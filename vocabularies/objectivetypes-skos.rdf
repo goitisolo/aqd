@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF  xml:base="http://rdfdata.eionet.europa.eu/airbase/objectivetypes/"
+    xmlns="http://www.w3.org/2004/02/skos/core#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+
+  <skos:ConceptScheme rdf:about="">
+    <rdfs:label>The vocabulary of objective types</rdfs:label>
+  </skos:ConceptScheme>
+
+  <Concept rdf:about="ALT">
+    <notation>ALT</notation>
+    <prefLabel>Alert threshold (ALT)</prefLabel>
+  </Concept>
+  <Concept rdf:about="NAT">
+    <notation>NAT</notation>
+    <prefLabel>Assessment of natural contribution (NAT)</prefLabel>
+  </Concept>
+  <Concept rdf:about="WSS">
+    <notation>WSS</notation>
+    <prefLabel>Assessment of winter sanding or salting (WSS)</prefLabel>
+  </Concept>
+  <Concept rdf:about="CL">
+    <notation>CL</notation>
+    <prefLabel>Critical level (CL)</prefLabel>
+  </Concept>
+  <Concept rdf:about="ECO">
+    <notation>ECO</notation>
+    <prefLabel>Exposure concentration obligation (ECO)</prefLabel>
+  </Concept>
+  <Concept rdf:about="ERT">
+    <notation>ERT</notation>
+    <prefLabel>Exposure reduction target (ERT)</prefLabel>
+  </Concept>
+  <Concept rdf:about="INT">
+    <notation>INT</notation>
+    <prefLabel>Information Threshold (INT)</prefLabel>
+  </Concept>
+  <Concept rdf:about="LV">
+    <notation>LV</notation>
+    <prefLabel>Limit Value (LV)</prefLabel>
+  </Concept>
+  <Concept rdf:about="LVMOT">
+    <notation>LVMOT</notation>
+    <prefLabel>Limit value plus applicable margin of tolerance (LVMOT)</prefLabel>
+  </Concept>
+  <Concept rdf:about="LTO">
+    <notation>LTO</notation>
+    <prefLabel>Long term objective (LTO)</prefLabel>
+  </Concept>
+  <Concept rdf:about="MO">
+    <notation>MO</notation>
+    <prefLabel>Monitoring objective (MO)</prefLabel>
+  </Concept>
+  <Concept rdf:about="TV">
+    <notation>TV</notation>
+    <prefLabel>Target Value (TV)</prefLabel>
+  </Concept>
+</rdf:RDF>
