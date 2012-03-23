@@ -1,83 +1,70 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rdf:RDF  xml:base="http://rdfdata.eionet.europa.eu/airbase/objectivetypes/"
-    xmlns="http://www.w3.org/2004/02/skos/core#"
+    xmlns="http://rdfdata.eionet.europa.eu/airbase/schema/"
     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
-    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#">
 
-  <skos:ConceptScheme rdf:about="">
-    <rdfs:label>The vocabulary of objective types</rdfs:label>
-  </skos:ConceptScheme>
+  <ObjectiveType rdf:about="ALT">
+    <code>ALT</code>
+    <rdfs:label>Alert threshold (ALT)</rdfs:label>
+  </ObjectiveType>
 
-  <Concept rdf:about="ALT">
-    <notation>ALT</notation>
-    <prefLabel>Alert threshold (ALT)</prefLabel>
-    <inScheme rdf:resource=""/>
-  </Concept>
+  <ObjectiveType rdf:about="NAT">
+    <code>NAT</code>
+    <rdfs:label>Assessment of natural contribution (NAT)</rdfs:label>
+  </ObjectiveType>
 
-  <Concept rdf:about="NAT">
-    <notation>NAT</notation>
-    <prefLabel>Assessment of natural contribution (NAT)</prefLabel>
-    <inScheme rdf:resource=""/>
-  </Concept>
+  <ObjectiveType rdf:about="WSS">
+    <code>WSS</code>
+    <rdfs:label>Assessment of winter sanding or salting (WSS)</rdfs:label>
+  </ObjectiveType>
 
-  <Concept rdf:about="WSS">
-    <notation>WSS</notation>
-    <prefLabel>Assessment of winter sanding or salting (WSS)</prefLabel>
-    <inScheme rdf:resource=""/>
-  </Concept>
+  <ObjectiveType rdf:about="CL">
+    <code>CL</code>
+    <rdfs:label>Critical level (CL)</rdfs:label>
+  </ObjectiveType>
 
-  <Concept rdf:about="CL">
-    <notation>CL</notation>
-    <prefLabel>Critical level (CL)</prefLabel>
-    <inScheme rdf:resource=""/>
-  </Concept>
+  <ObjectiveType rdf:about="ECO">
+    <code>ECO</code>
+    <rdfs:label>Exposure concentration obligation (ECO)</rdfs:label>
+  </ObjectiveType>
 
-  <Concept rdf:about="ECO">
-    <notation>ECO</notation>
-    <prefLabel>Exposure concentration obligation (ECO)</prefLabel>
-    <inScheme rdf:resource=""/>
-  </Concept>
+  <ObjectiveType rdf:about="ERT">
+    <code>ERT</code>
+    <rdfs:label>Exposure reduction target (ERT)</rdfs:label>
+  </ObjectiveType>
 
-  <Concept rdf:about="ERT">
-    <notation>ERT</notation>
-    <prefLabel>Exposure reduction target (ERT)</prefLabel>
-    <inScheme rdf:resource=""/>
-  </Concept>
+  <ObjectiveType rdf:about="INT">
+    <code>INT</code>
+    <rdfs:label>Information Threshold (INT)</rdfs:label>
+  </ObjectiveType>
 
-  <Concept rdf:about="INT">
-    <notation>INT</notation>
-    <prefLabel>Information Threshold (INT)</prefLabel>
-    <inScheme rdf:resource=""/>
-  </Concept>
+  <ObjectiveType rdf:about="LV">
+    <code>LV</code>
+    <rdfs:label>Limit Value (LV)</rdfs:label>
+  </ObjectiveType>
 
-  <Concept rdf:about="LV">
-    <notation>LV</notation>
-    <prefLabel>Limit Value (LV)</prefLabel>
-    <inScheme rdf:resource=""/>
-  </Concept>
+  <ObjectiveType rdf:about="LVMOT">
+    <code>LVMOT</code>
+    <rdfs:label>Limit value plus applicable margin of tolerance (LVMOT)</rdfs:label>
+  </ObjectiveType>
 
-  <Concept rdf:about="LVMOT">
-    <notation>LVMOT</notation>
-    <prefLabel>Limit value plus applicable margin of tolerance (LVMOT)</prefLabel>
-    <inScheme rdf:resource=""/>
-  </Concept>
+  <ObjectiveType rdf:about="LTO">
+    <code>LTO</code>
+    <rdfs:label>Long term objective (LTO)</rdfs:label>
+  </ObjectiveType>
 
-  <Concept rdf:about="LTO">
-    <notation>LTO</notation>
-    <prefLabel>Long term objective (LTO)</prefLabel>
-    <inScheme rdf:resource=""/>
-  </Concept>
+  <ObjectiveType rdf:about="MO">
+    <code>MO</code>
+    <rdfs:label>Monitoring objective (MO)</rdfs:label>
+  </ObjectiveType>
 
-  <Concept rdf:about="MO">
-    <notation>MO</notation>
-    <prefLabel>Monitoring objective (MO)</prefLabel>
-    <inScheme rdf:resource=""/>
-  </Concept>
-
-  <Concept rdf:about="TV">
-    <notation>TV</notation>
-    <prefLabel>Target Value (TV)</prefLabel>
-    <inScheme rdf:resource=""/>
-  </Concept>
+  <ObjectiveType rdf:about="TV">
+    <code>TV</code>
+    <rdfs:label>Target Value (TV)</rdfs:label>
+  </ObjectiveType>
 
 </rdf:RDF>
