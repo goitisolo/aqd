@@ -4,56 +4,80 @@
     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
 
-  <skos:ConceptScheme rdf:about="">
+  <ConceptScheme rdf:about="">
     <rdfs:label>The vocabulary of objective types</rdfs:label>
-  </skos:ConceptScheme>
+  </ConceptScheme>
 
   <Concept rdf:about="ALT">
     <notation>ALT</notation>
     <prefLabel>Alert threshold (ALT)</prefLabel>
+    <inScheme rdf:resource=""/>
   </Concept>
+
   <Concept rdf:about="NAT">
     <notation>NAT</notation>
     <prefLabel>Assessment of natural contribution (NAT)</prefLabel>
+    <inScheme rdf:resource=""/>
   </Concept>
+
   <Concept rdf:about="WSS">
     <notation>WSS</notation>
     <prefLabel>Assessment of winter sanding or salting (WSS)</prefLabel>
+    <inScheme rdf:resource=""/>
   </Concept>
+
   <Concept rdf:about="CL">
     <notation>CL</notation>
     <prefLabel>Critical level (CL)</prefLabel>
+    <inScheme rdf:resource=""/>
   </Concept>
+
   <Concept rdf:about="ECO">
     <notation>ECO</notation>
     <prefLabel>Exposure concentration obligation (ECO)</prefLabel>
+    <inScheme rdf:resource=""/>
   </Concept>
+
   <Concept rdf:about="ERT">
     <notation>ERT</notation>
     <prefLabel>Exposure reduction target (ERT)</prefLabel>
+    <inScheme rdf:resource=""/>
   </Concept>
+
   <Concept rdf:about="INT">
     <notation>INT</notation>
     <prefLabel>Information Threshold (INT)</prefLabel>
+    <inScheme rdf:resource=""/>
   </Concept>
+
   <Concept rdf:about="LV">
     <notation>LV</notation>
     <prefLabel>Limit Value (LV)</prefLabel>
+    <inScheme rdf:resource=""/>
   </Concept>
+
   <Concept rdf:about="LVMOT">
     <notation>LVMOT</notation>
     <prefLabel>Limit value plus applicable margin of tolerance (LVMOT)</prefLabel>
+    <inScheme rdf:resource=""/>
   </Concept>
+
   <Concept rdf:about="LTO">
     <notation>LTO</notation>
     <prefLabel>Long term objective (LTO)</prefLabel>
+    <inScheme rdf:resource=""/>
   </Concept>
+
   <Concept rdf:about="MO">
     <notation>MO</notation>
     <prefLabel>Monitoring objective (MO)</prefLabel>
+    <inScheme rdf:resource=""/>
   </Concept>
+
   <Concept rdf:about="TV">
     <notation>TV</notation>
     <prefLabel>Target Value (TV)</prefLabel>
+    <inScheme rdf:resource=""/>
   </Concept>
+
 </rdf:RDF>
