@@ -1,0 +1,65 @@
+<rdf:RDF
+ xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+ xmlns:foaf="http://xmlns.com/foaf/0.1/"
+ xmlns:owl="http://www.w3.org/2002/07/owl#"
+ xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+ xmlns:cc="http://creativecommons.org/ns#"
+ xmlns:dcterms="http://purl.org/dc/terms/"
+ xmlns="http://www.w3.org/2004/02/skos/core#"
+       xml:base="http://rdfdata.eionet.europa.eu/airbase/measurement-method/">
+
+<Concept rdf:about="1">
+   <prefLabel>UV fluorescence (SO2 (Reference))</prefLabel>
+</Concept>
+
+<Concept rdf:about="2">
+   <prefLabel>Chemiluminescence (NOx (Reference))</prefLabel>
+</Concept>
+
+<Concept rdf:about="3">
+   <prefLabel>Beta ray attenuation (PM10, PM2.5)</prefLabel>
+</Concept>
+
+<Concept rdf:about="4">
+   <prefLabel>Tapered Element Oscillating Microbalance (TEOM) (PM10, PM2.5)</prefLabel>
+</Concept>
+
+<Concept rdf:about="5">
+   <prefLabel>UV absorption (O3 (Reference))</prefLabel>
+</Concept>
+
+<Concept rdf:about="6">
+   <prefLabel>Non-dispersive infrared absorption/spectrometry (NDIR) (CO (Reference))</prefLabel>
+</Concept>
+
+<Concept rdf:about="7">
+   <prefLabel>Infrared gas filter correlation (CO)</prefLabel>
+</Concept>
+
+<Concept rdf:about="8">
+   <prefLabel>Sampling, reflectrometry</prefLabel>
+</Concept>
+
+<Concept rdf:about="9">
+   <prefLabel>Conversion, UV fluorescence</prefLabel>
+</Concept>
+
+<Concept rdf:about="10">
+   <prefLabel>Absorption, membrane separation, conductance detection</prefLabel>
+</Concept>
+
+<Concept rdf:about="11">
+   <prefLabel>Conversion, chemiluminescence </prefLabel>
+</Concept>
+
+<Concept rdf:about="12">
+   <prefLabel>Differential Optical Absorption Spectroscopy (DOAS) (SO2, NO2)</prefLabel>
+</Concept>
+
+<Concept rdf:about="13">
+   <prefLabel>Other, please specify</prefLabel>
+</Concept>
+
+
+</rdf:RDF>
