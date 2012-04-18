@@ -3,6 +3,7 @@
         xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
         xmlns="http://rdfdata.eionet.europa.eu/airbase/schema/"
 xml:base="http://rdfdata.eionet.europa.eu/airbase/aqd-analyticaltechniques/">
+
   <AnalyticalTechnique rdf:about="1">
     <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1</code>
     <name>Atomic absorption spectrometry (AAS) (ref. As</name>
@@ -23,10 +24,12 @@ xml:base="http://rdfdata.eionet.europa.eu/airbase/aqd-analyticaltechniques/">
     <name>Capillary electrophoresis</name>
   </AnalyticalTechnique>
 
+<!--
   <AnalyticalTechnique rdf:about="5">
     <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">5</code>
     <name>Cd</name>
   </AnalyticalTechnique>
+-->
 
   <AnalyticalTechnique rdf:about="6">
     <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">6</code>
@@ -40,7 +43,7 @@ xml:base="http://rdfdata.eionet.europa.eu/airbase/aqd-analyticaltechniques/">
 
   <AnalyticalTechnique rdf:about="8">
     <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">8</code>
-    <name>Cold vapour atomic absorption spectrometry (CV AAS)</name>
+    <name>Cold vapour atomic absorption spectrometry (CV AAS) (Hg)</name>
   </AnalyticalTechnique>
 
   <AnalyticalTechnique rdf:about="9">
@@ -50,13 +53,15 @@ xml:base="http://rdfdata.eionet.europa.eu/airbase/aqd-analyticaltechniques/">
 
   <AnalyticalTechnique rdf:about="10">
     <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">10</code>
-    <name>Colorimetric with p-rozaline</name>
+    <name>Colorimetric with p-rozaline (SO2)</name>
   </AnalyticalTechnique>
 
+<!--
   <AnalyticalTechnique rdf:about="11">
     <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">11</code>
     <name>Conductimetry</name>
   </AnalyticalTechnique>
+-->
 
   <AnalyticalTechnique rdf:about="12">
     <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">12</code>
@@ -80,7 +85,7 @@ xml:base="http://rdfdata.eionet.europa.eu/airbase/aqd-analyticaltechniques/">
 
   <AnalyticalTechnique rdf:about="16">
     <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">16</code>
-    <name>fFame ionization (FID)</name>
+    <name>Flame ionisation (FID)</name>
   </AnalyticalTechnique>
 
   <AnalyticalTechnique rdf:about="17">
@@ -90,7 +95,7 @@ xml:base="http://rdfdata.eionet.europa.eu/airbase/aqd-analyticaltechniques/">
 
   <AnalyticalTechnique rdf:about="18">
     <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">18</code>
-    <name>Gas chromatography (GC) + flame ionisation (FID) + ECD</name>
+    <name>Gas chromatography (GC) + flame ionisation (FID) + ECD (VOC)</name>
   </AnalyticalTechnique>
 
   <AnalyticalTechnique rdf:about="19">
@@ -100,12 +105,12 @@ xml:base="http://rdfdata.eionet.europa.eu/airbase/aqd-analyticaltechniques/">
 
   <AnalyticalTechnique rdf:about="20">
     <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">20</code>
-    <name>Gas chromatography + mass spectrometry (GC-MS) (ref. BaP)</name>
+    <name>Gas chromatography + mass spectrometry (GC-MS) (VOC, PAH, B(a)P (Reference))</name>
   </AnalyticalTechnique>
 
   <AnalyticalTechnique rdf:about="21">
     <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">21</code>
-    <name>Graphite furnace atomic absorption spectrometry (GF-AAS)</name>
+    <name>Graphite furnace atomic absorption spectrometry (GF-AAS) (Pb, As, Cd, Ni (Reference), (Hg))</name>
   </AnalyticalTechnique>
 
   <AnalyticalTechnique rdf:about="22">
@@ -130,12 +135,12 @@ xml:base="http://rdfdata.eionet.europa.eu/airbase/aqd-analyticaltechniques/">
 
   <AnalyticalTechnique rdf:about="26">
     <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">26</code>
-    <name>Inductive coupled plasma atomic emission spectrometry  (ICP-AES) (Pb in PM10)</name>
+    <name>Inductive coupled plasma atomic emission spectrometry (ICP-AES) (Pb in PM10)</name>
   </AnalyticalTechnique>
 
   <AnalyticalTechnique rdf:about="27">
     <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">27</code>
-    <name>Inductive coupled plasma mass spectrometry (ICP-MS) (ref. As</name>
+    <name>Inductive coupled plasma mass spectrometry (ICP-MS) (Pb, As, Cd, Ni)</name>
   </AnalyticalTechnique>
 
   <AnalyticalTechnique rdf:about="28">
@@ -163,21 +168,24 @@ xml:base="http://rdfdata.eionet.europa.eu/airbase/aqd-analyticaltechniques/">
     <name>Liquid chromatography</name>
   </AnalyticalTechnique>
 
+<!--
   <AnalyticalTechnique rdf:about="33">
     <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">33</code>
     <name>Ni in PM10)</name>
   </AnalyticalTechnique>
+-->
 
   <AnalyticalTechnique rdf:about="34">
     <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">34</code>
     <name>optical-acoustic</name>
   </AnalyticalTechnique>
 
+<!--
   <AnalyticalTechnique rdf:about="35">
     <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">35</code>
     <name>Pb</name>
   </AnalyticalTechnique>
-
+-->
   <AnalyticalTechnique rdf:about="36">
     <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">36</code>
     <name>Photometry</name>
@@ -220,12 +228,12 @@ xml:base="http://rdfdata.eionet.europa.eu/airbase/aqd-analyticaltechniques/">
 
   <AnalyticalTechnique rdf:about="44">
     <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">44</code>
-    <name>X-ray fluorescence spectrometry (XRF) (As</name>
+    <name>X-ray fluorescence spectrometry (XRF) (As, Cd, Pb, Ni)</name>
   </AnalyticalTechnique>
 
   <AnalyticalTechnique rdf:about="45">
     <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">45</code>
-    <name>Zeeman atomic absorption spectrometry (Zeeman  AAS)</name>
+    <name>Zeeman atomic absorption spectrometry (Zeeman AAS)=Graphite furnace atomic absorption spectrometry with Zeeman Background correction (Pb, As, Cd, Ni)</name>
   </AnalyticalTechnique>
 
   <AnalyticalTechnique rdf:about="46">
