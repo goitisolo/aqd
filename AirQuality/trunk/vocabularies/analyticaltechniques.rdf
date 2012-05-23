@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/"
+ xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+ xmlns:owl="http://www.w3.org/2002/07/owl#"
+ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+ xmlns="http://www.w3.org/2004/02/skos/core#"
+ xmlns:cc="http://creativecommons.org/ns#"
+ xmlns:dcterms="http://purl.org/dc/terms/"
+ xml:base="http://rdfdata.eionet.europa.eu/airbase/analyticaltechniques/">
+
+  <Concept rdf:about="1">
+    <notation>1</notation>
+    <prefLabel>Atomic absorption spectrometry (AAS)</prefLabel>
+  </Concept>
+  <Concept rdf:about="2">
+    <notation>2</notation>
+    <prefLabel>Cold vapour atomic absorption spectrometry (CV-AAS)</prefLabel>
+  </Concept>
+  <Concept rdf:about="3">
+    <notation>3</notation>
+    <prefLabel>Cold vapour atomic fluorescence spectrometry (CV-AFS)</prefLabel>
+  </Concept>
+  <Concept rdf:about="4">
+    <notation>4</notation>
+    <prefLabel>Colorimetric with p-rosaniline</prefLabel>
+  </Concept>
+  <Concept rdf:about="5">
+    <notation>5</notation>
+    <prefLabel>Conductimetry</prefLabel>
+  </Concept>
+  <Concept rdf:about="6">
+    <notation>6</notation>
+    <prefLabel>Continous flow analyses (CFA)</prefLabel>
+  </Concept>
+  <Concept rdf:about="7">
+    <notation>7</notation>
+    <prefLabel>Electrothermal Atomic Absorption Spectrometry (ET-AAS)</prefLabel>
+  </Concept>
+  <Concept rdf:about="8">
+    <notation>8</notation>
+    <prefLabel>FIAS-Furnace coupling technique (FI-FU)</prefLabel>
+  </Concept>
+  <Concept rdf:about="9">
+    <notation>9</notation>
+    <prefLabel>Flame atomic absorption spectrometry (F-AAS)</prefLabel>
+  </Concept>
+  <Concept rdf:about="10">
+    <notation>10</notation>
+    <prefLabel>Flame ionisation detection (FID)</prefLabel>
+  </Concept>
+  <Concept rdf:about="11">
+    <notation>11</notation>
+    <prefLabel>Gas chromatography (GC) + flame ionisation (GC-FID)</prefLabel>
+  </Concept>
+  <Concept rdf:about="12">
+    <notation>12</notation>
+    <prefLabel>Gas chromatography (GC) + flame ionisation (FID) + ECD (GC-FIS-ECD)</prefLabel>
+  </Concept>
+  <Concept rdf:about="13">
+    <notation>13</notation>
+    <prefLabel>Gas chromatography (separation from methane), flame ionization detection (GC (sep methane)-FID)</prefLabel>
+  </Concept>
+  <Concept rdf:about="14">
+    <notation>14</notation>
+    <prefLabel>Gas chromatography + mass spectrometry (GC-MS)</prefLabel>
+  </Concept>
+  <Concept rdf:about="15">
+    <notation>15</notation>
+    <prefLabel>Gas chromatography + flame ionization detection GC-FID</prefLabel>
+  </Concept>
+  <Concept rdf:about="16">
+    <notation>16</notation>
+    <prefLabel>Gas chromatography + flame ionization detection GC-FID after solvent or thermal desorption</prefLabel>
+  </Concept>
+  <Concept rdf:about="17">
+    <notation>17</notation>
+    <prefLabel>Gas chromatography + mass spectrometry GC-MS after solvent or thermal desorption</prefLabel>
+  </Concept>
+  <Concept rdf:about="18">
+    <notation>18</notation>
+    <prefLabel>Gas Chromatography with Nitrogen Phosphorous Detector GC-NPD</prefLabel>
+  </Concept>
+  <Concept rdf:about="19">
+    <notation>19</notation>
+    <prefLabel>Graphite furnace atomic absorption spectrometry (GF-AAS)</prefLabel>
+  </Concept>
+  <Concept rdf:about="20">
+    <notation>20</notation>
+    <prefLabel>Gravimetry</prefLabel>
+  </Concept>
+  <Concept rdf:about="21">
+    <notation>21</notation>
+    <prefLabel>Gravimetry for PM10 and/or PM2,5 - continuous measurement</prefLabel>
+  </Concept>
+  <Concept rdf:about="22">
+    <notation>22</notation>
+    <prefLabel>Gravimetry for PM10 and/or PM2,5 - random measurement</prefLabel>
+  </Concept>
+  <Concept rdf:about="23">
+    <notation>23</notation>
+    <prefLabel>Griess-Saltzman reaction</prefLabel>
+  </Concept>
+  <Concept rdf:about="24">
+    <notation>24</notation>
+    <prefLabel>High performance liquid chromatography - fluorescence detection (HPLC-FLD)</prefLabel>
+  </Concept>
+  <Concept rdf:about="25">
+    <notation>25</notation>
+    <prefLabel>High performance liquid chromatography - mass spectrometry (HPLC-MS)</prefLabel>
+  </Concept>
+  <Concept rdf:about="26">
+    <notation>26</notation>
+    <prefLabel>High Performance Liquid Chromatography HPLC with UV detection (HPLC-UV)</prefLabel>
+  </Concept>
+  <Concept rdf:about="27">
+    <notation>27</notation>
+    <prefLabel>High resolution continuum source atomic absorption spectrometry (HR-CS-AAS)</prefLabel>
+  </Concept>
+  <Concept rdf:about="28">
+    <notation>28</notation>
+    <prefLabel>Hydride generation electrothermal - atomic absorption spectrometry (HG-ET-AAS)</prefLabel>
+  </Concept>
+  <Concept rdf:about="29">
+    <notation>29</notation>
+    <prefLabel>Inductive coupled plasma atomic emission spectrometry (ICP-AES)</prefLabel>
+  </Concept>
+  <Concept rdf:about="30">
+    <notation>30</notation>
+    <prefLabel>Inductive coupled plasma mass spectrometryscopy (ICP-MS)</prefLabel>
+  </Concept>
+  <Concept rdf:about="31">
+    <notation>31</notation>
+    <prefLabel>Inductive coupled plasma optical emission spectrometry. (ICP-OES)</prefLabel>
+  </Concept>
+  <Concept rdf:about="32">
+    <notation>32</notation>
+    <prefLabel>Ion chromatography</prefLabel>
+  </Concept>
+  <Concept rdf:about="33">
+    <notation>33</notation>
+    <prefLabel>Isotope dilution</prefLabel>
+  </Concept>
+  <Concept rdf:about="34">
+    <notation>34</notation>
+    <prefLabel>Photometry</prefLabel>
+  </Concept>
+  <Concept rdf:about="35">
+    <notation>35</notation>
+    <prefLabel>Potentiometry</prefLabel>
+  </Concept>
+  <Concept rdf:about="36">
+    <notation>36</notation>
+    <prefLabel>Reflectometry</prefLabel>
+  </Concept>
+  <Concept rdf:about="37">
+    <notation>37</notation>
+    <prefLabel>Spectrometry</prefLabel>
+  </Concept>
+  <Concept rdf:about="38">
+    <notation>38</notation>
+    <prefLabel>Spectrophotometry</prefLabel>
+  </Concept>
+  <Concept rdf:about="39">
+    <notation>39</notation>
+    <prefLabel>Thermal-optical carbon analysis</prefLabel>
+  </Concept>
+  <Concept rdf:about="40">
+    <notation>40</notation>
+    <prefLabel>Titration</prefLabel>
+  </Concept>
+  <Concept rdf:about="41">
+    <notation>41</notation>
+    <prefLabel>Volumetry</prefLabel>
+  </Concept>
+  <Concept rdf:about="42">
+    <notation>42</notation>
+    <prefLabel>X-ray fluorescence spectroscopy (XRF)</prefLabel>
+  </Concept>
+  <Concept rdf:about="43">
+    <notation>43</notation>
+    <prefLabel>Zeeman atomic absorption spectrometry (Zeeman  AAS)</prefLabel>
+  </Concept>
+  <Concept rdf:about="44">
+    <notation>44</notation>
+    <prefLabel>Other, please specify</prefLabel>
+  </Concept>
+</rdf:RDF>

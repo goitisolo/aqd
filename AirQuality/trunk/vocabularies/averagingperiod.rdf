@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/"
+ xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+ xmlns:owl="http://www.w3.org/2002/07/owl#"
+ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+ xmlns="http://www.w3.org/2004/02/skos/core#"
+ xmlns:cc="http://creativecommons.org/ns#"
+ xmlns:dcterms="http://purl.org/dc/terms/"
+ xml:base="http://rdfdata.eionet.europa.eu/airbase/averagingperiod/">
+
+<Concept rdf:about="1"><notation>1</notation><prefLabel>1 hour</prefLabel></Concept>
+<Concept rdf:about="2"><notation>2</notation><prefLabel>8 hours</prefLabel></Concept>
+<Concept rdf:about="3"><notation>3</notation><prefLabel>1 day</prefLabel></Concept>
+<Concept rdf:about="4"><notation>4</notation><prefLabel>April to September (Summer)</prefLabel></Concept>
+<Concept rdf:about="5"><notation>5</notation><prefLabel>October to March (Winter)</prefLabel></Concept>
+<Concept rdf:about="6"><notation>6</notation><prefLabel>May-July (AOT40)</prefLabel></Concept>
+<Concept rdf:about="7"><notation>7</notation><prefLabel>January to December (1 year)</prefLabel></Concept>
+<Concept rdf:about="8"><notation>8</notation><prefLabel>3 years </prefLabel></Concept>
+</rdf:RDF>
