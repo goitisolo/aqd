@@ -2,6 +2,8 @@
 
 # This script opens an XML file called example.xml then runs through all
 # elements until an exception happens or the end of file.
+#
+# The script understands character set issues and namespaces.
 
 from xml.dom import pulldom
 
