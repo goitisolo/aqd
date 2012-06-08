@@ -1,0 +1,907 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" xmlns:owl="http://www.w3.org/2002/07/owl#" xmlns:xsd="http://www.w3.org/2001/XMLSchema#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:skos="http://www.w3.org/2004/02/skos/core#" xmlns:cc="http://creativecommons.org/ns#" xmlns:dcterms="http://purl.org/dc/terms/" xmlns="http://rdfdata.eionet.europa.eu/airbase/schema/" xml:base="http://rdfdata.eionet.europa.eu/airbase/">
+
+  <rdf:Description rdf:about="components/1">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/14"/>
+    <elementName>Sulphur dioxide</elementName>
+    <matrix>air</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/3">
+    <elementName>Strong acidity</elementName>
+    <matrix>air</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/4">
+    <elementName>Total suspended particulates</elementName>
+    <matrix>aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/5">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/319"/>
+    <elementName>Particulate matter &lt; 10 µm</elementName>
+    <matrix>aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/6">
+    <elementName>Black smoke</elementName>
+    <matrix>air</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/7">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/389"/>
+    <elementName>Ozone</elementName>
+    <matrix>air</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/8">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/83"/>
+    <elementName>Nitrogen dioxide</elementName>
+    <matrix>air</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/9">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/39"/>
+    <elementName>Nitrogen oxides</elementName>
+    <matrix>air</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/10">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/28"/>
+    <elementName>Carbon monoxide</elementName>
+    <matrix>air</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/11">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/956"/>
+    <elementName>Hydrogen sulphide</elementName>
+    <matrix>air</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/12">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/20"/>
+    <elementName>Lead</elementName>
+    <matrix>aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/13">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/17"/>
+    <elementName>Mercury</elementName>
+    <matrix>aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/14">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/15"/>
+    <elementName>Cadmium</elementName>
+    <matrix>aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/15">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/25"/>
+    <elementName>Nickel</elementName>
+    <matrix>aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/16">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/21"/>
+    <elementName>Chromium</elementName>
+    <matrix>aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/17">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/24"/>
+    <elementName>Manganese</elementName>
+    <matrix>aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/18">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/19"/>
+    <elementName>Arsenic</elementName>
+    <matrix>aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/19">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/1212"/>
+    <elementName>Carbon disulphide</elementName>
+    <matrix>air</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/20">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/76"/>
+    <elementName>Benzene</elementName>
+    <matrix>air</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/21">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/525"/>
+    <elementName>Toluene</elementName>
+    <matrix>air</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/22">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/639"/>
+    <elementName>Styrene</elementName>
+    <matrix>air</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/24">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/309"/>
+    <elementName>1,3 Butadiene</elementName>
+    <matrix>air</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/25">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/528"/>
+    <elementName>Formaldehyde</elementName>
+    <matrix>air</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/26">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/177"/>
+    <elementName>Trichloroethylene</elementName>
+    <matrix>air</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/27">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/765"/>
+    <elementName>Tetrachloroethylene</elementName>
+    <matrix>air</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/30">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/183"/>
+    <elementName>Polyaromatic hydrocarbons</elementName>
+    <matrix>air+aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/32">
+    <elementName>Total non-methane hydrocarbons</elementName>
+    <matrix>air</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/33">
+    <elementName>Total volatile organic compounds</elementName>
+    <matrix>air</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/34">
+    <elementName>Peroxyacetyl nitrate</elementName>
+    <matrix>air</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/35">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/312"/>
+    <elementName>Ammonia</elementName>
+    <matrix>air</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/36">
+    <elementName>Wet nitrogen deposition</elementName>
+    <matrix>flux</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/37">
+    <elementName>Wet sulphur deposition</elementName>
+    <matrix>flux</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/38">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/1039"/>
+    <elementName>Nitrogen monoxide</elementName>
+    <matrix>air</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/39">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/12"/>
+    <elementName>Hydrogen chloride</elementName>
+    <matrix>air</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/40">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/13"/>
+    <elementName>Hydrogen fluoride</elementName>
+    <matrix>air</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/41">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/317"/>
+    <elementName>Methane</elementName>
+    <matrix>air</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/45">
+    <elementName>Particulate ammonium</elementName>
+    <matrix>aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/46">
+    <elementName>Particulate nitrate</elementName>
+    <matrix>aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/47">
+    <elementName>Particulate sulphate</elementName>
+    <matrix>aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/48">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/190"/>
+    <elementName>Selenium</elementName>
+    <matrix>aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/49">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/26"/>
+    <elementName>Vanadium</elementName>
+    <matrix>aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/51">
+    <elementName>HC C2-C6 (excl. AROM. &amp; CHLH)</elementName>
+    <matrix>air+aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/63">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/109"/>
+    <elementName>Zinc</elementName>
+    <matrix>aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/65">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/339"/>
+    <elementName>Iron</elementName>
+    <matrix>aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/67">
+    <elementName>Total nitrate</elementName>
+    <matrix>air+aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/68">
+    <elementName>Total ammonium</elementName>
+    <matrix>air+aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/69">
+    <elementName>Radioactivity</elementName>
+    <matrix></matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/73">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/23"/>
+    <elementName>Copper</elementName>
+    <matrix>aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/316">
+    <elementName>i-Hexane (2-methylpentane)</elementName>
+    <elementAlt>i-Hexane</elementAlt>
+    <elementAlt>2-methylpentane</elementAlt>
+    <matrix>air</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/323">
+    <elementName>N3methylpentane</elementName>
+    <matrix>air</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/351">
+    <elementName>Acenaphthene</elementName>
+    <matrix>air+aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/352">
+    <elementName>Acenaphtylene</elementName>
+    <matrix>air+aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/380">
+    <elementName>Benzo(b+j+k)fluoranthenes</elementName>
+    <matrix>air+aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/381">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/596"/>
+    <elementName>Benzo(e)pyrene</elementName>
+    <matrix>air+aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/394">
+    <elementName>n-Butane</elementName>
+    <matrix>air</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/412">
+    <elementName>Conductivity</elementName>
+    <matrix>precip</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/416">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/549"/>
+    <elementName>Cyclohexane</elementName>
+    <matrix>air</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/428">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/316"/>
+    <elementName>Ethane</elementName>
+    <matrix>air</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/430">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/1211"/>
+    <elementName>Ethene (Ethylene)</elementName>
+    <elementAlt>Ethene</elementAlt>
+    <elementAlt>Ethylene</elementAlt>
+    <matrix>air</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/431">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/613"/>
+    <elementName>Ethyl benzene</elementName>
+    <matrix>air</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/432">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/278"/>
+    <elementName>Ethyne (Acetylene)</elementName>
+    <elementAlt>Ethyne</elementAlt>
+    <elementAlt>Acetylene</elementAlt>
+    <matrix>air</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/435">
+    <elementName>Fluorene</elementName>
+    <matrix>air+aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/441">
+    <elementName>n-Heptane</elementName>
+    <matrix>air</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/443">
+    <elementName>n-Hexane</elementName>
+    <matrix>air</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/447">
+    <elementName>i-Butane (2-methylpropane)</elementName>
+    <elementAlt>i-Butane</elementAlt>
+    <elementAlt>2-methylpropane</elementAlt>
+    <matrix>air</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/449">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/1210"/>
+    <elementName>i-Octane (2,2,4-trimethylpentane)</elementName>
+    <elementAlt>i-Octane</elementAlt>
+    <elementAlt>2,2,4-trimethylpentane</elementAlt>
+    <matrix>air</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/450">
+    <elementName>i-Pentane (2-methylbutane)</elementName>
+    <elementAlt>i-Pentane</elementAlt>
+    <elementAlt>2-methylbutane</elementAlt>
+    <matrix>air</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/451">
+    <elementName>Isoprene (2-methyl-1,3-butadiene)</elementName>
+    <elementAlt>Isoprene</elementAlt>
+    <elementAlt>2-methyl-1,3-butadiene</elementAlt>
+    <matrix>air</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/464">
+    <elementName>m,p-Xylene</elementName>
+    <matrix>air</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/465">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/661"/>
+    <elementName>Naphtalene</elementName>
+    <matrix>air+aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/475">
+    <elementName>n-Octane</elementName>
+    <matrix>air</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/482">
+    <elementName>o-Xylene</elementName>
+    <matrix>air</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/486">
+    <elementName>n-Pentane</elementName>
+    <matrix>air</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/503">
+    <elementName>Propane</elementName>
+    <matrix>air</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/505">
+    <elementName>Propene</elementName>
+    <matrix>air</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/520">
+    <elementName>sum_sulph_diox_sulphate</elementName>
+    <matrix>air+aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/604">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/331"/>
+    <elementName>Aluminium</elementName>
+    <matrix>aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/606">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/662"/>
+    <elementName>Anthracene</elementName>
+    <matrix>air+aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/608">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/662"/>
+    <elementName>Anthracene</elementName>
+    <matrix>precip+dry_dep</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/609">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/665"/>
+    <elementName>Benzo(a)anthracene</elementName>
+    <matrix>air+aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/611">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/665"/>
+    <elementName>Benzo(a)anthracene</elementName>
+    <matrix>precip+dry_dep</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/616">
+    <elementName>Benzo(b)fluoranthene</elementName>
+    <matrix>air+aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/618">
+    <elementName>Benzo(b)fluoranthene</elementName>
+    <matrix>precip+dry_dep</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/622">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/667"/>
+    <elementName>Benzo(ghi)perylene</elementName>
+    <matrix>air+aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/624">
+    <elementName>Benzo(ghi)perylene</elementName>
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/667"/>
+    <matrix>precip+dry_dep</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/625">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/668"/>
+    <elementName>Benzo(k)fluoranthene</elementName>
+    <matrix>air+aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/627">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/668"/>
+    <elementName>Benzo(k)fluoranthene</elementName>
+    <matrix>precip+dry_dep</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/629">
+    <elementName>Calcium</elementName>
+    <matrix>aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/630">
+    <elementName>Calcium</elementName>
+    <matrix>precip</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/631">
+    <elementName>Chloride</elementName>
+    <matrix>aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/632">
+    <elementName>Chloride</elementName>
+    <matrix>precip</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/643">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/664"/>
+    <elementName>Fluoranthene</elementName>
+    <matrix>air+aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/645">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/664"/>
+    <elementName>Fluoranthene</elementName>
+    <matrix>precip+dry_dep</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/648">
+    <elementName>Acidity (H+)</elementName>
+    <matrix>precip</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/653">
+    <elementName>Reactive mercury</elementName>
+    <matrix>air+aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/654">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/681"/>
+    <elementName>Ideno(1,2,3-cd)pyrene</elementName>
+    <matrix>air+aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/656">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/681"/>
+    <elementName>Ideno(1,2,3-cd)pyrene</elementName>
+    <matrix>precip+dry_dep</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/658">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/330"/>
+    <elementName>Potassium</elementName>
+    <matrix>precip</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/660">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/328"/>
+    <elementName>Magnesium</elementName>
+    <matrix>precip</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/664">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/333"/>
+    <elementName>Ammonium</elementName>
+    <matrix>precip</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/666">
+    <elementName>Nitrate</elementName>
+    <matrix>precip</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/669">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/329"/>
+    <elementName>Sodium</elementName>
+    <matrix>precip</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/673">
+    <elementName>PCB_114</elementName>
+    <matrix>air+aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/674">
+    <elementName>PCB_118</elementName>
+    <matrix>air+aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/677">
+    <elementName>PCB_138</elementName>
+    <matrix>air+aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/679">
+    <elementName>PCB_141</elementName>
+    <matrix>air+aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/680">
+    <elementName>PCB_153</elementName>
+    <matrix>air+aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/683">
+    <elementName>PCB_157</elementName>
+    <matrix>air+aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/684">
+    <elementName>PCB_167</elementName>
+    <matrix>air+aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/685">
+    <elementName>PCB_170</elementName>
+    <matrix>air+aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/686">
+    <elementName>PCB_180</elementName>
+    <matrix>air+aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/689">
+    <elementName>PCB_183</elementName>
+    <matrix>air+aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/690">
+    <elementName>PCB_187</elementName>
+    <matrix>air+aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/691">
+    <elementName>PCB_189</elementName>
+    <matrix>air+aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/692">
+    <elementName>PCB_194</elementName>
+    <matrix>air+aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/695">
+    <elementName>PCB_28</elementName>
+    <matrix>air+aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/701">
+    <elementName>PCB_52</elementName>
+    <matrix>air+aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/706">
+    <elementName>PCB_74</elementName>
+    <matrix>air+aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/707">
+    <elementName>PCB_99</elementName>
+    <matrix>air+aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/709">
+    <elementName>PCB_123</elementName>
+    <matrix>air+aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/712">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/663"/>
+    <elementName>Phenanthrene</elementName>
+    <matrix>air+aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/714">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/663"/>
+    <elementName>Phenanthrene</elementName>
+    <matrix>precip+dry_dep</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/715">
+    <elementName>Pyrene</elementName>
+    <matrix>air+aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/717">
+    <elementName>Pyrene</elementName>
+    <matrix>precip+dry_dep</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/719">
+    <elementName>Sulphate</elementName>
+    <matrix>precip</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/753">
+    <elementName>Precipitation amount</elementName>
+    <matrix>precip</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/754">
+    <elementName>Precipitation amount off</elementName>
+    <matrix>precip</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/760">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/669"/>
+    <elementName>Benzo(j)fluoranthene</elementName>
+    <matrix>precip+dry_dep</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/762">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/669"/>
+    <elementName>Benzo(j)fluoranthene</elementName>
+    <matrix>air+aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/1029">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/596"/>
+    <elementName>Benzo(a)pyrene</elementName>
+    <matrix>aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/1045">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/333"/>
+    <elementName>Ammonium</elementName>
+    <matrix>aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/1046">
+    <elementName>Nitrate</elementName>
+    <matrix>aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/1047">
+    <elementName>Sulphate</elementName>
+    <matrix>aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/1629">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/355"/>
+    <elementName>Calcium</elementName>
+    <matrix>aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/1631">
+    <elementName>Chloride</elementName>
+    <matrix>aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/1657">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/330"/>
+    <elementName>Potassium</elementName>
+    <matrix>aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/1659">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/328"/>
+    <elementName>Magnesium</elementName>
+    <matrix>aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/1668">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/329"/>
+    <elementName>Sodium</elementName>
+    <matrix>aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/1771">
+    <elementName>Elemental carbon</elementName>
+    <matrix>aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/1772">
+    <elementName>Organic carbon</elementName>
+    <matrix>aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/2012">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/20"/>
+    <elementName>Lead</elementName>
+    <matrix>precip</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/2013">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/17"/>
+    <elementName>Mercury</elementName>
+    <matrix>precip</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/2014">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/15"/>
+    <elementName>Cadmium</elementName>
+    <matrix>precip</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/2015">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/25"/>
+    <elementName>Nickel</elementName>
+    <matrix>precip</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/2018">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/19"/>
+    <elementName>Arsenic</elementName>
+    <matrix>precip</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/2063">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/109"/>
+    <elementName>Zinc</elementName>
+    <matrix>precip</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/2065">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/339"/>
+    <elementName>Iron</elementName>
+    <matrix>precip</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/2073">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/23"/>
+    <elementName>Copper</elementName>
+    <matrix>precip</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/2076">
+    <elementName>Acidity (pH)</elementName>
+    <matrix>precip</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/4013">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/17"/>
+    <elementName>Mercury</elementName>
+    <matrix>air+aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/4330">
+    <elementName>PCB_105</elementName>
+    <matrix>air+aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/4336">
+    <elementName>PCB_149</elementName>
+    <matrix>air+aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/4339">
+    <elementName>PCB_156</elementName>
+    <matrix>air+aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/4341">
+    <elementName>PCB_18</elementName>
+    <matrix>air+aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/4347">
+    <elementName>PCB_31</elementName>
+    <matrix>air+aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/4406">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/666"/>
+    <elementName>Chrysene</elementName>
+    <matrix>air+aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/4813">
+    <elementName>Total gaseous mercury</elementName>
+    <matrix>air+aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/5012">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/20"/>
+    <elementName>Lead</elementName>
+    <matrix>aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/5013">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/17"/>
+    <elementName>Mercury</elementName>
+    <matrix>aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/5014">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/15"/>
+    <elementName>Cadmium</elementName>
+    <matrix>aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/5015">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/25"/>
+    <elementName>Nickel</elementName>
+    <matrix>aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/5018">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/19"/>
+    <elementName>Arsenic</elementName>
+    <matrix>aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/5029">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/596"/>
+    <elementName>Benzo(a)pyrene</elementName>
+    <matrix>aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/5129">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/596"/>
+    <elementName>Benzo(a)pyrene</elementName>
+    <matrix>air+aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/5380">
+    <elementName>Benzo(b,j,k)fluoranthene</elementName>
+    <matrix>aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/5419">
+    <elementName>Dibenzo(ah)anthracene</elementName>
+    <matrix>aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/5609">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/665"/>
+    <elementName>Benzo(a)anthracene</elementName>
+    <matrix>air+aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/5610">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/665"/>
+    <elementName>Benzo(a)anthracene</elementName>
+    <matrix>aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/5616">
+    <elementName>Benzo(b)fluoranthene</elementName>
+    <matrix>air+aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/5617">
+    <elementName>Benzo(b)fluoranthene</elementName>
+    <matrix>aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/5625">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/668"/>
+    <elementName>Benzo(k)fluoranthene</elementName>
+    <matrix>air+aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/5626">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/668"/>
+    <elementName>Benzo(k)fluoranthene</elementName>
+    <matrix>aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/5654">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/681"/>
+    <elementName>Ideno(1,2,3-cd)pyrene</elementName>
+    <matrix>air+aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/5655">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/681"/>
+    <elementName>Ideno(1,2,3-cd)pyrene</elementName>
+    <matrix>aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/5759">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/669"/>
+    <elementName>Benzo(j)fluoranthene</elementName>
+    <matrix>aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/5762">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/669"/>
+    <elementName>Benzo(j)fluoranthene</elementName>
+    <matrix>air+aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/5763">
+    <elementName>Dibenzo(ah)anthracene</elementName>
+    <matrix>air+aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/6001">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/324"/>
+    <elementName>Particulate matter &lt; 2.5 µm</elementName>
+    <matrix>aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/6002">
+    <elementName>Particulate matter &lt; 1 µm</elementName>
+    <matrix>aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/6005">
+    <elementName>1-Butene</elementName>
+    <matrix>air</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/6006">
+    <elementName>Trans-2-Butene</elementName>
+    <matrix>air</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/6007">
+    <elementName>Cis-2-Butene</elementName>
+    <matrix>air</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/6008">
+    <elementName>1-Pentene</elementName>
+    <matrix>air</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/6009">
+    <elementName>2-Pentene</elementName>
+    <matrix>air</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/6011">
+    <elementName>1,2,4-Trimethylbenzene</elementName>
+    <matrix>air</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/6012">
+    <elementName>1,2,3-Trimethylbenzene</elementName>
+    <matrix>air</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/6013">
+    <elementName>1,3,5-Trimethylbenzene</elementName>
+    <matrix>air</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/6015">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/596"/>
+    <elementName>Benzo(a)pyrene</elementName>
+    <matrix>air+aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/6380">
+    <elementName>Benzo(b,j,k)fluoranthene</elementName>
+    <matrix>air+aerosol</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/7012">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/20"/>
+    <elementName>Lead</elementName>
+    <matrix>precip+dry_dep</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/7013">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/17"/>
+    <elementName>Mercury</elementName>
+    <matrix>precip+dry_dep</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/7014">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/15"/>
+    <elementName>Cadmium</elementName>
+    <matrix>precip+dry_dep</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/7015">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/25"/>
+    <elementName>Nickel</elementName>
+    <matrix>precip+dry_dep</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/7018">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/19"/>
+    <elementName>Arsenic</elementName>
+    <matrix>precip+dry_dep</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/7029">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/596"/>
+    <elementName>Benzo(a)pyrene</elementName>
+    <matrix>precip+dry_dep</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/7380">
+    <elementName>Benzo(b,j,k)fluoranthene</elementName>
+    <matrix>precip+dry_dep</matrix>
+  </rdf:Description>
+  <rdf:Description rdf:about="components/7419">
+    <elementName>Dibenzo(ah)anthracene</elementName>
+    <matrix>precip+dry_dep</matrix>
+  </rdf:Description>
+</rdf:RDF>
