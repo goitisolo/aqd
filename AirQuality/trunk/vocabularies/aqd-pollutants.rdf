@@ -1,290 +1,365 @@
 <?xml version="1.0"?>
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
         xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
-        xmlns="http://rdfdata.eionet.europa.eu/airbase/schema/"
+        xmlns="http://www.w3.org/2004/02/skos/core#"
 xml:base="http://rdfdata.eionet.europa.eu/airbase/aqd-pollutants/">
-  <Pollutant rdf:about="1">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1</code>
-    <name>(CH3)2-CH-CH2-CH2-CH3</name>
-  </Pollutant>
-  <Pollutant rdf:about="2">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">2</code>
-    <name>(CH3)3-C-CH2-CH-(CH3)2</name>
-  </Pollutant>
-  <Pollutant rdf:about="3">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">3</code>
-    <name>As</name>
-  </Pollutant>
-  <Pollutant rdf:about="4">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">4</code>
-    <name>As deposition</name>
-  </Pollutant>
-  <Pollutant rdf:about="5">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">5</code>
-    <name>B(a)P</name>
-    <longName>Benzo(a)pyrene</longName>
-  </Pollutant>
-  <Pollutant rdf:about="6">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">6</code>
-    <name>Benzo(a)anthracene</name>
-  </Pollutant>
-  <Pollutant rdf:about="7">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">7</code>
-    <name>Benzo(a)fluoranthene</name>
-  </Pollutant>
-  <Pollutant rdf:about="8">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">8</code>
-    <name>Benzo(b)anthracene</name>
-  </Pollutant>
-  <Pollutant rdf:about="9">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">9</code>
-    <name>Benzo(b)fluoranthene</name>
-  </Pollutant>
-  <Pollutant rdf:about="10">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">10</code>
-    <name>Benzo(j)fluoranthene</name>
-  </Pollutant>
-  <Pollutant rdf:about="11">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">11</code>
-    <name>Benzo(k)fluoranthene</name>
-  </Pollutant>
-  <Pollutant rdf:about="12">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">12</code>
-    <name>C2H6</name>
-    <longName>Benzene</longName>
-  </Pollutant>
-  <Pollutant rdf:about="13">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">13</code>
-    <name>C6H14</name>
-  </Pollutant>
-  <Pollutant rdf:about="14">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">14</code>
-    <name>C6H3(CH3)3</name>
-  </Pollutant>
-  <Pollutant rdf:about="15">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">15</code>
-    <name>C6H5-C2H5</name>
-  </Pollutant>
-  <Pollutant rdf:about="16">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">16</code>
-    <name>C6H5-CH3</name>
-  </Pollutant>
-  <Pollutant rdf:about="17">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">17</code>
-    <name>C6H6</name>
-  </Pollutant>
-  <Pollutant rdf:about="18">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">18</code>
-    <name>C7H16</name>
-  </Pollutant>
-  <Pollutant rdf:about="19">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">19</code>
-    <name>C8H18</name>
-  </Pollutant>
-  <Pollutant rdf:about="20">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">20</code>
-    <name>Ca2+ in PM2.5</name>
-  </Pollutant>
-  <Pollutant rdf:about="21">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">21</code>
-    <name>Cd</name>
-  </Pollutant>
-  <Pollutant rdf:about="22">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">22</code>
-    <name>Cd deposition</name>
-  </Pollutant>
-  <Pollutant rdf:about="23">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">23</code>
-    <name>CH2=CH-CH=CH2</name>
-  </Pollutant>
-  <Pollutant rdf:about="24">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">24</code>
-    <name>CH2=CH-CH3</name>
-  </Pollutant>
-  <Pollutant rdf:about="25">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">25</code>
-    <name>CH20</name>
-  </Pollutant>
-  <Pollutant rdf:about="26">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">26</code>
-    <name>CH4</name>
-  </Pollutant>
-  <Pollutant rdf:about="27">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">27</code>
-    <name>Cl- in PM2.5</name>
-  </Pollutant>
-  <Pollutant rdf:about="28">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">28</code>
-    <name>CO</name>
-  </Pollutant>
-  <Pollutant rdf:about="29">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">29</code>
-    <name>Dibenz(a,h)anthrazene</name>
-  </Pollutant>
-  <Pollutant rdf:about="30">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">30</code>
-    <name>elem. C in PM2.5</name>
-  </Pollutant>
-  <Pollutant rdf:about="31">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">31</code>
-    <name>H2C=CH-C(CH3)=CH2</name>
-  </Pollutant>
-  <Pollutant rdf:about="32">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">32</code>
-    <name>H2C=CH-CH2-CH2-CH3</name>
-  </Pollutant>
-  <Pollutant rdf:about="33">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">33</code>
-    <name>H2C=CH-CH2-CH3</name>
-  </Pollutant>
-  <Pollutant rdf:about="34">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">34</code>
-    <name>H2C=CH2</name>
-  </Pollutant>
-  <Pollutant rdf:about="35">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">35</code>
-    <name>H3C-(CH2)3-CH3</name>
-  </Pollutant>
-  <Pollutant rdf:about="36">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">36</code>
-    <name>H3C-CH(CH3)2</name>
-  </Pollutant>
-  <Pollutant rdf:about="37">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">37</code>
-    <name>H3C-CH=CH-CH3</name>
-    <longName>trans-2-Butene</longName>
-  </Pollutant>
-  <Pollutant rdf:about="38">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">38</code>
-    <name>H3C-CH2-CH(CH3)2</name>
-  </Pollutant>
-  <Pollutant rdf:about="39">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">39</code>
-    <name>H3C-CH2-CH2-CH3</name>
-  </Pollutant>
-  <Pollutant rdf:about="40">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">40</code>
-    <name>H3C-CH2-CH3</name>
-  </Pollutant>
-  <Pollutant rdf:about="41">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">41</code>
-    <name>H3C-HC=CH-CH2-CH3</name>
-  </Pollutant>
-  <Pollutant rdf:about="42">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">42</code>
-    <name>HC=CH</name>
-  </Pollutant>
-  <Pollutant rdf:about="43">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">43</code>
-    <name>HCHO</name>
-  </Pollutant>
-  <Pollutant rdf:about="44">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">44</code>
-    <name>Hg deposition</name>
-  </Pollutant>
-  <Pollutant rdf:about="45">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">45</code>
-    <name>Indeno(1,2,3-cd)pyrene</name>
-  </Pollutant>
-  <Pollutant rdf:about="46">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">46</code>
-    <name>K+ in PM2.5</name>
-  </Pollutant>
-  <Pollutant rdf:about="47">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">47</code>
-    <name>m;p-C6H4(CH3)2</name>
-  </Pollutant>
-  <Pollutant rdf:about="48">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">48</code>
-    <name>Metallic gaseous Hg</name>
-  </Pollutant>
-  <Pollutant rdf:about="49">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">49</code>
-    <name>Mg2+ in PM2.5</name>
-  </Pollutant>
-  <Pollutant rdf:about="50">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">50</code>
-    <name>Na+ in PM2.5</name>
-  </Pollutant>
-  <Pollutant rdf:about="51">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">51</code>
-    <name>NH4+ in PM2.5</name>
-  </Pollutant>
-  <Pollutant rdf:about="52">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">52</code>
-    <name>Ni</name>
-  </Pollutant>
-  <Pollutant rdf:about="53">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">53</code>
-    <name>Ni deposition</name>
-  </Pollutant>
-  <Pollutant rdf:about="54">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">54</code>
-    <name>NO2</name>
-  </Pollutant>
-  <Pollutant rdf:about="55">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">55</code>
-    <name>NO3- in PM2.5</name>
-  </Pollutant>
-  <Pollutant rdf:about="56">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">56</code>
-    <name>non methane Hydrocarbons</name>
-  </Pollutant>
-  <Pollutant rdf:about="57">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">57</code>
-    <name>NOx</name>
-  </Pollutant>
-  <Pollutant rdf:about="58">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">58</code>
-    <name>o-C6H4-(CH3)2</name>
-  </Pollutant>
-  <Pollutant rdf:about="59">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">59</code>
-    <name>O3</name>
-  </Pollutant>
-  <Pollutant rdf:about="60">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">60</code>
-    <name>org. C in PM2.5</name>
-  </Pollutant>
-  <Pollutant rdf:about="61">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">61</code>
-    <name>Particulate Hg</name>
-  </Pollutant>
-  <Pollutant rdf:about="62">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">62</code>
-    <name>Pb</name>
-  </Pollutant>
-  <Pollutant rdf:about="63">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">63</code>
-    <name>Pb deposition</name>
-  </Pollutant>
-  <Pollutant rdf:about="64">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">64</code>
-    <name>PM10</name>
-  </Pollutant>
-  <Pollutant rdf:about="65">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">65</code>
-    <name>PM2.5</name>
-  </Pollutant>
-  <Pollutant rdf:about="66">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">66</code>
-    <name>Reactive gaseous Hg</name>
-  </Pollutant>
-  <Pollutant rdf:about="67">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">67</code>
-    <name>SO2</name>
-  </Pollutant>
-  <Pollutant rdf:about="68">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">68</code>
-    <name>SO42+ in PM2.5</name>
-  </Pollutant>
-  <Pollutant rdf:about="69">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">69</code>
-    <name>Total gaseous Hg</name>
-  </Pollutant>
-  <Pollutant rdf:about="70">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">70</code>
-    <name>H3C-CH=CH-CH3</name>
-    <longName>cis-2-Butene</longName>
-  </Pollutant>
+
+  <ConceptScheme rdf:about="">
+    <rdfs:label>The vocabulary of pollutants from AQD.xsd</rdfs:label>
+  </ConceptScheme>
+
+  <Concept rdf:about="1">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1</notation>
+    <prefLabel>(CH3)2-CH-CH2-CH2-CH3</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="2">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">2</notation>
+    <prefLabel>(CH3)3-C-CH2-CH-(CH3)2</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="3">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">3</notation>
+    <prefLabel>As</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="4">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">4</notation>
+    <prefLabel>As deposition</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="5">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">5</notation>
+    <prefLabel>B(a)P</prefLabel>
+    <inScheme rdf:resource=""/>
+    <altLabel>Benzo(a)pyrene</altLabel>
+  </Concept>
+  <Concept rdf:about="6">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">6</notation>
+    <prefLabel>Benzo(a)anthracene</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="7">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">7</notation>
+    <prefLabel>Benzo(a)fluoranthene</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="8">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">8</notation>
+    <prefLabel>Benzo(b)anthracene</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="9">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">9</notation>
+    <prefLabel>Benzo(b)fluoranthene</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="10">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">10</notation>
+    <prefLabel>Benzo(j)fluoranthene</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="11">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">11</notation>
+    <prefLabel>Benzo(k)fluoranthene</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="12">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">12</notation>
+    <prefLabel>C2H6</prefLabel>
+    <inScheme rdf:resource=""/>
+    <altLabel>Benzene</altLabel>
+  </Concept>
+  <Concept rdf:about="13">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">13</notation>
+    <prefLabel>C6H14</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="14">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">14</notation>
+    <prefLabel>C6H3(CH3)3</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="15">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">15</notation>
+    <prefLabel>C6H5-C2H5</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="16">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">16</notation>
+    <prefLabel>C6H5-CH3</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="17">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">17</notation>
+    <prefLabel>C6H6</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="18">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">18</notation>
+    <prefLabel>C7H16</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="19">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">19</notation>
+    <prefLabel>C8H18</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="20">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">20</notation>
+    <prefLabel>Ca2+ in PM2.5</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="21">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">21</notation>
+    <prefLabel>Cd</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="22">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">22</notation>
+    <prefLabel>Cd deposition</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="23">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">23</notation>
+    <prefLabel>CH2=CH-CH=CH2</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="24">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">24</notation>
+    <prefLabel>CH2=CH-CH3</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="25">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">25</notation>
+    <prefLabel>CH20</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="26">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">26</notation>
+    <prefLabel>CH4</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="27">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">27</notation>
+    <prefLabel>Cl- in PM2.5</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="28">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">28</notation>
+    <prefLabel>CO</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="29">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">29</notation>
+    <prefLabel>Dibenz(a,h)anthrazene</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="30">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">30</notation>
+    <prefLabel>elem. C in PM2.5</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="31">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">31</notation>
+    <prefLabel>H2C=CH-C(CH3)=CH2</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="32">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">32</notation>
+    <prefLabel>H2C=CH-CH2-CH2-CH3</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="33">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">33</notation>
+    <prefLabel>H2C=CH-CH2-CH3</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="34">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">34</notation>
+    <prefLabel>H2C=CH2</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="35">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">35</notation>
+    <prefLabel>H3C-(CH2)3-CH3</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="36">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">36</notation>
+    <prefLabel>H3C-CH(CH3)2</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="37">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">37</notation>
+    <prefLabel>H3C-CH=CH-CH3</prefLabel>
+    <inScheme rdf:resource=""/>
+    <altLabel>trans-2-Butene</altLabel>
+  </Concept>
+  <Concept rdf:about="38">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">38</notation>
+    <prefLabel>H3C-CH2-CH(CH3)2</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="39">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">39</notation>
+    <prefLabel>H3C-CH2-CH2-CH3</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="40">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">40</notation>
+    <prefLabel>H3C-CH2-CH3</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="41">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">41</notation>
+    <prefLabel>H3C-HC=CH-CH2-CH3</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="42">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">42</notation>
+    <prefLabel>HC=CH</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="43">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">43</notation>
+    <prefLabel>HCHO</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="44">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">44</notation>
+    <prefLabel>Hg deposition</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="45">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">45</notation>
+    <prefLabel>Indeno(1,2,3-cd)pyrene</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="46">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">46</notation>
+    <prefLabel>K+ in PM2.5</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="47">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">47</notation>
+    <prefLabel>m;p-C6H4(CH3)2</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="48">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">48</notation>
+    <prefLabel>Metallic gaseous Hg</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="49">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">49</notation>
+    <prefLabel>Mg2+ in PM2.5</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="50">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">50</notation>
+    <prefLabel>Na+ in PM2.5</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="51">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">51</notation>
+    <prefLabel>NH4+ in PM2.5</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="52">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">52</notation>
+    <prefLabel>Ni</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="53">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">53</notation>
+    <prefLabel>Ni deposition</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="54">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">54</notation>
+    <prefLabel>NO2</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="55">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">55</notation>
+    <prefLabel>NO3- in PM2.5</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="56">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">56</notation>
+    <prefLabel>non methane Hydrocarbons</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="57">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">57</notation>
+    <prefLabel>NOx</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="58">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">58</notation>
+    <prefLabel>o-C6H4-(CH3)2</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="59">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">59</notation>
+    <prefLabel>O3</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="60">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">60</notation>
+    <prefLabel>org. C in PM2.5</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="61">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">61</notation>
+    <prefLabel>Particulate Hg</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="62">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">62</notation>
+    <prefLabel>Pb</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="63">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">63</notation>
+    <prefLabel>Pb deposition</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="64">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">64</notation>
+    <prefLabel>PM10</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="65">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">65</notation>
+    <prefLabel>PM2.5</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="66">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">66</notation>
+    <prefLabel>Reactive gaseous Hg</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="67">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">67</notation>
+    <prefLabel>SO2</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="68">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">68</notation>
+    <prefLabel>SO42+ in PM2.5</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="69">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">69</notation>
+    <prefLabel>Total gaseous Hg</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="70">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">70</notation>
+    <prefLabel>H3C-CH=CH-CH3</prefLabel>
+    <inScheme rdf:resource=""/>
+    <altLabel>cis-2-Butene</altLabel>
+  </Concept>
 </rdf:RDF>
