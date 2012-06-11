@@ -1,0 +1,710 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2011 rel. 2 (http://www.altova.com) by heimo rainer (private) -->
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:base="urn:x-inspire:specification:gmlas:BaseTypes:3.2" xmlns:base2="http://inspire.jrc.ec.europa.eu/schemas/base2/0.1" xmlns:ef="http://inspire.jrc.ec.europa.eu/schemas/ef/2.0" xmlns:gmd="http://www.isotc211.org/2005/gmd" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:om="http://www.opengis.net/om/2.0" targetNamespace="http://inspire.jrc.ec.europa.eu/schemas/ef/2.0" elementFormDefault="qualified" version="2.0">
+	<import namespace="http://inspire.jrc.ec.europa.eu/schemas/base2/0.1" schemaLocation="BaseTypes2.xsd"/>
+	<import namespace="http://www.isotc211.org/2005/gmd" schemaLocation="http://schemas.opengis.net/iso/19139/20070417/gmd/gmd.xsd"/>
+	<import namespace="http://www.opengis.net/gml/3.2" schemaLocation="http://schemas.opengis.net/gml/3.2.1/gml.xsd"/>
+	<import namespace="http://www.opengis.net/om/2.0" schemaLocation="http://schemas.opengis.net/om/2.0/observation.xsd"/>
+	<import namespace="urn:x-inspire:specification:gmlas:BaseTypes:3.2" schemaLocation="BaseTypes.xsd"/>
+	<!--XML Schema document created by ShapeChange-->
+	<element name="EnvironmentalMonitoringNetwork" type="ef:EnvironmentalMonitoringNetworkType" substitutionGroup="ef:AbstractMonitoringFeature"/>
+	<complexType name="EnvironmentalMonitoringNetworkType">
+		<complexContent>
+			<extension base="ef:AbstractMonitoringFeatureType">
+				<sequence>
+					<element name="onlineResource" nillable="true" minOccurs="0" maxOccurs="unbounded">
+						<complexType>
+							<simpleContent>
+								<extension base="anyURI">
+									<attribute name="nilReason" type="gml:NilReasonType"/>
+								</extension>
+							</simpleContent>
+						</complexType>
+					</element>
+					<element name="organisationalLevel" nillable="true">
+						<complexType>
+							<simpleContent>
+								<extension base="gml:CodeType">
+									<attribute name="nilReason" type="gml:NilReasonType"/>
+								</extension>
+							</simpleContent>
+						</complexType>
+					</element>
+					<element name="contains" type="ef:NetworkFacilityPropertyType" minOccurs="0" maxOccurs="unbounded">
+						<annotation>
+							<appinfo>
+								<reversePropertyName xmlns="http://www.opengis.net/gml/3.2">ef:belongsTo</reversePropertyName>
+							</appinfo>
+						</annotation>
+					</element>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="EnvironmentalMonitoringNetworkPropertyType">
+		<sequence minOccurs="0">
+			<element ref="ef:EnvironmentalMonitoringNetwork"/>
+		</sequence>
+		<attributeGroup ref="gml:AssociationAttributeGroup"/>
+		<attributeGroup ref="gml:OwnershipAttributeGroup"/>
+	</complexType>
+	<element name="AbstractMonitoringFeature" type="ef:AbstractMonitoringFeatureType" abstract="true" substitutionGroup="ef:AbstractMonitoringObject"/>
+	<complexType name="AbstractMonitoringFeatureType" abstract="true">
+		<complexContent>
+			<extension base="ef:AbstractMonitoringObjectType">
+				<sequence>
+					<element name="reportedTo" nillable="true" minOccurs="0" maxOccurs="unbounded">
+						<complexType>
+							<sequence>
+								<element ref="ef:ReportToLegalAct"/>
+							</sequence>
+							<attribute name="nilReason" type="gml:NilReasonType"/>
+						</complexType>
+					</element>
+					<element name="hasObservation" type="om:OM_ObservationPropertyType" minOccurs="0" maxOccurs="unbounded"/>
+					<element name="observingCapability" minOccurs="0" maxOccurs="unbounded">
+						<complexType>
+							<complexContent>
+								<extension base="gml:AbstractMemberType">
+									<sequence minOccurs="0">
+										<element ref="ef:ObservingCapability"/>
+									</sequence>
+									<attributeGroup ref="gml:AssociationAttributeGroup"/>
+								</extension>
+							</complexContent>
+						</complexType>
+					</element>
+					<element name="setUpFor" type="ef:EnvironmentalMonitoringActivityPropertyType" minOccurs="0" maxOccurs="unbounded"/>
+					<element name="broader" type="ef:HierarchyPropertyType" minOccurs="0">
+						<annotation>
+							<appinfo>
+								<reversePropertyName xmlns="http://www.opengis.net/gml/3.2">ef:narrower</reversePropertyName>
+							</appinfo>
+						</annotation>
+					</element>
+					<element name="narrower" type="ef:HierarchyPropertyType" minOccurs="0" maxOccurs="unbounded">
+						<annotation>
+							<appinfo>
+								<reversePropertyName xmlns="http://www.opengis.net/gml/3.2">ef:broader</reversePropertyName>
+							</appinfo>
+						</annotation>
+					</element>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="AbstractMonitoringFeaturePropertyType">
+		<sequence minOccurs="0">
+			<element ref="ef:AbstractMonitoringFeature"/>
+		</sequence>
+		<attributeGroup ref="gml:AssociationAttributeGroup"/>
+		<attributeGroup ref="gml:OwnershipAttributeGroup"/>
+	</complexType>
+	<element name="INSPIRE_GF_PropertyType" type="ef:INSPIRE_GF_PropertyTypeType" substitutionGroup="gml:AbstractFeature"/>
+	<complexType name="INSPIRE_GF_PropertyTypeType">
+		<complexContent>
+			<extension base="gml:AbstractFeatureType">
+				<sequence>
+					<element name="inspireId" type="base:IdentifierPropertyType"/>
+					<element name="name" type="string" minOccurs="0"/>
+					<element name="onlineResource" type="anyURI" minOccurs="0"/>
+					<element name="procedure" type="ef:INSPIRE_OM_ProcessPropertyType" minOccurs="0" maxOccurs="unbounded">
+						<annotation>
+							<appinfo>
+								<reversePropertyName xmlns="http://www.opengis.net/gml/3.2">ef:property</reversePropertyName>
+							</appinfo>
+						</annotation>
+					</element>
+					<element name="classificationUnit" type="ef:ClassificationUnitPropertyType" minOccurs="0" maxOccurs="unbounded">
+						<annotation>
+							<appinfo>
+								<reversePropertyName xmlns="http://www.opengis.net/gml/3.2">ef:baseProperty</reversePropertyName>
+							</appinfo>
+						</annotation>
+					</element>
+					<element name="referringFrom" type="ef:INSPIRE_GF_PropertyTypePropertyType" minOccurs="0" maxOccurs="unbounded">
+						<annotation>
+							<appinfo>
+								<reversePropertyName xmlns="http://www.opengis.net/gml/3.2">ef:referringTo</reversePropertyName>
+							</appinfo>
+						</annotation>
+					</element>
+					<element name="referringTo" type="ef:INSPIRE_GF_PropertyTypePropertyType" minOccurs="0" maxOccurs="unbounded">
+						<annotation>
+							<appinfo>
+								<reversePropertyName xmlns="http://www.opengis.net/gml/3.2">ef:referringFrom</reversePropertyName>
+							</appinfo>
+						</annotation>
+					</element>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="INSPIRE_GF_PropertyTypePropertyType">
+		<sequence minOccurs="0">
+			<element ref="ef:INSPIRE_GF_PropertyType"/>
+		</sequence>
+		<attributeGroup ref="gml:AssociationAttributeGroup"/>
+		<attributeGroup ref="gml:OwnershipAttributeGroup"/>
+	</complexType>
+	<element name="ProcessParameter" type="ef:ProcessParameterType" substitutionGroup="gml:AbstractObject"/>
+	<complexType name="ProcessParameterType">
+		<sequence>
+			<element name="description" type="string"/>
+			<element name="onlineResource" type="anyURI"/>
+		</sequence>
+	</complexType>
+	<complexType name="ProcessParameterPropertyType">
+		<sequence>
+			<element ref="ef:ProcessParameter"/>
+		</sequence>
+	</complexType>
+	<element name="EnvironmentalMonitoringActivity" type="ef:EnvironmentalMonitoringActivityType" substitutionGroup="gml:AbstractGML"/>
+	<complexType name="EnvironmentalMonitoringActivityType">
+		<complexContent>
+			<extension base="gml:AbstractGMLType">
+				<sequence>
+					<element name="activityTime" nillable="true">
+						<complexType>
+							<complexContent>
+								<extension base="gml:AbstractMemberType">
+									<sequence minOccurs="0">
+										<element ref="gml:AbstractTimeObject"/>
+									</sequence>
+									<attributeGroup ref="gml:AssociationAttributeGroup"/>
+								</extension>
+							</complexContent>
+						</complexType>
+					</element>
+					<element name="activityConditions" nillable="true">
+						<complexType>
+							<simpleContent>
+								<extension base="string">
+									<attribute name="nilReason" type="gml:NilReasonType"/>
+								</extension>
+							</simpleContent>
+						</complexType>
+					</element>
+					<element name="reportedTo" type="ef:EnvironmentalMonitoringProgramPropertyType"/>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="EnvironmentalMonitoringActivityPropertyType">
+		<sequence minOccurs="0">
+			<element ref="ef:EnvironmentalMonitoringActivity"/>
+		</sequence>
+		<attributeGroup ref="gml:AssociationAttributeGroup"/>
+		<attributeGroup ref="gml:OwnershipAttributeGroup"/>
+	</complexType>
+	<element name="AnyThematicLink" type="ef:AnyThematicLinkType" substitutionGroup="gml:AbstractGML"/>
+	<complexType name="AnyThematicLinkType">
+		<complexContent>
+			<extension base="gml:AbstractGMLType">
+				<sequence>
+					<element name="comment" nillable="true">
+						<complexType>
+							<simpleContent>
+								<extension base="string">
+									<attribute name="nilReason" type="gml:NilReasonType"/>
+								</extension>
+							</simpleContent>
+						</complexType>
+					</element>
+					<element name="relatedTo" type="ef:EnvironmentalMonitoringFacilityPropertyType"/>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="AnyThematicLinkPropertyType">
+		<sequence minOccurs="0">
+			<element ref="ef:AnyThematicLink"/>
+		</sequence>
+		<attributeGroup ref="gml:AssociationAttributeGroup"/>
+		<attributeGroup ref="gml:OwnershipAttributeGroup"/>
+	</complexType>
+	<element name="ClassificationUnit" type="ef:ClassificationUnitType" substitutionGroup="gml:AbstractFeature"/>
+	<complexType name="ClassificationUnitType">
+		<complexContent>
+			<extension base="gml:AbstractFeatureType">
+				<sequence>
+					<element name="inspireId" type="base:IdentifierPropertyType"/>
+					<element name="name" type="string" minOccurs="0"/>
+					<element name="schema" type="ef:ClassificationSchemaPropertyType" maxOccurs="unbounded">
+						<annotation>
+							<appinfo>
+								<reversePropertyName xmlns="http://www.opengis.net/gml/3.2">ef:unit</reversePropertyName>
+							</appinfo>
+						</annotation>
+					</element>
+					<element name="baseProperty" type="ef:INSPIRE_GF_PropertyTypePropertyType" minOccurs="0" maxOccurs="unbounded">
+						<annotation>
+							<appinfo>
+								<reversePropertyName xmlns="http://www.opengis.net/gml/3.2">ef:classificationUnit</reversePropertyName>
+							</appinfo>
+						</annotation>
+					</element>
+					<element name="referringFrom" type="ef:ClassificationUnitPropertyType" minOccurs="0" maxOccurs="unbounded">
+						<annotation>
+							<appinfo>
+								<reversePropertyName xmlns="http://www.opengis.net/gml/3.2">ef:referringTo</reversePropertyName>
+							</appinfo>
+						</annotation>
+					</element>
+					<element name="referringTo" type="ef:ClassificationUnitPropertyType" minOccurs="0" maxOccurs="unbounded">
+						<annotation>
+							<appinfo>
+								<reversePropertyName xmlns="http://www.opengis.net/gml/3.2">ef:referringFrom</reversePropertyName>
+							</appinfo>
+						</annotation>
+					</element>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="ClassificationUnitPropertyType">
+		<sequence minOccurs="0">
+			<element ref="ef:ClassificationUnit"/>
+		</sequence>
+		<attributeGroup ref="gml:AssociationAttributeGroup"/>
+		<attributeGroup ref="gml:OwnershipAttributeGroup"/>
+	</complexType>
+	<element name="ClassificationSchema" type="ef:ClassificationSchemaType" substitutionGroup="gml:AbstractFeature"/>
+	<complexType name="ClassificationSchemaType">
+		<complexContent>
+			<extension base="gml:AbstractFeatureType">
+				<sequence>
+					<element name="inspireId" type="base:IdentifierPropertyType"/>
+					<element name="name" type="string" minOccurs="0"/>
+					<element name="onlineResource" type="anyURI" minOccurs="0"/>
+					<element name="unit" minOccurs="0" maxOccurs="unbounded">
+						<annotation>
+							<appinfo>
+								<reversePropertyName xmlns="http://www.opengis.net/gml/3.2">ef:schema</reversePropertyName>
+							</appinfo>
+						</annotation>
+						<complexType>
+							<complexContent>
+								<extension base="gml:AbstractMemberType">
+									<sequence minOccurs="0">
+										<element ref="ef:ClassificationUnit"/>
+									</sequence>
+									<attributeGroup ref="gml:AssociationAttributeGroup"/>
+								</extension>
+							</complexContent>
+						</complexType>
+					</element>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="ClassificationSchemaPropertyType">
+		<sequence minOccurs="0">
+			<element ref="ef:ClassificationSchema"/>
+		</sequence>
+		<attributeGroup ref="gml:AssociationAttributeGroup"/>
+		<attributeGroup ref="gml:OwnershipAttributeGroup"/>
+	</complexType>
+	<element name="INSPIRE_OM_Process" type="ef:INSPIRE_OM_ProcessType" substitutionGroup="gml:AbstractGML"/>
+	<complexType name="INSPIRE_OM_ProcessType">
+		<complexContent>
+			<extension base="gml:AbstractFeatureType">
+				<sequence>
+					<element name="inspireId" type="base:IdentifierPropertyType"/>
+					<element name="name" type="string" minOccurs="0"/>
+					<element name="onlineResource" type="anyURI" minOccurs="0"/>
+					<element name="processParameter" type="ef:ProcessParameterPropertyType" minOccurs="0" maxOccurs="unbounded"/>
+					<element name="responsibleParty" maxOccurs="unbounded">
+						<complexType>
+							<complexContent>
+								<extension base="gml:AbstractMetadataPropertyType">
+									<sequence>
+										<element ref="gmd:CI_ResponsibleParty"/>
+									</sequence>
+								</extension>
+							</complexContent>
+						</complexType>
+					</element>
+					<element name="referringFrom" type="ef:INSPIRE_OM_ProcessPropertyType" minOccurs="0" maxOccurs="unbounded">
+						<annotation>
+							<appinfo>
+								<reversePropertyName xmlns="http://www.opengis.net/gml/3.2">ef:referringTo</reversePropertyName>
+							</appinfo>
+						</annotation>
+					</element>
+					<element name="referringTo" type="ef:INSPIRE_OM_ProcessPropertyType" minOccurs="0" maxOccurs="unbounded">
+						<annotation>
+							<appinfo>
+								<reversePropertyName xmlns="http://www.opengis.net/gml/3.2">ef:referringFrom</reversePropertyName>
+							</appinfo>
+						</annotation>
+					</element>
+					<element name="property" type="ef:INSPIRE_GF_PropertyTypePropertyType" minOccurs="0" maxOccurs="unbounded">
+						<annotation>
+							<appinfo>
+								<reversePropertyName xmlns="http://www.opengis.net/gml/3.2">ef:procedure</reversePropertyName>
+							</appinfo>
+						</annotation>
+					</element>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="INSPIRE_OM_ProcessPropertyType">
+		<sequence minOccurs="0">
+			<element ref="ef:INSPIRE_OM_Process"/>
+		</sequence>
+		<attributeGroup ref="gml:AssociationAttributeGroup"/>
+		<attributeGroup ref="gml:OwnershipAttributeGroup"/>
+	</complexType>
+	<element name="NetworkFacility" type="ef:NetworkFacilityType" substitutionGroup="gml:AbstractGML"/>
+	<complexType name="NetworkFacilityType">
+		<complexContent>
+			<extension base="gml:AbstractGMLType">
+				<sequence>
+					<element name="linkingTime" nillable="true">
+						<complexType>
+							<complexContent>
+								<extension base="gml:AbstractMemberType">
+									<sequence minOccurs="0">
+										<element ref="gml:AbstractTimeObject"/>
+									</sequence>
+									<attributeGroup ref="gml:AssociationAttributeGroup"/>
+								</extension>
+							</complexContent>
+						</complexType>
+					</element>
+					<element name="belongsTo" type="ef:EnvironmentalMonitoringNetworkPropertyType">
+						<annotation>
+							<appinfo>
+								<reversePropertyName xmlns="http://www.opengis.net/gml/3.2">ef:contains</reversePropertyName>
+							</appinfo>
+						</annotation>
+					</element>
+					<element name="contains" type="ef:EnvironmentalMonitoringFacilityPropertyType">
+						<annotation>
+							<appinfo>
+								<reversePropertyName xmlns="http://www.opengis.net/gml/3.2">ef:belongsTo</reversePropertyName>
+							</appinfo>
+						</annotation>
+					</element>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="NetworkFacilityPropertyType">
+		<sequence minOccurs="0">
+			<element ref="ef:NetworkFacility"/>
+		</sequence>
+		<attributeGroup ref="gml:AssociationAttributeGroup"/>
+		<attributeGroup ref="gml:OwnershipAttributeGroup"/>
+	</complexType>
+	<element name="AbstractMonitoringObject" type="ef:AbstractMonitoringObjectType" abstract="true" substitutionGroup="gml:AbstractFeature"/>
+	<complexType name="AbstractMonitoringObjectType" abstract="true">
+		<complexContent>
+			<extension base="gml:AbstractFeatureType">
+				<sequence>
+					<element name="inspireId" type="base:IdentifierPropertyType"/>
+					<element name="name" type="string" minOccurs="0" maxOccurs="unbounded"/>
+					<element name="additionalDescription" type="string" minOccurs="0"/>
+					<element name="legalBackground" nillable="true" minOccurs="0" maxOccurs="unbounded">
+						<complexType>
+							<sequence>
+								<element ref="base2:LegislationReference"/>
+							</sequence>
+							<attribute name="nilReason" type="gml:NilReasonType"/>
+						</complexType>
+					</element>
+					<element name="responsibleParty" nillable="true" minOccurs="0" maxOccurs="unbounded">
+						<complexType>
+							<complexContent>
+								<extension base="gml:AbstractMetadataPropertyType">
+									<sequence>
+										<element ref="gmd:CI_ResponsibleParty"/>
+									</sequence>
+									<attribute name="nilReason" type="gml:NilReasonType"/>
+								</extension>
+							</complexContent>
+						</complexType>
+					</element>
+					<element name="beginLifespan" nillable="true">
+						<complexType>
+							<simpleContent>
+								<extension base="dateTime">
+									<attribute name="nilReason" type="gml:NilReasonType"/>
+								</extension>
+							</simpleContent>
+						</complexType>
+					</element>
+					<element name="endLifespan" nillable="true" minOccurs="0">
+						<complexType>
+							<simpleContent>
+								<extension base="dateTime">
+									<attribute name="nilReason" type="gml:NilReasonType"/>
+								</extension>
+							</simpleContent>
+						</complexType>
+					</element>
+					<element name="geometry" type="gml:GeometryPropertyType" minOccurs="0"/>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="AbstractMonitoringObjectPropertyType">
+		<sequence minOccurs="0">
+			<element ref="ef:AbstractMonitoringObject"/>
+		</sequence>
+		<attributeGroup ref="gml:AssociationAttributeGroup"/>
+		<attributeGroup ref="gml:OwnershipAttributeGroup"/>
+	</complexType>
+	<element name="ObservingCapability" type="ef:ObservingCapabilityType" substitutionGroup="gml:AbstractFeature"/>
+	<complexType name="ObservingCapabilityType">
+		<complexContent>
+			<extension base="gml:AbstractFeatureType">
+				<sequence>
+					<element name="observingTime" nillable="true">
+						<complexType>
+							<complexContent>
+								<extension base="gml:AbstractMemberType">
+									<sequence minOccurs="0">
+										<element ref="gml:AbstractTimeObject"/>
+									</sequence>
+									<attributeGroup ref="gml:AssociationAttributeGroup"/>
+								</extension>
+							</complexContent>
+						</complexType>
+					</element>
+					<element name="processType" nillable="true">
+						<complexType>
+							<simpleContent>
+								<extension base="gml:CodeType">
+									<attribute name="nilReason" type="gml:NilReasonType"/>
+								</extension>
+							</simpleContent>
+						</complexType>
+					</element>
+					<element name="reportedTo" nillable="true" minOccurs="0" maxOccurs="unbounded">
+						<complexType>
+							<sequence>
+								<element ref="ef:ReportToLegalAct"/>
+							</sequence>
+							<attribute name="nilReason" type="gml:NilReasonType"/>
+						</complexType>
+					</element>
+					<element name="resultNature" nillable="true">
+						<complexType>
+							<simpleContent>
+								<extension base="gml:CodeType">
+									<attribute name="nilReason" type="gml:NilReasonType"/>
+								</extension>
+							</simpleContent>
+						</complexType>
+					</element>
+					<element name="observedProperty" type="gml:ReferenceType"/>
+					<element name="procedure" type="om:OM_ProcessPropertyType"/>
+					<element name="featureOfInterest" type="gml:FeaturePropertyType" minOccurs="0"/>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="ObservingCapabilityPropertyType">
+		<sequence minOccurs="0">
+			<element ref="ef:ObservingCapability"/>
+		</sequence>
+		<attributeGroup ref="gml:AssociationAttributeGroup"/>
+		<attributeGroup ref="gml:OwnershipAttributeGroup"/>
+	</complexType>
+	<element name="EnvironmentalMonitoringProgram" type="ef:EnvironmentalMonitoringProgramType" substitutionGroup="ef:AbstractMonitoringObject"/>
+	<complexType name="EnvironmentalMonitoringProgramType">
+		<complexContent>
+			<extension base="ef:AbstractMonitoringObjectType">
+				<sequence/>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="EnvironmentalMonitoringProgramPropertyType">
+		<sequence minOccurs="0">
+			<element ref="ef:EnvironmentalMonitoringProgram"/>
+		</sequence>
+		<attributeGroup ref="gml:AssociationAttributeGroup"/>
+		<attributeGroup ref="gml:OwnershipAttributeGroup"/>
+	</complexType>
+	<element name="OperationalActivityPeriod" type="ef:OperationalActivityPeriodType" substitutionGroup="gml:AbstractFeature"/>
+	<complexType name="OperationalActivityPeriodType">
+		<complexContent>
+			<extension base="gml:AbstractFeatureType">
+				<sequence>
+					<element name="activityTime">
+						<complexType>
+							<complexContent>
+								<extension base="gml:AbstractMemberType">
+									<sequence minOccurs="0">
+										<element ref="gml:AbstractTimeObject"/>
+									</sequence>
+									<attributeGroup ref="gml:AssociationAttributeGroup"/>
+								</extension>
+							</complexContent>
+						</complexType>
+					</element>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="OperationalActivityPeriodPropertyType">
+		<sequence minOccurs="0">
+			<element ref="ef:OperationalActivityPeriod"/>
+		</sequence>
+		<attributeGroup ref="gml:AssociationAttributeGroup"/>
+		<attributeGroup ref="gml:OwnershipAttributeGroup"/>
+	</complexType>
+	<element name="ReportToLegalAct" type="ef:ReportToLegalActType" substitutionGroup="gml:AbstractObject"/>
+	<complexType name="ReportToLegalActType">
+		<sequence>
+			<element name="legalAct" type="base2:LegislationReferencePropertyType"/>
+			<element name="reportDate" nillable="true">
+				<complexType>
+					<simpleContent>
+						<extension base="dateTime">
+							<attribute name="nilReason" type="gml:NilReasonType"/>
+						</extension>
+					</simpleContent>
+				</complexType>
+			</element>
+			<element name="observationRequired" nillable="true">
+				<complexType>
+					<simpleContent>
+						<extension base="boolean">
+							<attribute name="nilReason" type="gml:NilReasonType"/>
+						</extension>
+					</simpleContent>
+				</complexType>
+			</element>
+		</sequence>
+	</complexType>
+	<complexType name="ReportToLegalActPropertyType">
+		<sequence>
+			<element ref="ef:ReportToLegalAct"/>
+		</sequence>
+	</complexType>
+	<element name="Hierarchy" type="ef:HierarchyType" substitutionGroup="gml:AbstractGML"/>
+	<complexType name="HierarchyType">
+		<complexContent>
+			<extension base="gml:AbstractGMLType">
+				<sequence>
+					<element name="linkingTime" nillable="true">
+						<complexType>
+							<complexContent>
+								<extension base="gml:AbstractMemberType">
+									<sequence minOccurs="0">
+										<element ref="gml:AbstractTimeObject"/>
+									</sequence>
+									<attributeGroup ref="gml:AssociationAttributeGroup"/>
+								</extension>
+							</complexContent>
+						</complexType>
+					</element>
+					<element name="broader" type="ef:AbstractMonitoringFeaturePropertyType">
+						<annotation>
+							<appinfo>
+								<reversePropertyName xmlns="http://www.opengis.net/gml/3.2">ef:narrower</reversePropertyName>
+							</appinfo>
+						</annotation>
+					</element>
+					<element name="narrower" type="ef:AbstractMonitoringFeaturePropertyType">
+						<annotation>
+							<appinfo>
+								<reversePropertyName xmlns="http://www.opengis.net/gml/3.2">ef:broader</reversePropertyName>
+							</appinfo>
+						</annotation>
+					</element>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="HierarchyPropertyType">
+		<sequence minOccurs="0">
+			<element ref="ef:Hierarchy"/>
+		</sequence>
+		<attributeGroup ref="gml:AssociationAttributeGroup"/>
+		<attributeGroup ref="gml:OwnershipAttributeGroup"/>
+	</complexType>
+	<element name="EnvironmentalMonitoringFacility" type="ef:EnvironmentalMonitoringFacilityType" substitutionGroup="ef:AbstractMonitoringFeature"/>
+	<complexType name="EnvironmentalMonitoringFacilityType">
+		<complexContent>
+			<extension base="ef:AbstractMonitoringFeatureType">
+				<sequence>
+					<element name="representativePoint" type="gml:PointPropertyType" nillable="true" minOccurs="0"/>
+					<element name="measurementRegime" nillable="true">
+						<complexType>
+							<simpleContent>
+								<extension base="gml:CodeType">
+									<attribute name="nilReason" type="gml:NilReasonType"/>
+								</extension>
+							</simpleContent>
+						</complexType>
+					</element>
+					<element name="mediaMonitored" type="gml:CodeType" maxOccurs="unbounded"/>
+					<element name="mobile" nillable="true">
+						<complexType>
+							<simpleContent>
+								<extension base="gml:CodeType">
+									<attribute name="nilReason" type="gml:NilReasonType"/>
+								</extension>
+							</simpleContent>
+						</complexType>
+					</element>
+					<element name="resultAcquisitionSource" nillable="true" minOccurs="0">
+						<complexType>
+							<simpleContent>
+								<extension base="gml:CodeType">
+									<attribute name="nilReason" type="gml:NilReasonType"/>
+								</extension>
+							</simpleContent>
+						</complexType>
+					</element>
+					<element name="belongsTo" type="ef:NetworkFacilityPropertyType" minOccurs="0" maxOccurs="unbounded">
+						<annotation>
+							<appinfo>
+								<reversePropertyName xmlns="http://www.opengis.net/gml/3.2">ef:contains</reversePropertyName>
+							</appinfo>
+						</annotation>
+					</element>
+					<element name="relatedTo" type="ef:AnyThematicLinkPropertyType" minOccurs="0" maxOccurs="unbounded"/>
+					<element name="supersede" type="ef:EnvironmentalMonitoringFacilityPropertyType" minOccurs="0" maxOccurs="unbounded">
+						<annotation>
+							<appinfo>
+								<reversePropertyName xmlns="http://www.opengis.net/gml/3.2">ef:supersedeBy</reversePropertyName>
+							</appinfo>
+						</annotation>
+					</element>
+					<element name="supersedeBy" type="ef:EnvironmentalMonitoringFacilityPropertyType" minOccurs="0" maxOccurs="unbounded">
+						<annotation>
+							<appinfo>
+								<reversePropertyName xmlns="http://www.opengis.net/gml/3.2">ef:supersede</reversePropertyName>
+							</appinfo>
+						</annotation>
+					</element>
+					<element name="operationalActivityPeriod" nillable="true" maxOccurs="unbounded">
+						<complexType>
+							<complexContent>
+								<extension base="gml:AbstractMemberType">
+									<sequence minOccurs="0">
+										<element ref="ef:OperationalActivityPeriod"/>
+									</sequence>
+									<attributeGroup ref="gml:AssociationAttributeGroup"/>
+								</extension>
+							</complexContent>
+						</complexType>
+					</element>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="EnvironmentalMonitoringFacilityPropertyType">
+		<sequence minOccurs="0">
+			<element ref="ef:EnvironmentalMonitoringFacility"/>
+		</sequence>
+		<attributeGroup ref="gml:AssociationAttributeGroup"/>
+		<attributeGroup ref="gml:OwnershipAttributeGroup"/>
+	</complexType>
+</schema>
