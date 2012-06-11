@@ -1,0 +1,649 @@
+<?xml version="1.0"?>
+<!-- edited with XMLSpy v2009 sp1 (http://www.altova.com) by Tony Bush -->
+<!-- derived from version 3.0, modifications to global namspace and schema location references. -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:base="urn:x-inspire:specification:gmlas:BaseTypes:3.2" xmlns:aqd="http://acm.eionet.europa.eu/schemas/2011_850_EU_aq_impl_dec/Schema_testArea/Version_3.1/packages_A-G" xmlns:ef="http://inspire.jrc.ec.europa.eu/schemas/ef/2.0" xmlns:gmd="http://www.isotc211.org/2005/gmd" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:om="http://www.opengis.net/om/2.0" xmlns:swe="http://www.opengis.net/swe/2.0" xmlns:sf="http://www.opengis.net/samplingSpatial/2.0" xmlns:am="http://inspire.jrc.ec.europa.eu/schemas/am/2.0" xmlns:am-ru="http://inspire.jrc.ec.europa.eu/schemas/am-ru/2.0" targetNamespace="http://acm.eionet.europa.eu/schemas/2011_850_EU_aq_impl_dec/Schema_testArea/Version_3.1/packages_A-G" elementFormDefault="qualified" version="3.1">
+	<xs:import namespace="urn:x-inspire:specification:gmlas:BaseTypes:3.2" schemaLocation="BaseTypes.xsd"/>
+	<xs:import namespace="http://inspire.jrc.ec.europa.eu/schemas/ef/2.0" schemaLocation="EnvironmentalMonitoringFacilities.xsd"/>
+	<xs:import namespace="http://www.isotc211.org/2005/gmd" schemaLocation="http://schemas.opengis.net/iso/19139/20070417/gmd/gmd.xsd"/>
+	<xs:import namespace="http://www.opengis.net/gml/3.2" schemaLocation="http://schemas.opengis.net/gml/3.2.1/gml.xsd"/>
+	<xs:import namespace="http://www.opengis.net/om/2.0" schemaLocation="http://schemas.opengis.net/om/2.0/observation.xsd"/>
+	<xs:import namespace="http://www.opengis.net/swe/2.0" schemaLocation="http://schemas.opengis.net/sweCommon/2.0/swe.xsd"/>
+	<xs:import namespace="http://www.opengis.net/samplingSpatial/2.0" schemaLocation="http://schemas.opengis.net/samplingSpatial/2.0/spatialSamplingFeature.xsd"/>
+	<xs:import namespace="http://inspire.jrc.ec.europa.eu/schemas/am/2.0" schemaLocation="AreaManagementRestrictionRegulationZone.xsd"/>
+	<xs:import namespace="http://inspire.jrc.ec.europa.eu/schemas/am-ru/2.0" schemaLocation="ReportingUnits.xsd"/>
+	<xs:element name="AQD_AssessmentRegime" type="aqd:AQD_AssessmentRegime" substitutionGroup="gml:AbstractFeature"/>
+	<xs:complexType name="AQD_AssessmentRegime">
+		<xs:complexContent>
+			<xs:extension base="gml:AbstractFeatureType">
+				<xs:sequence>
+					<xs:element name="zone" type="gml:ReferenceType"/>
+					<xs:element name="pollutant" type="aqd:Pollutants"/>
+					<xs:element name="assessmentThreshold" type="aqd:AssessmentThreshold"/>
+					<xs:element name="competentAuthorities" type="aqd:CompetentAuthorities"/>
+					<xs:element name="assessmentMethods" type="aqd:AssessmentMethods"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="AQD_Attainment" type="aqd:AQD_Attainment" substitutionGroup="gml:AbstractFeature"/>
+	<xs:complexType name="AQD_Attainment">
+		<xs:complexContent>
+			<xs:extension base="gml:AbstractFeatureType">
+				<xs:sequence>
+					<xs:element name="zone" type="gml:ReferenceType"/>
+					<xs:element name="pollutant" type="aqd:Pollutants"/>
+					<xs:element name="assessment" type="gml:ReferenceType"/>
+					<xs:element name="environmentalObjective" type="aqd:EnvironmentalObjective"/>
+					<xs:element name="exceedanceObjective" type="xs:boolean"/>
+					<xs:element name="exceedanceMoT" type="xs:boolean"/>
+					<xs:element name="exceedanceWSS" type="xs:boolean"/>
+					<xs:element name="exceedanceNaturalSources" type="xs:boolean"/>
+					<xs:element name="exceedanceDescription" type="aqd:ExceedanceDescription"/>
+					<xs:element name="exceedanceDescription_WSS_NS" type="aqd:ExceedanceDescription"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="AQD_featureOfInterest" type="aqd:AQD_featureOfInterest" substitutionGroup="gml:AbstractFeature"/>
+	<xs:complexType name="AQD_featureOfInterest">
+		<xs:complexContent>
+			<xs:extension base="sf:SF_SpatialSamplingFeatureType">
+				<xs:sequence>
+					<xs:element name="InspireId" type="base:IdentifierPropertyType"/>
+					<xs:element name="inletHeight" type="xs:float"/>
+					<xs:element name="builldingDistance" type="xs:float" minOccurs="0"/>
+					<xs:element name="kerbDistance" type="xs:float" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="AQD_Network" type="aqd:AQD_Network" substitutionGroup="gml:AbstractFeature"/>
+	<xs:complexType name="AQD_Network">
+		<xs:complexContent>
+			<xs:extension base="ef:EnvironmentalMonitoringNetworkType">
+				<xs:sequence>
+					<xs:element name="networkCode" type="xs:string"/>
+					<xs:element name="networkType" type="aqd:NetworkType" minOccurs="0"/>
+					<xs:element name="operationActivityPeriod" type="gml:TimePeriodType" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="AQD_Process" type="aqd:AQD_Process" substitutionGroup="gml:AbstractFeature"/>
+	<xs:complexType name="AQD_Process">
+		<xs:complexContent>
+			<xs:extension base="ef:INSPIRE_OM_ProcessType">
+				<xs:sequence>
+					<xs:element name="measurementMethod" type="aqd:MeasurementMethod"/>
+					<xs:element name="samplingMethod" type="aqd:SamplingMethod"/>
+					<xs:element name="analyticalTechnique" type="aqd:AnalyticalTechnique"/>
+					<xs:element name="equipment" type="xs:string" minOccurs="0"/>
+					<xs:element name="equivalenceDemonstration" type="aqd:EquivalenceDemonstration" minOccurs="0"/>
+					<xs:element name="dataQuality" type="aqd:DataQuality"/>
+					<xs:element name="timeReferences" type="aqd:TimeReferences"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="AQD_ReportingUnits" type="aqd:AQD_ReportingUnits" substitutionGroup="gml:AbstractFeature"/>
+	<xs:complexType name="AQD_ReportingUnits">
+		<xs:complexContent>
+			<xs:extension base="am-ru:ReportingUnitsType">
+				<xs:sequence>
+					<xs:element name="change" type="xs:string" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="AQD_RepresentativeArea" type="aqd:AQD_RepresentativeArea" substitutionGroup="gml:AbstractFeature"/>
+	<xs:complexType name="AQD_RepresentativeArea">
+		<xs:complexContent>
+			<xs:extension base="sf:SF_SpatialSamplingFeatureType">
+				<xs:sequence>
+					<xs:element name="InspireId" type="base:IdentifierPropertyType"/>
+					<xs:element name="description" type="xs:string" minOccurs="0"/>
+					<xs:element name="documentation" type="xs:anyURI" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="AQD_SamplingPoint" type="aqd:AQD_SamplingPoint" substitutionGroup="gml:AbstractFeature"/>
+	<xs:complexType name="AQD_SamplingPoint">
+		<xs:complexContent>
+			<xs:extension base="ef:EnvironmentalMonitoringFacilityType">
+				<xs:sequence>
+					<xs:element name="relevantEmissions" type="aqd:RelevantEmissions"/>
+					<xs:element name="zone" type="gml:ReferenceType" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="AQD_Station" type="aqd:AQD_Station" substitutionGroup="gml:AbstractFeature"/>
+	<xs:complexType name="AQD_Station">
+		<xs:complexContent>
+			<xs:extension base="ef:EnvironmentalMonitoringFacilityType">
+				<xs:sequence>
+					<xs:element name="natlStationCode" type="xs:string"/>
+					<xs:element name="municipality" type="xs:string"/>
+					<xs:element name="EUStationCode" type="xs:string"/>
+					<xs:element name="meteoParams" type="aqd:MeteoParamsEnum" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="stationInfo" type="xs:anyURI" minOccurs="0"/>
+					<xs:element name="areaClassification" type="aqd:AreaClassification"/>
+					<xs:element name="dispersionSituation" type="aqd:dispersionSituation" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="AQD_Zone" type="aqd:AQD_Zone" substitutionGroup="gml:AbstractFeature"/>
+	<xs:complexType name="AQD_Zone">
+		<xs:complexContent>
+			<xs:extension base="am:ManagementRegulationOrRestrictionZoneType">
+				<xs:sequence>
+					<xs:element name="zoneCode" type="xs:string"/>
+					<xs:element name="LAU" type="xs:string" maxOccurs="unbounded"/>
+					<xs:element name="predecessor" type="xs:string" minOccurs="0"/>
+					<xs:element name="changeDelimitation" type="xs:string" minOccurs="0"/>
+					<xs:element name="residentPopulation" type="xs:int"/>
+					<xs:element name="residentPopulationYear" type="xs:date"/>
+					<xs:element name="pollutants" type="aqd:Pollutant" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="AQD_ZoneProcess" type="aqd:AQD_ZoneProcess" substitutionGroup="gml:AbstractFeature"/>
+	<xs:complexType name="AQD_ZoneProcess">
+		<xs:complexContent>
+			<xs:extension base="ef:INSPIRE_OM_ProcessType">
+				<xs:sequence/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:simpleType name="AssessmentThresholdExceedance">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Exceedance of Alert Threshold"/>
+			<xs:enumeration value="Exceedance of Information Threshold"/>
+			<xs:enumeration value="No exceedance but risk of exceedance of alert threshold"/>
+			<xs:enumeration value="No exceedance/risk of exceedance"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:element name="AssessmentThreshold" type="aqd:AssessmentThreshold"/>
+	<xs:complexType name="AssessmentThreshold">
+		<xs:sequence>
+			<xs:element name="environmentalObjective" type="aqd:EnvironmentalObjective"/>
+			<xs:element name="exceedanceAttainment" type="aqd:AssessmentThresholdExceedance"/>
+			<xs:element name="classificationDate" type="xs:date"/>
+			<xs:element name="classificationReport" type="xs:anyURI"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="CompetentAuthorities" type="aqd:CompetentAuthorities"/>
+	<xs:complexType name="CompetentAuthorities">
+		<xs:sequence>
+			<xs:element name="assessmentAirQuality" type="gmd:CI_ResponsibleParty_Type"/>
+			<xs:element name="approvalMeasurementSystems" type="gmd:CI_ResponsibleParty_Type"/>
+			<xs:element name="accuracyMeasurements" type="gmd:CI_ResponsibleParty_Type"/>
+			<xs:element name="analysisAssessmentMethod" type="gmd:CI_ResponsibleParty_Type"/>
+			<xs:element name="nation-wideQualityAssurance" type="gmd:CI_ResponsibleParty_Type"/>
+			<xs:element name="cooperationMSCommission" type="gmd:CI_ResponsibleParty_Type"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="AssessmentMethods" type="aqd:AssessmentMethods"/>
+	<xs:complexType name="AssessmentMethods">
+		<xs:sequence>
+			<xs:element name="assessmentType" type="aqd:AssessmentType" maxOccurs="unbounded"/>
+			<xs:element name="assessmentTypeOther" type="xs:string" minOccurs="0"/>
+			<xs:element name="fixedMeasurement" type="gml:ReferenceType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="assessmentMetadata" type="gml:ReferenceType" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="AssessmentType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Fixed measurement"/>
+			<xs:enumeration value="Indicative measurement"/>
+			<xs:enumeration value="Modelling"/>
+			<xs:enumeration value="Objective estimation"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:element name="ExceedanceDescription" type="aqd:ExceedanceDescription"/>
+	<xs:complexType name="ExceedanceDescription">
+		<xs:sequence>
+			<xs:element name="environmentalObjective" type="aqd:EnvironmentalObjective"/>
+			<xs:element name="exceedanceArea" type="aqd:ExceedanceArea"/>
+			<xs:element name="exceedanceExposure" type="aqd:ExceedanceExposure"/>
+			<xs:element name="comment" type="xs:string"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="ExceedanceExposure" type="aqd:ExceedanceExposure"/>
+	<xs:complexType name="ExceedanceExposure">
+		<xs:sequence>
+			<xs:element name="populationExposed" type="xs:int"/>
+			<xs:element name="ecosystemAreaExposed" type="xs:int"/>
+			<xs:element name="sensitivePopulation" type="xs:int"/>
+			<xs:element name="infrastructureServices" type="xs:int"/>
+			<xs:element name="referenceYear" type="xs:date"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="ExceedanceArea" type="aqd:ExceedanceArea"/>
+	<xs:complexType name="ExceedanceArea">
+		<xs:sequence>
+			<xs:element name="areaClassification" type="aqd:AreaClassification"/>
+			<xs:element name="administrativeUnits" type="gml:ReferenceType"/>
+			<xs:element name="spatialExtent" type="gml:GeometryPropertyType"/>
+			<xs:element name="surfaceArea" type="xs:float"/>
+			<xs:element name="roadLength" type="xs:float"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="DispersionRegional">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Basin in hilly terrain"/>
+			<xs:enumeration value="Basin in mountainous terrain"/>
+			<xs:enumeration value="Basin partly surrounded by mountains"/>
+			<xs:enumeration value="Coast with mountainous terrain in interior"/>
+			<xs:enumeration value="Coast with plane terrain in interior"/>
+			<xs:enumeration value="High alpine terrain"/>
+			<xs:enumeration value="Hilly terrain"/>
+			<xs:enumeration value="Mountainous terrain – ridge"/>
+			<xs:enumeration value="Mountainous terrain – slope"/>
+			<xs:enumeration value="pass or summit"/>
+			<xs:enumeration value="Plane terrain"/>
+			<xs:enumeration value="Valley in mountainous terrain"/>
+			<xs:enumeration value="Valleys in hilly terrain"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="NetworkType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="County"/>
+			<xs:enumeration value="Entire country"/>
+			<xs:enumeration value="Local industry"/>
+			<xs:enumeration value="Other"/>
+			<xs:enumeration value="Region"/>
+			<xs:enumeration value="Town/city"/>
+			<xs:enumeration value="Urban area"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:element name="MeasurementMethod" type="aqd:MeasurementMethod"/>
+	<xs:complexType name="MeasurementMethod">
+		<xs:sequence>
+			<xs:element name="measurementType" type="aqd:MeasurementTypes"/>
+			<xs:element name="measurementMethod" type="aqd:MeasurementMethods"/>
+			<xs:element name="otherMeasurementMethod" type="xs:string" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="MeasurementMethods">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Absorption"/>
+			<xs:enumeration value="Automatic analyzer - Measurement principle"/>
+			<xs:enumeration value="Beta ray attenuation"/>
+			<xs:enumeration value="chemiluminescence"/>
+			<xs:enumeration value="Chemiluminescence (ref)"/>
+			<xs:enumeration value="conductance detection"/>
+			<xs:enumeration value="Conversion"/>
+			<xs:enumeration value="Differential Optical Absorption Spectroscopy (DOAS)"/>
+			<xs:enumeration value="Gas chromatography with flame ionization detector"/>
+			<xs:enumeration value="Gas chromatography with photo ionization detector"/>
+			<xs:enumeration value="membrane separation"/>
+			<xs:enumeration value="Non-dispersive infrared absorption/spectrometry (NDIR) (ref); Infrared  gas filter correlation"/>
+			<xs:enumeration value="Other"/>
+			<xs:enumeration value="please specify"/>
+			<xs:enumeration value="Pumped sampling followed by gas chromatography with photo ionization detector (ref)"/>
+			<xs:enumeration value="reflectrometry"/>
+			<xs:enumeration value="Sampling"/>
+			<xs:enumeration value="Tapered Element Oscillating Microbalance (TEOM)"/>
+			<xs:enumeration value="UV absorption (ref.)"/>
+			<xs:enumeration value="UV fluorescence"/>
+			<xs:enumeration value="UV fluorescence (ref)"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="MeasurementTypes">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Active sampling"/>
+			<xs:enumeration value="Automatic analyzer"/>
+			<xs:enumeration value="Passive sampling"/>
+			<xs:enumeration value="Remote sensor"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:element name="SamplingMethod" type="aqd:SamplingMethod"/>
+	<xs:complexType name="SamplingMethod">
+		<xs:sequence>
+			<xs:element name="samplingMethod" type="aqd:SamplingMethods"/>
+			<xs:element name="otherSamplingMethod" type="xs:string" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="SamplingMethods">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="3 m³/h"/>
+			<xs:enumeration value="Active solid adsorbent sampling"/>
+			<xs:enumeration value="Continuous automatic sampler"/>
+			<xs:enumeration value="Diffusive solid adsorbent sampling"/>
+			<xs:enumeration value="HVS - manual filter change 30 m³/h"/>
+			<xs:enumeration value="HVS -automatic filter change 30 m³/h"/>
+			<xs:enumeration value="LVS - automatic filter change 2"/>
+			<xs:enumeration value="LVS- manual filter change 2"/>
+			<xs:enumeration value="MVS - manual filter change 15 m³/h"/>
+			<xs:enumeration value="Other"/>
+			<xs:enumeration value="please specify"/>
+			<xs:enumeration value="Sampling method deposition : cylindrical deposition gauge"/>
+			<xs:enumeration value="Sampling method deposition : wet and dry"/>
+			<xs:enumeration value="Sampling method deposition : wet-only"/>
+			<xs:enumeration value="Sampling with DNPH;"/>
+			<xs:enumeration value="Sampling with HMP;"/>
+			<xs:enumeration value="Sampling withy bisulfite and chromotropic acid;"/>
+			<xs:enumeration value="Whole air canister sampling"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:element name="AnalyticalTechnique" type="aqd:AnalyticalTechnique"/>
+	<xs:complexType name="AnalyticalTechnique">
+		<xs:sequence>
+			<xs:element name="analyticalTechnique" type="aqd:AnalyticalTechniques"/>
+			<xs:element name="otherAnalyticalTechnique" type="xs:string" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="AnalyticalTechniques">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="|Gas chromatography + mass spectrometry (GC-MS) (ref. BaP)"/>
+			<xs:enumeration value="Atomic absorption spectrometry (AAS) (ref. As"/>
+			<xs:enumeration value="Beta-absorption"/>
+			<xs:enumeration value="Bubbler 24hr"/>
+			<xs:enumeration value="Capillary electrophoresis"/>
+			<xs:enumeration value="Cd"/>
+			<xs:enumeration value="Chemiluminescence"/>
+			<xs:enumeration value="Chromatography"/>
+			<xs:enumeration value="Cold vapour atomic absorption spectrometry (CV AAS)"/>
+			<xs:enumeration value="Cold vapour atomic fluorescence spectrometry (CV AFS)"/>
+			<xs:enumeration value="Colorimetric with p-rozaline"/>
+			<xs:enumeration value="Conductimetry"/>
+			<xs:enumeration value="Conductometry"/>
+			<xs:enumeration value="Continous flow analyses (CFA)"/>
+			<xs:enumeration value="Coulometric"/>
+			<xs:enumeration value="Differential optical absorption spectrometry"/>
+			<xs:enumeration value="fFame ionization (FID)"/>
+			<xs:enumeration value="Fluorescence"/>
+			<xs:enumeration value="Gas chromatography (GC) + flame ionisation (FID) (GC/FID) (VOCs)"/>
+			<xs:enumeration value="Gas chromatography (GC) + flame ionisation (FID) + ECD"/>
+			<xs:enumeration value="Graphite furnace atomic absorption spectrometry (GF-AAS)"/>
+			<xs:enumeration value="Gravimetry (ref. PM10 and PM2.5)"/>
+			<xs:enumeration value="Griess-Saltzmann reaction"/>
+			<xs:enumeration value="High performance liquid chromatography – fluorescence detection (HPLC-FLD)"/>
+			<xs:enumeration value="Hydride generation electrothermal – atomic absorption spectrometry (HG ET AAS) (=Electrothermal Atomic Absorption Spectrometry (ETAAS)) (HM’s)"/>
+			<xs:enumeration value="Inductive coupled plasma atomic emission spectrometry  (ICP-AES) (Pb in PM10)"/>
+			<xs:enumeration value="Inductive coupled plasma mass spectrometry (ICP-MS) (ref. As"/>
+			<xs:enumeration value="Inductive coupled plasma optical emission spectrometry (ICP-OES)"/>
+			<xs:enumeration value="Infrared absorption"/>
+			<xs:enumeration value="Ion chromatography"/>
+			<xs:enumeration value="Isotope dilution"/>
+			<xs:enumeration value="Liquid chromatography"/>
+			<xs:enumeration value="Ni in PM10)"/>
+			<xs:enumeration value="optical-acoustic"/>
+			<xs:enumeration value="Other"/>
+			<xs:enumeration value="Pb"/>
+			<xs:enumeration value="Photometry"/>
+			<xs:enumeration value="please specify"/>
+			<xs:enumeration value="Potentiometry"/>
+			<xs:enumeration value="Reflectometry"/>
+			<xs:enumeration value="Spectrophotometry"/>
+			<xs:enumeration value="Titration"/>
+			<xs:enumeration value="Ultraviolet absorption"/>
+			<xs:enumeration value="Volumetry"/>
+			<xs:enumeration value="X-ray emission"/>
+			<xs:enumeration value="X-ray fluorescence spectrometry (XRF) (As"/>
+			<xs:enumeration value="Zeeman atomic absorption spectrometry (Zeeman  AAS)"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:element name="EquivalenceDemonstration" type="aqd:EquivalenceDemonstration"/>
+	<xs:complexType name="EquivalenceDemonstration">
+		<xs:sequence>
+			<xs:element name="equivalenceDemonstrated" type="aqd:EquivalenceDemonstrated" minOccurs="0"/>
+			<xs:element name="demonstrationReport" type="xs:anyURI" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="EquivalenceDemonstrated">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Demonstration not necessary"/>
+			<xs:enumeration value="Demonstration not possible"/>
+			<xs:enumeration value="Equivalence demonstrated"/>
+			<xs:enumeration value="Equivalence not demonstrated"/>
+			<xs:enumeration value="no reference method defined by Directive"/>
+			<xs:enumeration value="reference method used"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:element name="DataQuality" type="aqd:DataQuality"/>
+	<xs:complexType name="DataQuality">
+		<xs:sequence>
+			<xs:element name="detectionLimit" type="xs:float" minOccurs="0"/>
+			<xs:element name="timeCoverage" type="xs:boolean"/>
+			<xs:element name="dataCapture" type="xs:boolean"/>
+			<xs:element name="uncertaintyEstimation" type="xs:float"/>
+			<xs:element name="documentation" type="xs:string" minOccurs="0"/>
+			<xs:element name="qaReport" type="xs:anyURI" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="TimeReferences" type="aqd:TimeReferences"/>
+	<xs:complexType name="TimeReferences">
+		<xs:sequence>
+			<xs:element name="timeUnits" type="aqd:TimeUnits"/>
+			<xs:element name="numTimeUnits" type="xs:int"/>
+			<xs:element name="intervalUnits" type="aqd:TimeUnits"/>
+			<xs:element name="numIntervalUnits" type="xs:int"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="TimeUnits">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Day"/>
+			<xs:enumeration value="Hour"/>
+			<xs:enumeration value="Month"/>
+			<xs:enumeration value="Week"/>
+			<xs:enumeration value="Year"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:element name="RelevantEmissions" type="aqd:RelevantEmissions"/>
+	<xs:complexType name="RelevantEmissions">
+		<xs:sequence>
+			<xs:element name="stationClassification" type="aqd:StationClassification"/>
+			<xs:element name="mainEmissionSources" type="aqd:MainEmissionSources"/>
+			<xs:element name="trafficEmissions" type="xs:int" minOccurs="0"/>
+			<xs:element name="heatingEmissions" type="xs:int" minOccurs="0"/>
+			<xs:element name="industrialEmissions" type="xs:int" minOccurs="0"/>
+			<xs:element name="distanceSource" type="xs:int" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="StationClassification">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Background"/>
+			<xs:enumeration value="Industrial"/>
+			<xs:enumeration value="Traffic"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="MainEmissionSources">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="1.A.5)"/>
+			<xs:enumeration value="2)"/>
+			<xs:enumeration value="Agriculture (4)"/>
+			<xs:enumeration value="Domestic (1.A.4"/>
+			<xs:enumeration value="Energy (A.1)"/>
+			<xs:enumeration value="Fugitive emissions (1.B)"/>
+			<xs:enumeration value="Industry (1.A.2"/>
+			<xs:enumeration value="Long-range transport"/>
+			<xs:enumeration value="Other"/>
+			<xs:enumeration value="Secondary"/>
+			<xs:enumeration value="Solvents (3)"/>
+			<xs:enumeration value="Transport (1.A.3)"/>
+			<xs:enumeration value="Waste (6)"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Pollutants">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="(CH3)2-CH-CH2-CH2-CH3"/>
+			<xs:enumeration value="(CH3)3-C-CH2-CH-(CH3)2"/>
+			<xs:enumeration value="As"/>
+			<xs:enumeration value="As deposition"/>
+			<xs:enumeration value="B(a)P"/>
+			<xs:enumeration value="Benzo(a)anthracen"/>
+			<xs:enumeration value="Benzo(a)fluoranthen"/>
+			<xs:enumeration value="Benzo(b)anthracen"/>
+			<xs:enumeration value="Benzo(b)fluoranthen"/>
+			<xs:enumeration value="Benzo(j)fluoranthen"/>
+			<xs:enumeration value="Benzo(k)fluoranthen"/>
+			<xs:enumeration value="C2H6"/>
+			<xs:enumeration value="C6H14"/>
+			<xs:enumeration value="C6H3(CH3)3"/>
+			<xs:enumeration value="C6H5-C2H5"/>
+			<xs:enumeration value="C6H5-CH3"/>
+			<xs:enumeration value="C6H6"/>
+			<xs:enumeration value="C7H16"/>
+			<xs:enumeration value="C8H18"/>
+			<xs:enumeration value="Ca2+ in PM2.5"/>
+			<xs:enumeration value="Cd"/>
+			<xs:enumeration value="Cd deposition"/>
+			<xs:enumeration value="CH2=CH-CH=CH2"/>
+			<xs:enumeration value="CH2=CH-CH3"/>
+			<xs:enumeration value="CH20"/>
+			<xs:enumeration value="CH4"/>
+			<xs:enumeration value="Cl-in PM2.5"/>
+			<xs:enumeration value="CO"/>
+			<xs:enumeration value="Dibenzo(a;h)anthrazen"/>
+			<xs:enumeration value="elem. C in PM2.5"/>
+			<xs:enumeration value="H2C=CH-C(CH3)=CH2"/>
+			<xs:enumeration value="H2C=CH-CH2-CH2-CH3"/>
+			<xs:enumeration value="H2C=CH-CH2-CH3"/>
+			<xs:enumeration value="H2C=CH2"/>
+			<xs:enumeration value="H3C-(CH2)3-CH3"/>
+			<xs:enumeration value="H3C-CH(CH3)2"/>
+			<xs:enumeration value="H3C-CH=CH-CH3"/>
+			<xs:enumeration value="H3C-CH2-CH(CH3)2"/>
+			<xs:enumeration value="H3C-CH2-CH2-CH3"/>
+			<xs:enumeration value="H3C-CH2-CH3"/>
+			<xs:enumeration value="H3C-HC=CH-CH2-CH3"/>
+			<xs:enumeration value="HCºCH"/>
+			<xs:enumeration value="HCHO"/>
+			<xs:enumeration value="Hg deposition"/>
+			<xs:enumeration value="Indeno(1;2;3;-cd)pyren"/>
+			<xs:enumeration value="K+ in PM2.5"/>
+			<xs:enumeration value="m;p-C6H4(CH3)2"/>
+			<xs:enumeration value="Metallic gaseous Hg"/>
+			<xs:enumeration value="Mg2+ in PM2.5"/>
+			<xs:enumeration value="Na+ in PM2.5"/>
+			<xs:enumeration value="NH4+ inPM2.5"/>
+			<xs:enumeration value="Ni"/>
+			<xs:enumeration value="Ni deposition"/>
+			<xs:enumeration value="NO2"/>
+			<xs:enumeration value="NO3- in PM2.5"/>
+			<xs:enumeration value="non methane Hydrocarbons"/>
+			<xs:enumeration value="Nox"/>
+			<xs:enumeration value="o-C6H4-(CH3)2"/>
+			<xs:enumeration value="O3"/>
+			<xs:enumeration value="org. C in PM2.5"/>
+			<xs:enumeration value="Particulate Hg"/>
+			<xs:enumeration value="Pb"/>
+			<xs:enumeration value="Pb deposition"/>
+			<xs:enumeration value="PM10"/>
+			<xs:enumeration value="PM2.5"/>
+			<xs:enumeration value="Reactive gaseous Hg"/>
+			<xs:enumeration value="SO2"/>
+			<xs:enumeration value="SO42+ in PM2.5"/>
+			<xs:enumeration value="Total gaseous Hg"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ProtectionTarget">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Health"/>
+			<xs:enumeration value="Health and vegetation/ecosystem"/>
+			<xs:enumeration value="Vegetation/ecosystem"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:element name="Pollutant" type="aqd:Pollutant"/>
+	<xs:complexType name="Pollutant">
+		<xs:sequence>
+			<xs:element name="pollutantCode" type="aqd:Pollutants"/>
+			<xs:element name="protectionTarget" type="aqd:ProtectionTarget"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="EnvironmentalObjective" type="aqd:EnvironmentalObjective"/>
+	<xs:complexType name="EnvironmentalObjective">
+		<xs:sequence>
+			<xs:element name="objectiveType" type="aqd:ObjectiveType"/>
+			<xs:element name="aggregatingPeriod" type="aqd:AggregatingPeriod"/>
+			<xs:element name="protectionTarget" type="aqd:ProtectionTarget"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="ObjectiveType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Alert threshold (ALT)"/>
+			<xs:enumeration value="Assessment of natural contribution (NAT)"/>
+			<xs:enumeration value="Assessment of winter sanding or salting (WSS)"/>
+			<xs:enumeration value="Critical level (CL)"/>
+			<xs:enumeration value="Exposure concentration obligation (ECO)"/>
+			<xs:enumeration value="Exposure reduction target (ERT)"/>
+			<xs:enumeration value="Information Threshold (INT)"/>
+			<xs:enumeration value="Limit Value (LV)"/>
+			<xs:enumeration value="Limit value plus applicable margin of tolerance (LVMOT)"/>
+			<xs:enumeration value="Long term objective (LTO)"/>
+			<xs:enumeration value="Monitoring objective (MO)"/>
+			<xs:enumeration value="Target Value (TV)"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="AggregatingPeriod">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="n-days"/>
+			<xs:enumeration value="n-hours"/>
+			<xs:enumeration value="n-months"/>
+			<xs:enumeration value="n-weeks"/>
+			<xs:enumeration value="n-year"/>
+			<xs:enumeration value="summer (May to July)"/>
+			<xs:enumeration value="Variable"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="MeteoParamsEnum">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Absolute humidity"/>
+			<xs:enumeration value="Diffused radiation"/>
+			<xs:enumeration value="Direct solar IR radiation"/>
+			<xs:enumeration value="Direct solar radiation"/>
+			<xs:enumeration value="Direct solar UV radiation"/>
+			<xs:enumeration value="Direct solar visible radiation"/>
+			<xs:enumeration value="Duration of sunlight"/>
+			<xs:enumeration value="Global radiation"/>
+			<xs:enumeration value="Mixing height"/>
+			<xs:enumeration value="No meteo measured"/>
+			<xs:enumeration value="Precipitation"/>
+			<xs:enumeration value="Pressure"/>
+			<xs:enumeration value="Reflected radiation"/>
+			<xs:enumeration value="Relative humidity"/>
+			<xs:enumeration value="Temperature"/>
+			<xs:enumeration value="Volume of air"/>
+			<xs:enumeration value="Wind component south-north"/>
+			<xs:enumeration value="Wind component vertical"/>
+			<xs:enumeration value="Wind component west-east"/>
+			<xs:enumeration value="Wind direction"/>
+			<xs:enumeration value="Wind velocity"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:element name="dispersionSituation" type="aqd:dispersionSituation"/>
+	<xs:complexType name="dispersionSituation">
+		<xs:sequence>
+			<xs:element name="dispersionLocal" type="aqd:DispersionLocal" minOccurs="0"/>
+			<xs:element name="distanceJunction" type="xs:int" minOccurs="0"/>
+			<xs:element name="trafficVolume" type="xs:int" minOccurs="0"/>
+			<xs:element name="heavy-dutyFraction" type="xs:float" minOccurs="0"/>
+			<xs:element name="trafficSpeed" type="xs:int" minOccurs="0"/>
+			<xs:element name="streetWidth" type="xs:int" minOccurs="0"/>
+			<xs:element name="heightFacades" type="xs:int" minOccurs="0"/>
+			<xs:element name="dispersionRegional" type="aqd:DispersionRegional" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="AreaClassification">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Rural-Near_city"/>
+			<xs:enumeration value="Rural-Regional"/>
+			<xs:enumeration value="Rural-Remote"/>
+			<xs:enumeration value="Suburban"/>
+			<xs:enumeration value="Urban"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="DispersionLocal">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Detached buildings or one-sided compact buildings"/>
+			<xs:enumeration value="Elevated terrain"/>
+			<xs:enumeration value="Flat terrain"/>
+			<xs:enumeration value="Street canyon"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>

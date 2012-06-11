@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?><schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:base2="http://inspire.jrc.ec.europa.eu/schemas/base2/0.1" xmlns:gml="http://www.opengis.net/gml/3.2" elementFormDefault="qualified" targetNamespace="http://inspire.jrc.ec.europa.eu/schemas/base2/0.1" version="0.1">
+  <import namespace="http://www.opengis.net/gml/3.2" schemaLocation="http://schemas.opengis.net/gml/3.2.1/gml.xsd"/>
+  <!--XML Schema document created by ShapeChange-->
+  <element name="LegislationReference" substitutionGroup="gml:AbstractObject" type="base2:LegislationReferenceType"/>
+  <complexType name="LegislationReferenceType">
+    <sequence>
+      <element name="legalName" type="string"/>
+      <element minOccurs="0" name="shortName" type="string"/>
+      <element minOccurs="0" name="identificationNumber" type="string"/>
+      <element maxOccurs="unbounded" minOccurs="0" name="articleReference" type="string"/>
+      <element minOccurs="0" name="officialDocumentNumber" type="string"/>
+      <element name="linkToLegislativeInstrument" nillable="true">
+        <complexType>
+          <simpleContent>
+            <extension base="anyURI">
+              <attribute name="nilReason" type="gml:NilReasonType"/>
+            </extension>
+          </simpleContent>
+        </complexType>
+      </element>
+      <element name="publicationDate" type="gml:TimePositionType"/>
+      <element minOccurs="0" name="dateEnteredIntoForce" type="gml:TimePositionType"/>
+      <element minOccurs="0" name="dateRepealed" type="gml:TimePositionType"/>
+      <element name="level" type="gml:CodeType"/>
+      <element minOccurs="0" name="journalCitation" type="base2:OfficialJournalInformationPropertyType"/>
+    </sequence>
+  </complexType>
+  <complexType name="LegislationReferencePropertyType">
+    <sequence>
+      <element ref="base2:LegislationReference"/>
+    </sequence>
+  </complexType>
+  <element name="OfficialJournalInformation" substitutionGroup="gml:AbstractObject" type="base2:OfficialJournalInformationType"/>
+  <complexType name="OfficialJournalInformationType">
+    <sequence>
+      <element name="officialJournalIdentification" type="string"/>
+      <element minOccurs="0" name="ISSN" type="string"/>
+      <element minOccurs="0" name="ISBN" type="string"/>
+      <element minOccurs="0" name="linkToJournal" type="anyURI"/>
+    </sequence>
+  </complexType>
+  <complexType name="OfficialJournalInformationPropertyType">
+    <sequence>
+      <element ref="base2:OfficialJournalInformation"/>
+    </sequence>
+  </complexType>
+</schema>

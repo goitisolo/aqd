@@ -1,13 +1,8 @@
-<?xml version="1.0"?>
-<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-        xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
-        xmlns="http://www.w3.org/2004/02/skos/core#"
-xml:base="http://rdfdata.eionet.europa.eu/airbase/aqd-pollutants/">
-
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" xmlns="http://www.w3.org/2004/02/skos/core#">
   <ConceptScheme rdf:about="">
     <rdfs:label>The vocabulary of pollutants from AQD.xsd</rdfs:label>
   </ConceptScheme>
-
   <Concept rdf:about="1">
     <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1</notation>
     <prefLabel>(CH3)2-CH-CH2-CH2-CH3</prefLabel>
@@ -32,43 +27,41 @@ xml:base="http://rdfdata.eionet.europa.eu/airbase/aqd-pollutants/">
     <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">5</notation>
     <prefLabel>B(a)P</prefLabel>
     <inScheme rdf:resource=""/>
-    <altLabel>Benzo(a)pyrene</altLabel>
   </Concept>
   <Concept rdf:about="6">
     <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">6</notation>
-    <prefLabel>Benzo(a)anthracene</prefLabel>
+    <prefLabel>Benzo(a)anthracen</prefLabel>
     <inScheme rdf:resource=""/>
   </Concept>
   <Concept rdf:about="7">
     <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">7</notation>
-    <prefLabel>Benzo(a)fluoranthene</prefLabel>
+    <prefLabel>Benzo(a)fluoranthen</prefLabel>
     <inScheme rdf:resource=""/>
   </Concept>
   <Concept rdf:about="8">
     <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">8</notation>
-    <prefLabel>Benzo(b)anthracene</prefLabel>
+    <prefLabel>Benzo(b)anthracen</prefLabel>
     <inScheme rdf:resource=""/>
   </Concept>
   <Concept rdf:about="9">
     <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">9</notation>
-    <prefLabel>Benzo(b)fluoranthene</prefLabel>
+    <prefLabel>Benzo(b)fluoranthen</prefLabel>
     <inScheme rdf:resource=""/>
   </Concept>
   <Concept rdf:about="10">
     <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">10</notation>
-    <prefLabel>Benzo(j)fluoranthene</prefLabel>
+    <prefLabel>Benzo(j)fluoranthen</prefLabel>
     <inScheme rdf:resource=""/>
   </Concept>
   <Concept rdf:about="11">
     <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">11</notation>
-    <prefLabel>Benzo(k)fluoranthene</prefLabel>
+    <prefLabel>Benzo(k)fluoranthen</prefLabel>
     <inScheme rdf:resource=""/>
   </Concept>
   <Concept rdf:about="12">
     <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">12</notation>
     <prefLabel>C2H6</prefLabel>
     <inScheme rdf:resource=""/>
-    <altLabel>Benzene</altLabel>
   </Concept>
   <Concept rdf:about="13">
     <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">13</notation>
@@ -142,7 +135,7 @@ xml:base="http://rdfdata.eionet.europa.eu/airbase/aqd-pollutants/">
   </Concept>
   <Concept rdf:about="27">
     <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">27</notation>
-    <prefLabel>Cl- in PM2.5</prefLabel>
+    <prefLabel>Cl-in PM2.5</prefLabel>
     <inScheme rdf:resource=""/>
   </Concept>
   <Concept rdf:about="28">
@@ -152,7 +145,7 @@ xml:base="http://rdfdata.eionet.europa.eu/airbase/aqd-pollutants/">
   </Concept>
   <Concept rdf:about="29">
     <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">29</notation>
-    <prefLabel>Dibenz(a,h)anthrazene</prefLabel>
+    <prefLabel>Dibenzo(a;h)anthrazen</prefLabel>
     <inScheme rdf:resource=""/>
   </Concept>
   <Concept rdf:about="30">
@@ -194,7 +187,6 @@ xml:base="http://rdfdata.eionet.europa.eu/airbase/aqd-pollutants/">
     <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">37</notation>
     <prefLabel>H3C-CH=CH-CH3</prefLabel>
     <inScheme rdf:resource=""/>
-    <altLabel>trans-2-Butene</altLabel>
   </Concept>
   <Concept rdf:about="38">
     <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">38</notation>
@@ -218,7 +210,7 @@ xml:base="http://rdfdata.eionet.europa.eu/airbase/aqd-pollutants/">
   </Concept>
   <Concept rdf:about="42">
     <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">42</notation>
-    <prefLabel>HC=CH</prefLabel>
+    <prefLabel>HCºCH</prefLabel>
     <inScheme rdf:resource=""/>
   </Concept>
   <Concept rdf:about="43">
@@ -233,7 +225,7 @@ xml:base="http://rdfdata.eionet.europa.eu/airbase/aqd-pollutants/">
   </Concept>
   <Concept rdf:about="45">
     <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">45</notation>
-    <prefLabel>Indeno(1,2,3-cd)pyrene</prefLabel>
+    <prefLabel>Indeno(1;2;3;-cd)pyren</prefLabel>
     <inScheme rdf:resource=""/>
   </Concept>
   <Concept rdf:about="46">
@@ -263,7 +255,7 @@ xml:base="http://rdfdata.eionet.europa.eu/airbase/aqd-pollutants/">
   </Concept>
   <Concept rdf:about="51">
     <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">51</notation>
-    <prefLabel>NH4+ in PM2.5</prefLabel>
+    <prefLabel>NH4+ inPM2.5</prefLabel>
     <inScheme rdf:resource=""/>
   </Concept>
   <Concept rdf:about="52">
@@ -293,7 +285,7 @@ xml:base="http://rdfdata.eionet.europa.eu/airbase/aqd-pollutants/">
   </Concept>
   <Concept rdf:about="57">
     <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">57</notation>
-    <prefLabel>NOx</prefLabel>
+    <prefLabel>Nox</prefLabel>
     <inScheme rdf:resource=""/>
   </Concept>
   <Concept rdf:about="58">
@@ -355,11 +347,5 @@ xml:base="http://rdfdata.eionet.europa.eu/airbase/aqd-pollutants/">
     <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">69</notation>
     <prefLabel>Total gaseous Hg</prefLabel>
     <inScheme rdf:resource=""/>
-  </Concept>
-  <Concept rdf:about="70">
-    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">70</notation>
-    <prefLabel>H3C-CH=CH-CH3</prefLabel>
-    <inScheme rdf:resource=""/>
-    <altLabel>cis-2-Butene</altLabel>
   </Concept>
 </rdf:RDF>
