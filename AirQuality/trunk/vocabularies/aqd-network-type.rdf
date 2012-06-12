@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" xmlns="http://www.w3.org/2004/02/skos/core#">
+  <ConceptScheme rdf:about="">
+    <rdfs:label>The vocabulary of NetworkType from AQD.xsd</rdfs:label>
+  </ConceptScheme>
+  <Concept rdf:about="1">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1</notation>
+    <prefLabel>County</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="2">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">2</notation>
+    <prefLabel>Entire country</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="3">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">3</notation>
+    <prefLabel>Local industry</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="4">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">4</notation>
+    <prefLabel>Other</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="5">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">5</notation>
+    <prefLabel>Region</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="6">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">6</notation>
+    <prefLabel>Town/city</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="7">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">7</notation>
+    <prefLabel>Urban area</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+</rdf:RDF>
