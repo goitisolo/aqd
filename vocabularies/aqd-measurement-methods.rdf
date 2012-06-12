@@ -1,0 +1,111 @@
+<?xml version="1.0"?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" xmlns="http://www.w3.org/2004/02/skos/core#">
+  <ConceptScheme rdf:about="">
+    <rdfs:label>The vocabulary of MeasurementMethods from AQD.xsd</rdfs:label>
+  </ConceptScheme>
+  <Concept rdf:about="1">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1</notation>
+    <prefLabel>Absorption</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="2">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">2</notation>
+    <prefLabel>Automatic analyzer - Measurement principle</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="3">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">3</notation>
+    <prefLabel>Beta ray attenuation</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="4">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">4</notation>
+    <prefLabel>chemiluminescence</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="5">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">5</notation>
+    <prefLabel>Chemiluminescence (ref)</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="6">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">6</notation>
+    <prefLabel>conductance detection</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="7">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">7</notation>
+    <prefLabel>Conversion</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="8">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">8</notation>
+    <prefLabel>Differential Optical Absorption Spectroscopy (DOAS)</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="9">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">9</notation>
+    <prefLabel>Gas chromatography with flame ionization detector</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="10">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">10</notation>
+    <prefLabel>Gas chromatography with photo ionization detector</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="11">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">11</notation>
+    <prefLabel>membrane separation</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="12">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">12</notation>
+    <prefLabel>Non-dispersive infrared absorption/spectrometry (NDIR) (ref); Infrared  gas filter correlation</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="13">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">13</notation>
+    <prefLabel>Other</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="14">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">14</notation>
+    <prefLabel>please specify</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="15">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">15</notation>
+    <prefLabel>Pumped sampling followed by gas chromatography with photo ionization detector (ref)</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="16">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">16</notation>
+    <prefLabel>reflectrometry</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="17">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">17</notation>
+    <prefLabel>Sampling</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="18">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">18</notation>
+    <prefLabel>Tapered Element Oscillating Microbalance (TEOM)</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="19">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">19</notation>
+    <prefLabel>UV absorption (ref.)</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="20">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">20</notation>
+    <prefLabel>UV fluorescence</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="21">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">21</notation>
+    <prefLabel>UV fluorescence (ref)</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+</rdf:RDF>
