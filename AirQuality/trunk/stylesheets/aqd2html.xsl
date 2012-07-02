@@ -105,9 +105,11 @@
             <tr><th>Code</th><th>Protection target</th></tr>
             <xsl:for-each select="aqd:pollutants">
               <tr><td><xsl:value-of select="aqd:pollutantCode"/>
+        <!--
         <xsl:if test="function-available('fn:encode-for-uri')">
         (<xsl:call-template name="componentUrl"><xsl:with-param name="node" select="aqd:pollutantCode"/></xsl:call-template>)
         </xsl:if>
+        -->
               </td><td><xsl:value-of select="aqd:protectionTarget"/></td></tr>
             </xsl:for-each>
           </table>
