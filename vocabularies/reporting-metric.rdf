@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/"
+ xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+ xmlns:owl="http://www.w3.org/2002/07/owl#"
+ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+ xmlns="http://www.w3.org/2004/02/skos/core#"
+ xmlns:cc="http://creativecommons.org/ns#"
+ xmlns:dcterms="http://purl.org/dc/terms/"
+ xml:base="http://rdfdata.eionet.europa.eu/airbase/reporting-metric/">
+
+<Concept rdf:about="1"><notation>1</notation><prefLabel>Hours in exceedance in a calendar year</prefLabel></Concept>
+<Concept rdf:about="2"><notation>2</notation><prefLabel>Three consecutive hours in exceedance</prefLabel></Concept>
+<Concept rdf:about="3"><notation>3</notation><prefLabel>Deducted hours in exceedance in a calendar year</prefLabel></Concept>
+<Concept rdf:about="4"><notation>4</notation><prefLabel>Days in exceedance in a calendar year</prefLabel></Concept>
+<Concept rdf:about="5"><notation>5</notation><prefLabel>Deducted days in exceedance in a calendar year</prefLabel></Concept>
+<Concept rdf:about="6"><notation>6</notation><prefLabel>Annual average</prefLabel></Concept>
+<Concept rdf:about="7"><notation>7</notation><prefLabel>Deduction of annual average</prefLabel></Concept>
+<Concept rdf:about="8"><notation>8</notation><prefLabel>Percentiles corresponding to number of allowed exceedances</prefLabel></Concept>
+<Concept rdf:about="9"><notation>9</notation><prefLabel>Average over winter</prefLabel></Concept>
+<Concept rdf:about="10"><notation>AOT40</notation><prefLabel>AOT40</prefLabel></Concept>
+<Concept rdf:about="11"><notation>AEI</notation><prefLabel>Average Exposure Indicator</prefLabel></Concept>
+<Concept rdf:about="12"><notation>12</notation><prefLabel>Days in exceedance averaged over 3 years</prefLabel></Concept>
+<Concept rdf:about="13"><notation>13</notation><prefLabel>Maxiumum</prefLabel></Concept>
+
+</rdf:RDF>
