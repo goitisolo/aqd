@@ -11,42 +11,63 @@
        xml:base="http://rdfdata.eionet.europa.eu/airbase/measurement-method/">
 
   <Concept rdf:about="1">
+    <notation>1</notation>
     <prefLabel>UV fluorescence (SO2 (Reference))</prefLabel>
   </Concept>
+
   <Concept rdf:about="2">
+    <notation>2</notation>
     <prefLabel>Chemiluminescence (NOx (Reference))</prefLabel>
   </Concept>
+
   <Concept rdf:about="3">
+    <notation>Beta</notation>
     <prefLabel>Beta ray attenuation (PM10, PM2.5)</prefLabel>
   </Concept>
+
   <Concept rdf:about="4">
+    <notation>TEOM</notation>
     <prefLabel>Tapered Element Oscillating Microbalance (TEOM) (PM10, PM2.5)</prefLabel>
   </Concept>
+
   <Concept rdf:about="5">
-    <prefLabel>UV absorption (O3 (Reference))</prefLabel>
+    <notation>TEOM-FDMS</notation>
+    <prefLabel>Tapered Element Oscillating Microbalance (TEOM) with Filter Dynamics Measurement System (FDMS)</prefLabel>
   </Concept>
+
   <Concept rdf:about="6">
-    <prefLabel>Non-dispersive infrared absorption/spectrometry (NDIR) (CO (Reference))</prefLabel>
+    <notation>6</notation>
+    <prefLabel>UV absorption / photometry (O3 (Reference))</prefLabel>
   </Concept>
+
   <Concept rdf:about="7">
-    <prefLabel>Infrared gas filter correlation (CO)</prefLabel>
+    <notation>NDIR</notation>
+    <prefLabel>Non-dispersive infrared spectroscopy (NDIR) (CO (Reference))</prefLabel>
   </Concept>
+
   <Concept rdf:about="8">
-    <prefLabel>Sampling, reflectrometry</prefLabel>
+    <notation>DOAS</notation>
+    <prefLabel>Differential Optical Absorption Spectroscopy (DOAS)</prefLabel>
   </Concept>
+
   <Concept rdf:about="9">
-    <prefLabel>Conversion, UV fluorescence</prefLabel>
+    <notation>GC-FID</notation>
+    <prefLabel>Gas chromatography followed by flame ionization detection (GC-FID)</prefLabel>
   </Concept>
+
   <Concept rdf:about="10">
-    <prefLabel>Absorption, membrane separation, conductance detection</prefLabel>
+    <notation>GC-MS</notation>
+    <prefLabel>Gas chromatography followed by mass spectrometry (GC-MS)</prefLabel>
   </Concept>
+
   <Concept rdf:about="11">
-    <prefLabel>Conversion, chemiluminescence </prefLabel>
+    <notation>11</notation>
+    <prefLabel>Reflectrometry</prefLabel>
   </Concept>
+
   <Concept rdf:about="12">
-    <prefLabel>Differential Optical Absorption Spectroscopy (DOAS) (SO2, NO2)</prefLabel>
-  </Concept>
-  <Concept rdf:about="13">
+    <notation>12</notation>
     <prefLabel>Other, please specify</prefLabel>
   </Concept>
+
 </rdf:RDF>
