@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/"
+ xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+ xmlns:owl="http://www.w3.org/2002/07/owl#"
+ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+ xmlns="http://www.w3.org/2004/02/skos/core#"
+ xmlns:cc="http://creativecommons.org/ns#"
+ xmlns:dcterms="http://purl.org/dc/terms/"
+ xml:base="http://rdfdata.eionet.europa.eu/airbase/measure-classification/">
+
+  <Concept rdf:about="1">
+    <notation>1</notation>
+    <prefLabel>Emission control equipment for small and medium sized stationary combustion sources / replacement of combustion sources</prefLabel>
+  </Concept>
+  <Concept rdf:about="2">
+    <notation>2</notation>
+    <prefLabel>Retrofitting emission control equipment to vehicles</prefLabel>
+  </Concept>
+  <Concept rdf:about="3">
+    <notation>3</notation>
+    <prefLabel>Low emission fuels for small, medium and large scale stationary sources and in mobile sources</prefLabel>
+  </Concept>
+  <Concept rdf:about="4">
+    <notation>4</notation>
+    <broader rdf:resource="3"/>
+    <prefLabel>- Regulations for fuel quality</prefLabel>
+  </Concept>
+  <Concept rdf:about="5">
+    <notation>5</notation>
+    <broader rdf:resource="3"/>
+    <prefLabel>- Shift to installations using low emission fuels</prefLabel>
+  </Concept>
+  <Concept rdf:about="6">
+    <notation>6</notation>
+    <broader rdf:resource="3"/>
+    <prefLabel>- Other</prefLabel>
+  </Concept>
+  <Concept rdf:about="7">
+    <notation>7</notation>
+    <prefLabel>Measures to reduce pollution through permit systems and economic instruments</prefLabel>
+  </Concept>
+  <Concept rdf:about="8">
+    <notation>8</notation>
+    <broader rdf:resource="7"/>
+    <prefLabel>- LCP permits and national plans going beyond BAT</prefLabel>
+  </Concept>
+  <Concept rdf:about="9">
+    <notation>9</notation>
+    <broader rdf:resource="7"/>
+    <prefLabel>- IPPC permits beyond BAT</prefLabel>
+  </Concept>
+  <Concept rdf:about="10">
+    <notation>10</notation>
+    <broader rdf:resource="7"/>
+    <prefLabel>- Introduction/increase of environment taxes</prefLabel>
+  </Concept>
+  <Concept rdf:about="11">
+    <notation>11</notation>
+    <broader rdf:resource="7"/>
+    <prefLabel>- Introduction/increase of environment charges</prefLabel>
+  </Concept>
+  <Concept rdf:about="12">
+    <notation>12</notation>
+    <broader rdf:resource="7"/>
+    <prefLabel>- Tradable permit system</prefLabel>
+  </Concept>
+  <Concept rdf:about="13">
+    <notation>13</notation>
+    <broader rdf:resource="7"/>
+    <prefLabel>- Introduction/increase of environmental funding</prefLabel>
+  </Concept>
+  <Concept rdf:about="14">
+    <notation>14</notation>
+    <broader rdf:resource="7"/>
+    <prefLabel>- Other</prefLabel>
+  </Concept>
+  <Concept rdf:about="15">
+    <notation>15</notation>
+    <prefLabel>Public information/Education</prefLabel>
+  </Concept>
+  <Concept rdf:about="16">
+    <notation>16</notation>
+    <broader rdf:resource="15"/>
+    <prefLabel>- Internet</prefLabel>
+  </Concept>
+  <Concept rdf:about="17">
+    <notation>17</notation>
+    <broader rdf:resource="15"/>
+    <prefLabel>- Radio</prefLabel>
+  </Concept>
+  <Concept rdf:about="18">
+    <notation>18</notation>
+    <broader rdf:resource="15"/>
+    <prefLabel>- Television</prefLabel>
+  </Concept>
+  <Concept rdf:about="19">
+    <notation>19</notation>
+    <broader rdf:resource="15"/>
+    <prefLabel>- Leaflets</prefLabel>
+  </Concept>
+  <Concept rdf:about="20">
+    <notation>20</notation>
+    <broader rdf:resource="15"/>
+    <prefLabel>- Other</prefLabel>
+  </Concept>
+  <Concept rdf:about="21">
+    <notation>21</notation>
+    <prefLabel>Public procurement</prefLabel>
+  </Concept>
+  <Concept rdf:about="22">
+    <notation>22</notation>
+    <broader rdf:resource="21"/>
+    <prefLabel>- New vehicles, including low emission vehicles</prefLabel>
+  </Concept>
+  <Concept rdf:about="23">
+    <notation>23</notation>
+    <broader rdf:resource="21"/>
+    <prefLabel>- Cleaner vehicle transport services</prefLabel>
+  </Concept>
+  <Concept rdf:about="24">
+    <notation>24</notation>
+    <broader rdf:resource="21"/>
+    <prefLabel>- Low emission stationary combustion sources</prefLabel>
+  </Concept>
+  <Concept rdf:about="25">
+    <notation>25</notation>
+    <broader rdf:resource="21"/>
+    <prefLabel>- Low emission fuels for stationary and mobile sources</prefLabel>
+  </Concept>
+  <Concept rdf:about="26">
+    <notation>26</notation>
+    <broader rdf:resource="21"/>
+    <prefLabel>- Other</prefLabel>
+  </Concept>
+  <Concept rdf:about="27">
+    <notation>27</notation>
+    <prefLabel>Traffic planning and management</prefLabel>
+  </Concept>
+  <Concept rdf:about="28">
+    <notation>28</notation>
+    <broader rdf:resource="27"/>
+    <prefLabel>- Low emission zones</prefLabel>
+  </Concept>
+  <Concept rdf:about="29">
+    <notation>29</notation>
+    <broader rdf:resource="27"/>
+    <prefLabel>- Congestion pricing zones</prefLabel>
+  </Concept>
+  <Concept rdf:about="30">
+    <notation>30</notation>
+    <broader rdf:resource="27"/>
+    <prefLabel>- Differentiation of parking fees</prefLabel>
+  </Concept>
+  <Concept rdf:about="31">
+    <notation>31</notation>
+    <broader rdf:resource="27"/>
+    <prefLabel>- Management of parking places</prefLabel>
+  </Concept>
+  <Concept rdf:about="32">
+    <notation>32</notation>
+    <broader rdf:resource="27"/>
+    <prefLabel>- Effective reduction of speed limits and control</prefLabel>
+  </Concept>
+  <Concept rdf:about="33">
+    <notation>33</notation>
+    <broader rdf:resource="27"/>
+    <prefLabel>- Slow modes (e.g. expansion of bicycle and pedestrian infrastructure)</prefLabel>
+  </Concept>
+  <Concept rdf:about="34">
+    <notation>34</notation>
+    <broader rdf:resource="27"/>
+    <prefLabel>- Freight transport</prefLabel>
+  </Concept>
+  <Concept rdf:about="35">
+    <notation>35</notation>
+    <broader rdf:resource="27"/>
+    <prefLabel>- Effective improvement of public transport</prefLabel>
+  </Concept>
+  <Concept rdf:about="36">
+    <notation>36</notation>
+    <broader rdf:resource="27"/>
+    <prefLabel>- Land use planning to ensure sustainable transport facilities</prefLabel>
+  </Concept>
+  <Concept rdf:about="37">
+    <notation>37</notation>
+    <broader rdf:resource="27"/>
+    <prefLabel>- Encouragement of shift of transport modes</prefLabel>
+  </Concept>
+  <Concept rdf:about="38">
+    <notation>38</notation>
+    <broader rdf:resource="27"/>
+    <prefLabel>- Other</prefLabel>
+  </Concept>
+  <Concept rdf:about="39">
+    <notation>39</notation>
+    <prefLabel>Other, please specify </prefLabel>
+  </Concept>
+</rdf:RDF>
