@@ -9,16 +9,18 @@
  xml:base="http://rdfdata.eionet.europa.eu/airbase/analyticaltechniques/">
 
   <Concept rdf:about="1">
-    <notation>1</notation>
+    <notation>AAS</notation>
     <prefLabel>Atomic absorption spectrometry (AAS)</prefLabel>
   </Concept>
   <Concept rdf:about="2">
-    <notation>2</notation>
+    <notation>CV-AAS</notation>
     <prefLabel>Cold vapour atomic absorption spectrometry (CV-AAS)</prefLabel>
+    <rdfs:comment>Analysis of Hg</rdfs:comment>
   </Concept>
   <Concept rdf:about="3">
-    <notation>3</notation>
+    <notation>CV-AFS</notation>
     <prefLabel>Cold vapour atomic fluorescence spectrometry (CV-AFS)</prefLabel>
+    <rdfs:comment>Analysis of Hg</rdfs:comment>
   </Concept>
   <Concept rdf:about="4">
     <notation>4</notation>
@@ -29,31 +31,31 @@
     <prefLabel>Conductimetry</prefLabel>
   </Concept>
   <Concept rdf:about="6">
-    <notation>6</notation>
+    <notation>CFA</notation>
     <prefLabel>Continous flow analyses (CFA)</prefLabel>
   </Concept>
   <Concept rdf:about="7">
-    <notation>7</notation>
+    <notation>ET-AAS</notation>
     <prefLabel>Electrothermal Atomic Absorption Spectrometry (ET-AAS)</prefLabel>
   </Concept>
   <Concept rdf:about="8">
-    <notation>8</notation>
+    <notation>FI-FU</notation>
     <prefLabel>FIAS-Furnace coupling technique (FI-FU)</prefLabel>
   </Concept>
   <Concept rdf:about="9">
-    <notation>9</notation>
+    <notation>F-AAS</notation>
     <prefLabel>Flame atomic absorption spectrometry (F-AAS)</prefLabel>
   </Concept>
   <Concept rdf:about="10">
-    <notation>10</notation>
+    <notation>FID</notation>
     <prefLabel>Flame ionisation detection (FID)</prefLabel>
   </Concept>
   <Concept rdf:about="11">
-    <notation>11</notation>
+    <notation>GC-FID</notation>
     <prefLabel>Gas chromatography (GC) + flame ionisation (GC-FID)</prefLabel>
   </Concept>
   <Concept rdf:about="12">
-    <notation>12</notation>
+    <notation>GC-FIS-ECD</notation>
     <prefLabel>Gas chromatography (GC) + flame ionisation (FID) + ECD (GC-FIS-ECD)</prefLabel>
   </Concept>
   <Concept rdf:about="13">
@@ -77,15 +79,15 @@
     <prefLabel>Gas chromatography + mass spectrometry GC-MS after solvent or thermal desorption</prefLabel>
   </Concept>
   <Concept rdf:about="18">
-    <notation>18</notation>
+    <notation>GC-NPD</notation>
     <prefLabel>Gas Chromatography with Nitrogen Phosphorous Detector GC-NPD</prefLabel>
   </Concept>
   <Concept rdf:about="19">
-    <notation>19</notation>
+    <notation>GF-AAS</notation>
     <prefLabel>Graphite furnace atomic absorption spectrometry (GF-AAS)</prefLabel>
   </Concept>
   <Concept rdf:about="20">
-    <notation>20</notation>
+    <notation>grav</notation>
     <prefLabel>Gravimetry</prefLabel>
   </Concept>
   <Concept rdf:about="21">
@@ -101,39 +103,39 @@
     <prefLabel>Griess-Saltzman reaction</prefLabel>
   </Concept>
   <Concept rdf:about="24">
-    <notation>24</notation>
+    <notation>HPLC-FLD</notation>
     <prefLabel>High performance liquid chromatography - fluorescence detection (HPLC-FLD)</prefLabel>
   </Concept>
   <Concept rdf:about="25">
-    <notation>25</notation>
+    <notation>HPLC-MS</notation>
     <prefLabel>High performance liquid chromatography - mass spectrometry (HPLC-MS)</prefLabel>
   </Concept>
   <Concept rdf:about="26">
-    <notation>26</notation>
+    <notation>HPLC-UV</notation>
     <prefLabel>High Performance Liquid Chromatography HPLC with UV detection (HPLC-UV)</prefLabel>
   </Concept>
   <Concept rdf:about="27">
-    <notation>27</notation>
+    <notation>HR-CS-AAS</notation>
     <prefLabel>High resolution continuum source atomic absorption spectrometry (HR-CS-AAS)</prefLabel>
   </Concept>
   <Concept rdf:about="28">
-    <notation>28</notation>
+    <notation>HG-ET-AAS</notation>
     <prefLabel>Hydride generation electrothermal - atomic absorption spectrometry (HG-ET-AAS)</prefLabel>
   </Concept>
   <Concept rdf:about="29">
-    <notation>29</notation>
+    <notation>ICP-AES</notation>
     <prefLabel>Inductive coupled plasma atomic emission spectrometry (ICP-AES)</prefLabel>
   </Concept>
   <Concept rdf:about="30">
-    <notation>30</notation>
+    <notation>ICP-MS</notation>
     <prefLabel>Inductive coupled plasma mass spectrometryscopy (ICP-MS)</prefLabel>
   </Concept>
   <Concept rdf:about="31">
-    <notation>31</notation>
+    <notation>ICP-OES</notation>
     <prefLabel>Inductive coupled plasma optical emission spectrometry. (ICP-OES)</prefLabel>
   </Concept>
   <Concept rdf:about="32">
-    <notation>32</notation>
+    <notation>IC</notation>
     <prefLabel>Ion chromatography</prefLabel>
   </Concept>
   <Concept rdf:about="33">
@@ -173,11 +175,11 @@
     <prefLabel>Volumetry</prefLabel>
   </Concept>
   <Concept rdf:about="42">
-    <notation>42</notation>
+    <notation>XRF</notation>
     <prefLabel>X-ray fluorescence spectroscopy (XRF)</prefLabel>
   </Concept>
   <Concept rdf:about="43">
-    <notation>43</notation>
+    <notation>Zeeman  AAS</notation>
     <prefLabel>Zeeman atomic absorption spectrometry (Zeeman  AAS)</prefLabel>
   </Concept>
   <Concept rdf:about="44">
