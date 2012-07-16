@@ -1,0 +1,3857 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/"
+ xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+ xmlns:owl="http://www.w3.org/2002/07/owl#"
+ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+ xmlns="http://www.w3.org/2004/02/skos/core#"
+ xmlns:cc="http://creativecommons.org/ns#"
+ xmlns:dcterms="http://purl.org/dc/terms/"
+ xmlns:ab="http://rdfdata.eionet.europa.eu/airbase/schema/"
+ xml:base="http://rdfdata.eionet.europa.eu/airquality/components/">
+
+ <ConceptScheme rdf:about="">
+   <rdfs:label>AQD_Pollutants_CodeList_FINAL-120628.txt</rdfs:label>
+   <dcterms:date rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2012-06-28</dcterms:date>
+ </ConceptScheme>
+
+<Concept rdf:about="1">
+<notation>SO2</notation>
+<prefLabel>Sulphur dioxide (air)</prefLabel>
+<ab:pollutant>Sulphur dioxide</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>2011/850/EU</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/1"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="3">
+<notation>SA</notation>
+<prefLabel>Strong acidity (air)</prefLabel>
+<ab:pollutant>Strong acidity</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>µg SO2/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/3"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="4">
+<notation>SPM</notation>
+<prefLabel>Total suspended particulates (aerosol)</prefLabel>
+<ab:pollutant>Total suspended particulates</ab:pollutant>
+<ab:matrix>aerosol</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/4"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="5">
+<notation>PM10</notation>
+<prefLabel>Particulate matter &lt; 10 µm (aerosol)</prefLabel>
+<ab:pollutant>Particulate matter &lt; 10 µm</ab:pollutant>
+<ab:matrix>aerosol</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>2011/850/EU</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/5"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="6">
+<notation>BS</notation>
+<prefLabel>Black smoke (air)</prefLabel>
+<ab:pollutant>Black smoke</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/6"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="7">
+<notation>O3</notation>
+<prefLabel>Ozone (air)</prefLabel>
+<ab:pollutant>Ozone</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>2011/850/EU</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/7"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="8">
+<notation>NO2</notation>
+<prefLabel>Nitrogen dioxide (air)</prefLabel>
+<ab:pollutant>Nitrogen dioxide</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>2011/850/EU</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/8"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="9">
+<notation>NOX</notation>
+<prefLabel>Nitrogen oxides (air)</prefLabel>
+<ab:pollutant>Nitrogen oxides</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>µg NO2/m3</ab:measurementUnit>
+<ab:requirement>2011/850/EU</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/9"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="10">
+<notation>CO</notation>
+<prefLabel>Carbon monoxide (air)</prefLabel>
+<ab:pollutant>Carbon monoxide</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>mg/m3</ab:measurementUnit>
+<ab:requirement>2011/850/EU</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/10"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="11">
+<notation>H2S</notation>
+<prefLabel>Hydrogen sulphide (air)</prefLabel>
+<ab:pollutant>Hydrogen sulphide</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/11"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="12">
+<notation>Pb</notation>
+<prefLabel>Lead (aerosol)</prefLabel>
+<ab:pollutant>Lead</ab:pollutant>
+<ab:matrix>aerosol</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/12"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="13">
+<notation>Hg</notation>
+<prefLabel>Mercury (aerosol)</prefLabel>
+<ab:pollutant>Mercury</ab:pollutant>
+<ab:matrix>aerosol</ab:matrix>
+<ab:measurementUnit>ng/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/13"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="14">
+<notation>Cd</notation>
+<prefLabel>Cadmium (aerosol)</prefLabel>
+<ab:pollutant>Cadmium</ab:pollutant>
+<ab:matrix>aerosol</ab:matrix>
+<ab:measurementUnit>ng/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/14"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="15">
+<notation>Ni</notation>
+<prefLabel>Nickel (aerosol)</prefLabel>
+<ab:pollutant>Nickel</ab:pollutant>
+<ab:matrix>aerosol</ab:matrix>
+<ab:measurementUnit>ng/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/15"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="16">
+<notation>Cr</notation>
+<prefLabel>Chromium (aerosol)</prefLabel>
+<ab:pollutant>Chromium</ab:pollutant>
+<ab:matrix>aerosol</ab:matrix>
+<ab:measurementUnit>ng/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/16"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="17">
+<notation>Mn</notation>
+<prefLabel>Manganese (aerosol)</prefLabel>
+<ab:pollutant>Manganese</ab:pollutant>
+<ab:matrix>aerosol</ab:matrix>
+<ab:measurementUnit>ng/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/17"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="18">
+<notation>As</notation>
+<prefLabel>Arsenic (aerosol)</prefLabel>
+<ab:pollutant>Arsenic</ab:pollutant>
+<ab:matrix>aerosol</ab:matrix>
+<ab:measurementUnit>ng/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/18"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="19">
+<notation>CS2</notation>
+<prefLabel>Carbon disulphide (air)</prefLabel>
+<ab:pollutant>Carbon disulphide</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/19"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="20">
+<notation>C6H6</notation>
+<prefLabel>Benzene (air)</prefLabel>
+<ab:pollutant>Benzene</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>2011/850/EU</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/20"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="21">
+<notation>C6H5-CH3</notation>
+<prefLabel>Toluene (air)</prefLabel>
+<ab:pollutant>Toluene</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>2011/850/EU</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/21"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="22">
+<notation>C6H5-CH=CH2</notation>
+<prefLabel>Styrene (air)</prefLabel>
+<ab:pollutant>Styrene</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/22"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="23">
+<notation>CH2=CH-CN</notation>
+<prefLabel>Acrylonitrile (air)</prefLabel>
+<ab:pollutant>Acrylonitrile</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/23"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="24">
+<notation>CH2=CH-CH=CH2</notation>
+<prefLabel>1.3 Butadiene (air)</prefLabel>
+<ab:pollutant>1.3 Butadiene</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>2011/850/EU</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/24"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="25">
+<notation>HCHO</notation>
+<prefLabel>Formaldehyde (Methanal) (air)</prefLabel>
+<ab:pollutant>Formaldehyde (Methanal)</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>2011/850/EU</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/25"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="26">
+<notation>CHCl=CCl2</notation>
+<prefLabel>Trichloroethylene (air)</prefLabel>
+<ab:pollutant>Trichloroethylene</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/26"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="27">
+<notation>C2Cl4</notation>
+<prefLabel>Tetrachloroethylene (air)</prefLabel>
+<ab:pollutant>Tetrachloroethylene</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/27"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="28">
+<notation>CH2Cl2</notation>
+<prefLabel>Dichloromethane (air)</prefLabel>
+<ab:pollutant>Dichloromethane</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/28"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="29">
+<notation>BaP</notation>
+<prefLabel>Benzo(a)pyrene (precip)</prefLabel>
+<ab:pollutant>Benzo(a)pyrene</ab:pollutant>
+<ab:matrix>precip</ab:matrix>
+<ab:measurementUnit>ng/l</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/29"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="30">
+<notation>PAH</notation>
+<prefLabel>Polyaromatic hydrocarbons (air+aerosol)</prefLabel>
+<ab:pollutant>Polyaromatic hydrocarbons</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>ng/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/30"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="31">
+<notation>VC</notation>
+<prefLabel>Vinyl chloride (air)</prefLabel>
+<ab:pollutant>Vinyl chloride</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/31"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="32">
+<notation>THC (NM)</notation>
+<prefLabel>Total non-methane hydrocarbons (air)</prefLabel>
+<ab:pollutant>Total non-methane hydrocarbons</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>µg C/m3</ab:measurementUnit>
+<ab:requirement>2011/850/EU</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/32"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="33">
+<notation>T-VOC</notation>
+<prefLabel>Total volatile organic compounds (air)</prefLabel>
+<ab:pollutant>Total volatile organic compounds</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/33"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="34">
+<notation>PAN</notation>
+<prefLabel>Peroxyacetyl nitrate (air)</prefLabel>
+<ab:pollutant>Peroxyacetyl nitrate</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/34"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="35">
+<notation>NH3</notation>
+<prefLabel>Ammonia (air)</prefLabel>
+<ab:pollutant>Ammonia</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/35"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="36">
+<notation>N-DEP</notation>
+<prefLabel>Wet nitrogen deposition (flux)</prefLabel>
+<ab:pollutant>Wet nitrogen deposition</ab:pollutant>
+<ab:matrix>flux</ab:matrix>
+<ab:measurementUnit>mg N/m2.m</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/36"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="37">
+<notation>S-DEP</notation>
+<prefLabel>Wet sulphur deposition (flux)</prefLabel>
+<ab:pollutant>Wet sulphur deposition</ab:pollutant>
+<ab:matrix>flux</ab:matrix>
+<ab:measurementUnit>mg S/m2.m</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/37"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="38">
+<notation>NO</notation>
+<prefLabel>Nitrogen monoxide (air)</prefLabel>
+<ab:pollutant>Nitrogen monoxide</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/38"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="39">
+<notation>HCl</notation>
+<prefLabel>Hydrogen chloride (air)</prefLabel>
+<ab:pollutant>Hydrogen chloride</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/39"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="40">
+<notation>HF</notation>
+<prefLabel>Hydrogen fluoride (air)</prefLabel>
+<ab:pollutant>Hydrogen fluoride</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/40"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="41">
+<notation>CH4</notation>
+<prefLabel>Methane (air)</prefLabel>
+<ab:pollutant>Methane</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/41"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="45">
+<notation>NH4</notation>
+<prefLabel>Particulate ammonium (aerosol)</prefLabel>
+<ab:pollutant>Particulate ammonium</ab:pollutant>
+<ab:matrix>aerosol</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/45"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="46">
+<notation>NO3</notation>
+<prefLabel>Particulate nitrate (aerosol)</prefLabel>
+<ab:pollutant>Particulate nitrate</ab:pollutant>
+<ab:matrix>aerosol</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/46"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="47">
+<notation>SO4 (H2SO4 aerosols) (SO4--)</notation>
+<prefLabel>Particulate sulphate (aerosol)</prefLabel>
+<ab:pollutant>Particulate sulphate</ab:pollutant>
+<ab:matrix>aerosol</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/47"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="48">
+<notation>Se</notation>
+<prefLabel>Selenium (aerosol)</prefLabel>
+<ab:pollutant>Selenium</ab:pollutant>
+<ab:matrix>aerosol</ab:matrix>
+<ab:measurementUnit>ng/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/48"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="49">
+<notation>Vanadium</notation>
+<prefLabel>Vanadium (aerosol)</prefLabel>
+<ab:pollutant>Vanadium</ab:pollutant>
+<ab:matrix>aerosol</ab:matrix>
+<ab:measurementUnit>ng/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/49"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="50">
+<notation>HNO3</notation>
+<prefLabel>Gaseous nitric acid (air)</prefLabel>
+<ab:pollutant>Gaseous nitric acid</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/50"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="51">
+<notation>HC C2-C6(excl. AROM. &amp; CHLH)</notation>
+<prefLabel>HC C2-C6(excl. AROM. &amp; CHLH) (air+aerosol)</prefLabel>
+<ab:pollutant>HC C2-C6(excl. AROM. &amp; CHLH)</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/51"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="52">
+<notation>HC &gt; C6 (excl. AROM. &amp; CHLH)</notation>
+<prefLabel>HC &gt; C6 (excl. AROM. &amp; CHLH) (air+aerosol)</prefLabel>
+<ab:pollutant>HC &gt; C6 (excl. AROM. &amp; CHLH)</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/52"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="53">
+<notation>Aromatics (except C6H6)</notation>
+<prefLabel>Aromatics (except C6H6) (air)</prefLabel>
+<ab:pollutant>Aromatics (except C6H6)</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/53"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="54">
+<notation>Chlorinated hydrocarbons</notation>
+<prefLabel>Chlorinated hydrocarbons (air)</prefLabel>
+<ab:pollutant>Chlorinated hydrocarbons</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/54"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="62">
+<notation>Fluor (except HF)</notation>
+<prefLabel>Fluoride (except HF) (air)</prefLabel>
+<ab:pollutant>Fluoride (except HF)</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/62"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="63">
+<notation>Zn</notation>
+<prefLabel>Zinc (aerosol)</prefLabel>
+<ab:pollutant>Zinc</ab:pollutant>
+<ab:matrix>aerosol</ab:matrix>
+<ab:measurementUnit>ng/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/63"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="64">
+<notation>Co</notation>
+<prefLabel>Cobalt (aerosol)</prefLabel>
+<ab:pollutant>Cobalt</ab:pollutant>
+<ab:matrix>aerosol</ab:matrix>
+<ab:measurementUnit>ng/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/64"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="65">
+<notation>Fe</notation>
+<prefLabel>Iron (aerosol)</prefLabel>
+<ab:pollutant>Iron</ab:pollutant>
+<ab:matrix>aerosol</ab:matrix>
+<ab:measurementUnit>ng/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/65"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="66">
+<notation>Back scattering</notation>
+<prefLabel>Back scattering ()</prefLabel>
+<ab:pollutant>Back scattering</ab:pollutant>
+<ab:matrix></ab:matrix>
+<ab:measurementUnit>m-1</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/66"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="67">
+<notation>HNO3+NO3</notation>
+<prefLabel>Total nitrate (air+aerosol)</prefLabel>
+<ab:pollutant>Total nitrate</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>µg N/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/67"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="68">
+<notation>NH3+NH4</notation>
+<prefLabel>Total ammonium (air+aerosol)</prefLabel>
+<ab:pollutant>Total ammonium</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>µg N/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/68"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="69">
+<notation>Radioactivity</notation>
+<prefLabel>Radioactivity ()</prefLabel>
+<ab:pollutant>Radioactivity</ab:pollutant>
+<ab:matrix></ab:matrix>
+<ab:measurementUnit></ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/69"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="71">
+<notation>CO2</notation>
+<prefLabel>Carbon dioxide (air)</prefLabel>
+<ab:pollutant>Carbon dioxide</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>ppmv</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/71"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="73">
+<notation>Cu</notation>
+<prefLabel>Copper (aerosol)</prefLabel>
+<ab:pollutant>Copper</ab:pollutant>
+<ab:matrix>aerosol</ab:matrix>
+<ab:measurementUnit>ng/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/73"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="302">
+<notation>CFC-11</notation>
+<prefLabel>CFC_11 (air)</prefLabel>
+<ab:pollutant>CFC_11</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>pptv</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/302"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="303">
+<notation>CFC-113</notation>
+<prefLabel>CFC_113 (air)</prefLabel>
+<ab:pollutant>CFC_113</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>pptv</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/303"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="304">
+<notation>CFC-12</notation>
+<prefLabel>CFC_12 (air)</prefLabel>
+<ab:pollutant>CFC_12</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>pptv</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/304"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="307">
+<notation>HCFC-123</notation>
+<prefLabel>HCFC_123 (air)</prefLabel>
+<ab:pollutant>HCFC_123</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>pptv</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/307"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="308">
+<notation>HCFC-22</notation>
+<prefLabel>HCFC_22 (air)</prefLabel>
+<ab:pollutant>HCFC_22</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>pptv</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/308"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="309">
+<notation>1-methylnaphtalene</notation>
+<prefLabel>N1methylnaphtalene (air+aerosol)</prefLabel>
+<ab:pollutant>N1methylnaphtalene</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>ng/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/309"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="310">
+<notation>1-methylphenanthrene</notation>
+<prefLabel>N1methylphenanthrene (air+aerosol)</prefLabel>
+<ab:pollutant>N1methylphenanthrene</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>ng/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/310"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="311">
+<notation>Methyletylketone (MEK)</notation>
+<prefLabel>N2butanone (air)</prefLabel>
+<ab:pollutant>N2butanone</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/311"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="312">
+<notation>Crotonaldehyde</notation>
+<prefLabel>N2butenal (air)</prefLabel>
+<ab:pollutant>N2butenal</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/312"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="313">
+<notation>2-methylanthracene</notation>
+<prefLabel>N2methylanthracene (air+aerosol)</prefLabel>
+<ab:pollutant>N2methylanthracene</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>ng/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/313"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="314">
+<notation>2-methylbenzaldehyde</notation>
+<prefLabel>N2methylbenzencarbaldehyde (air)</prefLabel>
+<ab:pollutant>N2methylbenzencarbaldehyde</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/314"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="315">
+<notation>2-methylnaphtalene</notation>
+<prefLabel>N2methylnaphtalene (air+aerosol)</prefLabel>
+<ab:pollutant>N2methylnaphtalene</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>ng/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/315"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="316">
+<notation>(CH3)2-CH-CH2-CH2-CH3</notation>
+<prefLabel>i-Hexane (2-methylpentane) (air)</prefLabel>
+<ab:pollutant>i-Hexane (2-methylpentane)</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>2011/850/EU</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/316"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="317">
+<notation>2-methylphenanthrene</notation>
+<prefLabel>N2methylphenanthrene (air+aerosol)</prefLabel>
+<ab:pollutant>N2methylphenanthrene</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>ng/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/317"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="318">
+<notation>Methacroleine</notation>
+<prefLabel>N2methylpropenal (air)</prefLabel>
+<ab:pollutant>N2methylpropenal</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/318"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="319">
+<notation>Methylglyoxal</notation>
+<prefLabel>N2oxopropanal (air)</prefLabel>
+<ab:pollutant>N2oxopropanal</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/319"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="320">
+<notation>Acroleine</notation>
+<prefLabel>N2propenal (air)</prefLabel>
+<ab:pollutant>N2propenal</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/320"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="321">
+<notation>Methylvinylketone (MVK)</notation>
+<prefLabel>N3buten2one (air)</prefLabel>
+<ab:pollutant>N3buten2one</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/321"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="322">
+<notation>3-methylbenzaldehyde</notation>
+<prefLabel>N3methylbenzencarbaldehyde (air)</prefLabel>
+<ab:pollutant>N3methylbenzencarbaldehyde</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/322"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="323">
+<notation>3-methylpentane</notation>
+<prefLabel>N3methylpentane (air)</prefLabel>
+<ab:pollutant>N3methylpentane</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>pptv</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/323"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="324">
+<notation>4-methylbenzaldehyde</notation>
+<prefLabel>N4methylbenzencarbaldehyde (air)</prefLabel>
+<ab:pollutant>N4methylbenzencarbaldehyde</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/324"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="326">
+<notation>NOy</notation>
+<prefLabel>NOy (air)</prefLabel>
+<ab:pollutant>NOy</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>µg N/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/326"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="330">
+<notation>PCB-105</notation>
+<prefLabel>PCB_105 (precip)</prefLabel>
+<ab:pollutant>PCB_105</ab:pollutant>
+<ab:matrix>precip</ab:matrix>
+<ab:measurementUnit>ng/l</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/330"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="333">
+<notation>PCB-128</notation>
+<prefLabel>PCB_128 (precip)</prefLabel>
+<ab:pollutant>PCB_128</ab:pollutant>
+<ab:matrix>precip</ab:matrix>
+<ab:measurementUnit>ng/l</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/333"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="336">
+<notation>PCB-149</notation>
+<prefLabel>PCB_149 (precip)</prefLabel>
+<ab:pollutant>PCB_149</ab:pollutant>
+<ab:matrix>precip</ab:matrix>
+<ab:measurementUnit>ng/l</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/336"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="339">
+<notation>PCB-156</notation>
+<prefLabel>PCB_156 (precip)</prefLabel>
+<ab:pollutant>PCB_156</ab:pollutant>
+<ab:matrix>precip</ab:matrix>
+<ab:measurementUnit>ng/l</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/339"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="340">
+<notation>PCB-177</notation>
+<prefLabel>PCB_177 (precip)</prefLabel>
+<ab:pollutant>PCB_177</ab:pollutant>
+<ab:matrix>precip</ab:matrix>
+<ab:measurementUnit>ng/l</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/340"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="341">
+<notation>PCB-18</notation>
+<prefLabel>PCB_18 (precip)</prefLabel>
+<ab:pollutant>PCB_18</ab:pollutant>
+<ab:matrix>precip</ab:matrix>
+<ab:measurementUnit>ng/l</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/341"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="344">
+<notation>PCB-26</notation>
+<prefLabel>PCB_26 (precip)</prefLabel>
+<ab:pollutant>PCB_26</ab:pollutant>
+<ab:matrix>precip</ab:matrix>
+<ab:measurementUnit>ng/l</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/344"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="347">
+<notation>PCB-31</notation>
+<prefLabel>PCB_31 (precip)</prefLabel>
+<ab:pollutant>PCB_31</ab:pollutant>
+<ab:matrix>precip</ab:matrix>
+<ab:measurementUnit>ng/l</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/347"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="348">
+<notation>PCB-44</notation>
+<prefLabel>PCB_44 (precip)</prefLabel>
+<ab:pollutant>PCB_44</ab:pollutant>
+<ab:matrix>precip</ab:matrix>
+<ab:measurementUnit>ng/l</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/348"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="351">
+<notation>Acenaphtene</notation>
+<prefLabel>Acenaphthene (air+aerosol)</prefLabel>
+<ab:pollutant>Acenaphthene</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>ng/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/351"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="352">
+<notation>Acenaphtylene</notation>
+<prefLabel>Acenaphtylene (air+aerosol)</prefLabel>
+<ab:pollutant>Acenaphtylene</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>ng/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/352"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="356">
+<notation>Aldrin</notation>
+<prefLabel>Aldrin (precip)</prefLabel>
+<ab:pollutant>Aldrin</ab:pollutant>
+<ab:matrix>precip</ab:matrix>
+<ab:measurementUnit>ng/l</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/356"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="364">
+<notation>Anthanthrene</notation>
+<prefLabel>Anthanthrene (air+aerosol)</prefLabel>
+<ab:pollutant>Anthanthrene</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>ng/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/364"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="372">
+<notation>Benzaldehyde</notation>
+<prefLabel>Benzenecarbaldehyde (air)</prefLabel>
+<ab:pollutant>Benzenecarbaldehyde</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/372"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="373">
+<notation>Benzo(a)fluoranthene</notation>
+<prefLabel>Benzo(a)fluoranthene (air+aerosol)</prefLabel>
+<ab:pollutant>Benzo(a)fluoranthene</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>ng/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/373"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="380">
+<notation>Benzo(b+j+k)fluoranthenes</notation>
+<prefLabel>Benzo(b+j+k)fluoranthenes (air+aerosol)</prefLabel>
+<ab:pollutant>Benzo(b+j+k)fluoranthenes</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>ng/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/380"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="381">
+<notation>Benzo(e)pyrene</notation>
+<prefLabel>Benzo(e)pyrene (air+aerosol)</prefLabel>
+<ab:pollutant>Benzo(e)pyrene</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>ng/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/381"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="390">
+<notation>Biphenyl</notation>
+<prefLabel>Biphenyl (air+aerosol)</prefLabel>
+<ab:pollutant>Biphenyl</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>ng/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/390"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="391">
+<notation>Black Carbon</notation>
+<prefLabel>Black Carbon (aerosol)</prefLabel>
+<ab:pollutant>Black Carbon</ab:pollutant>
+<ab:matrix>aerosol</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/391"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="393">
+<notation>Butanales</notation>
+<prefLabel>Butanales (air)</prefLabel>
+<ab:pollutant>Butanales</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/393"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="394">
+<notation>H3C-CH2-CH2-CH3</notation>
+<prefLabel>n-Butane (air)</prefLabel>
+<ab:pollutant>n-Butane</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>2011/850/EU</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/394"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="395">
+<notation>Butenes</notation>
+<prefLabel>Butenes (air)</prefLabel>
+<ab:pollutant>Butenes</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>pptv</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/395"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="401">
+<notation>Carbon-tetrachloride</notation>
+<prefLabel>Carbon-tetrachloride (air)</prefLabel>
+<ab:pollutant>Carbon-tetrachloride</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>pptv</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/401"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="406">
+<notation>Chrysene</notation>
+<prefLabel>Chrysene (precip)</prefLabel>
+<ab:pollutant>Chrysene</ab:pollutant>
+<ab:matrix>precip</ab:matrix>
+<ab:measurementUnit>ng/l</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/406"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="412">
+<notation>k</notation>
+<prefLabel>Conductivity (precip)</prefLabel>
+<ab:pollutant>Conductivity</ab:pollutant>
+<ab:matrix>precip</ab:matrix>
+<ab:measurementUnit>uS/cm</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/412"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="415">
+<notation>Coronene</notation>
+<prefLabel>Coronene (air+aerosol)</prefLabel>
+<ab:pollutant>Coronene</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>ng/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/415"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="416">
+<notation>Cyclo-hexane</notation>
+<prefLabel>Cyclohexane (air)</prefLabel>
+<ab:pollutant>Cyclohexane</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>pptv</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/416"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="417">
+<notation>Cyklopenta(cd)pyrene</notation>
+<prefLabel>Cyklopenta(cd)pyrene (air+aerosol)</prefLabel>
+<ab:pollutant>Cyklopenta(cd)pyrene</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>ng/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/417"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="418">
+<notation>Dibenzo(ac+ah)anthracenes</notation>
+<prefLabel>Dibenzo(ac+ah)anthracenes (precip)</prefLabel>
+<ab:pollutant>Dibenzo(ac+ah)anthracenes</ab:pollutant>
+<ab:matrix>precip</ab:matrix>
+<ab:measurementUnit>ng/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/418"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="419">
+<notation>Dibenzo(ah)anthracene</notation>
+<prefLabel>Dibenzo(ah)anthracene (precip)</prefLabel>
+<ab:pollutant>Dibenzo(ah)anthracene</ab:pollutant>
+<ab:matrix>precip</ab:matrix>
+<ab:measurementUnit>ng/l</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/419"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="420">
+<notation>Dibenzofuran</notation>
+<prefLabel>Dibenzofuran (air+aerosol)</prefLabel>
+<ab:pollutant>Dibenzofuran</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>ng/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/420"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="421">
+<notation>Dibenzothiophene</notation>
+<prefLabel>Dibenzothiophene (air+aerosol)</prefLabel>
+<ab:pollutant>Dibenzothiophene</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>ng/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/421"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="425">
+<notation>N2O</notation>
+<prefLabel>Dinitrogenoxide (air)</prefLabel>
+<ab:pollutant>Dinitrogenoxide</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>ppbv</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/425"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="426">
+<notation>Endrin</notation>
+<prefLabel>Dndrin (precip)</prefLabel>
+<ab:pollutant>Dndrin</ab:pollutant>
+<ab:matrix>precip</ab:matrix>
+<ab:measurementUnit>ng/l</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/426"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="427">
+<notation>Acetaldehyde</notation>
+<prefLabel>Ethanal (air)</prefLabel>
+<ab:pollutant>Ethanal</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/427"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="428">
+<notation>C2H6</notation>
+<prefLabel>Ethane (air)</prefLabel>
+<ab:pollutant>Ethane</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>2011/850/EU</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/428"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="429">
+<notation>Glyoxal</notation>
+<prefLabel>Ethanedial (air)</prefLabel>
+<ab:pollutant>Ethanedial</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/429"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="430">
+<notation>C2H4</notation>
+<prefLabel>Ethene (Ethylene) (air)</prefLabel>
+<ab:pollutant>Ethene (Ethylene)</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>2011/850/EU</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/430"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="431">
+<notation>C6H5-C2H5</notation>
+<prefLabel>Ethyl benzene (air)</prefLabel>
+<ab:pollutant>Ethyl benzene</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>2011/850/EU</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/431"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="432">
+<notation>HC=CH</notation>
+<prefLabel>Ethyne  (Acetylene) (air)</prefLabel>
+<ab:pollutant>Ethyne  (Acetylene)</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>2011/850/EU</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/432"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="435">
+<notation>Fluorene</notation>
+<prefLabel>Fluorene (air+aerosol)</prefLabel>
+<ab:pollutant>Fluorene</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>ng/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/435"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="438">
+<notation>Halon 1211</notation>
+<prefLabel>Halon_1211 (air)</prefLabel>
+<ab:pollutant>Halon_1211</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>pptv</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/438"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="439">
+<notation>Halon 1301</notation>
+<prefLabel>Halon_1301 (air)</prefLabel>
+<ab:pollutant>Halon_1301</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>pptv</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/439"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="440">
+<notation>Heptachlor</notation>
+<prefLabel>Heptachlor (precip)</prefLabel>
+<ab:pollutant>Heptachlor</ab:pollutant>
+<ab:matrix>precip</ab:matrix>
+<ab:measurementUnit>ng/l</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/440"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="441">
+<notation>C7H16</notation>
+<prefLabel>n-Heptane (air)</prefLabel>
+<ab:pollutant>n-Heptane</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>2011/850/EU</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/441"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="442">
+<notation>n-Hexanal</notation>
+<prefLabel>Hexanal (air)</prefLabel>
+<ab:pollutant>Hexanal</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/442"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="443">
+<notation>C6H14</notation>
+<prefLabel>n-Hexane (air)</prefLabel>
+<ab:pollutant>n-Hexane</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>2011/850/EU</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/443"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="447">
+<notation>H3C-CH(CH3)2</notation>
+<prefLabel>i-Butane (2-methylpropane) (air)</prefLabel>
+<ab:pollutant>i-Butane (2-methylpropane)</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>2011/850/EU</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/447"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="448">
+<notation>i-Heptane</notation>
+<prefLabel>i-Heptane (Isoheptane) (air)</prefLabel>
+<ab:pollutant>i-Heptane (Isoheptane)</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/448"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="449">
+<notation>(CH3)3-C-CH2-CH-(CH3)2</notation>
+<prefLabel>i-Octane (2,2,4-trimethylpentane) (air)</prefLabel>
+<ab:pollutant>i-Octane (2,2,4-trimethylpentane)</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>2011/850/EU</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/449"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="450">
+<notation>H3C-CH2-CH(CH3)2</notation>
+<prefLabel>i-Pentane (2-methylbutane) (air)</prefLabel>
+<ab:pollutant>i-Pentane (2-methylbutane)</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>2011/850/EU</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/450"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="451">
+<notation>CH2=CH-C(CH3)=CH2</notation>
+<prefLabel>Isoprene (2-methyl-1,3-butadiene) (air)</prefLabel>
+<ab:pollutant>Isoprene (2-methyl-1,3-butadiene)</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>2011/850/EU</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/451"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="463">
+<notation>Methyl-chloroform</notation>
+<prefLabel>Methylchloroform (air)</prefLabel>
+<ab:pollutant>Methylchloroform</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>pptv</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/463"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="464">
+<notation>m,p-C6H4(CH3)2</notation>
+<prefLabel>m,p-Xylene (air)</prefLabel>
+<ab:pollutant>m,p-Xylene</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>2011/850/EU</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/464"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="465">
+<notation>Naphtalene</notation>
+<prefLabel>Naphtalene (air+aerosol)</prefLabel>
+<ab:pollutant>Naphtalene</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>ng/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/465"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="466">
+<notation>Neo-hexane</notation>
+<prefLabel>Neohexane (air)</prefLabel>
+<ab:pollutant>Neohexane</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>pptv</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/466"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="467">
+<notation>Neo-pentane</notation>
+<prefLabel>Neopentane (air)</prefLabel>
+<ab:pollutant>Neopentane</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>pptv</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/467"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="475">
+<notation>C8H18</notation>
+<prefLabel>n-Octane (air)</prefLabel>
+<ab:pollutant>n-Octane</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>2011/850/EU</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/475"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="482">
+<notation>o-C6H4-(CH3)2</notation>
+<prefLabel>o-Xylene (air)</prefLabel>
+<ab:pollutant>o-Xylene</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>2011/850/EU</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/482"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="485">
+<notation>Valeraldehyde</notation>
+<prefLabel>Pentanal (air)</prefLabel>
+<ab:pollutant>Pentanal</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/485"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="486">
+<notation>H3C-(CH2)3-CH3</notation>
+<prefLabel>n-Pentane (air)</prefLabel>
+<ab:pollutant>n-Pentane</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>2011/850/EU</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/486"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="487">
+<notation>Pentenes</notation>
+<prefLabel>Pentenes (air)</prefLabel>
+<ab:pollutant>Pentenes</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>pptv</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/487"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="488">
+<notation>Perylene</notation>
+<prefLabel>Perylene (air+aerosol)</prefLabel>
+<ab:pollutant>Perylene</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>ng/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/488"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="491">
+<notation>Acetophenone</notation>
+<prefLabel>Phenyletanone (air)</prefLabel>
+<ab:pollutant>Phenyletanone</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/491"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="502">
+<notation>Propanal</notation>
+<prefLabel>Propanal (air)</prefLabel>
+<ab:pollutant>Propanal</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/502"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="503">
+<notation>H3C-CH2-CH3</notation>
+<prefLabel>Propane (air)</prefLabel>
+<ab:pollutant>Propane</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>2011/850/EU</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/503"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="504">
+<notation>Acetone</notation>
+<prefLabel>Propanone (air)</prefLabel>
+<ab:pollutant>Propanone</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/504"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="505">
+<notation>CH2=CH-CH3</notation>
+<prefLabel>Propene (air)</prefLabel>
+<ab:pollutant>Propene</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>2011/850/EU</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/505"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="508">
+<notation>Retene</notation>
+<prefLabel>rRetene (air+aerosol)</prefLabel>
+<ab:pollutant>rRetene</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>ng/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/508"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="517">
+<notation>sum-PCB</notation>
+<prefLabel>sum_PCB (precip)</prefLabel>
+<ab:pollutant>sum_PCB</ab:pollutant>
+<ab:matrix>precip</ab:matrix>
+<ab:measurementUnit>ng/l</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/517"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="520">
+<notation>SO2 + SO4--</notation>
+<prefLabel>sum_sulph_diox_sulphate (air+aerosol)</prefLabel>
+<ab:pollutant>sum_sulph_diox_sulphate</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>µg S/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/520"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="601">
+<notation>3-methylphenantrene</notation>
+<prefLabel>N3methylphenanthrene (air+aerosol)</prefLabel>
+<ab:pollutant>N3methylphenanthrene</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>ng/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/601"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="602">
+<notation>9-methylphenantrene</notation>
+<prefLabel>N9methylphenanthrene (air+aerosol)</prefLabel>
+<ab:pollutant>N9methylphenanthrene</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>ng/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/602"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="604">
+<notation>Al</notation>
+<prefLabel>Aluminium (aerosol)</prefLabel>
+<ab:pollutant>Aluminium</ab:pollutant>
+<ab:matrix>aerosol</ab:matrix>
+<ab:measurementUnit>ng/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/604"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="605">
+<notation>Al</notation>
+<prefLabel>Aluminium (precip)</prefLabel>
+<ab:pollutant>Aluminium</ab:pollutant>
+<ab:matrix>precip</ab:matrix>
+<ab:measurementUnit>µg/l</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/605"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="606">
+<notation>Anthracene</notation>
+<prefLabel>Anthracene (air+aerosol)</prefLabel>
+<ab:pollutant>Anthracene</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>ng/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/606"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="607">
+<notation>Anthracene</notation>
+<prefLabel>Anthracene (precip)</prefLabel>
+<ab:pollutant>Anthracene</ab:pollutant>
+<ab:matrix>precip</ab:matrix>
+<ab:measurementUnit>ng/l</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/607"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="608">
+<notation>Anthracene</notation>
+<prefLabel>Anthracene (precip+dry_dep)</prefLabel>
+<ab:pollutant>Anthracene</ab:pollutant>
+<ab:matrix>precip+dry_dep</ab:matrix>
+<ab:measurementUnit>µg/m2/day</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/608"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="609">
+<notation>Benz(a)anthracene</notation>
+<prefLabel>Benzo(a)anthracene (air+aerosol)</prefLabel>
+<ab:pollutant>Benzo(a)anthracene</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>ng/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/609"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="610">
+<notation>Benz(a)anthracene</notation>
+<prefLabel>Benzo(a)anthracene (precip)</prefLabel>
+<ab:pollutant>Benzo(a)anthracene</ab:pollutant>
+<ab:matrix>precip</ab:matrix>
+<ab:measurementUnit>ng/l</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/610"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="611">
+<notation>Benz(a)anthracene</notation>
+<prefLabel>Benzo(a)anthracene (precip+dry_dep)</prefLabel>
+<ab:pollutant>Benzo(a)anthracene</ab:pollutant>
+<ab:matrix>precip+dry_dep</ab:matrix>
+<ab:measurementUnit>µg/m2/day</ab:measurementUnit>
+<ab:requirement>2011/850/EU</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/611"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="613">
+<notation>Benzo(a)fluorene</notation>
+<prefLabel>Benzo(a)fluorene (air+aerosol)</prefLabel>
+<ab:pollutant>Benzo(a)fluorene</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>ng/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/613"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="616">
+<notation>Benzo(b)fluoranthene</notation>
+<prefLabel>Benzo(b)fluoranthene (air+aerosol)</prefLabel>
+<ab:pollutant>Benzo(b)fluoranthene</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>ng/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/616"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="617">
+<notation>Benzo(b)fluoranthene</notation>
+<prefLabel>Benzo(b)fluoranthene (precip)</prefLabel>
+<ab:pollutant>Benzo(b)fluoranthene</ab:pollutant>
+<ab:matrix>precip</ab:matrix>
+<ab:measurementUnit>ng/l</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/617"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="618">
+<notation>Benzo(b)fluoranthene</notation>
+<prefLabel>Benzo(b)fluoranthene (precip+dry_dep)</prefLabel>
+<ab:pollutant>Benzo(b)fluoranthene</ab:pollutant>
+<ab:matrix>precip+dry_dep</ab:matrix>
+<ab:measurementUnit>µg/m2/day</ab:measurementUnit>
+<ab:requirement>2011/850/EU</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/618"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="619">
+<notation>Benzo(b)fluorene</notation>
+<prefLabel>Benzo(b)fluorene (air+aerosol)</prefLabel>
+<ab:pollutant>Benzo(b)fluorene</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>ng/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/619"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="620">
+<notation>Benzo(ghi)fluoranthene</notation>
+<prefLabel>Benzo(ghi)fluoranthene (air+aerosol)</prefLabel>
+<ab:pollutant>Benzo(ghi)fluoranthene</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>ng/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/620"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="621">
+<notation>Benzo(ghi)fluoranthene</notation>
+<prefLabel>Benzo(ghi)fluoranthene (precip)</prefLabel>
+<ab:pollutant>Benzo(ghi)fluoranthene</ab:pollutant>
+<ab:matrix>precip</ab:matrix>
+<ab:measurementUnit>ng/l</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/621"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="622">
+<notation>Benzo(ghi)perylene</notation>
+<prefLabel>Benzo(ghi)perylene (air+aerosol)</prefLabel>
+<ab:pollutant>Benzo(ghi)perylene</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>ng/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/622"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="623">
+<notation>Benzo(ghi)perylene</notation>
+<prefLabel>Benzo(ghi)perylene (precip)</prefLabel>
+<ab:pollutant>Benzo(ghi)perylene</ab:pollutant>
+<ab:matrix>precip</ab:matrix>
+<ab:measurementUnit>ng/l</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/623"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="624">
+<notation>Benzo(ghi)perylene</notation>
+<prefLabel>Benzo(ghi)perylene (precip+dry_dep)</prefLabel>
+<ab:pollutant>Benzo(ghi)perylene</ab:pollutant>
+<ab:matrix>precip+dry_dep</ab:matrix>
+<ab:measurementUnit>µg/m2/day</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/624"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="625">
+<notation>Benzo(k)fluoranthene</notation>
+<prefLabel>Benzo(k)fluoranthene (air+aerosol)</prefLabel>
+<ab:pollutant>Benzo(k)fluoranthene</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>ng/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/625"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="626">
+<notation>Benzo(k)fluoranthene</notation>
+<prefLabel>Benzo(k)fluoranthene (precip)</prefLabel>
+<ab:pollutant>Benzo(k)fluoranthene</ab:pollutant>
+<ab:matrix>precip</ab:matrix>
+<ab:measurementUnit>ng/l</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/626"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="627">
+<notation>Benzo(k)fluoranthene</notation>
+<prefLabel>Benzo(k)fluoranthene (precip+dry_dep)</prefLabel>
+<ab:pollutant>Benzo(k)fluoranthene</ab:pollutant>
+<ab:matrix>precip+dry_dep</ab:matrix>
+<ab:measurementUnit>µg/m2/day</ab:measurementUnit>
+<ab:requirement>2011/850/EU</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/627"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="629">
+<notation>Ca++</notation>
+<prefLabel>Calcium (aerosol)</prefLabel>
+<ab:pollutant>Calcium</ab:pollutant>
+<ab:matrix>aerosol</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/629"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="630">
+<notation>Ca++</notation>
+<prefLabel>Calcium (precip)</prefLabel>
+<ab:pollutant>Calcium</ab:pollutant>
+<ab:matrix>precip</ab:matrix>
+<ab:measurementUnit>mg/l</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/630"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="631">
+<notation>Cl-</notation>
+<prefLabel>Chloride (aerosol)</prefLabel>
+<ab:pollutant>Chloride</ab:pollutant>
+<ab:matrix>aerosol</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/631"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="632">
+<notation>Cl-</notation>
+<prefLabel>Chloride (precip)</prefLabel>
+<ab:pollutant>Chloride</ab:pollutant>
+<ab:matrix>precip</ab:matrix>
+<ab:measurementUnit>mg/l</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/632"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="633">
+<notation>Dibenz(ac+ah)anthracenes</notation>
+<prefLabel>Dibenz(ac+ah)anthracenes (air+aerosol)</prefLabel>
+<ab:pollutant>Dibenz(ac+ah)anthracenes</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>ng/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/633"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="634">
+<notation>Dibenz(ac+ah)anthracenes</notation>
+<prefLabel>Dibenz(ac+ah)anthracenes (precip)</prefLabel>
+<ab:pollutant>Dibenz(ac+ah)anthracenes</ab:pollutant>
+<ab:matrix>precip</ab:matrix>
+<ab:measurementUnit>ng/l</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/634"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="635">
+<notation>Dibenz(ah)anthracene</notation>
+<prefLabel>Dibenz(ah)anthracene (precip)</prefLabel>
+<ab:pollutant>Dibenz(ah)anthracene</ab:pollutant>
+<ab:matrix>precip</ab:matrix>
+<ab:measurementUnit>ng/l</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/635"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="636">
+<notation>Dibenzo(ae)pyrene</notation>
+<prefLabel>Dibenzo(ae)pyrene (air+aerosol)</prefLabel>
+<ab:pollutant>Dibenzo(ae)pyrene</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>ng/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/636"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="637">
+<notation>Dibenzo(ah)pyrene</notation>
+<prefLabel>Dibenzo(ah)pyrene (air+aerosol)</prefLabel>
+<ab:pollutant>Dibenzo(ah)pyrene</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>ng/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/637"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="638">
+<notation>Dibenzo(ai)pyrene</notation>
+<prefLabel>Dibenzo(ai)pyrene (air+aerosol)</prefLabel>
+<ab:pollutant>Dibenzo(ai)pyrene</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>ng/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/638"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="639">
+<notation>Dibenzo(ai)pyrene</notation>
+<prefLabel>Dibenzo(ai)pyrene (precip)</prefLabel>
+<ab:pollutant>Dibenzo(ai)pyrene</ab:pollutant>
+<ab:matrix>precip</ab:matrix>
+<ab:measurementUnit>ng/l</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/639"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="640">
+<notation>Dieldrin</notation>
+<prefLabel>Dieldrin (air+aerosol)</prefLabel>
+<ab:pollutant>Dieldrin</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>pg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/640"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="641">
+<notation>Dieldrin</notation>
+<prefLabel>Dieldrin (precip)</prefLabel>
+<ab:pollutant>Dieldrin</ab:pollutant>
+<ab:matrix>precip</ab:matrix>
+<ab:measurementUnit>ng/l</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/641"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="643">
+<notation>Fluoranthene</notation>
+<prefLabel>Fluoranthene (air+aerosol)</prefLabel>
+<ab:pollutant>Fluoranthene</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>ng/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/643"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="644">
+<notation>Fluoranthene</notation>
+<prefLabel>Fluoranthene (precip)</prefLabel>
+<ab:pollutant>Fluoranthene</ab:pollutant>
+<ab:matrix>precip</ab:matrix>
+<ab:measurementUnit>ng/l</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/644"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="645">
+<notation>Fluoranthene</notation>
+<prefLabel>Fluoranthene (precip+dry_dep)</prefLabel>
+<ab:pollutant>Fluoranthene</ab:pollutant>
+<ab:matrix>precip+dry_dep</ab:matrix>
+<ab:measurementUnit>µg/m2/day</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/645"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="648">
+<notation>H+</notation>
+<prefLabel>Acidity(H+) (precip)</prefLabel>
+<ab:pollutant>Acidity(H+)</ab:pollutant>
+<ab:matrix>precip</ab:matrix>
+<ab:measurementUnit>ue H/l</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/648"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="649">
+<notation>HCB</notation>
+<prefLabel>HCB (air+aerosol)</prefLabel>
+<ab:pollutant>HCB</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>pg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/649"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="650">
+<notation>HCB</notation>
+<prefLabel>HCB (precip)</prefLabel>
+<ab:pollutant>HCB</ab:pollutant>
+<ab:matrix>precip</ab:matrix>
+<ab:measurementUnit>ng/l</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/650"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="652">
+<notation>Heptachlor Epoxide</notation>
+<prefLabel>Heptachlor_epoxide (precip)</prefLabel>
+<ab:pollutant>Heptachlor_epoxide</ab:pollutant>
+<ab:matrix>precip</ab:matrix>
+<ab:measurementUnit>ng/l</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/652"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="653">
+<notation>Hg-reactive</notation>
+<prefLabel>Reactive_mercury (air+aerosol)</prefLabel>
+<ab:pollutant>Reactive_mercury</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>pg/m3</ab:measurementUnit>
+<ab:requirement>2011/850/EU</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/653"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="654">
+<notation>Indeno-(1,2,3-cd)pyrene</notation>
+<prefLabel>Indeno_123cd_pyrene (air+aerosol)</prefLabel>
+<ab:pollutant>Indeno_123cd_pyrene</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>ng/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/654"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="655">
+<notation>Indeno-(1,2,3-cd)pyrene</notation>
+<prefLabel>Indeno_123cd_pyrene (precip)</prefLabel>
+<ab:pollutant>Indeno_123cd_pyrene</ab:pollutant>
+<ab:matrix>precip</ab:matrix>
+<ab:measurementUnit>ng/l</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/655"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="656">
+<notation>Indeno-(1,2,3-cd)pyrene</notation>
+<prefLabel>Indeno_123cd_pyrene (precip+dry_dep)</prefLabel>
+<ab:pollutant>Indeno_123cd_pyrene</ab:pollutant>
+<ab:matrix>precip+dry_dep</ab:matrix>
+<ab:measurementUnit>µg/m2/day</ab:measurementUnit>
+<ab:requirement>2011/850/EU</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/656"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="657">
+<notation>K+</notation>
+<prefLabel>Potassium (aerosol)</prefLabel>
+<ab:pollutant>Potassium</ab:pollutant>
+<ab:matrix>aerosol</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/657"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="658">
+<notation>K+</notation>
+<prefLabel>Potassium (precip)</prefLabel>
+<ab:pollutant>Potassium</ab:pollutant>
+<ab:matrix>precip</ab:matrix>
+<ab:measurementUnit>mg/l</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/658"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="659">
+<notation>Mg++</notation>
+<prefLabel>Magnesium (aerosol)</prefLabel>
+<ab:pollutant>Magnesium</ab:pollutant>
+<ab:matrix>aerosol</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/659"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="660">
+<notation>Mg++</notation>
+<prefLabel>Magnesium (precip)</prefLabel>
+<ab:pollutant>Magnesium</ab:pollutant>
+<ab:matrix>precip</ab:matrix>
+<ab:measurementUnit>mg/l</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/660"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="661">
+<notation>Mo</notation>
+<prefLabel>Molybdenum (aerosol)</prefLabel>
+<ab:pollutant>Molybdenum</ab:pollutant>
+<ab:matrix>aerosol</ab:matrix>
+<ab:measurementUnit>ng/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/661"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="664">
+<notation>NH4+</notation>
+<prefLabel>Ammonium (precip)</prefLabel>
+<ab:pollutant>Ammonium</ab:pollutant>
+<ab:matrix>precip</ab:matrix>
+<ab:measurementUnit>mg N/l</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/664"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="666">
+<notation>NO3-</notation>
+<prefLabel>Nitrate (precip)</prefLabel>
+<ab:pollutant>Nitrate</ab:pollutant>
+<ab:matrix>precip</ab:matrix>
+<ab:measurementUnit>mg N/l</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/666"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="668">
+<notation>Na+</notation>
+<prefLabel>Sodium (aerosol)</prefLabel>
+<ab:pollutant>Sodium</ab:pollutant>
+<ab:matrix>aerosol</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/668"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="669">
+<notation>Na+</notation>
+<prefLabel>Sodium (precip)</prefLabel>
+<ab:pollutant>Sodium</ab:pollutant>
+<ab:matrix>precip</ab:matrix>
+<ab:measurementUnit>mg/l</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/669"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="670">
+<notation>PCB-101</notation>
+<prefLabel>PCB_101 (air+aerosol)</prefLabel>
+<ab:pollutant>PCB_101</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>pg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/670"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="671">
+<notation>PCB-101</notation>
+<prefLabel>PCB_101 (precip)</prefLabel>
+<ab:pollutant>PCB_101</ab:pollutant>
+<ab:matrix>precip</ab:matrix>
+<ab:measurementUnit>ng/l</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/671"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="672">
+<notation>PCB-101</notation>
+<prefLabel>PCB_101 (precip+dry_dep)</prefLabel>
+<ab:pollutant>PCB_101</ab:pollutant>
+<ab:matrix>precip+dry_dep</ab:matrix>
+<ab:measurementUnit>ng/m2/day</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/672"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="673">
+<notation>PCB-114</notation>
+<prefLabel>PCB_114 (air+aerosol)</prefLabel>
+<ab:pollutant>PCB_114</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>pg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/673"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="674">
+<notation>PCB-118</notation>
+<prefLabel>PCB_118 (air+aerosol)</prefLabel>
+<ab:pollutant>PCB_118</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>pg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/674"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="675">
+<notation>PCB-118</notation>
+<prefLabel>PCB_118 (precip)</prefLabel>
+<ab:pollutant>PCB_118</ab:pollutant>
+<ab:matrix>precip</ab:matrix>
+<ab:measurementUnit>ng/l</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/675"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="676">
+<notation>PCB-118</notation>
+<prefLabel>PCB_118 (precip+dry_dep)</prefLabel>
+<ab:pollutant>PCB_118</ab:pollutant>
+<ab:matrix>precip+dry_dep</ab:matrix>
+<ab:measurementUnit>ng/m2/day</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/676"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="677">
+<notation>PCB-138</notation>
+<prefLabel>PCB_138 (air+aerosol)</prefLabel>
+<ab:pollutant>PCB_138</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>pg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/677"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="678">
+<notation>PCB-138</notation>
+<prefLabel>PCB_138 (precip+dry_dep)</prefLabel>
+<ab:pollutant>PCB_138</ab:pollutant>
+<ab:matrix>precip+dry_dep</ab:matrix>
+<ab:measurementUnit>ng/m2/day</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/678"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="679">
+<notation>PCB-141</notation>
+<prefLabel>PCB_141 (air+aerosol)</prefLabel>
+<ab:pollutant>PCB_141</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>pg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/679"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="680">
+<notation>PCB-153</notation>
+<prefLabel>PCB_153 (air+aerosol)</prefLabel>
+<ab:pollutant>PCB_153</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>pg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/680"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="681">
+<notation>PCB-153</notation>
+<prefLabel>PCB_153 (precip)</prefLabel>
+<ab:pollutant>PCB_153</ab:pollutant>
+<ab:matrix>precip</ab:matrix>
+<ab:measurementUnit>ng/l</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/681"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="682">
+<notation>PCB-153</notation>
+<prefLabel>PCB_153 (precip+dry_dep)</prefLabel>
+<ab:pollutant>PCB_153</ab:pollutant>
+<ab:matrix>precip+dry_dep</ab:matrix>
+<ab:measurementUnit>ng/m2/day</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/682"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="683">
+<notation>PCB-157</notation>
+<prefLabel>PCB_157 (air+aerosol)</prefLabel>
+<ab:pollutant>PCB_157</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>pg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/683"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="684">
+<notation>PCB-167</notation>
+<prefLabel>PCB_167 (air+aerosol)</prefLabel>
+<ab:pollutant>PCB_167</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>pg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/684"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="685">
+<notation>PCB-170</notation>
+<prefLabel>PCB_170 (air+aerosol)</prefLabel>
+<ab:pollutant>PCB_170</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>pg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/685"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="686">
+<notation>PCB-180</notation>
+<prefLabel>PCB_180 (air+aerosol)</prefLabel>
+<ab:pollutant>PCB_180</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>pg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/686"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="687">
+<notation>PCB-180</notation>
+<prefLabel>PCB_180 (precip)</prefLabel>
+<ab:pollutant>PCB_180</ab:pollutant>
+<ab:matrix>precip</ab:matrix>
+<ab:measurementUnit>ng/l</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/687"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="688">
+<notation>PCB-180</notation>
+<prefLabel>PCB_180 (precip+dry_dep)</prefLabel>
+<ab:pollutant>PCB_180</ab:pollutant>
+<ab:matrix>precip+dry_dep</ab:matrix>
+<ab:measurementUnit>ng/m2/day</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/688"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="689">
+<notation>PCB-183</notation>
+<prefLabel>PCB_183 (air+aerosol)</prefLabel>
+<ab:pollutant>PCB_183</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>pg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/689"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="690">
+<notation>PCB-187</notation>
+<prefLabel>PCB_187 (air+aerosol)</prefLabel>
+<ab:pollutant>PCB_187</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>pg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/690"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="691">
+<notation>PCB-189</notation>
+<prefLabel>PCB_189 (air+aerosol)</prefLabel>
+<ab:pollutant>PCB_189</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>pg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/691"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="692">
+<notation>PCB-194</notation>
+<prefLabel>PCB_194 (air+aerosol)</prefLabel>
+<ab:pollutant>PCB_194</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>pg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/692"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="693">
+<notation>PCB-206</notation>
+<prefLabel>PCB_206 (air+aerosol)</prefLabel>
+<ab:pollutant>PCB_206</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>pg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/693"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="694">
+<notation>PCB-209</notation>
+<prefLabel>PCB_209 (air+aerosol)</prefLabel>
+<ab:pollutant>PCB_209</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>pg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/694"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="695">
+<notation>PCB-28</notation>
+<prefLabel>PCB_28 (air+aerosol)</prefLabel>
+<ab:pollutant>PCB_28</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>pg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/695"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="696">
+<notation>PCB-28</notation>
+<prefLabel>PCB_28 (precip)</prefLabel>
+<ab:pollutant>PCB_28</ab:pollutant>
+<ab:matrix>precip</ab:matrix>
+<ab:measurementUnit>ng/l</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/696"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="697">
+<notation>PCB-28</notation>
+<prefLabel>PCB_28 (precip+dry_dep)</prefLabel>
+<ab:pollutant>PCB_28</ab:pollutant>
+<ab:matrix>precip+dry_dep</ab:matrix>
+<ab:measurementUnit>ng/m2/day</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/697"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="698">
+<notation>PCB-33</notation>
+<prefLabel>PCB_33 (air+aerosol)</prefLabel>
+<ab:pollutant>PCB_33</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>pg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/698"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="699">
+<notation>PCB-37</notation>
+<prefLabel>PCB_37 (air+aerosol)</prefLabel>
+<ab:pollutant>PCB_37</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>pg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/699"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="700">
+<notation>PCB-47</notation>
+<prefLabel>PCB_47 (air+aerosol)</prefLabel>
+<ab:pollutant>PCB_47</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>pg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/700"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="701">
+<notation>PCB-52</notation>
+<prefLabel>PCB_52 (air+aerosol)</prefLabel>
+<ab:pollutant>PCB_52</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>pg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/701"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="702">
+<notation>PCB-52</notation>
+<prefLabel>PCB_52 (precip)</prefLabel>
+<ab:pollutant>PCB_52</ab:pollutant>
+<ab:matrix>precip</ab:matrix>
+<ab:measurementUnit>ng/l</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/702"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="703">
+<notation>PCB-52</notation>
+<prefLabel>PCB_52 (precip+dry_dep)</prefLabel>
+<ab:pollutant>PCB_52</ab:pollutant>
+<ab:matrix>precip+dry_dep</ab:matrix>
+<ab:measurementUnit>ng/m2/day</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/703"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="704">
+<notation>PCB-60</notation>
+<prefLabel>PCB_60 (air+aerosol)</prefLabel>
+<ab:pollutant>PCB_60</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>pg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/704"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="705">
+<notation>PCB-66</notation>
+<prefLabel>PCB_66 (air+aerosol)</prefLabel>
+<ab:pollutant>PCB_66</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>pg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/705"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="706">
+<notation>PCB-74</notation>
+<prefLabel>PCB_74 (air+aerosol)</prefLabel>
+<ab:pollutant>PCB_74</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>pg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/706"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="707">
+<notation>PCB-99</notation>
+<prefLabel>PCB_99 (air+aerosol)</prefLabel>
+<ab:pollutant>PCB_99</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>pg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/707"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="708">
+<notation>PCB_122</notation>
+<prefLabel>PCB_122 (air+aerosol)</prefLabel>
+<ab:pollutant>PCB_122</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>pg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/708"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="709">
+<notation>PCB_123</notation>
+<prefLabel>PCB_123 (air+aerosol)</prefLabel>
+<ab:pollutant>PCB_123</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>pg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/709"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="710">
+<notation>PCB_128</notation>
+<prefLabel>PCB_128 (air+aerosol)</prefLabel>
+<ab:pollutant>PCB_128</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>pg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/710"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="711">
+<notation>PCB_138</notation>
+<prefLabel>PCB_138 (precip)</prefLabel>
+<ab:pollutant>PCB_138</ab:pollutant>
+<ab:matrix>precip</ab:matrix>
+<ab:measurementUnit>ng/l</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/711"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="712">
+<notation>Phenanthrene</notation>
+<prefLabel>Phenanthrene (air+aerosol)</prefLabel>
+<ab:pollutant>Phenanthrene</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>ng/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/712"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="713">
+<notation>Phenanthrene</notation>
+<prefLabel>Phenanthrene (precip)</prefLabel>
+<ab:pollutant>Phenanthrene</ab:pollutant>
+<ab:matrix>precip</ab:matrix>
+<ab:measurementUnit>ng/l</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/713"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="714">
+<notation>Phenanthrene</notation>
+<prefLabel>Phenanthrene (precip+dry_dep)</prefLabel>
+<ab:pollutant>Phenanthrene</ab:pollutant>
+<ab:matrix>precip+dry_dep</ab:matrix>
+<ab:measurementUnit>µg/m2/day</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/714"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="715">
+<notation>Pyrene</notation>
+<prefLabel>Pyrene (air+aerosol)</prefLabel>
+<ab:pollutant>Pyrene</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>ng/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/715"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="716">
+<notation>Pyrene</notation>
+<prefLabel>Pyrene (precip)</prefLabel>
+<ab:pollutant>Pyrene</ab:pollutant>
+<ab:matrix>precip</ab:matrix>
+<ab:measurementUnit>ng/l</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/716"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="717">
+<notation>Pyrene</notation>
+<prefLabel>Pyrene (precip+dry_dep)</prefLabel>
+<ab:pollutant>Pyrene</ab:pollutant>
+<ab:matrix>precip+dry_dep</ab:matrix>
+<ab:measurementUnit>µg/m2/day</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/717"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="719">
+<notation>SO4--</notation>
+<prefLabel>Sulphate (precip)</prefLabel>
+<ab:pollutant>Sulphate</ab:pollutant>
+<ab:matrix>precip</ab:matrix>
+<ab:measurementUnit>mg S/l</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/719"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="720">
+<notation>SO4-- corr</notation>
+<prefLabel>Sulphate_corrected (precip)</prefLabel>
+<ab:pollutant>Sulphate_corrected</ab:pollutant>
+<ab:matrix>precip</ab:matrix>
+<ab:measurementUnit>mg S/l</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/720"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="723">
+<notation>TI</notation>
+<prefLabel>Titanium (precip)</prefLabel>
+<ab:pollutant>Titanium</ab:pollutant>
+<ab:matrix>precip</ab:matrix>
+<ab:measurementUnit>µg/l</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/723"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="728">
+<notation>Vanadium</notation>
+<prefLabel>Vanadium (precip)</prefLabel>
+<ab:pollutant>Vanadium</ab:pollutant>
+<ab:matrix>precip</ab:matrix>
+<ab:measurementUnit>µg/l</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/728"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="729">
+<notation>alpha-HCH</notation>
+<prefLabel>alpha_HCH (air+aerosol)</prefLabel>
+<ab:pollutant>alpha_HCH</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>pg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/729"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="730">
+<notation>alpha-HCH</notation>
+<prefLabel>alpha_HCH (precip)</prefLabel>
+<ab:pollutant>alpha_HCH</ab:pollutant>
+<ab:matrix>precip</ab:matrix>
+<ab:measurementUnit>ng/l</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/730"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="731">
+<notation>alpha-HCH</notation>
+<prefLabel>alpha_HCH (precip+dry_dep)</prefLabel>
+<ab:pollutant>alpha_HCH</ab:pollutant>
+<ab:matrix>precip+dry_dep</ab:matrix>
+<ab:measurementUnit>ng/m2</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/731"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="732">
+<notation>beta-HCH</notation>
+<prefLabel>beta_HCH (air+aerosol)</prefLabel>
+<ab:pollutant>beta_HCH</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>pg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/732"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="733">
+<notation>beta-HCH</notation>
+<prefLabel>beta_HCH (precip)</prefLabel>
+<ab:pollutant>beta_HCH</ab:pollutant>
+<ab:matrix>precip</ab:matrix>
+<ab:measurementUnit>ng/l</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/733"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="734">
+<notation>cis-CD</notation>
+<prefLabel>cis_CD (air+aerosol)</prefLabel>
+<ab:pollutant>cis_CD</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>pg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/734"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="735">
+<notation>cis-CD</notation>
+<prefLabel>cis_CD (precip)</prefLabel>
+<ab:pollutant>cis_CD</ab:pollutant>
+<ab:matrix>precip</ab:matrix>
+<ab:measurementUnit>ng/l</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/735"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="736">
+<notation>cis-NO</notation>
+<prefLabel>cis_NO (air+aerosol)</prefLabel>
+<ab:pollutant>cis_NO</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>pg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/736"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="737">
+<notation>gamma-HCH</notation>
+<prefLabel>lindane (air+aerosol)</prefLabel>
+<ab:pollutant>lindane</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>pg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/737"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="738">
+<notation>gamma-HCH</notation>
+<prefLabel>lindane (precip+dry_dep)</prefLabel>
+<ab:pollutant>lindane</ab:pollutant>
+<ab:matrix>precip+dry_dep</ab:matrix>
+<ab:measurementUnit>ng/m2</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/738"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="739">
+<notation>gamma-HCH</notation>
+<prefLabel>lindane (precip)</prefLabel>
+<ab:pollutant>lindane</ab:pollutant>
+<ab:matrix>precip</ab:matrix>
+<ab:measurementUnit>ng/l</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/739"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="741">
+<notation>o,p'-DDD</notation>
+<prefLabel>op_DDD (precip)</prefLabel>
+<ab:pollutant>op_DDD</ab:pollutant>
+<ab:matrix>precip</ab:matrix>
+<ab:measurementUnit>ng/l</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/741"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="742">
+<notation>o,p'-DDE</notation>
+<prefLabel>op_DDE (precip)</prefLabel>
+<ab:pollutant>op_DDE</ab:pollutant>
+<ab:matrix>precip</ab:matrix>
+<ab:measurementUnit>ng/l</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/742"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="743">
+<notation>o,p'-DDT</notation>
+<prefLabel>op_DDT (precip)</prefLabel>
+<ab:pollutant>op_DDT</ab:pollutant>
+<ab:matrix>precip</ab:matrix>
+<ab:measurementUnit>ng/l</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/743"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="744">
+<notation>o,p'-DDD</notation>
+<prefLabel>op_DDD (air+aerosol)</prefLabel>
+<ab:pollutant>op_DDD</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>pg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/744"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="745">
+<notation>o,p'-DDE</notation>
+<prefLabel>op_DDE (air+aerosol)</prefLabel>
+<ab:pollutant>op_DDE</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>pg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/745"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="746">
+<notation>o,p'-DDT</notation>
+<prefLabel>op_DDT (air+aerosol)</prefLabel>
+<ab:pollutant>op_DDT</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>pg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/746"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="747">
+<notation>p,p'-DDD</notation>
+<prefLabel>pp_DDD (precip)</prefLabel>
+<ab:pollutant>pp_DDD</ab:pollutant>
+<ab:matrix>precip</ab:matrix>
+<ab:measurementUnit>ng/l</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/747"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="748">
+<notation>p,p'-DDE</notation>
+<prefLabel>pp_DDE (precip)</prefLabel>
+<ab:pollutant>pp_DDE</ab:pollutant>
+<ab:matrix>precip</ab:matrix>
+<ab:measurementUnit>ng/l</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/748"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="749">
+<notation>p,p'-DDT</notation>
+<prefLabel>pp_DDT (precip)</prefLabel>
+<ab:pollutant>pp_DDT</ab:pollutant>
+<ab:matrix>precip</ab:matrix>
+<ab:measurementUnit>ng/l</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/749"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="750">
+<notation>p,p'-DDD</notation>
+<prefLabel>pp_DDD (air+aerosol)</prefLabel>
+<ab:pollutant>pp_DDD</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>pg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/750"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="751">
+<notation>p,p'-DDE</notation>
+<prefLabel>pp_DDE (air+aerosol)</prefLabel>
+<ab:pollutant>pp_DDE</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>pg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/751"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="752">
+<notation>p,p'-DDT</notation>
+<prefLabel>pp_DDT (air+aerosol)</prefLabel>
+<ab:pollutant>pp_DDT</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>pg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/752"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="753">
+<notation>precip_amount</notation>
+<prefLabel>precipitation_amount (precip)</prefLabel>
+<ab:pollutant>precipitation_amount</ab:pollutant>
+<ab:matrix>precip</ab:matrix>
+<ab:measurementUnit>mm</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/753"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="754">
+<notation>precip_amount_off</notation>
+<prefLabel>precipitation_amount_off (precip)</prefLabel>
+<ab:pollutant>precipitation_amount_off</ab:pollutant>
+<ab:matrix>precip</ab:matrix>
+<ab:measurementUnit>mm</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/754"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="755">
+<notation>trans-CD</notation>
+<prefLabel>trans_CD (air+aerosol)</prefLabel>
+<ab:pollutant>trans_CD</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>pg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/755"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="756">
+<notation>trans-CD</notation>
+<prefLabel>trans_CD (precip)</prefLabel>
+<ab:pollutant>trans_CD</ab:pollutant>
+<ab:matrix>precip</ab:matrix>
+<ab:measurementUnit>ng/l</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/756"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="757">
+<notation>trans-NO</notation>
+<prefLabel>trans_NO (air+aerosol)</prefLabel>
+<ab:pollutant>trans_NO</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>pg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/757"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="758">
+<notation>trans_NO</notation>
+<prefLabel>trans_NO (precip)</prefLabel>
+<ab:pollutant>trans_NO</ab:pollutant>
+<ab:matrix>precip</ab:matrix>
+<ab:measurementUnit>ng/l</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/758"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="759">
+<notation>Benzo(j)fluoranthene</notation>
+<prefLabel>Benzo(j)fluoranthene (precip)</prefLabel>
+<ab:pollutant>Benzo(j)fluoranthene</ab:pollutant>
+<ab:matrix>precip</ab:matrix>
+<ab:measurementUnit>ng/l</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/759"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="760">
+<notation>Benzo(j)fluoranthene</notation>
+<prefLabel>Benzo(j)fluoranthene (precip+dry_dep)</prefLabel>
+<ab:pollutant>Benzo(j)fluoranthene</ab:pollutant>
+<ab:matrix>precip+dry_dep</ab:matrix>
+<ab:measurementUnit>µg/m2/day</ab:measurementUnit>
+<ab:requirement>2011/850/EU</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/760"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="761">
+<notation>Benzo(j)fluorene</notation>
+<prefLabel>Benzo(j)fluorene (air+aerosol)</prefLabel>
+<ab:pollutant>Benzo(j)fluorene</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>ng/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/761"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="762">
+<notation>Benzo(j)fluoranthene</notation>
+<prefLabel>Benzo(j)fluoranthene (air+aerosol)</prefLabel>
+<ab:pollutant>Benzo(j)fluoranthene</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>ng/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/762"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="763">
+<notation>Dibenzo(ah)anthracene</notation>
+<prefLabel>Dibenzo(ah)anthracene (air+aerosol)</prefLabel>
+<ab:pollutant>Dibenzo(ah)anthracene</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>ng/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/763"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="771">
+<notation>EC</notation>
+<prefLabel>Elemental carbon (aerosol)</prefLabel>
+<ab:pollutant>Elemental carbon</ab:pollutant>
+<ab:matrix>aerosol</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/771"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="772">
+<notation>OC</notation>
+<prefLabel>Organic carbon (aerosol)</prefLabel>
+<ab:pollutant>Organic carbon</ab:pollutant>
+<ab:matrix>aerosol</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/772"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="1012">
+<notation>Pb in PM2.5</notation>
+<prefLabel>Lead in PM2.5 (aerosol)</prefLabel>
+<ab:pollutant>Lead in PM2.5</ab:pollutant>
+<ab:matrix>aerosol</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/1012"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="1029">
+<notation>BaP in PM2.5</notation>
+<prefLabel>Benzo(a)pyrene in PM2.5 (aerosol)</prefLabel>
+<ab:pollutant>Benzo(a)pyrene in PM2.5</ab:pollutant>
+<ab:matrix>aerosol</ab:matrix>
+<ab:measurementUnit>ng/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/1029"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="1045">
+<notation>NH4+ in PM2.5</notation>
+<prefLabel>Ammonium in PM2.5 (aerosol)</prefLabel>
+<ab:pollutant>Ammonium in PM2.5</ab:pollutant>
+<ab:matrix>aerosol</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>2011/850/EU</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/1045"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="1046">
+<notation>NO3- in PM2.5</notation>
+<prefLabel>Nitrate in PM2.5 (aerosol)</prefLabel>
+<ab:pollutant>Nitrate in PM2.5</ab:pollutant>
+<ab:matrix>aerosol</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>2011/850/EU</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/1046"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="1047">
+<notation>SO42- in PM2.5</notation>
+<prefLabel>Sulphate in PM2.5 (aerosol)</prefLabel>
+<ab:pollutant>Sulphate in PM2.5</ab:pollutant>
+<ab:matrix>aerosol</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>2011/850/EU</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/1047"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="1629">
+<notation>Ca2+ in PM2.5</notation>
+<prefLabel>Calcium in PM2.5 (aerosol)</prefLabel>
+<ab:pollutant>Calcium in PM2.5</ab:pollutant>
+<ab:matrix>aerosol</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>2011/850/EU</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/1629"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="1631">
+<notation>Cl- in PM2.5</notation>
+<prefLabel>Chloride in PM2.5 (aerosol)</prefLabel>
+<ab:pollutant>Chloride in PM2.5</ab:pollutant>
+<ab:matrix>aerosol</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>2011/850/EU</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/1631"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="1657">
+<notation>K+ in PM2.5</notation>
+<prefLabel>Potassium in PM2.5 (aerosol)</prefLabel>
+<ab:pollutant>Potassium in PM2.5</ab:pollutant>
+<ab:matrix>aerosol</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>2011/850/EU</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/1657"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="1659">
+<notation>Mg2+ in PM2.5</notation>
+<prefLabel>Magnesium  in PM2.5 (aerosol)</prefLabel>
+<ab:pollutant>Magnesium  in PM2.5</ab:pollutant>
+<ab:matrix>aerosol</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>2011/850/EU</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/1659"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="1668">
+<notation>Na+  in PM2.5</notation>
+<prefLabel>Sodium in PM2.5 (aerosol)</prefLabel>
+<ab:pollutant>Sodium in PM2.5</ab:pollutant>
+<ab:matrix>aerosol</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>2011/850/EU</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/1668"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="1771">
+<notation>EC in PM2.5</notation>
+<prefLabel>Elemental Carbon in PM2.5 (aerosol)</prefLabel>
+<ab:pollutant>Elemental Carbon in PM2.5</ab:pollutant>
+<ab:matrix>aerosol</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>2011/850/EU</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/1771"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="1772">
+<notation>OC in PM2.5</notation>
+<prefLabel>Organic Carbon in PM2.5 (aerosol)</prefLabel>
+<ab:pollutant>Organic Carbon in PM2.5</ab:pollutant>
+<ab:matrix>aerosol</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>2011/850/EU</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/1772"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="2012">
+<notation>Pb</notation>
+<prefLabel>Lead (precip)</prefLabel>
+<ab:pollutant>Lead</ab:pollutant>
+<ab:matrix>precip</ab:matrix>
+<ab:measurementUnit>µg/l</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/2012"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="2013">
+<notation>Hg</notation>
+<prefLabel>Mercury (precip)</prefLabel>
+<ab:pollutant>Mercury</ab:pollutant>
+<ab:matrix>precip</ab:matrix>
+<ab:measurementUnit>ng/l</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/2013"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="2014">
+<notation>Cd</notation>
+<prefLabel>Cadmium (precip)</prefLabel>
+<ab:pollutant>Cadmium</ab:pollutant>
+<ab:matrix>precip</ab:matrix>
+<ab:measurementUnit>µg/l</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/2014"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="2015">
+<notation>Ni</notation>
+<prefLabel>Nickel (precip)</prefLabel>
+<ab:pollutant>Nickel</ab:pollutant>
+<ab:matrix>precip</ab:matrix>
+<ab:measurementUnit>µg/l</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/2015"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="2016">
+<notation>Cr</notation>
+<prefLabel>Chromium (precip)</prefLabel>
+<ab:pollutant>Chromium</ab:pollutant>
+<ab:matrix>precip</ab:matrix>
+<ab:measurementUnit>µg/l</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/2016"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="2017">
+<notation>Mn</notation>
+<prefLabel>Manganese (precip)</prefLabel>
+<ab:pollutant>Manganese</ab:pollutant>
+<ab:matrix>precip</ab:matrix>
+<ab:measurementUnit>µg/l</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/2017"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="2018">
+<notation>As</notation>
+<prefLabel>Arsenic (precip)</prefLabel>
+<ab:pollutant>Arsenic</ab:pollutant>
+<ab:matrix>precip</ab:matrix>
+<ab:measurementUnit>µg/l</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/2018"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="2063">
+<notation>Zn</notation>
+<prefLabel>Zinc (precip)</prefLabel>
+<ab:pollutant>Zinc</ab:pollutant>
+<ab:matrix>precip</ab:matrix>
+<ab:measurementUnit>µg/l</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/2063"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="2064">
+<notation>Co</notation>
+<prefLabel>Cobalt (precip)</prefLabel>
+<ab:pollutant>Cobalt</ab:pollutant>
+<ab:matrix>precip</ab:matrix>
+<ab:measurementUnit>µg/l</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/2064"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="2065">
+<notation>Fe</notation>
+<prefLabel>Iron (precip)</prefLabel>
+<ab:pollutant>Iron</ab:pollutant>
+<ab:matrix>precip</ab:matrix>
+<ab:measurementUnit>µg/l</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/2065"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="2073">
+<notation>Cu</notation>
+<prefLabel>Copper (precip)</prefLabel>
+<ab:pollutant>Copper</ab:pollutant>
+<ab:matrix>precip</ab:matrix>
+<ab:measurementUnit>µg/l</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/2073"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="2076">
+<notation>pH</notation>
+<prefLabel>Acidity(pH) (precip)</prefLabel>
+<ab:pollutant>Acidity(pH)</ab:pollutant>
+<ab:matrix>precip</ab:matrix>
+<ab:measurementUnit>pH units</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/2076"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="2380">
+<notation>Benzo(b,j,k)fluoranthene</notation>
+<prefLabel>Benzo(b,j,k)fluoranthene (precip)</prefLabel>
+<ab:pollutant>Benzo(b,j,k)fluoranthene</ab:pollutant>
+<ab:matrix>precip</ab:matrix>
+<ab:measurementUnit>ng/l</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/2380"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="2770">
+<notation>PO43-</notation>
+<prefLabel>phosphate (precip)</prefLabel>
+<ab:pollutant>phosphate</ab:pollutant>
+<ab:matrix>precip</ab:matrix>
+<ab:measurementUnit>mg S/l</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/2770"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="3012">
+<notation>Pb in TSP</notation>
+<prefLabel>Lead in TSP (aerosol)</prefLabel>
+<ab:pollutant>Lead in TSP</ab:pollutant>
+<ab:matrix>aerosol</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/3012"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="3013">
+<notation>Hg in TSP</notation>
+<prefLabel>Mercury in TSP (aerosol)</prefLabel>
+<ab:pollutant>Mercury in TSP</ab:pollutant>
+<ab:matrix>aerosol</ab:matrix>
+<ab:measurementUnit>ng/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/3013"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="3014">
+<notation>Cd in TSP</notation>
+<prefLabel>Cadmium in TSP (aerosol)</prefLabel>
+<ab:pollutant>Cadmium in TSP</ab:pollutant>
+<ab:matrix>aerosol</ab:matrix>
+<ab:measurementUnit>ng/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/3014"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="4013">
+<notation>Hg0</notation>
+<prefLabel>Mercury (air+aerosol)</prefLabel>
+<ab:pollutant>Mercury</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>ng/m3</ab:measurementUnit>
+<ab:requirement>2011/850/EU</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/4013"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="4330">
+<notation>PCB-105</notation>
+<prefLabel>PCB_105 (air+aerosol)</prefLabel>
+<ab:pollutant>PCB_105</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>pg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/4330"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="4336">
+<notation>PCB-149</notation>
+<prefLabel>PCB_149 (air+aerosol)</prefLabel>
+<ab:pollutant>PCB_149</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>pg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/4336"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="4339">
+<notation>PCB-156</notation>
+<prefLabel>PCB_156 (air+aerosol)</prefLabel>
+<ab:pollutant>PCB_156</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>pg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/4339"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="4341">
+<notation>PCB-18</notation>
+<prefLabel>PCB_18 (air+aerosol)</prefLabel>
+<ab:pollutant>PCB_18</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>pg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/4341"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="4347">
+<notation>PCB-31</notation>
+<prefLabel>PCB_31 (air+aerosol)</prefLabel>
+<ab:pollutant>PCB_31</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>pg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/4347"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="4406">
+<notation>Chrysene</notation>
+<prefLabel>Chrysene (air+aerosol)</prefLabel>
+<ab:pollutant>Chrysene</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>ng/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/4406"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="4407">
+<notation>Chrysene + Triphenylene</notation>
+<prefLabel>Chrysene_triphenylene (air+aerosol)</prefLabel>
+<ab:pollutant>Chrysene_triphenylene</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>ng/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/4407"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="4813">
+<notation>Hg0 + Hg-reactive</notation>
+<prefLabel>Total gaseous mercury (air+aerosol)</prefLabel>
+<ab:pollutant>Total gaseous mercury</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>ng/m3</ab:measurementUnit>
+<ab:requirement>2011/850/EU</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/4813"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="5012">
+<notation>Pb in PM10</notation>
+<prefLabel>Lead in PM10 (aerosol)</prefLabel>
+<ab:pollutant>Lead in PM10</ab:pollutant>
+<ab:matrix>aerosol</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>2011/850/EU</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/5012"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="5013">
+<notation>Hg in PM10</notation>
+<prefLabel>Mercury in PM10 (aerosol)</prefLabel>
+<ab:pollutant>Mercury in PM10</ab:pollutant>
+<ab:matrix>aerosol</ab:matrix>
+<ab:measurementUnit>ng/m3</ab:measurementUnit>
+<ab:requirement>2011/850/EU</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/5013"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="5014">
+<notation>Cd in PM10</notation>
+<prefLabel>Cadmium in PM10 (aerosol)</prefLabel>
+<ab:pollutant>Cadmium in PM10</ab:pollutant>
+<ab:matrix>aerosol</ab:matrix>
+<ab:measurementUnit>ng/m3</ab:measurementUnit>
+<ab:requirement>2011/850/EU</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/5014"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="5015">
+<notation>Ni in PM10</notation>
+<prefLabel>Nickel in PM10 (aerosol)</prefLabel>
+<ab:pollutant>Nickel in PM10</ab:pollutant>
+<ab:matrix>aerosol</ab:matrix>
+<ab:measurementUnit>ng/m3</ab:measurementUnit>
+<ab:requirement>2011/850/EU</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/5015"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="5018">
+<notation>As in PM10</notation>
+<prefLabel>Arsenic in PM10 (aerosol)</prefLabel>
+<ab:pollutant>Arsenic in PM10</ab:pollutant>
+<ab:matrix>aerosol</ab:matrix>
+<ab:measurementUnit>ng/m3</ab:measurementUnit>
+<ab:requirement>2011/850/EU</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/5018"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="5029">
+<notation>BaP in PM10</notation>
+<prefLabel>Benzo(a)pyrene in PM10 (aerosol)</prefLabel>
+<ab:pollutant>Benzo(a)pyrene in PM10</ab:pollutant>
+<ab:matrix>aerosol</ab:matrix>
+<ab:measurementUnit>ng/m3</ab:measurementUnit>
+<ab:requirement>2011/850/EU</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/5029"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="5045">
+<notation>NH4+ in PM10</notation>
+<prefLabel>Ammonium in PM10 (aerosol)</prefLabel>
+<ab:pollutant>Ammonium in PM10</ab:pollutant>
+<ab:matrix>aerosol</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/5045"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="5046">
+<notation>NO3- in PM10</notation>
+<prefLabel>Nitrate in PM10 (aerosol)</prefLabel>
+<ab:pollutant>Nitrate in PM10</ab:pollutant>
+<ab:matrix>aerosol</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/5046"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="5047">
+<notation>SO42-  in PM10</notation>
+<prefLabel>Sulphate in PM10 (aerosol)</prefLabel>
+<ab:pollutant>Sulphate in PM10</ab:pollutant>
+<ab:matrix>aerosol</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/5047"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="5129">
+<notation>BaP in PM10</notation>
+<prefLabel>Benzo(a)pyrene in PM10 (air+aerosol)</prefLabel>
+<ab:pollutant>Benzo(a)pyrene in PM10</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>ng/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/5129"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="5380">
+<notation>Benzo(b,j,k)fluoranthene in PM10</notation>
+<prefLabel>Benzo(b,j,k)fluoranthene in PM10 (aerosol)</prefLabel>
+<ab:pollutant>Benzo(b,j,k)fluoranthene in PM10</ab:pollutant>
+<ab:matrix>aerosol</ab:matrix>
+<ab:measurementUnit>ng/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/5380"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="5419">
+<notation>Dibenzo(ah)anthracene in PM10</notation>
+<prefLabel>Dibenzo(ah)anthracene in PM10 (aerosol)</prefLabel>
+<ab:pollutant>Dibenzo(ah)anthracene in PM10</ab:pollutant>
+<ab:matrix>aerosol</ab:matrix>
+<ab:measurementUnit>ng/m3</ab:measurementUnit>
+<ab:requirement>2011/850/EU</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/5419"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="5609">
+<notation>Benzo(a)anthracene in PM10</notation>
+<prefLabel>Benzo(a)anthracene in PM10 (air+aerosol)</prefLabel>
+<ab:pollutant>Benzo(a)anthracene in PM10</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>ng/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/5609"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="5610">
+<notation>Benzo(a)anthracene in PM10</notation>
+<prefLabel>Benzo(a)anthracene in PM10 (aerosol)</prefLabel>
+<ab:pollutant>Benzo(a)anthracene in PM10</ab:pollutant>
+<ab:matrix>aerosol</ab:matrix>
+<ab:measurementUnit>ng/m3</ab:measurementUnit>
+<ab:requirement>2011/850/EU</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/5610"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="5616">
+<notation>Benzo(b)fluoranthene in PM10</notation>
+<prefLabel>Benzo(b)fluoranthene in PM10 (air+aerosol)</prefLabel>
+<ab:pollutant>Benzo(b)fluoranthene in PM10</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>ng/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/5616"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="5617">
+<notation>Benzo(b)fluoranthene in PM10</notation>
+<prefLabel>Benzo(b)fluoranthene in PM10 (aerosol)</prefLabel>
+<ab:pollutant>Benzo(b)fluoranthene in PM10</ab:pollutant>
+<ab:matrix>aerosol</ab:matrix>
+<ab:measurementUnit>ng/m3</ab:measurementUnit>
+<ab:requirement>2011/850/EU</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/5617"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="5625">
+<notation>Benzo(k)fluoranthene in PM10</notation>
+<prefLabel>Benzo(k)fluoranthene in PM10 (air+aerosol)</prefLabel>
+<ab:pollutant>Benzo(k)fluoranthene in PM10</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>ng/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/5625"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="5626">
+<notation>Benzo(k)fluoranthene in PM10</notation>
+<prefLabel>Benzo(k)fluoranthene in PM10 (aerosol)</prefLabel>
+<ab:pollutant>Benzo(k)fluoranthene in PM10</ab:pollutant>
+<ab:matrix>aerosol</ab:matrix>
+<ab:measurementUnit>ng/m3</ab:measurementUnit>
+<ab:requirement>2011/850/EU</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/5626"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="5629">
+<notation>Ca2+ in PM10</notation>
+<prefLabel>Calcium in PM10 (aerosol)</prefLabel>
+<ab:pollutant>Calcium in PM10</ab:pollutant>
+<ab:matrix>aerosol</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/5629"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="5631">
+<notation>Cl- in PM10</notation>
+<prefLabel>Chloride in PM10 (aerosol)</prefLabel>
+<ab:pollutant>Chloride in PM10</ab:pollutant>
+<ab:matrix>aerosol</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/5631"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="5654">
+<notation>Indeno-(1,2,3-cd)pyrene in PM10</notation>
+<prefLabel>Indeno_123cd_pyrene in PM10 (air+aerosol)</prefLabel>
+<ab:pollutant>Indeno_123cd_pyrene in PM10</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>ng/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/5654"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="5655">
+<notation>Indeno-(1,2,3-cd)pyrene in PM10</notation>
+<prefLabel>Indeno_123cd_pyrene in PM10 (aerosol)</prefLabel>
+<ab:pollutant>Indeno_123cd_pyrene in PM10</ab:pollutant>
+<ab:matrix>aerosol</ab:matrix>
+<ab:measurementUnit>ng/m3</ab:measurementUnit>
+<ab:requirement>2011/850/EU</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/5655"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="5657">
+<notation>K+ in PM10</notation>
+<prefLabel>Potassium in PM10 (aerosol)</prefLabel>
+<ab:pollutant>Potassium in PM10</ab:pollutant>
+<ab:matrix>aerosol</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/5657"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="5659">
+<notation>Mg2+ in PM10</notation>
+<prefLabel>Magnesium  in PM10 (aerosol)</prefLabel>
+<ab:pollutant>Magnesium  in PM10</ab:pollutant>
+<ab:matrix>aerosol</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/5659"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="5668">
+<notation>Na+  in PM10</notation>
+<prefLabel>Sodium in PM10 (aerosol)</prefLabel>
+<ab:pollutant>Sodium in PM10</ab:pollutant>
+<ab:matrix>aerosol</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/5668"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="5759">
+<notation>Benzo(j)fluoranthene in PM10</notation>
+<prefLabel>Benzo(j)fluoranthene in PM10 (aerosol)</prefLabel>
+<ab:pollutant>Benzo(j)fluoranthene in PM10</ab:pollutant>
+<ab:matrix>aerosol</ab:matrix>
+<ab:measurementUnit>ng/m3</ab:measurementUnit>
+<ab:requirement>2011/850/EU</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/5759"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="5762">
+<notation>Benzo(j)fluoranthene in PM10</notation>
+<prefLabel>Benzo(j)fluoranthene in PM10 (air+aerosol)</prefLabel>
+<ab:pollutant>Benzo(j)fluoranthene in PM10</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>ng/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/5762"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="5763">
+<notation>Dibenzo(ah)anthracene in PM10</notation>
+<prefLabel>Dibenzo(ah)anthracene in PM10 (air+aerosol)</prefLabel>
+<ab:pollutant>Dibenzo(ah)anthracene in PM10</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>ng/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/5763"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="6001">
+<notation>PM2.5</notation>
+<prefLabel>Particulate matter &lt; 2.5 µm (aerosol)</prefLabel>
+<ab:pollutant>Particulate matter &lt; 2.5 µm</ab:pollutant>
+<ab:matrix>aerosol</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>2011/850/EU</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/6001"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="6002">
+<notation>PM1</notation>
+<prefLabel>Particulate matter &lt; 1 µm (aerosol)</prefLabel>
+<ab:pollutant>Particulate matter &lt; 1 µm</ab:pollutant>
+<ab:matrix>aerosol</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/6002"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="6005">
+<notation>H2C=CH-CH2-CH3</notation>
+<prefLabel>1-Butene (air)</prefLabel>
+<ab:pollutant>1-Butene</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>2011/850/EU</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/6005"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="6006">
+<notation>H3C-CH=CH-CH3</notation>
+<prefLabel>Trans-2-Butene (air)</prefLabel>
+<ab:pollutant>Trans-2-Butene</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>2011/850/EU</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/6006"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="6007">
+<notation>H3C-CH=CH-CH3</notation>
+<prefLabel>cis-2-Butene (air)</prefLabel>
+<ab:pollutant>cis-2-Butene</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>2011/850/EU</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/6007"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="6008">
+<notation>H2C=CH-CH2-CH2-CH3</notation>
+<prefLabel>1-Pentene (air)</prefLabel>
+<ab:pollutant>1-Pentene</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>2011/850/EU</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/6008"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="6009">
+<notation>H3C-HC=CH-CH2-CH3</notation>
+<prefLabel>2-Pentene (air)</prefLabel>
+<ab:pollutant>2-Pentene</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>2011/850/EU</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/6009"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="6011">
+<notation>C6H3-(CH3)3</notation>
+<prefLabel>1,2,4-Trimethylbenzene (air)</prefLabel>
+<ab:pollutant>1,2,4-Trimethylbenzene</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>2011/850/EU</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/6011"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="6012">
+<notation>C6H3-(CH3)3</notation>
+<prefLabel>1,2,3-Trimethylbenzene (air)</prefLabel>
+<ab:pollutant>1,2,3-Trimethylbenzene</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>2011/850/EU</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/6012"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="6013">
+<notation>C6H3-(CH3)3</notation>
+<prefLabel>1,3,5-Trimethylbenzene (air)</prefLabel>
+<ab:pollutant>1,3,5-Trimethylbenzene</ab:pollutant>
+<ab:matrix>air</ab:matrix>
+<ab:measurementUnit>µg/m3</ab:measurementUnit>
+<ab:requirement>2011/850/EU</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/6013"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="6015">
+<notation>BaP</notation>
+<prefLabel>Benzo(a)pyrene (air+aerosol)</prefLabel>
+<ab:pollutant>Benzo(a)pyrene</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>ng/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/6015"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="6380">
+<notation>Benzo(b,j,k)fluoranthene in PM10</notation>
+<prefLabel>Benzo(b,j,k)fluoranthene in PM10 (air+aerosol)</prefLabel>
+<ab:pollutant>Benzo(b,j,k)fluoranthene in PM10</ab:pollutant>
+<ab:matrix>air+aerosol</ab:matrix>
+<ab:measurementUnit>ng/m3</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/6380"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="7012">
+<notation>Pb</notation>
+<prefLabel>Lead (precip+dry_dep)</prefLabel>
+<ab:pollutant>Lead</ab:pollutant>
+<ab:matrix>precip+dry_dep</ab:matrix>
+<ab:measurementUnit>µg/m2/day</ab:measurementUnit>
+<ab:requirement>2011/850/EU</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/7012"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="7013">
+<notation>Hg</notation>
+<prefLabel>Mercury (precip+dry_dep)</prefLabel>
+<ab:pollutant>Mercury</ab:pollutant>
+<ab:matrix>precip+dry_dep</ab:matrix>
+<ab:measurementUnit>µg/m2/day</ab:measurementUnit>
+<ab:requirement>2011/850/EU</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/7013"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="7014">
+<notation>Cd</notation>
+<prefLabel>Cadmium (precip+dry_dep)</prefLabel>
+<ab:pollutant>Cadmium</ab:pollutant>
+<ab:matrix>precip+dry_dep</ab:matrix>
+<ab:measurementUnit>µg/m2/day</ab:measurementUnit>
+<ab:requirement>2011/850/EU</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/7014"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="7015">
+<notation>Ni</notation>
+<prefLabel>Nickel (precip+dry_dep)</prefLabel>
+<ab:pollutant>Nickel</ab:pollutant>
+<ab:matrix>precip+dry_dep</ab:matrix>
+<ab:measurementUnit>µg/m2/day</ab:measurementUnit>
+<ab:requirement>2011/850/EU</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/7015"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="7018">
+<notation>As</notation>
+<prefLabel>Arsenic (precip+dry_dep)</prefLabel>
+<ab:pollutant>Arsenic</ab:pollutant>
+<ab:matrix>precip+dry_dep</ab:matrix>
+<ab:measurementUnit>µg/m2/day</ab:measurementUnit>
+<ab:requirement>2011/850/EU</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/7018"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="7029">
+<notation>BaP</notation>
+<prefLabel>Benzo(a)pyrene (precip+dry_dep)</prefLabel>
+<ab:pollutant>Benzo(a)pyrene</ab:pollutant>
+<ab:matrix>precip+dry_dep</ab:matrix>
+<ab:measurementUnit>µg/m2/day</ab:measurementUnit>
+<ab:requirement>2011/850/EU</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/7029"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="7380">
+<notation>Benzo(b,j,k)fluoranthene</notation>
+<prefLabel>Benzo(b,j,k)fluoranthene (precip+dry_dep)</prefLabel>
+<ab:pollutant>Benzo(b,j,k)fluoranthene</ab:pollutant>
+<ab:matrix>precip+dry_dep</ab:matrix>
+<ab:measurementUnit>µg/m2/day</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/7380"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="7407">
+<notation>Chrysene + Triphenylene</notation>
+<prefLabel>Chrysene_triphenylene (precip+dry_dep)</prefLabel>
+<ab:pollutant>Chrysene_triphenylene</ab:pollutant>
+<ab:matrix>precip+dry_dep</ab:matrix>
+<ab:measurementUnit>µg/m2/day</ab:measurementUnit>
+<ab:requirement>Reciprocal exchange</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/7407"/>
+<inScheme rdf:resource=""/>
+</Concept>
+<Concept rdf:about="7419">
+<notation>Dibenzo(ah)anthracene</notation>
+<prefLabel>Dibenzo(ah)anthracene (precip+dry_dep)</prefLabel>
+<ab:pollutant>Dibenzo(ah)anthracene</ab:pollutant>
+<ab:matrix>precip+dry_dep</ab:matrix>
+<ab:measurementUnit>µg/m2/day</ab:measurementUnit>
+<ab:requirement>2011/850/EU</ab:requirement>
+<owl:sameAs rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/7419"/>
+<inScheme rdf:resource=""/>
+</Concept>
+</rdf:RDF>
