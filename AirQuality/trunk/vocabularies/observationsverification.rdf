@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/"
+ xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+ xmlns:owl="http://www.w3.org/2002/07/owl#"
+ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+ xmlns="http://www.w3.org/2004/02/skos/core#"
+ xmlns:cc="http://creativecommons.org/ns#"
+ xmlns:dcterms="http://purl.org/dc/terms/"
+ xmlns:ab="http://rdfdata.eionet.europa.eu/airbase/schema/"
+ xml:base="http://rdfdata.eionet.europa.eu/airbase/observationsverification/">
+
+  <ConceptScheme rdf:about="">
+    <rdfs:label>ObservationsVerification from AQD_Code_List_FULL_20120712.txt</rdfs:label>
+    <dcterms:date rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2012-07-17T14:37:54</dcterms:date>
+  </ConceptScheme>
+
+  <Concept rdf:about="1">
+    <notation>3</notation>
+    <prefLabel>Not verified</prefLabel>
+    <definition>Data has not gone through (or has gone through minimal) checks by data provider/owner.  Some basic screening criteria in order to exclude clearly faulty data as far as possible maybe used. The data with this data flag is considered provisional and can be used as provisional. This flag is independant to the validity status.</definition>
+    <scopeNote>Mainly used when Up To Date data is reported. Data subject to changes as further qa/qc is carried out.</scopeNote>
+    <inScheme rdf:resource=""/>
+  </Concept>
+
+  <Concept rdf:about="2">
+    <notation>2</notation>
+    <prefLabel>Preliminary verified</prefLabel>
+    <definition>Data has gone through initial checks by data provider/owner. Extra quality assurance and quality control verifications have been carried out compared to "Not verified" data. Data Verification might be carried out on an ongoing basis and is nominally a process to "clean-up" the initial "Not verified" data. Any corrections to the data made during the verification process are changes the status flag to "Preliminary verified". The data with this data flag is considered provisional and can be used as provisional.  This flag is independant to the validity status.</definition>
+    <scopeNote>Mainly used when Up To Date data is reported. Data subject to changes as further qa/qc is carried out.</scopeNote>
+    <inScheme rdf:resource=""/>
+  </Concept>
+
+  <Concept rdf:about="3">
+    <notation>1</notation>
+    <prefLabel>Verified</prefLabel>
+    <definition>Data has gone through full quality assurance and quality control by data provider/owner. Data is considered verified and can be formally used for its reporting purposes.</definition>
+    <scopeNote>Final data having gone through full qa/qc.</scopeNote>
+    <inScheme rdf:resource=""/>
+  </Concept>
+
+</rdf:RDF>

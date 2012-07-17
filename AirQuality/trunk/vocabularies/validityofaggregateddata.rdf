@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/"
+ xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+ xmlns:owl="http://www.w3.org/2002/07/owl#"
+ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+ xmlns="http://www.w3.org/2004/02/skos/core#"
+ xmlns:cc="http://creativecommons.org/ns#"
+ xmlns:dcterms="http://purl.org/dc/terms/"
+ xmlns:ab="http://rdfdata.eionet.europa.eu/airbase/schema/"
+ xml:base="http://rdfdata.eionet.europa.eu/airbase/validity-of-aggregated-data/">
+
+  <ConceptScheme rdf:about="">
+    <rdfs:label>Validity of aggregated data from AQD_Code_List_FULL_20120712.txt</rdfs:label>
+    <dcterms:date rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2012-07-17T14:37:54</dcterms:date>
+  </ConceptScheme>
+
+  <Concept rdf:about="1">
+    <notation>1</notation>
+    <prefLabel>Valid</prefLabel>
+    <definition>Aggregation is valid following rules set out in Directive and Guidance.</definition>
+    <inScheme rdf:resource=""/>
+  </Concept>
+
+  <Concept rdf:about="2">
+    <notation>-1</notation>
+    <prefLabel>Not valid because of insufficient data capture</prefLabel>
+    <definition>Aggregation is not valid following rules set out in Directive and Guidance.</definition>
+    <inScheme rdf:resource=""/>
+  </Concept>
+
+</rdf:RDF>

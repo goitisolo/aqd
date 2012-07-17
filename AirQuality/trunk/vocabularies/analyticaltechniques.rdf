@@ -6,184 +6,334 @@
  xmlns="http://www.w3.org/2004/02/skos/core#"
  xmlns:cc="http://creativecommons.org/ns#"
  xmlns:dcterms="http://purl.org/dc/terms/"
+ xmlns:ab="http://rdfdata.eionet.europa.eu/airbase/schema/"
  xml:base="http://rdfdata.eionet.europa.eu/airbase/analyticaltechniques/">
+
+  <ConceptScheme rdf:about="">
+    <rdfs:label>AnalyticalTechniques from AQD_Code_List_FULL_20120712.txt</rdfs:label>
+    <dcterms:date rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2012-07-17T14:37:54</dcterms:date>
+  </ConceptScheme>
 
   <Concept rdf:about="1">
     <notation>AAS</notation>
     <prefLabel>Atomic absorption spectrometry (AAS)</prefLabel>
+    <definition>Atomic absorption spectroscopy (AAS) is a spectroanalytical procedure for the quantitative determination of chemical elements employing the absorption of optical radiation (light) by free atoms in the gaseous state. In analytical chemistry the technique is used for determining the concentration of a particular element (the analyte) in a sample to be analyzed. AAS can be used to determine over 70 different elements in solution or directly in solid samples (source: http://en.wikipedia.org/wiki/Atomic_absorption_spectroscopy)</definition>
+    <inScheme rdf:resource=""/>
   </Concept>
+
   <Concept rdf:about="2">
     <notation>CV-AAS</notation>
     <prefLabel>Cold vapour atomic absorption spectrometry (CV-AAS)</prefLabel>
-    <rdfs:comment>Analysis of Hg</rdfs:comment>
+    <scopeNote>Analysis of Hg</scopeNote>
+    <inScheme rdf:resource=""/>
   </Concept>
+
   <Concept rdf:about="3">
     <notation>CV-AFS</notation>
     <prefLabel>Cold vapour atomic fluorescence spectrometry (CV-AFS)</prefLabel>
-    <rdfs:comment>Analysis of Hg</rdfs:comment>
+    <definition>Cold vapour atomic fluorescence spectroscopy is a subset of the analytical technique known as atomic fluorescence spectroscopy (AFS). Used in the measurement of trace amounts of volatile heavy metals such as mercury, cold vapour AFS makes use of the unique characteristic of mercury that allows vapour measurement at room temperature. Free mercury atoms in a carrier gas are excited by a collimated ultraviolet light source at a wavelength of 253.7 nanometres. The excited atoms re-radiate their absorbed energy (fluoresce) at this same wavelength. (Source: http://en.wikipedia.org/wiki/Cold_vapour_atomic_fluorescence_spectroscopy)</definition>
+    <scopeNote>Analysis of Hg</scopeNote>
+    <inScheme rdf:resource=""/>
   </Concept>
+
   <Concept rdf:about="4">
     <notation>4</notation>
     <prefLabel>Colorimetric with p-rosaniline</prefLabel>
+    <scopeNote>Analysis of SO2</scopeNote>
+    <relatedMatch rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/1"/>
+    <inScheme rdf:resource=""/>
   </Concept>
+
   <Concept rdf:about="5">
     <notation>5</notation>
     <prefLabel>Conductimetry</prefLabel>
+    <inScheme rdf:resource=""/>
   </Concept>
+
   <Concept rdf:about="6">
     <notation>CFA</notation>
-    <prefLabel>Continous flow analyses (CFA)</prefLabel>
+    <prefLabel>Continous flow analysis (CFA)</prefLabel>
+    <inScheme rdf:resource=""/>
   </Concept>
+
   <Concept rdf:about="7">
     <notation>ET-AAS</notation>
     <prefLabel>Electrothermal Atomic Absorption Spectrometry (ET-AAS)</prefLabel>
+    <definition>Electrothermal Atomic Absorption Spectrometry (ETAAS) (also known as Graphite furnace atomic absorption spectrometry (GFAAS)) is a type of spectrometry that uses a graphite-coated furnace to vaporize the sample. Briefly, the technique is based on the fact that free atoms will absorb light at frequencies or wavelengths characteristic of the element of interest (hence the name atomic absorption spectrometry). Within certain limits, the amount of light absorbed can be linearly correlated to the concentration of analyte present. Free atoms of most elements can be produced from samples by the application of high temperatures.</definition>
+    <related rdf:resource="http://rdfdata.eionet.europa.eu/airbase/analyticaltechniques/19"/>
+    <inScheme rdf:resource=""/>
   </Concept>
+
   <Concept rdf:about="8">
     <notation>FI-FU</notation>
     <prefLabel>FIAS-Furnace coupling technique (FI-FU)</prefLabel>
+    <related rdf:resource="http://rdfdata.eionet.europa.eu/airbase/analyticaltechniques/28"/>
+    <inScheme rdf:resource=""/>
   </Concept>
+
   <Concept rdf:about="9">
     <notation>F-AAS</notation>
     <prefLabel>Flame atomic absorption spectrometry (F-AAS)</prefLabel>
+    <inScheme rdf:resource=""/>
   </Concept>
+
   <Concept rdf:about="10">
     <notation>FID</notation>
-    <prefLabel>Flame ionisation detection (FID)</prefLabel>
+    <prefLabel>Flame ionization detection (FID)</prefLabel>
+    <definition>A flame ionization detector (FID) is a type of gas detector used in gas chromatography. The detection of organic compounds is most effectively done with flame ionization.</definition>
+    <inScheme rdf:resource=""/>
   </Concept>
+
   <Concept rdf:about="11">
     <notation>GC-FID</notation>
     <prefLabel>Gas chromatography (GC) + flame ionisation (GC-FID)</prefLabel>
+    <scopeNote>Analysis of VOCs</scopeNote>
+    <inScheme rdf:resource=""/>
   </Concept>
+
   <Concept rdf:about="12">
     <notation>GC-FIS-ECD</notation>
     <prefLabel>Gas chromatography (GC) + flame ionisation (FID) + ECD (GC-FIS-ECD)</prefLabel>
+    <scopeNote>Analysis of VOCs</scopeNote>
+    <inScheme rdf:resource=""/>
   </Concept>
+
   <Concept rdf:about="13">
     <notation>13</notation>
     <prefLabel>Gas chromatography (separation from methane), flame ionization detection (GC (sep methane)-FID)</prefLabel>
+    <related rdf:resource="http://rdfdata.eionet.europa.eu/airbase/analyticaltechniques/19"/>
+    <inScheme rdf:resource=""/>
   </Concept>
+
   <Concept rdf:about="14">
-    <notation>14</notation>
+    <notation>GC-MS</notation>
     <prefLabel>Gas chromatography + mass spectrometry (GC-MS)</prefLabel>
+    <definition>Gas chromatography–mass spectrometry (GC-MS) is a method that combines the features of gas-liquid chromatography and mass spectrometry to identify different substances within a test sample. Applications of GC-MS include drug detection, fire investigation, environmental analysis, explosives investigation, and identification of unknown samples. GC-MS can also be used in airport security to detect substances in luggage or on human beings. Additionally, it can identify trace elements in materials that were previously thought to have disintegrated beyond identification.</definition>
+    <scopeNote>Analysis VOC, PAH, B(a)P (Reference)</scopeNote>
+    <inScheme rdf:resource=""/>
   </Concept>
+
   <Concept rdf:about="15">
     <notation>15</notation>
-    <prefLabel>Gas chromatography + flame ionization detection GC-FID</prefLabel>
+    <prefLabel>Gas chromatography + flame ionisation detection GC-FID</prefLabel>
+    <related rdf:resource="http://rdfdata.eionet.europa.eu/airbase/analyticaltechniques/11"/>
+    <inScheme rdf:resource=""/>
   </Concept>
+
   <Concept rdf:about="16">
     <notation>16</notation>
-    <prefLabel>Gas chromatography + flame ionization detection GC-FID after solvent or thermal desorption</prefLabel>
+    <prefLabel>Gas chromatography + flame ionisation detection GC-FID after solvent or thermal desorption</prefLabel>
+    <inScheme rdf:resource=""/>
   </Concept>
+
   <Concept rdf:about="17">
     <notation>17</notation>
     <prefLabel>Gas chromatography + mass spectrometry GC-MS after solvent or thermal desorption</prefLabel>
+    <inScheme rdf:resource=""/>
   </Concept>
+
   <Concept rdf:about="18">
     <notation>GC-NPD</notation>
     <prefLabel>Gas Chromatography with Nitrogen Phosphorous Detector GC-NPD</prefLabel>
+    <inScheme rdf:resource=""/>
   </Concept>
+
   <Concept rdf:about="19">
     <notation>GF-AAS</notation>
     <prefLabel>Graphite furnace atomic absorption spectrometry (GF-AAS)</prefLabel>
+    <definition>Graphite furnace atomic absorption spectrometry (GFAAS) (also known as Electrothermal Atomic Absorption Spectrometry (ETAAS)) is a type of spectrometry that uses a graphite-coated furnace to vaporize the sample. Briefly, the technique is based on the fact that free atoms will absorb light at frequencies or wavelengths characteristic of the element of interest (hence the name atomic absorption spectrometry). Within certain limits, the amount of light absorbed can be linearly correlated to the concentration of analyte present. Free atoms of most elements can be produced from samples by the application of high temperatures. Source: http://en.wikipedia.org/wiki/Graphite_furnace_atomic_absorption</definition>
+    <scopeNote>Analysis of Pb, As, Cd, Ni (Reference) &amp; Hg</scopeNote>
+    <related rdf:resource="http://rdfdata.eionet.europa.eu/airbase/analyticaltechniques/7"/>
+    <inScheme rdf:resource=""/>
   </Concept>
+
   <Concept rdf:about="20">
-    <notation>grav</notation>
-    <prefLabel>Gravimetry</prefLabel>
+    <notation>Gravimetric</notation>
+    <prefLabel>Gravimetric analysis</prefLabel>
+    <definition>Gravimetric analysis describes a set of methods in analytical chemistry for the quantitative determination of an analyte based on the mass of a solid. A simple example is the measurement of solids suspended in a water sample: A known volume of water is filtered, and the collected solids are weighed</definition>
+    <scopeNote>Analysis of PM10, PM2,5, PM1 (Reference)</scopeNote>
+    <relatedMatch rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/5"/>
+    <relatedMatch rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/6001"/>
+    <relatedMatch rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/6002"/>
+    <inScheme rdf:resource=""/>
   </Concept>
+
   <Concept rdf:about="21">
     <notation>21</notation>
     <prefLabel>Gravimetry for PM10 and/or PM2,5 - continuous measurement</prefLabel>
+    <relatedMatch rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/5"/>
+    <relatedMatch rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/6001"/>
+    <relatedMatch rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/6002"/>
+    <inScheme rdf:resource=""/>
   </Concept>
+
   <Concept rdf:about="22">
     <notation>22</notation>
     <prefLabel>Gravimetry for PM10 and/or PM2,5 - random measurement</prefLabel>
+    <relatedMatch rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/5"/>
+    <relatedMatch rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/6001"/>
+    <relatedMatch rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/6002"/>
+    <inScheme rdf:resource=""/>
   </Concept>
+
   <Concept rdf:about="23">
     <notation>23</notation>
     <prefLabel>Griess-Saltzman reaction</prefLabel>
+    <definition>Analysis of NO2</definition>
+    <scopeNote>Analysis of NO2</scopeNote>
+    <relatedMatch rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/8"/>
+    <inScheme rdf:resource=""/>
   </Concept>
+
   <Concept rdf:about="24">
     <notation>HPLC-FLD</notation>
     <prefLabel>High performance liquid chromatography - fluorescence detection (HPLC-FLD)</prefLabel>
+    <definition>High-performance liquid chromatography (sometimes referred to as high-pressure liquid chromatography), HPLC, is a chromatographic technique used to separate a mixture of compounds in analytical chemistry and biochemistry with the purpose of identifying, quantifying and purifying the individual components of the mixture. HPLC-FLD is done with fluorescence detection.</definition>
+    <scopeNote>Analysis of PAH</scopeNote>
+    <inScheme rdf:resource=""/>
   </Concept>
+
   <Concept rdf:about="25">
     <notation>HPLC-MS</notation>
     <prefLabel>High performance liquid chromatography - mass spectrometry (HPLC-MS)</prefLabel>
+    <definition>High performance liquid chromatography–mass spectrometry (HPLC-MS, or alternatively LC-MS) is an analytical chemistry technique that combines the physical separation capabilities of liquid chromatography (or HPLC) with the mass analysis capabilities of mass spectrometry. LC-MS is a powerful technique used for many applications which has very high sensitivity and selectivity. Generally its application is oriented towards the general detection and potential identification of chemicals in the presence of other chemicals (in a complex mixture). The limitations of LC-MS in urine analysis drug screening is that it often fails to distinguish between specific metabolites, in particular with hydrocodone and its metabolites.</definition>
+    <inScheme rdf:resource=""/>
   </Concept>
+
   <Concept rdf:about="26">
     <notation>HPLC-UV</notation>
-    <prefLabel>High Performance Liquid Chromatography HPLC with UV detection (HPLC-UV)</prefLabel>
+    <prefLabel>High performance liquid chromatography HPLC with UV detection (HPLC-UV)</prefLabel>
+    <definition>High-performance liquid chromatography (sometimes referred to as high-pressure liquid chromatography), HPLC, is a chromatographic technique used to separate a mixture of compounds in analytical chemistry and biochemistry with the purpose of identifying, quantifying and purifying the individual components of the mixture. HPLC-FLD is done with UV detection.</definition>
+    <inScheme rdf:resource=""/>
   </Concept>
+
   <Concept rdf:about="27">
     <notation>HR-CS-AAS</notation>
     <prefLabel>High resolution continuum source atomic absorption spectrometry (HR-CS-AAS)</prefLabel>
+    <definition>When a continuum radiation source is used for AAS measurement it is indispensable to work with a high-resolution monochromator. The resolution has to be equal to or better than the half width of an atomic absorption line (about 2 pm) in order to avoid losses of sensitivity and linearity of the calibration graph. These spectrometers use a compact double monochromator with a prism pre-monochromator and an echelle grating monochromator for high resolution. A linear charge coupled device (CCD) array with 200 pixels is used as the detector. The second monochromator does not have an exit slit; hence the spectral environment at both sides of the analytical line becomes visible at high resolution. As typically only 3–5 pixels are used to measure the atomic absorption, the other pixels are available for correction purposes. One of these corrections is that for lamp flicker noise, which is independent of wavelength, resulting in measurements with very low noise level; other corrections are those for background absorption, as will be discussed later.</definition>
+    <scopeNote>Analysis of Pb, As, Cd, Ni (Reference)</scopeNote>
+    <inScheme rdf:resource=""/>
   </Concept>
+
   <Concept rdf:about="28">
     <notation>HG-ET-AAS</notation>
     <prefLabel>Hydride generation electrothermal - atomic absorption spectrometry (HG-ET-AAS)</prefLabel>
+    <related rdf:resource="http://rdfdata.eionet.europa.eu/airbase/analyticaltechniques/8"/>
+    <inScheme rdf:resource=""/>
   </Concept>
+
   <Concept rdf:about="29">
     <notation>ICP-AES</notation>
     <prefLabel>Inductive coupled plasma atomic emission spectrometry (ICP-AES)</prefLabel>
+    <definition>Inductively coupled plasma atomic emission spectroscopy (ICP-AES), also referred to as inductively coupled plasma optical emission spectrometry (ICP-OES), is an analytical technique used for the detection of trace metals. It is a type of emission spectroscopy that uses the inductively coupled plasma to produce excited atoms and ions that emit electromagnetic radiation at wavelengths characteristic of a particular element.[1][2] The intensity of this emission is indicative of the concentration of the element within the sample.</definition>
+    <scopeNote>Analysis of As &amp; Ni</scopeNote>
+    <related rdf:resource="http://rdfdata.eionet.europa.eu/airbase/analyticaltechniques/31"/>
+    <inScheme rdf:resource=""/>
   </Concept>
+
   <Concept rdf:about="30">
     <notation>ICP-MS</notation>
     <prefLabel>Inductive coupled plasma mass spectrometryscopy (ICP-MS)</prefLabel>
+    <definition>Inductively coupled plasma mass spectrometry (ICP-MS) is a type of mass spectrometry which is capable of detecting metals and several non-metals at concentrations as low as one part in 1012 (part per trillion). This is achieved by ionizing the sample with inductively coupled plasma and then using a mass spectrometer to separate and quantify those ions.</definition>
+    <scopeNote>Analysis of Pb, As, Cd &amp; Ni</scopeNote>
+    <inScheme rdf:resource=""/>
   </Concept>
+
   <Concept rdf:about="31">
     <notation>ICP-OES</notation>
-    <prefLabel>Inductive coupled plasma optical emission spectrometry. (ICP-OES)</prefLabel>
+    <prefLabel>Inductive coupled plasma optical emission spectrometry (ICP-OES)</prefLabel>
+    <definition>Inductively coupled plasma optical emission spectrometry (ICP-OES), also referred to as inductively coupled plasma atomic emission spectroscopy (ICP-AES), is an analytical technique used for the detection of trace metals. It is a type of emission spectroscopy that uses the inductively coupled plasma to produce excited atoms and ions that emit electromagnetic radiation at wavelengths characteristic of a particular element.[1][2] The intensity of this emission is indicative of the concentration of the element within the sample.</definition>
+    <related rdf:resource="http://rdfdata.eionet.europa.eu/airbase/analyticaltechniques/29"/>
+    <inScheme rdf:resource=""/>
   </Concept>
+
   <Concept rdf:about="32">
     <notation>IC</notation>
     <prefLabel>Ion chromatography</prefLabel>
+    <definition>Ion chromatography (or ion-exchange chromatography) is a process that allows the separation of ions and polar molecules based on their charge. It can be used for almost any kind of charged molecule including large proteins, small nucleotides and amino acids. The solution to be injected is usually called a sample, and the individually separated components are called analytes. It is often used in protein purification, water analysis, and quality control.</definition>
+    <inScheme rdf:resource=""/>
   </Concept>
+
   <Concept rdf:about="33">
     <notation>33</notation>
     <prefLabel>Isotope dilution</prefLabel>
+    <definition>Isotope dilution analysis is a technique to increase the precision and accuracy of chemical analysis. The isotopic composition of the sample will be slightly changed. Then, by measuring each isotope, the amount of lead in the original sample can be calculated. In a typical gas chromatography analysis, isotopic dilution can decrease the error of injection from 5% to 1%. It can also be used in mass spectrometry (commonly referred to as isotopic dilution mass spectrometry or IDMS), in which the isotopic ratio can be determined with precision typically better than 0.25%.</definition>
+    <inScheme rdf:resource=""/>
   </Concept>
+
   <Concept rdf:about="34">
     <notation>34</notation>
     <prefLabel>Photometry</prefLabel>
+    <definition>Photometry is the science of the measurement of light, in terms of its perceived brightness to the human eye.[1] It is distinct from radiometry, which is the science of measurement of radiant energy (including light) in terms of absolute power; rather, in photometry, the radiant power at each wavelength is weighted by a luminosity function (a.k.a. visual sensitivity function) that models human brightness sensitivity.</definition>
+    <inScheme rdf:resource=""/>
   </Concept>
+
   <Concept rdf:about="35">
     <notation>35</notation>
     <prefLabel>Potentiometry</prefLabel>
+    <inScheme rdf:resource=""/>
   </Concept>
+
   <Concept rdf:about="36">
     <notation>36</notation>
     <prefLabel>Reflectometry</prefLabel>
+    <inScheme rdf:resource=""/>
   </Concept>
+
   <Concept rdf:about="37">
     <notation>37</notation>
     <prefLabel>Spectrometry</prefLabel>
+    <inScheme rdf:resource=""/>
   </Concept>
+
   <Concept rdf:about="38">
     <notation>38</notation>
     <prefLabel>Spectrophotometry</prefLabel>
+    <definition>Spectrophotometry is the quantitative measurement of the reflection or transmission properties of a material as a function of wavelength. It is more specific than the general term electromagnetic spectroscopy in that spectrophotometry deals with visible light, near-ultraviolet, and near-infrared, but does not cover time-resolved spectroscopic techniques.
+Spectrophotometry involves the use of a spectrophotometer. A spectrophotometer is a photometer that can measure intensity as a function of the light source wavelength. Important features of spectrophotometers are spectral bandwidth and linear range of absorption or reflectance measurement.</definition>
+    <inScheme rdf:resource=""/>
   </Concept>
+
   <Concept rdf:about="39">
     <notation>39</notation>
     <prefLabel>Thermal-optical carbon analysis</prefLabel>
+    <inScheme rdf:resource=""/>
   </Concept>
+
   <Concept rdf:about="40">
     <notation>40</notation>
     <prefLabel>Titration</prefLabel>
+    <definition>Titration, also known as titrimetry, is a common laboratory method of quantitative chemical analysis that is used to determine the unknown concentration of an identified analyte. Because volume measurements play a key role in titration, it is also known as volumetric analysis.</definition>
+    <inScheme rdf:resource=""/>
   </Concept>
+
   <Concept rdf:about="41">
     <notation>41</notation>
     <prefLabel>Volumetry</prefLabel>
+    <inScheme rdf:resource=""/>
   </Concept>
+
   <Concept rdf:about="42">
     <notation>XRF</notation>
     <prefLabel>X-ray fluorescence spectroscopy (XRF)</prefLabel>
+    <definition>X-ray fluorescence (XRF) is the emission of characteristic "secondary" (or fluorescent) X-rays from a material that has been excited by bombarding with high-energy X-rays or gamma rays. The phenomenon is widely used for elemental analysis and chemical analysis, particularly in the investigation of metals, glass, ceramics and building materials, and for research in geochemistry, forensic science and archaeology.</definition>
+    <scopeNote>Analysis of As, Cd, Pb &amp; Ni</scopeNote>
+    <inScheme rdf:resource=""/>
   </Concept>
+
   <Concept rdf:about="43">
-    <notation>Zeeman  AAS</notation>
+    <notation>Zeeman AAS</notation>
     <prefLabel>Zeeman atomic absorption spectrometry (Zeeman  AAS)</prefLabel>
+    <definition>Analysis of Pb, As, Cd &amp; Ni</definition>
+    <scopeNote>Analysis of Pb, As, Cd &amp; Ni</scopeNote>
+    <inScheme rdf:resource=""/>
   </Concept>
+
   <Concept rdf:about="44">
-    <notation>44</notation>
+    <notation>other</notation>
     <prefLabel>Other, please specify</prefLabel>
+    <definition>Other, please specify</definition>
+    <inScheme rdf:resource=""/>
   </Concept>
+
 </rdf:RDF>

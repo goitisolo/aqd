@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/"
+ xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+ xmlns:owl="http://www.w3.org/2002/07/owl#"
+ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+ xmlns="http://www.w3.org/2004/02/skos/core#"
+ xmlns:cc="http://creativecommons.org/ns#"
+ xmlns:dcterms="http://purl.org/dc/terms/"
+ xmlns:ab="http://rdfdata.eionet.europa.eu/airbase/schema/"
+ xml:base="http://rdfdata.eionet.europa.eu/airbase/observationsunit/">
+
+  <ConceptScheme rdf:about="">
+    <rdfs:label>ObservationsUnit from AQD_Code_List_FULL_20120712.txt</rdfs:label>
+    <dcterms:date rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2012-07-17T14:37:54</dcterms:date>
+  </ConceptScheme>
+
+  <Concept rdf:about="1">
+    <prefLabel>mg/m³</prefLabel>
+    <definition>Miligrams per cubic metre of ambient air. Unit of amount of chemical vapors, fumes, or dust in the ambient air.</definition>
+    <inScheme rdf:resource=""/>
+  </Concept>
+
+  <Concept rdf:about="2">
+    <prefLabel>µg/m³</prefLabel>
+    <definition>Micrograms per cubic metre of ambient air. Unit of amount of chemical vapors, fumes, or dust in the ambient air.</definition>
+    <inScheme rdf:resource=""/>
+  </Concept>
+
+  <Concept rdf:about="3">
+    <prefLabel>ng/m³</prefLabel>
+    <definition>Nanograms per cubic metre of ambient air. Unit of amount of chemical vapors, fumes, or dust in the ambient air.</definition>
+    <inScheme rdf:resource=""/>
+  </Concept>
+
+  <Concept rdf:about="4">
+    <prefLabel>µg/m².day</prefLabel>
+    <definition>Unit of amount of chemical vapors, fumes, or dust deposited from the air.</definition>
+    <inScheme rdf:resource=""/>
+  </Concept>
+
+  <Concept rdf:about="5">
+    <prefLabel>ng/m³.day</prefLabel>
+    <definition>Unit of amount of chemical vapors, fumes, or dust deposited from the air.</definition>
+    <inScheme rdf:resource=""/>
+  </Concept>
+
+</rdf:RDF>

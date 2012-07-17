@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/"
+ xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+ xmlns:owl="http://www.w3.org/2002/07/owl#"
+ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+ xmlns="http://www.w3.org/2004/02/skos/core#"
+ xmlns:cc="http://creativecommons.org/ns#"
+ xmlns:dcterms="http://purl.org/dc/terms/"
+ xmlns:ab="http://rdfdata.eionet.europa.eu/airbase/schema/"
+ xml:base="http://rdfdata.eionet.europa.eu/airbase/observationsvalidity/">
+
+  <ConceptScheme rdf:about="">
+    <rdfs:label>ObservationsValidity from AQD_Code_List_FULL_20120712.txt</rdfs:label>
+    <dcterms:date rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2012-07-17T14:37:54</dcterms:date>
+  </ConceptScheme>
+
+  <Concept rdf:about="1">
+    <notation>1</notation>
+    <prefLabel>Valid</prefLabel>
+    <definition>Data considered valid by the data provider for its related reporting purposes.</definition>
+    <inScheme rdf:resource=""/>
+  </Concept>
+
+  <Concept rdf:about="2">
+    <notation>2</notation>
+    <prefLabel>Valid, but below detection limit measurement value given</prefLabel>
+    <definition>Data considered valid by the data provider for its related reporting purposes. However, the value has been measured below the detection limit and the value reported is the detection limit.</definition>
+    <inScheme rdf:resource=""/>
+  </Concept>
+
+  <Concept rdf:about="3">
+    <notation>3</notation>
+    <prefLabel>Valid, but below detection limit and number replaced by 0.5*detection limit</prefLabel>
+    <definition>Data considered valid by the data provider for its related reporting purposes. However, the value has been measured below the detection limit and the value reported is half of this detection limit.</definition>
+    <inScheme rdf:resource=""/>
+  </Concept>
+
+  <Concept rdf:about="4">
+    <notation>-99</notation>
+    <prefLabel>Not valid due to station maintenance or calibration</prefLabel>
+    <definition>Data is considered to be invalid due to the regular calibration or the normal maintenance of the instrumentation.</definition>
+    <inScheme rdf:resource=""/>
+  </Concept>
+
+  <Concept rdf:about="5">
+    <notation>-1</notation>
+    <prefLabel>Not valid due to other reasons or missing</prefLabel>
+    <definition>Data is considered to be invalid due to other circumstances or data is simply missing.</definition>
+    <inScheme rdf:resource=""/>
+  </Concept>
+
+</rdf:RDF>

@@ -1,73 +1,127 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<rdf:RDF
+<rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/"
  xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
- xmlns:foaf="http://xmlns.com/foaf/0.1/"
  xmlns:owl="http://www.w3.org/2002/07/owl#"
- xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
  xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+ xmlns="http://www.w3.org/2004/02/skos/core#"
  xmlns:cc="http://creativecommons.org/ns#"
  xmlns:dcterms="http://purl.org/dc/terms/"
- xmlns="http://www.w3.org/2004/02/skos/core#"
-       xml:base="http://rdfdata.eionet.europa.eu/airbase/measurement-method/">
+ xmlns:ab="http://rdfdata.eionet.europa.eu/airbase/schema/"
+ xml:base="http://rdfdata.eionet.europa.eu/airbase/measurementmethods/">
+
+  <ConceptScheme rdf:about="">
+    <rdfs:label>MeasurementMethods from AQD_Code_List_FULL_20120712.txt</rdfs:label>
+    <dcterms:date rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2012-07-17T14:37:54</dcterms:date>
+  </ConceptScheme>
 
   <Concept rdf:about="1">
-    <notation>1</notation>
-    <prefLabel>UV fluorescence (SO2 (Reference))</prefLabel>
+    <prefLabel>Absorption, membrane separation, conductance detection</prefLabel>
+    <inScheme rdf:resource=""/>
   </Concept>
 
   <Concept rdf:about="2">
-    <notation>2</notation>
-    <prefLabel>Chemiluminescence (NOx (Reference))</prefLabel>
+    <notation>Beta</notation>
+    <prefLabel>Beta ray attenuation</prefLabel>
+    <definition>The instrument's primary operating mechanism is the radiometric microbalance system, which relies on changes in the strength of a beta ray beam passing through the filter paper to determine changes in particulate mass collected. A Beta Attenuation Monitor is comprised of three main components: the PM air inlet, the central instrument, and the vacuum pump.</definition>
+    <scopeNote>Measurement of Particulate Matter (PM10, PM2.5 &amp; PM1)</scopeNote>
+    <relatedMatch rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/5"/>
+    <relatedMatch rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/6001"/>
+    <relatedMatch rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/6002"/>
+    <inScheme rdf:resource=""/>
   </Concept>
 
   <Concept rdf:about="3">
-    <notation>Beta</notation>
-    <prefLabel>Beta ray attenuation (PM10, PM2.5)</prefLabel>
+    <prefLabel>Chemiluminescence</prefLabel>
+    <definition>Chemiluminescence (sometimes "chemoluminescence") is the emission of light (luminescence), as the result of a chemical reaction. One known gas phase reaction is the basis of nitric oxide detection in commercial analytic instruments applied to environmental air-quality testing. Ozone is combined with nitric oxide to form nitrogen dioxide in an activated state. The activated NO2[◊] luminesces broadband visible to infrared light as it reverts to a lower energy state. A photomultiplier and associated electronics counts the photons that are proportional to the amount of NO present. To determine the amount of nitrogen dioxide, NO2, in a sample (containing no NO) it must first be converted to nitric oxide, NO, by passing the sample through a converter before the above ozone activation reaction is applied. The ozone reaction produces a photon count proportional to NO that is proportional to NO2 before it was converted to NO. In the case of a mixed sample that contains both NO and NO2, the above reaction yields the amount of NO and NO2 combined in the air sample, assuming that the sample is passed through the converter.</definition>
+    <scopeNote>The reference method for the measurement of nitrogen dioxide and oxides of nitrogen is that described in EN 14211:2005 ‘Ambient air quality — Standard method for the measurement of the concentration of nitrogen dioxide and nitrogen monoxide by chemiluminescence’.</scopeNote>
+    <relatedMatch rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/8"/>
+    <relatedMatch rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/9"/>
+    <relatedMatch rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/38"/>
+    <inScheme rdf:resource=""/>
   </Concept>
 
   <Concept rdf:about="4">
-    <notation>TEOM</notation>
-    <prefLabel>Tapered Element Oscillating Microbalance (TEOM) (PM10, PM2.5)</prefLabel>
+    <notation>DOAS</notation>
+    <prefLabel>Differential Optical Absorption Spectroscopy (DOAS)</prefLabel>
+    <definition>In atmospheric chemistry, differential optical absorption spectroscopy (DOAS) is used to measure concentrations of trace gases. When combined with basic optical spectrometers such as prisms or diffraction gratings and automated, ground-based observation platforms, what we have is a cheap and powerful means for the measurement of such trace gas species as ozone and nitrogen dioxide.</definition>
+    <scopeNote>Measurement of SO2, NO2</scopeNote>
+    <relatedMatch rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/1"/>
+    <inScheme rdf:resource=""/>
   </Concept>
 
   <Concept rdf:about="5">
-    <notation>TEOM-FDMS</notation>
-    <prefLabel>Tapered Element Oscillating Microbalance (TEOM) with Filter Dynamics Measurement System (FDMS)</prefLabel>
+    <notation>GC-FID</notation>
+    <prefLabel>Gas chromatography followed by flame ionization detection (GC-FID)</prefLabel>
+    <related rdf:resource="http://rdfdata.eionet.europa.eu/airbase/analyticaltechniques/11"/>
+    <inScheme rdf:resource=""/>
   </Concept>
 
   <Concept rdf:about="6">
-    <notation>6</notation>
-    <prefLabel>UV absorption / photometry (O3 (Reference))</prefLabel>
+    <notation>GC-MS</notation>
+    <prefLabel>Gas chromatography followed by mass spectrometry (GC-MS)</prefLabel>
+    <related rdf:resource="http://rdfdata.eionet.europa.eu/airbase/analyticaltechniques/14"/>
+    <inScheme rdf:resource=""/>
   </Concept>
 
   <Concept rdf:about="7">
-    <notation>NDIR</notation>
-    <prefLabel>Non-dispersive infrared spectroscopy (NDIR) (CO (Reference))</prefLabel>
+    <prefLabel>Infrared gas filter correlation</prefLabel>
+    <scopeNote>Measurement of CO</scopeNote>
+    <relatedMatch rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/1"/>
+    <inScheme rdf:resource=""/>
   </Concept>
 
   <Concept rdf:about="8">
-    <notation>DOAS</notation>
-    <prefLabel>Differential Optical Absorption Spectroscopy (DOAS)</prefLabel>
+    <notation>NDIR</notation>
+    <prefLabel>Non-dispersive infrared spectroscopy (NDIR)</prefLabel>
+    <definition>A nondispersive infrared sensor (or NDIR) sensor is a simple spectroscopic device often used as gas detector. The main components are an infrared source (lamp), a sample chamber or light tube, a wavelength sample chamber, and gas concentration is measured electro-optically by its absorption of a specific wavelength in the infrared (IR). The IR light is directed through the sample chamber towards the detector. In parallel there is another chamber with an enclosed reference gas, typically nitrogen. The detector has an optical filter in front of it that eliminates all light except the wavelength that the selected gas molecules can absorb.</definition>
+    <scopeNote>The reference method for the measurement of carbon monoxide is that described in EN 14626:2005 ‘Ambient air quality — Standard method for the measurement of the concentration of carbon monoxide by non-dispersive infrared spectroscopy’</scopeNote>
+    <relatedMatch rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/1"/>
+    <inScheme rdf:resource=""/>
   </Concept>
 
   <Concept rdf:about="9">
-    <notation>GC-FID</notation>
-    <prefLabel>Gas chromatography followed by flame ionization detection (GC-FID)</prefLabel>
+    <prefLabel>Reflectrometry</prefLabel>
+    <related rdf:resource="http://rdfdata.eionet.europa.eu/airbase/analyticaltechniques/36"/>
+    <inScheme rdf:resource=""/>
   </Concept>
 
   <Concept rdf:about="10">
-    <notation>GC-MS</notation>
-    <prefLabel>Gas chromatography followed by mass spectrometry (GC-MS)</prefLabel>
+    <notation>TEOM</notation>
+    <prefLabel>Tapered Element Oscillating Microbalance (TEOM)</prefLabel>
+    <scopeNote>Measurement of Particulate Matter (PM10, PM2.5 &amp; PM1)</scopeNote>
+    <relatedMatch rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/5"/>
+    <relatedMatch rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/6001"/>
+    <relatedMatch rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/6002"/>
+    <inScheme rdf:resource=""/>
   </Concept>
 
   <Concept rdf:about="11">
-    <notation>11</notation>
-    <prefLabel>Reflectrometry</prefLabel>
+    <notation>TEOM-FDMS</notation>
+    <prefLabel>Tapered Element Oscillating Microbalance (TEOM) with Filter Dynamics Measurement System (FDMS)</prefLabel>
+    <scopeNote>Measurement of Particulate Matter (PM10, PM2.5 &amp; PM1)</scopeNote>
+    <relatedMatch rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/5"/>
+    <relatedMatch rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/6001"/>
+    <relatedMatch rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/6002"/>
+    <inScheme rdf:resource=""/>
   </Concept>
 
   <Concept rdf:about="12">
-    <notation>12</notation>
+    <prefLabel>UV absorption / photometry</prefLabel>
+    <scopeNote>The reference method for the measurement of ozone is that described in EN 14625:2005 ‘Ambient air quality — Standard method for the measurement of the concentration of ozone by ultraviolet photometry’.</scopeNote>
+    <relatedMatch rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/7"/>
+    <inScheme rdf:resource=""/>
+  </Concept>
+
+  <Concept rdf:about="13">
+    <prefLabel>UV fluorescence</prefLabel>
+    <scopeNote>The reference method for the measurement of sulphur dioxide is that described in EN 14212:2005 ‘Ambient air quality — Standard method for the measurement of the concentration of sulphur dioxide by ultraviolet fluorescence’.</scopeNote>
+    <relatedMatch rdf:resource="http://rdfdata.eionet.europa.eu/airbase/components/1"/>
+    <inScheme rdf:resource=""/>
+  </Concept>
+
+  <Concept rdf:about="14">
     <prefLabel>Other, please specify</prefLabel>
+    <inScheme rdf:resource=""/>
   </Concept>
 
 </rdf:RDF>
