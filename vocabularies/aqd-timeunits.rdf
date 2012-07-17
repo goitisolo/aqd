@@ -1,36 +1,46 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" xmlns="http://www.w3.org/2004/02/skos/core#">
+<?xml version="1.0"?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" xmlns="http://www.w3.org/2004/02/skos/core#" xml:base="http://rdfdata.eionet.europa.eu/airquality/timeunits/">
   <ConceptScheme rdf:about="">
-    <rdfs:label>The vocabulary of EquivalenceDemonstrated from AQD.xsd</rdfs:label>
+    <rdfs:label>The vocabulary of TimeUnits from AQD_v3.0.3.xsd</rdfs:label>
   </ConceptScheme>
   <Concept rdf:about="1">
     <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1</notation>
-    <prefLabel>Demonstration not necessary</prefLabel>
+    <prefLabel>Second</prefLabel>
     <inScheme rdf:resource=""/>
   </Concept>
   <Concept rdf:about="2">
     <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">2</notation>
-    <prefLabel>Demonstration not possible</prefLabel>
+    <prefLabel>Minute</prefLabel>
     <inScheme rdf:resource=""/>
   </Concept>
   <Concept rdf:about="3">
     <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">3</notation>
-    <prefLabel>Equivalence demonstrated</prefLabel>
+    <prefLabel>Hour</prefLabel>
     <inScheme rdf:resource=""/>
   </Concept>
   <Concept rdf:about="4">
     <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">4</notation>
-    <prefLabel>Equivalence not demonstrated</prefLabel>
+    <prefLabel>Day</prefLabel>
     <inScheme rdf:resource=""/>
   </Concept>
   <Concept rdf:about="5">
     <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">5</notation>
-    <prefLabel>no reference method defined by Directive</prefLabel>
+    <prefLabel>Week</prefLabel>
     <inScheme rdf:resource=""/>
   </Concept>
   <Concept rdf:about="6">
     <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">6</notation>
-    <prefLabel>reference method used</prefLabel>
+    <prefLabel>Month</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="7">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">7</notation>
+    <prefLabel>Year</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="8">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">8</notation>
+    <prefLabel>Other</prefLabel>
     <inScheme rdf:resource=""/>
   </Concept>
 </rdf:RDF>

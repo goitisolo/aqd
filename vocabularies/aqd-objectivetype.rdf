@@ -1,96 +1,81 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" xmlns="http://www.w3.org/2004/02/skos/core#">
+<?xml version="1.0"?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" xmlns="http://www.w3.org/2004/02/skos/core#" xml:base="http://rdfdata.eionet.europa.eu/airquality/objectivetype/">
   <ConceptScheme rdf:about="">
-    <rdfs:label>The vocabulary of SamplingMethods from AQD.xsd</rdfs:label>
+    <rdfs:label>The vocabulary of ObjectiveType from AQD_v3.0.3.xsd</rdfs:label>
   </ConceptScheme>
   <Concept rdf:about="1">
     <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1</notation>
-    <prefLabel>3 m³/h</prefLabel>
+    <prefLabel>Alert threshold (ALT)</prefLabel>
     <inScheme rdf:resource=""/>
   </Concept>
   <Concept rdf:about="2">
     <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">2</notation>
-    <prefLabel>Active solid adsorbent sampling</prefLabel>
+    <prefLabel>Assessment of natural contribution (NAT)</prefLabel>
     <inScheme rdf:resource=""/>
   </Concept>
   <Concept rdf:about="3">
     <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">3</notation>
-    <prefLabel>Continuous automatic sampler</prefLabel>
+    <prefLabel>Assessment of winter sanding or salting (WSS)</prefLabel>
     <inScheme rdf:resource=""/>
   </Concept>
   <Concept rdf:about="4">
     <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">4</notation>
-    <prefLabel>Diffusive solid adsorbent sampling</prefLabel>
+    <prefLabel>Critical level (CL)</prefLabel>
     <inScheme rdf:resource=""/>
   </Concept>
   <Concept rdf:about="5">
     <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">5</notation>
-    <prefLabel>HVS - manual filter change 30 m³/h</prefLabel>
+    <prefLabel>Exposure concentration obligation (ECO)</prefLabel>
     <inScheme rdf:resource=""/>
   </Concept>
   <Concept rdf:about="6">
     <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">6</notation>
-    <prefLabel>HVS -automatic filter change 30 m³/h</prefLabel>
+    <prefLabel>Exposure reduction target (ERT)</prefLabel>
     <inScheme rdf:resource=""/>
   </Concept>
   <Concept rdf:about="7">
     <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">7</notation>
-    <prefLabel>LVS - automatic filter change 2</prefLabel>
+    <prefLabel>Information Threshold (INT)</prefLabel>
     <inScheme rdf:resource=""/>
   </Concept>
   <Concept rdf:about="8">
     <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">8</notation>
-    <prefLabel>LVS- manual filter change 2</prefLabel>
+    <prefLabel>Limit Value (LV)</prefLabel>
     <inScheme rdf:resource=""/>
   </Concept>
   <Concept rdf:about="9">
     <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">9</notation>
-    <prefLabel>MVS - manual filter change 15 m³/h</prefLabel>
+    <prefLabel>Limit value plus applicable margin of tolerance (LVMOT)</prefLabel>
     <inScheme rdf:resource=""/>
   </Concept>
   <Concept rdf:about="10">
     <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">10</notation>
-    <prefLabel>Other</prefLabel>
+    <prefLabel>Long term objective (LTO)</prefLabel>
     <inScheme rdf:resource=""/>
   </Concept>
   <Concept rdf:about="11">
     <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">11</notation>
-    <prefLabel>please specify</prefLabel>
+    <prefLabel>Monitoring objective (MO)</prefLabel>
     <inScheme rdf:resource=""/>
   </Concept>
   <Concept rdf:about="12">
     <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">12</notation>
-    <prefLabel>Sampling method deposition : cylindrical deposition gauge</prefLabel>
+    <prefLabel>Below Lower Assessment Threshold (&lt;LAT)</prefLabel>
     <inScheme rdf:resource=""/>
   </Concept>
   <Concept rdf:about="13">
     <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">13</notation>
-    <prefLabel>Sampling method deposition : wet and dry</prefLabel>
+    <prefLabel>Between Lower and Upper Assessment Threshold (LAT-UAT)</prefLabel>
     <inScheme rdf:resource=""/>
   </Concept>
   <Concept rdf:about="14">
     <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">14</notation>
-    <prefLabel>Sampling method deposition : wet-only</prefLabel>
+    <prefLabel>Above Upper Assessment Threshold (&gt;LAT)</prefLabel>
     <inScheme rdf:resource=""/>
   </Concept>
   <Concept rdf:about="15">
     <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">15</notation>
-    <prefLabel>Sampling with DNPH;</prefLabel>
-    <inScheme rdf:resource=""/>
-  </Concept>
-  <Concept rdf:about="16">
-    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">16</notation>
-    <prefLabel>Sampling with HMP;</prefLabel>
-    <inScheme rdf:resource=""/>
-  </Concept>
-  <Concept rdf:about="17">
-    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">17</notation>
-    <prefLabel>Sampling withy bisulfite and chromotropic acid;</prefLabel>
-    <inScheme rdf:resource=""/>
-  </Concept>
-  <Concept rdf:about="18">
-    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">18</notation>
-    <prefLabel>Whole air canister sampling</prefLabel>
+    <prefLabel>Target Value (TV)</prefLabel>
     <inScheme rdf:resource=""/>
   </Concept>
 </rdf:RDF>

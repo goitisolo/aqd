@@ -1,244 +1,226 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-        xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
-        xmlns="http://rdfdata.eionet.europa.eu/airbase/schema/"
-xml:base="http://rdfdata.eionet.europa.eu/airbase/aqd-analyticaltechniques/">
-
-  <AnalyticalTechnique rdf:about="1">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1</code>
-    <name>Atomic absorption spectrometry (AAS) (ref. As</name>
-  </AnalyticalTechnique>
-
-  <AnalyticalTechnique rdf:about="2">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">2</code>
-    <name>Beta-absorption</name>
-  </AnalyticalTechnique>
-
-  <AnalyticalTechnique rdf:about="3">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">3</code>
-    <name>Bubbler 24hr</name>
-  </AnalyticalTechnique>
-
-  <AnalyticalTechnique rdf:about="4">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">4</code>
-    <name>Capillary electrophoresis</name>
-  </AnalyticalTechnique>
-
-<!--
-  <AnalyticalTechnique rdf:about="5">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">5</code>
-    <name>Cd</name>
-  </AnalyticalTechnique>
--->
-
-  <AnalyticalTechnique rdf:about="6">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">6</code>
-    <name>Chemiluminescence</name>
-  </AnalyticalTechnique>
-
-  <AnalyticalTechnique rdf:about="7">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">7</code>
-    <name>Chromatography</name>
-  </AnalyticalTechnique>
-
-  <AnalyticalTechnique rdf:about="8">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">8</code>
-    <name>Cold vapour atomic absorption spectrometry (CV AAS) (Hg)</name>
-  </AnalyticalTechnique>
-
-  <AnalyticalTechnique rdf:about="9">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">9</code>
-    <name>Cold vapour atomic fluorescence spectrometry (CV AFS)</name>
-  </AnalyticalTechnique>
-
-  <AnalyticalTechnique rdf:about="10">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">10</code>
-    <name>Colorimetric with p-rozaline (SO2)</name>
-  </AnalyticalTechnique>
-
-<!--
-  <AnalyticalTechnique rdf:about="11">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">11</code>
-    <name>Conductimetry</name>
-  </AnalyticalTechnique>
--->
-
-  <AnalyticalTechnique rdf:about="12">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">12</code>
-    <name>Conductometry</name>
-  </AnalyticalTechnique>
-
-  <AnalyticalTechnique rdf:about="13">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">13</code>
-    <name>Continous flow analyses (CFA)</name>
-  </AnalyticalTechnique>
-
-  <AnalyticalTechnique rdf:about="14">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">14</code>
-    <name>Coulometric</name>
-  </AnalyticalTechnique>
-
-  <AnalyticalTechnique rdf:about="15">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">15</code>
-    <name>Differential optical absorption spectrometry</name>
-  </AnalyticalTechnique>
-
-  <AnalyticalTechnique rdf:about="16">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">16</code>
-    <name>Flame ionisation (FID)</name>
-  </AnalyticalTechnique>
-
-  <AnalyticalTechnique rdf:about="17">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">17</code>
-    <name>Fluorescence</name>
-  </AnalyticalTechnique>
-
-  <AnalyticalTechnique rdf:about="18">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">18</code>
-    <name>Gas chromatography (GC) + flame ionisation (FID) + ECD (VOC)</name>
-  </AnalyticalTechnique>
-
-  <AnalyticalTechnique rdf:about="19">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">19</code>
-    <name>Gas chromatography (GC) + flame ionisation (FID) (GC/FID) (VOCs)</name>
-  </AnalyticalTechnique>
-
-  <AnalyticalTechnique rdf:about="20">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">20</code>
-    <name>Gas chromatography + mass spectrometry (GC-MS) (VOC, PAH, B(a)P (Reference))</name>
-  </AnalyticalTechnique>
-
-  <AnalyticalTechnique rdf:about="21">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">21</code>
-    <name>Graphite furnace atomic absorption spectrometry (GF-AAS) (Pb, As, Cd, Ni (Reference), (Hg))</name>
-  </AnalyticalTechnique>
-
-  <AnalyticalTechnique rdf:about="22">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">22</code>
-    <name>Gravimetry (ref. PM10 and PM2.5)</name>
-  </AnalyticalTechnique>
-
-  <AnalyticalTechnique rdf:about="23">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">23</code>
-    <name>Griess-Saltzmann reaction</name>
-  </AnalyticalTechnique>
-
-  <AnalyticalTechnique rdf:about="24">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">24</code>
-    <name>High performance liquid chromatography – fluorescence detection (HPLC-FLD)</name>
-  </AnalyticalTechnique>
-
-  <AnalyticalTechnique rdf:about="25">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">25</code>
-    <name>Hydride generation electrothermal – atomic absorption spectrometry (HG ET AAS) (=Electrothermal Atomic Absorption Spectrometry (ETAAS)) (HM’s)</name>
-  </AnalyticalTechnique>
-
-  <AnalyticalTechnique rdf:about="26">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">26</code>
-    <name>Inductive coupled plasma atomic emission spectrometry (ICP-AES) (Pb in PM10)</name>
-  </AnalyticalTechnique>
-
-  <AnalyticalTechnique rdf:about="27">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">27</code>
-    <name>Inductive coupled plasma mass spectrometry (ICP-MS) (Pb, As, Cd, Ni)</name>
-  </AnalyticalTechnique>
-
-  <AnalyticalTechnique rdf:about="28">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">28</code>
-    <name>Inductive coupled plasma optical emission spectrometry (ICP-OES)</name>
-  </AnalyticalTechnique>
-
-  <AnalyticalTechnique rdf:about="29">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">29</code>
-    <name>Infrared absorption</name>
-  </AnalyticalTechnique>
-
-  <AnalyticalTechnique rdf:about="30">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">30</code>
-    <name>Ion chromatography</name>
-  </AnalyticalTechnique>
-
-  <AnalyticalTechnique rdf:about="31">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">31</code>
-    <name>Isotope dilution</name>
-  </AnalyticalTechnique>
-
-  <AnalyticalTechnique rdf:about="32">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">32</code>
-    <name>Liquid chromatography</name>
-  </AnalyticalTechnique>
-
-<!--
-  <AnalyticalTechnique rdf:about="33">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">33</code>
-    <name>Ni in PM10)</name>
-  </AnalyticalTechnique>
--->
-
-  <AnalyticalTechnique rdf:about="34">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">34</code>
-    <name>optical-acoustic</name>
-  </AnalyticalTechnique>
-
-<!--
-  <AnalyticalTechnique rdf:about="35">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">35</code>
-    <name>Pb</name>
-  </AnalyticalTechnique>
--->
-  <AnalyticalTechnique rdf:about="36">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">36</code>
-    <name>Photometry</name>
-  </AnalyticalTechnique>
-
-  <AnalyticalTechnique rdf:about="37">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">37</code>
-    <name>Potentiometry</name>
-  </AnalyticalTechnique>
-
-  <AnalyticalTechnique rdf:about="38">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">38</code>
-    <name>Reflectometry</name>
-  </AnalyticalTechnique>
-
-  <AnalyticalTechnique rdf:about="39">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">39</code>
-    <name>Spectrophotometry</name>
-  </AnalyticalTechnique>
-
-  <AnalyticalTechnique rdf:about="40">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">40</code>
-    <name>Titration</name>
-  </AnalyticalTechnique>
-
-  <AnalyticalTechnique rdf:about="41">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">41</code>
-    <name>Ultraviolet absorption</name>
-  </AnalyticalTechnique>
-
-  <AnalyticalTechnique rdf:about="42">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">42</code>
-    <name>Volumetry</name>
-  </AnalyticalTechnique>
-
-  <AnalyticalTechnique rdf:about="43">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">43</code>
-    <name>X-ray emission</name>
-  </AnalyticalTechnique>
-
-  <AnalyticalTechnique rdf:about="44">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">44</code>
-    <name>X-ray fluorescence spectrometry (XRF) (As, Cd, Pb, Ni)</name>
-  </AnalyticalTechnique>
-
-  <AnalyticalTechnique rdf:about="45">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">45</code>
-    <name>Zeeman atomic absorption spectrometry (Zeeman AAS)=Graphite furnace atomic absorption spectrometry with Zeeman Background correction (Pb, As, Cd, Ni)</name>
-  </AnalyticalTechnique>
-
-  <AnalyticalTechnique rdf:about="46">
-    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">46</code>
-    <name>Other, please specify</name>
-  </AnalyticalTechnique>
-
+<?xml version="1.0"?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" xmlns="http://www.w3.org/2004/02/skos/core#" xml:base="http://rdfdata.eionet.europa.eu/airquality/analyticaltechniques/">
+  <ConceptScheme rdf:about="">
+    <rdfs:label>The vocabulary of AnalyticalTechniques from AQD_v3.0.3.xsd</rdfs:label>
+  </ConceptScheme>
+  <Concept rdf:about="1">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1</notation>
+    <prefLabel>Atomic absorption spectrometry (AAS)</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="2">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">2</notation>
+    <prefLabel>Cold vapour atomic absorption spectrometry (CV-AAS)</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="3">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">3</notation>
+    <prefLabel>Cold vapour atomic fluorescence spectrometry (CV-AFS)</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="4">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">4</notation>
+    <prefLabel>Colorimetric with p-rosaniline</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="5">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">5</notation>
+    <prefLabel>Conductimetry</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="6">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">6</notation>
+    <prefLabel>Continous flow analyses (CFA)</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="7">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">7</notation>
+    <prefLabel>Electrothermal Atomic Absorption Spectrometry (ET-AAS)</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="8">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">8</notation>
+    <prefLabel>FIAS-Furnace coupling technique (FI-FU)</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="9">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">9</notation>
+    <prefLabel>Flame atomic absorption spectrometry (F-AAS)</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="10">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">10</notation>
+    <prefLabel>Flame ionization dertection (FID)</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="11">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">11</notation>
+    <prefLabel>Gas chromatography (GC) + flame ionisation (GC-FID)</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="12">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">12</notation>
+    <prefLabel>Gas chromatography (GC) + flame ionisation (FID) + ECD (GC-FIS-ECD)</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="13">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">13</notation>
+    <prefLabel>Gas chromatography (separation from methane), flame ionization detection (GC (sep methane)-FID)</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="14">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">14</notation>
+    <prefLabel>Gas chromatography + mass spectrometry (GC-MS)</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="15">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">15</notation>
+    <prefLabel>Gas chromatography + flame ionisation detection GC-FID</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="16">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">16</notation>
+    <prefLabel>Gas chromatography + flame ionisation detection GC-FID after solvent or thermal desorption</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="17">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">17</notation>
+    <prefLabel>Gas chromatography + mass spectrometry GC-MS after solvent or thermal desorption</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="18">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">18</notation>
+    <prefLabel>Gas Chromatography with Nitrogen Phosphorous Detector GC-NPD</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="19">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">19</notation>
+    <prefLabel>Graphite furnace atomic absorption spectrometry (GF-AAS)</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="20">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">20</notation>
+    <prefLabel>Gravimetry</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="21">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">21</notation>
+    <prefLabel>Gravimetry for PM10 and/or PM2,5 - continuous measurement</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="22">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">22</notation>
+    <prefLabel>Gravimetry for PM10 and/or PM2,5 - random measurement</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="23">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">23</notation>
+    <prefLabel>Griess-Saltzman reaction</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="24">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">24</notation>
+    <prefLabel>High performance liquid chromatography - fluorescence detection (HPLC-FLD)</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="25">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">25</notation>
+    <prefLabel>High performance liquid chromatography - mass spectrometry (HPLC-MS)</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="26">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">26</notation>
+    <prefLabel>High performance liquid chromatography HPLC with UV detection (HPLC-UV)</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="27">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">27</notation>
+    <prefLabel>High resolution continuum source atomic absorption spectrometry (HR-CS-AAS)</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="28">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">28</notation>
+    <prefLabel>Hydride generation electrothermal - atomic absorption spectrometry (HG-ET-AAS)</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="29">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">29</notation>
+    <prefLabel>Inductive coupled plasma atomic emission spectrometry (ICP-AES)</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="30">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">30</notation>
+    <prefLabel>Inductive coupled plasma mass spectrometryscopy (ICP-MS)</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="31">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">31</notation>
+    <prefLabel>Inductive coupled plasma optical emission spectrometry (ICP-OES)</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="32">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">32</notation>
+    <prefLabel>Ion chromatography</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="33">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">33</notation>
+    <prefLabel>Isotope dilution</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="34">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">34</notation>
+    <prefLabel>Photometry</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="35">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">35</notation>
+    <prefLabel>Potentiometry</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="36">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">36</notation>
+    <prefLabel>Reflectometry</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="37">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">37</notation>
+    <prefLabel>Spectrometry</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="38">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">38</notation>
+    <prefLabel>Spectrophotometry</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="39">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">39</notation>
+    <prefLabel>Thermal-optical carbon analysis</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="40">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">40</notation>
+    <prefLabel>Titration</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="41">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">41</notation>
+    <prefLabel>Volumetry</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="42">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">42</notation>
+    <prefLabel>X-ray fluorescence spectroscopy (XRF)</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="43">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">43</notation>
+    <prefLabel>Zeeman atomic absorption spectrometry (Zeeman  AAS)</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
+  <Concept rdf:about="44">
+    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">44</notation>
+    <prefLabel>Other, please specify</prefLabel>
+    <inScheme rdf:resource=""/>
+  </Concept>
 </rdf:RDF>
