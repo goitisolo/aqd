@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
-<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" xmlns="http://www.w3.org/2004/02/skos/core#">
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" xmlns="http://www.w3.org/2004/02/skos/core#" xml:base="http://rdfdata.eionet.europa.eu/airquality/dispersionregional/">
   <ConceptScheme rdf:about="">
-    <rdfs:label>The vocabulary of DispersionRegional from AQD.xsd</rdfs:label>
+    <rdfs:label>The vocabulary of DispersionRegional from AQD_v3.0.3.xsd</rdfs:label>
   </ConceptScheme>
   <Concept rdf:about="1">
     <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1</notation>
@@ -40,32 +40,27 @@
   </Concept>
   <Concept rdf:about="8">
     <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">8</notation>
-    <prefLabel>Mountainous terrain &#x2013; ridge</prefLabel>
+    <prefLabel>Mountainous terrain – ridge, pass or summit</prefLabel>
     <inScheme rdf:resource=""/>
   </Concept>
   <Concept rdf:about="9">
     <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">9</notation>
-    <prefLabel>Mountainous terrain &#x2013; slope</prefLabel>
+    <prefLabel>Mountainous terrain – slope</prefLabel>
     <inScheme rdf:resource=""/>
   </Concept>
   <Concept rdf:about="10">
     <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">10</notation>
-    <prefLabel>pass or summit</prefLabel>
+    <prefLabel>Plane terrain</prefLabel>
     <inScheme rdf:resource=""/>
   </Concept>
   <Concept rdf:about="11">
     <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">11</notation>
-    <prefLabel>Plane terrain</prefLabel>
+    <prefLabel>Valley in hilly terrain</prefLabel>
     <inScheme rdf:resource=""/>
   </Concept>
   <Concept rdf:about="12">
     <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">12</notation>
     <prefLabel>Valley in mountainous terrain</prefLabel>
-    <inScheme rdf:resource=""/>
-  </Concept>
-  <Concept rdf:about="13">
-    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">13</notation>
-    <prefLabel>Valleys in hilly terrain</prefLabel>
     <inScheme rdf:resource=""/>
   </Concept>
 </rdf:RDF>

@@ -1,31 +1,26 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" xmlns="http://www.w3.org/2004/02/skos/core#">
+<?xml version="1.0"?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" xmlns="http://www.w3.org/2004/02/skos/core#" xml:base="http://rdfdata.eionet.europa.eu/airquality/assessmentthresholdexceedance/">
   <ConceptScheme rdf:about="">
-    <rdfs:label>The vocabulary of TimeUnits from AQD.xsd</rdfs:label>
+    <rdfs:label>The vocabulary of AssessmentThresholdExceedance from AQD_v3.0.3.xsd</rdfs:label>
   </ConceptScheme>
   <Concept rdf:about="1">
     <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1</notation>
-    <prefLabel>Day</prefLabel>
+    <prefLabel>Below lower assessment threshold</prefLabel>
     <inScheme rdf:resource=""/>
   </Concept>
   <Concept rdf:about="2">
     <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">2</notation>
-    <prefLabel>Hour</prefLabel>
+    <prefLabel>Between lower and upper assessment threshold</prefLabel>
     <inScheme rdf:resource=""/>
   </Concept>
   <Concept rdf:about="3">
     <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">3</notation>
-    <prefLabel>Month</prefLabel>
+    <prefLabel>Above upper assessment threshold</prefLabel>
     <inScheme rdf:resource=""/>
   </Concept>
   <Concept rdf:about="4">
     <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">4</notation>
-    <prefLabel>Week</prefLabel>
-    <inScheme rdf:resource=""/>
-  </Concept>
-  <Concept rdf:about="5">
-    <notation rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">5</notation>
-    <prefLabel>Year</prefLabel>
+    <prefLabel>Not applicable </prefLabel>
     <inScheme rdf:resource=""/>
   </Concept>
 </rdf:RDF>
