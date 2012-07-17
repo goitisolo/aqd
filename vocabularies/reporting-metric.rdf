@@ -6,20 +6,84 @@
  xmlns="http://www.w3.org/2004/02/skos/core#"
  xmlns:cc="http://creativecommons.org/ns#"
  xmlns:dcterms="http://purl.org/dc/terms/"
+ xmlns:ab="http://rdfdata.eionet.europa.eu/airbase/schema/"
  xml:base="http://rdfdata.eionet.europa.eu/airbase/reporting-metric/">
 
-<Concept rdf:about="1"><notation>1</notation><prefLabel>Hours in exceedance in a calendar year</prefLabel></Concept>
-<Concept rdf:about="2"><notation>2</notation><prefLabel>Three consecutive hours in exceedance</prefLabel></Concept>
-<Concept rdf:about="3"><notation>3</notation><prefLabel>Deducted hours in exceedance in a calendar year</prefLabel></Concept>
-<Concept rdf:about="4"><notation>4</notation><prefLabel>Days in exceedance in a calendar year</prefLabel></Concept>
-<Concept rdf:about="5"><notation>5</notation><prefLabel>Deducted days in exceedance in a calendar year</prefLabel></Concept>
-<Concept rdf:about="6"><notation>6</notation><prefLabel>Annual average</prefLabel></Concept>
-<Concept rdf:about="7"><notation>7</notation><prefLabel>Deduction of annual average</prefLabel></Concept>
-<Concept rdf:about="8"><notation>8</notation><prefLabel>Percentiles corresponding to number of allowed exceedances</prefLabel></Concept>
-<Concept rdf:about="9"><notation>9</notation><prefLabel>Average over winter</prefLabel></Concept>
-<Concept rdf:about="10"><notation>AOT40</notation><prefLabel>AOT40</prefLabel></Concept>
-<Concept rdf:about="11"><notation>AEI</notation><prefLabel>Average Exposure Indicator</prefLabel></Concept>
-<Concept rdf:about="12"><notation>12</notation><prefLabel>Days in exceedance averaged over 3 years</prefLabel></Concept>
-<Concept rdf:about="13"><notation>13</notation><prefLabel>Maxiumum</prefLabel></Concept>
+  <ConceptScheme rdf:about="">
+    <rdfs:label>Reporting Metric from AQD_Code_List_FULL_20120712.txt</rdfs:label>
+    <dcterms:date rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2012-07-17T14:37:54</dcterms:date>
+  </ConceptScheme>
+
+  <Concept rdf:about="1">
+    <prefLabel>AnnualMean</prefLabel>
+    <definition>Annual average</definition>
+    <inScheme rdf:resource=""/>
+  </Concept>
+
+  <Concept rdf:about="2">
+    <prefLabel>AOT40</prefLabel>
+    <definition>AOT40</definition>
+    <inScheme rdf:resource=""/>
+  </Concept>
+
+  <Concept rdf:about="3">
+    <prefLabel>AEI</prefLabel>
+    <definition>Average Exposure Indicator</definition>
+    <inScheme rdf:resource=""/>
+  </Concept>
+
+  <Concept rdf:about="4">
+    <prefLabel>WinterMean</prefLabel>
+    <definition>Average over winter</definition>
+    <inScheme rdf:resource=""/>
+  </Concept>
+
+  <Concept rdf:about="5">
+    <prefLabel>DaysInExceedOver3y</prefLabel>
+    <definition>Days in exceedance averaged over 3 years; Days when maximum daily 8-h mean exceed the target value over 3 years</definition>
+    <inScheme rdf:resource=""/>
+  </Concept>
+
+  <Concept rdf:about="6">
+    <prefLabel>DaysInExceed</prefLabel>
+    <definition>Days in exceedance in a calendar year; Days when maximum daily 8-h mean exceed the LV/LTO in 1 calendar year</definition>
+    <inScheme rdf:resource=""/>
+  </Concept>
+
+  <Concept rdf:about="7">
+    <prefLabel>DedDaysInExceed</prefLabel>
+    <definition>Deducted days in exceedance in a calendar year</definition>
+    <inScheme rdf:resource=""/>
+  </Concept>
+
+  <Concept rdf:about="8">
+    <prefLabel>DedHoursInExceed</prefLabel>
+    <definition>Deducted hours in exceedance in a calendar year</definition>
+    <inScheme rdf:resource=""/>
+  </Concept>
+
+  <Concept rdf:about="9">
+    <prefLabel>DedAnnualMean</prefLabel>
+    <definition>Deduction of annual average</definition>
+    <inScheme rdf:resource=""/>
+  </Concept>
+
+  <Concept rdf:about="10">
+    <prefLabel>HoursInExceed</prefLabel>
+    <definition>Number of hours in exceedance in a calendar year</definition>
+    <inScheme rdf:resource=""/>
+  </Concept>
+
+  <Concept rdf:about="11">
+    <prefLabel>PercentileNumbExceed</prefLabel>
+    <definition>Percentiles corresponding to number of allowed exceedances</definition>
+    <inScheme rdf:resource=""/>
+  </Concept>
+
+  <Concept rdf:about="12">
+    <prefLabel>3ConsecHoursInExceed</prefLabel>
+    <definition>Three consecutive hours in exceedance</definition>
+    <inScheme rdf:resource=""/>
+  </Concept>
 
 </rdf:RDF>
