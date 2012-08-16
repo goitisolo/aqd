@@ -53,8 +53,16 @@
     <xsl:apply-templates mode="property"/>
   </xsl:template>
 
-<!-- Stop processing of resources -->
-  <xsl:template match="om:OM_Observation" mode="resource"/>
+<!-- Observation -->
+  <xsl:template match="om:OM_Observation" mode="resource">
+    <xsl:element name="{local-name()}" namespace="http://rdfdata.eionet.europa.eu/airquality/ontology/">
+      <xsl:attribute name="rdf:ID">
+        <xsl:value-of select="generate-id()"/>
+      </xsl:attribute>
+      <xsl:apply-templates mode="property"/>
+      <xsl:call-template name="swe_DataArrayType"><xsl:with-param name="node" select="om:result"/></xsl:call-template>
+    </xsl:element>
+  </xsl:template>
 
 <!-- Stop processing of properties -->
   <xsl:template match="ef:geometry|am:geometry|sams:shape|om:result" mode="property"/>
@@ -166,22 +174,84 @@
 
   <xsl:template name="swe_DataArrayType">
     <xsl:param name="node" select="."/>
-    <pre>Values (@ replaced by newline):
-<xsl:value-of select="translate($node/swe:values,'@','&#10;')"/></pre>
-    <table class="tbl">
-      <caption>
-        <xsl:value-of select="$node/swe:elementType/@name"/>
-      </caption>
-      <xsl:for-each select="$node/swe:elementType/swe:DataRecord/swe:field">
-        <tr>
-          <th scope="row">
-            <xsl:value-of select="@name"/>
-          </th>
-          <td>
-            <xsl:value-of select="*/swe:uom/@code"/>
-          </td>
-        </tr>
-      </xsl:for-each>
-    </table>
+    <xsl:call-template name="split-results">
+        <xsl:with-param name="text" select="om:result/swe:values"/>
+        <xsl:with-param name="pollutant" select="$node/swe:elementType/swe:DataRecord/swe:field[last()]/@name"/>
+    </xsl:call-template>
   </xsl:template>
+
+        <!-- split on the @@ -->
+        <xsl:template name="split-results">
+          <xsl:param name="text"/>
+          <xsl:param name="pollutant"/>
+          <xsl:choose>
+            <xsl:when test="contains($text, '@@')">
+              <xsl:call-template name="resultasresource">
+                <xsl:with-param name="text" select="substring-before($text, '@@')"/>
+                <xsl:with-param name="pollutant" select="$pollutant"/>
+              </xsl:call-template>
+              <xsl:call-template name="split-results">
+                <xsl:with-param name="text" select="substring-after($text, '@@')"/>
+                <xsl:with-param name="pollutant" select="$pollutant"/>
+              </xsl:call-template>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:call-template name="resultasresource">
+                <xsl:with-param name="text" select="$text"/>
+                <xsl:with-param name="pollutant" select="$pollutant"/>
+              </xsl:call-template>
+            </xsl:otherwise>
+          </xsl:choose>
+        </xsl:template>
+
+  <xsl:template name="resultasresource">
+    <xsl:param name="text"/>
+    <xsl:param name="pollutant"/>
+    <xsl:if test="$text != ''">
+      <result>
+        <rdf:Description>
+          <!-- <pollutant><xsl:value-of select="$pollutant"/></pollutant> -->
+          <xsl:call-template name="splitonefield">
+            <xsl:with-param name="text" select="$text"/>
+            <xsl:with-param name="columns" select="'time,validity,verification,measurement'"/>
+          </xsl:call-template>
+        </rdf:Description>
+      </result>
+    </xsl:if>
+  </xsl:template>
+
+  <xsl:template name="splitonefield">
+    <xsl:param name="text"/>
+    <xsl:param name="columns"/>
+          <xsl:choose>
+            <xsl:when test="contains($columns, ',')">
+              <xsl:call-template name="resultproperty">
+                <xsl:with-param name="text" select="substring-before($text, ',')"/>
+                <xsl:with-param name="column" select="substring-before($columns, ',')"/>
+              </xsl:call-template>
+              <xsl:call-template name="splitonefield">
+                <xsl:with-param name="text" select="substring-after($text, ',')"/>
+                <xsl:with-param name="columns" select="substring-after($columns, ',')"/>
+              </xsl:call-template>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:call-template name="resultproperty">
+                <xsl:with-param name="text" select="$text"/>
+                <xsl:with-param name="column" select="$columns"/>
+              </xsl:call-template>
+            </xsl:otherwise>
+          </xsl:choose>
+  </xsl:template>
+
+  <xsl:template name="resultproperty">
+    <xsl:param name="text"/>
+    <xsl:param name="column"/>
+    <xsl:element name="{$column}">
+      <xsl:if test="string(number($text)) != 'NaN'">
+        <xsl:attribute name="rdf:datatype">http://www.w3.org/2001/XMLSchema#decimal</xsl:attribute>
+      </xsl:if>
+    <xsl:value-of select="$text"/>
+    </xsl:element>
+  </xsl:template>
+
 </xsl:stylesheet>
