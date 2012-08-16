@@ -210,6 +210,9 @@
     <xsl:if test="$text != ''">
       <result>
         <rdf:Description>
+          <xsl:attribute name="rdf:ID">
+            <xsl:value-of select="concat(generate-id(),'_',translate($text,':,-','___'))"/>
+          </xsl:attribute>
           <!-- <pollutant><xsl:value-of select="$pollutant"/></pollutant> -->
           <xsl:call-template name="splitonefield">
             <xsl:with-param name="text" select="$text"/>
