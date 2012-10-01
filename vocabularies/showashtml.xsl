@@ -12,26 +12,22 @@
 		<head>
 			<title><xsl:value-of select="skos:ConceptScheme/rdfs:label"/></title>
                         <style type="text/css">
-                        table { border-collapse:collapse }
-                        td { border: 1px solid #999 }
-                        th { background-color: #87CEFA; text-align: left; padding-right: 2em; border: 1px solid #999 }
+                        table { border-collapse:collapse; border: 1px solid #999; width: 98%; margin-top: 1em }
+                        th { background-color: #87CEFA; text-align: left; padding-right: 2em; border: 1px solid #999; width:14em }
+                        td { border: 1px solid #999}
                         </style>
 		</head>
 		<body>
 			<h1><xsl:value-of select="skos:ConceptScheme/rdfs:label"/></h1>
-			<table style="border: 1px solid #999" cellpading="0" cellspacing="0">
-				<xsl:apply-templates select="skos:Concept"/>
-			</table>
+
+                        <xsl:apply-templates mode="resource"/>
 		</body>
 	</html>
 </xsl:template>
 
-<xsl:template match="skos:Concept">
-	<xsl:if test="position()=1">
-		<xsl:call-template name="header"/>
-	</xsl:if>
-	<tr>
-                <td> <!-- Resource URI -->
+<xsl:template match="*" mode="resource">
+        <table>
+                <tr><th colspan="2">Resource URI:
                 <xsl:choose>
                     <xsl:when test="@rdf:ID">
                                 <xsl:value-of select="/rdf:RDF/@xml:base" />#<xsl:value-of select="@rdf:ID"/>
@@ -46,15 +42,17 @@
                         {Anonymous}
                     </xsl:otherwise>
                 </xsl:choose>
-                </td>
-		<xsl:apply-templates />
-	</tr>
+                </th></tr>
+        <xsl:if test="name() != 'rdf:Description'">
+        <tr><th>rdf:type</th><td><xsl:value-of select="name()" /></td></tr>
+        </xsl:if>
+        <xsl:apply-templates mode="property"/>
+        </table>
 </xsl:template>
 
-<!-- <xsl:template match="skos:inScheme"/> -->
-
-<!-- template for building table cells with values -->
-<xsl:template match="*">
+<xsl:template match="*" mode="property">
+    <tr>
+        <th><xsl:value-of select="name()" /></th>
 	<td>
                 <xsl:choose>
                     <xsl:when test="@rdf:resource">
@@ -69,16 +67,7 @@
                     </xsl:otherwise>
                 </xsl:choose>
 	</td>
-</xsl:template>
-
-<!-- a named template, which creates the table header row and a description -->
-<xsl:template name="header">
-	<tr>
-        <th>Resource URI</th>
-	<xsl:for-each select="*">
-		<th><xsl:value-of select="local-name()" /></th>
-	</xsl:for-each>
-	</tr>
+    </tr>
 </xsl:template>
 
 </xsl:stylesheet>
