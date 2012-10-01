@@ -31,16 +31,34 @@
 		<xsl:call-template name="header"/>
 	</xsl:if>
 	<tr>
+                <td> <!-- Resource URI -->
+                <xsl:choose>
+                    <xsl:when test="@rdf:ID">
+                                <xsl:value-of select="/rdf:RDF/@xml:base" />#<xsl:value-of select="@rdf:ID"/>
+                    </xsl:when>
+                    <xsl:when test="@rdf:about">
+                        <xsl:if test="not(starts-with(@rdf:about,'http:') or starts-with(@rdf:about,'/'))">
+                            <xsl:value-of select="/rdf:RDF/@xml:base"/>
+                        </xsl:if>
+                            <xsl:value-of select="@rdf:about"/>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        {Anonymous}
+                    </xsl:otherwise>
+                </xsl:choose>
+                </td>
 		<xsl:apply-templates />
 	</tr>
 </xsl:template>
+
+<!-- <xsl:template match="skos:inScheme"/> -->
 
 <!-- template for building table cells with values -->
 <xsl:template match="*">
 	<td>
                 <xsl:choose>
                     <xsl:when test="@rdf:resource">
-                        <a><xsl:attribute name="href"><xsl:value-of select="@rdf:resource" /></xsl:attribute>
+                        <a><xsl:attribute name="href"><xsl:value-of select="/rdf:RDF/@xml:base" /><xsl:value-of select="@rdf:resource" /></xsl:attribute>
                         <xsl:if test="@rdf:resource = ''">
                                 <xsl:value-of select="/rdf:RDF/@xml:base" />
                         </xsl:if>
@@ -56,6 +74,7 @@
 <!-- a named template, which creates the table header row and a description -->
 <xsl:template name="header">
 	<tr>
+        <th>Resource URI</th>
 	<xsl:for-each select="*">
 		<th><xsl:value-of select="local-name()" /></th>
 	</xsl:for-each>
