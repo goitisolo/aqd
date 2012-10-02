@@ -156,9 +156,48 @@
     </td></tr>
     </table>
   </xsl:for-each>
+
+<!-- Assessment regimes -->
+  <xsl:for-each select="gml:featureMember/aqd:AQD_AssessmentRegime">
+    <h2><xsl:attribute name="id"><xsl:value-of select="@gml:id"/></xsl:attribute>Assessment regime: <xsl:value-of select="@gml:id"/></h2>
+    <table class="tbl">
+    <tr><th scope="row">Zone</th><td><xsl:call-template name="datavalue"><xsl:with-param name="node" select="aqd:zone"/></xsl:call-template></td></tr>
+    <tr><th scope="row">Pollutant</th><td><xsl:call-template name="pollutantUrl"><xsl:with-param name="node" select="aqd:pollutant"/></xsl:call-template></td></tr>
+    <tr><th scope="column" colspan="2">Assessment threshold</th></tr>
+    <tr><th scope="row">Objective Type</th><td><xsl:call-template name="datavalue"><xsl:with-param name="node" select="aqd:assessmentThreshold/aqd:environmentalObjective/aqd:objectiveType"/></xsl:call-template></td></tr>
+    <tr><th scope="row">Reporting Metric</th><td><xsl:call-template name="datavalue"><xsl:with-param name="node" select="aqd:assessmentThreshold/aqd:environmentalObjective/aqd:reportingMetric"/></xsl:call-template></td></tr>
+    <tr><th scope="row">Protection Target</th><td><xsl:call-template name="datavalue"><xsl:with-param name="node" select="aqd:assessmentThreshold/aqd:environmentalObjective/aqd:protectionTarget"/></xsl:call-template></td></tr>
+    <tr><th scope="row">Exceedance Objective</th><td><xsl:value-of select="aqd:assessmentThreshold/aqd:exceedanceObjective"/></td></tr>
+    <tr><th scope="row">Classification date</th><td><xsl:value-of select="aqd:assessmentThreshold/aqd:classificationDate"/></td></tr>
+    <tr><th scope="row">Classification report</th><td><xsl:value-of select="aqd:assessmentThreshold/aqd:classificationReport"/></td></tr>
+
+    <tr><th scope="column" colspan="2">Competent authorities</th></tr>
+    <tr><th scope="row">Assessment Air quality</th><td><xsl:value-of select="aqd:competentAuthorities/aqd:assessmentAirQuality"/></td></tr>
+    <tr><th scope="row">Approval Measurement Systems</th><td><xsl:value-of select="aqd:competentAuthorities/aqd:approvalMeasurementSystems"/></td></tr>
+    <tr><th scope="row">Accuracy Measurements</th><td><xsl:value-of select="aqd:competentAuthorities/aqd:accuracyMeasurements"/></td></tr>
+    <tr><th scope="row">Analysis Assessment Method</th><td><xsl:value-of select="aqd:competentAuthorities/aqd:analysisAssessmentMethod"/></td></tr>
+    <tr><th scope="row">Nation-wide Quality Assurance</th><td><xsl:value-of select="aqd:competentAuthorities/aqd:nation-wideQualityAssurance"/></td></tr>
+    <tr><th scope="row">Cooperation MS Commission</th><td><xsl:value-of select="aqd:competentAuthorities/aqd:cooperationMSCommission"/></td></tr>
+    <tr><th scope="column" colspan="2">Assessment methods</th></tr>
+    <xsl:apply-templates select="aqd:assessmentMethods"/>
+
+    </table>
+  </xsl:for-each>
+
 </xsl:template>
 
+<xsl:template match="aqd:assessmentMethods">
+<tr>
+<th><xsl:for-each select="aqd:assessmentType">
+<xsl:value-of select="."/><br/>
+</xsl:for-each></th>
+<td><xsl:for-each select="aqd:assessmentMetadata">
+<xsl:call-template name="datavalue"><xsl:with-param name="node" select="."/></xsl:call-template><br/>
+</xsl:for-each></td>
+</tr>
+</xsl:template>
 
+<!-- Any generic data value -->
 <xsl:template name="datavalue">
     <xsl:param name="node" select="."/>
     <xsl:choose>
@@ -169,6 +208,14 @@
         <xsl:value-of select="$node"/>
       </xsl:otherwise>
     </xsl:choose>
+</xsl:template>
+
+<xsl:template name="pollutantUrl">
+    <xsl:param name="node" select="."/>
+    <xsl:value-of select="$node"/>
+    <xsl:if test="contains($node,'/page')">
+     <b> ["/page/" found. Illegal URL!]</b>
+    </xsl:if>
 </xsl:template>
 
 <xsl:template name="time_period">
