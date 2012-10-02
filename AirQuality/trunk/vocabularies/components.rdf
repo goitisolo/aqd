@@ -14,6 +14,12 @@
  xmlns:dcterms="http://purl.org/dc/terms/"
  xmlns="http://rdfdata.eionet.europa.eu/airbase/schema/" xml:base="http://rdfdata.eionet.europa.eu/airbase/">
 
+<skos:ConceptScheme rdf:about="components">
+  <rdfs:label>Components (pollutants) from Airbase_v6_20120221_statistic</rdfs:label>
+  <dcterms:issued rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2012-02-21</dcterms:issued>
+  <dcterms:creator>David Simoens</dcterms:creator>
+</skos:ConceptScheme>
+
 <Component rdf:about="components/1">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1</componentCode>
  <componentCaption>SO2</componentCaption>
@@ -21,6 +27,7 @@
  <rdfs:label>Sulphur dioxide (air)</rdfs:label>
  <measurementUnit>µg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/3">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">3</componentCode>
  <componentCaption>SA</componentCaption>
@@ -28,6 +35,7 @@
  <rdfs:label>Strong acidity (air)</rdfs:label>
  <measurementUnit>µg SO2/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/4">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">4</componentCode>
  <componentCaption>SPM</componentCaption>
@@ -35,6 +43,7 @@
  <rdfs:label>Total suspended particulates (aerosol)</rdfs:label>
  <measurementUnit>µg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/5">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">5</componentCode>
  <componentCaption>PM10</componentCaption>
@@ -42,6 +51,7 @@
  <rdfs:label>Particulate matter &lt; 10 µm (aerosol)</rdfs:label>
  <measurementUnit>µg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/6">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">6</componentCode>
  <componentCaption>BS</componentCaption>
@@ -49,6 +59,7 @@
  <rdfs:label>Black smoke (air)</rdfs:label>
  <measurementUnit>µg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/7">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">7</componentCode>
  <componentCaption>O3</componentCaption>
@@ -56,6 +67,7 @@
  <rdfs:label>Ozone (air)</rdfs:label>
  <measurementUnit>µg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/8">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">8</componentCode>
  <componentCaption>NO2</componentCaption>
@@ -63,6 +75,7 @@
  <rdfs:label>Nitrogen dioxide (air)</rdfs:label>
  <measurementUnit>µg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/9">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">9</componentCode>
  <componentCaption>NOX</componentCaption>
@@ -70,6 +83,7 @@
  <rdfs:label>Nitrogen oxides (air)</rdfs:label>
  <measurementUnit>µg NO2/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/10">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">10</componentCode>
  <componentCaption>CO</componentCaption>
@@ -77,6 +91,7 @@
  <rdfs:label>Carbon monoxide (air)</rdfs:label>
  <measurementUnit>mg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/11">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">11</componentCode>
  <componentCaption>H2S</componentCaption>
@@ -84,6 +99,7 @@
  <rdfs:label>Hydrogen sulphide (air)</rdfs:label>
  <measurementUnit>µg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/12">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">12</componentCode>
  <componentCaption>Pb</componentCaption>
@@ -91,6 +107,7 @@
  <rdfs:label>Lead (aerosol)</rdfs:label>
  <measurementUnit>µg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/13">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">13</componentCode>
  <componentCaption>Hg</componentCaption>
@@ -98,6 +115,7 @@
  <rdfs:label>Mercury (aerosol)</rdfs:label>
  <measurementUnit>ng/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/14">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">14</componentCode>
  <componentCaption>Cd</componentCaption>
@@ -105,6 +123,7 @@
  <rdfs:label>Cadmium (aerosol)</rdfs:label>
  <measurementUnit>ng/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/15">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">15</componentCode>
  <componentCaption>Ni</componentCaption>
@@ -112,6 +131,7 @@
  <rdfs:label>Nickel (aerosol)</rdfs:label>
  <measurementUnit>ng/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/16">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">16</componentCode>
  <componentCaption>Cr</componentCaption>
@@ -119,6 +139,7 @@
  <rdfs:label>Chromium (aerosol)</rdfs:label>
  <measurementUnit>ng/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/17">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">17</componentCode>
  <componentCaption>Mn</componentCaption>
@@ -126,6 +147,7 @@
  <rdfs:label>Manganese (aerosol)</rdfs:label>
  <measurementUnit>ng/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/18">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">18</componentCode>
  <componentCaption>As</componentCaption>
@@ -133,6 +155,7 @@
  <rdfs:label>Arsenic (aerosol)</rdfs:label>
  <measurementUnit>ng/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/19">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">19</componentCode>
  <componentCaption>CS2</componentCaption>
@@ -140,6 +163,7 @@
  <rdfs:label>Carbon disulphide (air)</rdfs:label>
  <measurementUnit>µg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/20">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">20</componentCode>
  <componentCaption>C6H6</componentCaption>
@@ -147,6 +171,7 @@
  <rdfs:label>Benzene (air)</rdfs:label>
  <measurementUnit>µg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/21">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">21</componentCode>
  <componentCaption>C6H5-CH3</componentCaption>
@@ -154,6 +179,7 @@
  <rdfs:label>Toluene (air)</rdfs:label>
  <measurementUnit>µg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/22">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">22</componentCode>
  <componentCaption>C6H5-CH=CH2</componentCaption>
@@ -161,6 +187,7 @@
  <rdfs:label>Styrene (air)</rdfs:label>
  <measurementUnit>µg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/24">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">24</componentCode>
  <componentCaption>CH2=CH-CH=CH2</componentCaption>
@@ -168,6 +195,7 @@
  <rdfs:label>1.3 Butadiene (air)</rdfs:label>
  <measurementUnit>µg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/25">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">25</componentCode>
  <componentCaption>HCHO</componentCaption>
@@ -175,6 +203,7 @@
  <rdfs:label>Formaldehyde (air)</rdfs:label>
  <measurementUnit>µg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/26">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">26</componentCode>
  <componentCaption>CHCl=CCl2</componentCaption>
@@ -182,6 +211,7 @@
  <rdfs:label>Trichloroethylene (air)</rdfs:label>
  <measurementUnit>µg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/27">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">27</componentCode>
  <componentCaption>C2Cl4</componentCaption>
@@ -189,6 +219,7 @@
  <rdfs:label>Tetrachloroethylene (air)</rdfs:label>
  <measurementUnit>µg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/30">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">30</componentCode>
  <componentCaption>PAH</componentCaption>
@@ -196,6 +227,7 @@
  <rdfs:label>Polyaromatic hydrocarbons (air+aerosol)</rdfs:label>
  <measurementUnit>ng/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/32">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">32</componentCode>
  <componentCaption>THC (NM)</componentCaption>
@@ -203,6 +235,7 @@
  <rdfs:label>Total non-methane hydrocarbons (air)</rdfs:label>
  <measurementUnit>µg C/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/33">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">33</componentCode>
  <componentCaption>T-VOC</componentCaption>
@@ -210,6 +243,7 @@
  <rdfs:label>Total volatile organic compounds (air)</rdfs:label>
  <measurementUnit>µg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/34">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">34</componentCode>
  <componentCaption>PAN</componentCaption>
@@ -217,6 +251,7 @@
  <rdfs:label>Peroxyacetyl nitrate (air)</rdfs:label>
  <measurementUnit>µg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/35">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">35</componentCode>
  <componentCaption>NH3</componentCaption>
@@ -224,6 +259,7 @@
  <rdfs:label>Ammonia (air)</rdfs:label>
  <measurementUnit>µg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/36">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">36</componentCode>
  <componentCaption>N-DEP</componentCaption>
@@ -231,6 +267,7 @@
  <rdfs:label>Wet nitrogen deposition (flux)</rdfs:label>
  <measurementUnit>mg N/m2.m</measurementUnit>
 </Component>
+
 <Component rdf:about="components/37">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">37</componentCode>
  <componentCaption>S-DEP</componentCaption>
@@ -238,6 +275,7 @@
  <rdfs:label>Wet sulphur deposition (flux)</rdfs:label>
  <measurementUnit>mg S/m2.m</measurementUnit>
 </Component>
+
 <Component rdf:about="components/38">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">38</componentCode>
  <componentCaption>NO</componentCaption>
@@ -245,6 +283,7 @@
  <rdfs:label>Nitrogen monoxide (air)</rdfs:label>
  <measurementUnit>µg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/39">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">39</componentCode>
  <componentCaption>HCl</componentCaption>
@@ -252,6 +291,7 @@
  <rdfs:label>Hydrogen chloride (air)</rdfs:label>
  <measurementUnit>µg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/40">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">40</componentCode>
  <componentCaption>HF</componentCaption>
@@ -259,6 +299,7 @@
  <rdfs:label>Hydrogen fluoride (air)</rdfs:label>
  <measurementUnit>µg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/41">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">41</componentCode>
  <componentCaption>CH4</componentCaption>
@@ -266,6 +307,7 @@
  <rdfs:label>Methane (air)</rdfs:label>
  <measurementUnit>µg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/45">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">45</componentCode>
  <componentCaption>NH4</componentCaption>
@@ -273,6 +315,7 @@
  <rdfs:label>Particulate ammonium (aerosol)</rdfs:label>
  <measurementUnit>µg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/46">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">46</componentCode>
  <componentCaption>NO3</componentCaption>
@@ -280,6 +323,7 @@
  <rdfs:label>Particulate nitrate (aerosol)</rdfs:label>
  <measurementUnit>µg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/47">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">47</componentCode>
  <componentCaption>SO4 (H2SO4 aerosols) (SO4--)</componentCaption>
@@ -287,6 +331,7 @@
  <rdfs:label>Particulate sulphate (aerosol)</rdfs:label>
  <measurementUnit>µg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/48">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">48</componentCode>
  <componentCaption>Se</componentCaption>
@@ -294,6 +339,7 @@
  <rdfs:label>Selenium (aerosol)</rdfs:label>
  <measurementUnit>ng/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/49">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">49</componentCode>
  <componentCaption>Vanadium</componentCaption>
@@ -301,6 +347,7 @@
  <rdfs:label>Vanadium (aerosol)</rdfs:label>
  <measurementUnit>ng/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/51">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">51</componentCode>
  <componentCaption>HC C2-C6(excl. AROM. &amp; CHLH)</componentCaption>
@@ -308,6 +355,7 @@
  <rdfs:label>HC C2-C6(excl. AROM. &amp; CHLH) (air+aerosol)</rdfs:label>
  <measurementUnit>µg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/63">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">63</componentCode>
  <componentCaption>Zn</componentCaption>
@@ -315,6 +363,7 @@
  <rdfs:label>Zinc (aerosol)</rdfs:label>
  <measurementUnit>ng/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/65">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">65</componentCode>
  <componentCaption>Fe</componentCaption>
@@ -322,6 +371,7 @@
  <rdfs:label>Iron (aerosol)</rdfs:label>
  <measurementUnit>ng/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/67">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">67</componentCode>
  <componentCaption>HNO3+NO3</componentCaption>
@@ -329,6 +379,7 @@
  <rdfs:label>Total nitrate (air+aerosol)</rdfs:label>
  <measurementUnit>µg N/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/68">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">68</componentCode>
  <componentCaption>NH3+NH4</componentCaption>
@@ -336,12 +387,14 @@
  <rdfs:label>Total ammonium (air+aerosol)</rdfs:label>
  <measurementUnit>µg N/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/69">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">69</componentCode>
  <componentCaption>Radioactivity</componentCaption>
  <componentName>Radioactivity ()</componentName>
  <rdfs:label>Radioactivity ()</rdfs:label>
 </Component>
+
 <Component rdf:about="components/73">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">73</componentCode>
  <componentCaption>Cu</componentCaption>
@@ -349,6 +402,7 @@
  <rdfs:label>Copper (aerosol)</rdfs:label>
  <measurementUnit>ng/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/316">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">316</componentCode>
  <componentCaption>(CH3)2-CH-CH2-CH2-CH3</componentCaption>
@@ -356,6 +410,7 @@
  <rdfs:label>i-Hexane (2-methylpentane) (air)</rdfs:label>
  <measurementUnit>µg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/323">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">323</componentCode>
  <componentCaption>3-methylpentane</componentCaption>
@@ -363,6 +418,7 @@
  <rdfs:label>N3methylpentane (air)</rdfs:label>
  <measurementUnit>pptv</measurementUnit>
 </Component>
+
 <Component rdf:about="components/351">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">351</componentCode>
  <componentCaption>Acenaphthene</componentCaption>
@@ -370,6 +426,7 @@
  <rdfs:label>acenaphthene (air+aerosol)</rdfs:label>
  <measurementUnit>ng/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/352">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">352</componentCode>
  <componentCaption>Acenaphtylene</componentCaption>
@@ -377,6 +434,7 @@
  <rdfs:label>acenaphtylene (air+aerosol)</rdfs:label>
  <measurementUnit>ng/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/380">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">380</componentCode>
  <componentCaption>Benzo(b+j+k)fluoranthenes</componentCaption>
@@ -384,6 +442,7 @@
  <rdfs:label>Benzo(b+j+k)fluoranthenes (air+aerosol)</rdfs:label>
  <measurementUnit>ng/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/381">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">381</componentCode>
  <componentCaption>Benzo(e)pyrene</componentCaption>
@@ -391,6 +450,7 @@
  <rdfs:label>Benzo(e)pyrene (air+aerosol)</rdfs:label>
  <measurementUnit>ng/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/394">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">394</componentCode>
  <componentCaption>H3C-CH2-CH2-CH3</componentCaption>
@@ -398,6 +458,7 @@
  <rdfs:label>n-Butane (air)</rdfs:label>
  <measurementUnit>µg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/412">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">412</componentCode>
  <componentCaption>k</componentCaption>
@@ -405,6 +466,7 @@
  <rdfs:label>conductivity (precip)</rdfs:label>
  <measurementUnit>uS/cm</measurementUnit>
 </Component>
+
 <Component rdf:about="components/416">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">416</componentCode>
  <componentCaption>Cyclo-hexane</componentCaption>
@@ -412,6 +474,7 @@
  <rdfs:label>cyclohexane (air)</rdfs:label>
  <measurementUnit>pptv</measurementUnit>
 </Component>
+
 <Component rdf:about="components/428">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">428</componentCode>
  <componentCaption>C2H6</componentCaption>
@@ -419,6 +482,7 @@
  <rdfs:label>Ethane (air)</rdfs:label>
  <measurementUnit>µg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/430">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">430</componentCode>
  <componentCaption>H2C=CH2</componentCaption>
@@ -426,6 +490,7 @@
  <rdfs:label>Ethene (Ethylene) (air)</rdfs:label>
  <measurementUnit>µg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/431">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">431</componentCode>
  <componentCaption>C6H5-C2H5</componentCaption>
@@ -433,6 +498,7 @@
  <rdfs:label>Ethyl benzene (air)</rdfs:label>
  <measurementUnit>µg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/432">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">432</componentCode>
  <componentCaption>HC=CH</componentCaption>
@@ -440,6 +506,7 @@
  <rdfs:label>Ethyne  (Acetylene) (air)</rdfs:label>
  <measurementUnit>µg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/435">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">435</componentCode>
  <componentCaption>Fluorene</componentCaption>
@@ -447,6 +514,7 @@
  <rdfs:label>fluorene (air+aerosol)</rdfs:label>
  <measurementUnit>ng/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/441">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">441</componentCode>
  <componentCaption>C7H16</componentCaption>
@@ -454,6 +522,7 @@
  <rdfs:label>n-Heptane (air)</rdfs:label>
  <measurementUnit>µg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/443">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">443</componentCode>
  <componentCaption>C6H14</componentCaption>
@@ -461,6 +530,7 @@
  <rdfs:label>n-Hexane (air)</rdfs:label>
  <measurementUnit>µg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/447">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">447</componentCode>
  <componentCaption>H3C-CH(CH3)2</componentCaption>
@@ -468,6 +538,7 @@
  <rdfs:label>i-Butane (2-methylpropane) (air)</rdfs:label>
  <measurementUnit>µg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/449">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">449</componentCode>
  <componentCaption>(CH3)3-C-CH2-CH-(CH3)2</componentCaption>
@@ -475,6 +546,7 @@
  <rdfs:label>i-Octane (2,2,4-trimethylpentane) (air)</rdfs:label>
  <measurementUnit>µg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/450">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">450</componentCode>
  <componentCaption>H3C-CH2-CH(CH3)2</componentCaption>
@@ -482,6 +554,7 @@
  <rdfs:label>i-Pentane (2-methylbutane) (air)</rdfs:label>
  <measurementUnit>µg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/451">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">451</componentCode>
  <componentCaption>CH2=CH-C(CH3)=CH2</componentCaption>
@@ -489,6 +562,7 @@
  <rdfs:label>Isoprene (2-methyl-1,3-butadiene) (air)</rdfs:label>
  <measurementUnit>µg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/464">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">464</componentCode>
  <componentCaption>m,p-C6H4(CH3)2</componentCaption>
@@ -496,6 +570,7 @@
  <rdfs:label>m,p-Xylene (air)</rdfs:label>
  <measurementUnit>µg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/465">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">465</componentCode>
  <componentCaption>Naphtalene</componentCaption>
@@ -503,6 +578,7 @@
  <rdfs:label>naphtalene (air+aerosol)</rdfs:label>
  <measurementUnit>ng/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/475">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">475</componentCode>
  <componentCaption>C8H18</componentCaption>
@@ -510,6 +586,7 @@
  <rdfs:label>n-Octane (air)</rdfs:label>
  <measurementUnit>µg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/482">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">482</componentCode>
  <componentCaption>o-C6H4-(CH3)2</componentCaption>
@@ -517,6 +594,7 @@
  <rdfs:label>o-Xylene (air)</rdfs:label>
  <measurementUnit>µg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/486">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">486</componentCode>
  <componentCaption>H3C-(CH2)3-CH3</componentCaption>
@@ -524,6 +602,7 @@
  <rdfs:label>n-Pentane (air)</rdfs:label>
  <measurementUnit>µg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/503">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">503</componentCode>
  <componentCaption>H3C-CH2-CH3</componentCaption>
@@ -531,6 +610,7 @@
  <rdfs:label>Propane (air)</rdfs:label>
  <measurementUnit>µg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/505">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">505</componentCode>
  <componentCaption>CH2=CH-CH3</componentCaption>
@@ -538,6 +618,7 @@
  <rdfs:label>Propene (air)</rdfs:label>
  <measurementUnit>µg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/520">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">520</componentCode>
  <componentCaption>SO2 + SO4--</componentCaption>
@@ -545,6 +626,7 @@
  <rdfs:label>sum_sulph_diox_sulphate (air+aerosol)</rdfs:label>
  <measurementUnit>µg S/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/604">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">604</componentCode>
  <componentCaption>Al</componentCaption>
@@ -552,6 +634,7 @@
  <rdfs:label>aluminium (aerosol)</rdfs:label>
  <measurementUnit>ng/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/606">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">606</componentCode>
  <componentCaption>Anthracene</componentCaption>
@@ -559,6 +642,7 @@
  <rdfs:label>anthracene (air+aerosol)</rdfs:label>
  <measurementUnit>ng/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/608">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">608</componentCode>
  <componentCaption>Anthracene</componentCaption>
@@ -566,6 +650,7 @@
  <rdfs:label>anthracene (precip+dry_dep)</rdfs:label>
  <measurementUnit>µg/m2/day</measurementUnit>
 </Component>
+
 <Component rdf:about="components/609">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">609</componentCode>
  <componentCaption>Benzo(a)anthracene</componentCaption>
@@ -573,6 +658,7 @@
  <rdfs:label>Benzo(a)anthracene (air+aerosol)</rdfs:label>
  <measurementUnit>ng/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/611">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">611</componentCode>
  <componentCaption>Benzo(a)anthracene</componentCaption>
@@ -580,6 +666,7 @@
  <rdfs:label>Benzo(a)anthracene (precip+dry_dep)</rdfs:label>
  <measurementUnit>µg/m2/day</measurementUnit>
 </Component>
+
 <Component rdf:about="components/616">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">616</componentCode>
  <componentCaption>Benzo(b)fluoranthene</componentCaption>
@@ -587,6 +674,7 @@
  <rdfs:label>Benzo(b)fluoranthene (air+aerosol)</rdfs:label>
  <measurementUnit>ng/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/618">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">618</componentCode>
  <componentCaption>Benzo(b)fluoranthene</componentCaption>
@@ -594,6 +682,7 @@
  <rdfs:label>Benzo(b)fluoranthene (precip+dry_dep)</rdfs:label>
  <measurementUnit>µg/m2/day</measurementUnit>
 </Component>
+
 <Component rdf:about="components/622">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">622</componentCode>
  <componentCaption>Benzo(ghi)perylene</componentCaption>
@@ -601,6 +690,7 @@
  <rdfs:label>Benzo(ghi)perylene (air+aerosol)</rdfs:label>
  <measurementUnit>ng/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/624">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">624</componentCode>
  <componentCaption>Benzo(ghi)perylene</componentCaption>
@@ -608,6 +698,7 @@
  <rdfs:label>Benzo(ghi)perylene (precip+dry_dep)</rdfs:label>
  <measurementUnit>µg/m2/day</measurementUnit>
 </Component>
+
 <Component rdf:about="components/625">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">625</componentCode>
  <componentCaption>Benzo(k)fluoranthene</componentCaption>
@@ -615,6 +706,7 @@
  <rdfs:label>Benzo(k)fluoranthene (air+aerosol)</rdfs:label>
  <measurementUnit>ng/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/627">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">627</componentCode>
  <componentCaption>Benzo(k)fluoranthene</componentCaption>
@@ -622,6 +714,7 @@
  <rdfs:label>Benzo(k)fluoranthene (precip+dry_dep)</rdfs:label>
  <measurementUnit>µg/m2/day</measurementUnit>
 </Component>
+
 <Component rdf:about="components/629">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">629</componentCode>
  <componentCaption>Ca++</componentCaption>
@@ -629,6 +722,7 @@
  <rdfs:label>calcium (aerosol)</rdfs:label>
  <measurementUnit>µg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/630">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">630</componentCode>
  <componentCaption>Ca++</componentCaption>
@@ -636,6 +730,7 @@
  <rdfs:label>calcium (precip)</rdfs:label>
  <measurementUnit>mg/l</measurementUnit>
 </Component>
+
 <Component rdf:about="components/631">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">631</componentCode>
  <componentCaption>Cl-</componentCaption>
@@ -643,6 +738,7 @@
  <rdfs:label>chloride (aerosol)</rdfs:label>
  <measurementUnit>µg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/632">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">632</componentCode>
  <componentCaption>Cl-</componentCaption>
@@ -650,6 +746,7 @@
  <rdfs:label>chloride (precip)</rdfs:label>
  <measurementUnit>mg/l</measurementUnit>
 </Component>
+
 <Component rdf:about="components/643">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">643</componentCode>
  <componentCaption>Fluoranthene</componentCaption>
@@ -657,6 +754,7 @@
  <rdfs:label>fluoranthene (air+aerosol)</rdfs:label>
  <measurementUnit>ng/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/645">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">645</componentCode>
  <componentCaption>Fluoranthene</componentCaption>
@@ -664,6 +762,7 @@
  <rdfs:label>fluoranthene (precip+dry_dep)</rdfs:label>
  <measurementUnit>µg/m2/day</measurementUnit>
 </Component>
+
 <Component rdf:about="components/648">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">648</componentCode>
  <componentCaption>H+</componentCaption>
@@ -671,6 +770,7 @@
  <rdfs:label>acidity(H+) (precip)</rdfs:label>
  <measurementUnit>ue H/l</measurementUnit>
 </Component>
+
 <Component rdf:about="components/653">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">653</componentCode>
  <componentCaption>Hg-reactive</componentCaption>
@@ -678,6 +778,7 @@
  <rdfs:label>reactive_mercury (air+aerosol)</rdfs:label>
  <measurementUnit>pg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/654">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">654</componentCode>
  <componentCaption>Indeno-(1,2,3-cd)pyrene</componentCaption>
@@ -685,6 +786,7 @@
  <rdfs:label>indeno_123cd_pyrene (air+aerosol)</rdfs:label>
  <measurementUnit>ng/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/656">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">656</componentCode>
  <componentCaption>Indeno-(1,2,3-cd)pyrene</componentCaption>
@@ -692,6 +794,7 @@
  <rdfs:label>indeno_123cd_pyrene (precip+dry_dep)</rdfs:label>
  <measurementUnit>µg/m2/day</measurementUnit>
 </Component>
+
 <Component rdf:about="components/658">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">658</componentCode>
  <componentCaption>K+</componentCaption>
@@ -699,6 +802,7 @@
  <rdfs:label>potassium (precip)</rdfs:label>
  <measurementUnit>mg/l</measurementUnit>
 </Component>
+
 <Component rdf:about="components/660">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">660</componentCode>
  <componentCaption>Mg++</componentCaption>
@@ -706,6 +810,7 @@
  <rdfs:label>magnesium (precip)</rdfs:label>
  <measurementUnit>mg/l</measurementUnit>
 </Component>
+
 <Component rdf:about="components/664">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">664</componentCode>
  <componentCaption>NH4+</componentCaption>
@@ -713,6 +818,7 @@
  <rdfs:label>ammonium (precip)</rdfs:label>
  <measurementUnit>mg N/l</measurementUnit>
 </Component>
+
 <Component rdf:about="components/666">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">666</componentCode>
  <componentCaption>NO3-</componentCaption>
@@ -720,6 +826,7 @@
  <rdfs:label>nitrate (precip)</rdfs:label>
  <measurementUnit>mg N/l</measurementUnit>
 </Component>
+
 <Component rdf:about="components/669">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">669</componentCode>
  <componentCaption>Na+</componentCaption>
@@ -727,6 +834,7 @@
  <rdfs:label>sodium (precip)</rdfs:label>
  <measurementUnit>mg/l</measurementUnit>
 </Component>
+
 <Component rdf:about="components/673">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">673</componentCode>
  <componentCaption>PCB-114</componentCaption>
@@ -734,6 +842,7 @@
  <rdfs:label>PCB_114 (air+aerosol)</rdfs:label>
  <measurementUnit>pg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/674">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">674</componentCode>
  <componentCaption>PCB-118</componentCaption>
@@ -741,6 +850,7 @@
  <rdfs:label>PCB_118 (air+aerosol)</rdfs:label>
  <measurementUnit>pg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/677">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">677</componentCode>
  <componentCaption>PCB-138</componentCaption>
@@ -748,6 +858,7 @@
  <rdfs:label>PCB_138 (air+aerosol)</rdfs:label>
  <measurementUnit>pg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/679">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">679</componentCode>
  <componentCaption>PCB-141</componentCaption>
@@ -755,6 +866,7 @@
  <rdfs:label>PCB_141 (air+aerosol)</rdfs:label>
  <measurementUnit>pg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/680">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">680</componentCode>
  <componentCaption>PCB-153</componentCaption>
@@ -762,6 +874,7 @@
  <rdfs:label>PCB_153 (air+aerosol)</rdfs:label>
  <measurementUnit>pg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/683">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">683</componentCode>
  <componentCaption>PCB-157</componentCaption>
@@ -769,6 +882,7 @@
  <rdfs:label>PCB_157 (air+aerosol)</rdfs:label>
  <measurementUnit>pg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/684">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">684</componentCode>
  <componentCaption>PCB-167</componentCaption>
@@ -776,6 +890,7 @@
  <rdfs:label>PCB_167 (air+aerosol)</rdfs:label>
  <measurementUnit>pg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/685">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">685</componentCode>
  <componentCaption>PCB-170</componentCaption>
@@ -783,6 +898,7 @@
  <rdfs:label>PCB_170 (air+aerosol)</rdfs:label>
  <measurementUnit>pg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/686">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">686</componentCode>
  <componentCaption>PCB-180</componentCaption>
@@ -790,6 +906,7 @@
  <rdfs:label>PCB_180 (air+aerosol)</rdfs:label>
  <measurementUnit>pg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/689">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">689</componentCode>
  <componentCaption>PCB-183</componentCaption>
@@ -797,6 +914,7 @@
  <rdfs:label>PCB_183 (air+aerosol)</rdfs:label>
  <measurementUnit>pg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/690">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">690</componentCode>
  <componentCaption>PCB-187</componentCaption>
@@ -804,6 +922,7 @@
  <rdfs:label>PCB_187 (air+aerosol)</rdfs:label>
  <measurementUnit>pg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/691">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">691</componentCode>
  <componentCaption>PCB-189</componentCaption>
@@ -811,6 +930,7 @@
  <rdfs:label>PCB_189 (air+aerosol)</rdfs:label>
  <measurementUnit>pg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/692">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">692</componentCode>
  <componentCaption>PCB-194</componentCaption>
@@ -818,6 +938,7 @@
  <rdfs:label>PCB_194 (air+aerosol)</rdfs:label>
  <measurementUnit>pg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/695">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">695</componentCode>
  <componentCaption>PCB-28</componentCaption>
@@ -825,6 +946,7 @@
  <rdfs:label>PCB_28 (air+aerosol)</rdfs:label>
  <measurementUnit>pg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/701">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">701</componentCode>
  <componentCaption>PCB-52</componentCaption>
@@ -832,6 +954,7 @@
  <rdfs:label>PCB_52 (air+aerosol)</rdfs:label>
  <measurementUnit>pg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/706">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">706</componentCode>
  <componentCaption>PCB-74</componentCaption>
@@ -839,6 +962,7 @@
  <rdfs:label>PCB_74 (air+aerosol)</rdfs:label>
  <measurementUnit>pg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/707">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">707</componentCode>
  <componentCaption>PCB-99</componentCaption>
@@ -846,6 +970,7 @@
  <rdfs:label>PCB_99 (air+aerosol)</rdfs:label>
  <measurementUnit>pg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/709">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">709</componentCode>
  <componentCaption>PCB_123</componentCaption>
@@ -853,6 +978,7 @@
  <rdfs:label>PCB_123 (air+aerosol)</rdfs:label>
  <measurementUnit>pg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/712">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">712</componentCode>
  <componentCaption>Phenanthrene</componentCaption>
@@ -860,6 +986,7 @@
  <rdfs:label>phenanthrene (air+aerosol)</rdfs:label>
  <measurementUnit>ng/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/714">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">714</componentCode>
  <componentCaption>Phenanthrene</componentCaption>
@@ -867,6 +994,7 @@
  <rdfs:label>phenanthrene (precip+dry_dep)</rdfs:label>
  <measurementUnit>µg/m2/day</measurementUnit>
 </Component>
+
 <Component rdf:about="components/715">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">715</componentCode>
  <componentCaption>Pyrene</componentCaption>
@@ -874,6 +1002,7 @@
  <rdfs:label>pyrene (air+aerosol)</rdfs:label>
  <measurementUnit>ng/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/717">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">717</componentCode>
  <componentCaption>Pyrene</componentCaption>
@@ -881,6 +1010,7 @@
  <rdfs:label>pyrene (precip+dry_dep)</rdfs:label>
  <measurementUnit>µg/m2/day</measurementUnit>
 </Component>
+
 <Component rdf:about="components/719">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">719</componentCode>
  <componentCaption>SO4--</componentCaption>
@@ -888,6 +1018,7 @@
  <rdfs:label>sulphate (precip)</rdfs:label>
  <measurementUnit>mg S/l</measurementUnit>
 </Component>
+
 <Component rdf:about="components/753">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">753</componentCode>
  <componentCaption>precip_amount</componentCaption>
@@ -895,6 +1026,7 @@
  <rdfs:label>precipitation_amount (precip)</rdfs:label>
  <measurementUnit>mm</measurementUnit>
 </Component>
+
 <Component rdf:about="components/754">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">754</componentCode>
  <componentCaption>precip_amount_off</componentCaption>
@@ -902,6 +1034,7 @@
  <rdfs:label>precipitation_amount_off (precip)</rdfs:label>
  <measurementUnit>mm</measurementUnit>
 </Component>
+
 <Component rdf:about="components/760">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">760</componentCode>
  <componentCaption>Benzo(j)fluoranthene</componentCaption>
@@ -909,6 +1042,7 @@
  <rdfs:label>Benzo(j)fluoranthene (precip+dry_dep)</rdfs:label>
  <measurementUnit>µg/m2/day</measurementUnit>
 </Component>
+
 <Component rdf:about="components/762">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">762</componentCode>
  <componentCaption>Benzo(j)fluoranthene</componentCaption>
@@ -916,6 +1050,7 @@
  <rdfs:label>Benzo(j)fluoranthene (air+aerosol)</rdfs:label>
  <measurementUnit>ng/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/1029">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1029</componentCode>
  <componentCaption>BaP in PM2.5</componentCaption>
@@ -923,6 +1058,7 @@
  <rdfs:label>Benzo(a)pyrene in PM2.5 (aerosol)</rdfs:label>
  <measurementUnit>ng/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/1045">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1045</componentCode>
  <componentCaption>NH4+ in PM2.5</componentCaption>
@@ -930,6 +1066,7 @@
  <rdfs:label>Ammonium in PM2.5 (aerosol)</rdfs:label>
  <measurementUnit>µg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/1046">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1046</componentCode>
  <componentCaption>NO3- in PM2.5</componentCaption>
@@ -937,6 +1074,7 @@
  <rdfs:label>Nitrate in PM2.5 (aerosol)</rdfs:label>
  <measurementUnit>µg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/1047">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1047</componentCode>
  <componentCaption>SO42- in PM2.5</componentCaption>
@@ -944,6 +1082,7 @@
  <rdfs:label>sulphate in PM2.5 (aerosol)</rdfs:label>
  <measurementUnit>µg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/1629">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1629</componentCode>
  <componentCaption>Ca2+ in PM2.5</componentCaption>
@@ -951,6 +1090,7 @@
  <rdfs:label>calcium in PM2.5 (aerosol)</rdfs:label>
  <measurementUnit>µg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/1631">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1631</componentCode>
  <componentCaption>Cl- in PM2.5</componentCaption>
@@ -958,6 +1098,7 @@
  <rdfs:label>chloride in PM2.5 (aerosol)</rdfs:label>
  <measurementUnit>µg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/1657">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1657</componentCode>
  <componentCaption>K+ in PM2.5</componentCaption>
@@ -965,6 +1106,7 @@
  <rdfs:label>potassium in PM2.5 (aerosol)</rdfs:label>
  <measurementUnit>µg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/1659">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1659</componentCode>
  <componentCaption>Mg2+ in PM2.5</componentCaption>
@@ -972,6 +1114,7 @@
  <rdfs:label>magnesium  in PM2.5 (aerosol)</rdfs:label>
  <measurementUnit>µg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/1668">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1668</componentCode>
  <componentCaption>Na+  in PM2.5</componentCaption>
@@ -979,6 +1122,7 @@
  <rdfs:label>sodium in PM2.5 (aerosol)</rdfs:label>
  <measurementUnit>µg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/1771">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1771</componentCode>
  <componentCaption>EC in PM2.5</componentCaption>
@@ -986,6 +1130,7 @@
  <rdfs:label>Elemental carbon in PM2.5 (aerosol)</rdfs:label>
  <measurementUnit>µg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/1772">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1772</componentCode>
  <componentCaption>OC in PM2.5</componentCaption>
@@ -993,6 +1138,7 @@
  <rdfs:label>Organic carbon in PM2.5 (aerosol)</rdfs:label>
  <measurementUnit>µg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/2012">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">2012</componentCode>
  <componentCaption>Pb</componentCaption>
@@ -1000,6 +1146,7 @@
  <rdfs:label>Lead (precip)</rdfs:label>
  <measurementUnit>µg/l</measurementUnit>
 </Component>
+
 <Component rdf:about="components/2013">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">2013</componentCode>
  <componentCaption>Hg</componentCaption>
@@ -1007,6 +1154,7 @@
  <rdfs:label>Mercury (precip)</rdfs:label>
  <measurementUnit>ng/l</measurementUnit>
 </Component>
+
 <Component rdf:about="components/2014">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">2014</componentCode>
  <componentCaption>Cd</componentCaption>
@@ -1014,6 +1162,7 @@
  <rdfs:label>Cadmium (precip)</rdfs:label>
  <measurementUnit>µg/l</measurementUnit>
 </Component>
+
 <Component rdf:about="components/2015">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">2015</componentCode>
  <componentCaption>Ni</componentCaption>
@@ -1021,6 +1170,7 @@
  <rdfs:label>Nickel (precip)</rdfs:label>
  <measurementUnit>µg/l</measurementUnit>
 </Component>
+
 <Component rdf:about="components/2018">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">2018</componentCode>
  <componentCaption>As</componentCaption>
@@ -1028,6 +1178,7 @@
  <rdfs:label>Arsenic (precip)</rdfs:label>
  <measurementUnit>µg/l</measurementUnit>
 </Component>
+
 <Component rdf:about="components/2063">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">2063</componentCode>
  <componentCaption>Zn</componentCaption>
@@ -1035,6 +1186,7 @@
  <rdfs:label>Zinc (precip)</rdfs:label>
  <measurementUnit>µg/l</measurementUnit>
 </Component>
+
 <Component rdf:about="components/2065">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">2065</componentCode>
  <componentCaption>Fe</componentCaption>
@@ -1042,6 +1194,7 @@
  <rdfs:label>Iron (precip)</rdfs:label>
  <measurementUnit>µg/l</measurementUnit>
 </Component>
+
 <Component rdf:about="components/2073">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">2073</componentCode>
  <componentCaption>Cu</componentCaption>
@@ -1049,6 +1202,7 @@
  <rdfs:label>Copper (precip)</rdfs:label>
  <measurementUnit>µg/l</measurementUnit>
 </Component>
+
 <Component rdf:about="components/2076">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">2076</componentCode>
  <componentCaption>pH</componentCaption>
@@ -1056,6 +1210,7 @@
  <rdfs:label>acidity(pH) (precip)</rdfs:label>
  <measurementUnit>pH units</measurementUnit>
 </Component>
+
 <Component rdf:about="components/4013">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">4013</componentCode>
  <componentCaption>Hg</componentCaption>
@@ -1063,6 +1218,7 @@
  <rdfs:label>Mercury (air+aerosol)</rdfs:label>
  <measurementUnit>ng/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/4330">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">4330</componentCode>
  <componentCaption>PCB-105</componentCaption>
@@ -1070,6 +1226,7 @@
  <rdfs:label>PCB_105 (air+aerosol)</rdfs:label>
  <measurementUnit>pg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/4336">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">4336</componentCode>
  <componentCaption>PCB-149</componentCaption>
@@ -1077,6 +1234,7 @@
  <rdfs:label>PCB_149 (air+aerosol)</rdfs:label>
  <measurementUnit>pg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/4339">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">4339</componentCode>
  <componentCaption>PCB-156</componentCaption>
@@ -1084,6 +1242,7 @@
  <rdfs:label>PCB_156 (air+aerosol)</rdfs:label>
  <measurementUnit>pg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/4341">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">4341</componentCode>
  <componentCaption>PCB-18</componentCaption>
@@ -1091,6 +1250,7 @@
  <rdfs:label>PCB_18 (air+aerosol)</rdfs:label>
  <measurementUnit>pg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/4347">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">4347</componentCode>
  <componentCaption>PCB-31</componentCaption>
@@ -1098,6 +1258,7 @@
  <rdfs:label>PCB_31 (air+aerosol)</rdfs:label>
  <measurementUnit>pg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/4406">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">4406</componentCode>
  <componentCaption>Chrysene</componentCaption>
@@ -1105,6 +1266,7 @@
  <rdfs:label>chrysene (air+aerosol)</rdfs:label>
  <measurementUnit>ng/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/4813">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">4813</componentCode>
  <componentCaption>Hg0 + Hg-reactive</componentCaption>
@@ -1112,6 +1274,7 @@
  <rdfs:label>Total gaseous mercury (air+aerosol)</rdfs:label>
  <measurementUnit>ng/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/5012">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">5012</componentCode>
  <componentCaption>Pb in PM10</componentCaption>
@@ -1119,6 +1282,7 @@
  <rdfs:label>Lead in PM10 (aerosol)</rdfs:label>
  <measurementUnit>µg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/5013">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">5013</componentCode>
  <componentCaption>Hg in PM10</componentCaption>
@@ -1126,6 +1290,7 @@
  <rdfs:label>Mercury in PM10 (aerosol)</rdfs:label>
  <measurementUnit>ng/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/5014">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">5014</componentCode>
  <componentCaption>Cd in PM10</componentCaption>
@@ -1133,6 +1298,7 @@
  <rdfs:label>Cadmium in PM10 (aerosol)</rdfs:label>
  <measurementUnit>ng/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/5015">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">5015</componentCode>
  <componentCaption>Ni in PM10</componentCaption>
@@ -1140,6 +1306,7 @@
  <rdfs:label>Nickel in PM10 (aerosol)</rdfs:label>
  <measurementUnit>ng/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/5018">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">5018</componentCode>
  <componentCaption>As in PM10</componentCaption>
@@ -1147,6 +1314,7 @@
  <rdfs:label>Arsenic in PM10 (aerosol)</rdfs:label>
  <measurementUnit>ng/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/5029">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">5029</componentCode>
  <componentCaption>BaP in PM10</componentCaption>
@@ -1154,6 +1322,7 @@
  <rdfs:label>Benzo(a)pyrene in PM10 (aerosol)</rdfs:label>
  <measurementUnit>ng/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/5129">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">5129</componentCode>
  <componentCaption>BaP in PM10</componentCaption>
@@ -1161,6 +1330,7 @@
  <rdfs:label>Benzo(a)pyrene in PM10 (air+aerosol)</rdfs:label>
  <measurementUnit>ng/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/5380">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">5380</componentCode>
  <componentCaption>Benzo(b,j,k)fluorantheneInPM1</componentCaption>
@@ -1168,6 +1338,7 @@
  <rdfs:label>Benzo(b,j,k)fluoranthene in PM10 (aerosol)</rdfs:label>
  <measurementUnit>ng/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/5419">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">5419</componentCode>
  <componentCaption>Dibenzo(ah)anthracene in PM10</componentCaption>
@@ -1175,6 +1346,7 @@
  <rdfs:label>Dibenzo(ah)anthracene in PM10 (aerosol)</rdfs:label>
  <measurementUnit>ng/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/5609">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">5609</componentCode>
  <componentCaption>Benzo(a)anthracene in PM10</componentCaption>
@@ -1182,6 +1354,7 @@
  <rdfs:label>Benzo(a)anthracene in PM10 (air+aerosol)</rdfs:label>
  <measurementUnit>ng/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/5610">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">5610</componentCode>
  <componentCaption>Benzo(a)anthracene in PM10</componentCaption>
@@ -1189,6 +1362,7 @@
  <rdfs:label>Benzo(a)anthracene in PM10 (aerosol)</rdfs:label>
  <measurementUnit>ng/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/5616">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">5616</componentCode>
  <componentCaption>Benzo(b)fluoranthene in PM10</componentCaption>
@@ -1196,6 +1370,7 @@
  <rdfs:label>Benzo(b)fluoranthene in PM10 (air+aerosol)</rdfs:label>
  <measurementUnit>ng/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/5617">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">5617</componentCode>
  <componentCaption>Benzo(b)fluoranthene in PM10</componentCaption>
@@ -1203,6 +1378,7 @@
  <rdfs:label>Benzo(b)fluoranthene in PM10 (aerosol)</rdfs:label>
  <measurementUnit>ng/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/5625">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">5625</componentCode>
  <componentCaption>Benzo(k)fluoranthene in PM10</componentCaption>
@@ -1210,6 +1386,7 @@
  <rdfs:label>Benzo(k)fluoranthene in PM10 (air+aerosol)</rdfs:label>
  <measurementUnit>ng/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/5626">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">5626</componentCode>
  <componentCaption>Benzo(k)fluoranthene in PM10</componentCaption>
@@ -1217,6 +1394,7 @@
  <rdfs:label>Benzo(k)fluoranthene in PM10 (aerosol)</rdfs:label>
  <measurementUnit>ng/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/5654">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">5654</componentCode>
  <componentCaption>Indeno-(1,2,3-cd)pyrene in PM</componentCaption>
@@ -1224,6 +1402,7 @@
  <rdfs:label>indeno_123cd_pyrene in PM10 (air+aerosol)</rdfs:label>
  <measurementUnit>ng/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/5655">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">5655</componentCode>
  <componentCaption>Indeno-(1,2,3-cd)pyrene in PM</componentCaption>
@@ -1231,6 +1410,7 @@
  <rdfs:label>indeno_123cd_pyrene in PM10 (aerosol)</rdfs:label>
  <measurementUnit>ng/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/5759">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">5759</componentCode>
  <componentCaption>Benzo(j)fluoranthene in PM10</componentCaption>
@@ -1238,6 +1418,7 @@
  <rdfs:label>Benzo(j)fluoranthene in PM10 (aerosol)</rdfs:label>
  <measurementUnit>ng/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/5762">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">5762</componentCode>
  <componentCaption>Benzo(j)fluoranthene in PM10</componentCaption>
@@ -1245,6 +1426,7 @@
  <rdfs:label>Benzo(j)fluoranthene in PM10 (air+aerosol)</rdfs:label>
  <measurementUnit>ng/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/5763">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">5763</componentCode>
  <componentCaption>Dibenzo(ah)anthracene in PM10</componentCaption>
@@ -1252,6 +1434,7 @@
  <rdfs:label>Dibenzo(ah)anthracene in PM10 (air+aerosol)</rdfs:label>
  <measurementUnit>ng/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/6001">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">6001</componentCode>
  <componentCaption>PM2.5</componentCaption>
@@ -1259,6 +1442,7 @@
  <rdfs:label>Particulate matter &lt; 2.5 µm (aerosol)</rdfs:label>
  <measurementUnit>µg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/6002">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">6002</componentCode>
  <componentCaption>PM1</componentCaption>
@@ -1266,6 +1450,7 @@
  <rdfs:label>Particulate matter &lt; 1 µm (aerosol)</rdfs:label>
  <measurementUnit>µg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/6005">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">6005</componentCode>
  <componentCaption>H2C=CH-CH2-CH3</componentCaption>
@@ -1273,6 +1458,7 @@
  <rdfs:label>1-Butene (air)</rdfs:label>
  <measurementUnit>µg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/6006">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">6006</componentCode>
  <componentCaption>trans-H3C-CH=CH-CH3</componentCaption>
@@ -1280,6 +1466,7 @@
  <rdfs:label>trans-2-Butene (air)</rdfs:label>
  <measurementUnit>µg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/6007">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">6007</componentCode>
  <componentCaption>cis-H3C-CH=CH-CH3</componentCaption>
@@ -1287,6 +1474,7 @@
  <rdfs:label>cis-2-Butene (air)</rdfs:label>
  <measurementUnit>µg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/6008">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">6008</componentCode>
  <componentCaption>H2C=CH-CH2-CH2-CH3</componentCaption>
@@ -1294,6 +1482,7 @@
  <rdfs:label>1-Pentene (air)</rdfs:label>
  <measurementUnit>µg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/6009">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">6009</componentCode>
  <componentCaption>H3C-HC=CH-CH2-CH3</componentCaption>
@@ -1301,6 +1490,7 @@
  <rdfs:label>2-Pentenes (air)</rdfs:label>
  <measurementUnit>µg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/6011">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">6011</componentCode>
  <componentCaption>1,2,4-C6H3(CH3)3</componentCaption>
@@ -1308,6 +1498,7 @@
  <rdfs:label>1,2,4-Trimethylbenzene (air)</rdfs:label>
  <measurementUnit>µg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/6012">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">6012</componentCode>
  <componentCaption>1,2,3-C6H3(CH3)3</componentCaption>
@@ -1315,6 +1506,7 @@
  <rdfs:label>1,2,3-Trimethylbenzene (air)</rdfs:label>
  <measurementUnit>µg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/6013">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">6013</componentCode>
  <componentCaption>1,3,5-C6H3(CH3)3</componentCaption>
@@ -1322,6 +1514,7 @@
  <rdfs:label>1,3,5-Trimethylbenzene (air)</rdfs:label>
  <measurementUnit>µg/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/6015">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">6015</componentCode>
  <componentCaption>BaP</componentCaption>
@@ -1329,6 +1522,7 @@
  <rdfs:label>Benzo(a)pyrene (air+aerosol)</rdfs:label>
  <measurementUnit>ng/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/6380">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">6380</componentCode>
  <componentCaption>Benzo(b,j,k)fluorantheneInPM1</componentCaption>
@@ -1336,6 +1530,7 @@
  <rdfs:label>Benzo(b,j,k)fluoranthene in PM10 (air+aerosol)</rdfs:label>
  <measurementUnit>ng/m3</measurementUnit>
 </Component>
+
 <Component rdf:about="components/7012">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">7012</componentCode>
  <componentCaption>Pb</componentCaption>
@@ -1343,6 +1538,7 @@
  <rdfs:label>Lead (precip+dry_dep)</rdfs:label>
  <measurementUnit>µg/m2/day</measurementUnit>
 </Component>
+
 <Component rdf:about="components/7013">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">7013</componentCode>
  <componentCaption>Hg</componentCaption>
@@ -1350,6 +1546,7 @@
  <rdfs:label>Mercury (precip+dry_dep)</rdfs:label>
  <measurementUnit>µg/m2/day</measurementUnit>
 </Component>
+
 <Component rdf:about="components/7014">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">7014</componentCode>
  <componentCaption>Cd</componentCaption>
@@ -1357,6 +1554,7 @@
  <rdfs:label>Cadmium (precip+dry_dep)</rdfs:label>
  <measurementUnit>µg/m2/day</measurementUnit>
 </Component>
+
 <Component rdf:about="components/7015">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">7015</componentCode>
  <componentCaption>Ni</componentCaption>
@@ -1364,6 +1562,7 @@
  <rdfs:label>Nickel (precip+dry_dep)</rdfs:label>
  <measurementUnit>µg/m2/day</measurementUnit>
 </Component>
+
 <Component rdf:about="components/7018">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">7018</componentCode>
  <componentCaption>As</componentCaption>
@@ -1371,6 +1570,7 @@
  <rdfs:label>Arsenic (precip+dry_dep)</rdfs:label>
  <measurementUnit>µg/m2/day</measurementUnit>
 </Component>
+
 <Component rdf:about="components/7029">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">7029</componentCode>
  <componentCaption>BaP</componentCaption>
@@ -1378,6 +1578,7 @@
  <rdfs:label>Benzo(a)pyrene (precip+dry_dep)</rdfs:label>
  <measurementUnit>ng/m2/day</measurementUnit>
 </Component>
+
 <Component rdf:about="components/7380">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">7380</componentCode>
  <componentCaption>Benzo(b,j,k)fluoranthene</componentCaption>
@@ -1385,6 +1586,7 @@
  <rdfs:label>Benzo(b,j,k)fluoranthene (precip+dry_dep)</rdfs:label>
  <measurementUnit>µg/m2/day</measurementUnit>
 </Component>
+
 <Component rdf:about="components/7419">
  <componentCode rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">7419</componentCode>
  <componentCaption>Dibenzo(ah)anthracene</componentCaption>
