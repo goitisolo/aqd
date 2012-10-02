@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet version="1.0"
         xmlns:fn="http://www.w3.org/2005/xpath-functions"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xmlns:sparql="http://www.w3.org/2005/sparql-results#"
         xmlns:xs="http://www.w3.org/2001/XMLSchema"
         xmlns:aqd="http://www.eionet.europa.eu/aqportal/Drep1"
@@ -38,6 +39,7 @@
   <html>
   <head>
 	<style>
+                .errormsg { background: #ffe0e0; font-size: 120%; padding: 0.2em; border: 1px solid blue; margin: 0.5em; }
                 th[scope="row"] {
                     text-align: left;
                     vertical-align:top;
@@ -51,8 +53,8 @@
 <!-- Booby traps -->
   <xsl:for-each select="//aqdold:*">
     <xsl:if test="position() = 1">
-      <div style="background: #e0e0e0">
-      <h1>This file is using an obsolete namespace (http://www.exampleURI.com/AQD) for the aqd prefix</h1>
+      <div class="errormsg">
+      <p>This file is using an obsolete namespace (http://www.exampleURI.com/AQD) for the aqd prefix</p>
       <p>The correct one is http://www.eionet.europa.eu/aqportal/Drep1</p>
       </div>
     </xsl:if>
@@ -65,6 +67,15 @@
 
 <xsl:template match="gml:FeatureCollection">
   <h1>Features in this file</h1>
+<!-- Booby traps -->
+  <xsl:if test="not(contains(@xsi:schemaLocation,'http://dd.eionet.europa.eu/schemas/'))">
+      <div class="errormsg">
+      <p>Error: AQD schema found in xsi:schemaLocation without full URL or wrong URL!<br/>
+      Found: <xsl:value-of select="@xsi:schemaLocation"/><br/>
+      Correct syntax: "http://www.eionet.europa.eu/aqportal/Drep1 http://dd.eionet.europa.eu/schemas/id2011850eu/AQD.xsd" or later version.
+      </p>
+      </div>
+  </xsl:if>
 
 <!-- Reporting authorities -->
   <xsl:for-each select="aqd:AQD_ReportingUnits/am-ru:reportingAuthority">
