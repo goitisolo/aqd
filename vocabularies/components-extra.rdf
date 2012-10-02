@@ -180,6 +180,7 @@ xml:base="http://rdfdata.eionet.europa.eu/airbase/">
   </rdf:Description>
 
   <rdf:Description rdf:about="components/34">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/1713"/>
     <elementName>Peroxyacetyl nitrate</elementName>
     <matrix>air</matrix>
   </rdf:Description>
@@ -290,6 +291,7 @@ xml:base="http://rdfdata.eionet.europa.eu/airbase/">
   </rdf:Description>
 
   <rdf:Description rdf:about="components/316">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/1574"/>
     <elementName>i-Hexane (2-methylpentane)</elementName>
     <elementAlt>i-Hexane</elementAlt>
     <elementAlt>2-methylpentane</elementAlt>
@@ -302,16 +304,19 @@ xml:base="http://rdfdata.eionet.europa.eu/airbase/">
   </rdf:Description>
 
   <rdf:Description rdf:about="components/351">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/1228"/>
     <elementName>Acenaphthene</elementName>
     <matrix>air+aerosol</matrix>
   </rdf:Description>
 
   <rdf:Description rdf:about="components/352">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/1229"/>
     <elementName>Acenaphtylene</elementName>
     <matrix>air+aerosol</matrix>
   </rdf:Description>
 
   <rdf:Description rdf:about="components/380">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/47"/>
     <elementName>Benzo(b+j+k)fluoranthenes</elementName>
     <matrix>air+aerosol</matrix>
   </rdf:Description>
@@ -323,6 +328,7 @@ xml:base="http://rdfdata.eionet.europa.eu/airbase/">
   </rdf:Description>
 
   <rdf:Description rdf:about="components/394">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/1714"/>
     <elementName>n-Butane</elementName>
     <matrix>air</matrix>
   </rdf:Description>
@@ -367,21 +373,25 @@ xml:base="http://rdfdata.eionet.europa.eu/airbase/">
   </rdf:Description>
 
   <rdf:Description rdf:about="components/435">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/674"/>
     <elementName>Fluorene</elementName>
     <matrix>air+aerosol</matrix>
   </rdf:Description>
 
   <rdf:Description rdf:about="components/441">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/559"/>
     <elementName>n-Heptane</elementName>
     <matrix>air</matrix>
   </rdf:Description>
 
   <rdf:Description rdf:about="components/443">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/548"/>
     <elementName>n-Hexane</elementName>
     <matrix>air</matrix>
   </rdf:Description>
 
   <rdf:Description rdf:about="components/447">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/1715"/>
     <elementName>i-Butane (2-methylpropane)</elementName>
     <elementAlt>i-Butane</elementAlt>
     <elementAlt>2-methylpropane</elementAlt>
@@ -614,6 +624,7 @@ xml:base="http://rdfdata.eionet.europa.eu/airbase/">
   </rdf:Description>
 
   <rdf:Description rdf:about="components/673">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/1716"/>
     <elementName>PCB_114</elementName>
     <matrix>air+aerosol</matrix>
   </rdf:Description>
@@ -631,6 +642,7 @@ xml:base="http://rdfdata.eionet.europa.eu/airbase/">
   </rdf:Description>
 
   <rdf:Description rdf:about="components/679">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/1717"/>
     <elementName>PCB_141</elementName>
     <matrix>air+aerosol</matrix>
   </rdf:Description>
@@ -642,11 +654,13 @@ xml:base="http://rdfdata.eionet.europa.eu/airbase/">
   </rdf:Description>
 
   <rdf:Description rdf:about="components/683">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/1718"/>
     <elementName>PCB_157</elementName>
     <matrix>air+aerosol</matrix>
   </rdf:Description>
 
   <rdf:Description rdf:about="components/684">
+    <determinant rdf:resource="http://rdfdata.eionet.europa.eu/eea/determinants/1719"/>
     <elementName>PCB_167</elementName>
     <matrix>air+aerosol</matrix>
   </rdf:Description>
