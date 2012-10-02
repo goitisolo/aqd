@@ -39,7 +39,8 @@
   <html>
   <head>
 	<style>
-                .errormsg { background: #ffe0e0; font-size: 120%; padding: 0.2em; border: 1px solid blue; margin: 0.5em; }
+                .errormsg { background: #ffe0e0; font-size: 120%; padding: 0.2em; border: 1px solid darkred; margin: 0.5em; }
+                .inlineerror { background: #ffe0e0; font-weight: bold; padding: 0 0.2em; border: 1px solid darkred; margin: 0.1em 0.1em 0.1em 0.6em; }
                 th[scope="row"] {
                     text-align: left;
                     vertical-align:top;
@@ -225,7 +226,7 @@
     <xsl:param name="node" select="."/>
     <xsl:value-of select="$node"/>
     <xsl:if test="contains($node,'/page')">
-     <b> ["/page/" found. Illegal URL!]</b>
+     <span class="inlineerror">"/page/" found. Illegal URL!</span>
     </xsl:if>
 </xsl:template>
 
