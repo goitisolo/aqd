@@ -4,7 +4,8 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xmlns:sparql="http://www.w3.org/2005/sparql-results#"
         xmlns:xs="http://www.w3.org/2001/XMLSchema"
-        xmlns:aqd="http://www.eionet.europa.eu/aqportal/Drep1"
+        xmlns:aqd="http://dd.eionet.europa.eu/schemas/id2011850eu"
+        xmlns:aqd1="http://www.eionet.europa.eu/aqportal/Drep1"
         xmlns:aqdold="http://www.exampleURI.com/AQD"
         xmlns:base="urn:x-inspire:specification:gmlas:BaseTypes:3.2"
         xmlns:gmd="http://www.isotc211.org/2005/gmd"
@@ -56,10 +57,20 @@
     <xsl:if test="position() = 1">
       <div class="errormsg">
       <p>This file is using an obsolete namespace (http://www.exampleURI.com/AQD) for the aqd prefix</p>
-      <p>The correct one is http://www.eionet.europa.eu/aqportal/Drep1</p>
+      <p>The correct one is http://dd.eionet.europa.eu/schemas/id2011850eu</p>
       </div>
     </xsl:if>
   </xsl:for-each>
+
+  <xsl:for-each select="//aqd1:*">
+    <xsl:if test="position() = 1">
+      <div class="errormsg">
+      <p>This file is using an obsolete namespace (http://www.eionet.europa.eu/aqportal/Drep1) for the aqd prefix</p>
+      <p>The correct one is http://dd.eionet.europa.eu/schemas/id2011850eu</p>
+      </div>
+    </xsl:if>
+  </xsl:for-each>
+
 
   <xsl:apply-templates/>
   </body>
@@ -83,6 +94,21 @@
     <h2><xsl:attribute name="id"><xsl:value-of select="@gml:id"/></xsl:attribute>Reporting authority: nr. <xsl:value-of select="position()"/>:
      <xsl:value-of select="@gml:id"/></h2>
     <div><xsl:value-of select="gmd:CI_ResponsibleParty"/></div>
+  </xsl:for-each>
+
+<!-- Attainment regimes -->
+  <xsl:for-each select="gml:featureMember/aqd:AQD_Attainment">
+    <h2><xsl:attribute name="id"><xsl:value-of select="@gml:id"/></xsl:attribute>Attainment regime: nr. <xsl:value-of select="position()"/>:
+     <xsl:value-of select="@gml:id"/></h2>
+    <table class="tbl">
+    <tr><th scope="row">Zone</th><td><xsl:call-template name="datavalue"><xsl:with-param name="node" select="aqd:zone"/></xsl:call-template></td></tr>
+    <tr><th scope="row">Pollutant</th><td><xsl:call-template name="pollutantUrl"><xsl:with-param name="node" select="aqd:pollutant"/></xsl:call-template></td></tr>
+    <tr><th scope="row">Objective type</th><td><xsl:call-template name="datavalue"><xsl:with-param name="node" select="aqd:environmentalObjective/aqd:objectiveType"/></xsl:call-template></td></tr>
+    <tr><th scope="row">Reporting metric</th><td><xsl:call-template name="datavalue"><xsl:with-param name="node" select="aqd:environmentalObjective/aqd:reportingMetric"/></xsl:call-template></td></tr>
+    <tr><th scope="row">Protection target</th><td><xsl:call-template name="datavalue"><xsl:with-param name="node" select="aqd:environmentalObjective/aqd:protectionTarget"/></xsl:call-template></td></tr>
+    <tr><th scope="row">Exceedance objective</th><td><xsl:call-template name="datavalue"><xsl:with-param name="node" select="aqd:exceedanceObjective"/></xsl:call-template></td></tr>
+    <tr><th scope="row">Assessment</th><td><xsl:call-template name="datavalue"><xsl:with-param name="node" select="aqd:assessment"/></xsl:call-template></td></tr>
+    </table>
   </xsl:for-each>
 
 <!-- Reporting units -->
@@ -160,7 +186,6 @@
     <table class="tbl">
     <tr><th scope="row">Phenomenon time</th><td><xsl:call-template name="time_period"><xsl:with-param name="node" select="om:phenomenonTime"/></xsl:call-template></td></tr>
     <tr><th scope="row">Result time</th><td><xsl:value-of select="om:resultTime/gml:TimeInstant/gml:timePosition"/></td></tr>
-    <tr><th scope="row">Procedure</th><td><xsl:call-template name="datavalue"><xsl:with-param name="node" select="om:procedure"/></xsl:call-template></td></tr>
     <tr><th scope="row">Observed property</th><td><xsl:call-template name="datavalue"><xsl:with-param name="node" select="om:observedProperty"/></xsl:call-template></td></tr>
     <tr><th scope="row">Feature of interest</th><td><xsl:call-template name="datavalue"><xsl:with-param name="node" select="om:featureOfInterest"/></xsl:call-template></td></tr>
     <tr><th scope="row">Result</th><td>
