@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet href="showashtml.xsl" type="text/xsl"?>
 <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/"
  xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
  xmlns:owl="http://www.w3.org/2002/07/owl#"
@@ -8,49 +9,73 @@
  xmlns:dcterms="http://purl.org/dc/terms/"
  xml:base="http://rdfdata.eionet.europa.eu/airbase/averagingperiod/">
 
+  <ConceptScheme rdf:about="">
+      <rdfs:label>Averaging period</rdfs:label>
+      <dcterms:date rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2012-07-17T14:37:54</dcterms:date>
+  </ConceptScheme>
+
+
 <Concept rdf:about="1">
     <notation>1h</notation>
     <prefLabel>1 hour</prefLabel>
     <definition>The hourly average or hour mean is the average of all valid minute values for an hour. An hourly average is calculated if at least 45 valid minutes values are available.</definition>
+    <inScheme rdf:resource=""/>
 </Concept>
+
 <Concept rdf:about="2">
     <notation>8h</notation>
     <prefLabel>8 hours</prefLabel>
     <definition>The 8-hour running mean value for each hour is calculated as the average of the valid values for that hour and the 7 foregoing hours (averaging period). So, the averaging period of hour1 of dayn is hour17 of dayn-1 until hour1 of dayn. The averaging period of hour24 of dayn is hour16 of dayn until hour24 of dayn. A 8-hourly running averaged concentration is calculated if at least 6 valid hourly values are available.</definition>
+    <inScheme rdf:resource=""/>
 </Concept>
+
 <Concept rdf:about="3">
     <notation>maxd8h</notation>
     <prefLabel>Maximum daily eight-hour mean</prefLabel>
     <definition>The daily maximum 8-hour running mean for a day is the maximum of the valid hourly 8-hour running means for that day. A daily maximum 8-hour mean is calculated if at least 18 valid hourly 8-hour running means are available for that particular day.</definition>
+    <inScheme rdf:resource=""/>
 </Concept>
+
 <Concept rdf:about="4">
     <notation>1d</notation>
     <prefLabel>1 day</prefLabel>
     <definition>The daily average or daily mean is the average of all valid hourly values for a day. A daily or 24-hourly average is calculated if at least 18 valid hourly values are available.</definition>
+    <inScheme rdf:resource=""/>
 </Concept>
+
 <Concept rdf:about="5">
     <notation>summer</notation>
     <prefLabel>April to September (Summer)</prefLabel>
     <definition>Average between 1st April to 30th September Year X</definition>
+    <inScheme rdf:resource=""/>
 </Concept>
+
 <Concept rdf:about="6">
     <notation>winter</notation>
     <prefLabel>October to March (Winter)</prefLabel>
     <definition>Average between 1st October year x-1 to 31st March year x</definition>
+    <inScheme rdf:resource=""/>
 </Concept>
+
 <Concept rdf:about="7">
     <notation></notation>
     <prefLabel>1 May to 31 July</prefLabel>
     <definition>could add description</definition>
+    <inScheme rdf:resource=""/>
 </Concept>
+
 <Concept rdf:about="8">
     <notation>1y</notation>
     <prefLabel>1 calendar year</prefLabel>
     <definition>Average bet 1st January to 31st December</definition>
+    <inScheme rdf:resource=""/>
 </Concept>
+
 <Concept rdf:about="9">
     <notation>3y</notation>
     <prefLabel>3 subsequent calendar years</prefLabel>
     <definition>could add description</definition>
+    <inScheme rdf:resource=""/>
 </Concept>
+
 </rdf:RDF>
