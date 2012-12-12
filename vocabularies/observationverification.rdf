@@ -7,11 +7,10 @@
  xmlns="http://www.w3.org/2004/02/skos/core#"
  xmlns:cc="http://creativecommons.org/ns#"
  xmlns:dcterms="http://purl.org/dc/terms/"
- xmlns:ab="http://rdfdata.eionet.europa.eu/airbase/schema/"
- xml:base="http://rdfdata.eionet.europa.eu/airbase/observationsverification/">
+ xml:base="http://rdfdata.eionet.europa.eu/airbase/observationverification/">
 
   <ConceptScheme rdf:about="">
-    <rdfs:label>ObservationsVerification from AQD_Code_List_FULL_20120712.txt</rdfs:label>
+    <rdfs:label>ObservationVerification from AQD_Code_List_FULL_20120712.txt</rdfs:label>
     <dcterms:date rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2012-07-17T14:37:54</dcterms:date>
   </ConceptScheme>
 
