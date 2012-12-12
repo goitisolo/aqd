@@ -8,7 +8,7 @@
  xmlns:cc="http://creativecommons.org/ns#"
  xmlns:dcterms="http://purl.org/dc/terms/"
  xmlns:ab="http://rdfdata.eionet.europa.eu/airbase/schema/"
- xml:base="http://rdfdata.eionet.europa.eu/airbase/measurementmethods/">
+ xml:base="http://rdfdata.eionet.europa.eu/airbase/measurementmethod/">
 
   <ConceptScheme rdf:about="">
     <rdfs:label>MeasurementMethods from AQD_Code_List_FULL_20120712.txt</rdfs:label>
