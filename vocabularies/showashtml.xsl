@@ -56,11 +56,20 @@
 	<td>
                 <xsl:choose>
                     <xsl:when test="@rdf:resource">
-                        <a><xsl:attribute name="href"><xsl:value-of select="/rdf:RDF/@xml:base" /><xsl:value-of select="@rdf:resource" /></xsl:attribute>
-                        <xsl:if test="@rdf:resource = ''">
-                                <xsl:value-of select="/rdf:RDF/@xml:base" />
-                        </xsl:if>
-                        <xsl:value-of select="@rdf:resource" /></a>
+                        <a>
+                        <xsl:choose>
+                            <xsl:when test="starts-with(@rdf:resource,'http:')">
+                                <xsl:attribute name="href"><xsl:value-of select="@rdf:resource" /></xsl:attribute>
+                            </xsl:when>
+                            <xsl:when test="@rdf:resource = ''">
+                                <xsl:attribute name="href"><xsl:value-of select="/rdf:RDF/@xml:base" /></xsl:attribute>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:attribute name="href"><xsl:value-of select="/rdf:RDF/@xml:base" /><xsl:value-of select="@rdf:resource" /></xsl:attribute>
+                            </xsl:otherwise>
+                            <xsl:value-of select="@rdf:resource" />
+                        </xsl:choose>
+                        </a>
                     </xsl:when>
                     <xsl:otherwise>
                         <xsl:value-of select="." />
