@@ -31,10 +31,8 @@
         xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
 <!-- $Id$
-     For schema http://dd.eionet.europa.eu/schemas/id2011850eu/AQD.xsd
-             or http://dd.eionet.europa.eu/schemas/id2011850eu/AQD.xsd http://schemas.opengis.net/gml/3.2.1/gml.xsd
-             or http://dd.eionet.europa.eu/schemas/id2011850eu_v05/AirQualityReporting.xsd
-        xmlns:aqd="http://www.exampleURI.com/AQD"
+     For schema http://dd.eionet.europa.eu/schemas/id2011850eu_v05/AirQualityReporting.xsd
+        xmlns:aqd="http://aqd.ec.europa.eu/aqd/0.2"
   -->
   <xsl:output method="xml" encoding="UTF-8" indent="yes"/>
 
