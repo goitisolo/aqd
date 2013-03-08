@@ -30,7 +30,7 @@
 
         xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
-<!-- $Id: aqd2rdf.xsl 12497 2012-08-16 14:45:50Z roug $
+<!-- $Id$
      For schema http://dd.eionet.europa.eu/schemas/id2011850eu/AQD.xsd
              or http://dd.eionet.europa.eu/schemas/id2011850eu/AQD.xsd http://schemas.opengis.net/gml/3.2.1/gml.xsd
              or http://dd.eionet.europa.eu/schemas/id2011850eu_v05/AirQualityReporting.xsd
