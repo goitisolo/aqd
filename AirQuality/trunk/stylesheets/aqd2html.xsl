@@ -1,29 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet version="1.0"
-        xmlns:fn="http://www.w3.org/2005/xpath-functions"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xmlns:sparql="http://www.w3.org/2005/sparql-results#"
-        xmlns:xs="http://www.w3.org/2001/XMLSchema"
-        xmlns:aqd="http://dd.eionet.europa.eu/schemas/id2011850eu"
+        xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0"
+        xmlns:am="http://inspire.jrc.ec.europa.eu/schemas/am/2.0"
+        xmlns:am-ru="http://inspire.jrc.ec.europa.eu/schemas/am-ru/2.0"
         xmlns:aqd1="http://www.eionet.europa.eu/aqportal/Drep1"
+        xmlns:aqd="http://aqd.ec.europa.eu/aqd/0.3.6b"
         xmlns:aqdold="http://www.exampleURI.com/AQD"
-        xmlns:base="urn:x-inspire:specification:gmlas:BaseTypes:3.2"
-        xmlns:gmd="http://www.isotc211.org/2005/gmd"
+        xmlns:base2="http://inspire.ec.europa.eu/schemas/base2/1.0rc3"
+        xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/"
+        xmlns:ef="http://inspire.ec.europa.eu/schemas/ef/3.0rc3"
+        xmlns:fn="http://www.w3.org/2005/xpath-functions"
         xmlns:gco="http://www.isotc211.org/2005/gco"
-        xmlns:xlink="http://www.w3.org/1999/xlink"
+        xmlns:gmd="http://www.isotc211.org/2005/gmd"
         xmlns:gml="http://www.opengis.net/gml/3.2"
+        xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+        xmlns:gsr="http://www.isotc211.org/2005/gsr"
         xmlns:gss="http://www.isotc211.org/2005/gss"
         xmlns:gts="http://www.isotc211.org/2005/gts"
-        xmlns:gsr="http://www.isotc211.org/2005/gsr"
-        xmlns:ef="http://inspire.jrc.ec.europa.eu/schemas/ef/2.0"
-        xmlns:base2="http://inspire.jrc.ec.europa.eu/schemas/base2/0.1"
         xmlns:om="http://www.opengis.net/om/2.0"
-        xmlns:swe="http://www.opengis.net/swe/2.0"
-        xmlns:sams="http://www.opengis.net/samplingSpatial/2.0"
+        xmlns:ompr="http://inspire.ec.europa.eu/schemas/ompr/2.0rc3"
         xmlns:sam="http://www.opengis.net/sampling/2.0"
-        xmlns:am="http://inspire.jrc.ec.europa.eu/schemas/am/2.0"
-        xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
-        xmlns:am-ru="http://inspire.jrc.ec.europa.eu/schemas/am-ru/2.0"
+        xmlns:sams="http://www.opengis.net/samplingSpatial/2.0"
+        xmlns:sparql="http://www.w3.org/2005/sparql-results#"
+        xmlns:swe="http://www.opengis.net/swe/2.0"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
+        xmlns:xs="http://www.w3.org/2001/XMLSchema"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
 <!-- $Id$
@@ -160,10 +162,13 @@
   <xsl:for-each select="gml:featureMember/aqd:AQD_Station">
     <h2><xsl:attribute name="id"><xsl:value-of select="@gml:id"/></xsl:attribute>Station: <xsl:value-of select="@gml:id"/></h2>
     <table class="tbl">
+    <tr><th scope="row">INSPIRE ID</th><td><a>
+    <xsl:attribute name="href"><xsl:value-of select="ef:inspireId/base:Identifier/base:namespace"/><xsl:value-of select="ef:inspireId/base:Identifier/base:localId"/></xsl:attribute>
+    <xsl:value-of select="ef:inspireId/base:Identifier/base:localId"/> (<xsl:value-of select="ef:inspireId/base:Identifier/base:namespace"/>)</a></td></tr>
     <tr><th scope="row">Name</th><td><xsl:value-of select="ef:name"/></td></tr>
     <tr><th scope="row">Begins</th><td><xsl:value-of select="ef:beginLifespan"/></td></tr>
-    <tr><th scope="row">Measurement regime</th><td><xsl:value-of select="ef:measurementRegime"/></td></tr>
-    <tr><th scope="row">Media monitored</th><td><xsl:value-of select="ef:mediaMonitored"/></td></tr>
+    <tr><th scope="row">Measurement regime</th><td><xsl:call-template name="datavalue"><xsl:with-param name="node" select="ef:measurementRegime"/></xsl:call-template></td></tr>
+    <tr><th scope="row">Media monitored</th><td><xsl:call-template name="datavalue"><xsl:with-param name="node" select="ef:mediaMonitored"/></xsl:call-template></td></tr>
     <tr><th scope="row">Mobile</th><td><xsl:value-of select="ef:mobile"/></td></tr>
     <tr><th scope="row">Belongs to</th><td><ul>
     <xsl:for-each select="ef:belongsTo">
@@ -176,7 +181,7 @@
     <tr><th scope="row">Municipality</th><td><xsl:value-of select="aqd:municipality"/></td></tr>
     <tr><th scope="row">EU station code</th><td><xsl:value-of select="aqd:EUStationCode"/></td></tr>
     <tr><th scope="row">Station info</th><td><xsl:value-of select="aqd:stationInfo"/></td></tr>
-    <tr><th scope="row">Area classification</th><td><xsl:value-of select="aqd:areaClassification"/></td></tr>
+    <tr><th scope="row">Area classification</th><td><xsl:call-template name="datavalue"><xsl:with-param name="node" select="aqd:areaClassification"/></xsl:call-template></td></tr>
     </table>
   </xsl:for-each>
 
