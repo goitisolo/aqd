@@ -45,12 +45,14 @@
                 .errormsg { background: #ffe0e0; font-size: 120%; padding: 0.2em; border: 1px solid darkred; margin: 0.5em; }
                 .inlineerror { background: #ffe0e0; font-weight: bold; padding: 0 0.2em; border: 1px solid darkred; margin: 0.1em 0.1em 0.1em 0.6em; }
                 th[scope="row"] {
-                    text-align: left;
+                    text-align: right;
                     vertical-align:top;
+                    background-color: #b6ddf7;
                 }
                 ul {list-style-type: none; margin: 0; padding: 0}
 		span.lbl {float: right; font-weight: bold; text-align: right; padding-right: 3px; width: 100%}
 		table.tbl tr td, table.tbl tr th {border: solid 1px #cccccc;}
+                table.full {width: 100%}
 	</style>
   </head>
   <body>
@@ -90,154 +92,134 @@
       </p>
       </div>
   </xsl:if>
+  <xsl:apply-templates/>
+</xsl:template>
 
-<!-- Reporting authorities -->
-  <xsl:for-each select="aqd:AQD_ReportingUnits/am-ru:reportingAuthority">
-    <h2><xsl:attribute name="id"><xsl:value-of select="@gml:id"/></xsl:attribute>Reporting authority: nr. <xsl:value-of select="position()"/>:
-     <xsl:value-of select="@gml:id"/></h2>
-    <div><xsl:value-of select="gmd:CI_ResponsibleParty"/></div>
-  </xsl:for-each>
+<xsl:template match="gml:featureMember">
+  <xsl:apply-templates mode="feature"/>
+</xsl:template>
 
-<!-- Attainment regimes -->
-  <xsl:for-each select="gml:featureMember/aqd:AQD_Attainment">
-    <h2><xsl:attribute name="id"><xsl:value-of select="@gml:id"/></xsl:attribute>Attainment regime: nr. <xsl:value-of select="position()"/>:
-     <xsl:value-of select="@gml:id"/></h2>
-    <table class="tbl">
-    <tr><th scope="row">Zone</th><td><xsl:call-template name="datavalue"><xsl:with-param name="node" select="aqd:zone"/></xsl:call-template></td></tr>
-    <tr><th scope="row">Pollutant</th><td><xsl:call-template name="pollutantUrl"><xsl:with-param name="node" select="aqd:pollutant"/></xsl:call-template></td></tr>
-    <tr><th scope="row">Objective type</th><td><xsl:call-template name="datavalue"><xsl:with-param name="node" select="aqd:environmentalObjective/aqd:objectiveType"/></xsl:call-template></td></tr>
-    <tr><th scope="row">Reporting metric</th><td><xsl:call-template name="datavalue"><xsl:with-param name="node" select="aqd:environmentalObjective/aqd:reportingMetric"/></xsl:call-template></td></tr>
-    <tr><th scope="row">Protection target</th><td><xsl:call-template name="datavalue"><xsl:with-param name="node" select="aqd:environmentalObjective/aqd:protectionTarget"/></xsl:call-template></td></tr>
-    <tr><th scope="row">Exceedance objective</th><td><xsl:call-template name="datavalue"><xsl:with-param name="node" select="aqd:exceedanceObjective"/></xsl:call-template></td></tr>
-    <tr><th scope="row">Assessment</th><td><xsl:call-template name="datavalue"><xsl:with-param name="node" select="aqd:assessment"/></xsl:call-template></td></tr>
+<!-- Features -->
+<xsl:template match="*" mode="feature">
+    <h2><xsl:attribute name="id"><xsl:value-of select="@gml:id"/></xsl:attribute>
+      <xsl:value-of select="document('aqd-labels.xml')/labels/labelset/label[@id=name(current())]"/>: <xsl:value-of select="@gml:id"/></h2>
+    <table class="tbl full">
+    <xsl:apply-templates mode="property"/>
     </table>
-  </xsl:for-each>
-
-<!-- Reporting units -->
-  <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingUnits">
-    <h2><xsl:attribute name="id"><xsl:value-of select="@gml:id"/></xsl:attribute>Reporting unit: nr. <xsl:value-of select="position()"/>:
-     <xsl:value-of select="@gml:id"/></h2>
-    <table class="tbl">
-    <tr><th scope="row">Name</th><td><xsl:value-of select="am-ru:reportingUnitName"/></td></tr>
-    <tr><th scope="row">Reporting period</th><td><xsl:call-template name="time_period"><xsl:with-param name="node" select="am-ru:reportingPeriod"/></xsl:call-template></td></tr>
-    <tr><th scope="row">Lifespan version</th><td><xsl:value-of select="am-ru:beginLifespanVersion"/></td></tr>
-    <tr><th scope="row">Unit</th><td><ul>
-    <xsl:for-each select="am-ru:unit">
-        <li><xsl:call-template name="datavalue"><xsl:with-param name="node" select="."/></xsl:call-template></li>
-    </xsl:for-each>
-    </ul></td></tr>
-    <tr><th scope="row">Change</th><td><xsl:value-of select="aqd:change"/></td></tr>
-    </table>
-  </xsl:for-each>
-
-
-<!-- Zones -->
-  <xsl:for-each select="gml:featureMember/aqd:AQD_Zone">
-    <h2><xsl:attribute name="id"><xsl:value-of select="@gml:id"/></xsl:attribute>Zone: <xsl:value-of select="@gml:id"/></h2>
-    <table class="tbl">
-    <tr><th scope="row">Zone type</th><td><xsl:value-of select="am:zoneType"/></td></tr>
-    <tr><th scope="row">Zone code</th><td><xsl:value-of select="aqd:zoneCode"/></td></tr>
-    <tr><th scope="row">LAU</th><td><xsl:value-of select="aqd:LAU"/></td></tr>
-    <tr><th scope="row">Resident population</th><td><xsl:value-of select="aqd:residentPopulation"/> (<xsl:value-of select="aqd:residentPopulationYear"/>)</td></tr>
-    <tr><th scope="row">Legal basis</th><td><xsl:value-of select="am:legalBasis/base2:LegislationReference/base2:legalName"/></td></tr>
-    <tr><th scope="row">Pollutants</th><td>
-          <table>
-            <tr><th>Code</th><th>Protection target</th></tr>
-            <xsl:for-each select="aqd:pollutants">
-              <tr><td><xsl:value-of select="aqd:pollutantCode"/>
-        <!--
-        <xsl:if test="function-available('fn:encode-for-uri')">
-        (<xsl:call-template name="componentUrl"><xsl:with-param name="node" select="aqd:pollutantCode"/></xsl:call-template>)
-        </xsl:if>
-        -->
-              </td><td><xsl:value-of select="aqd:protectionTarget"/></td></tr>
-            </xsl:for-each>
-          </table>
-        </td></tr>
-    </table>
-  </xsl:for-each>
-
-
-<!-- Stations -->
-  <xsl:for-each select="gml:featureMember/aqd:AQD_Station">
-    <h2><xsl:attribute name="id"><xsl:value-of select="@gml:id"/></xsl:attribute>Station: <xsl:value-of select="@gml:id"/></h2>
-    <table class="tbl">
-    <tr><th scope="row">INSPIRE ID</th><td><a>
-    <xsl:attribute name="href"><xsl:value-of select="ef:inspireId/base:Identifier/base:namespace"/><xsl:value-of select="ef:inspireId/base:Identifier/base:localId"/></xsl:attribute>
-    <xsl:value-of select="ef:inspireId/base:Identifier/base:localId"/> (<xsl:value-of select="ef:inspireId/base:Identifier/base:namespace"/>)</a></td></tr>
-    <tr><th scope="row">Name</th><td><xsl:value-of select="ef:name"/></td></tr>
-    <tr><th scope="row">Begins</th><td><xsl:value-of select="ef:beginLifespan"/></td></tr>
-    <tr><th scope="row">Measurement regime</th><td><xsl:call-template name="datavalue"><xsl:with-param name="node" select="ef:measurementRegime"/></xsl:call-template></td></tr>
-    <tr><th scope="row">Media monitored</th><td><xsl:call-template name="datavalue"><xsl:with-param name="node" select="ef:mediaMonitored"/></xsl:call-template></td></tr>
-    <tr><th scope="row">Mobile</th><td><xsl:value-of select="ef:mobile"/></td></tr>
-    <tr><th scope="row">Belongs to</th><td><ul>
-    <xsl:for-each select="ef:belongsTo">
-        <li><xsl:call-template name="datavalue"><xsl:with-param name="node" select="."/></xsl:call-template></li>
-    </xsl:for-each>
-    </ul></td></tr>
-
-    <tr><th scope="row">Operational Activity</th><td><xsl:call-template name="time_period"><xsl:with-param name="node" select="ef:operationalActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime"/></xsl:call-template></td></tr>
-    <tr><th scope="row">National station code</th><td><xsl:value-of select="aqd:natlStationCode"/></td></tr>
-    <tr><th scope="row">Municipality</th><td><xsl:value-of select="aqd:municipality"/></td></tr>
-    <tr><th scope="row">EU station code</th><td><xsl:value-of select="aqd:EUStationCode"/></td></tr>
-    <tr><th scope="row">Station info</th><td><xsl:value-of select="aqd:stationInfo"/></td></tr>
-    <tr><th scope="row">Area classification</th><td><xsl:call-template name="datavalue"><xsl:with-param name="node" select="aqd:areaClassification"/></xsl:call-template></td></tr>
-    </table>
-  </xsl:for-each>
-
-<!-- Observations -->
-  <xsl:for-each select="gml:featureMember/om:OM_Observation">
-    <h2><xsl:attribute name="id"><xsl:value-of select="@gml:id"/></xsl:attribute>Observation: <xsl:value-of select="@gml:id"/></h2>
-    <table class="tbl">
-    <tr><th scope="row">Phenomenon time</th><td><xsl:call-template name="time_period"><xsl:with-param name="node" select="om:phenomenonTime"/></xsl:call-template></td></tr>
-    <tr><th scope="row">Result time</th><td><xsl:value-of select="om:resultTime/gml:TimeInstant/gml:timePosition"/></td></tr>
-    <tr><th scope="row">Observed property</th><td><xsl:call-template name="datavalue"><xsl:with-param name="node" select="om:observedProperty"/></xsl:call-template></td></tr>
-    <tr><th scope="row">Feature of interest</th><td><xsl:call-template name="datavalue"><xsl:with-param name="node" select="om:featureOfInterest"/></xsl:call-template></td></tr>
-    <tr><th scope="row">Result</th><td>
-    <xsl:call-template name="swe_DataArrayType"><xsl:with-param name="node" select="om:result"/></xsl:call-template>
-    </td></tr>
-    </table>
-  </xsl:for-each>
+</xsl:template>
 
 <!-- Assessment regimes -->
-  <xsl:for-each select="gml:featureMember/aqd:AQD_AssessmentRegime">
+<xsl:template match="aqd:AQD_AssessmentRegime">
     <h2><xsl:attribute name="id"><xsl:value-of select="@gml:id"/></xsl:attribute>Assessment regime: <xsl:value-of select="@gml:id"/></h2>
     <table class="tbl">
-    <tr><th scope="row">Zone</th><td><xsl:call-template name="datavalue"><xsl:with-param name="node" select="aqd:zone"/></xsl:call-template></td></tr>
-    <tr><th scope="row">Pollutant</th><td><xsl:call-template name="pollutantUrl"><xsl:with-param name="node" select="aqd:pollutant"/></xsl:call-template></td></tr>
-    <tr><th scope="column" colspan="2">Assessment threshold</th></tr>
-    <tr><th scope="row">Objective Type</th><td><xsl:call-template name="datavalue"><xsl:with-param name="node" select="aqd:assessmentThreshold/aqd:environmentalObjective/aqd:objectiveType"/></xsl:call-template></td></tr>
-    <tr><th scope="row">Reporting Metric</th><td><xsl:call-template name="datavalue"><xsl:with-param name="node" select="aqd:assessmentThreshold/aqd:environmentalObjective/aqd:reportingMetric"/></xsl:call-template></td></tr>
-    <tr><th scope="row">Protection Target</th><td><xsl:call-template name="datavalue"><xsl:with-param name="node" select="aqd:assessmentThreshold/aqd:environmentalObjective/aqd:protectionTarget"/></xsl:call-template></td></tr>
-    <tr><th scope="row">Exceedance Objective</th><td><xsl:value-of select="aqd:assessmentThreshold/aqd:exceedanceObjective"/></td></tr>
-    <tr><th scope="row">Classification date</th><td><xsl:value-of select="aqd:assessmentThreshold/aqd:classificationDate"/></td></tr>
-    <tr><th scope="row">Classification report</th><td><xsl:value-of select="aqd:assessmentThreshold/aqd:classificationReport"/></td></tr>
-
-    <tr><th scope="column" colspan="2">Competent authorities</th></tr>
-    <tr><th scope="row">Assessment Air quality</th><td><xsl:value-of select="aqd:competentAuthorities/aqd:assessmentAirQuality"/></td></tr>
-    <tr><th scope="row">Approval Measurement Systems</th><td><xsl:value-of select="aqd:competentAuthorities/aqd:approvalMeasurementSystems"/></td></tr>
-    <tr><th scope="row">Accuracy Measurements</th><td><xsl:value-of select="aqd:competentAuthorities/aqd:accuracyMeasurements"/></td></tr>
-    <tr><th scope="row">Analysis Assessment Method</th><td><xsl:value-of select="aqd:competentAuthorities/aqd:analysisAssessmentMethod"/></td></tr>
-    <tr><th scope="row">Nation-wide Quality Assurance</th><td><xsl:value-of select="aqd:competentAuthorities/aqd:nation-wideQualityAssurance"/></td></tr>
-    <tr><th scope="row">Cooperation MS Commission</th><td><xsl:value-of select="aqd:competentAuthorities/aqd:cooperationMSCommission"/></td></tr>
-    <tr><th scope="column" colspan="2">Assessment methods</th></tr>
+    <tr><th scope="row">Zone</th>
+        <td><xsl:call-template name="datavalue"><xsl:with-param name="node" select="aqd:zone"/></xsl:call-template></td></tr>
+    <tr><th scope="row">Pollutant</th>
+        <td><xsl:call-template name="datavalue"><xsl:with-param name="node" select="aqd:pollutant"/></xsl:call-template></td></tr>
+    <xsl:apply-templates select="aqd:assessmentThreshold"/>
     <xsl:apply-templates select="aqd:assessmentMethods"/>
 
     </table>
-  </xsl:for-each>
+</xsl:template>
 
+
+<xsl:template match="aqd:assessmentThreshold">
+    <tr><th scope="column" colspan="2">Assessment threshold</th>
+    </tr>
+    <tr><th scope="row">Objective Type</th>
+        <td><xsl:call-template name="datavalue"><xsl:with-param name="node" select="aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:objectiveType"/></xsl:call-template></td>
+    </tr>
+    <tr><th scope="row">Reporting Metric</th>
+        <td><xsl:call-template name="datavalue"><xsl:with-param name="node" select="aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:reportingMetric"/></xsl:call-template></td>
+    </tr>
+    <tr><th scope="row">Protection Target</th>
+        <td><xsl:call-template name="datavalue"><xsl:with-param name="node" select="aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:protectionTarget"/></xsl:call-template></td>
+    </tr>
+    <tr><th scope="row">Exceedance Attainment</th>
+        <td><xsl:value-of select="aqd:AssessmentThreshold/aqd:exceedanceAttainment"/></td>
+    </tr>
+    <tr><th scope="row">Classification date</th>
+        <td><xsl:value-of select="aqd:AssessmentThreshold/aqd:classificationDate"/></td>
+    </tr>
+    <tr><th scope="row">Classification report</th>
+        <td><xsl:value-of select="aqd:AssessmentThreshold/aqd:classificationReport"/></td>
+    </tr>
 </xsl:template>
 
 <xsl:template match="aqd:assessmentMethods">
-<tr>
-<th><xsl:for-each select="aqd:assessmentType">
-<xsl:value-of select="."/><br/>
-</xsl:for-each></th>
-<td><xsl:for-each select="aqd:assessmentMetadata">
+    <tr><th scope="column" colspan="2">Assessment methods</th></tr>
+    <tr>
+    <th scope="row">
+        <xsl:call-template name="datavalue"><xsl:with-param name="node" select="aqd:AssessmentMethods/aqd:assessmentType"/></xsl:call-template><br/>
+        <xsl:value-of select="aqd:AssessmentMethods/aqd:assessmentTypeDescription"/>
+    </th>
+    <td>
+<xsl:for-each select="aqd:AssessmentMethods/aqd:modelAssessmentMetadata">
 <xsl:call-template name="datavalue"><xsl:with-param name="node" select="."/></xsl:call-template><br/>
-</xsl:for-each></td>
+</xsl:for-each>
+</td>
 </tr>
 </xsl:template>
+
+<!-- PROPERTIES -->
+<xsl:template match="swe:encoding" mode="property"/>
+
+<xsl:template match="swe:field" mode="property">
+  <tr>
+    <th scope="row"><xsl:value-of select="local-name()"/>: <xsl:value-of select="@name"/></th>
+    <td>
+        <xsl:apply-templates mode="resourceorliteral"/>
+    </td>
+  </tr>
+</xsl:template>
+
+<xsl:template match="swe:values" mode="property">
+  <tr>
+    <th scope="row"><xsl:value-of select="local-name()"/></th>
+    <td>
+    <pre>Values (@ replaced by newline):&#10;<xsl:value-of select="translate(text(),'@','&#10;')"/></pre>
+    </td>
+  </tr>
+</xsl:template>
+
+<xsl:template match="*" mode="property">
+  <tr>
+    <th scope="row"><xsl:value-of select="local-name()"/></th>
+    <td>
+      <xsl:choose>
+        <xsl:when test="@xlink:href != ''">
+          <a><xsl:attribute name="href"><xsl:value-of select="@xlink:href"/></xsl:attribute><xsl:value-of select="@xlink:href"/></a>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="text()"/>
+          <xsl:apply-templates mode="resourceorliteral"/>
+        </xsl:otherwise>
+      </xsl:choose>
+    </td>
+  </tr>
+</xsl:template>
+
+<xsl:template match="swe:Time|swe:Category|swe:Quantity" mode="resourceorliteral">
+  Vocabulary: <xsl:value-of select="@definition"/>
+</xsl:template>
+
+<xsl:template match="text()" mode="resourceorliteral">
+  <xsl:value-of select="text()"/>
+</xsl:template>
+
+<xsl:template match="*" mode="resourceorliteral">
+  <table>
+    <xsl:if test="@gml:id != ''">
+      <caption>
+        <xsl:attribute name="id"><xsl:value-of select="@gml:id"/></xsl:attribute>
+        <xsl:value-of select="local-name()"/>: <xsl:value-of select="@gml:id"/>
+      </caption>
+    </xsl:if>
+    <xsl:apply-templates mode="property"/>
+  </table>
+</xsl:template>
+
+<!-- NAMED TEMPLATES -->
 
 <!-- Any generic data value -->
 <xsl:template name="datavalue">
@@ -252,30 +234,9 @@
     </xsl:choose>
 </xsl:template>
 
-<xsl:template name="pollutantUrl">
-    <xsl:param name="node" select="."/>
-    <xsl:value-of select="$node"/>
-    <xsl:if test="contains($node,'/page')">
-     <span class="inlineerror">"/page/" found. Illegal URL!</span>
-    </xsl:if>
-</xsl:template>
-
 <xsl:template name="time_period">
     <xsl:param name="node" select="."/>
     <xsl:value-of select="$node/gml:TimePeriod/gml:beginPosition"/> to <xsl:value-of select="$node/gml:TimePeriod/gml:endPosition"/>
-</xsl:template>
-
-<xsl:template name="swe_DataArrayType">
-    <xsl:param name="node" select="."/>
-    <pre>Values (@ replaced by newline):&#10;<xsl:value-of select="translate($node/swe:values,'@','&#10;')"/></pre>
-    <table class="tbl">
-      <caption><xsl:value-of select="$node/swe:elementType/@name"/></caption>
-    <xsl:for-each select="$node/swe:elementType/swe:DataRecord/swe:field">
-      <tr><th scope="row"> <xsl:value-of select="@name"/></th>
-          <td><xsl:value-of select="*/swe:uom/@code"/></td>
-      </tr>
-    </xsl:for-each>
-    </table>
 </xsl:template>
 
 <!-- Template contains the actual SPARQL to query the NUTS labels by code. -->
@@ -311,3 +272,4 @@ SELECT ?s WHERE {?s a air:Component .
   </xsl:template>
 
 </xsl:stylesheet>
+<!-- vim: set expandtab sw=2 : -->
