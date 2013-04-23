@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!-- Label for HTML view of instance files
+     $Id$ -->
+<labels>
+  <labelset id="schema" lang="en">
+    <label id="aqd:AQD_AssessmentRegime">Assessment regime</label>
+    <label id="aqd:AQD_Attainment">Attainment</label>
+    <label id="aqd:AQD_ReportingHeader">Reporting header</label>
+    <label id="aqd:AQD_ReportingUnits">Reporting unit</label>
+    <label id="aqd:AQD_SamplingPointProcess">Sampling point process</label>
+    <label id="aqd:AQD_SamplingPoint">Sampling point</label>
+    <label id="aqd:AQD_Station">Station</label>
+    <label id="aqd:AQD_Zone">Zone</label>
+    <label id="aqd:AQD_Sample">Sample</label>
+    <label id="gmd:CI_ResponsibleParty">Responsible party</label>
+
+  </labelset>
+</labels>
