@@ -35,6 +35,7 @@
   -->
 <!-- SPARQL Endpoint URL variable -->
 <xsl:variable name="sparqlEndpointUrl" select="'http://cr.eionet.europa.eu/sparql'"/>
+<xsl:variable name="labelsFile" select="'http://converters.eionet.europa.eu/xmlfile/aqd-labels.xml'"/>
 
 <xsl:output method='html' encoding='UTF-8' indent='yes'/>
 
@@ -102,7 +103,8 @@
 <!-- Features -->
 <xsl:template match="*" mode="feature">
     <h2><xsl:attribute name="id"><xsl:value-of select="@gml:id"/></xsl:attribute>
-      <xsl:value-of select="document('aqd-labels.xml')/labels/labelset/label[@id=name(current())]"/>: <xsl:value-of select="@gml:id"/></h2>
+      <xsl:call-template name="getLabel"><xsl:with-param name="node" select="."/></xsl:call-template>: <xsl:value-of select="@gml:id"/>
+    </h2>
     <table class="tbl full">
     <xsl:apply-templates mode="property"/>
     </table>
@@ -184,7 +186,9 @@
 
 <xsl:template match="*" mode="property">
   <tr>
-    <th scope="row"><xsl:value-of select="local-name()"/></th>
+    <th scope="row">
+      <xsl:call-template name="getLabel"><xsl:with-param name="node" select="."/></xsl:call-template>
+    </th>
     <td>
       <xsl:choose>
         <xsl:when test="@xlink:href != ''">
@@ -266,9 +270,22 @@ SELECT ?s WHERE {?s a air:Component .
   <xsl:template name="getSparqlEndPointUrl">
     <xsl:param name="sparql" select="''" />
     <xsl:variable name="sparql-encoded" select="fn:encode-for-uri($sparql)"/>
-      <xsl:variable name="uriParams"
+    <xsl:variable name="uriParams"
           select="concat('query=', $sparql-encoded , '&amp;format=application/xml')" />
-      <xsl:value-of select="concat($sparqlEndpointUrl, '?', $uriParams)" />
+    <xsl:value-of select="concat($sparqlEndpointUrl, '?', $uriParams)" />
+  </xsl:template>
+
+  <xsl:template name="getLabel">
+    <xsl:param name="node"/>
+    <xsl:variable name="label" select="document($labelsFile)/labels/labelset[lang='en']/label[@id=name($node)]"/>
+    <xsl:choose>
+      <xsl:when test="$label = ''">
+         <xsl:value-of select="$label"/>
+      </xsl:when>
+      <xsl:otherwise>
+         <xsl:value-of select="local-name($node)"/>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
 
 </xsl:stylesheet>
