@@ -52,8 +52,11 @@
                 }
                 ul {list-style-type: none; margin: 0; padding: 0}
 		span.lbl {float: right; font-weight: bold; text-align: right; padding-right: 3px; width: 100%}
-		table.tbl tr td, table.tbl tr th {border: solid 1px #cccccc;}
+                table { border-collapse: collapse; margin: 2pt 0pt; border: solid 1px #000000 }
+		table.tbl tr td, table.tbl tr th, table.tbl caption {border: solid 1px #cccccc;}
+                td, th {padding: 1pt 3pt; }
                 table.full {width: 100%}
+                caption { background-color: #cddaec }
 	</style>
   </head>
   <body>
@@ -110,43 +113,7 @@
     </table>
 </xsl:template>
 
-<!-- Assessment regimes -->
-<xsl:template match="aqd:AQD_AssessmentRegime">
-    <h2><xsl:attribute name="id"><xsl:value-of select="@gml:id"/></xsl:attribute>Assessment regime: <xsl:value-of select="@gml:id"/></h2>
-    <table class="tbl">
-    <tr><th scope="row">Zone</th>
-        <td><xsl:call-template name="datavalue"><xsl:with-param name="node" select="aqd:zone"/></xsl:call-template></td></tr>
-    <tr><th scope="row">Pollutant</th>
-        <td><xsl:call-template name="datavalue"><xsl:with-param name="node" select="aqd:pollutant"/></xsl:call-template></td></tr>
-    <xsl:apply-templates select="aqd:assessmentThreshold"/>
-    <xsl:apply-templates select="aqd:assessmentMethods"/>
 
-    </table>
-</xsl:template>
-
-
-<xsl:template match="aqd:assessmentThreshold">
-    <tr><th scope="column" colspan="2">Assessment threshold</th>
-    </tr>
-    <tr><th scope="row">Objective Type</th>
-        <td><xsl:call-template name="datavalue"><xsl:with-param name="node" select="aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:objectiveType"/></xsl:call-template></td>
-    </tr>
-    <tr><th scope="row">Reporting Metric</th>
-        <td><xsl:call-template name="datavalue"><xsl:with-param name="node" select="aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:reportingMetric"/></xsl:call-template></td>
-    </tr>
-    <tr><th scope="row">Protection Target</th>
-        <td><xsl:call-template name="datavalue"><xsl:with-param name="node" select="aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:protectionTarget"/></xsl:call-template></td>
-    </tr>
-    <tr><th scope="row">Exceedance Attainment</th>
-        <td><xsl:value-of select="aqd:AssessmentThreshold/aqd:exceedanceAttainment"/></td>
-    </tr>
-    <tr><th scope="row">Classification date</th>
-        <td><xsl:value-of select="aqd:AssessmentThreshold/aqd:classificationDate"/></td>
-    </tr>
-    <tr><th scope="row">Classification report</th>
-        <td><xsl:value-of select="aqd:AssessmentThreshold/aqd:classificationReport"/></td>
-    </tr>
-</xsl:template>
 
 <xsl:template match="aqd:assessmentMethods">
     <tr><th scope="column" colspan="2">Assessment methods</th></tr>
@@ -220,7 +187,7 @@
     <xsl:if test="@gml:id != ''">
       <caption>
         <xsl:attribute name="id"><xsl:value-of select="@gml:id"/></xsl:attribute>
-        <xsl:value-of select="local-name()"/>: <xsl:value-of select="@gml:id"/>
+        <xsl:call-template name="getLabel"><xsl:with-param name="node" select="current()"/></xsl:call-template>: <xsl:value-of select="@gml:id"/>
       </caption>
     </xsl:if>
     <xsl:apply-templates mode="property"/>
