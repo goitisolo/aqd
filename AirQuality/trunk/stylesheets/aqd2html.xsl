@@ -103,7 +103,7 @@
 <!-- Features -->
 <xsl:template match="*" mode="feature">
     <h2><xsl:attribute name="id"><xsl:value-of select="@gml:id"/></xsl:attribute>
-      <xsl:call-template name="getLabel"><xsl:with-param name="node" select="."/></xsl:call-template>: <xsl:value-of select="@gml:id"/>
+      <xsl:call-template name="getLabel"><xsl:with-param name="node" select="current()"/></xsl:call-template>: <xsl:value-of select="@gml:id"/>
     </h2>
     <table class="tbl full">
     <xsl:apply-templates mode="property"/>
@@ -187,7 +187,7 @@
 <xsl:template match="*" mode="property">
   <tr>
     <th scope="row">
-      <xsl:call-template name="getLabel"><xsl:with-param name="node" select="."/></xsl:call-template>
+      <xsl:call-template name="getLabel"><xsl:with-param name="node" select="current()"/></xsl:call-template>
     </th>
     <td>
       <xsl:choose>
@@ -209,6 +209,10 @@
 
 <xsl:template match="text()" mode="resourceorliteral">
   <xsl:value-of select="text()"/>
+</xsl:template>
+
+<xsl:template match="gml:Polygon" mode="resourceorliteral">
+<em>Polygon values not shown</em>
 </xsl:template>
 
 <xsl:template match="*" mode="resourceorliteral">
@@ -277,9 +281,9 @@ SELECT ?s WHERE {?s a air:Component .
 
   <xsl:template name="getLabel">
     <xsl:param name="node"/>
-    <xsl:variable name="label" select="document($labelsFile)/labels/labelset[lang='en']/label[@id=name($node)]"/>
+    <xsl:variable name="label" select="document($labelsFile)/labels/labelset[@lang='en']/label[@id=name($node)]"/>
     <xsl:choose>
-      <xsl:when test="$label = ''">
+      <xsl:when test="$label != ''">
          <xsl:value-of select="$label"/>
       </xsl:when>
       <xsl:otherwise>
