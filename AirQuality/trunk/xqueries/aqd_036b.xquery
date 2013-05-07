@@ -20,7 +20,7 @@ declare namespace sparql = "http://www.w3.org/2005/sparql-results#";
 (:~ declare Content Registry SPARQL endpoint:)
 declare variable $xmlconv:CR_SPARQL_URL := "http://cr.eionet.europa.eu/sparql";
 
-declare option xqilla:psvi "false";
+(:declare option xqilla:psvi "false"; :)
 (:===================================================================:)
 (: Variable given as an external parameter by the QA service                                                 :)
 (:===================================================================:)
@@ -93,31 +93,13 @@ as xs:string
     }")
 };
 
-
-declare function xmlconv:validatePollutantCode($url as xs:string)
+declare function xmlconv:validateCode($elems, $scheme as xs:string)
 as element(div)*
 {
-    let $sparql := xmlconv:getConceptUrlSparql("http://dd.eionet.europa.eu/vocabulary/aq/pollutant/")
+    let $sparql := xmlconv:getConceptUrlSparql($scheme)
     let $crConcepts := xmlconv:executeSparqlQuery($sparql)
 
-    for $polCodeElem in doc($url)//aqd:pollutantCode/@xlink:href
-    let $polCode := normalize-space($polCodeElem)
-    let $isMatchingCode := xmlconv:isMatchingVocabCode($crConcepts, $polCode)
-    return
-        if (not( $isMatchingCode )) then
-                        <div>"{ $polCode }" is not a valid code.</div>
-        else
-            ()
-};
-
-
-declare function xmlconv:validateAreaClassificationCode($url as xs:string)
-as element(div)*
-{
-    let $sparql := xmlconv:getConceptUrlSparql("http://dd.eionet.europa.eu/vocabulary/aq/areaclassification/")
-    let $crConcepts := xmlconv:executeSparqlQuery($sparql)
-
-    for $polCodeElem in doc($url)//aqd:areaClassification/@xlink:href
+    for $polCodeElem in $elems
     let $polCode := normalize-space($polCodeElem)
     let $isMatchingCode := xmlconv:isMatchingVocabCode($crConcepts, $polCode)
     return
@@ -145,26 +127,60 @@ declare function xmlconv:proceed($source_url as xs:string) {
 <div class="feedbacktext">
     <h2>Pollutant codes</h2>
     {
-    if (count(xmlconv:validatePollutantCode($source_url)) > 0) then
-        <div style="color:red">{ count(xmlconv:validatePollutantCode($source_url)) } invalid codes found!</div>
+    if (count(xmlconv:validateCode(
+            doc($source_url)//aqd:areaClassification/@xlink:href,
+            "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/")) > 0) then
+        <div style="color:red">{ count(xmlconv:validateCode(
+                doc($source_url)//aqd:areaClassification/@xlink:href,
+                "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/")) } invalid codes found!</div>
     else
         <div style="color:green">All codes are valid.</div>
     }
-    { xmlconv:validatePollutantCode($source_url) }
-    <br/>
-    <a href="{ xmlconv:getSparqlEndpointUrl(xmlconv:getConceptUrlSparql("http://dd.eionet.europa.eu/vocabulary/aq/pollutant/"), "html") }">Pollutant codes in Content Registry</a>
+    { xmlconv:validateCode(
+            doc($source_url)//aqd:areaClassification/@xlink:href,
+            "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/") }
+    <p>
+    <a href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/">Pollutant codes vocabulary</a>
+    </p>
 
 
     <h2>Area classification codes</h2>
     {
-    if (count(xmlconv:validateAreaClassificationCode($source_url)) > 0) then
-        <div style="color:red">{ count(xmlconv:validateAreaClassificationCode($source_url)) } invalid codes found!</div>
+    if (count(xmlconv:validateCode(
+            doc($source_url)//aqd:areaClassification/@xlink:href,
+            "http://dd.eionet.europa.eu/vocabulary/aq/areaclassification/")) > 0) then
+        <div style="color:red">{ count(xmlconv:validateCode(
+                doc($source_url)//aqd:areaClassification/@xlink:href,
+                "http://dd.eionet.europa.eu/vocabulary/aq/areaclassification/")) } invalid codes found!</div>
     else
         <div style="color:green">All codes are valid.</div>
     }
-    { xmlconv:validateAreaClassificationCode($source_url) }
-    <br/>
-    <a href="{ xmlconv:getSparqlEndpointUrl(xmlconv:getConceptUrlSparql("http://dd.eionet.europa.eu/vocabulary/aq/areaclassification/"), "html") }">Area classification codes in Content Registry</a>
+    { xmlconv:validateCode(
+            doc($source_url)//aqd:areaClassification/@xlink:href,
+            "http://dd.eionet.europa.eu/vocabulary/aq/areaclassification/") }
+    <p>
+    <a href="http://dd.eionet.europa.eu/vocabulary/aq/areaclassification/">Area classification codes vocabulary</a>
+    </p>
+
+
+    <h2>Assessment types</h2>
+    {
+    if (count(xmlconv:validateCode(
+            doc($source_url)//aqd:assessmentType/@xlink:href,
+            "http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/")) > 0) then
+        <div style="color:red">{ count(xmlconv:validateCode(
+                doc($source_url)//aqd:assessmentType/@xlink:href,
+                "http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/")) } invalid codes found!</div>
+    else
+        <div style="color:green">All codes are valid.</div>
+    }
+    { xmlconv:validateCode(
+            doc($source_url)//aqd:assessmentType/@xlink:href,
+            "http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/") }
+    <p>
+    <a href="http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/">Assessment types vocabulary</a>
+    </p>
+
 
 </div>
 };
