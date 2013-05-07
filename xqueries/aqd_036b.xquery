@@ -128,16 +128,16 @@ declare function xmlconv:proceed($source_url as xs:string) {
     <h2>Pollutant codes</h2>
     {
     if (count(xmlconv:validateCode(
-            doc($source_url)//aqd:areaClassification/@xlink:href,
+            doc($source_url)//aqd:pollutantCode/@xlink:href,
             "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/")) > 0) then
         <div style="color:red">{ count(xmlconv:validateCode(
-                doc($source_url)//aqd:areaClassification/@xlink:href,
+                doc($source_url)//aqd:pollutantCode/@xlink:href,
                 "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/")) } invalid codes found!</div>
     else
         <div style="color:green">All codes are valid.</div>
     }
     { xmlconv:validateCode(
-            doc($source_url)//aqd:areaClassification/@xlink:href,
+            doc($source_url)//aqd:pollutantCode/@xlink:href,
             "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/") }
     <p>
     <a href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/">Pollutant codes vocabulary</a>
