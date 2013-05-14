@@ -25,11 +25,12 @@ declare variable $xmlconv:CR_SPARQL_URL := "http://cr.eionet.europa.eu/sparql";
 (: Variable given as an external parameter by the QA service                                                 :)
 (:===================================================================:)
 declare variable $source_url as xs:untypedAtomic external;
+
 (:
 
     Change it for testing locally:
 declare variable $source_url as xs:string external;
-declare variable $source_url := "http://cdr.eionet.europa.eu/gb/eu/aqd/e2a/colutn32a/envuvlxkq/B_GB_Zones.xml";
+declare variable $source_url := "http://cdr.eionet.europa.eu/gb/eu/aqd/e2a/colutn32a/envuvlxkq/E2a_GB2013032713version4.xml";
 :)
 
 (:
@@ -124,61 +125,56 @@ as xs:boolean
  :)
 declare function xmlconv:proceed($source_url as xs:string) {
 
+let $pollutantCodesVocabulary := "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/"
+let $invalidPollutantCodes := xmlconv:validateCode(distinct-values(doc($source_url)//aqd:pollutantCode/@xlink:href[contains(., ':')]),
+            $pollutantCodesVocabulary)
+
+let $areaClassificationVocabulary := "http://dd.eionet.europa.eu/vocabulary/aq/areaclassification/"
+let $invalidAreaClassification := xmlconv:validateCode(distinct-values(doc($source_url)//aqd:areaClassification/@xlink:href[contains(., ':')]),
+            $areaClassificationVocabulary)
+
+let $asssssmentTypeVocabulary := "http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/"
+let $invalidAssessmentTypes := xmlconv:validateCode(distinct-values(doc($source_url)//aqd:assessmentType/@xlink:href[contains(., ':')]),
+            $asssssmentTypeVocabulary)
+
+return
 <div class="feedbacktext">
     <h2>Pollutant codes</h2>
     {
-    if (count(xmlconv:validateCode(
-            doc($source_url)//aqd:pollutantCode/@xlink:href,
-            "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/")) > 0) then
-        <div style="color:red">{ count(xmlconv:validateCode(
-                doc($source_url)//aqd:pollutantCode/@xlink:href,
-                "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/")) } invalid codes found!</div>
+    if (count($invalidPollutantCodes) > 0) then
+        <div style="color:red">{ count($invalidPollutantCodes) } invalid codes found!</div>
     else
         <div style="color:green">All codes are valid.</div>
     }
-    { xmlconv:validateCode(
-            doc($source_url)//aqd:pollutantCode/@xlink:href,
-            "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/") }
+    { $invalidPollutantCodes }
     <p>
-    <a href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/">Pollutant codes vocabulary</a>
+    <a href="{ $pollutantCodesVocabulary }">Pollutant codes vocabulary</a>
     </p>
 
 
     <h2>Area classification codes</h2>
     {
-    if (count(xmlconv:validateCode(
-            doc($source_url)//aqd:areaClassification/@xlink:href,
-            "http://dd.eionet.europa.eu/vocabulary/aq/areaclassification/")) > 0) then
-        <div style="color:red">{ count(xmlconv:validateCode(
-                doc($source_url)//aqd:areaClassification/@xlink:href,
-                "http://dd.eionet.europa.eu/vocabulary/aq/areaclassification/")) } invalid codes found!</div>
+    if (count($invalidAreaClassification) > 0) then
+        <div style="color:red">{ count($invalidAreaClassification) } invalid codes found!</div>
     else
         <div style="color:green">All codes are valid.</div>
     }
-    { xmlconv:validateCode(
-            doc($source_url)//aqd:areaClassification/@xlink:href,
-            "http://dd.eionet.europa.eu/vocabulary/aq/areaclassification/") }
+    { $invalidAreaClassification }
     <p>
-    <a href="http://dd.eionet.europa.eu/vocabulary/aq/areaclassification/">Area classification codes vocabulary</a>
+    <a href="{ $areaClassificationVocabulary }">Area classification codes vocabulary</a>
     </p>
 
 
     <h2>Assessment types</h2>
     {
-    if (count(xmlconv:validateCode(
-            doc($source_url)//aqd:assessmentType/@xlink:href,
-            "http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/")) > 0) then
-        <div style="color:red">{ count(xmlconv:validateCode(
-                doc($source_url)//aqd:assessmentType/@xlink:href,
-                "http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/")) } invalid codes found!</div>
+    if (count($invalidAssessmentTypes) > 0) then
+        <div style="color:red">{ count($invalidAssessmentTypes) } invalid codes found!</div>
     else
         <div style="color:green">All codes are valid.</div>
     }
-    { xmlconv:validateCode(
-            doc($source_url)//aqd:assessmentType/@xlink:href,
-            "http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/") }
+    { $invalidAssessmentTypes }
     <p>
-    <a href="http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/">Assessment types vocabulary</a>
+    <a href="{ $asssssmentTypeVocabulary }">Assessment types vocabulary</a>
     </p>
 
 
