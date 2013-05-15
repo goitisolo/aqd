@@ -24,7 +24,7 @@ declare variable $xmlconv:CR_SPARQL_URL := "http://cr.eionet.europa.eu/sparql";
 (:===================================================================:)
 (: Variable given as an external parameter by the QA service                                                 :)
 (:===================================================================:)
-declare variable $source_url := "http://cdr.eionet.europa.eu/gb/eu/aqd/e2a/colutn32a/envuvlxkq/E2a_GB2013032713version4.xml";
+declare variable $source_url as xs:untypedAtomic external;
 
 (:
 declare variable $source_url as xs:untypedAtomic external;
