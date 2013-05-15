@@ -24,9 +24,10 @@ declare variable $xmlconv:CR_SPARQL_URL := "http://cr.eionet.europa.eu/sparql";
 (:===================================================================:)
 (: Variable given as an external parameter by the QA service                                                 :)
 (:===================================================================:)
-declare variable $source_url as xs:untypedAtomic external;
+declare variable $source_url := "http://cdr.eionet.europa.eu/gb/eu/aqd/e2a/colutn32a/envuvlxkq/E2a_GB2013032713version4.xml";
 
 (:
+declare variable $source_url as xs:untypedAtomic external;
 
     Change it for testing locally:
 declare variable $source_url as xs:string external;
@@ -117,6 +118,60 @@ as xs:boolean
     count($crConcepts//sparql:result/sparql:binding[@name="concepturl" and sparql:uri=$polCode])>0
 };
 
+declare function xmlconv:getVocabularyMapping(){
+
+    <mapping>
+        <vocabulary label="Pollutant codes" url="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/">
+            <element>aqd:pollutantCode</element>
+            <element>aqd:pollutant</element>
+            <element>ef:observedProperty</element>
+            <element>om:observedProperty</element>
+        </vocabulary>
+        <vocabulary label="Area classification codes" url="http://dd.eionet.europa.eu/vocabulary/aq/areaclassification/">
+            <element>aqd:areaClassification</element>
+        </vocabulary>
+        <vocabulary label="Assessment types" url="http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/">
+            <element>aqd:assessmentType</element>
+        </vocabulary>
+        <vocabulary label="Environmental domains" url="http://dd.eionet.europa.eu/vocabulary/common/environmentaldomain/">
+            <element>am:environmentalDomain</element>
+        </vocabulary>
+        <vocabulary label="Zone types" url="http://dd.eionet.europa.eu/vocabulary/aq/zonetype/">
+            <element>aqd:aqdZoneType</element>
+        </vocabulary>
+        <vocabulary label="Protection targets" url="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/">
+            <element>aqd:protectionTarget</element>
+        </vocabulary>
+        <vocabulary label="Time extension types" url="http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/">
+            <element>aqd:timeExtensionExemption</element>
+        </vocabulary>
+        <vocabulary label="Emission sources" url="http://dd.eionet.europa.eu/vocabulary/aq/emissionsource/">
+            <element>aqd:mainEmissionSources</element>
+        </vocabulary>
+        <vocabulary label="Station classifications" url="http://dd.eionet.europa.eu/vocabulary/aq/stationclassification/">
+            <element>aqd:stationClassification</element>
+        </vocabulary>
+        <vocabulary label="Measurement Equipment codes" url="http://dd.eionet.europa.eu/vocabulary/aq/measurementequipment/">
+            <element>aqd:equipment</element>
+        </vocabulary>
+        <vocabulary label="Equivalence demonstrated codes" url="http://dd.eionet.europa.eu/vocabulary/aq/equivalencedemonstrated/">
+            <element>aqd:equivalenceDemonstrated</element>
+        </vocabulary>
+        <vocabulary label="Measurement types" url="http://dd.eionet.europa.eu/vocabulary/aq/measurementtype/">
+            <element>aqd:measurementType</element>
+        </vocabulary>
+        <vocabulary label="Time units" url="http://dd.eionet.europa.eu/vocabulary/aq/timeunit/">
+            <element>aqd:unit</element>
+        </vocabulary>
+        <vocabulary label="Process parameters" url="http://dd.eionet.europa.eu/vocabulary/aq/processparameter/">
+            <element checkConceptOnly="true">ompr:name</element>
+            <element checkConceptOnly="true">om:name</element>
+        </vocabulary>
+        <vocabulary label="Observation units" url="http://dd.eionet.europa.eu/vocabulary/aq/observationunit/">
+            <element checkConceptOnly="true">swe:uom</element>
+        </vocabulary>
+    </mapping>
+};
 
 (:
  : ======================================================================
@@ -125,59 +180,63 @@ as xs:boolean
  :)
 declare function xmlconv:proceed($source_url as xs:string) {
 
-let $pollutantCodesVocabulary := "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/"
-let $invalidPollutantCodes := xmlconv:validateCode(distinct-values(doc($source_url)//aqd:pollutantCode/@xlink:href[contains(., ':')]),
-            $pollutantCodesVocabulary)
+let $vocabularies := xmlconv:getVocabularyMapping()//vocabulary
 
-let $areaClassificationVocabulary := "http://dd.eionet.europa.eu/vocabulary/aq/areaclassification/"
-let $invalidAreaClassification := xmlconv:validateCode(distinct-values(doc($source_url)//aqd:areaClassification/@xlink:href[contains(., ':')]),
-            $areaClassificationVocabulary)
+let $reportedVocabularyElements :=
+    for $elem in doc($source_url)//*[contains(@xlink:href, ':')]
+    (:string-length(@checkConceptOnly)=0 and:)
+    where count($vocabularies//element[not(@checkConceptOnly) and . = $elem/name()]) > 0
+        or count($vocabularies//element[@checkConceptOnly = 'true' and . = $elem/name() and starts-with($elem/@xlink:href, ../@url)]) > 0
+    return
+        $elem
 
-let $asssssmentTypeVocabulary := "http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/"
-let $invalidAssessmentTypes := xmlconv:validateCode(distinct-values(doc($source_url)//aqd:assessmentType/@xlink:href[contains(., ':')]),
-            $asssssmentTypeVocabulary)
+
+let $result := for $vocabulary in $vocabularies
+        let $vocabularyUrl := data($vocabulary/@url)
+        let $invalidCodes := xmlconv:validateCode(distinct-values($reportedVocabularyElements[count(index-of($vocabulary//element[not(@checkConceptOnly)], name(.))) > 0
+            or (count(index-of($vocabulary//element[@checkConceptOnly='true'], name(.))) > 0 and starts-with(@xlink:href, $vocabulary/@url))]/@xlink:href),
+            $vocabularyUrl)
+        let $errorCount := count($invalidCodes)
+    return
+        <div>
+            <h3>{ data($vocabulary/@label) }</h3>
+            {
+            if (count($invalidCodes) > 0) then
+                <div style="color:red" errorCount="{ $errorCount }">{ $errorCount } invalid codes found!</div>
+            else
+                <div style="color:green">All codes are valid.</div>
+            }
+            { $invalidCodes }
+            <p><a href="{ $vocabularyUrl }">{ data($vocabulary/@label) } vocabulary</a></p>
+        </div>
 
 return
 <div class="feedbacktext">
-    <h2>Pollutant codes</h2>
-    {
-    if (count($invalidPollutantCodes) > 0) then
-        <div style="color:red">{ count($invalidPollutantCodes) } invalid codes found!</div>
-    else
-        <div style="color:green">All codes are valid.</div>
+        <div>
+            <h2>Check codes</h2>
+            {
+            if (sum($result//div/@errorCount) > 0) then
+                <div style="color:red">{ sum($result//div/@errorCount) } invalid codes found from this report!</div>
+            else
+                <div style="color:green">All codes are valid in this report.</div>
+            }
+        </div>
+
+    { $result }
+    <div>
+    {()
+    (:
+    Discover vocablary concepts used in XML
+    let  $items := distinct-values(doc($source_url)//*[starts-with(@xlink:href, 'http://rdfdata') or starts-with(@xlink:href, 'http://dd.eionet')]/concat(@xlink:href,' - ',  name(.)))
+    return
+        for $n in $items
+        order by $n
+        return
+            <p>{$n}</p>
+     :)
     }
-    { $invalidPollutantCodes }
-    <p>
-    <a href="{ $pollutantCodesVocabulary }">Pollutant codes vocabulary</a>
-    </p>
-
-
-    <h2>Area classification codes</h2>
-    {
-    if (count($invalidAreaClassification) > 0) then
-        <div style="color:red">{ count($invalidAreaClassification) } invalid codes found!</div>
-    else
-        <div style="color:green">All codes are valid.</div>
-    }
-    { $invalidAreaClassification }
-    <p>
-    <a href="{ $areaClassificationVocabulary }">Area classification codes vocabulary</a>
-    </p>
-
-
-    <h2>Assessment types</h2>
-    {
-    if (count($invalidAssessmentTypes) > 0) then
-        <div style="color:red">{ count($invalidAssessmentTypes) } invalid codes found!</div>
-    else
-        <div style="color:green">All codes are valid.</div>
-    }
-    { $invalidAssessmentTypes }
-    <p>
-    <a href="{ $asssssmentTypeVocabulary }">Assessment types vocabulary</a>
-    </p>
-
-
+    </div>
 </div>
+
 };
 xmlconv:proceed( $source_url )
