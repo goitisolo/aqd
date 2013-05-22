@@ -3,7 +3,7 @@
         xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0"
         xmlns:am="http://inspire.ec.europa.eu/schemas/am/3.0rc3"
         xmlns:am-ru="http://inspire.jrc.ec.europa.eu/schemas/am-ru/2.0"
-        xmlns:aqd="http://aqd.ec.europa.eu/aqd/0.3.6b"
+        xmlns:aqd="http://aqd.ec.europa.eu/aqd/0.3.7c"
         xmlns:base2="http://inspire.ec.europa.eu/schemas/base2/1.0rc3"
         xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/"
         xmlns:ef="http://inspire.ec.europa.eu/schemas/ef/3.0rc3"
@@ -32,9 +32,7 @@
         xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
 <!-- $Id$
-     For schema http://dd.eionet.europa.eu/schemas/id2011850eu/AQD.xsd
-             or http://dd.eionet.europa.eu/schemas/id2011850eu/AQD.xsd http://schemas.opengis.net/gml/3.2.1/gml.xsd
-        xmlns:aqd="http://www.exampleURI.com/AQD"
+     For schema http://dd.eionet.europa.eu/schemas/id2011850eu/AirQualityReporting.xsd
   -->
   <xsl:output method="xml" encoding="UTF-8" indent="no"/>
 
