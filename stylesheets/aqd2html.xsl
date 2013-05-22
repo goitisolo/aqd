@@ -4,8 +4,8 @@
         xmlns:am="http://inspire.jrc.ec.europa.eu/schemas/am/2.0"
         xmlns:am-ru="http://inspire.jrc.ec.europa.eu/schemas/am-ru/2.0"
         xmlns:aqd1="http://www.eionet.europa.eu/aqportal/Drep1"
-        xmlns:aqd="http://aqd.ec.europa.eu/aqd/0.3.6b"
-        xmlns:aqdold="http://www.exampleURI.com/AQD"
+        xmlns:aqd="http://aqd.ec.europa.eu/aqd/0.3.7c"
+        xmlns:aqdold="http://aqd.ec.europa.eu/aqd/0.3.6b"
         xmlns:base2="http://inspire.ec.europa.eu/schemas/base2/1.0rc3"
         xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/"
         xmlns:ef="http://inspire.ec.europa.eu/schemas/ef/3.0rc3"
@@ -64,8 +64,9 @@
   <xsl:for-each select="//aqdold:*">
     <xsl:if test="position() = 1">
       <div class="errormsg">
-      <p>This file is using an obsolete namespace (http://www.exampleURI.com/AQD) for the aqd prefix</p>
-      <p>The correct one is http://dd.eionet.europa.eu/schemas/id2011850eu</p>
+      <p>This file is using an obsolete namespace (http://aqd.ec.europa.eu/aqd/0.3.6b) for the aqd prefix</p>
+      <p>The correct one is http://aqd.ec.europa.eu/aqd/0.3.7c
+      </p>
       </div>
     </xsl:if>
   </xsl:for-each>
@@ -74,7 +75,8 @@
     <xsl:if test="position() = 1">
       <div class="errormsg">
       <p>This file is using an obsolete namespace (http://www.eionet.europa.eu/aqportal/Drep1) for the aqd prefix</p>
-      <p>The correct one is http://dd.eionet.europa.eu/schemas/id2011850eu</p>
+      <p>The correct one is http://aqd.ec.europa.eu/aqd/0.3.7c
+      </p>
       </div>
     </xsl:if>
   </xsl:for-each>
@@ -92,7 +94,7 @@
       <div class="errormsg">
       <p>Error: AQD schema found in xsi:schemaLocation without full URL or wrong URL!<br/>
       Found: <xsl:value-of select="@xsi:schemaLocation"/><br/>
-      Correct syntax: "http://www.eionet.europa.eu/aqportal/Drep1 http://dd.eionet.europa.eu/schemas/id2011850eu/AQD.xsd" or later version.
+      Correct syntax: "http://dd.eionet.europa.eu/schemas/id2011850eu/AirQualityReporting.xsd" or later version.
       </p>
       </div>
   </xsl:if>
