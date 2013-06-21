@@ -27,6 +27,7 @@
     xmlns:sparql="http://www.w3.org/2005/sparql-results#"
     xmlns:owl="http://www.w3.org/2002/07/owl#"
     xmlns:skos="http://www.w3.org/2008/05/skos#"
+    xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#"
     xmlns="http://rdfdata.eionet.europa.eu/airquality/ontology/"
 
         xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
@@ -52,7 +53,7 @@
   </xsl:template>
 
 <!-- Stop processing of properties -->
-  <xsl:template match="ef:geometry|am:geometry|sams:shape|om:result|swe:encoding" mode="property"/>
+  <xsl:template match="am:geometry|sams:shape|om:result|swe:encoding" mode="property"/>
 
 <!-- For literal decimal elements (properties) -->
   <xsl:template match="aqd:area|aqd:residentPopulation|
@@ -128,6 +129,25 @@
   <!-- Ignore polygons -->
   <xsl:template match="gml:Polygon" mode="resourceorliteral"/>
 
+  <xsl:template match="gml:Point" mode="resourceorliteral">
+    <xsl:if test="@srsName='urn:ogc:def:crs:EPSG::6326' and gml:pos/@srsDimension='2'">
+      <geo:SpatialThing>
+        <xsl:attribute name="rdf:ID">
+          <xsl:value-of select="@gml:id"/>
+        </xsl:attribute>
+        <geo:lat>
+          <xsl:attribute name="rdf:datatype">http://www.w3.org/2001/XMLSchema#decimal</xsl:attribute>
+          <xsl:value-of select="substring-before(gml:pos/text(),' ')"/>
+        </geo:lat>
+        <geo:long>
+          <xsl:attribute name="rdf:datatype">http://www.w3.org/2001/XMLSchema#decimal</xsl:attribute>
+          <xsl:value-of select="substring-after(gml:pos/text(),' ')"/>
+        </geo:long>
+      </geo:SpatialThing>
+    </xsl:if>
+  </xsl:template>
+
+
   <!-- The property contains text -->
   <xsl:template match="text()" mode="resourceorliteral">
     <xsl:value-of select="text()"/>
@@ -141,16 +161,11 @@
   <!-- Standard resources -->
   <xsl:template match="*" mode="resourceorliteral">
     <xsl:element name="{local-name()}" namespace="http://rdfdata.eionet.europa.eu/airquality/ontology/">
-      <xsl:attribute name="rdf:ID">
-      <xsl:choose>
-        <xsl:when test="@gml:id != ''">
+      <xsl:if test="@gml:id != ''">
+        <xsl:attribute name="rdf:ID">
           <xsl:value-of select="@gml:id"/>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:value-of select="generate-id()"/>
-        </xsl:otherwise>
-      </xsl:choose>
-      </xsl:attribute>
+        </xsl:attribute>
+      </xsl:if>
       <xsl:apply-templates mode="property"/>
     </xsl:element>
   </xsl:template>
