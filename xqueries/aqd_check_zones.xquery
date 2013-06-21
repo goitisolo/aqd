@@ -16,17 +16,24 @@ declare namespace xmlconv = "http://converters.eionet.europa.eu";
 declare namespace aqd = "http://aqd.ec.europa.eu/aqd/0.3.7c";
 declare namespace gml = "http://www.opengis.net/gml/3.2";
 declare namespace am = "http://inspire.ec.europa.eu/schemas/am/3.0rc3";
-declare namespace ef="http://inspire.ec.europa.eu/schemas/ef/3.0rc3";
-declare namespace base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/";
+declare namespace ef = "http://inspire.ec.europa.eu/schemas/ef/3.0rc3";
+declare namespace base = "http://inspire.ec.europa.eu/schemas/base/3.3rc3/";
+declare namespace gn = "urn:x-inspire:specification:gmlas:GeographicalNames:3.0";
+declare namespace base2 = "http://inspire.ec.europa.eu/schemas/base2/1.0rc3";
+
+declare variable $xmlconv:ISO2_CODES as xs:string* := ("AL","AT","BA","BE","BG","CH","CY","CZ","DE","DK","DZ","EE","EG","ES","FI",
+    "FR","GB","GR","HR","HU","IE","IL","IS","IT","JO","LB","LI","LT","LU","LV","MA","ME","MK","MT","NL","NO","PL","PS","PT",
+     "RO","RS","SE","SI","SK","TN","TR","XK","UK");
 (:===================================================================:)
 (: Variable given as an external parameter by the QA service                                                 :)
 (:===================================================================:)
 
-declare variable $source_url := "../test/D_GB_Zones.xml";
+declare variable $source_url as xs:untypedAtomic external;
 
 (:
 declare variable $source_url as xs:untypedAtomic external;
 Change it for testing locally:
+declare variable $source_url := "../test/D_GB_Zones.xml";
 declare variable $source_url as xs:string external;
 declare variable $source_url := "http://cdr.eionet.europa.eu/gb/eu/aqd/e2a/colutn32a/envubnpvw/B_GB_Zones.xml";
 :)
@@ -42,9 +49,44 @@ as element(div) {
         else
             "deepskyblue"
 return
-    <div style="background-color: { $color }; font-size: 0.8em; color: white; padding-left:5px;padding-right:5px;margin-right:5px;text-align:center">{ $text }</div>
+    <div style="background-color: { $color }; font-size: 0.8em; color: white; padding-left:5px;padding-right:5px;margin-right:5px;margin-top:2px;text-align:center">{ $text }</div>
 };
 
+(:
+    Builds HTML table rows for rules B13 - B17.
+:)
+declare function xmlconv:buildResultRows($ruleCode as xs:string, $text as xs:string, $invalidValues as xs:string*,
+    $valueHeading as xs:string, $validMsg as xs:string, $invalidMsg as xs:string)
+as element(tr)*{
+    let $countInvalidValues := count($invalidValues)
+
+let $result :=
+    (
+        <tr>
+            <td style="vertical-align:top;">{ xmlconv:getBullet($ruleCode, if ($countInvalidValues = 0) then "info" else "error") }</td>
+            <th style="vertical-align:top;">{ $text }</th>
+            <td style="vertical-align:top;">{
+                if ($countInvalidValues = 0) then
+                    $validMsg
+                else
+                    concat($countInvalidValues, $invalidMsg, substring("s ", number(not($countInvalidValues > 1)) * 2) ,"found") }</td>
+        </tr>,
+            if ($countInvalidValues > 0) then
+                <tr style="font-size: 0.9em;color:grey;">
+                    <td colspan="2" style="text-align:right;vertical-align:top;">{ $valueHeading} - </td>
+                    <td style="font-style:italic;vertical-align:top;">{ string-join($invalidValues, ", ")}</td>
+                </tr>
+            else
+                ()
+    )
+return $result
+
+};
+
+
+(:
+    Rule implementations
+:)
 declare function xmlconv:checkReport($source_url as xs:string)
 as element(table) {
 
@@ -60,7 +102,7 @@ let $countZonesWithLAU := count($docRoot//gml:featureMember/aqd:AQD_Zone/aqd:LAU
 let $gmlIds := $docRoot//gml:featureMember/aqd:AQD_Zone/lower-case(normalize-space(@gml:id))
 let $duplicateGmlIds := distinct-values(
     for $id in $docRoot//gml:featureMember/aqd:AQD_Zone/@gml:id
-    where count(index-of($gmlIds, lower-case(normalize-space($id)))) > 1
+    where string-length(normalize-space($id)) > 0 and count(index-of($gmlIds, lower-case(normalize-space($id)))) > 1
     return
         $id
     )
@@ -73,7 +115,7 @@ let $duplicateefInspireIds := distinct-values(
     let $key :=
         concat("[", normalize-space($id/base:Identifier/base:localId), ", ", normalize-space($id/base:Identifier/base:namespace),
             ", ", normalize-space($id/base:Identifier/base:versionId), "]")
-    where count(index-of($efInspireIds, lower-case($key))) > 1
+    where string-length(normalize-space($id/base:Identifier/base:localId)) > 0 and count(index-of($efInspireIds, lower-case($key))) > 1
     return
         $key
     )
@@ -87,7 +129,7 @@ let $duplicateaqdInspireIds := distinct-values(
     let $key :=
         concat("[", normalize-space($id/base:Identifier/base:localId), ", ", normalize-space($id/base:Identifier/base:namespace),
             ", ", normalize-space($id/base:Identifier/base:versionId), "]")
-    where count(index-of($aqdInspireIds, lower-case($key))) > 1
+    where  string-length(normalize-space($id/base:Identifier/base:localId)) > 0 and count(index-of($aqdInspireIds, lower-case($key))) > 1
     return
         $key
     )
@@ -102,36 +144,72 @@ let $countB8duplicates := $countGmlIdDuplicates + $countefInspireIdDuplicates + 
 let $amInspireIds := $docRoot//gml:featureMember/aqd:AQD_Zone/am:inspireId/base:Identifier/lower-case(normalize-space(base:localId))
 let $duplicateAmInspireIds := distinct-values(
     for $id in $docRoot//gml:featureMember/aqd:AQD_Zone/am:inspireId/base:Identifier/base:localId
-    where count(index-of($amInspireIds, lower-case(normalize-space($id)))) > 1
+    where string-length(normalize-space($id)) > 0 and count(index-of($amInspireIds, lower-case(normalize-space($id)))) > 1
+    return
+        $id
+    )
+let $invalidIsoAmInspireIds := distinct-values(
+    for $id in $docRoot//gml:featureMember/aqd:AQD_Zone/am:inspireId/base:Identifier/base:localId
+    where string-length(normalize-space($id)) > 0 and (string-length(normalize-space($id)) < 2 or
+        count(index-of($xmlconv:ISO2_CODES , substring(upper-case(normalize-space($id)), 1, 2))) = 0)
     return
         $id
     )
 
 let $countAmInspireIdDuplicates := count($duplicateAmInspireIds)
-let $countB9duplicates := $countAmInspireIdDuplicates
+let $countAmInspireIdInvalidIso := count($invalidIsoAmInspireIds)
+let $countB9duplicates := $countAmInspireIdDuplicates + $countAmInspireIdInvalidIso
 
+(: B14 :)
+let $unknownNativeness := distinct-values($docRoot//gml:featureMember/aqd:AQD_Zone[count(am:name/gn:GeographicalName/gn:nativeness[@xsi:nil="true" and @nilReason="unknown"])>0]/@gml:id)
+(: B15 :)
+let $unknownNameStatus := distinct-values($docRoot//gml:featureMember/aqd:AQD_Zone[count(am:name/gn:GeographicalName/gn:nameStatus[@xsi:nil="true" and @nilReason="unknown"])>0]/@gml:id)
+(: B16 :)
+let $unknownSourceOfName := distinct-values($docRoot//gml:featureMember/aqd:AQD_Zone[count(am:name/gn:GeographicalName/gn:sourceOfName[@xsi:nil="true" and @nilReason="unknown"])>0]/@gml:id)
+(: B17 :)
+let $unknownPronunciation  := distinct-values($docRoot//gml:featureMember/aqd:AQD_Zone[count(am:name/gn:GeographicalName/gn:pronunciation[@xsi:nil="true" and @nilReason="unknown"])>0]/@gml:id)
 
+(: B21 :)
+let $invalidPosListDimension  := distinct-values($docRoot//gml:featureMember/aqd:AQD_Zone/am:geometry/gml:Polygon/gml:exterior/gml:LinearRing/gml:posList[@srsDimension != "2"]/
+            concat(../../../../../@gml:id, ": srsDimension=", @srsDimension))
+
+(: B30 :)
+let $invalidLegalBasisName  := distinct-values($docRoot//gml:featureMember/aqd:AQD_Zone/am:legalBasis/base2:LegislationCitation[normalize-space(base2:name) != "2011/850/EC"]/
+            concat(../../@gml:id, ": base2:name=", if (string-length(base2:name) > 20) then concat(substring(base2:name, 1, 20), "...") else base2:name))
+(: B31 :)
+let $invalidLegalBasisDate  := distinct-values($docRoot//gml:featureMember/aqd:AQD_Zone/am:legalBasis/base2:LegislationCitation[normalize-space(base2:date) != "2011-12-12"]/
+            concat(../../@gml:id, ": base2:date=", if (string-length(base2:date) > 20) then concat(substring(base2:date, 1, 20), "...") else base2:date))
+(: B32 :)
+let $invalidLegalBasisLink  := distinct-values($docRoot//gml:featureMember/aqd:AQD_Zone/am:legalBasis/base2:LegislationCitation[normalize-space(base2:link) != "http://rod.eionet.europa.eu/instruments/650"]/
+            concat(../../@gml:id, ": base2:link=", if (string-length(base2:link) > 40) then concat(substring(base2:link, 1, 40), "...") else base2:link))
+
+(: B35 :)
+let $invalidResidentPopulation  := distinct-values($docRoot//gml:featureMember/aqd:AQD_Zone[not(count(aqd:residentPopulation)>0 and aqd:residentPopulation castable as xs:integer and number(aqd:residentPopulation) > 0)]/
+            concat(@gml:id, ": aqd:residentPopulation=", if (string-length(aqd:residentPopulation) = 0) then "missing" else aqd:residentPopulation))
+(: B37 :)
+let $invalidArea  := distinct-values($docRoot//gml:featureMember/aqd:AQD_Zone[not(count(aqd:area)>0 and number(aqd:area) and number(aqd:area) > 0)]/
+            concat(@gml:id, ": aqd:area=", if (string-length(aqd:area) = 0) then "missing" else aqd:area))
 return
-    <table style="text-align:left">
+    <table style="text-align:left;vertical-align:top;">
         <tr>
-            <td>{ xmlconv:getBullet("B1", "info") }</td>
-            <th>Total number of AQ zones</th>
-            <td>{ $countZones }</td>
+            <td style="vertical-align:top;">{ xmlconv:getBullet("B1", "info") }</td>
+            <th style="vertical-align:top;">Total number of AQ zones</th>
+            <td style="vertical-align:top;">{ $countZones }</td>
         </tr>
         <tr>
-            <td>{ xmlconv:getBullet("B3", "info") }</td>
-            <th>The number of zones designated with coordinates via the ./am:geometry element</th>
-            <td>{ $countZonesWithAmGeometry }</td>
+            <td style="vertical-align:top;">{ xmlconv:getBullet("B3", "info") }</td>
+            <th style="vertical-align:top;">The number of zones designated with coordinates via the ./am:geometry element</th>
+            <td style="vertical-align:top;">{ $countZonesWithAmGeometry }</td>
         </tr>
         <tr>
-            <td>{ xmlconv:getBullet("B4", "info") }</td>
-            <th>The number of zones designated with coordinates via the ./aqd:LAU element</th>
-            <td>{ $countZonesWithLAU }</td>
+            <td style="vertical-align:top;">{ xmlconv:getBullet("B4", "info") }</td>
+            <th style="vertical-align:top;">The number of zones designated with coordinates via the ./aqd:LAU element</th>
+            <td style="vertical-align:top;">{ $countZonesWithLAU }</td>
         </tr>
         <tr>
-            <td>{ xmlconv:getBullet("B8", if ($countB8duplicates = 0) then "info" else "error") }</td>
-            <th>All gml:id attributes, ef:inspireId and aqd:inspireId elements shall have unique content</th>
-            <td>{
+            <td style="vertical-align:top;">{ xmlconv:getBullet("B8", if ($countB8duplicates = 0) then "info" else "error") }</td>
+            <th style="vertical-align:top;">All gml:id attributes, ef:inspireId and aqd:inspireId elements shall have unique content</th>
+            <td style="vertical-align:top;">{
                 if ($countB8duplicates = 0) then
                     "All Ids are unique"
                 else
@@ -140,8 +218,8 @@ return
         {
             if ($countGmlIdDuplicates > 0) then
                 <tr style="font-size: 0.9em;color:grey;">
-                    <td colspan="2" style="text-align:right;">gml:id - </td>
-                    <td style="font-style:italic">{ string-join($duplicateGmlIds, ", ")}</td>
+                    <td colspan="2" style="text-align:right;vertical-align:top;">aqd:AQD_Zone/@gml:id - </td>
+                    <td style="font-style:italic;vertical-align:top;">{ string-join($duplicateGmlIds, ", ")}</td>
                 </tr>
             else
                 ()
@@ -149,8 +227,8 @@ return
         {
             if ($countefInspireIdDuplicates > 0) then
                 <tr style="font-size: 0.9em;color:grey;">
-                    <td colspan="2" style="text-align:right;">ef:inspireId - </td>
-                    <td style="font-style:italic">{ string-join($duplicateefInspireIds, ", ")}</td>
+                    <td colspan="2" style="text-align:right;vertical-align:top;">ef:inspireId - </td>
+                    <td style="font-style:italic;vertical-align:top;">{ string-join($duplicateefInspireIds, ", ")}</td>
                 </tr>
             else
                 ()
@@ -158,16 +236,16 @@ return
         {
             if ($countaqdInspireIdDuplicates > 0) then
                 <tr style="font-size: 0.9em;color:grey;">
-                    <td colspan="2" style="text-align:right;">aqd:inspireId - </td>
-                    <td style="font-style:italic">{ string-join($duplicateaqdInspireIds, ", ")}</td>
+                    <td colspan="2" style="text-align:right;vertical-align:top;">aqd:inspireId - </td>
+                    <td style="font-style:italic;vertical-align:top;">{ string-join($duplicateaqdInspireIds, ", ")}</td>
                 </tr>
             else
                 ()
         }
         <tr>
-            <td>{ xmlconv:getBullet("B9", if ($countB9duplicates = 0) then "info" else "error") }</td>
-            <th>./am:inspireId/base:Identifier/base:localId shall be an unique code for network starting with ISO2-country code</th>
-            <td>{
+            <td style="vertical-align:top;">{ xmlconv:getBullet("B9", if ($countB9duplicates = 0) then "info" else "error") }</td>
+            <th style="vertical-align:top;">./am:inspireId/base:Identifier/base:localId shall be an unique code for network starting with ISO2-country code</th>
+            <td style="vertical-align:top;">{
                 if ($countB9duplicates = 0) then
                     "All Ids are unique"
                 else
@@ -176,12 +254,42 @@ return
         {
             if ($countAmInspireIdDuplicates > 0) then
                 <tr style="font-size: 0.9em;color:grey;">
-                    <td colspan="2" style="text-align:right;">Duplicate base:localId - </td>
-                    <td style="font-style:italic">{ string-join($duplicateAmInspireIds, ", ")}</td>
+                    <td colspan="2" style="text-align:right;vertical-align:top;">Duplicate base:localId - </td>
+                    <td style="font-style:italic;vertical-align:top;">{ string-join($duplicateAmInspireIds, ", ")}</td>
                 </tr>
             else
                 ()
         }
+        {
+            if ($countAmInspireIdInvalidIso > 0) then
+                <tr style="font-size: 0.9em;color:grey;">
+                    <td colspan="2" style="text-align:right;vertical-align:top;">Wrong ISO2 in base:localId - </td>
+                    <td style="font-style:italic;vertical-align:top;">{ string-join($invalidIsoAmInspireIds, ", ")}</td>
+                </tr>
+            else
+                ()
+        }
+        {xmlconv:buildResultRows("B14", "./am:name/gn:GeographicalName/gn:nativeness attribute xsi:nil=""true"" nilReason=""unknown""",
+            $unknownNativeness, "aqd:AQD_Zone/@gml:id", "No unknown values found", " unknwon reason")}
+        {xmlconv:buildResultRows("B15", "./am:name/gn:GeographicalName/gn:nameStatus  attribute xsi:nil=""true"" nilReason=""unknown""",
+            $unknownNameStatus, "aqd:AQD_Zone/@gml:id", "No unknown values found", " unknwon reason")}
+        {xmlconv:buildResultRows("B16", "./am:name/gn:GeographicalName/gn:sourceOfName  attribute xsi:nil=""true"" nilReason=""unknown""",
+            $unknownSourceOfName, "aqd:AQD_Zone/@gml:id", "No unknown values found", " unknwon reason")}
+        {xmlconv:buildResultRows("B17", "./am:name/gn:GeographicalName/gn:pronunciation  attribute xsi:nil=""true"" nilReason=""unknown""",
+            $unknownPronunciation, "aqd:AQD_Zone/@gml:id", "No unknown values found", " unknwon reason")}
+        {xmlconv:buildResultRows("B21", "./am:geometry/gml:Polygon/gml:exterior/gml:LinearRing/gml:posList the srsDimension attribute shall resolve to ""2"" to allow the x &amp; y-coordinate of the feature of interest",
+            $invalidPosListDimension, "aqd:AQD_Zone/@gml:id", "All srsDimension attributes resolve to ""2""", " invalid attribute")}
+        {xmlconv:buildResultRows("B30", "./am:legalBasis/base2:LegislationCitation/base2:name value shall be ""2011/850/EC""",
+            $invalidLegalBasisName, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value")}
+        {xmlconv:buildResultRows("B31", "./am:legalBasis/base2:LegislationCitation/base2:date value shall be ""2011-12-12""",
+            $invalidLegalBasisDate, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value")}
+        {xmlconv:buildResultRows("B32", "./am:legalBasis/base2:LegislationCitation/base2:link value shall be ""http://rod.eionet.europa.eu/instruments/650""",
+            $invalidLegalBasisLink, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value")}
+        {xmlconv:buildResultRows("B35", "./aqd:residentPopulation shall be an integer value GREATER THAN 0 (zero)",
+            $invalidResidentPopulation, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value")}
+        {xmlconv:buildResultRows("B37", "./aqd:area the value will be a decimal number GREATER THAN 0 (zero)",
+            $invalidArea, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value")}
+
     </table>
 }
 ;
