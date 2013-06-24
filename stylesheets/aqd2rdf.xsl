@@ -130,11 +130,12 @@
   <xsl:template match="gml:Polygon" mode="resourceorliteral"/>
 
   <xsl:template match="gml:Point" mode="resourceorliteral">
-    <xsl:if test="@srsName='urn:ogc:def:crs:EPSG::6326' and gml:pos/@srsDimension='2'">
-      <geo:SpatialThing>
+    <xsl:if test="gml:pos/@srsDimension='2' and (@srsName='urn:ogc:def:crs:EPSG::6326' or @srsName='urn:ogc:def:crs:EPSG::4326')">
+      <geo:Point>
         <xsl:attribute name="rdf:ID">
           <xsl:value-of select="@gml:id"/>
         </xsl:attribute>
+        <rdf:type rdf:resource="http://www.w3.org/2003/01/geo/wgs84_pos#SpatialThing"/>
         <geo:lat>
           <xsl:attribute name="rdf:datatype">http://www.w3.org/2001/XMLSchema#decimal</xsl:attribute>
           <xsl:value-of select="substring-before(gml:pos/text(),' ')"/>
@@ -143,7 +144,7 @@
           <xsl:attribute name="rdf:datatype">http://www.w3.org/2001/XMLSchema#decimal</xsl:attribute>
           <xsl:value-of select="substring-after(gml:pos/text(),' ')"/>
         </geo:long>
-      </geo:SpatialThing>
+      </geo:Point>
     </xsl:if>
   </xsl:template>
 
