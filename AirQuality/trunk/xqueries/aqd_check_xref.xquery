@@ -24,13 +24,13 @@ declare variable $xmlconv:CR_SPARQL_URL := "http://cr.eionet.europa.eu/sparql";
 (:===================================================================:)
 (: Variable given as an external parameter by the QA service                                                 :)
 (:===================================================================:)
-declare variable $source_url as xs:untypedAtomic external;
 
-(:
 declare variable $source_url as xs:untypedAtomic external;
+(:
 
     Change it for testing locally:
 declare variable $source_url as xs:string external;
+declare variable $source_url as xs:untypedAtomic external;
 declare variable $source_url := "http://cdr.eionet.europa.eu/gb/eu/aqd/e2a/colutn32a/envuvlxkq/E2a_GB2013032713version4.xml";
 :)
 
@@ -193,18 +193,21 @@ let $reportedVocabularyElements :=
 
 let $result := for $vocabulary in $vocabularies
         let $vocabularyUrl := data($vocabulary/@url)
-        let $invalidCodes := xmlconv:validateCode(distinct-values($reportedVocabularyElements[count(index-of($vocabulary//element[not(@checkConceptOnly)], name(.))) > 0
-            or (count(index-of($vocabulary//element[@checkConceptOnly='true'], name(.))) > 0 and starts-with(@xlink:href, $vocabulary/@url))]/@xlink:href),
-            $vocabularyUrl)
+        let $codes := $reportedVocabularyElements[count(index-of($vocabulary//element[not(@checkConceptOnly)], name(.))) > 0
+            or (count(index-of($vocabulary//element[@checkConceptOnly='true'], name(.))) > 0 and starts-with(@xlink:href, $vocabulary/@url))]/@xlink:href
+        let $invalidCodes := xmlconv:validateCode(distinct-values($codes), $vocabularyUrl)
         let $errorCount := count($invalidCodes)
+        let $codesCount := count($codes)
     return
         <div>
             <h3>{ data($vocabulary/@label) }</h3>
             {
-            if (count($invalidCodes) > 0) then
-                <div style="color:red" errorCount="{ $errorCount }">{ $errorCount } invalid codes found!</div>
+            if  ($codesCount = 0) then
+                <div codesCount="{ $codesCount }">No codes found.</div>
+            else if ($errorCount > 0) then
+                <div style="color:red" codesCount="{ $codesCount }" errorCount="{ $errorCount }">{ $errorCount } invalid code{ substring("s ", number(not($errorCount > 1)) * 2)}found out of { $codesCount } checked.</div>
             else
-                <div style="color:green">All codes are valid.</div>
+                <div style="color:green" codesCount="{ $codesCount }">Found { $codesCount } code{ substring("s,", number(not($codesCount > 1)) * 2)} all valid.</div>
             }
             { $invalidCodes }
             <p><a href="{ $vocabularyUrl }">{ data($vocabulary/@label) } vocabulary</a></p>
@@ -215,10 +218,12 @@ return
         <div>
             <h2>Check codes</h2>
             {
-            if (sum($result//div/@errorCount) > 0) then
-                <div style="color:red">{ sum($result//div/@errorCount) } invalid codes found from this report!</div>
+            if (sum($result//div/@codesCount) = 0) then
+                <div>No codes found from this report.</div>
+            else if (sum($result//div/@errorCount) > 0) then
+                <div style="color:red">{ sum($result//div/@errorCount) } invalid code{ substring("s ", number(not(sum($result//div/@errorCount) > 1)) * 2)}found out of { sum($result//div/@codesCount) } checked from this report.</div>
             else
-                <div style="color:green">All codes are valid in this report.</div>
+                <div style="color:green">Found { sum($result//div/@codesCount) } code{ substring("s ", number(not(sum($result//div/@codesCount) > 1)) * 2)}from this report, all valid.</div>
             }
         </div>
 
