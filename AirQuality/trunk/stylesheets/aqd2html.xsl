@@ -41,62 +41,62 @@
 
 <xsl:template match="/">
   <html>
-  <head>
-	<style>
-                .errormsg { background: #ffe0e0; font-size: 120%; padding: 0.2em; border: 1px solid darkred; margin: 0.5em; }
-                .inlineerror { background: #ffe0e0; font-weight: bold; padding: 0 0.2em; border: 1px solid darkred; margin: 0.1em 0.1em 0.1em 0.6em; }
-                th[scope="row"] {
-                    text-align: right;
-                    vertical-align:top;
-                    background-color: #b6ddf7;
-                }
-                ul {list-style-type: none; margin: 0; padding: 0}
-		span.lbl {float: right; font-weight: bold; text-align: right; padding-right: 3px; width: 100%}
-                table { border-collapse: collapse; margin: 2pt 0pt; border: solid 1px #000000 }
-		table.tbl tr td, table.tbl tr th, table.tbl caption {border: solid 1px #cccccc;}
-                td, th {padding: 1pt 3pt; }
-                table.full {width: 100%}
-                caption { background-color: #cddaec }
-	</style>
-  </head>
-  <body>
+    <head>
+      <style>
+        .errormsg { background: #ffe0e0; font-size: 120%; padding: 0.2em; border: 1px solid darkred; margin: 0.5em; }
+        .inlineerror { background: #ffe0e0; font-weight: bold; padding: 0 0.2em; border: 1px solid darkred; margin: 0.1em 0.1em 0.1em 0.6em; }
+        th[scope="row"] {
+            text-align: right;
+            vertical-align:top;
+            background-color: #b6ddf7;
+        }
+        ul {list-style-type: none; margin: 0; padding: 0}
+        span.lbl {float: right; font-weight: bold; text-align: right; padding-right: 3px; width: 100%}
+        table { border-collapse: collapse; margin: 2pt 0pt; border: solid 1px #000000 }
+        table.tbl tr td, table.tbl tr th, table.tbl caption {border: solid 1px #cccccc;}
+        td, th {padding: 1pt 3pt; }
+        table.full {width: 100%}
+        caption { background-color: #cddaec }
+      </style>
+    </head>
+    <body>
 <!-- Booby traps -->
-  <xsl:for-each select="//aqdold:*">
-    <xsl:if test="position() = 1">
-      <div class="errormsg">
-      <p>This file is using an obsolete namespace (http://aqd.ec.europa.eu/aqd/0.3.6b) for the aqd prefix</p>
-      <p>The correct one is http://aqd.ec.europa.eu/aqd/0.3.7c
-      </p>
-      </div>
-    </xsl:if>
-  </xsl:for-each>
+      <xsl:for-each select="//aqdold:*">
+        <xsl:if test="position() = 1">
+          <div class="errormsg">
+          <p>This file is using an obsolete namespace (http://aqd.ec.europa.eu/aqd/0.3.6b) for the aqd prefix</p>
+          <p>The correct one is http://aqd.ec.europa.eu/aqd/0.3.7c
+          </p>
+          </div>
+        </xsl:if>
+      </xsl:for-each>
 
-  <xsl:for-each select="//aqd1:*">
-    <xsl:if test="position() = 1">
-      <div class="errormsg">
-      <p>This file is using an obsolete namespace (http://www.eionet.europa.eu/aqportal/Drep1) for the aqd prefix</p>
-      <p>The correct one is http://aqd.ec.europa.eu/aqd/0.3.7c
-      </p>
-      </div>
-    </xsl:if>
-  </xsl:for-each>
-
-
-  <xsl:apply-templates/>
-  </body>
+      <xsl:for-each select="//aqd1:*">
+        <xsl:if test="position() = 1">
+          <div class="errormsg">
+            <p>This file is using an obsolete namespace (http://www.eionet.europa.eu/aqportal/Drep1) for the aqd prefix</p>
+            <p>The correct one is http://aqd.ec.europa.eu/aqd/0.3.7c</p>
+          </div>
+        </xsl:if>
+      </xsl:for-each>
+      <xsl:apply-templates/>
+    </body>
   </html>
 </xsl:template>
 
+<!--
+     Root element
+  -->
 <xsl:template match="gml:FeatureCollection">
   <h1>Features in this file</h1>
 <!-- Booby traps -->
   <xsl:if test="not(contains(@xsi:schemaLocation,'http://dd.eionet.europa.eu/schemas/'))">
-      <div class="errormsg">
+    <div class="errormsg">
       <p>Error: AQD schema found in xsi:schemaLocation without full URL or wrong URL!<br/>
       Found: <xsl:value-of select="@xsi:schemaLocation"/><br/>
       Correct syntax: "http://dd.eionet.europa.eu/schemas/id2011850eu/AirQualityReporting.xsd" or later version.
       </p>
-      </div>
+    </div>
   </xsl:if>
   <xsl:apply-templates/>
 </xsl:template>
@@ -107,33 +107,35 @@
 
 <!-- Features -->
 <xsl:template match="*" mode="feature">
-    <h2><xsl:attribute name="id"><xsl:value-of select="@gml:id"/></xsl:attribute>
-      <xsl:call-template name="getLabel"><xsl:with-param name="node" select="current()"/></xsl:call-template>: <xsl:value-of select="@gml:id"/>
-    </h2>
-    <table class="tbl full">
+  <h2><xsl:attribute name="id"><xsl:value-of select="@gml:id"/></xsl:attribute>
+    <xsl:call-template name="getLabel"><xsl:with-param name="node" select="current()"/></xsl:call-template>: <xsl:value-of select="@gml:id"/>
+  </h2>
+  <table class="tbl full">
     <xsl:apply-templates mode="property"/>
-    </table>
+  </table>
 </xsl:template>
 
 
 
 <xsl:template match="aqd:assessmentMethods">
-    <tr><th scope="column" colspan="2">Assessment methods</th></tr>
-    <tr>
+  <tr><th scope="column" colspan="2">Assessment methods</th></tr>
+  <tr>
     <th scope="row">
-        <xsl:call-template name="datavalue"><xsl:with-param name="node" select="aqd:AssessmentMethods/aqd:assessmentType"/></xsl:call-template><br/>
-        <xsl:value-of select="aqd:AssessmentMethods/aqd:assessmentTypeDescription"/>
+      <xsl:call-template name="datavalue"><xsl:with-param name="node" select="aqd:AssessmentMethods/aqd:assessmentType"/></xsl:call-template><br/>
+      <xsl:value-of select="aqd:AssessmentMethods/aqd:assessmentTypeDescription"/>
     </th>
     <td>
-<xsl:for-each select="aqd:AssessmentMethods/aqd:modelAssessmentMetadata">
-<xsl:call-template name="datavalue"><xsl:with-param name="node" select="."/></xsl:call-template><br/>
-</xsl:for-each>
-</td>
-</tr>
+      <xsl:for-each select="aqd:AssessmentMethods/aqd:modelAssessmentMetadata">
+        <xsl:call-template name="datavalue"><xsl:with-param name="node" select="."/></xsl:call-template><br/>
+      </xsl:for-each>
+    </td>
+  </tr>
 </xsl:template>
 
 <!-- PROPERTIES -->
-<xsl:template match="swe:encoding" mode="property"/>
+
+<!-- Stop processing of properties -->
+<xsl:template match="am:geometry|sams:shape|swe:encoding" mode="property"/>
 
 <xsl:template match="swe:field" mode="property">
   <tr>
@@ -153,6 +155,7 @@
   </tr>
 </xsl:template>
 
+<!-- Wildcard property -->
 <xsl:template match="*" mode="property">
   <tr>
     <th scope="row">
@@ -200,20 +203,20 @@
 
 <!-- Any generic data value -->
 <xsl:template name="datavalue">
-    <xsl:param name="node" select="."/>
-    <xsl:choose>
-      <xsl:when test="$node/@xlink:href != ''">
-        <a><xsl:attribute name="href"><xsl:value-of select="$node/@xlink:href"/></xsl:attribute><xsl:value-of select="$node/@xlink:href"/></a>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:value-of select="$node"/>
-      </xsl:otherwise>
-    </xsl:choose>
+  <xsl:param name="node" select="."/>
+  <xsl:choose>
+    <xsl:when test="$node/@xlink:href != ''">
+      <a><xsl:attribute name="href"><xsl:value-of select="$node/@xlink:href"/></xsl:attribute><xsl:value-of select="$node/@xlink:href"/></a>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:value-of select="$node"/>
+    </xsl:otherwise>
+  </xsl:choose>
 </xsl:template>
 
 <xsl:template name="time_period">
-    <xsl:param name="node" select="."/>
-    <xsl:value-of select="$node/gml:TimePeriod/gml:beginPosition"/> to <xsl:value-of select="$node/gml:TimePeriod/gml:endPosition"/>
+  <xsl:param name="node" select="."/>
+  <xsl:value-of select="$node/gml:TimePeriod/gml:beginPosition"/> to <xsl:value-of select="$node/gml:TimePeriod/gml:endPosition"/>
 </xsl:template>
 
 <!-- Template contains the actual SPARQL to query the NUTS labels by code. -->
@@ -240,26 +243,26 @@ SELECT ?s WHERE {?s a air:Component .
 
 
 <!-- Helper template for constructing URL to SPARQL Endpoint. -->
-  <xsl:template name="getSparqlEndPointUrl">
-    <xsl:param name="sparql" select="''" />
-    <xsl:variable name="sparql-encoded" select="fn:encode-for-uri($sparql)"/>
-    <xsl:variable name="uriParams"
-          select="concat('query=', $sparql-encoded , '&amp;format=application/xml')" />
-    <xsl:value-of select="concat($sparqlEndpointUrl, '?', $uriParams)" />
-  </xsl:template>
+<xsl:template name="getSparqlEndPointUrl">
+  <xsl:param name="sparql" select="''" />
+  <xsl:variable name="sparql-encoded" select="fn:encode-for-uri($sparql)"/>
+  <xsl:variable name="uriParams"
+        select="concat('query=', $sparql-encoded , '&amp;format=application/xml')" />
+  <xsl:value-of select="concat($sparqlEndpointUrl, '?', $uriParams)" />
+</xsl:template>
 
-  <xsl:template name="getLabel">
-    <xsl:param name="node"/>
-    <xsl:variable name="label" select="document($labelsFile)/labels/labelset[@lang='en']/label[@id=name($node)]"/>
-    <xsl:choose>
-      <xsl:when test="$label != ''">
-         <xsl:value-of select="$label"/>
-      </xsl:when>
-      <xsl:otherwise>
-         <xsl:value-of select="local-name($node)"/>
-      </xsl:otherwise>
-    </xsl:choose>
-  </xsl:template>
+<xsl:template name="getLabel">
+  <xsl:param name="node"/>
+  <xsl:variable name="label" select="document($labelsFile)/labels/labelset[@lang='en']/label[@id=name($node)]"/>
+  <xsl:choose>
+    <xsl:when test="$label != ''">
+      <xsl:value-of select="$label"/>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:value-of select="local-name($node)"/>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
 
 </xsl:stylesheet>
 <!-- vim: set expandtab sw=2 : -->
