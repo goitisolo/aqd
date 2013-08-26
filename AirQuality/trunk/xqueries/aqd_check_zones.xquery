@@ -20,6 +20,11 @@ declare namespace ef = "http://inspire.ec.europa.eu/schemas/ef/3.0rc3";
 declare namespace base = "http://inspire.ec.europa.eu/schemas/base/3.3rc3/";
 declare namespace gn = "urn:x-inspire:specification:gmlas:GeographicalNames:3.0";
 declare namespace base2 = "http://inspire.ec.europa.eu/schemas/base2/1.0rc3";
+declare namespace sparql = "http://www.w3.org/2005/sparql-results#";
+declare namespace xlink = "http://www.w3.org/1999/xlink";
+
+(:~ declare Content Registry SPARQL endpoint:)
+declare variable $xmlconv:CR_SPARQL_URL := "http://cr.eionet.europa.eu/sparql";
 
 declare variable $xmlconv:ISO2_CODES as xs:string* := ("AL","AT","BA","BE","BG","CH","CY","CZ","DE","DK","DZ","EE","EG","ES","FI",
     "FR","GB","GR","HR","HU","IE","IL","IS","IT","JO","LB","LI","LT","LU","LV","MA","ME","MK","MT","NL","NO","PL","PS","PT",
@@ -28,15 +33,99 @@ declare variable $xmlconv:ISO2_CODES as xs:string* := ("AL","AT","BA","BE","BG",
 (: Variable given as an external parameter by the QA service                                                 :)
 (:===================================================================:)
 
-declare variable $source_url as xs:untypedAtomic external;
+declare variable $source_url as xs:string external;
 
 (:
+declare variable $source_url := "../test/D_GB_Zones.xml";
 declare variable $source_url as xs:untypedAtomic external;
 Change it for testing locally:
-declare variable $source_url := "../test/D_GB_Zones.xml";
 declare variable $source_url as xs:string external;
 declare variable $source_url := "http://cdr.eionet.europa.eu/gb/eu/aqd/e2a/colutn32a/envubnpvw/B_GB_Zones.xml";
 :)
+
+(: removes the file part from the end of URL and appends 'xml' for getting the envelope xml description :)
+declare function xmlconv:getEnvelopeXML($url as xs:string) as xs:string{
+
+        let $col := fn:tokenize($url,'/')
+        let $col := fn:remove($col, fn:count($col))
+        let $ret := fn:string-join($col,'/')
+        let $ret := fn:concat($ret,'/xml')
+        return
+            if(fn:doc-available($ret)) then
+                $ret
+            else
+             ""
+(:              "http://cdrtest.eionet.europa.eu/ee/eu/art17/envriytkg/xml" :)
+}
+;
+(:
+ : ======================================================================
+ :              SPARQL HELPER methods
+ : ======================================================================
+ :)
+(:~ Function executes given SPARQL query and returns result elements in SPARQL result format.
+ : URL parameters will be correctly encoded.
+ : @param $sparql SPARQL query.
+ : @return sparql:results element containing zero or more sparql:result subelements in SPARQL result format.
+ :)
+declare function xmlconv:executeSparqlQuery($sparql as xs:string)
+as element(sparql:results)
+{
+    let $uri := xmlconv:getSparqlEndpointUrl($sparql, "xml")
+
+    return
+        fn:doc($uri)//sparql:results
+};
+
+
+(:~
+ : Get the SPARQL endpoint URL.
+ : @param $sparql SPARQL query.
+ : @param $format xml or html.
+ : @param $inference use inference when executing sparql query.
+ : @return link to sparql endpoint
+ :)
+declare function xmlconv:getSparqlEndpointUrl($sparql as xs:string, $format as xs:string)
+as xs:string
+{
+    let $sparql := fn:encode-for-uri(fn:normalize-space($sparql))
+    let $resultFormat :=
+        if ($format = "xml") then
+            "application/xml"
+        else if ($format = "html") then
+            "text/html"
+        else
+            $format
+    let $defaultGraph := ""
+    let $uriParams := concat("query=", $sparql, "&amp;format=", $resultFormat, $defaultGraph)
+    let $uri := concat($xmlconv:CR_SPARQL_URL, "?", $uriParams)
+    return $uri
+};
+
+declare function xmlconv:getNutsSparql($countryCode as xs:string)
+as xs:string
+{
+    concat("PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+    SELECT ?concepturl ?label ?code
+    WHERE {
+      ?concepturl skos:inScheme <http://dd.eionet.europa.eu/vocabulary/common/nuts/>;
+                  skos:prefLabel ?label;
+                  skos:notation ?code
+                  FILTER regex(?code, '^", $countryCode, "', 'i')
+    }")
+};
+declare function xmlconv:getLau2Sparql($countryCode as xs:string)
+as xs:string
+{
+
+    concat("PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+    SELECT ?concepturl ?label ?code
+    WHERE {
+      ?concepturl skos:inScheme <http://dd.eionet.europa.eu/vocabulary/lau2/", $countryCode, "/>;
+                  skos:prefLabel ?label;
+                  skos:notation ?code
+    }")
+};
 
 declare function xmlconv:getBullet($text as xs:string, $level as xs:string)
 as element(div) {
@@ -46,6 +135,8 @@ as element(div) {
             "red"
         else if ($level = "warning") then
             "orange"
+        else if ($level = "skipped") then
+            "brown"
         else
             "deepskyblue"
 return
@@ -55,18 +146,20 @@ return
 (:
     Builds HTML table rows for rules B13 - B17.
 :)
-declare function xmlconv:buildResultRows($ruleCode as xs:string, $text as xs:string, $invalidValues as xs:string*,
-    $valueHeading as xs:string, $validMsg as xs:string, $invalidMsg as xs:string)
+declare function xmlconv:buildResultRows($ruleCode as xs:string, $text, $invalidValues as xs:string*,
+    $valueHeading as xs:string, $validMsg as xs:string, $invalidMsg as xs:string, $skippedMsg)
 as element(tr)*{
     let $countInvalidValues := count($invalidValues)
-
+    let $bulletType := if (string-length($skippedMsg) > 0) then "skipped" else if ($countInvalidValues = 0) then "info" else "error"
 let $result :=
     (
         <tr>
-            <td style="vertical-align:top;">{ xmlconv:getBullet($ruleCode, if ($countInvalidValues = 0) then "info" else "error") }</td>
+            <td style="vertical-align:top;">{ xmlconv:getBullet($ruleCode, $bulletType) }</td>
             <th style="vertical-align:top;">{ $text }</th>
             <td style="vertical-align:top;">{
-                if ($countInvalidValues = 0) then
+                if (string-length($skippedMsg) > 0) then
+                    $skippedMsg
+                else if ($countInvalidValues = 0) then
                     $validMsg
                 else
                     concat($countInvalidValues, $invalidMsg, substring("s ", number(not($countInvalidValues > 1)) * 2) ,"found") }</td>
@@ -89,6 +182,15 @@ return $result
 :)
 declare function xmlconv:checkReport($source_url as xs:string)
 as element(table) {
+
+(: get reporting country :)
+let $envelopeUrl := xmlconv:getEnvelopeXML($source_url)
+let $countryCode := if(string-length($envelopeUrl)>0) then lower-case(fn:doc($envelopeUrl)/envelope/countrycode) else ""
+
+(: FIXME
+let $countryCode := "gb"
+:)
+let $countryCode := if ($countryCode = "gb") then "uk" else if ($countryCode = "gr") then "el" else $countryCode
 
 let $docRoot := doc($source_url)
 (: B1 :)
@@ -189,6 +291,28 @@ let $invalidResidentPopulation  := distinct-values($docRoot//gml:featureMember/a
 (: B37 :)
 let $invalidArea  := distinct-values($docRoot//gml:featureMember/aqd:AQD_Zone[not(count(aqd:area)>0 and number(aqd:area) and number(aqd:area) > 0)]/
             concat(@gml:id, ": aqd:area=", if (string-length(aqd:area) = 0) then "missing" else aqd:area))
+(: B42 :)
+let $lau2Sparql := if (fn:string-length($countryCode) = 2) then xmlconv:getLau2Sparql($countryCode) else ""
+let $isLau2CodesAvailable := string-length($lau2Sparql) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($lau2Sparql, "xml"))
+let $lau2Codes := if ($isLau2CodesAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($lau2Sparql)//sparql:binding[@name='concepturl']/sparql:uri)) else ()
+let $isLau2CodesAvailable := count($lau2Codes) > 0
+
+let $nutsSparql := if (fn:string-length($countryCode) = 2) then xmlconv:getNutsSparql($countryCode) else ""
+let $isNutsCodesAvailable := doc-available(xmlconv:getSparqlEndpointUrl($nutsSparql, "xml"))
+let $nutsCodes := if ($isNutsCodesAvailable) then  distinct-values(data(xmlconv:executeSparqlQuery($nutsSparql)//sparql:binding[@name='concepturl']/sparql:uri)) else ()
+let $isNutsAvailable := count($nutsSparql) > 0
+
+let $invalidLau := if ($isLau2CodesAvailable and $isNutsAvailable) then
+        distinct-values($docRoot//gml:featureMember/aqd:AQD_Zone/aqd:LAU[string-length(normalize-space(@xlink:href)) > 0 and
+            empty(index-of($lau2Codes, normalize-space(@xlink:href))) and empty(index-of($nutsCodes, normalize-space(@xlink:href)))]/@xlink:href)
+    else
+        ()
+let $lauSkippedMsg := if (fn:string-length($countryCode) != 2) then "The test was skipped - reporting country code not found."
+    else if (fn:string-length($isLau2CodesAvailable) != 2) then "The test was skipped - LAU2 concepts are not available in CR."
+    else if (fn:string-length($isNutsAvailable) != 2) then "The test was skipped - NUTS concepts are not available in CR."
+    else ""
+
+
 return
     <table style="text-align:left;vertical-align:top;">
         <tr>
@@ -270,26 +394,31 @@ return
                 ()
         }
         {xmlconv:buildResultRows("B14", "./am:name/gn:GeographicalName/gn:nativeness attribute xsi:nil=""true"" nilReason=""unknown""",
-            $unknownNativeness, "aqd:AQD_Zone/@gml:id", "No unknown values found", " unknwon reason")}
+            $unknownNativeness, "aqd:AQD_Zone/@gml:id", "No unknown values found", " unknwon reason", "")}
         {xmlconv:buildResultRows("B15", "./am:name/gn:GeographicalName/gn:nameStatus  attribute xsi:nil=""true"" nilReason=""unknown""",
-            $unknownNameStatus, "aqd:AQD_Zone/@gml:id", "No unknown values found", " unknwon reason")}
+            $unknownNameStatus, "aqd:AQD_Zone/@gml:id", "No unknown values found", " unknwon reason", "")}
         {xmlconv:buildResultRows("B16", "./am:name/gn:GeographicalName/gn:sourceOfName  attribute xsi:nil=""true"" nilReason=""unknown""",
-            $unknownSourceOfName, "aqd:AQD_Zone/@gml:id", "No unknown values found", " unknwon reason")}
+            $unknownSourceOfName, "aqd:AQD_Zone/@gml:id", "No unknown values found", " unknwon reason", "")}
         {xmlconv:buildResultRows("B17", "./am:name/gn:GeographicalName/gn:pronunciation  attribute xsi:nil=""true"" nilReason=""unknown""",
-            $unknownPronunciation, "aqd:AQD_Zone/@gml:id", "No unknown values found", " unknwon reason")}
+            $unknownPronunciation, "aqd:AQD_Zone/@gml:id", "No unknown values found", " unknwon reason", "")}
         {xmlconv:buildResultRows("B21", "./am:geometry/gml:Polygon/gml:exterior/gml:LinearRing/gml:posList the srsDimension attribute shall resolve to ""2"" to allow the x &amp; y-coordinate of the feature of interest",
-            $invalidPosListDimension, "aqd:AQD_Zone/@gml:id", "All srsDimension attributes resolve to ""2""", " invalid attribute")}
+            $invalidPosListDimension, "aqd:AQD_Zone/@gml:id", "All srsDimension attributes resolve to ""2""", " invalid attribute", "")}
         {xmlconv:buildResultRows("B30", "./am:legalBasis/base2:LegislationCitation/base2:name value shall be ""2011/850/EC""",
-            $invalidLegalBasisName, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value")}
+            $invalidLegalBasisName, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "")}
         {xmlconv:buildResultRows("B31", "./am:legalBasis/base2:LegislationCitation/base2:date value shall be ""2011-12-12""",
-            $invalidLegalBasisDate, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value")}
+            $invalidLegalBasisDate, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "")}
         {xmlconv:buildResultRows("B32", "./am:legalBasis/base2:LegislationCitation/base2:link value shall be ""http://rod.eionet.europa.eu/instruments/650""",
-            $invalidLegalBasisLink, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value")}
+            $invalidLegalBasisLink, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "")}
         {xmlconv:buildResultRows("B35", "./aqd:residentPopulation shall be an integer value GREATER THAN 0 (zero)",
-            $invalidResidentPopulation, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value")}
+            $invalidResidentPopulation, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "")}
         {xmlconv:buildResultRows("B37", "./aqd:area the value will be a decimal number GREATER THAN 0 (zero)",
-            $invalidArea, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value")}
+            $invalidArea, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "")}
 
+        {xmlconv:buildResultRows("B42", <span>Where ./aqd:LAU has been used
+            then the reference must point to a concept in the list of <a href="http://dd.eionet.europa.eu/vocabulary/lau2/{$countryCode}/view">LAU2</a> or
+             <a href="http://dd.eionet.europa.eu/vocabulary/common/nuts/view">NUTS</a></span>,
+            $invalidLau, "aqd:AQD_Zone/aqd:LAU/@xlink:href", "All values are valid", " invalid value", $lauSkippedMsg)
+            }
     </table>
 }
 ;
