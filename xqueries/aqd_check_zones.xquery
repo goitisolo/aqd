@@ -308,8 +308,8 @@ let $invalidLau := if ($isLau2CodesAvailable and $isNutsAvailable) then
     else
         ()
 let $lauSkippedMsg := if (fn:string-length($countryCode) != 2) then "The test was skipped - reporting country code not found."
-    else if (fn:string-length($isLau2CodesAvailable) != 2) then "The test was skipped - LAU2 concepts are not available in CR."
-    else if (fn:string-length($isNutsAvailable) != 2) then "The test was skipped - NUTS concepts are not available in CR."
+    else if (not($isLau2CodesAvailable)) then "The test was skipped - LAU2 concepts are not available in CR."
+    else if (not($isNutsAvailable)) then "The test was skipped - NUTS concepts are not available in CR."
     else ""
 
 
