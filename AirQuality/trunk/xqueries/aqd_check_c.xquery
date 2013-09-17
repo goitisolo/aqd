@@ -366,7 +366,7 @@ let $invalidAssessmentUsed :=
 
 
 return
-    <table style="border-collapse:collapse">
+    <table style="border-collapse:collapse;display:inline">
         <colgroup>
             <col width="15px" style="text-align:center"/>
             <col width="450px" style="text-align:left"/>
@@ -401,11 +401,6 @@ let $countZones := count(doc($source_url)//gml:featureMember/aqd:AQD_AssessmentR
 let $result := if ($countZones > 0) then xmlconv:checkReport($source_url) else ()
 
 return
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
-        <head>
-            <link rel="stylesheet" type="text/css" href="http://www.eionet.europa.eu/styles/eionet2007/screen.css" media="screen" title="Eionet 2007 style" />
-        </head>
-        <body>
 <div class="feedbacktext">
     { xmlconv:javaScript() }
     <div>
@@ -414,12 +409,15 @@ return
         if ( $countZones = 0) then
             <p>No aqd:AQD_AssessmentRegime elements found from this XML.</p>
         else
+            (<p>This check evaluated the delivery by executing the tier-1 tests on air quality assessment regimes data in Dataflow C.
+            Red bullet in front of the test result indicates that errenous records found from the delivery.
+            Blue bullet means that the data confirms to rule, but additional feedback could be provided. </p>,
+            <p>Please click on the "Show recors" link to see more details.</p>,
             $result
+            )
         }
     </div>
 </div>
-</body>
-</html>
 
 };
 xmlconv:proceed( $source_url )
