@@ -114,7 +114,7 @@
           <xsl:attribute name="rdf:resource">
             <xsl:if test="not(contains(@xlink:href,'://'))"><xsl:value-of select="$envelopeurl"/>/</xsl:if>
             <xsl:call-template name="fix-uri">
-              <xsl:with-param name="text" select="@xlink:href"/>
+              <xsl:with-param name="text" select="normalize-space(@xlink:href)"/>
             </xsl:call-template>
           </xsl:attribute>
         </xsl:when>
