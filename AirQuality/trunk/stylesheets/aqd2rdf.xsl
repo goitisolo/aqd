@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xsl:stylesheet [
+ <!ENTITY ref "http://reference.eionet.europa.eu/aq/">
+ <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#">
+ <!ENTITY ont "http://rdfdata.eionet.europa.eu/airquality/ontology/">
+]>
 <xsl:stylesheet version="1.0"
         xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0"
         xmlns:am="http://inspire.ec.europa.eu/schemas/am/3.0rc3"
@@ -16,11 +21,11 @@
         xmlns:gss="http://www.isotc211.org/2005/gss"
         xmlns:gts="http://www.isotc211.org/2005/gts"
         xmlns:om="http://www.opengis.net/om/2.0"
+        xmlns:ompr="http://inspire.ec.europa.eu/schemas/ompr/2.0rc3"
         xmlns:sam="http://www.opengis.net/sampling/2.0"
         xmlns:sams="http://www.opengis.net/samplingSpatial/2.0"
         xmlns:swe="http://www.opengis.net/swe/2.0"
         xmlns:xlink="http://www.w3.org/1999/xlink"
-        xmlns:xs="http://www.w3.org/2001/XMLSchema"
 
     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
@@ -28,7 +33,7 @@
     xmlns:owl="http://www.w3.org/2002/07/owl#"
     xmlns:skos="http://www.w3.org/2008/05/skos#"
     xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#"
-    xmlns="http://rdfdata.eionet.europa.eu/airquality/ontology/"
+    xmlns="&ont;"
 
         xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
@@ -61,8 +66,8 @@
    aqd:detectionLimit|aqd:numUnits" mode="property">
     <xsl:variable name="value" select="normalize-space(text())"/>
     <xsl:if test="$value != ''">
-      <xsl:element name="{local-name()}" namespace="http://rdfdata.eionet.europa.eu/airquality/ontology/">
-            <xsl:attribute name="rdf:datatype">http://www.w3.org/2001/XMLSchema#decimal</xsl:attribute>
+      <xsl:element name="{local-name()}" namespace="&ont;">
+            <xsl:attribute name="rdf:datatype">&xsd;decimal</xsl:attribute>
         <xsl:value-of select="$value"/>
       </xsl:element>
     </xsl:if>
@@ -74,16 +79,16 @@
     gml:beginPosition|gml:endPosition|gml:timePosition" mode="property">
     <xsl:variable name="value" select="normalize-space(text())"/>
     <xsl:if test="$value != ''">
-      <xsl:element name="{local-name()}" namespace="http://rdfdata.eionet.europa.eu/airquality/ontology/">
+      <xsl:element name="{local-name()}" namespace="&ont;">
         <xsl:choose>
           <xsl:when test="string-length($value) = 4">
-            <xsl:attribute name="rdf:datatype">http://www.w3.org/2001/XMLSchema#int</xsl:attribute>
+            <xsl:attribute name="rdf:datatype">&xsd;int</xsl:attribute>
           </xsl:when>
           <xsl:when test="string-length($value) = 10">
-            <xsl:attribute name="rdf:datatype">http://www.w3.org/2001/XMLSchema#date</xsl:attribute>
+            <xsl:attribute name="rdf:datatype">&xsd;date</xsl:attribute>
           </xsl:when>
           <xsl:otherwise>
-            <xsl:attribute name="rdf:datatype">http://www.w3.org/2001/XMLSchema#dateTime</xsl:attribute>
+            <xsl:attribute name="rdf:datatype">&xsd;dateTime</xsl:attribute>
           </xsl:otherwise>
         </xsl:choose>
         <xsl:value-of select="$value"/>
@@ -95,20 +100,29 @@
   <xsl:template match="ef:mobile|aqd:change|aqd:exceedance|aqd:usedAQD" mode="property">
     <xsl:variable name="value" select="normalize-space(text())"/>
     <xsl:if test="$value != ''">
-      <xsl:element name="{local-name()}" namespace="http://rdfdata.eionet.europa.eu/airquality/ontology/">
+      <xsl:element name="{local-name()}" namespace="&ont;">
         <xsl:if test="contains('|true|false|1|0|', normalize-space(text()))">
-            <xsl:attribute name="rdf:datatype">http://www.w3.org/2001/XMLSchema#boolean</xsl:attribute>
+            <xsl:attribute name="rdf:datatype">&xsd;boolean</xsl:attribute>
         </xsl:if>
         <xsl:value-of select="$value"/>
       </xsl:element>
     </xsl:if>
   </xsl:template>
 
+  <xsl:template match="ef:inspireId|aqd:inspireId|am:inspireId|ompr:inspireld" mode="property">
+    <xsl:element name="declarationFor" namespace="&ont;">
+          <xsl:attribute name="rdf:resource">&ref;<xsl:value-of select="base:Identifier/base:namespace"/>/<xsl:value-of select="base:Identifier/base:localId"/></xsl:attribute>
+    </xsl:element>
+    <xsl:element name="{local-name()}" namespace="&ont;">
+      <xsl:apply-templates mode="resourceorliteral"/>
+    </xsl:element>
+  </xsl:template>
+
 <!-- For literal elements (properties) -->
   <xsl:template match="*" mode="property">
     <xsl:variable name="value" select="normalize-space(text())"/>
     <xsl:if test="$value != '' or count(*) &gt; 0 or @xlink:href != ''">
-      <xsl:element name="{local-name()}" namespace="http://rdfdata.eionet.europa.eu/airquality/ontology/">
+      <xsl:element name="{local-name()}" namespace="&ont;">
       <xsl:choose>
         <xsl:when test="@xlink:href != ''">
           <xsl:attribute name="rdf:resource">
@@ -137,11 +151,11 @@
         </xsl:attribute>
         <rdf:type rdf:resource="http://www.w3.org/2003/01/geo/wgs84_pos#SpatialThing"/>
         <geo:lat>
-          <xsl:attribute name="rdf:datatype">http://www.w3.org/2001/XMLSchema#decimal</xsl:attribute>
+          <xsl:attribute name="rdf:datatype">&xsd;decimal</xsl:attribute>
           <xsl:value-of select="substring-before(gml:pos/text(),' ')"/>
         </geo:lat>
         <geo:long>
-          <xsl:attribute name="rdf:datatype">http://www.w3.org/2001/XMLSchema#decimal</xsl:attribute>
+          <xsl:attribute name="rdf:datatype">&xsd;decimal</xsl:attribute>
           <xsl:value-of select="substring-after(gml:pos/text(),' ')"/>
         </geo:long>
       </geo:Point>
@@ -161,7 +175,7 @@
 
   <!-- Standard resources -->
   <xsl:template match="*" mode="resourceorliteral">
-    <xsl:element name="{local-name()}" namespace="http://rdfdata.eionet.europa.eu/airquality/ontology/">
+    <xsl:element name="{local-name()}" namespace="&ont;">
       <xsl:if test="@gml:id != ''">
         <xsl:attribute name="rdf:ID">
           <xsl:value-of select="@gml:id"/>
@@ -268,7 +282,7 @@
     <xsl:param name="column"/>
     <xsl:element name="{$column}">
       <xsl:if test="string(number($text)) != 'NaN'">
-        <xsl:attribute name="rdf:datatype">http://www.w3.org/2001/XMLSchema#decimal</xsl:attribute>
+        <xsl:attribute name="rdf:datatype">&xsd;decimal</xsl:attribute>
       </xsl:if>
     <xsl:value-of select="$text"/>
     </xsl:element>
