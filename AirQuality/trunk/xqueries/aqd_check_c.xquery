@@ -412,7 +412,7 @@ return
             (<p>This check evaluated the delivery by executing the tier-1 tests on air quality assessment regimes data in Dataflow C.
             Red bullet in front of the test result indicates that errenous records found from the delivery.
             Blue bullet means that the data confirms to rule, but additional feedback could be provided. </p>,
-            <p>Please click on the "Show recors" link to see more details.</p>,
+            <p>Please click on the "Show records" link to see more details.</p>,
             $result
             )
         }
