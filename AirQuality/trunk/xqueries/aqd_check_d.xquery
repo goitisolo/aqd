@@ -420,7 +420,7 @@ return
 <div class="feedbacktext">
     { xmlconv:javaScript() }
     <div>
-        <h2>Check metadata on air quality assessment methods - Dataflow D</h2>
+        <h2>Check environmental monitoring feature types - Dataflow D</h2>
         {
         if ( $countFeatures = 0) then
             <p>No environmental monitoring feature type elements ({string-join($xmlconv:FEATURE_TYPES, ", ")}) found from this XML.</p>
