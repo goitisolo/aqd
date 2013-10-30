@@ -106,7 +106,7 @@ as element(div)*
     let $isMatchingCode := xmlconv:isMatchingVocabCode($crConcepts, $polCode)
     return
         if (not( $isMatchingCode )) then
-                        <div>"{ $polCode }" is not a valid code.</div>
+                        <div>"{ $polCode }"</div>
         else
             ()
 };
@@ -170,6 +170,18 @@ declare function xmlconv:getVocabularyMapping(){
         <vocabulary label="Observation units" url="http://dd.eionet.europa.eu/vocabulary/aq/observationunit/">
             <element checkConceptOnly="true">swe:uom</element>
         </vocabulary>
+        <vocabulary label="Legislation level" url="http://inspire.ec.europa.eu/codeList/LegislationLevelValue/" ruleType="startsWith">
+            <element>base2:level</element>
+        </vocabulary>
+        <vocabulary label="AQ reference" url="http://reference.eionet.europa.eu/aq/" ruleType="startsWith">
+            <element>ef:belongsTo</element>
+            <element>ef:procedure</element>
+            <element>ef:broader</element>
+            <element>ef:featureOfInterest</element>
+            <element>aqd:modelAssessmentMetadata</element>
+            <element>aqd:zone</element>
+            <element>aqd:assessment</element>
+        </vocabulary>
     </mapping>
 };
 
@@ -178,8 +190,8 @@ declare function xmlconv:getVocabularyMapping(){
  : Main function
  : ======================================================================
  :)
-declare function xmlconv:proceed($source_url as xs:string) {
-
+declare function xmlconv:proceed($source_url as xs:string)
+as element(div){
 let $vocabularies := xmlconv:getVocabularyMapping()//vocabulary
 
 let $reportedVocabularyElements :=
@@ -195,39 +207,58 @@ let $result := for $vocabulary in $vocabularies
         let $vocabularyUrl := data($vocabulary/@url)
         let $codes := $reportedVocabularyElements[count(index-of($vocabulary//element[not(@checkConceptOnly)], name(.))) > 0
             or (count(index-of($vocabulary//element[@checkConceptOnly='true'], name(.))) > 0 and starts-with(@xlink:href, $vocabulary/@url))]/@xlink:href
-        let $invalidCodes := xmlconv:validateCode(distinct-values($codes), $vocabularyUrl)
+        let $invalidCodes :=
+            if ($vocabulary/@ruleType = "startsWith") then
+                distinct-values($codes[not(starts-with(., $vocabularyUrl))])
+            else
+                xmlconv:validateCode(distinct-values($codes), $vocabularyUrl)
+        let $ruleHeading :=
+            if ($vocabulary/@ruleType = "startsWith") then
+                <span>The code must start with { $vocabularyUrl }</span>
+            else
+                <span>The code must be in <a href="{ $vocabularyUrl }">{ data($vocabulary/@label) } vocabulary</a></span>
+
         let $errorCount := count($invalidCodes)
         let $codesCount := count($codes)
     return
-        <div>
-            <h3>{ data($vocabulary/@label) }</h3>
-            {
-            if  ($codesCount = 0) then
-                <div codesCount="{ $codesCount }">No codes found.</div>
-            else if ($errorCount > 0) then
-                <div style="color:red" codesCount="{ $codesCount }" errorCount="{ $errorCount }">{ $errorCount } invalid code{ substring("s ", number(not($errorCount > 1)) * 2)}found out of { $codesCount } checked.</div>
-            else
-                <div style="color:green" codesCount="{ $codesCount }">Found { $codesCount } code{ substring("s,", number(not($codesCount > 1)) * 2)} all valid.</div>
-            }
-            { $invalidCodes }
-            <p><a href="{ $vocabularyUrl }">{ data($vocabulary/@label) } vocabulary</a></p>
-        </div>
+        <tr codesCount="{ $codesCount }" errorCount="{ $errorCount }">
+            <td style="vertical-align:top">{ $ruleHeading }</td>{
+                if  ($codesCount = 0) then
+                    <td style="vertical-align:top">No codes found.</td>
+                else if ($errorCount > 0) then
+                    <td style="color:red;vertical-align:top">{ $errorCount } invalid code{ substring("s ", number(not($errorCount > 1)) * 2)}found out of { $codesCount } checked</td>
+                else
+                    <td style="color:green;vertical-align:top">Found { $codesCount } code{ substring("s,", number(not($codesCount > 1)) * 2)} all valid</td>
+                }
+            <td style="vertical-align:top">{ string-join($vocabulary//element, ", ")}</td>
+            <td style="vertical-align:top">{ $invalidCodes }</td>
+        </tr>
 
 return
 <div class="feedbacktext">
         <div>
             <h2>Check codes</h2>
             {
-            if (sum($result//div/@codesCount) = 0) then
+            if (sum($result/@codesCount) = 0) then
                 <div>No codes found from this report.</div>
-            else if (sum($result//div/@errorCount) > 0) then
-                <div style="color:red">{ sum($result//div/@errorCount) } invalid code{ substring("s ", number(not(sum($result//div/@errorCount) > 1)) * 2)}found out of { sum($result//div/@codesCount) } checked from this report.</div>
+            else if (sum($result/@errorCount) > 0) then
+                <div style="color:red">{ sum($result/@errorCount) } invalid code{ substring("s ", number(not(sum($result/@errorCount) > 1)) * 2)}found out of { sum($result/@codesCount) } checked from this report.</div>
             else
-                <div style="color:green">Found { sum($result//div/@codesCount) } code{ substring("s ", number(not(sum($result//div/@codesCount) > 1)) * 2)}from this report, all valid.</div>
+                <div style="color:green">Found { sum($result/@codesCount) } code{ substring("s ", number(not(sum($result/@codesCount) > 1)) * 2)}from this report, all valid.</div>
             }
-        </div>
-
-    { $result }
+        </div>{
+        if ( count($result )> 0) then
+            <table class="datatable">
+                <thead>
+                    <tr><th>Code list</th><th>Result</th><th>Checked elements</th><th>Invalid codes</th></tr>
+                </thead>
+                <tbody>
+                    {$result}
+                </tbody>
+            </table>
+        else
+            ()
+     }
     <div>
     {()
     (:
