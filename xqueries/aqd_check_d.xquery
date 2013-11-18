@@ -38,7 +38,7 @@ declare variable $xmlconv:MEDIA_VALUE_VOCABULARY_BASE_URI := "http://inspire.ec.
 declare variable $xmlconv:MEDIA_VALUE_VOCABULARY := "http://dd.eionet.europa.eu/vocabulary/inspire/MediaValue/";
 declare variable $xmlconv:ORGANISATIONAL_LEVEL_VOCABULARY := "http://dd.eionet.europa.eu/vocabulary/aq/organisationallevel/";
 declare variable $xmlconv:NETWORK_TYPE_VOCABULARY := "http://dd.eionet.europa.eu/vocabulary/aq/networktype/";
-declare variable $xmlconv:METEO_PARAMS_VOCABULARY := "http://dd.eionet.europa.eu/vocabulary/aq/meteoparams/";
+declare variable $xmlconv:METEO_PARAMS_VOCABULARY := "http://vocab.nerc.ac.uk/collection/P07/current/";
 declare variable $xmlconv:AREA_CLASSIFICATION_VOCABULARY := "http://dd.eionet.europa.eu/vocabulary/aq/areaclassification/";
 declare variable $xmlconv:DISPERSION_LOCAL_VOCABULARY := "http://dd.eionet.europa.eu/vocabulary/aq/dispersionlocal/";
 declare variable $xmlconv:DISPERSION_REGIONAL_VOCABULARY := "http://dd.eionet.europa.eu/vocabulary/aq/dispersionregional/";
@@ -314,7 +314,7 @@ let $invalidNetworkType := xmlconv:checkVocabularyConceptValues("aqd:AQD_Station
 (: D19 :)
 let $invalidStationMedia := xmlconv:checkVocabularyConceptValues("aqd:AQD_Station", "ef:mediaMonitored", $xmlconv:MEDIA_VALUE_VOCABULARY_BASE_URI)
 (: D27 :)
-let $invalidMeteoParams := xmlconv:checkVocabularyConceptValues("aqd:AQD_Station", "aqd:meteoParams", $xmlconv:METEO_PARAMS_VOCABULARY)
+let $invalidMeteoParams := xmlconv:checkVocabularyConceptValues("aqd:AQD_Station", "aqd:meteoParams", $xmlconv:METEO_PARAMS_VOCABULARY, "collection")
 (: D28 :)
 let $invalidAreaClassification := xmlconv:checkVocabularyConceptValues("aqd:AQD_Station", "aqd:areaClassification", $xmlconv:AREA_CLASSIFICATION_VOCABULARY)
 (: D29 :)
@@ -364,10 +364,18 @@ return
     </table>
 }
 ;
-declare function xmlconv:checkVocabularyConceptValues($featureType as xs:string, $element as xs:string, $vocabularyUrl)
+declare function xmlconv:checkVocabularyConceptValues($featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string)
+as element(tr)*{
+    xmlconv:checkVocabularyConceptValues($featureType, $element, $vocabularyUrl, "")
+};
+declare function xmlconv:checkVocabularyConceptValues($featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string, $vocabularyType as xs:string)
 as element(tr)*{
 
-    let $sparql := xmlconv:getConceptUrlSparql($vocabularyUrl)
+    let $sparql :=
+        if ($vocabularyType = "collection") then
+            xmlconv:getCollectionConceptUrlSparql($vocabularyUrl)
+        else
+            xmlconv:getConceptUrlSparql($vocabularyUrl)
     let $crConcepts := xmlconv:executeSparqlQuery($sparql)
 
     for $rec in doc($source_url)//gml:featureMember/child::*[name()=$featureType]
@@ -395,6 +403,19 @@ as xs:string
     WHERE {
       ?concepturl skos:inScheme <", $scheme, ">;
                   skos:prefLabel ?label
+    }")
+};
+
+declare function xmlconv:getCollectionConceptUrlSparql($collection as xs:string)
+as xs:string
+{
+    concat("PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+    SELECT ?concepturl
+    WHERE {
+        GRAPH <", $collection, "> {
+            <", $collection, "> skos:member ?concepturl .
+            ?concepturl a skos:Concept
+        }
     }")
 };
 
