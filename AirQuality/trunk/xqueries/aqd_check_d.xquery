@@ -295,7 +295,7 @@ let $docRoot := doc($source_url)
 let $countFeatureTypes :=
     for $featureType in $xmlconv:FEATURE_TYPES
     return
-        count(doc($source_url)//gml:featureMember/child::*[name()=$featureType])
+        count(doc($source_url)//gml:featureMember/descendant::*[name()=$featureType])
 let $tblAllFeatureTypes :=
     for $featureType at $pos in $xmlconv:FEATURE_TYPES
     where $countFeatureTypes[$pos] > 0
@@ -378,7 +378,7 @@ as element(tr)*{
             xmlconv:getConceptUrlSparql($vocabularyUrl)
     let $crConcepts := xmlconv:executeSparqlQuery($sparql)
 
-    for $rec in doc($source_url)//gml:featureMember/child::*[name()=$featureType]
+    for $rec in doc($source_url)//gml:featureMember/descendant::*[name()=$featureType]
     for $conceptUrl in $rec/child::*[name() = $element]/@xlink:href
     let $conceptUrl := normalize-space($conceptUrl)
 
@@ -432,7 +432,7 @@ as xs:boolean
  :)
 declare function xmlconv:proceed($source_url as xs:string) {
 
-let $countFeatures := count(doc($source_url)//gml:featureMember/child::*[
+let $countFeatures := count(doc($source_url)//gml:featureMember/descendant::*[
     not(empty(index-of($xmlconv:FEATURE_TYPES, name())))]
     )
 let $result := if ($countFeatures > 0) then xmlconv:checkReport($source_url) else ()

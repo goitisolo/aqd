@@ -397,7 +397,7 @@ return
  :)
 declare function xmlconv:proceed($source_url as xs:string) {
 
-let $countZones := count(doc($source_url)//gml:featureMember/aqd:AQD_AssessmentRegime)
+let $countZones := count(doc($source_url)//aqd:AQD_AssessmentRegime)
 let $result := if ($countZones > 0) then xmlconv:checkReport($source_url) else ()
 
 return
