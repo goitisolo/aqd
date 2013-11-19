@@ -194,26 +194,26 @@ let $countryCode := if ($countryCode = "gb") then "uk" else if ($countryCode = "
 
 let $docRoot := doc($source_url)
 (: B1 :)
-let $countZones := count($docRoot//gml:featureMember/aqd:AQD_Zone)
+let $countZones := count($docRoot//aqd:AQD_Zone)
 (: B3 :)
-let $countZonesWithAmGeometry := count($docRoot//gml:featureMember/aqd:AQD_Zone/am:geometry)
+let $countZonesWithAmGeometry := count($docRoot//aqd:AQD_Zone/am:geometry)
 (: B4 :)
-let $countZonesWithLAU := count($docRoot//gml:featureMember/aqd:AQD_Zone/aqd:LAU)
+let $countZonesWithLAU := count($docRoot//aqd:AQD_Zone/aqd:LAU)
 
 (: B8 :)
-let $gmlIds := $docRoot//gml:featureMember/aqd:AQD_Zone/lower-case(normalize-space(@gml:id))
+let $gmlIds := $docRoot//aqd:AQD_Zone/lower-case(normalize-space(@gml:id))
 let $duplicateGmlIds := distinct-values(
-    for $id in $docRoot//gml:featureMember/aqd:AQD_Zone/@gml:id
+    for $id in $docRoot//aqd:AQD_Zone/@gml:id
     where string-length(normalize-space($id)) > 0 and count(index-of($gmlIds, lower-case(normalize-space($id)))) > 1
     return
         $id
     )
-let $efInspireIds := for $id in $docRoot//gml:featureMember/aqd:AQD_Zone/ef:inspireId
+let $efInspireIds := for $id in $docRoot//aqd:AQD_Zone/ef:inspireId
                      return
                         lower-case(concat("[", normalize-space($id/base:Identifier/base:localId), ", ", normalize-space($id/base:Identifier/base:namespace),
                             ", ", normalize-space($id/base:Identifier/base:versionId), "]"))
 let $duplicateefInspireIds := distinct-values(
-    for $id in $docRoot//gml:featureMember/aqd:AQD_Zone/ef:inspireId
+    for $id in $docRoot//aqd:AQD_Zone/ef:inspireId
     let $key :=
         concat("[", normalize-space($id/base:Identifier/base:localId), ", ", normalize-space($id/base:Identifier/base:namespace),
             ", ", normalize-space($id/base:Identifier/base:versionId), "]")
@@ -222,12 +222,12 @@ let $duplicateefInspireIds := distinct-values(
         $key
     )
 
-let $aqdInspireIds := for $id in $docRoot//gml:featureMember/aqd:AQD_Zone/aqd:inspireId
+let $aqdInspireIds := for $id in $docRoot//aqd:AQD_Zone/aqd:inspireId
                      return
                         lower-case(concat("[", normalize-space($id/base:Identifier/base:localId), ", ", normalize-space($id/base:Identifier/base:namespace),
                             ", ", normalize-space($id/base:Identifier/base:versionId), "]"))
 let $duplicateaqdInspireIds := distinct-values(
-    for $id in $docRoot//gml:featureMember/aqd:AQD_Zone/aqd:inspireId
+    for $id in $docRoot//aqd:AQD_Zone/aqd:inspireId
     let $key :=
         concat("[", normalize-space($id/base:Identifier/base:localId), ", ", normalize-space($id/base:Identifier/base:namespace),
             ", ", normalize-space($id/base:Identifier/base:versionId), "]")
@@ -243,15 +243,15 @@ let $countaqdInspireIdDuplicates := count($duplicateaqdInspireIds)
 let $countB8duplicates := $countGmlIdDuplicates + $countefInspireIdDuplicates + $countaqdInspireIdDuplicates
 
 (: B9 :)
-let $amInspireIds := $docRoot//gml:featureMember/aqd:AQD_Zone/am:inspireId/base:Identifier/lower-case(normalize-space(base:localId))
+let $amInspireIds := $docRoot//aqd:AQD_Zone/am:inspireId/base:Identifier/lower-case(normalize-space(base:localId))
 let $duplicateAmInspireIds := distinct-values(
-    for $id in $docRoot//gml:featureMember/aqd:AQD_Zone/am:inspireId/base:Identifier/base:localId
+    for $id in $docRoot//aqd:AQD_Zone/am:inspireId/base:Identifier/base:localId
     where string-length(normalize-space($id)) > 0 and count(index-of($amInspireIds, lower-case(normalize-space($id)))) > 1
     return
         $id
     )
 let $invalidIsoAmInspireIds := distinct-values(
-    for $id in $docRoot//gml:featureMember/aqd:AQD_Zone/am:inspireId/base:Identifier/base:localId
+    for $id in $docRoot//aqd:AQD_Zone/am:inspireId/base:Identifier/base:localId
     where string-length(normalize-space($id)) > 0 and (string-length(normalize-space($id)) < 2 or
         count(index-of($xmlconv:ISO2_CODES , substring(upper-case(normalize-space($id)), 1, 2))) = 0)
     return
@@ -263,33 +263,33 @@ let $countAmInspireIdInvalidIso := count($invalidIsoAmInspireIds)
 let $countB9duplicates := $countAmInspireIdDuplicates + $countAmInspireIdInvalidIso
 
 (: B14 :)
-let $unknownNativeness := distinct-values($docRoot//gml:featureMember/aqd:AQD_Zone[count(am:name/gn:GeographicalName/gn:nativeness[@xsi:nil="true" and @nilReason="unknown"])>0]/@gml:id)
+let $unknownNativeness := distinct-values($docRoot//aqd:AQD_Zone[count(am:name/gn:GeographicalName/gn:nativeness[@xsi:nil="true" and @nilReason="unknown"])>0]/@gml:id)
 (: B15 :)
-let $unknownNameStatus := distinct-values($docRoot//gml:featureMember/aqd:AQD_Zone[count(am:name/gn:GeographicalName/gn:nameStatus[@xsi:nil="true" and @nilReason="unknown"])>0]/@gml:id)
+let $unknownNameStatus := distinct-values($docRoot//aqd:AQD_Zone[count(am:name/gn:GeographicalName/gn:nameStatus[@xsi:nil="true" and @nilReason="unknown"])>0]/@gml:id)
 (: B16 :)
-let $unknownSourceOfName := distinct-values($docRoot//gml:featureMember/aqd:AQD_Zone[count(am:name/gn:GeographicalName/gn:sourceOfName[@xsi:nil="true" and @nilReason="unknown"])>0]/@gml:id)
+let $unknownSourceOfName := distinct-values($docRoot//aqd:AQD_Zone[count(am:name/gn:GeographicalName/gn:sourceOfName[@xsi:nil="true" and @nilReason="unknown"])>0]/@gml:id)
 (: B17 :)
-let $unknownPronunciation  := distinct-values($docRoot//gml:featureMember/aqd:AQD_Zone[count(am:name/gn:GeographicalName/gn:pronunciation[@xsi:nil="true" and @nilReason="unknown"])>0]/@gml:id)
+let $unknownPronunciation  := distinct-values($docRoot//aqd:AQD_Zone[count(am:name/gn:GeographicalName/gn:pronunciation[@xsi:nil="true" and @nilReason="unknown"])>0]/@gml:id)
 
 (: B21 :)
-let $invalidPosListDimension  := distinct-values($docRoot//gml:featureMember/aqd:AQD_Zone/am:geometry/gml:Polygon/gml:exterior/gml:LinearRing/gml:posList[@srsDimension != "2"]/
+let $invalidPosListDimension  := distinct-values($docRoot//aqd:AQD_Zone/am:geometry/gml:Polygon/gml:exterior/gml:LinearRing/gml:posList[@srsDimension != "2"]/
             concat(../../../../../@gml:id, ": srsDimension=", @srsDimension))
 
 (: B30 :)
-let $invalidLegalBasisName  := distinct-values($docRoot//gml:featureMember/aqd:AQD_Zone/am:legalBasis/base2:LegislationCitation[normalize-space(base2:name) != "2011/850/EC"]/
+let $invalidLegalBasisName  := distinct-values($docRoot//aqd:AQD_Zone/am:legalBasis/base2:LegislationCitation[normalize-space(base2:name) != "2011/850/EC"]/
             concat(../../@gml:id, ": base2:name=", if (string-length(base2:name) > 20) then concat(substring(base2:name, 1, 20), "...") else base2:name))
 (: B31 :)
-let $invalidLegalBasisDate  := distinct-values($docRoot//gml:featureMember/aqd:AQD_Zone/am:legalBasis/base2:LegislationCitation[normalize-space(base2:date) != "2011-12-12"]/
+let $invalidLegalBasisDate  := distinct-values($docRoot//aqd:AQD_Zone/am:legalBasis/base2:LegislationCitation[normalize-space(base2:date) != "2011-12-12"]/
             concat(../../@gml:id, ": base2:date=", if (string-length(base2:date) > 20) then concat(substring(base2:date, 1, 20), "...") else base2:date))
 (: B32 :)
-let $invalidLegalBasisLink  := distinct-values($docRoot//gml:featureMember/aqd:AQD_Zone/am:legalBasis/base2:LegislationCitation[normalize-space(base2:link) != "http://rod.eionet.europa.eu/instruments/650"]/
+let $invalidLegalBasisLink  := distinct-values($docRoot//aqd:AQD_Zone/am:legalBasis/base2:LegislationCitation[normalize-space(base2:link) != "http://rod.eionet.europa.eu/instruments/650"]/
             concat(../../@gml:id, ": base2:link=", if (string-length(base2:link) > 40) then concat(substring(base2:link, 1, 40), "...") else base2:link))
 
 (: B35 :)
-let $invalidResidentPopulation  := distinct-values($docRoot//gml:featureMember/aqd:AQD_Zone[not(count(aqd:residentPopulation)>0 and aqd:residentPopulation castable as xs:integer and number(aqd:residentPopulation) > 0)]/
+let $invalidResidentPopulation  := distinct-values($docRoot//aqd:AQD_Zone[not(count(aqd:residentPopulation)>0 and aqd:residentPopulation castable as xs:integer and number(aqd:residentPopulation) > 0)]/
             concat(@gml:id, ": aqd:residentPopulation=", if (string-length(aqd:residentPopulation) = 0) then "missing" else aqd:residentPopulation))
 (: B37 :)
-let $invalidArea  := distinct-values($docRoot//gml:featureMember/aqd:AQD_Zone[not(count(aqd:area)>0 and number(aqd:area) and number(aqd:area) > 0)]/
+let $invalidArea  := distinct-values($docRoot//aqd:AQD_Zone[not(count(aqd:area)>0 and number(aqd:area) and number(aqd:area) > 0)]/
             concat(@gml:id, ": aqd:area=", if (string-length(aqd:area) = 0) then "missing" else aqd:area))
 (: B42 :)
 let $lau2Sparql := if (fn:string-length($countryCode) = 2) then xmlconv:getLau2Sparql($countryCode) else ""
@@ -303,7 +303,7 @@ let $nutsCodes := if ($isNutsCodesAvailable) then  distinct-values(data(xmlconv:
 let $isNutsAvailable := count($nutsSparql) > 0
 
 let $invalidLau := if ($isLau2CodesAvailable and $isNutsAvailable) then
-        distinct-values($docRoot//gml:featureMember/aqd:AQD_Zone/aqd:LAU[string-length(normalize-space(@xlink:href)) > 0 and
+        distinct-values($docRoot//aqd:AQD_Zone/aqd:LAU[string-length(normalize-space(@xlink:href)) > 0 and
             empty(index-of($lau2Codes, normalize-space(@xlink:href))) and empty(index-of($nutsCodes, normalize-space(@xlink:href)))]/@xlink:href)
     else
         ()
@@ -431,7 +431,7 @@ return
  :)
 declare function xmlconv:proceed($source_url as xs:string) {
 
-let $countZones := count(doc($source_url)//gml:featureMember/aqd:AQD_Zone)
+let $countZones := count(doc($source_url)//aqd:AQD_Zone)
 let $result := if ($countZones > 0) then xmlconv:checkReport($source_url) else ()
 
 return
