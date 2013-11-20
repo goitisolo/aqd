@@ -25,9 +25,10 @@ declare variable $source_url as xs:string :='http://cdr.eionet.europa.eu/dk/eu/a
 declare variable $source_url as xs:string external;
 
 :)
-declare variable $source_url as xs:string :='http://cdr.eionet.europa.eu/dk/eu/aqd/b/envumeiyg/xml';
+declare variable $source_url as xs:string external;
 
-declare variable $SCHEMA as xs:string := "http://dd.eionet.europa.eu/schemas/id2011850eu/AirQualityReporting.xsd";
+declare variable $xmlconv:SCHEMA as xs:string := "http://dd.eionet.europa.eu/schemas/id2011850eu/AirQualityReporting.xsd";
+declare variable $xmlconv:SCHEMA2 as xs:string := "http://dd.eionet.europa.eu/schemas/id2011850eu/AirQualityReporting.xsd http://schemas.opengis.net/sweCommon/2.0/swe.xsd";
 (:~ Separator used in lists expressed as string :)
 declare variable $xmlconv:LIST_ITEM_SEP := "##";
 (:~ Source file URL parameter name :)
@@ -83,14 +84,17 @@ as element(div)
     let $files := fn:doc($url)//file[string-length(@link)>0]
 
     let $filesCountAll := count($files)
-    let $filesCountCorrectSchema := count($files[@schema = $SCHEMA])
+    let $filesCountCorrectSchema := count($files[@schema = $xmlconv:SCHEMA or @schema = $xmlconv:SCHEMA2])
 (:    let $filesCountXml := count($files[@type="text/xml"]):)
 
     let $errorLevel := if ($filesCountCorrectSchema > 0) then "INFO" else "BLOCKER"
 
     let $description :=
         if ($filesCountCorrectSchema = 0) then
-            <span>Your delivery cannot be accepted as you did not provide any XML files with correct XML Schema.</span>
+            <div>
+                <p style="color:red">Your delivery cannot be accepted as you did not provide any XML files with correct XML Schema location.</p>
+                <p>Valid XML Schema location is: {$xmlconv:SCHEMA2}</p>
+            </div>
         else
             <span>Your delivery contains {$filesCountCorrectSchema} XML file{ substring("s ", number(not($filesCountCorrectSchema > 1)) * 2)}with correct XML Schema.</span>
     return
@@ -101,7 +105,7 @@ as element(div)
         </span>
         {
         if ($errorLevel = "BLOCKER") then
-            <p><span style="color:red">{ $description }</span></p>
+            $description
         else
             <p style="color:blue;font-size:1.1em;">{ $description }</p>
         }
