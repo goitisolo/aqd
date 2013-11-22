@@ -14,7 +14,7 @@ xquery version "1.0" encoding "UTF-8";
 declare namespace xmlconv="http://converters.eionet.europa.eu";
 declare namespace aqd = "http://aqd.ec.europa.eu/aqd/0.3.7c";
 
-declare variable $xmlconv:xmlValidatorUrl as xs:string := 'http://localhost:8080/xmlconv/api/runQAScript?script_id=-1&amp;url=';
+declare variable $xmlconv:xmlValidatorUrl as xs:string := 'http://converters.eionet.europa.eu/api/runQAScript?script_id=-1&amp;url=';
 
 declare variable $ignoredMessages := ("cvc-elt.1: Cannot find the declaration of element 'gml:FeatureCollection'.");
 
