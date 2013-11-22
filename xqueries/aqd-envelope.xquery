@@ -29,6 +29,7 @@ declare variable $source_url as xs:string external;
 
 declare variable $xmlconv:SCHEMA as xs:string := "http://dd.eionet.europa.eu/schemas/id2011850eu/AirQualityReporting.xsd";
 declare variable $xmlconv:SCHEMA2 as xs:string := "http://dd.eionet.europa.eu/schemas/id2011850eu/AirQualityReporting.xsd http://schemas.opengis.net/sweCommon/2.0/swe.xsd";
+declare variable $xmlconv:SCHEMA3 as xs:string := "http://dd.eionet.europa.eu/schemas/id2011850eu/AirQualityReporting.xsd http://schemas.opengis.net/sweCommon/2.0/swe.xsd http://schemas.opengis.net/gml/3.2.1/gml.xsd";
 (:~ Separator used in lists expressed as string :)
 declare variable $xmlconv:LIST_ITEM_SEP := "##";
 (:~ Source file URL parameter name :)
@@ -84,7 +85,7 @@ as element(div)
     let $files := fn:doc($url)//file[string-length(@link)>0]
 
     let $filesCountAll := count($files)
-    let $filesCountCorrectSchema := count($files[@schema = $xmlconv:SCHEMA or @schema = $xmlconv:SCHEMA2])
+    let $filesCountCorrectSchema := count($files[@schema = $xmlconv:SCHEMA or @schema = $xmlconv:SCHEMA2 or @schema = $xmlconv:SCHEMA3])
 (:    let $filesCountXml := count($files[@type="text/xml"]):)
 
     let $errorLevel := if ($filesCountCorrectSchema > 0) then "INFO" else "BLOCKER"
