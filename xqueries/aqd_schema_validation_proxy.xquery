@@ -23,10 +23,8 @@ declare variable $ignoredMessages := ("cvc-elt.1: Cannot find the declaration of
 (:===================================================================:)
 
 declare variable $source_url as xs:string external;
-
-
 (:
-
+declare variable $source_url as xs:string external;
 Change it for testing locally:
 declare variable $source_url as xs:string external;
 declare variable $source_url as xs:untypedAtomic external;
@@ -47,7 +45,7 @@ declare function xmlconv:validateXmlSchema($source_url)
     let $fullUrl := concat($xmlconv:xmlValidatorUrl, fn:encode-for-uri($source_url))
     let $validationResult := doc($fullUrl)
 
-    let $hasErrors := count($validationResult//*[name()="tr"]) > 1
+    let $hasErrors := count($validationResult//*[local-name() = "tr"]) > 1
 
     let $filteredResult :=
         if ($hasErrors) then
@@ -73,13 +71,14 @@ declare function xmlconv:validateXmlSchema($source_url)
         else
             $validationResult
 
-    let $hasErrorsAfterFiltering := count($filteredResult//*[name()="tr"]) > 1
+    let $hasErrorsAfterFiltering := count($filteredResult//*[local-name()="tr"]) > 1
 
     return
-        if ($hasErrorsAfterFiltering) then
-            $filteredResult
-        else
+        if ($hasErrors and not($hasErrorsAfterFiltering)) then
             $successfulResult
+        else
+            $validationResult
+
 };
 
 (:
