@@ -160,7 +160,7 @@ declare function xmlconv:getVocabularyMapping(){
         <vocabulary label="Measurement types" url="http://dd.eionet.europa.eu/vocabulary/aq/measurementtype/">
             <element>aqd:measurementType</element>
         </vocabulary>
-        <vocabulary label="Time units" url="http://dd.eionet.europa.eu/vocabulary/uom/time">
+        <vocabulary label="Time units" url="http://dd.eionet.europa.eu/vocabulary/uom/time/">
             <element>aqd:unit</element>
         </vocabulary>
         <vocabulary label="Process parameters" url="http://dd.eionet.europa.eu/vocabulary/aq/processparameter/">
