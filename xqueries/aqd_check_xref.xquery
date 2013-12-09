@@ -160,14 +160,14 @@ declare function xmlconv:getVocabularyMapping(){
         <vocabulary label="Measurement types" url="http://dd.eionet.europa.eu/vocabulary/aq/measurementtype/">
             <element>aqd:measurementType</element>
         </vocabulary>
-        <vocabulary label="Time units" url="http://dd.eionet.europa.eu/vocabulary/aq/timeunit/">
+        <vocabulary label="Time units" url="http://dd.eionet.europa.eu/vocabulary/uom/time">
             <element>aqd:unit</element>
         </vocabulary>
         <vocabulary label="Process parameters" url="http://dd.eionet.europa.eu/vocabulary/aq/processparameter/">
             <element checkConceptOnly="true">ompr:name</element>
             <element checkConceptOnly="true">om:name</element>
         </vocabulary>
-        <vocabulary label="Observation units" url="http://dd.eionet.europa.eu/vocabulary/aq/observationunit/">
+        <vocabulary label="Observation units" url="http://dd.eionet.europa.eu/vocabulary/uom/concentration/">
             <element checkConceptOnly="true">swe:uom</element>
         </vocabulary>
         <vocabulary label="Legislation level" url="http://inspire.ec.europa.eu/codeList/LegislationLevelValue/" ruleType="startsWith">
