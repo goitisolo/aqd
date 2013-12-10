@@ -33,9 +33,6 @@
              or http://dd.eionet.europa.eu/schemas/id2011850eu/AQD.xsd http://schemas.opengis.net/gml/3.2.1/gml.xsd
         xmlns:aqd="http://www.exampleURI.com/AQD"
   -->
-<!-- SPARQL Endpoint URL variable -->
-<xsl:variable name="sparqlEndpointUrl" select="'http://cr.eionet.europa.eu/sparql'"/>
-<xsl:variable name="labelsFile" select="'http://converters.eionet.europa.eu/xmlfile/aqd-labels.xml'"/>
 
 <xsl:output method='html' encoding='UTF-8' indent='yes'/>
 
@@ -71,53 +68,96 @@
 <xsl:template match="gml:FeatureCollection">
   <h1>Summary of features in this file</h1>
 
-  <xsl:if test="count(gml:featureMember/aqd:AQD_Zone) &gt; 0">
+
+  <xsl:if test="count(gml:featureMember/aqd:AQD_ReportingHeader) &gt; 0">
     <table class="tbl">
-      <xsl:for-each select="gml:featureMember/aqd:AQD_Zone">
+      <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader">
         <xsl:if test="position() = 1">
-          <xsl:call-template name="AQD_Zone_header"/>
+          <xsl:call-template name="AQD_ReportingHeader_header"/>
         </xsl:if>
-        <xsl:call-template name="AQD_Zone"/>
+        <xsl:call-template name="AQD_ReportingHeader"/>
+        <tr>
+        <th colspan="5">
+          <table>
+            <xsl:apply-templates select="aqd:content"/>
+          </table>
+        </th>
+        </tr>
       </xsl:for-each>
     </table>
   </xsl:if>
 
-  <xsl:if test="count(gml:featureMember/aqd:AQD_AssessmentRegime) &gt; 0">
-    <table class="tbl">
-      <xsl:for-each select="gml:featureMember/aqd:AQD_AssessmentRegime">
-        <xsl:if test="position() = 1">
-          <xsl:call-template name="AQD_AssessmentRegime_header"/>
-        </xsl:if>
-        <xsl:call-template name="AQD_AssessmentRegime"/>
-      </xsl:for-each>
-    </table>
-  </xsl:if>
+  <xsl:call-template name="AQD_Zone_table">
+    <xsl:with-param name="nodetype" select="gml:featureMember/aqd:AQD_Zone"/>
+  </xsl:call-template>
 
-  <xsl:if test="count(gml:featureMember/aqd:AQD_Station) &gt; 0">
-    <table class="tbl">
-      <xsl:for-each select="gml:featureMember/aqd:AQD_Station">
-        <xsl:if test="position() = 1">
-          <xsl:call-template name="AQD_Station_header"/>
-        </xsl:if>
-        <xsl:call-template name="AQD_Station"/>
-      </xsl:for-each>
-    </table>
-  </xsl:if>
+  <xsl:call-template name="AQD_AssessmentRegime_table">
+    <xsl:with-param name="nodetype" select="gml:featureMember/aqd:AQD_AssessmentRegime"/>
+  </xsl:call-template>
 
-  <xsl:if test="count(gml:featureMember/aqd:AQD_SamplingPoint) &gt; 0">
-    <table class="tbl">
-      <xsl:for-each select="gml:featureMember/aqd:AQD_SamplingPoint">
-        <xsl:if test="position() = 1">
-          <xsl:call-template name="AQD_SamplingPoint_header"/>
-        </xsl:if>
-        <xsl:call-template name="AQD_SamplingPoint"/>
-      </xsl:for-each>
-    </table>
-  </xsl:if>
+  <xsl:call-template name="AQD_Station_table">
+    <xsl:with-param name="nodetype" select="gml:featureMember/aqd:AQD_Station"/>
+  </xsl:call-template>
+
+  <xsl:call-template name="AQD_SamplingPoint_table">
+    <xsl:with-param name="nodetype" select="gml:featureMember/aqd:AQD_SamplingPoint"/>
+  </xsl:call-template>
 
 </xsl:template>
 
+<xsl:template match="aqd:content">
+    <xsl:call-template name="AQD_Zone_table">
+      <xsl:with-param name="nodetype" select="../aqd:content/aqd:AQD_Zone"/>
+    </xsl:call-template>
 
+  <xsl:call-template name="AQD_AssessmentRegime_table">
+    <xsl:with-param name="nodetype" select="../aqd:content/aqd:AQD_AssessmentRegime"/>
+  </xsl:call-template>
+
+  <xsl:call-template name="AQD_Station_table">
+    <xsl:with-param name="nodetype" select="../aqd:content/aqd:AQD_Station"/>
+  </xsl:call-template>
+
+  <xsl:call-template name="AQD_SamplingPoint_table">
+    <xsl:with-param name="nodetype" select="../aqd:content/aqd:AQD_SamplingPoint"/>
+  </xsl:call-template>
+
+</xsl:template>
+
+<xsl:template name="AQD_ReportingHeader_header">
+  <caption>Reporting header</caption>
+  <tr>
+    <th>Inspire ID</th>
+    <th>Change</th>
+    <th>Change description</th>
+    <th>Reporting period</th>
+  </tr>
+</xsl:template>
+
+<xsl:template name="AQD_ReportingHeader">
+  <tr>
+    <td><xsl:value-of select="aqd:inspireId/base:Identifier/base:localId"/></td>
+    <td><xsl:value-of select="aqd:change"/></td>
+    <td><xsl:value-of select="aqd:changeDescription"/></td>
+    <td><xsl:value-of select="aqd:reportingPeriod/gml:TimePeriod/gml:beginPosition"/>
+     to <xsl:value-of select="aqd:reportingPeriod/gml:TimePeriod/gml:endPosition"/></td>
+  </tr>
+</xsl:template>
+
+
+<xsl:template name="AQD_Zone_table">
+    <xsl:param name="nodetype"/>
+    <xsl:if test="count($nodetype) &gt; 0">
+      <table class="tbl">
+        <xsl:for-each select="$nodetype">
+          <xsl:if test="position() = 1">
+            <xsl:call-template name="AQD_Zone_header"/>
+          </xsl:if>
+          <xsl:call-template name="AQD_Zone"/>
+        </xsl:for-each>
+      </table>
+    </xsl:if>
+</xsl:template>
 
 <xsl:template name="AQD_Zone_header">
   <caption>Zones</caption>
@@ -144,6 +184,19 @@
 </xsl:template>
 
 
+<xsl:template name="AQD_AssessmentRegime_table">
+    <xsl:param name="nodetype"/>
+    <xsl:if test="count($nodetype) &gt; 0">
+      <table class="tbl">
+        <xsl:for-each select="$nodetype">
+          <xsl:if test="position() = 1">
+            <xsl:call-template name="AQD_AssessmentRegime_header"/>
+          </xsl:if>
+          <xsl:call-template name="AQD_AssessmentRegime"/>
+        </xsl:for-each>
+      </table>
+    </xsl:if>
+</xsl:template>
 
 <xsl:template name="AQD_AssessmentRegime_header">
   <caption>Assessment regimes</caption>
@@ -159,6 +212,19 @@
 </xsl:template>
 
 
+<xsl:template name="AQD_Station_table">
+    <xsl:param name="nodetype"/>
+    <xsl:if test="count($nodetype) &gt; 0">
+      <table class="tbl">
+        <xsl:for-each select="$nodetype">
+          <xsl:if test="position() = 1">
+            <xsl:call-template name="AQD_Station_header"/>
+          </xsl:if>
+          <xsl:call-template name="AQD_Station"/>
+        </xsl:for-each>
+      </table>
+    </xsl:if>
+</xsl:template>
 
 <xsl:template name="AQD_Station_header">
   <caption>Stations</caption>
@@ -185,6 +251,20 @@
 
 
 
+
+<xsl:template name="AQD_SamplingPoint_table">
+    <xsl:param name="nodetype"/>
+    <xsl:if test="count($nodetype) &gt; 0">
+      <table class="tbl">
+        <xsl:for-each select="$nodetype">
+          <xsl:if test="position() = 1">
+            <xsl:call-template name="AQD_SamplingPoint_header"/>
+          </xsl:if>
+          <xsl:call-template name="AQD_SamplingPoint"/>
+        </xsl:for-each>
+      </table>
+    </xsl:if>
+</xsl:template>
 
 <xsl:template name="AQD_SamplingPoint_header">
   <caption>Sampling points</caption>
