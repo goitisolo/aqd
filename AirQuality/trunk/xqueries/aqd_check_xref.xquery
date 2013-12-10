@@ -173,6 +173,7 @@ declare function xmlconv:getVocabularyMapping(){
         <vocabulary label="Legislation level" url="http://inspire.ec.europa.eu/codeList/LegislationLevelValue/" ruleType="startsWith">
             <element>base2:level</element>
         </vocabulary>
+        <!--
         <vocabulary label="AQ reference" url="http://reference.eionet.europa.eu/aq/" ruleType="startsWith">
             <element>ef:belongsTo</element>
             <element>ef:procedure</element>
@@ -182,6 +183,7 @@ declare function xmlconv:getVocabularyMapping(){
             <element>aqd:zone</element>
             <element>aqd:assessment</element>
         </vocabulary>
+        -->
     </mapping>
 };
 
