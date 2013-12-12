@@ -61,7 +61,7 @@
   <xsl:template match="am:geometry|sams:shape|om:result|swe:encoding" mode="property"/>
 
 <!-- For literal decimal elements (properties) -->
-  <xsl:template match="aqd:area|aqd:residentPopulation|
+  <xsl:template match="aqd:altitude|aqd:area|aqd:residentPopulation|
    aqd:inletHeight|aqd:buildingDistance|aqd:kerbDistance|
    aqd:detectionLimit|aqd:numUnits" mode="property">
     <xsl:variable name="value" select="normalize-space(text())"/>
@@ -111,7 +111,14 @@
 
   <xsl:template match="ef:inspireId|aqd:inspireId|am:inspireId|ompr:inspireld" mode="property">
     <xsl:element name="declarationFor" namespace="&ont;">
+      <xsl:choose>
+        <xsl:when test="starts-with(base:Identifier/base:namespace, 'http:')">
+          <xsl:attribute name="rdf:resource"><xsl:value-of select="base:Identifier/base:namespace"/>/<xsl:value-of select="base:Identifier/base:localId"/></xsl:attribute>
+        </xsl:when>
+        <xsl:otherwise>
           <xsl:attribute name="rdf:resource">&ref;<xsl:value-of select="base:Identifier/base:namespace"/>/<xsl:value-of select="base:Identifier/base:localId"/></xsl:attribute>
+        </xsl:otherwise>
+      </xsl:choose>
     </xsl:element>
     <xsl:element name="{local-name()}" namespace="&ont;">
       <xsl:apply-templates mode="resourceorliteral"/>
