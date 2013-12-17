@@ -242,14 +242,20 @@ let $countefInspireIdDuplicates := count($duplicateefInspireIds)
 let $countaqdInspireIdDuplicates := count($duplicateaqdInspireIds)
 let $countB8duplicates := $countGmlIdDuplicates + $countefInspireIdDuplicates + $countaqdInspireIdDuplicates
 
-(: B9 :)
-let $amInspireIds := $docRoot//aqd:AQD_Zone/am:inspireId/base:Identifier/lower-case(normalize-space(base:localId))
+(: B9 The base:localId needs to be unique within namespace.  :)
+let $amInspireIds := $docRoot//aqd:AQD_Zone/am:inspireId/base:Identifier/concat(lower-case(normalize-space(base:namespace)), '##',
+    lower-case(normalize-space(base:localId)))
 let $duplicateAmInspireIds := distinct-values(
-    for $id in $docRoot//aqd:AQD_Zone/am:inspireId/base:Identifier/base:localId
-    where string-length(normalize-space($id)) > 0 and count(index-of($amInspireIds, lower-case(normalize-space($id)))) > 1
+    for $identifier in $docRoot//aqd:AQD_Zone/am:inspireId/base:Identifier
+    where string-length(normalize-space($identifier/base:localId)) > 0 and count(index-of($amInspireIds,
+        concat(lower-case(normalize-space($identifier/base:namespace)), '##', lower-case(normalize-space($identifier/base:localId))))) > 1
     return
-        $id
+        concat(normalize-space($identifier/base:namespace), ':', normalize-space($identifier/base:localId))
     )
+(: wrong rule here.
+The element that "shall be an unique code for network starting with ISO2-country code" is aqd:zoneCode
+with the exception of UnitedKingdom that might use UK instead of GB
+
 let $invalidIsoAmInspireIds := distinct-values(
     for $id in $docRoot//aqd:AQD_Zone/am:inspireId/base:Identifier/base:localId
     where string-length(normalize-space($id)) > 0 and (string-length(normalize-space($id)) < 2 or
@@ -257,10 +263,9 @@ let $invalidIsoAmInspireIds := distinct-values(
     return
         $id
     )
-
+:)
 let $countAmInspireIdDuplicates := count($duplicateAmInspireIds)
-let $countAmInspireIdInvalidIso := count($invalidIsoAmInspireIds)
-let $countB9duplicates := $countAmInspireIdDuplicates + $countAmInspireIdInvalidIso
+let $countB9duplicates := $countAmInspireIdDuplicates
 
 (: B14 :)
 let $unknownNativeness := distinct-values($docRoot//aqd:AQD_Zone[count(am:name/gn:GeographicalName/gn:nativeness[@xsi:nil="true" and @nilReason="unknown"])>0]/@gml:id)
@@ -368,7 +373,7 @@ return
         }
         <tr>
             <td style="vertical-align:top;">{ xmlconv:getBullet("B9", if ($countB9duplicates = 0) then "info" else "error") }</td>
-            <th style="vertical-align:top;">./am:inspireId/base:Identifier/base:localId shall be an unique code for network starting with ISO2-country code</th>
+            <th style="vertical-align:top;">./am:inspireId/base:Identifier/base:localId shall be an unique code within namespace</th>
             <td style="vertical-align:top;">{
                 if ($countB9duplicates = 0) then
                     "All Ids are unique"
@@ -378,17 +383,8 @@ return
         {
             if ($countAmInspireIdDuplicates > 0) then
                 <tr style="font-size: 0.9em;color:grey;">
-                    <td colspan="2" style="text-align:right;vertical-align:top;">Duplicate base:localId - </td>
+                    <td colspan="2" style="text-align:right;vertical-align:top;">Duplicate base:namespace:base:localId - </td>
                     <td style="font-style:italic;vertical-align:top;">{ string-join($duplicateAmInspireIds, ", ")}</td>
-                </tr>
-            else
-                ()
-        }
-        {
-            if ($countAmInspireIdInvalidIso > 0) then
-                <tr style="font-size: 0.9em;color:grey;">
-                    <td colspan="2" style="text-align:right;vertical-align:top;">Wrong ISO2 in base:localId - </td>
-                    <td style="font-style:italic;vertical-align:top;">{ string-join($invalidIsoAmInspireIds, ", ")}</td>
                 </tr>
             else
                 ()
