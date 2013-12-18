@@ -25,13 +25,13 @@ declare variable $xmlconv:CR_SPARQL_URL := "http://cr.eionet.europa.eu/sparql";
 (: Variable given as an external parameter by the QA service                                                 :)
 (:===================================================================:)
 
-declare variable $source_url as xs:untypedAtomic external;
+declare variable $source_url as xs:string external;
 (:
 
     Change it for testing locally:
 declare variable $source_url as xs:string external;
 declare variable $source_url as xs:untypedAtomic external;
-declare variable $source_url := "http://cdr.eionet.europa.eu/gb/eu/aqd/e2a/colutn32a/envuvlxkq/E2a_GB2013032713version4.xml";
+declare variable $source_url := "../test/DE_D_Station.xml";
 :)
 
 (:
@@ -152,7 +152,10 @@ declare function xmlconv:getVocabularyMapping(){
             <element>aqd:stationClassification</element>
         </vocabulary>
         <vocabulary label="Measurement Equipment codes" url="http://dd.eionet.europa.eu/vocabulary/aq/measurementequipment/">
-            <element>aqd:equipment</element>
+            <element>aqd:MeasurementEquipment/aqd:equipment</element>
+        </vocabulary>
+        <vocabulary label="Sampling Equipment codes" url="http://dd.eionet.europa.eu/vocabulary/aq/samplingequipment/">
+            <element>aqd:SamplingEquipment/aqd:equipment</element>
         </vocabulary>
         <vocabulary label="Equivalence demonstrated codes" url="http://dd.eionet.europa.eu/vocabulary/aq/equivalencedemonstrated/">
             <element>aqd:equivalenceDemonstrated</element>
@@ -199,7 +202,8 @@ let $vocabularies := xmlconv:getVocabularyMapping()//vocabulary
 let $reportedVocabularyElements :=
     for $elem in doc($source_url)//*[contains(@xlink:href, ':')]
     (:string-length(@checkConceptOnly)=0 and:)
-    where count($vocabularies//element[not(@checkConceptOnly) and . = $elem/name()]) > 0
+    where count($vocabularies//element[contains(.,'/') and substring-before(., '/') = $elem/../name() and substring-after(., '/') = $elem/name()]) > 0
+        or count($vocabularies//element[not(@checkConceptOnly) and not(contains(.,'/')) and . = $elem/name()]) > 0
         or count($vocabularies//element[@checkConceptOnly = 'true' and . = $elem/name() and starts-with($elem/@xlink:href, ../@url)]) > 0
     return
         $elem
@@ -207,7 +211,9 @@ let $reportedVocabularyElements :=
 
 let $result := for $vocabulary in $vocabularies
         let $vocabularyUrl := data($vocabulary/@url)
-        let $codes := $reportedVocabularyElements[count(index-of($vocabulary//element[not(@checkConceptOnly)], name(.))) > 0
+        let $codes := $reportedVocabularyElements[
+            count(index-of($vocabulary//element[not(@checkConceptOnly)], name(.))) > 0
+            or count(index-of($vocabulary//element[not(@checkConceptOnly)], concat(name(..), '/', name(.)))) > 0
             or (count(index-of($vocabulary//element[@checkConceptOnly='true'], name(.))) > 0 and starts-with(@xlink:href, $vocabulary/@url))]/@xlink:href
         let $invalidCodes :=
             if ($vocabulary/@ruleType = "startsWith") then
