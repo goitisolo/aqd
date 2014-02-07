@@ -30,7 +30,7 @@ declare variable $xmlconv:ISO2_CODES as xs:string* := ("AL","AT","BA","BE","BG",
     "FR","GB","GR","HR","HU","IE","IL","IS","IT","JO","LB","LI","LT","LU","LV","MA","ME","MK","MT","NL","NO","PL","PS","PT",
      "RO","RS","SE","SI","SK","TN","TR","XK","UK");
 
-declare variable $xmlconv:FEATURE_TYPES := ("aqd:AQD_Network", "aqd:AQD_Station", "aqd:AQD_StationProcess", "aqd:AQD_Sample",
+declare variable $xmlconv:FEATURE_TYPES := ("aqd:AQD_Network", "aqd:AQD_Station", "aqd:AQD_SamplingPointProcess", "aqd:AQD_Sample",
 "aqd:AQD_RepresentativeArea", "aqd:AQD_SamplingPoint");
 
 
