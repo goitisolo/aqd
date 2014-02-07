@@ -31,6 +31,7 @@ declare variable $source_url as xs:string external;
 declare variable $source_url as xs:string external;
 declare variable $source_url as xs:untypedAtomic external;
 declare variable $source_url := "../test/DE_D_Station.xml";
+declare variable $source_url as xs:string external;
 :)
 
 (:
@@ -185,13 +186,7 @@ declare function xmlconv:getVocabularyMapping(){
             <element>base2:level</element>
         </vocabulary>
         <vocabulary label="AQ reference" url="http://reference.eionet.europa.eu/page/" ruleType="mustNotStartWith">
-            <element>ef:belongsTo</element>
-            <element>ef:procedure</element>
-            <element>ef:broader</element>
-            <element>ef:featureOfInterest</element>
-            <element>aqd:modelAssessmentMetadata</element>
-            <element>aqd:zone</element>
-            <element>aqd:assessment</element>
+            <element>*</element>
         </vocabulary>
     </mapping>
 };
@@ -214,6 +209,12 @@ let $reportedVocabularyElements :=
     return
         $elem
 
+let $allRefElements :=
+    for $elem in doc($source_url)//*[contains(@xlink:href, ':')]
+    return
+        $elem
+
+let $allRefsCount := count($allRefElements)
 
 let $result := for $vocabulary in $vocabularies
         let $vocabularyUrl := data($vocabulary/@url)
@@ -225,50 +226,54 @@ let $result := for $vocabulary in $vocabularies
             if ($vocabulary/@ruleType = "startsWith") then
                 distinct-values($codes[not(starts-with(., $vocabularyUrl))])
             else if ($vocabulary/@ruleType = "mustNotStartWith") then
-                distinct-values($codes[starts-with(., $vocabularyUrl)])
+                (:distinct-values($codes[starts-with(., $vocabularyUrl)]):)
+                distinct-values($allRefElements[starts-with(@xlink:href, $vocabularyUrl)]/concat(name(),'=',@xlink:href))
             else
                 xmlconv:validateCode(distinct-values($codes), $vocabularyUrl)
         let $ruleHeading :=
             if ($vocabulary/@ruleType = "startsWith") then
-                <span>The code must start with { $vocabularyUrl }</span>
+                <span>The reference must start with { $vocabularyUrl }</span>
             else if ($vocabulary/@ruleType = "mustNotStartWith") then
-                <span>The code must NOT start with { $vocabularyUrl }</span>
+                <span>The reference must NOT start with { $vocabularyUrl }</span>
             else
-                <span>The code must be in <a href="{ $vocabularyUrl }">{ data($vocabulary/@label) } vocabulary</a></span>
+                <span>The reference must point to concept in <a href="{ $vocabularyUrl }">{ data($vocabulary/@label) } vocabulary</a></span>
 
         let $errorCount := count($invalidCodes)
-        let $codesCount := count($codes)
+        let $codesCount :=
+         if ($vocabulary/@ruleType = "mustNotStartWith") then
+            $allRefsCount
+         else
+            count($codes)
     return
-        <tr codesCount="{ $codesCount }" errorCount="{ $errorCount }">
+        <tr codesCount="{ $allRefsCount }" errorCount="{ $errorCount }">
             <td style="vertical-align:top">{ $ruleHeading }</td>{
                 if  ($codesCount = 0) then
-                    <td style="vertical-align:top">No codes found.</td>
+                    <td style="vertical-align:top">No references found.</td>
                 else if ($errorCount > 0) then
-                    <td style="color:red;vertical-align:top">{ $errorCount } invalid code{ substring("s ", number(not($errorCount > 1)) * 2)}found out of { $codesCount } checked</td>
+                    <td style="color:red;vertical-align:top">{ $errorCount } invalid reference{ substring("s ", number(not($errorCount > 1)) * 2)}found out of { $codesCount } checked</td>
                 else
-                    <td style="color:green;vertical-align:top">Found { $codesCount } code{ substring("s,", number(not($codesCount > 1)) * 2)} all valid</td>
+                    <td style="color:green;vertical-align:top">Found { $codesCount } reference{ substring("s,", number(not($codesCount > 1)) * 2)} all valid</td>
                 }
             <td style="vertical-align:top">{ string-join($vocabulary//element, ", ")}</td>
             <td style="vertical-align:top">{ $invalidCodes }</td>
         </tr>
-
 return
 <div class="feedbacktext">
         <div>
-            <h2>Check codes</h2>
+            <h2>Check references</h2>
             {
-            if (sum($result/@codesCount) = 0) then
-                <div>No codes found from this report.</div>
+            if ($allRefsCount = 0) then
+                <div>No references found from this report.</div>
             else if (sum($result/@errorCount) > 0) then
-                <div style="color:red">{ sum($result/@errorCount) } invalid code{ substring("s ", number(not(sum($result/@errorCount) > 1)) * 2)}found out of { sum($result/@codesCount) } checked from this report.</div>
+                <div style="color:red">{ sum($result/@errorCount) } invalid reference{ substring("s ", number(not(sum($result/@errorCount) > 1)) * 2)}found out of { $allRefsCount } checked from this report.</div>
             else
-                <div style="color:green">Found { sum($result/@codesCount) } code{ substring("s ", number(not(sum($result/@codesCount) > 1)) * 2)}from this report, all valid.</div>
+                <div style="color:green">Found { $allRefsCount } reference{ substring("s ", number(not($allRefsCount > 1)) * 2)}from this report, all valid.</div>
             }
         </div>{
         if ( count($result )> 0) then
             <table class="datatable">
                 <thead>
-                    <tr><th>Code list</th><th>Result</th><th>Checked elements</th><th>Invalid codes</th></tr>
+                    <tr><th>Reference rule</th><th>Result</th><th>Checked elements</th><th>Invalid references</th></tr>
                 </thead>
                 <tbody>
                     {$result}
