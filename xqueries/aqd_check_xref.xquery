@@ -27,7 +27,6 @@ declare variable $xmlconv:CR_SPARQL_URL := "http://cr.eionet.europa.eu/sparql";
 
 declare variable $source_url as xs:string external;
 (:
-
     Change it for testing locally:
 declare variable $source_url as xs:string external;
 declare variable $source_url as xs:untypedAtomic external;
@@ -173,11 +172,19 @@ declare function xmlconv:getVocabularyMapping(){
         <vocabulary label="Observation units" url="http://dd.eionet.europa.eu/vocabulary/uom/concentration/">
             <element checkConceptOnly="true">swe:uom</element>
         </vocabulary>
+        <vocabulary label="Objective type" url="http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/">
+            <element>aqd:objectiveType</element>
+        </vocabulary>
+        <vocabulary label="Reporting metric" url="http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/">
+            <element>aqd:reportingMetric</element>
+        </vocabulary>
+        <vocabulary label="Assessment Threshold Exceedance" url="http://dd.eionet.europa.eu/vocabulary/aq/assessmentthresholdexceedance/">
+            <element>aqd:exceedanceAttainment</element>
+        </vocabulary>
         <vocabulary label="Legislation level" url="http://inspire.ec.europa.eu/codeList/LegislationLevelValue/" ruleType="startsWith">
             <element>base2:level</element>
         </vocabulary>
-        <!--
-        <vocabulary label="AQ reference" url="http://reference.eionet.europa.eu/aq/" ruleType="startsWith">
+        <vocabulary label="AQ reference" url="http://reference.eionet.europa.eu/page/" ruleType="mustNotStartWith">
             <element>ef:belongsTo</element>
             <element>ef:procedure</element>
             <element>ef:broader</element>
@@ -186,7 +193,6 @@ declare function xmlconv:getVocabularyMapping(){
             <element>aqd:zone</element>
             <element>aqd:assessment</element>
         </vocabulary>
-        -->
     </mapping>
 };
 
@@ -218,11 +224,15 @@ let $result := for $vocabulary in $vocabularies
         let $invalidCodes :=
             if ($vocabulary/@ruleType = "startsWith") then
                 distinct-values($codes[not(starts-with(., $vocabularyUrl))])
+            else if ($vocabulary/@ruleType = "mustNotStartWith") then
+                distinct-values($codes[starts-with(., $vocabularyUrl)])
             else
                 xmlconv:validateCode(distinct-values($codes), $vocabularyUrl)
         let $ruleHeading :=
             if ($vocabulary/@ruleType = "startsWith") then
                 <span>The code must start with { $vocabularyUrl }</span>
+            else if ($vocabulary/@ruleType = "mustNotStartWith") then
+                <span>The code must NOT start with { $vocabularyUrl }</span>
             else
                 <span>The code must be in <a href="{ $vocabularyUrl }">{ data($vocabulary/@label) } vocabulary</a></span>
 
