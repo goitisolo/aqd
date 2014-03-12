@@ -2,6 +2,7 @@
 <!DOCTYPE xsl:stylesheet [
  <!ENTITY sep ",">
  <!ENTITY nl "&#xa;">
+ <!ENTITY bom "&#xFEFF;">
 ]>
 <xsl:stylesheet version="1.0"
         xmlns:str="http://exslt.org/strings"
@@ -42,22 +43,9 @@
 
 <xsl:output method='text' encoding='UTF-8' indent='no'/>
 
-<!--
-<func:function name="aqf:wrap">
-    <xsl:param name="value"/>
-    <xsl:choose>
-      <xsl:when test="contains($value,',')">
-        <func:result select="concat('&quot;',str:replace($value,'&quot;','&quot;&quot;'),'&quot;')"/>
-      </xsl:when>
-      <xsl:otherwise>
-        <func:result select="$value"/>
-      </xsl:otherwise>
-    </xsl:choose>
-</func:function>
--->
-
 <xsl:template match="/">
-      <xsl:apply-templates/>
+  <xsl:text>&bom;</xsl:text>
+  <xsl:apply-templates/>
 </xsl:template>
 
 <!--
