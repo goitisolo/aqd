@@ -2,6 +2,7 @@
 <!DOCTYPE xsl:stylesheet [
  <!ENTITY sep ",">
  <!ENTITY nl "&#xa;">
+ <!ENTITY bom "&#xFEFF;">
 ]>
 <xsl:stylesheet version="1.0"
         xmlns:str="http://exslt.org/strings"
@@ -43,7 +44,8 @@
 <xsl:output method='text' encoding='UTF-8' indent='no'/>
 
 <xsl:template match="/">
-      <xsl:apply-templates/>
+  <xsl:text>&bom;</xsl:text>
+  <xsl:apply-templates/>
 </xsl:template>
 
 <!--
