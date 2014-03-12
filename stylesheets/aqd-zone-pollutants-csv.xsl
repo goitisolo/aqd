@@ -5,6 +5,8 @@
  <!ENTITY bom "&#xFEFF;">
 ]>
 <xsl:stylesheet version="1.0"
+        xmlns:str="http://exslt.org/strings"
+
         xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0"
         xmlns:am="http://inspire.ec.europa.eu/schemas/am/3.0rc3"
         xmlns:am-ru="http://inspire.jrc.ec.europa.eu/schemas/am-ru/2.0"
@@ -76,7 +78,7 @@
 </xsl:template>
 
 <xsl:template name="AQD_Zone_header">
-    <xsl:text>InspireID&sep;LocalId&sep;Namespace&sep;GeographicalName&sep;ZoneCode&sep;ZoneType&sep;BeginTime&sep;EndTime&sep;EnvironmentalDomain&sep;AQDZoneType&sep;ResidentPopulation&sep;Area&sep;TimeExtensionExemption&sep;ResidentPopulationYear&sep;SRSName&nl;</xsl:text>
+    <xsl:text>InspireID&sep;LocalId&sep;Namespace&sep;GeographicalName&sep;ZoneCode&sep;PollutantCode&sep;ProtectionTarget&nl;</xsl:text>
 </xsl:template>
 
 <xsl:template name="AQD_Zone">

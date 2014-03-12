@@ -5,6 +5,8 @@
  <!ENTITY bom "&#xFEFF;">
 ]>
 <xsl:stylesheet version="1.0"
+        xmlns:str="http://exslt.org/strings"
+
         xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0"
         xmlns:am="http://inspire.ec.europa.eu/schemas/am/3.0rc3"
         xmlns:am-ru="http://inspire.jrc.ec.europa.eu/schemas/am-ru/2.0"
