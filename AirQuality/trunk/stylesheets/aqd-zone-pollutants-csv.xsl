@@ -5,17 +5,11 @@
  <!ENTITY bom "&#xFEFF;">
 ]>
 <xsl:stylesheet version="1.0"
-        xmlns:str="http://exslt.org/strings"
-        xmlns:func="http://exslt.org/functions"
-        xmlns:aqf="http://www.eionet.europa.eu/functions"
-
         xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0"
         xmlns:am="http://inspire.ec.europa.eu/schemas/am/3.0rc3"
         xmlns:am-ru="http://inspire.jrc.ec.europa.eu/schemas/am-ru/2.0"
         xmlns:aqd1="http://www.eionet.europa.eu/aqportal/Drep1"
         xmlns:aqd="http://aqd.ec.europa.eu/aqd/0.3.7c"
-        xmlns:aqdold="http://aqd.ec.europa.eu/aqd/0.3.6b"
-        xmlns:base2="http://inspire.ec.europa.eu/schemas/base2/1.0rc3"
         xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/"
         xmlns:ef="http://inspire.ec.europa.eu/schemas/ef/3.0rc3"
         xmlns:fn="http://www.w3.org/2005/xpath-functions"
@@ -30,7 +24,6 @@
         xmlns:ompr="http://inspire.ec.europa.eu/schemas/ompr/2.0rc3"
         xmlns:sam="http://www.opengis.net/sampling/2.0"
         xmlns:sams="http://www.opengis.net/samplingSpatial/2.0"
-        xmlns:sparql="http://www.w3.org/2005/sparql-results#"
         xmlns:swe="http://www.opengis.net/swe/2.0"
         xmlns:xlink="http://www.w3.org/1999/xlink"
         xmlns:xs="http://www.w3.org/2001/XMLSchema"
@@ -53,6 +46,7 @@
   -->
 <xsl:template match="gml:FeatureCollection">
 
+  <xsl:call-template name="AQD_Zone_header"/>
   <xsl:if test="count(gml:featureMember/aqd:AQD_ReportingHeader) &gt; 0">
     <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader">
       <xsl:apply-templates select="aqd:content"/>
@@ -75,14 +69,9 @@
 <xsl:template name="AQD_Zone_table">
     <xsl:param name="nodetype"/>
     <xsl:if test="count($nodetype) &gt; 0">
-      <table class="tbl">
         <xsl:for-each select="$nodetype">
-          <xsl:if test="position() = 1">
-            <xsl:call-template name="AQD_Zone_header"/>
-          </xsl:if>
           <xsl:call-template name="AQD_Zone"/>
         </xsl:for-each>
-      </table>
     </xsl:if>
 </xsl:template>
 
