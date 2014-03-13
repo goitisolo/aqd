@@ -43,30 +43,40 @@
   <xsl:apply-templates/>
 </xsl:template>
 
-<!--
-     Root element
-  -->
 <xsl:template match="gml:FeatureCollection">
-
   <xsl:call-template name="header"/>
   <xsl:if test="count(gml:featureMember/aqd:AQD_ReportingHeader) &gt; 0">
     <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader">
       <xsl:apply-templates select="aqd:content"/>
     </xsl:for-each>
   </xsl:if>
-
   <xsl:call-template name="table">
-    <xsl:with-param name="nodetype" select="gml:featureMember/aqd:AQD_Zone/aqd:pollutants/aqd:Pollutant"/>
+    <xsl:with-param name="nodetype" select="gml:featureMember/aqd:AQD_AssessmentRegime"/>
   </xsl:call-template>
-
 </xsl:template>
 
 <xsl:template match="aqd:content">
   <xsl:call-template name="table">
-    <xsl:with-param name="nodetype" select="../aqd:content/aqd:AQD_Zone/aqd:pollutants/aqd:Pollutant"/>
+    <xsl:with-param name="nodetype" select="aqd:AQD_AssessmentRegime"/>
   </xsl:call-template>
 </xsl:template>
 
+<!-- Named templates -->
+
+<xsl:template name="header">
+    <xsl:text>GMLID</xsl:text><xsl:text>&sep;</xsl:text>
+    <xsl:text>LocalId</xsl:text><xsl:text>&sep;</xsl:text>
+    <xsl:text>Namespace</xsl:text><xsl:text>&sep;</xsl:text>
+    <xsl:text>Pollutant</xsl:text><xsl:text>&sep;</xsl:text>
+    <xsl:text>Zone</xsl:text><xsl:text>&sep;</xsl:text>
+    <xsl:text>ObjectiveType</xsl:text><xsl:text>&sep;</xsl:text>
+    <xsl:text>ReportingMetric</xsl:text><xsl:text>&sep;</xsl:text>
+    <xsl:text>ProtectionTarget</xsl:text><xsl:text>&sep;</xsl:text>
+    <xsl:text>ExceedanceAttainment</xsl:text><xsl:text>&sep;</xsl:text>
+    <xsl:text>ClassificationDate</xsl:text><xsl:text>&sep;</xsl:text>
+    <xsl:text>ClassificationReport</xsl:text>
+    <xsl:text>&nl;</xsl:text>
+</xsl:template>
 
 <xsl:template name="table">
     <xsl:param name="nodetype"/>
@@ -77,43 +87,60 @@
     </xsl:if>
 </xsl:template>
 
-<xsl:template name="header">
-    <xsl:text>GMLID&sep;LocalId&sep;Namespace&sep;GeographicalName&sep;ZoneCode&sep;PollutantCode&sep;ProtectionTarget&nl;</xsl:text>
-</xsl:template>
 
 <xsl:template name="row">
     <xsl:call-template name="wrapext">
-      <xsl:with-param name="value" select="../../@gml:id"/>
+      <xsl:with-param name="value" select="@gml:id"/>
     </xsl:call-template>
     <xsl:text>&sep;</xsl:text>
 
     <xsl:call-template name="wrapext">
-      <xsl:with-param name="value" select="../../am:inspireId/base:Identifier/base:localId"/>
+      <xsl:with-param name="value" select="aqd:inspireId/base:Identifier/base:localId"/>
     </xsl:call-template>
     <xsl:text>&sep;</xsl:text>
 
     <xsl:call-template name="wrapext">
-      <xsl:with-param name="value" select="../../am:inspireId/base:Identifier/base:namespace"/>
+      <xsl:with-param name="value" select="aqd:inspireId/base:Identifier/base:namespace"/>
     </xsl:call-template>
     <xsl:text>&sep;</xsl:text>
 
     <xsl:call-template name="wrapext">
-      <xsl:with-param name="value" select="../../am:name/descendant::gn:text"/>
+      <xsl:with-param name="value" select="aqd:pollutant/@xlink:href"/>
     </xsl:call-template>
     <xsl:text>&sep;</xsl:text>
 
     <xsl:call-template name="wrapext">
-      <xsl:with-param name="value" select="../../aqd:zoneCode"/>
+      <xsl:with-param name="value" select="aqd:zone/@xlink:href"/>
     </xsl:call-template>
     <xsl:text>&sep;</xsl:text>
 
     <xsl:call-template name="wrapext">
-      <xsl:with-param name="value" select="aqd:pollutantCode/@xlink:href"/>
+      <xsl:with-param name="value" select="aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType/@xlink:href"/>
     </xsl:call-template>
     <xsl:text>&sep;</xsl:text>
 
     <xsl:call-template name="wrapext">
-      <xsl:with-param name="value" select="aqd:protectionTarget/@xlink:href"/>
+      <xsl:with-param name="value" select="aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric/@xlink:href"/>
+    </xsl:call-template>
+    <xsl:text>&sep;</xsl:text>
+
+    <xsl:call-template name="wrapext">
+      <xsl:with-param name="value" select="aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/@xlink:href"/>
+    </xsl:call-template>
+    <xsl:text>&sep;</xsl:text>
+
+    <xsl:call-template name="wrapext">
+      <xsl:with-param name="value" select="aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:exceedanceAttainment/@xlink:href"/>
+    </xsl:call-template>
+    <xsl:text>&sep;</xsl:text>
+
+    <xsl:call-template name="wrapext">
+      <xsl:with-param name="value" select="aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:classificationDate/gml:TimeInstant/gml:timePosition"/>
+    </xsl:call-template>
+    <xsl:text>&sep;</xsl:text>
+
+    <xsl:call-template name="wrapext">
+      <xsl:with-param name="value" select="aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:classificationReport"/>
     </xsl:call-template>
 
     <xsl:text>&nl;</xsl:text>

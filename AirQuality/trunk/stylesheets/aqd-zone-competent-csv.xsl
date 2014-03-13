@@ -13,6 +13,7 @@
         xmlns:aqd1="http://www.eionet.europa.eu/aqportal/Drep1"
         xmlns:aqd="http://aqd.ec.europa.eu/aqd/0.3.7c"
         xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/"
+        xmlns:base2="http://inspire.ec.europa.eu/schemas/base2/1.0rc3"
         xmlns:ef="http://inspire.ec.europa.eu/schemas/ef/3.0rc3"
         xmlns:fn="http://www.w3.org/2005/xpath-functions"
         xmlns:gco="http://www.isotc211.org/2005/gco"
@@ -56,14 +57,14 @@
   </xsl:if>
 
   <xsl:call-template name="table">
-    <xsl:with-param name="nodetype" select="gml:featureMember/aqd:AQD_Zone/aqd:pollutants/aqd:Pollutant"/>
+    <xsl:with-param name="nodetype" select="gml:featureMember/aqd:AQD_Zone"/>
   </xsl:call-template>
 
 </xsl:template>
 
 <xsl:template match="aqd:content">
   <xsl:call-template name="table">
-    <xsl:with-param name="nodetype" select="../aqd:content/aqd:AQD_Zone/aqd:pollutants/aqd:Pollutant"/>
+    <xsl:with-param name="nodetype" select="aqd:AQD_Zone"/>
   </xsl:call-template>
 </xsl:template>
 
@@ -78,42 +79,87 @@
 </xsl:template>
 
 <xsl:template name="header">
-    <xsl:text>GMLID&sep;LocalId&sep;Namespace&sep;GeographicalName&sep;ZoneCode&sep;PollutantCode&sep;ProtectionTarget&nl;</xsl:text>
+    <xsl:text>GMLID&sep;LocalId&sep;Namespace&sep;GeographicalName&sep;ZoneCode&sep;IndividualName&sep;Organisation&sep;Language&sep;Nativeness&sep;Address&sep;Mail&sep;Telephone&sep;Website&sep;Role&nl;</xsl:text>
 </xsl:template>
 
 <xsl:template name="row">
     <xsl:call-template name="wrapext">
-      <xsl:with-param name="value" select="../../@gml:id"/>
+      <xsl:with-param name="value" select="@gml:id"/>
     </xsl:call-template>
     <xsl:text>&sep;</xsl:text>
 
     <xsl:call-template name="wrapext">
-      <xsl:with-param name="value" select="../../am:inspireId/base:Identifier/base:localId"/>
+      <xsl:with-param name="value" select="am:inspireId/base:Identifier/base:localId"/>
     </xsl:call-template>
     <xsl:text>&sep;</xsl:text>
 
     <xsl:call-template name="wrapext">
-      <xsl:with-param name="value" select="../../am:inspireId/base:Identifier/base:namespace"/>
+      <xsl:with-param name="value" select="am:inspireId/base:Identifier/base:namespace"/>
     </xsl:call-template>
     <xsl:text>&sep;</xsl:text>
 
     <xsl:call-template name="wrapext">
-      <xsl:with-param name="value" select="../../am:name/descendant::gn:text"/>
+      <xsl:with-param name="value" select="am:name/descendant::gn:text"/>
     </xsl:call-template>
     <xsl:text>&sep;</xsl:text>
 
     <xsl:call-template name="wrapext">
-      <xsl:with-param name="value" select="../../aqd:zoneCode"/>
+      <xsl:with-param name="value" select="aqd:zoneCode"/>
     </xsl:call-template>
     <xsl:text>&sep;</xsl:text>
 
     <xsl:call-template name="wrapext">
-      <xsl:with-param name="value" select="aqd:pollutantCode/@xlink:href"/>
+      <xsl:with-param name="value" select="am:competentAuthority/base2:RelatedParty/base2:individualName/gmd:LocalisedCharacterString"/>
     </xsl:call-template>
     <xsl:text>&sep;</xsl:text>
 
     <xsl:call-template name="wrapext">
-      <xsl:with-param name="value" select="aqd:protectionTarget/@xlink:href"/>
+      <xsl:with-param name="value" select="am:competentAuthority/base2:RelatedParty/base2:organisationName/gmd:LocalisedCharacterString"/>
+    </xsl:call-template>
+    <xsl:text>&sep;</xsl:text>
+
+    <xsl:call-template name="wrapext">
+      <xsl:with-param name="value" select="am:competentAuthority/base2:RelatedParty/base2:contact/base2:Contact/base2:address/ad:AddressRepresentation/ad:adminUnit/gn:GeographicalName/gn:language"/>
+    </xsl:call-template>
+    <xsl:text>&sep;</xsl:text>
+
+    <xsl:call-template name="wrapext">
+      <xsl:with-param name="value" select="am:competentAuthority/base2:RelatedParty/base2:contact/base2:Contact/base2:address/ad:AddressRepresentation/ad:adminUnit/gn:GeographicalName/gn:nativeness"/>
+    </xsl:call-template>
+    <xsl:text>&sep;</xsl:text>
+
+    <xsl:call-template name="wrapext">
+      <xsl:with-param name="value" select="am:competentAuthority/base2:RelatedParty/base2:contact/base2:Contact/base2:address/ad:AddressRepresentation/ad:adminUnit/gn:GeographicalName/gn:spelling/gn:SpellingOfName/gn:text"/>
+    </xsl:call-template>
+    <xsl:text>&sep;</xsl:text>
+
+    <xsl:call-template name="wrapext">
+      <xsl:with-param name="value" select="am:competentAuthority/base2:RelatedParty/base2:contact/base2:Contact/base2:address/ad:AddressRepresentation/ad:locatorDesignator"/>
+    </xsl:call-template>
+    <xsl:text>&sep;</xsl:text>
+
+    <xsl:call-template name="wrapext">
+      <xsl:with-param name="value" select="am:competentAuthority/base2:RelatedParty/base2:contact/base2:Contact/base2:address/ad:AddressRepresentation/ad:postCode"/>
+    </xsl:call-template>
+    <xsl:text>&sep;</xsl:text>
+
+    <xsl:call-template name="wrapext">
+      <xsl:with-param name="value" select="am:competentAuthority/base2:RelatedParty/base2:contact/base2:Contact/base2:electronicMailAddress"/>
+    </xsl:call-template>
+    <xsl:text>&sep;</xsl:text>
+
+    <xsl:call-template name="wrapext">
+      <xsl:with-param name="value" select="am:competentAuthority/base2:RelatedParty/base2:contact/base2:Contact/base2:telephoneVoice"/>
+    </xsl:call-template>
+    <xsl:text>&sep;</xsl:text>
+
+    <xsl:call-template name="wrapext">
+      <xsl:with-param name="value" select="am:competentAuthority/base2:RelatedParty/base2:contact/base2:Contact/base2:website"/>
+    </xsl:call-template>
+    <xsl:text>&sep;</xsl:text>
+
+    <xsl:call-template name="wrapext">
+      <xsl:with-param name="value" select="am:competentAuthority/base2:RelatedParty/base2:contact/base2:Contact/base2:role"/>
     </xsl:call-template>
 
     <xsl:text>&nl;</xsl:text>

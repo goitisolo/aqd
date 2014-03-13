@@ -48,40 +48,40 @@
   -->
 <xsl:template match="gml:FeatureCollection">
 
-  <xsl:call-template name="AQD_Zone_header"/>
+  <xsl:call-template name="header"/>
   <xsl:if test="count(gml:featureMember/aqd:AQD_ReportingHeader) &gt; 0">
     <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader">
       <xsl:apply-templates select="aqd:content"/>
     </xsl:for-each>
   </xsl:if>
 
-  <xsl:call-template name="AQD_Zone_table">
+  <xsl:call-template name="table">
     <xsl:with-param name="nodetype" select="gml:featureMember/aqd:AQD_Zone"/>
   </xsl:call-template>
 
 </xsl:template>
 
 <xsl:template match="aqd:content">
-  <xsl:call-template name="AQD_Zone_table">
+  <xsl:call-template name="table">
     <xsl:with-param name="nodetype" select="aqd:AQD_Zone"/>
   </xsl:call-template>
 </xsl:template>
 
 
-<xsl:template name="AQD_Zone_table">
+<xsl:template name="table">
     <xsl:param name="nodetype"/>
     <xsl:if test="count($nodetype) &gt; 0">
         <xsl:for-each select="$nodetype">
-          <xsl:call-template name="AQD_Zone"/>
+          <xsl:call-template name="row"/>
         </xsl:for-each>
     </xsl:if>
 </xsl:template>
 
-<xsl:template name="AQD_Zone_header">
-    <xsl:text>InspireID&sep;LocalId&sep;Namespace&sep;GeographicalName&sep;ZoneCode&sep;ZoneType&sep;BeginTime&sep;EndTime&sep;EnvironmentalDomain&sep;AQDZoneType&sep;ResidentPopulation&sep;Area&sep;TimeExtensionExemption&sep;ResidentPopulationYear&sep;SRSName&nl;</xsl:text>
+<xsl:template name="header">
+    <xsl:text>GMLID&sep;LocalId&sep;Namespace&sep;GeographicalName&sep;ZoneCode&sep;ZoneType&sep;BeginTime&sep;EndTime&sep;EnvironmentalDomain&sep;AQDZoneType&sep;ResidentPopulation&sep;Area&sep;TimeExtensionExemption&sep;ResidentPopulationYear&sep;SRSName&nl;</xsl:text>
 </xsl:template>
 
-<xsl:template name="AQD_Zone">
+<xsl:template name="row">
     <xsl:call-template name="wrapext">
       <xsl:with-param name="value" select="@gml:id"/>
     </xsl:call-template>
