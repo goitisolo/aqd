@@ -190,7 +190,17 @@
     <xsl:param name="value"/>
     <xsl:choose>
       <xsl:when test="contains($value,'&sep;') or contains($value,'&#xa;') or contains($value,'&quot;')">
-        <xsl:text>"</xsl:text><xsl:value-of select="str:replace($value,'&quot;','&quot;&quot;')"/><xsl:text>"</xsl:text>
+        <xsl:choose>
+          <xsl:when test="function-available('str:replace')">
+            <xsl:text>"</xsl:text><xsl:value-of select="str:replace($value,'&quot;','&quot;&quot;')"/><xsl:text>"</xsl:text>
+          </xsl:when>
+          <xsl:when test="function-available('replace')">
+            <xsl:text>"</xsl:text><xsl:value-of select="replace($value,'&quot;','&quot;&quot;')"/><xsl:text>"</xsl:text>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:text>"</xsl:text><xsl:value-of select="$value"/><xsl:text>"</xsl:text>
+          </xsl:otherwise>
+        </xsl:choose>
       </xsl:when>
       <xsl:otherwise>
         <xsl:value-of select="$value"/>
