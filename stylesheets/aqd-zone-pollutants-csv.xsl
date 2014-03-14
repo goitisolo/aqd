@@ -4,6 +4,9 @@
  <!ENTITY nl "&#xa;">
  <!ENTITY bom "&#xFEFF;">
 ]>
+<!-- $Id$
+     For schema http://dd.eionet.europa.eu/schemas/id2011850eu/AQD.xsd
+  -->
 <xsl:stylesheet version="1.0"
         xmlns:str="http://exslt.org/strings"
 
@@ -31,10 +34,6 @@
         xmlns:xs="http://www.w3.org/2001/XMLSchema"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
-
-<!-- $Id$
-     For schema http://dd.eionet.europa.eu/schemas/id2011850eu/AQD.xsd
-  -->
 
 <xsl:output method='text' encoding='UTF-8' indent='no'/>
 
@@ -78,7 +77,13 @@
 </xsl:template>
 
 <xsl:template name="header">
-    <xsl:text>GMLID&sep;LocalId&sep;Namespace&sep;GeographicalName&sep;ZoneCode&sep;PollutantCode&sep;ProtectionTarget&nl;</xsl:text>
+    <xsl:text>GMLID</xsl:text><xsl:text>&sep;</xsl:text>
+    <xsl:text>LocalId</xsl:text><xsl:text>&sep;</xsl:text>
+    <xsl:text>Namespace</xsl:text><xsl:text>&sep;</xsl:text>
+    <xsl:text>GeographicalName</xsl:text><xsl:text>&sep;</xsl:text>
+    <xsl:text>ZoneCode</xsl:text><xsl:text>&sep;</xsl:text>
+    <xsl:text>PollutantCode</xsl:text><xsl:text>&sep;</xsl:text>
+    <xsl:text>ProtectionTarget</xsl:text><xsl:text>&nl;</xsl:text>
 </xsl:template>
 
 <xsl:template name="row">

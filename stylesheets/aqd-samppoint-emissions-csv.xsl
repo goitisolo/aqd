@@ -5,8 +5,8 @@
  <!ENTITY bom "&#xFEFF;">
 ]>
 <!-- $Id$
-     AQ zones business data 1 - General AQ zones information
      For schema http://dd.eionet.europa.eu/schemas/id2011850eu/AQD.xsd
+     AQD_SamplingPoint for fixed measurements business data 2 - Emission information
   -->
 <xsl:stylesheet version="1.0"
         xmlns:str="http://exslt.org/strings"
@@ -43,30 +43,40 @@
   <xsl:apply-templates/>
 </xsl:template>
 
-<!--
-     Root element
-  -->
 <xsl:template match="gml:FeatureCollection">
-
   <xsl:call-template name="header"/>
   <xsl:if test="count(gml:featureMember/aqd:AQD_ReportingHeader) &gt; 0">
     <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader">
       <xsl:apply-templates select="aqd:content"/>
     </xsl:for-each>
   </xsl:if>
-
   <xsl:call-template name="table">
-    <xsl:with-param name="nodetype" select="gml:featureMember/aqd:AQD_Zone"/>
+    <xsl:with-param name="nodetype" select="gml:featureMember/aqd:AQD_SamplingPoint"/>
   </xsl:call-template>
-
 </xsl:template>
 
 <xsl:template match="aqd:content">
   <xsl:call-template name="table">
-    <xsl:with-param name="nodetype" select="aqd:AQD_Zone"/>
+    <xsl:with-param name="nodetype" select="aqd:AQD_SamplingPoint"/>
   </xsl:call-template>
 </xsl:template>
 
+<!-- Named templates -->
+
+<xsl:template name="header">
+    <xsl:text>GMLID</xsl:text><xsl:text>&sep;</xsl:text>
+    <xsl:text>LocalId</xsl:text><xsl:text>&sep;</xsl:text>
+    <xsl:text>Namespace</xsl:text><xsl:text>&sep;</xsl:text>
+    <xsl:text>Version</xsl:text><xsl:text>&sep;</xsl:text>
+    <xsl:text>Name</xsl:text><xsl:text>&sep;</xsl:text>
+    <xsl:text>ObservedProperty</xsl:text><xsl:text>&sep;</xsl:text>
+    <xsl:text>StationClassification</xsl:text><xsl:text>&sep;</xsl:text>
+    <xsl:text>MainEmmissionSources</xsl:text><xsl:text>&sep;</xsl:text>
+    <xsl:text>TrafficEmissions</xsl:text><xsl:text>&sep;</xsl:text>
+    <xsl:text>HeatingEmissions</xsl:text><xsl:text>&sep;</xsl:text>
+    <xsl:text>IndustrialEmissions</xsl:text><xsl:text>&sep;</xsl:text>
+    <xsl:text>DistanceSource</xsl:text><xsl:text>&nl;</xsl:text>
+</xsl:template>
 
 <xsl:template name="table">
     <xsl:param name="nodetype"/>
@@ -77,24 +87,6 @@
     </xsl:if>
 </xsl:template>
 
-<xsl:template name="header">
-    <xsl:text>GMLID</xsl:text><xsl:text>&sep;</xsl:text>
-    <xsl:text>LocalId</xsl:text><xsl:text>&sep;</xsl:text>
-    <xsl:text>Namespace</xsl:text><xsl:text>&sep;</xsl:text>
-    <xsl:text>GeographicalName</xsl:text><xsl:text>&sep;</xsl:text>
-    <xsl:text>ZoneCode</xsl:text><xsl:text>&sep;</xsl:text>
-    <xsl:text>ZoneType</xsl:text><xsl:text>&sep;</xsl:text>
-    <xsl:text>BeginTime</xsl:text><xsl:text>&sep;</xsl:text>
-    <xsl:text>EndTime</xsl:text><xsl:text>&sep;</xsl:text>
-    <xsl:text>EnvironmentalDomain</xsl:text><xsl:text>&sep;</xsl:text>
-    <xsl:text>AQDZoneType</xsl:text><xsl:text>&sep;</xsl:text>
-    <xsl:text>ResidentPopulation</xsl:text><xsl:text>&sep;</xsl:text>
-    <xsl:text>Area</xsl:text><xsl:text>&sep;</xsl:text>
-    <xsl:text>TimeExtensionExemption</xsl:text><xsl:text>&sep;</xsl:text>
-    <xsl:text>ResidentPopulationYear</xsl:text><xsl:text>&sep;</xsl:text>
-    <xsl:text>SRSName</xsl:text><xsl:text>&nl;</xsl:text>
-</xsl:template>
-
 <xsl:template name="row">
     <xsl:call-template name="wrapext">
       <xsl:with-param name="value" select="@gml:id"/>
@@ -102,69 +94,58 @@
     <xsl:text>&sep;</xsl:text>
 
     <xsl:call-template name="wrapext">
-      <xsl:with-param name="value" select="am:inspireId/base:Identifier/base:localId"/>
+      <xsl:with-param name="value" select="ef:inspireId/base:Identifier/base:localId"/>
     </xsl:call-template>
     <xsl:text>&sep;</xsl:text>
 
     <xsl:call-template name="wrapext">
-      <xsl:with-param name="value" select="am:inspireId/base:Identifier/base:namespace"/>
+      <xsl:with-param name="value" select="ef:inspireId/base:Identifier/base:namespace"/>
     </xsl:call-template>
     <xsl:text>&sep;</xsl:text>
 
     <xsl:call-template name="wrapext">
-      <xsl:with-param name="value" select="am:name/descendant::gn:text"/>
+      <xsl:with-param name="value" select="ef:inspireId/base:Identifier/base:versionid"/>
     </xsl:call-template>
     <xsl:text>&sep;</xsl:text>
 
     <xsl:call-template name="wrapext">
-      <xsl:with-param name="value" select="aqd:zoneCode"/>
+      <xsl:with-param name="value" select="ef:name"/>
     </xsl:call-template>
     <xsl:text>&sep;</xsl:text>
 
     <xsl:call-template name="wrapext">
-      <xsl:with-param name="value" select="am:zoneType/@xlink:href"/>
+      <xsl:with-param name="value" select="ef:observingCapability/ef:ObservingCapability/ef:observedProperty/@xlink:href"/>
     </xsl:call-template>
     <xsl:text>&sep;</xsl:text>
 
     <xsl:call-template name="wrapext">
-      <xsl:with-param name="value" select="am:designationPeriod/gml:TimePeriod/gml:beginPosition"/>
+      <xsl:with-param name="value" select="aqd:relevantEmissions/aqd:RelevantEmissions/aqd:stationClassification/@xlink:href"/>
     </xsl:call-template>
     <xsl:text>&sep;</xsl:text>
 
     <xsl:call-template name="wrapext">
-      <xsl:with-param name="value" select="am:designationPeriod/gml:TimePeriod/gml:endPosition"/>
+      <xsl:with-param name="value" select="aqd:relevantEmissions/aqd:RelevantEmissions/aqd:mainEmissionSources/@xlink:href"/>
     </xsl:call-template>
     <xsl:text>&sep;</xsl:text>
 
     <xsl:call-template name="wrapext">
-      <xsl:with-param name="value" select="am:environmentalDomain/@xlink:href"/>
+      <xsl:with-param name="value" select="aqd:relevantEmissions/aqd:RelevantEmissions/aqd:trafficEmissions"/>
     </xsl:call-template>
     <xsl:text>&sep;</xsl:text>
 
     <xsl:call-template name="wrapext">
-      <xsl:with-param name="value" select="aqd:residentPopulation"/>
+      <xsl:with-param name="value" select="aqd:relevantEmissions/aqd:RelevantEmissions/aqd:heatingEmissions"/>
     </xsl:call-template>
     <xsl:text>&sep;</xsl:text>
 
     <xsl:call-template name="wrapext">
-      <xsl:with-param name="value" select="aqd:area"/>
+      <xsl:with-param name="value" select="aqd:relevantEmissions/aqd:RelevantEmissions/aqd:industrialEmissions"/>
     </xsl:call-template>
     <xsl:text>&sep;</xsl:text>
 
     <xsl:call-template name="wrapext">
-      <xsl:with-param name="value" select="aqd:timeExtensionExemption/@xlink:href"/>
+      <xsl:with-param name="value" select="aqd:relevantEmissions/aqd:RelevantEmissions/aqd:distanceSource"/>
     </xsl:call-template>
-    <xsl:text>&sep;</xsl:text>
-
-    <xsl:call-template name="wrapext">
-      <xsl:with-param name="value" select="aqd:residentPopulationYear/gml:TimeInstant/gml:timePosition"/>
-    </xsl:call-template>
-    <xsl:text>&sep;</xsl:text>
-
-    <xsl:call-template name="wrapext">
-      <xsl:with-param name="value" select="am:geometry/gml:Polygon/@srsName"/>
-    </xsl:call-template>
-
     <xsl:text>&nl;</xsl:text>
 </xsl:template>
 
