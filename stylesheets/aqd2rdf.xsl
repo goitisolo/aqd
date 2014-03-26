@@ -180,6 +180,14 @@
     <xsl:value-of select="text()"/>
   </xsl:template>
 
+  <xsl:template match="gmd:PT_FreeText" mode="resourceorliteral">
+    <xsl:value-of select="descendant::gmd:LocalisedCharacterString/text()"/>
+  </xsl:template>
+
+  <xsl:template match="gn:GeographicalName" mode="resourceorliteral">
+    <xsl:value-of select="descendant::gn:text/text()"/>
+  </xsl:template>
+
   <!-- Standard resources -->
   <xsl:template match="*" mode="resourceorliteral">
     <xsl:element name="{local-name()}" namespace="&ont;">
@@ -207,94 +215,6 @@
     </xsl:otherwise>
   </xsl:choose>
 </xsl:template>
-
-<!--
-  <xsl:template name="swe_DataArrayType">
-    <xsl:param name="node" select="."/>
-    <xsl:call-template name="split-results">
-        <xsl:with-param name="text" select="om:result/swe:values"/>
-        <xsl:with-param name="pollutant" select="$node/swe:elementType/swe:DataRecord/swe:field[last()]/@name"/>
-    </xsl:call-template>
-  </xsl:template>
--->
-
-  <!-- split on the @@ -->
-<!--
-  <xsl:template name="split-results">
-    <xsl:param name="text"/>
-    <xsl:param name="pollutant"/>
-    <xsl:choose>
-      <xsl:when test="contains($text, '@@')">
-        <xsl:call-template name="resultasresource">
-          <xsl:with-param name="text" select="substring-before($text, '@@')"/>
-          <xsl:with-param name="pollutant" select="$pollutant"/>
-        </xsl:call-template>
-        <xsl:call-template name="split-results">
-          <xsl:with-param name="text" select="substring-after($text, '@@')"/>
-          <xsl:with-param name="pollutant" select="$pollutant"/>
-        </xsl:call-template>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:call-template name="resultasresource">
-          <xsl:with-param name="text" select="$text"/>
-          <xsl:with-param name="pollutant" select="$pollutant"/>
-        </xsl:call-template>
-      </xsl:otherwise>
-    </xsl:choose>
-  </xsl:template>
-
-  <xsl:template name="resultasresource">
-    <xsl:param name="text"/>
-    <xsl:param name="pollutant"/>
-    <xsl:if test="$text != ''">
-      <result>
-        <rdf:Description>
-          <xsl:attribute name="rdf:ID">
-            <xsl:value-of select="concat(generate-id(),'_',translate($text,':,-','___'))"/>
-          </xsl:attribute>
-          <xsl:call-template name="splitonefield">
-            <xsl:with-param name="text" select="$text"/>
-            <xsl:with-param name="columns" select="'time,validity,verification,measurement'"/>
-          </xsl:call-template>
-        </rdf:Description>
-      </result>
-    </xsl:if>
-  </xsl:template>
-
-  <xsl:template name="splitonefield">
-    <xsl:param name="text"/>
-    <xsl:param name="columns"/>
-      <xsl:choose>
-        <xsl:when test="contains($columns, ',')">
-          <xsl:call-template name="resultproperty">
-            <xsl:with-param name="text" select="substring-before($text, ',')"/>
-            <xsl:with-param name="column" select="substring-before($columns, ',')"/>
-          </xsl:call-template>
-          <xsl:call-template name="splitonefield">
-            <xsl:with-param name="text" select="substring-after($text, ',')"/>
-            <xsl:with-param name="columns" select="substring-after($columns, ',')"/>
-          </xsl:call-template>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:call-template name="resultproperty">
-            <xsl:with-param name="text" select="$text"/>
-            <xsl:with-param name="column" select="$columns"/>
-          </xsl:call-template>
-        </xsl:otherwise>
-      </xsl:choose>
-  </xsl:template>
-
-  <xsl:template name="resultproperty">
-    <xsl:param name="text"/>
-    <xsl:param name="column"/>
-    <xsl:element name="{$column}">
-      <xsl:if test="string(number($text)) != 'NaN'">
-        <xsl:attribute name="rdf:datatype">&xsd;decimal</xsl:attribute>
-      </xsl:if>
-    <xsl:value-of select="$text"/>
-    </xsl:element>
-  </xsl:template>
--->
 
 </xsl:stylesheet>
 <!-- vim: set expandtab sw=2 : -->
