@@ -110,7 +110,7 @@
     </xsl:if>
   </xsl:template>
 
-  <xsl:template match="ef:inspireId|aqd:inspireId|am:inspireId|ompr:inspireld" mode="property">
+  <xsl:template match="ef:inspireId|aqd:inspireId|am:inspireId|ompr:inspireId" mode="property">
     <!-- Create the declarationFor property -->
     <xsl:element name="declarationFor" namespace="&ont;">
       <xsl:choose>
