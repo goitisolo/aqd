@@ -35,6 +35,7 @@
     xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#"
     xmlns="&ont;"
 
+        xmlns:str="http://exslt.org/strings"
         xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
 <!-- $Id$
@@ -110,6 +111,7 @@
   </xsl:template>
 
   <xsl:template match="ef:inspireId|aqd:inspireId|am:inspireId|ompr:inspireld" mode="property">
+    <!-- Create the declarationFor property -->
     <xsl:element name="declarationFor" namespace="&ont;">
       <xsl:choose>
         <xsl:when test="starts-with(base:Identifier/base:namespace, 'http:')">
@@ -120,6 +122,7 @@
         </xsl:otherwise>
       </xsl:choose>
     </xsl:element>
+    <!-- Also add the original element -->
     <xsl:element name="{local-name()}" namespace="&ont;">
       <xsl:apply-templates mode="resourceorliteral"/>
     </xsl:element>
@@ -133,7 +136,7 @@
       <xsl:choose>
         <xsl:when test="@xlink:href != ''">
           <xsl:attribute name="rdf:resource">
-            <xsl:if test="not(contains(@xlink:href,'://'))"><xsl:value-of select="$envelopeurl"/>/</xsl:if>
+            <xsl:if test="not(contains(@xlink:href,'://'))">&ref;</xsl:if>
             <xsl:call-template name="fix-uri">
               <xsl:with-param name="text" select="normalize-space(@xlink:href)"/>
             </xsl:call-template>
@@ -202,16 +205,28 @@
 
 <!-- NAMED TEMPLATES -->
 
+<!-- Replace spaces with %20 -->
 <xsl:template name="fix-uri">
   <xsl:param name="text" select="."/>
+
   <xsl:choose>
-    <xsl:when test="contains($text, ' ')">
-      <xsl:value-of select="substring-before($text, ' ')"/>%20<xsl:call-template name="fix-uri">
-        <xsl:with-param name="text" select="substring-after($text, ' ')"/>
-      </xsl:call-template>
+    <xsl:when test="function-available('replace')">
+      <xsl:value-of select="replace($text,' ','%20')"/>
+    </xsl:when>
+    <xsl:when test="function-available('str:replace')">
+      <xsl:value-of select="str:replace($text,' ','%20')"/>
     </xsl:when>
     <xsl:otherwise>
-      <xsl:value-of select="$text"/>
+      <xsl:choose>
+        <xsl:when test="contains($text, ' ')">
+          <xsl:value-of select="substring-before($text, ' ')"/>%20<xsl:call-template name="fix-uri">
+            <xsl:with-param name="text" select="substring-after($text, ' ')"/>
+          </xsl:call-template>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="$text"/>
+        </xsl:otherwise>
+      </xsl:choose>
     </xsl:otherwise>
   </xsl:choose>
 </xsl:template>
