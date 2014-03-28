@@ -4,6 +4,9 @@
  <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#">
  <!ENTITY ont "http://rdfdata.eionet.europa.eu/airquality/ontology/">
 ]>
+<!-- $Id$
+     For schema http://dd.eionet.europa.eu/schemas/id2011850eu/AirQualityReporting.xsd
+  -->
 <xsl:stylesheet version="1.0"
         xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0"
         xmlns:am="http://inspire.ec.europa.eu/schemas/am/3.0rc3"
@@ -38,9 +41,6 @@
         xmlns:str="http://exslt.org/strings"
         xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
-<!-- $Id$
-     For schema http://dd.eionet.europa.eu/schemas/id2011850eu/AirQualityReporting.xsd
-  -->
   <xsl:output method="xml" encoding="UTF-8" indent="no"/>
 
   <xsl:param name="envelopeurl"/>
@@ -115,10 +115,18 @@
     <xsl:element name="declarationFor" namespace="&ont;">
       <xsl:choose>
         <xsl:when test="starts-with(base:Identifier/base:namespace, 'http:')">
-          <xsl:attribute name="rdf:resource"><xsl:value-of select="base:Identifier/base:namespace"/>/<xsl:value-of select="base:Identifier/base:localId"/></xsl:attribute>
+          <xsl:attribute name="rdf:resource">
+            <xsl:call-template name="fix-uri">
+              <xsl:with-param name="text" select="concat(base:Identifier/base:namespace,'/',base:Identifier/base:localId)"/>
+            </xsl:call-template>
+          </xsl:attribute>
         </xsl:when>
         <xsl:otherwise>
-          <xsl:attribute name="rdf:resource">&ref;<xsl:value-of select="base:Identifier/base:namespace"/>/<xsl:value-of select="base:Identifier/base:localId"/></xsl:attribute>
+          <xsl:attribute name="rdf:resource">
+            <xsl:call-template name="fix-uri">
+              <xsl:with-param name="text" select="concat('&ref;',base:Identifier/base:namespace,'/',base:Identifier/base:localId)"/>
+            </xsl:call-template>
+          </xsl:attribute>
         </xsl:otherwise>
       </xsl:choose>
     </xsl:element>
@@ -133,20 +141,28 @@
     <xsl:variable name="value" select="normalize-space(text())"/>
     <xsl:if test="$value != '' or count(*) &gt; 0 or @xlink:href != ''">
       <xsl:element name="{local-name()}" namespace="&ont;">
-      <xsl:choose>
-        <xsl:when test="@xlink:href != ''">
-          <xsl:attribute name="rdf:resource">
-            <xsl:if test="not(contains(@xlink:href,'://'))">&ref;</xsl:if>
-            <xsl:call-template name="fix-uri">
-              <xsl:with-param name="text" select="normalize-space(@xlink:href)"/>
-            </xsl:call-template>
-          </xsl:attribute>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:value-of select="$value"/><xsl:apply-templates mode="resourceorliteral"/>
-        </xsl:otherwise>
-      </xsl:choose>
+        <xsl:choose>
+          <xsl:when test="@xlink:href != ''"> <!-- There is an HREF attribute -->
+            <xsl:attribute name="rdf:resource">
+              <xsl:if test="not(contains(@xlink:href,'://'))">&ref;</xsl:if>
+              <xsl:call-template name="fix-uri">
+                <xsl:with-param name="text" select="normalize-space(@xlink:href)"/>
+              </xsl:call-template>
+            </xsl:attribute>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="$value"/><xsl:apply-templates mode="resourceorliteral"/>
+          </xsl:otherwise>
+        </xsl:choose>
       </xsl:element>
+      <!-- UOM attribute - We'll assume there is only one value for a given context -->
+      <!--
+      <xsl:if test="@uom != ''">
+        <xsl:element name="{concat(local-name(),'UOM')}" namespace="&ont;">
+          <xsl:value-of select="@uom"/>
+        </xsl:element>
+      </xsl:if>
+      -->
     </xsl:if>
   </xsl:template>
 
