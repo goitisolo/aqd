@@ -24,7 +24,6 @@ declare namespace aqd = "http://aqd.ec.europa.eu/aqd/0.3.7c";
 (:
 declare variable $source_url as xs:string :='http://cdr.eionet.europa.eu/dk/eu/aqd/b/envumeiyg/xml';
 declare variable $source_url as xs:string external;
-declare variable $source_url as xs:string external;
 
 :)
 declare variable $source_url as xs:string external;
@@ -71,9 +70,9 @@ declare function xmlconv:replaceSourceUrl($url as xs:string, $url2 as xs:string)
 ;
 
 
-declare function xmlconv:getFiles($url as xs:string, $schema as xs:string)   {
+declare function xmlconv:getFiles($url as xs:string)   {
 
-    for $pn in fn:doc($url)//file[@schema = $schema and string-length(@link)>0]
+    for $pn in fn:doc($url)//file[(@schema = $xmlconv:SCHEMA or @schema = $xmlconv:SCHEMA2 or @schema = $xmlconv:SCHEMA3) and string-length(@link)>0]
         let $fileUrl := xmlconv:replaceSourceUrl($url, string($pn/@link))
         where doc-available($fileUrl)
         return
@@ -93,10 +92,9 @@ as element(div)
     (:  At least one XML file in the envelope must have an aqd:AQD_ReportingHeader element. :)
     let $containsAqdReportingHeader :=
         count(index-of(
-            for $file in $files[(@schema = $xmlconv:SCHEMA or @schema = $xmlconv:SCHEMA2 or @schema = $xmlconv:SCHEMA3)
-                and doc-available(@link)]
+            for $file in xmlconv:getFiles($url)
             return
-                count(doc($file/@link)//aqd:AQD_ReportingHeader) > 0
+                count(doc($file)//aqd:AQD_ReportingHeader) > 0
             , fn:true()
             )) > 0
 
