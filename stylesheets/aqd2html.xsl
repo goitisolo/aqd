@@ -42,6 +42,7 @@
 <xsl:template match="/">
   <html>
     <head>
+      <base href="http://reference.eionet.europa.eu/aq/" />
       <style>
         .errormsg { background: #ffe0e0; font-size: 120%; padding: 0.2em; border: 1px solid darkred; margin: 0.5em; }
         .inlineerror { background: #ffe0e0; font-weight: bold; padding: 0 0.2em; border: 1px solid darkred; margin: 0.1em 0.1em 0.1em 0.6em; }
