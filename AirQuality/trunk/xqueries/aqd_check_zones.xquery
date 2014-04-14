@@ -37,6 +37,7 @@ declare variable $source_url as xs:string external;
 
 (:
 declare variable $source_url := "../test/D_GB_Zones.xml";
+declare variable $source_url := "../test/D_GB_Zones.xml";
 declare variable $source_url as xs:untypedAtomic external;
 Change it for testing locally:
 declare variable $source_url as xs:string external;
@@ -125,6 +126,23 @@ as xs:string
                   skos:prefLabel ?label;
                   skos:notation ?code
     }")
+};
+declare function xmlconv:getLangCodesSparql()
+as xs:string
+{
+    "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+    SELECT distinct ?code ?label ?concepturl
+    WHERE {
+      ?concepturl a skos:Concept .
+      {?concepturl skos:inScheme <http://dd.eionet.europa.eu/vocabulary/common/iso639-3/>;
+                  skos:prefLabel ?label;
+                  skos:notation ?code}
+      UNION
+      {?concepturl skos:inScheme <http://dd.eionet.europa.eu/vocabulary/common/iso639-5/>;
+                  skos:prefLabel ?label;
+                  skos:notation ?code}
+
+    }"
 };
 
 declare function xmlconv:getBullet($text as xs:string, $level as xs:string)
@@ -267,6 +285,22 @@ let $invalidIsoAmInspireIds := distinct-values(
 let $countAmInspireIdDuplicates := count($duplicateAmInspireIds)
 let $countB9duplicates := $countAmInspireIdDuplicates
 
+(: B13 :)
+let $langCodeSparql := xmlconv:getLangCodesSparql()
+let $isLangCodesAvailable := string-length($langCodeSparql) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($langCodeSparql, "xml"))
+let $langCodes := if ($isLangCodesAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($langCodeSparql)//sparql:binding[@name='code']/sparql:literal)) else ()
+let $isLangCodesAvailable := count($langCodes) > 0
+
+let $invalidLangCode := if ($isLangCodesAvailable) then
+        distinct-values($docRoot//aqd:AQD_Zone/am:name/gn:GeographicalName[string-length(normalize-space(gn:language)) > 0 and
+            empty(index-of($langCodes, normalize-space(gn:language))) and empty(index-of($langCodes, normalize-space(gn:language)))]/gn:language)
+    else
+        ()
+
+let $langSkippedMsg :=
+    if (not($isLangCodesAvailable)) then "The test was skipped - ISO 639-3 and ISO 639-5 language codes are not available in Content Registry."
+    else ""
+
 (: B14 :)
 let $unknownNativeness := distinct-values($docRoot//aqd:AQD_Zone[count(am:name/gn:GeographicalName/gn:nativeness[@xsi:nil="true" and @nilReason="unknown"])>0]/@gml:id)
 (: B15 :)
@@ -389,6 +423,11 @@ return
             else
                 ()
         }
+        {xmlconv:buildResultRows("B13", <span>/aqd:AQD_Zone/am:name/gn:GeographicalName/gn:language value shall be the language of the name,
+ given as a three letters code, in accordance with either <a href="http://dd.eionet.europa.eu/vocabulary/common/iso639-3/view">ISO 639-3</a> or
+ <a href="http://dd.eionet.europa.eu/vocabulary/common/iso639-5/view">ISO 639-5</a>.</span>,
+            $invalidLangCode, "/aqd:AQD_Zone/am:name/gn:GeographicalName/gn:language", "All values are valid", " invalid value", $langSkippedMsg)
+            }
         {xmlconv:buildResultRows("B14", "./am:name/gn:GeographicalName/gn:nativeness attribute xsi:nil=""true"" nilReason=""unknown""",
             $unknownNativeness, "aqd:AQD_Zone/@gml:id", "No unknown values found", " unknwon reason", "")}
         {xmlconv:buildResultRows("B15", "./am:name/gn:GeographicalName/gn:nameStatus  attribute xsi:nil=""true"" nilReason=""unknown""",
