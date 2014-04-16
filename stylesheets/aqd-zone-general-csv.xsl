@@ -167,7 +167,7 @@
     <xsl:text>&sep;</xsl:text>
 
     <xsl:call-template name="wrapext">
-      <xsl:with-param name="value" select="am:geometry/gml:Polygon/@srsName"/>
+      <xsl:with-param name="value" select="am:geometry/*/@srsName"/>
     </xsl:call-template>
 
     <xsl:text>&nl;</xsl:text>
