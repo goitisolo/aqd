@@ -142,6 +142,11 @@
     <xsl:text>&sep;</xsl:text>
 
     <xsl:call-template name="wrapext">
+      <xsl:with-param name="value" select="aqd:aqdZoneType"/>
+    </xsl:call-template>
+    <xsl:text>&sep;</xsl:text>
+
+    <xsl:call-template name="wrapext">
       <xsl:with-param name="value" select="aqd:residentPopulation"/>
     </xsl:call-template>
     <xsl:text>&sep;</xsl:text>

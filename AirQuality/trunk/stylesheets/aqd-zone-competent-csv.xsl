@@ -145,6 +145,7 @@
     </xsl:call-template>
     <xsl:text>&sep;</xsl:text>
 
+<!--
     <xsl:call-template name="wrapext">
       <xsl:with-param name="value" select="am:competentAuthority/base2:RelatedParty/base2:contact/base2:Contact/base2:address/ad:AddressRepresentation/ad:locatorDesignator"/>
     </xsl:call-template>
@@ -154,7 +155,7 @@
       <xsl:with-param name="value" select="am:competentAuthority/base2:RelatedParty/base2:contact/base2:Contact/base2:address/ad:AddressRepresentation/ad:postCode"/>
     </xsl:call-template>
     <xsl:text>&sep;</xsl:text>
-
+-->
     <xsl:call-template name="wrapext">
       <xsl:with-param name="value" select="am:competentAuthority/base2:RelatedParty/base2:contact/base2:Contact/base2:electronicMailAddress"/>
     </xsl:call-template>
