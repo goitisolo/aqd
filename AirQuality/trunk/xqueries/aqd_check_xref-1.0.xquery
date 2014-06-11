@@ -14,10 +14,10 @@ xquery version "1.0" encoding "UTF-8";
  :)
 
 declare namespace xmlconv="http://converters.eionet.europa.eu";
-declare namespace aqd = "http://aqd.ec.europa.eu/aqd/0.3.7c";
+declare namespace aqd = "http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0";
 declare namespace xlink = "http://www.w3.org/1999/xlink";
 declare namespace sparql = "http://www.w3.org/2005/sparql-results#";
-declare namespace om = "http://inspire.ec.europa.eu/schemas/ompr/2.0rc3";
+declare namespace om = "http://inspire.ec.europa.eu/schemas/ompr/2.0";
 (:~ declare Content Registry SPARQL endpoint:)
 declare variable $xmlconv:CR_SPARQL_URL := "http://cr.eionet.europa.eu/sparql";
 
