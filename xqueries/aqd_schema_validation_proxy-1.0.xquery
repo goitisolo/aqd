@@ -12,7 +12,7 @@ xquery version "1.0" encoding "UTF-8";
  :)
 
 declare namespace xmlconv="http://converters.eionet.europa.eu";
-declare namespace aqd = "http://aqd.ec.europa.eu/aqd/0.3.7c";
+declare namespace aqd = "http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0";
 
 declare variable $xmlconv:xmlValidatorUrl as xs:string := 'http://converters.eionet.europa.eu/api/runQAScript?script_id=-1&amp;url=';
 
@@ -40,7 +40,7 @@ declare function xmlconv:validateXmlSchema($source_url)
     <span id="feedbackStatus" class="INFO" style="display:none">XML Schema validation passed without errors.</span>
     <span style="display:none"><p>OK</p></span>
     <h2>XML Schema validation</h2>
-    <p><span style="background-color: green; font-size: 0.8em; color: white; padding-left:5px;padding-right:5px;margin-right:5px;text-align:center">OK</span>XML Schema validation passed without errors.</p><p>The file was validated against <a href="http://dd.eionet.europa.eu/schemas/id2011850eu/AirQualityReporting.xsd">http://dd.eionet.europa.eu/schemas/id2011850eu/AirQualityReporting.xsd</a></p></div>
+    <p><span style="background-color: green; font-size: 0.8em; color: white; padding-left:5px;padding-right:5px;margin-right:5px;text-align:center">OK</span>XML Schema validation passed without errors.</p><p>The file was validated against <a href="http://dd.eionet.europa.eu/schemas/id2011850eu-1.0/AirQualityReporting.xsd">http://dd.eionet.europa.eu/schemas/id2011850eu-1.0/AirQualityReporting.xsd</a></p></div>
 
     let $fullUrl := concat($xmlconv:xmlValidatorUrl, fn:encode-for-uri($source_url))
     let $validationResult := doc($fullUrl)

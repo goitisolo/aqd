@@ -13,13 +13,13 @@ xquery version "1.0" encoding "UTF-8";
  :)
 
 declare namespace xmlconv = "http://converters.eionet.europa.eu";
-declare namespace aqd = "http://aqd.ec.europa.eu/aqd/0.3.7c";
+declare namespace aqd = "http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0";
 declare namespace gml = "http://www.opengis.net/gml/3.2";
-declare namespace am = "http://inspire.ec.europa.eu/schemas/am/3.0rc3";
-declare namespace ef = "http://inspire.ec.europa.eu/schemas/ef/3.0rc3";
-declare namespace base = "http://inspire.ec.europa.eu/schemas/base/3.3rc3/";
+declare namespace am = "http://inspire.ec.europa.eu/schemas/am/3.0";
+declare namespace ef = "http://inspire.ec.europa.eu/schemas/ef/3.0";
+declare namespace base = "http://inspire.ec.europa.eu/schemas/base/3.3";
 declare namespace gn = "urn:x-inspire:specification:gmlas:GeographicalNames:3.0";
-declare namespace base2 = "http://inspire.ec.europa.eu/schemas/base2/1.0rc3";
+declare namespace base2 = "http://inspire.ec.europa.eu/schemas/base2/1.0";
 declare namespace sparql = "http://www.w3.org/2005/sparql-results#";
 declare namespace xlink = "http://www.w3.org/1999/xlink";
 

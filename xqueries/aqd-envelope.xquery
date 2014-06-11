@@ -17,7 +17,7 @@ xquery version "1.0";
 
 
 declare namespace xmlconv="http://converters.eionet.europa.eu/aqd";
-declare namespace aqd = "http://aqd.ec.europa.eu/aqd/0.3.7c";
+declare namespace aqd = "http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0";
 (:===================================================================:)
 (: Variable given as an external parameter by the QA service:)
 (:===================================================================:)
@@ -28,9 +28,9 @@ declare variable $source_url as xs:string external;
 :)
 declare variable $source_url as xs:string external;
 
-declare variable $xmlconv:SCHEMA as xs:string := "http://dd.eionet.europa.eu/schemas/id2011850eu/AirQualityReporting.xsd";
-declare variable $xmlconv:SCHEMA2 as xs:string := "http://dd.eionet.europa.eu/schemas/id2011850eu/AirQualityReporting.xsd http://schemas.opengis.net/sweCommon/2.0/swe.xsd";
-declare variable $xmlconv:SCHEMA3 as xs:string := "http://dd.eionet.europa.eu/schemas/id2011850eu/AirQualityReporting.xsd http://schemas.opengis.net/sweCommon/2.0/swe.xsd http://schemas.opengis.net/gml/3.2.1/gml.xsd";
+declare variable $xmlconv:SCHEMA as xs:string := "http://dd.eionet.europa.eu/schemas/id2011850eu-1.0/AirQualityReporting.xsd";
+declare variable $xmlconv:SCHEMA2 as xs:string := "http://dd.eionet.europa.eu/schemas/id2011850eu-1.0/AirQualityReporting.xsd http://schemas.opengis.net/sweCommon/2.0/swe.xsd";
+declare variable $xmlconv:SCHEMA3 as xs:string := "http://dd.eionet.europa.eu/schemas/id2011850eu-1.0/AirQualityReporting.xsd http://schemas.opengis.net/sweCommon/2.0/swe.xsd http://schemas.opengis.net/gml/3.2.1/gml.xsd";
 (:~ Separator used in lists expressed as string :)
 declare variable $xmlconv:LIST_ITEM_SEP := "##";
 (:~ Source file URL parameter name :)
