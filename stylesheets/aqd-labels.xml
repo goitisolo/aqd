@@ -18,6 +18,7 @@
     <label id="am:zoneType">Zone type</label>
     <label id="aqd:AQD_AssessmentRegime">Assessment regime</label>
     <label id="aqd:AQD_Attainment">Attainment</label>
+    <label id="aqd:AQD_Plan">Air Quality Plan</label>
     <label id="aqd:AQD_ReportingHeader">Reporting header</label>
     <label id="aqd:AQD_ReportingUnits">Reporting unit</label>
     <label id="aqd:AQD_Sample">Sample</label>
@@ -39,6 +40,8 @@
     <label id="aqd:change">Change</label>
     <label id="aqd:changeDescription">Change description</label>
     <label id="aqd:changeDocumentation">Change documentation</label>
+    <label id="aqd:code">Code</label>
+    <label id="aqd:competentAuthority">Competent authority</label>
     <label id="aqd:content">Content</label>
     <label id="aqd:dataQuality">Data quality</label>
     <label id="aqd:DataQuality">Data quality</label>
@@ -52,6 +55,7 @@
     <label id="aqd:equivalenceDemonstration">Equivalence demonstration</label>
     <label id="aqd:EquivalenceDemonstration">Equivalence demonstration</label>
     <label id="aqd:EUStationCode">EU Station code</label>
+    <label id="aqd:firstExceedanceYear">First exceedence year</label>
     <label id="aqd:heatingEmissions">Heating emissions</label>
     <label id="aqd:industrialEmissions">Industrial emissions</label>
     <label id="aqd:inletHeight">Inlet height</label>
@@ -71,6 +75,7 @@
     <label id="aqd:Pollutant">Pollutant</label>
     <label id="aqd:pollutants">Pollutants</label>
     <label id="aqd:protectionTarget">Protection target</label>
+    <label id="aqd:publication">Publication</label>
     <label id="aqd:qaReport">QA report</label>
     <label id="aqd:relevantEmissions">Relevant emissions</label>
     <label id="aqd:RelevantEmissions">Relevant emissions</label>
@@ -80,8 +85,10 @@
     <label id="aqd:residentPopulationYear">Resident population year</label>
     <label id="aqd:stationClassification">Station classification</label>
     <label id="aqd:stationInfo">Station info</label>
+    <label id="aqd:status">Status</label>
     <label id="aqd:timeExtensionExemption">Time extension exemption</label>
     <label id="aqd:TimeReferences">Time references</label>
+    <label id="aqd:timeTable">Time table</label>
     <label id="aqd:trafficEmissions">Traffic emissions</label>
     <label id="aqd:unit">Unit</label>
     <label id="aqd:usedAQD">Used AQD</label>
@@ -152,6 +159,8 @@
     <label id="gn:nameStatus">Name status</label>
     <label id="gn:nativeness">Nativeness</label>
     <label id="gn:pronunciation">Pronunciation</label>
+    <label id="gn:pronunciationSoundLink">Link to pronunciation sound</label>
+    <label id="gn:pronunciationIPA">International Phonetic Alphabet</label>
     <label id="gn:script">Script</label>
     <label id="gn:sourceOfName">Source of name</label>
     <label id="gn:SpellingOfName">Spelling of name</label>
