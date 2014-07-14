@@ -34,7 +34,10 @@
   -->
 <!-- SPARQL Endpoint URL variable -->
 <xsl:variable name="sparqlEndpointUrl" select="'http://cr.eionet.europa.eu/sparql'"/>
+<!--
 <xsl:variable name="labelsFile" select="'http://converters.eionet.europa.eu/xmlfile/aqd-labels.xml'"/>
+-->
+<xsl:variable name="labelsFile" select="'aqd-labels.xml'"/>
 
 <xsl:output method='html' encoding='UTF-8' indent='yes'/>
 
@@ -84,7 +87,7 @@
     <div class="errormsg">
       <p>Error: AQD schema found in xsi:schemaLocation without full URL or wrong URL!<br/>
       Found: <xsl:value-of select="@xsi:schemaLocation"/><br/>
-      Correct syntax: "http://dd.eionet.europa.eu/schemas/id2011850eu/AirQualityReporting.xsd" or later version.
+      Correct syntax: "http://dd.eionet.europa.eu/schemas/id2011850eu-1.0/AirQualityReporting.xsd" or later version.
       </p>
     </div>
   </xsl:if>
@@ -169,7 +172,7 @@
   Vocabulary: <xsl:value-of select="@definition"/>
 </xsl:template>
 
-<xsl:template match="text()" mode="resourceorliteral">
+<xsl:template match="text()|gco:CharacterString" mode="resourceorliteral">
   <xsl:value-of select="text()"/>
 </xsl:template>
 
@@ -179,12 +182,17 @@
 
 <xsl:template match="*" mode="resourceorliteral">
   <table>
-    <xsl:if test="@gml:id != ''">
-      <caption>
-        <xsl:attribute name="id"><xsl:value-of select="@gml:id"/></xsl:attribute>
-        <xsl:call-template name="getLabel"><xsl:with-param name="node" select="current()"/></xsl:call-template>: <xsl:value-of select="@gml:id"/>
-      </caption>
-    </xsl:if>
+    <caption>
+      <xsl:choose>
+        <xsl:when test="@gml:id != ''">
+          <xsl:attribute name="id"><xsl:value-of select="@gml:id"/></xsl:attribute>
+          Type: <xsl:call-template name="getLabel"><xsl:with-param name="node" select="current()"/></xsl:call-template> - Id: <xsl:value-of select="@gml:id"/>
+        </xsl:when>
+        <xsl:otherwise>
+          Type: <xsl:call-template name="getLabel"><xsl:with-param name="node" select="current()"/></xsl:call-template>
+        </xsl:otherwise>
+      </xsl:choose>
+    </caption>
     <xsl:apply-templates mode="property"/>
   </table>
 </xsl:template>
@@ -243,7 +251,7 @@ SELECT ?s WHERE {?s a air:Component .
 
 <xsl:template name="getLabel">
   <xsl:param name="node"/>
-  <xsl:variable name="label" select="document($labelsFile)/labels/labelset[@lang='en']/label[@id=name($node)]"/>
+  <xsl:variable name="label" select="document($labelsFile)/labels/labelset[@lang='en']/label[@id=local-name($node)]"/>
   <xsl:choose>
     <xsl:when test="$label != ''">
       <xsl:value-of select="$label"/>
