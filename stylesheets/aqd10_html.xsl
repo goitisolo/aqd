@@ -28,16 +28,14 @@
         xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
 <!-- $Id$
-     For schema http://dd.eionet.europa.eu/schemas/id2011850eu/AQD.xsd
-             or http://dd.eionet.europa.eu/schemas/id2011850eu/AQD.xsd http://schemas.opengis.net/gml/3.2.1/gml.xsd
-        xmlns:aqd="http://www.exampleURI.com/AQD"
+     For schema http://dd.eionet.europa.eu/schemas/id2011850eu-1.0/AirQualityReporting.xsd
   -->
 <!-- SPARQL Endpoint URL variable -->
 <xsl:variable name="sparqlEndpointUrl" select="'http://cr.eionet.europa.eu/sparql'"/>
-<!--
 <xsl:variable name="labelsFile" select="'http://converters.eionet.europa.eu/xmlfile/aqd-labels.xml'"/>
--->
+<!--
 <xsl:variable name="labelsFile" select="'aqd-labels.xml'"/>
+-->
 
 <xsl:output method='html' encoding='UTF-8' indent='yes'/>
 
@@ -172,8 +170,8 @@
   Vocabulary: <xsl:value-of select="@definition"/>
 </xsl:template>
 
-<xsl:template match="text()|gco:CharacterString" mode="resourceorliteral">
-  <xsl:value-of select="text()"/>
+<xsl:template match="text()|gco:CharacterString|gmd:PT_FreeText" mode="resourceorliteral">
+  <xsl:value-of select="*"/>
 </xsl:template>
 
 <xsl:template match="gml:Polygon" mode="resourceorliteral">
