@@ -158,7 +158,7 @@
           <a><xsl:attribute name="href"><xsl:value-of select="@xlink:href"/></xsl:attribute><xsl:value-of select="@xlink:href"/></a>
         </xsl:when>
         <xsl:otherwise>
-          <xsl:value-of select="text()"/>
+          <!-- <xsl:value-of select="text()"/> -->
           <xsl:apply-templates mode="resourceorliteral"/>
         </xsl:otherwise>
       </xsl:choose>
@@ -170,8 +170,8 @@
   Vocabulary: <xsl:value-of select="@definition"/>
 </xsl:template>
 
-<xsl:template match="text()|gco:CharacterString|gmd:PT_FreeText" mode="resourceorliteral">
-  <xsl:value-of select="*"/>
+<xsl:template match="text()|gco:CharacterString|gmd:PT_FreeText|gmd:LocalisedCharacterString" mode="resourceorliteral">
+  <xsl:value-of select="normalize-space(.)"/>
 </xsl:template>
 
 <xsl:template match="gml:Polygon" mode="resourceorliteral">
