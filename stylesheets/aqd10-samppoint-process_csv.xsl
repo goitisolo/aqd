@@ -80,7 +80,7 @@
     <xsl:text>documentation</xsl:text><xsl:text>&sep;</xsl:text>
     <xsl:text>qaReport</xsl:text><xsl:text>&sep;</xsl:text>
     <xsl:text>DurationUnit</xsl:text><xsl:text>&sep;</xsl:text>
-    <xsl:text>DurationNumUnits</xsl:text><xsl:text>&nl;</xsl:text>
+    <xsl:text>DurationNumUnits</xsl:text><xsl:text>&sep;</xsl:text>
     <xsl:text>CadenceUnit</xsl:text><xsl:text>&sep;</xsl:text>
     <xsl:text>CadenceNumUnits</xsl:text><xsl:text>&nl;</xsl:text>
 </xsl:template>
