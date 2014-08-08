@@ -16,3 +16,8 @@ E2a_GB2013032713version4.ttl GB_e-ReportingHeader.ttl G_GB_attainment_16_Jan.ttl
 clean:
 	rm -f *.rdf *.html *.n3 *.ttl
 
+dataflowf.rdf: dataflowf_rdf.xsl 2013.xml
+	xsltproc dataflowf_rdf.xsl 2013.xml | xmllint --format - > dataflowf.rdf
+
+get2013:
+	wget https://ereporting.blob.core.windows.net/annualstatistics/2013.xml
