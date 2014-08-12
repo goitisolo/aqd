@@ -527,4 +527,94 @@ http://www.opengis.net/swe/2.0 http://schemas.opengis.net/sweCommon/2.0/swe.xsd"
                   <aqd:timeExtensionExemption xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/noneUnknon"/>
             </aqd:AQD_Zone>
       </gml:featureMember>
+      <gml:featureMember>
+            <aqd:AQD_Zone gml:id="Zone_UK0001">
+                  <am:inspireId>
+                        <base:Identifier>
+                              <base:localId>Zone_UK0043</base:localId>
+                              <base:namespace>GB.defra.AQ.e-reporting</base:namespace>
+                        </base:Identifier>
+                  </am:inspireId>
+            </aqd:AQD_Zone>
+      </gml:featureMember>
+      <gml:featureMember>
+            <aqd:AQD_Zone gml:id="Zone_UK999">
+                  <ef:inspireId>
+                        <base:Identifier>
+                              <base:localId>Zone_UK0099</base:localId>
+                              <base:namespace>gb.defra.AQ.e-reporting</base:namespace>
+							  <base:versionId>1.0</base:versionId>
+                        </base:Identifier>
+                  </ef:inspireId>
+            </aqd:AQD_Zone>
+      </gml:featureMember>
+      <gml:featureMember>
+            <aqd:AQD_Zone gml:id="Zone_UK999">
+                  <ef:inspireId>
+                        <base:Identifier>
+                              <base:localId>Zone_UK0099</base:localId>
+                              <base:namespace>GB.defra.AQ.e-reporting</base:namespace>
+							  <base:versionId>1.0</base:versionId>
+                        </base:Identifier>
+                  </ef:inspireId>
+            </aqd:AQD_Zone>
+      </gml:featureMember>
+      <gml:featureMember>
+            <aqd:AQD_Zone gml:id="Zone_UK888-aqd">
+                  <aqd:inspireId>
+                        <base:Identifier>
+                              <base:localId>Zone_UK0099-aqd</base:localId>
+                              <base:namespace>GB.defra.AQ.e-reporting</base:namespace>
+							  <base:versionId>1.0</base:versionId>
+                        </base:Identifier>
+                  </aqd:inspireId>
+            </aqd:AQD_Zone>
+      </gml:featureMember>
+      <gml:featureMember>
+            <aqd:AQD_Zone gml:id="Zone_UK888-aqd">
+                  <aqd:inspireId>
+                        <base:Identifier>
+                              <base:localId>Zone_UK0099-aqd</base:localId>
+                              <base:namespace>GB.defra.AQ.e-reporting</base:namespace>
+							  <base:versionId>1.0</base:versionId>
+                        </base:Identifier>
+                  </aqd:inspireId>
+            </aqd:AQD_Zone>
+      </gml:featureMember>
+      <gml:featureMember>
+            <aqd:AQD_Zone gml:id="Zone_UK888-aqd">
+				<aqd:LAU xlink:href="http://dd.eionet.europa.eu/vocabulary/lau2/uk/38UDGW-invalid"/>
+                  <aqd:inspireId>
+                        <base:Identifier>
+                              <base:localId>UK0099-aqd</base:localId>
+                              <base:namespace>GB.defra.AQ.e-reporting</base:namespace>
+							  <base:versionId>1.0</base:versionId>
+                        </base:Identifier>
+                  </aqd:inspireId>
+            </aqd:AQD_Zone>
+      </gml:featureMember>
+      <gml:featureMember>
+            <aqd:AQD_Zone gml:id="Zone_UK888-aqd">
+				<aqd:LAU xlink:href="http://dd.eionet.europa.eu/vocabulary/lau2/uk/38UDGW"/>
+                  <aqd:inspireId>
+                        <base:Identifier>
+                              <base:localId>UK0099-aqd</base:localId>
+                              <base:namespace>GB.defra.AQ.e-reporting</base:namespace>
+							  <base:versionId>2.0</base:versionId>
+                        </base:Identifier>
+                  </aqd:inspireId>
+            </aqd:AQD_Zone>
+      </gml:featureMember>
+      <gml:featureMember>
+            <aqd:AQD_Zone gml:id="Zone_UK888-aqd">
+				<aqd:LAU xlink:href="http://dd.eionet.europa.eu/vocabulary/common/nuts/UK1"/>
+                  <aqd:inspireId>
+                        <base:Identifier>
+                              <base:localId>UK0099-aqd</base:localId>
+                              <base:namespace>GB.defra.AQ.e-reporting</base:namespace>
+							  <base:versionId>3.0</base:versionId>
+                        </base:Identifier>
+                  </aqd:inspireId>
+            </aqd:AQD_Zone>
+      </gml:featureMember>
 </gml:FeatureCollection>
