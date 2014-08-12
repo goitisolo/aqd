@@ -1,0 +1,530 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gml:FeatureCollection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aqd="http://aqd.ec.europa.eu/aqd/0.3.7c" xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/" xmlns:base2="http://inspire.ec.europa.eu/schemas/base2/1.0rc3" xmlns:ef="http://inspire.ec.europa.eu/schemas/ef/3.0rc3" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:ompr="http://inspire.ec.europa.eu/schemas/ompr/2.0rc3" xmlns:sam="http://www.opengis.net/sampling/2.0" xmlns:sams="http://www.opengis.net/samplingSpatial/2.0" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:gmd="http://www.isotc211.org/2005/gmd" xmlns:gco="http://www.isotc211.org/2005/gco" xmlns:om="http://www.opengis.net/om/2.0" xmlns:swe="http://www.opengis.net/swe/2.0" xmlns:am="http://inspire.ec.europa.eu/schemas/am/3.0rc3" xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0" xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" xsi:schemaLocation="
+http://aqd.ec.europa.eu/aqd/0.3.7c http://dd.eionet.europa.eu/schemas/id2011850eu/AirQualityReporting.xsd 
+http://www.opengis.net/swe/2.0 http://schemas.opengis.net/sweCommon/2.0/swe.xsd" gml:id="zones">
+      <gml:featureMember>
+            <aqd:AQD_Zone gml:id="Zone_UK0001">
+				<aqd:zone xlink:href="http://jj"/>
+				<aqd:zone xlink:href="http://reference.eionet.europa.eu/aq/jj"/>
+                  <am:inspireId>
+                        <base:Identifier>
+                              <base:localId>Zone_UK0001</base:localId>
+                              <base:namespace>GB.defra.AQ.e-reporting</base:namespace>
+                        </base:Identifier>
+                  </am:inspireId>
+
+                  <am:name>
+                        <gn:GeographicalName>
+                              <gn:language>eng</gn:language>
+                              <gn:nativeness nilReason="known" xsi:nil="true"/>
+                              <gn:nameStatus nilReason="known" xsi:nil="true"/>
+                              <gn:sourceOfName nilReason="known" xsi:nil="true"/>
+                              <gn:pronunciation nilReason="known" xsi:nil="true"/>
+                              <gn:spelling>
+                                    <gn:SpellingOfName>
+                                          <gn:text>Greater London Urban</gn:text>
+                                          <gn:script nilReason="unknown" xsi:nil="true"/>
+                                    </gn:SpellingOfName>
+                              </gn:spelling>
+                        </gn:GeographicalName>
+                  </am:name>
+                  <am:zoneType xlink:href="http://inspire.ec.europa.eu/codeList/ZoneTypeCode/airQualityManagementZone"/>
+                  <am:designationPeriod>
+                        <gml:TimePeriod gml:id="ZoneTimePeriodLOCAL_ID_0">
+                              <gml:beginPosition>2000-01-01T00:00:00+00:00</gml:beginPosition>
+                              <gml:endPosition indeterminatePosition="unknown"/>
+                        </gml:TimePeriod>
+                  </am:designationPeriod>
+                  <am:environmentalDomain xlink:href="http://dd.eionet.europa.eu/vocabulary/common/environmentaldomain/air?"/>
+                  <am:competentAuthority>
+                        <base2:RelatedParty>
+                              <base2:individualName>
+                                    <gmd:LocalisedCharacterString>Emily Connolly</gmd:LocalisedCharacterString>
+                              </base2:individualName>
+                              <base2:organisationName>
+                                    <gmd:LocalisedCharacterString>The Department for Environment, Food and Rural Affairs (Defra)</gmd:LocalisedCharacterString>
+                              </base2:organisationName>
+                              <base2:contact>
+                                    <base2:Contact>
+                                          <base2:address>
+                                                <ad:AddressRepresentation>
+                                                      <ad:adminUnit>
+                                                            <gn:GeographicalName>
+                                                                  <gn:language>eng</gn:language>
+                                                                  <gn:nativeness>eng</gn:nativeness>
+                                                                  <gn:nameStatus nilReason="missing" xsi:nil="true"/>
+                                                                  <gn:sourceOfName nilReason="missing" xsi:nil="true"/>
+                                                                  <gn:pronunciation nilReason="missing" xsi:nil="true"/>
+                                                                  <gn:spelling>
+                                                                        <gn:SpellingOfName>
+                                                                              <gn:text>Atmosphere and Local Environment Programme, 5E, Ergon House, 17 Smith Square, London SW1P 3JR</gn:text>
+                                                                              <gn:script nilReason="missing" xsi:nil="true"/>
+                                                                        </gn:SpellingOfName>
+                                                                  </gn:spelling>
+                                                            </gn:GeographicalName>
+                                                      </ad:adminUnit>
+                                                      <ad:locatorDesignator>London</ad:locatorDesignator>
+                                                      <ad:postCode>SW1P 3JR</ad:postCode>
+                                                </ad:AddressRepresentation>
+                                          </base2:address>
+                                          <base2:electronicMailAddress>emily.connolly@defra.gsi.gov.uk</base2:electronicMailAddress>
+                                          <base2:telephoneVoice>+44 (0) 207 238 6476</base2:telephoneVoice>
+                                          <base2:website/>
+                                    </base2:Contact>
+                              </base2:contact>
+                              <base2:role/>
+                        </base2:RelatedParty>
+                  </am:competentAuthority>
+                  <am:beginLifespanVersion>2013-05-09T14:48:36</am:beginLifespanVersion>
+                  <am:legalBasis>
+                        <base2:LegislationCitation gml:id="LegislationCitation_LOCAL_ID_1">
+                              <base2:name>2011/850/EU: Commission Implementing Decision of 12 December 2011 laying down rules for Directives 2004/107/EC and 2008/50/EC of the European Parliament and of the Council as regards the reciprocal exchange of information and reporting on ambient air quality (notified under document C(2011) 9068)</base2:name>
+                              <base2:shortName>AQ IPR for e-Reporting </base2:shortName>
+                              <base2:date>2011-12-12</base2:date>
+                              <base2:link>http://eur-lex.europa.eu/Notice.do?val=628915:cs&amp;amp;lang=en&amp;amp;list=628915:cs,&amp;amp;pos=1&amp;amp;page=1&amp;amp;nbl=1&amp;amp;pgs=10&amp;amp;hwords=850~&amp;amp;checktexte=checkbox&amp;amp;visu=#texte</base2:link>
+                              <base2:identificationNumber>2011/850/EC</base2:identificationNumber>
+                              <base2:officialDocumentNumber>OJ L 335, 17.12.2011, p. 86–106 </base2:officialDocumentNumber>
+                              <base2:dateEnteredIntoForce>2014-01-01</base2:dateEnteredIntoForce>
+                              <base2:level xlink:href="http://inspire.ec.europa.eu/codeList/LegislationLevelValueeuropean"/>
+                        </base2:LegislationCitation>
+                  </am:legalBasis>
+                  <aqd:zoneCode>UK0001</aqd:zoneCode>
+                  <aqd:aqdZoneType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/zonetype/agg"/>
+                  <aqd:changeDocumentation>no change</aqd:changeDocumentation>
+                  <aqd:residentPopulation>7791140</aqd:residentPopulation>
+                  <aqd:residentPopulationYear>
+                        <gml:TimeInstant gml:id="TimeInstant_LOCAL_ID_2">
+                              <gml:timePosition>2000</gml:timePosition>
+                        </gml:TimeInstant>
+                  </aqd:residentPopulationYear>
+                  <aqd:area uom="km2">1629.8600</aqd:area>
+                  <aqd:pollutants>
+                        <aqd:Pollutant>
+                              <aqd:pollutantCode xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/10"/>
+                              <aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"/>
+                        </aqd:Pollutant>
+                  </aqd:pollutants>
+                  <aqd:pollutants>
+                        <aqd:Pollutant>
+                              <aqd:pollutantCode xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/20"/>
+                              <aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"/>
+                        </aqd:Pollutant>
+                  </aqd:pollutants>
+                  <aqd:pollutants>
+                        <aqd:Pollutant>
+                              <aqd:pollutantCode xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/8"/>
+                              <aqd:protectionTarget xlink:href="http://rdfdata.eionet.europa.eu/airquality/protectiontarget/H"/>
+                        </aqd:Pollutant>
+                  </aqd:pollutants>
+                  <aqd:pollutants>
+                        <aqd:Pollutant>
+                              <aqd:pollutantCode xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/18"/>
+                              <aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"/>
+                        </aqd:Pollutant>
+                  </aqd:pollutants>
+                  <aqd:pollutants>
+                        <aqd:Pollutant>
+                              <aqd:pollutantCode xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/14"/>
+                              <aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"/>
+                        </aqd:Pollutant>
+                  </aqd:pollutants>
+                  <aqd:pollutants>
+                        <aqd:Pollutant>
+                              <aqd:pollutantCode xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1029"/>
+                              <aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"/>
+                        </aqd:Pollutant>
+                  </aqd:pollutants>
+                  <aqd:pollutants>
+                        <aqd:Pollutant>
+                              <aqd:pollutantCode xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/15"/>
+                              <aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"/>
+                        </aqd:Pollutant>
+                  </aqd:pollutants>
+                  <aqd:pollutants>
+                        <aqd:Pollutant>
+                              <aqd:pollutantCode xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5012"/>
+                              <aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"/>
+                        </aqd:Pollutant>
+                  </aqd:pollutants>
+                  <aqd:pollutants>
+                        <aqd:Pollutant>
+                              <aqd:pollutantCode xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1"/>
+                              <aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"/>
+                        </aqd:Pollutant>
+                  </aqd:pollutants>
+                  <aqd:pollutants>
+                        <aqd:Pollutant>
+                              <aqd:pollutantCode xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5029"/>
+                              <aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"/>
+                        </aqd:Pollutant>
+                  </aqd:pollutants>
+                  <aqd:pollutants>
+                        <aqd:Pollutant>
+                              <aqd:pollutantCode xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/7"/>
+                              <aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/HV"/>
+                        </aqd:Pollutant>
+                  </aqd:pollutants>
+                  <aqd:pollutants>
+                        <aqd:Pollutant>
+                              <aqd:pollutantCode xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5012"/>
+                              <aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"/>
+                        </aqd:Pollutant>
+                  </aqd:pollutants>
+                  <aqd:pollutants>
+                        <aqd:Pollutant>
+                              <aqd:pollutantCode xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/9"/>
+                              <aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V"/>
+                        </aqd:Pollutant>
+                  </aqd:pollutants>
+                  <aqd:timeExtensionExemption xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/PM10-24h"/>
+            </aqd:AQD_Zone>
+      </gml:featureMembe>
+      <gml:featureMember>
+            <aqd:AQD_Zone gml:id="Zone_UK0039">
+                  <am:inspireId>
+                        <base:Identifier>
+                              <base:localId>Zone_UK0039</base:localId>
+                              <base:namespace>GB.defra.AQ.e-reporting</base:namespace>
+                        </base:Identifier>
+                  </am:inspireId>
+                  <am:name>
+                        <gn:GeographicalName>
+                              <gn:language>eng</gn:language>
+                              <gn:nativeness nilReason="unknown" xsi:nil="true"/>
+                              <gn:nameStatus nilReason="unknown" xsi:nil="true"/>
+                              <gn:sourceOfName nilReason="unknown" xsi:nil="true"/>
+                              <gn:pronunciation nilReason="unknown" xsi:nil="true"/>
+                              <gn:spelling>
+                                    <gn:SpellingOfName>
+                                          <gn:text>Highland</gn:text>
+                                          <gn:script nilReason="unknown" xsi:nil="true"/>
+                                    </gn:SpellingOfName>
+                              </gn:spelling>
+                        </gn:GeographicalName>
+                  </am:name>
+                  <am:zoneType xlink:href="http://inspire.ec.europa.eu/codeList/ZoneTypeCode/airQualityManagementZone"/>
+                  <am:designationPeriod>
+                        <gml:TimePeriod gml:id="ZoneTimePeriodLOCAL_ID_114">
+                              <gml:beginPosition>2000-01-01T00:00:00+00:00</gml:beginPosition>
+                              <gml:endPosition indeterminatePosition="unknown"/>
+                        </gml:TimePeriod>
+                  </am:designationPeriod>
+                  <am:environmentalDomain xlink:href="http://dd.eionet.europa.eu/vocabulary/common/environmentaldomain/air"/>
+                  <am:competentAuthority>
+                        <base2:RelatedParty>
+                              <base2:individualName>
+                                    <gmd:LocalisedCharacterString>Emily Connolly</gmd:LocalisedCharacterString>
+                              </base2:individualName>
+                              <base2:organisationName>
+                                    <gmd:LocalisedCharacterString>The Department for Environment, Food and Rural Affairs (Defra)</gmd:LocalisedCharacterString>
+                              </base2:organisationName>
+                              <base2:contact>
+                                    <base2:Contact>
+                                          <base2:address>
+                                                <ad:AddressRepresentation>
+                                                      <ad:adminUnit>
+                                                            <gn:GeographicalName>
+                                                                  <gn:language>eng</gn:language>
+                                                                  <gn:nativeness>eng</gn:nativeness>
+                                                                  <gn:nameStatus nilReason="missing" xsi:nil="true"/>
+                                                                  <gn:sourceOfName nilReason="missing" xsi:nil="true"/>
+                                                                  <gn:pronunciation nilReason="missing" xsi:nil="true"/>
+                                                                  <gn:spelling>
+                                                                        <gn:SpellingOfName>
+                                                                              <gn:text>Atmosphere and Local Environment Programme, 5E, Ergon House, 17 Smith Square, London SW1P 3JR</gn:text>
+                                                                              <gn:script nilReason="missing" xsi:nil="true"/>
+                                                                        </gn:SpellingOfName>
+                                                                  </gn:spelling>
+                                                            </gn:GeographicalName>
+                                                      </ad:adminUnit>
+                                                      <ad:locatorDesignator>London</ad:locatorDesignator>
+                                                      <ad:postCode>SW1P 3JR</ad:postCode>
+                                                </ad:AddressRepresentation>
+                                          </base2:address>
+                                          <base2:electronicMailAddress>emily.connolly@defra.gsi.gov.uk</base2:electronicMailAddress>
+                                          <base2:telephoneVoice>+44 (0) 207 238 6476</base2:telephoneVoice>
+                                          <base2:website/>
+                                    </base2:Contact>
+                              </base2:contact>
+                              <base2:role/>
+                        </base2:RelatedParty>
+                  </am:competentAuthority>
+                  <am:beginLifespanVersion>2013-05-09T14:48:42</am:beginLifespanVersion>
+                  <am:legalBasis>
+                        <base2:LegislationCitation gml:id="LegislationCitation_LOCAL_ID_115">
+                              <base2:name>2011/850/EU: Commission Implementing Decision of 12 December 2011 laying down rules for Directives 2004/107/EC and 2008/50/EC of the European Parliament and of the Council as regards the reciprocal exchange of information and reporting on ambient air quality (notified under document C(2011) 9068)</base2:name>
+                              <base2:shortName>AQ IPR for e-Reporting </base2:shortName>
+                              <base2:date>2011-12-12</base2:date>
+                              <base2:link>http://eur-lex.europa.eu/Notice.do?val=628915:cs&amp;amp;lang=en&amp;amp;list=628915:cs,&amp;amp;pos=1&amp;amp;page=1&amp;amp;nbl=1&amp;amp;pgs=10&amp;amp;hwords=850~&amp;amp;checktexte=checkbox&amp;amp;visu=#texte</base2:link>
+                              <base2:identificationNumber>2011/850/EC</base2:identificationNumber>
+                              <base2:officialDocumentNumber>OJ L 335, 17.12.2011, p. 86–106 </base2:officialDocumentNumber>
+                              <base2:dateEnteredIntoForce>2014-01-01</base2:dateEnteredIntoForce>
+                              <base2:level xlink:href="http://inspire.ec.europa.eu/codeList/LegislationLevelValueeuropean"/>
+                        </base2:LegislationCitation>
+                  </am:legalBasis>
+                  <aqd:zoneCode>UK0039</aqd:zoneCode>
+                  <aqd:aqdZoneType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/zonetype/noagg"/>
+                  <aqd:changeDocumentation>no change</aqd:changeDocumentation>
+                  <aqd:residentPopulation>341329</aqd:residentPopulation>
+                  <aqd:residentPopulationYear>
+                        <gml:TimeInstant gml:id="TimeInstant_LOCAL_ID_116">
+                              <gml:timePosition>2000</gml:timePosition>
+                        </gml:TimeInstant>
+                  </aqd:residentPopulationYear>
+                  <aqd:area uom="km2">2147.4836</aqd:area>
+                  <aqd:pollutants>
+                        <aqd:Pollutant>
+                              <aqd:pollutantCode xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/10"/>
+                              <aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"/>
+                        </aqd:Pollutant>
+                  </aqd:pollutants>
+                  <aqd:pollutants>
+                        <aqd:Pollutant>
+                              <aqd:pollutantCode xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/20"/>
+                              <aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"/>
+                        </aqd:Pollutant>
+                  </aqd:pollutants>
+                  <aqd:pollutants>
+                        <aqd:Pollutant>
+                              <aqd:pollutantCode xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/8"/>
+                              <aqd:protectionTarget xlink:href="http://rdfdata.eionet.europa.eu/airquality/protectiontarget/H"/>
+                        </aqd:Pollutant>
+                  </aqd:pollutants>
+                  <aqd:pollutants>
+                        <aqd:Pollutant>
+                              <aqd:pollutantCode xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/18"/>
+                              <aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"/>
+                        </aqd:Pollutant>
+                  </aqd:pollutants>
+                  <aqd:pollutants>
+                        <aqd:Pollutant>
+                              <aqd:pollutantCode xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/14"/>
+                              <aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"/>
+                        </aqd:Pollutant>
+                  </aqd:pollutants>
+                  <aqd:pollutants>
+                        <aqd:Pollutant>
+                              <aqd:pollutantCode xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1029"/>
+                              <aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"/>
+                        </aqd:Pollutant>
+                  </aqd:pollutants>
+                  <aqd:pollutants>
+                        <aqd:Pollutant>
+                              <aqd:pollutantCode xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/15"/>
+                              <aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"/>
+                        </aqd:Pollutant>
+                  </aqd:pollutants>
+                  <aqd:pollutants>
+                        <aqd:Pollutant>
+                              <aqd:pollutantCode xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5012"/>
+                              <aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"/>
+                        </aqd:Pollutant>
+                  </aqd:pollutants>
+                  <aqd:pollutants>
+                        <aqd:Pollutant>
+                              <aqd:pollutantCode xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1"/>
+                              <aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"/>
+                        </aqd:Pollutant>
+                  </aqd:pollutants>
+                  <aqd:pollutants>
+                        <aqd:Pollutant>
+                              <aqd:pollutantCode xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5029"/>
+                              <aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"/>
+                        </aqd:Pollutant>
+                  </aqd:pollutants>
+                  <aqd:pollutants>
+                        <aqd:Pollutant>
+                              <aqd:pollutantCode xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/7"/>
+                              <aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/HV"/>
+                        </aqd:Pollutant>
+                  </aqd:pollutants>
+                  <aqd:pollutants>
+                        <aqd:Pollutant>
+                              <aqd:pollutantCode xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5012"/>
+                              <aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"/>
+                        </aqd:Pollutant>
+                  </aqd:pollutants>
+                  <aqd:pollutants>
+                        <aqd:Pollutant>
+                              <aqd:pollutantCode xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/9"/>
+                              <aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V"/>
+                        </aqd:Pollutant>
+                  </aqd:pollutants>
+                  <aqd:timeExtensionExemption xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/none"/>
+            </aqd:AQD_Zone>
+      </gml:featureMember>
+      <gml:featureMember>
+            <aqd:AQD_Zone gml:id="Zone_UK0040">
+                  <am:inspireId>
+                        <base:Identifier>
+                              <base:localId>Zone_UK0040</base:localId>
+                              <base:namespace>GB.defra.AQ.e-reporting</base:namespace>
+                        </base:Identifier>
+                  </am:inspireId>
+                  <am:name>
+                        <gn:GeographicalName>
+                              <gn:language>zooo</gn:language>
+                              <gn:nativeness nilReason="unknown" xsi:nil="true"/>
+                              <gn:nameStatus nilReason="unknown" xsi:nil="true"/>
+                              <gn:sourceOfName nilReason="unknown" xsi:nil="true"/>
+                              <gn:pronunciation nilReason="unknown" xsi:nil="true"/>
+                              <gn:spelling>
+                                    <gn:SpellingOfName>
+                                          <gn:text>Scottish Borders</gn:text>
+                                          <gn:script nilReason="unknown" xsi:nil="true"/>
+                                    </gn:SpellingOfName>
+                              </gn:spelling>
+                        </gn:GeographicalName>
+                  </am:name>
+                  <am:zoneType xlink:href="http://inspire.ec.europa.eu/codeList/ZoneTypeCode/airQualityManagementZone"/>
+                  <am:designationPeriod>
+                        <gml:TimePeriod gml:id="ZoneTimePeriodLOCAL_ID_117">
+                              <gml:beginPosition>2000-01-01T00:00:00+00:00</gml:beginPosition>
+                              <gml:endPosition indeterminatePosition="unknown"/>
+                        </gml:TimePeriod>
+                  </am:designationPeriod>
+                  <am:environmentalDomain xlink:href="http://dd.eionet.europa.eu/vocabulary/common/environmentaldomain/air"/>
+                  <am:competentAuthority>
+                        <base2:RelatedParty>
+                              <base2:individualName>
+                                    <gmd:LocalisedCharacterString>Emily Connolly</gmd:LocalisedCharacterString>
+                              </base2:individualName>
+                              <base2:organisationName>
+                                    <gmd:LocalisedCharacterString>The Department for Environment, Food and Rural Affairs (Defra)</gmd:LocalisedCharacterString>
+                              </base2:organisationName>
+                              <base2:contact>
+                                    <base2:Contact>
+                                          <base2:address>
+                                                <ad:AddressRepresentation>
+                                                      <ad:adminUnit>
+                                                            <gn:GeographicalName>
+                                                                  <gn:language>eng</gn:language>
+                                                                  <gn:nativeness>eng</gn:nativeness>
+                                                                  <gn:nameStatus nilReason="missing" xsi:nil="true"/>
+                                                                  <gn:sourceOfName nilReason="missing" xsi:nil="true"/>
+                                                                  <gn:pronunciation nilReason="missing" xsi:nil="true"/>
+                                                                  <gn:spelling>
+                                                                        <gn:SpellingOfName>
+                                                                              <gn:text>Atmosphere and Local Environment Programme, 5E, Ergon House, 17 Smith Square, London SW1P 3JR</gn:text>
+                                                                              <gn:script nilReason="missing" xsi:nil="true"/>
+                                                                        </gn:SpellingOfName>
+                                                                  </gn:spelling>
+                                                            </gn:GeographicalName>
+                                                      </ad:adminUnit>
+                                                      <ad:locatorDesignator>London</ad:locatorDesignator>
+                                                      <ad:postCode>SW1P 3JR</ad:postCode>
+                                                </ad:AddressRepresentation>
+                                          </base2:address>
+                                          <base2:electronicMailAddress>emily.connolly@defra.gsi.gov.uk</base2:electronicMailAddress>
+                                          <base2:telephoneVoice>+44 (0) 207 238 6476</base2:telephoneVoice>
+                                          <base2:website/>
+                                    </base2:Contact>
+                              </base2:contact>
+                              <base2:role/>
+                        </base2:RelatedParty>
+                  </am:competentAuthority>
+                  <am:beginLifespanVersion>2013-05-09T14:48:43</am:beginLifespanVersion>
+                  <am:legalBasis>
+                        <base2:LegislationCitation gml:id="LegislationCitation_LOCAL_ID_118">
+                              <base2:name>2011/850/EU: Commission Implementing Decision of 12 December 2011 laying down rules for Directives 2004/107/EC and 2008/50/EC of the European Parliament and of the Council as regards the reciprocal exchange of information and reporting on ambient air quality (notified under document C(2011) 9068)</base2:name>
+                              <base2:shortName>AQ IPR for e-Reporting </base2:shortName>
+                              <base2:date>2011-12-12</base2:date>
+                              <base2:link>http://eur-lex.europa.eu/Notice.do?val=628915:cs&amp;amp;lang=en&amp;amp;list=628915:cs,&amp;amp;pos=1&amp;amp;page=1&amp;amp;nbl=1&amp;amp;pgs=10&amp;amp;hwords=850~&amp;amp;checktexte=checkbox&amp;amp;visu=#texte</base2:link>
+                              <base2:identificationNumber>2011/850/EC</base2:identificationNumber>
+                              <base2:officialDocumentNumber>OJ L 335, 17.12.2011, p. 86–106 </base2:officialDocumentNumber>
+                              <base2:dateEnteredIntoForce>2014-01-01</base2:dateEnteredIntoForce>
+                              <base2:level xlink:href="http://inspire.ec.europa.eu/codeList/LegislationLevelValueeuropean"/>
+                        </base2:LegislationCitation>
+                  </am:legalBasis>
+                  <aqd:zoneCode>UK0040</aqd:zoneCode>
+                  <aqd:aqdZoneType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/zonetype/noagg"/>
+                  <aqd:changeDocumentation>no change</aqd:changeDocumentation>
+                  <aqd:residentPopulation>250529</aqd:residentPopulation>
+                  <aqd:residentPopulationYear>
+                        <gml:TimeInstant gml:id="TimeInstant_LOCAL_ID_119">
+                              <gml:timePosition>2000</gml:timePosition>
+                        </gml:TimeInstant>
+                  </aqd:residentPopulationYear>
+                  <aqd:area uom="km2">2147.4836</aqd:area>
+                  <aqd:pollutants>
+                        <aqd:Pollutant>
+                              <aqd:pollutantCode xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/10"/>
+                              <aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"/>
+                        </aqd:Pollutant>
+                  </aqd:pollutants>
+                  <aqd:pollutants>
+                        <aqd:Pollutant>
+                              <aqd:pollutantCode xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/20"/>
+                              <aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"/>
+                        </aqd:Pollutant>
+                  </aqd:pollutants>
+                  <aqd:pollutants>
+                        <aqd:Pollutant>
+                              <aqd:pollutantCode xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/8"/>
+                              <aqd:protectionTarget xlink:href="http://rdfdata.eionet.europa.eu/airquality/protectiontarget/H"/>
+                        </aqd:Pollutant>
+                  </aqd:pollutants>
+                  <aqd:pollutants>
+                        <aqd:Pollutant>
+                              <aqd:pollutantCode xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/18"/>
+                              <aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"/>
+                        </aqd:Pollutant>
+                  </aqd:pollutants>
+                  <aqd:pollutants>
+                        <aqd:Pollutant>
+                              <aqd:pollutantCode xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/14"/>
+                              <aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"/>
+                        </aqd:Pollutant>
+                  </aqd:pollutants>
+                  <aqd:pollutants>
+                        <aqd:Pollutant>
+                              <aqd:pollutantCode xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1029"/>
+                              <aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"/>
+                        </aqd:Pollutant>
+                  </aqd:pollutants>
+                  <aqd:pollutants>
+                        <aqd:Pollutant>
+                              <aqd:pollutantCode xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/15"/>
+                              <aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"/>
+                        </aqd:Pollutant>
+                  </aqd:pollutants>
+                  <aqd:pollutants>
+                        <aqd:Pollutant>
+                              <aqd:pollutantCode xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5012"/>
+                              <aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"/>
+                        </aqd:Pollutant>
+                  </aqd:pollutants>
+                  <aqd:pollutants>
+                        <aqd:Pollutant>
+                              <aqd:pollutantCode xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1"/>
+                              <aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"/>
+                        </aqd:Pollutant>
+                  </aqd:pollutants>
+                  <aqd:pollutants>
+                        <aqd:Pollutant>
+                              <aqd:pollutantCode xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5029"/>
+                              <aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"/>
+                        </aqd:Pollutant>
+                  </aqd:pollutants>
+                  <aqd:pollutants>
+                        <aqd:Pollutant>
+                              <aqd:pollutantCode xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/7"/>
+                              <aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/HV"/>
+                        </aqd:Pollutant>
+                  </aqd:pollutants>
+                  <aqd:pollutants>
+                        <aqd:Pollutant>
+                              <aqd:pollutantCode xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5012"/>
+                              <aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"/>
+                        </aqd:Pollutant>
+                  </aqd:pollutants>
+                  <aqd:pollutants>
+                        <aqd:Pollutant>
+                              <aqd:pollutantCode xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/9"/>
+                              <aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V"/>
+                        </aqd:Pollutant>
+                  </aqd:pollutants>
+                  <aqd:timeExtensionExemption xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/noneUnknon"/>
+            </aqd:AQD_Zone>
+      </gml:featureMember>
+</gml:FeatureCollection>
