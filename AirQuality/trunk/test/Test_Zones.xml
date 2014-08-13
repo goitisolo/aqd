@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<gml:FeatureCollection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aqd="http://aqd.ec.europa.eu/aqd/0.3.7c" xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/" xmlns:base2="http://inspire.ec.europa.eu/schemas/base2/1.0rc3" xmlns:ef="http://inspire.ec.europa.eu/schemas/ef/3.0rc3" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:ompr="http://inspire.ec.europa.eu/schemas/ompr/2.0rc3" xmlns:sam="http://www.opengis.net/sampling/2.0" xmlns:sams="http://www.opengis.net/samplingSpatial/2.0" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:gmd="http://www.isotc211.org/2005/gmd" xmlns:gco="http://www.isotc211.org/2005/gco" xmlns:om="http://www.opengis.net/om/2.0" xmlns:swe="http://www.opengis.net/swe/2.0" xmlns:am="http://inspire.ec.europa.eu/schemas/am/3.0rc3" xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0" xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" xsi:schemaLocation="
-http://aqd.ec.europa.eu/aqd/0.3.7c http://dd.eionet.europa.eu/schemas/id2011850eu/AirQualityReporting.xsd 
+<gml:FeatureCollection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aqd="http://aqd.ec.europa.eu/aqd/0.3.7c"
+xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/" xmlns:base2="http://inspire.ec.europa.eu/schemas/base2/1.0rc3"
+xmlns:ef="http://inspire.ec.europa.eu/schemas/ef/3.0rc3"
+xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:ompr="http://inspire.ec.europa.eu/schemas/ompr/2.0rc3" xmlns:sam="http://www.opengis.net/sampling/2.0" xmlns:sams="http://www.opengis.net/samplingSpatial/2.0" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:gmd="http://www.isotc211.org/2005/gmd" xmlns:gco="http://www.isotc211.org/2005/gco" xmlns:om="http://www.opengis.net/om/2.0" xmlns:swe="http://www.opengis.net/swe/2.0" xmlns:am="http://inspire.ec.europa.eu/schemas/am/3.0rc3" xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0" xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" xsi:schemaLocation="
+http://aqd.ec.europa.eu/aqd/0.3.7c http://dd.eionet.europa.eu/schemas/id2011850eu/AirQualityReporting.xsd
 http://www.opengis.net/swe/2.0 http://schemas.opengis.net/sweCommon/2.0/swe.xsd" gml:id="zones">
       <gml:featureMember>
             <aqd:AQD_Zone gml:id="Zone_UK0001">
-				<aqd:zone xlink:href="http://jj"/>
-				<aqd:zone xlink:href="http://reference.eionet.europa.eu/aq/jj"/>
+        <aqd:zone xlink:href="http://jj"/>
+        <aqd:zone xlink:href="http://reference.eionet.europa.eu/aq/jj"/>
                   <am:inspireId>
                         <base:Identifier>
                               <base:localId>Zone_UK0001</base:localId>
@@ -543,7 +546,7 @@ http://www.opengis.net/swe/2.0 http://schemas.opengis.net/sweCommon/2.0/swe.xsd"
                         <base:Identifier>
                               <base:localId>Zone_UK0099</base:localId>
                               <base:namespace>gb.defra.AQ.e-reporting</base:namespace>
-							  <base:versionId>1.0</base:versionId>
+                <base:versionId>1.0</base:versionId>
                         </base:Identifier>
                   </ef:inspireId>
             </aqd:AQD_Zone>
@@ -554,7 +557,7 @@ http://www.opengis.net/swe/2.0 http://schemas.opengis.net/sweCommon/2.0/swe.xsd"
                         <base:Identifier>
                               <base:localId>Zone_UK0099</base:localId>
                               <base:namespace>GB.defra.AQ.e-reporting</base:namespace>
-							  <base:versionId>1.0</base:versionId>
+                <base:versionId>1.0</base:versionId>
                         </base:Identifier>
                   </ef:inspireId>
             </aqd:AQD_Zone>
@@ -565,7 +568,7 @@ http://www.opengis.net/swe/2.0 http://schemas.opengis.net/sweCommon/2.0/swe.xsd"
                         <base:Identifier>
                               <base:localId>Zone_UK0099-aqd</base:localId>
                               <base:namespace>GB.defra.AQ.e-reporting</base:namespace>
-							  <base:versionId>1.0</base:versionId>
+                <base:versionId>1.0</base:versionId>
                         </base:Identifier>
                   </aqd:inspireId>
             </aqd:AQD_Zone>
@@ -576,43 +579,43 @@ http://www.opengis.net/swe/2.0 http://schemas.opengis.net/sweCommon/2.0/swe.xsd"
                         <base:Identifier>
                               <base:localId>Zone_UK0099-aqd</base:localId>
                               <base:namespace>GB.defra.AQ.e-reporting</base:namespace>
-							  <base:versionId>1.0</base:versionId>
+                <base:versionId>1.0</base:versionId>
                         </base:Identifier>
                   </aqd:inspireId>
             </aqd:AQD_Zone>
       </gml:featureMember>
       <gml:featureMember>
             <aqd:AQD_Zone gml:id="Zone_UK888-aqd">
-				<aqd:LAU xlink:href="http://dd.eionet.europa.eu/vocabulary/lau2/uk/38UDGW-invalid"/>
+        <aqd:LAU xlink:href="http://dd.eionet.europa.eu/vocabulary/lau2/uk/38UDGW-invalid"/>
                   <aqd:inspireId>
                         <base:Identifier>
                               <base:localId>UK0099-aqd</base:localId>
                               <base:namespace>GB.defra.AQ.e-reporting</base:namespace>
-							  <base:versionId>1.0</base:versionId>
+                <base:versionId>1.0</base:versionId>
                         </base:Identifier>
                   </aqd:inspireId>
             </aqd:AQD_Zone>
       </gml:featureMember>
       <gml:featureMember>
             <aqd:AQD_Zone gml:id="Zone_UK888-aqd">
-				<aqd:LAU xlink:href="http://dd.eionet.europa.eu/vocabulary/lau2/uk/38UDGW"/>
+        <aqd:LAU xlink:href="http://dd.eionet.europa.eu/vocabulary/lau2/uk/38UDGW"/>
                   <aqd:inspireId>
                         <base:Identifier>
                               <base:localId>UK0099-aqd</base:localId>
                               <base:namespace>GB.defra.AQ.e-reporting</base:namespace>
-							  <base:versionId>2.0</base:versionId>
+                <base:versionId>2.0</base:versionId>
                         </base:Identifier>
                   </aqd:inspireId>
             </aqd:AQD_Zone>
       </gml:featureMember>
       <gml:featureMember>
             <aqd:AQD_Zone gml:id="Zone_UK888-aqd">
-				<aqd:LAU xlink:href="http://dd.eionet.europa.eu/vocabulary/common/nuts/UK1"/>
+        <aqd:LAU xlink:href="http://dd.eionet.europa.eu/vocabulary/common/nuts/UK1"/>
                   <aqd:inspireId>
                         <base:Identifier>
                               <base:localId>UK0099-aqd</base:localId>
                               <base:namespace>GB.defra.AQ.e-reporting</base:namespace>
-							  <base:versionId>3.0</base:versionId>
+                <base:versionId>3.0</base:versionId>
                         </base:Identifier>
                   </aqd:inspireId>
             </aqd:AQD_Zone>

@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<gml:FeatureCollection xsi:schemaLocation="http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0 http://dd.eionet.europa.eu/schemas/id2011850eu-1.0/AirQualityReporting.xsd" gml:id="HR_DOC_TYPE_G_FC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:aqd="http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0" xmlns:ns="http://inspire.ec.europa.eu/schemas/base/3.3" xmlns:ns1="http://inspire.ec.europa.eu/schemas/base2/1.0" xmlns:gmd="http://www.isotc211.org/2005/gmd" xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0" xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" xmlns:xlink="http://www.w3.org/1999/xlink">
+<gml:FeatureCollection xsi:schemaLocation="http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0 http://dd.eionet.europa.eu/schemas/id2011850eu-1.0/AirQualityReporting.xsd"
+    xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/" xmlns:base2="http://inspire.ec.europa.eu/schemas/base2/1.0rc3"
+    xmlns:ef="http://inspire.ec.europa.eu/schemas/ef/3.0rc3"
+    gml:id="HR_DOC_TYPE_G_FC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:aqd="http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0" xmlns:ns="http://inspire.ec.europa.eu/schemas/base/3.3" xmlns:ns1="http://inspire.ec.europa.eu/schemas/base2/1.0" xmlns:gmd="http://www.isotc211.org/2005/gmd" xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0" xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" xmlns:xlink="http://www.w3.org/1999/xlink">
   <gml:featureMember>
     <aqd:AQD_ReportingHeader gml:id="HR_DOC_TYPE_G">
       <aqd:change>true</aqd:change>
@@ -64,6 +67,13 @@
       </aqd:reportingPeriod>
       <aqd:content>
         <aqd:AQD_Attainment gml:id="HR_DOC_TYPE_G_ATTTYPE_1">
+          <ef:inspireId>
+            <base:Identifier>
+            <base:localId>Zone_UK0099</base:localId>
+            <base:namespace>gb.defra.AQ.e-reporting</base:namespace>
+            <base:versionId>1.0</base:versionId>
+            </base:Identifier>
+          </ef:inspireId>
           <aqd:inspireId>
             <ns:Identifier>
               <ns:localId>HR_DOC_TYPE_G_ATTTYPE_1</ns:localId>
@@ -165,7 +175,7 @@
               <ns:versionId>1.0</ns:versionId>
             </ns:Identifier>
           </aqd:inspireId>
-          <aqd:pollutant xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/8"/>
+          <aqd:pollutant xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/12"/>
           <aqd:environmentalObjective>
             <aqd:EnvironmentalObjective>
               <aqd:objectiveType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV"/>
@@ -215,7 +225,7 @@
           <aqd:pollutant xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/8"/>
           <aqd:environmentalObjective>
             <aqd:EnvironmentalObjective>
-              <aqd:objectiveType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV"/>
+              <aqd:objectiveType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/EE"/>
               <aqd:reportingMetric xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/hrsAbove"/>
               <aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"/>
             </aqd:EnvironmentalObjective>
@@ -224,7 +234,7 @@
             <aqd:ExceedanceDescription>
               <aqd:exceedance>false</aqd:exceedance>
               <aqd:numericalExceedance>0.0</aqd:numericalExceedance>
-              <aqd:numberExceedances>4</aqd:numberExceedances>
+              <aqd:numberExceedances>0</aqd:numberExceedances>
               <aqd:deductionAssessmentMethod>
                 <aqd:AdjustmentMethod>
                   <aqd:assessmentMethod>
@@ -356,7 +366,7 @@
           <aqd:pollutant xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/8"/>
           <aqd:environmentalObjective>
             <aqd:EnvironmentalObjective>
-              <aqd:objectiveType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV"/>
+              <aqd:objectiveType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/OHH"/>
               <aqd:reportingMetric xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/hrsAbove"/>
               <aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"/>
             </aqd:EnvironmentalObjective>
@@ -583,7 +593,7 @@
         <aqd:AQD_Attainment gml:id="HR_DOC_TYPE_G_ATTTYPE_122">
           <aqd:inspireId>
             <ns:Identifier>
-              <ns:localId>HR_DOC_TYPE_G_ATTTYPE_122</ns:localId>
+              <ns:localId>HR_DOC_TYPE_G_ATTTYPE_85</ns:localId>
               <ns:namespace>aqd.azo.hr</ns:namespace>
               <ns:versionId>1.0</ns:versionId>
             </ns:Identifier>
@@ -5612,7 +5622,7 @@
         <aqd:AQD_Attainment gml:id="HR_DOC_TYPE_G_ATTTYPE_386">
           <aqd:inspireId>
             <ns:Identifier>
-              <ns:localId>HR_DOC_TYPE_G_ATTTYPE_386</ns:localId>
+              <ns:localId>EE_DOC_TYPE_G_ATTTYPE_386</ns:localId>
               <ns:namespace>aqd.azo.hr</ns:namespace>
               <ns:versionId>1.0</ns:versionId>
             </ns:Identifier>
@@ -5986,9 +5996,16 @@
       </aqd:content>
       <aqd:content>
         <aqd:AQD_Attainment gml:id="HR_DOC_TYPE_G_ATTTYPE_539">
+         <ef:inspireId>
+            <base:Identifier>
+            <base:localId>Zone_UK0099</base:localId>
+            <base:namespace>gb.defra.AQ.e-reporting</base:namespace>
+            <base:versionId>1.0</base:versionId>
+            </base:Identifier>
+          </ef:inspireId>
           <aqd:inspireId>
             <ns:Identifier>
-              <ns:localId>HR_DOC_TYPE_G_ATTTYPE_539</ns:localId>
+              <ns:localId>HR_DOC_TYPE_G_ATTTYPE_85</ns:localId>
               <ns:namespace>aqd.azo.hr</ns:namespace>
               <ns:versionId>1.0</ns:versionId>
             </ns:Identifier>

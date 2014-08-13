@@ -284,7 +284,7 @@ let $invalidDuplicateGmlIds :=
 let $localIds := $docRoot//aqd:AQD_AssessmentRegime/aqd:inspireId/base:Identifier/lower-case(normalize-space(base:localId))
 let $invalidDuplicateLocalIds :=
     for $id in $docRoot//aqd:inspireId/base:Identifier/base:localId
-    where count(index-of($gmlIds, lower-case(normalize-space($id)))) > 1
+    where count(index-of($localIds, lower-case(normalize-space($id)))) > 1
     return
         $id
 
