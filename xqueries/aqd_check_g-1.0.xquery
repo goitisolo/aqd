@@ -16,9 +16,13 @@ declare namespace xmlconv = "http://converters.eionet.europa.eu";
 declare namespace aqd = "http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0";
 declare namespace gml = "http://www.opengis.net/gml/3.2";
 declare namespace am = "http://inspire.ec.europa.eu/schemas/am/3.0";
-declare namespace ef = "http://inspire.ec.europa.eu/schemas/ef/3.0";
+declare namespace ef = "http://inspire.ec.europa.eu/schemas/ef/3.0rc3";
+
 declare namespace ns = "http://inspire.ec.europa.eu/schemas/base/3.3";
 declare namespace gn = "urn:x-inspire:specification:gmlas:GeographicalNames:3.0";
+declare namespace  base = "http://inspire.ec.europa.eu/schemas/base/3.3rc3/";
+
+
 declare namespace base2 = "http://inspire.ec.europa.eu/schemas/base2/1.0";
 declare namespace sparql = "http://www.w3.org/2005/sparql-results#";
 declare namespace xlink = "http://www.w3.org/1999/xlink";
@@ -34,8 +38,12 @@ declare variable $xmlconv:ISO2_CODES as xs:string* := ("AL","AT","BA","BE","BG",
 (:===================================================================:)
 
 
-declare variable $source_url as xs:string external;
+declare variable $xmlconv:VALID_POLLUTANT_IDS as xs:string* := ("1", "7", "8", "9", "5", "6001", "10","20", "5012", "5014", "5015", "5018", "5029");
 
+declare variable $xmlconv:POLLUTANT_VOCABULARY as xs:string := "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/";
+declare variable $xmlconv:OBJECTIVETYPE_VOCABULARY as xs:string := "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/";
+
+declare variable $source_url as xs:string external;
 (:
 declare variable $source_url := "../test/HR_G_201407281307.xml";
 Change it for testing locally:
@@ -246,14 +254,16 @@ as element(table) {
 
 (: get reporting country :)
 (:
-let $envelopeUrl := xmlconv:getEnvelopeXML($source_url)
-let $countryCode := if(string-length($envelopeUrl)>0) then lower-case(fn:doc($envelopeUrl)/envelope/countrycode) else ""
+let $countryCode := "hr"
 :)
 
-(: FIXME
-let $countryCode := "gb"
+let $envelopeUrl := xmlconv:getEnvelopeXML($source_url)
+let $countryCode := if(string-length($envelopeUrl)>0) then lower-case(fn:doc($envelopeUrl)/envelope/countrycode) else ""
+(: =============================================== FIXME !!! :)
+
+
+
 let $countryCode := if ($countryCode = "gb") then "uk" else if ($countryCode = "gr") then "el" else $countryCode
-:)
 
 let $docRoot := doc($source_url)
 (: G1 :)
@@ -271,13 +281,45 @@ let $tblAllAttainments :=
         </tr>
 
 
-(: G4 duplicate @gml:ids :)
+(: G5 Compile & feedback a list of the exceedances situations based on the content of
+ ./aqd:zone, ./aqd:pollutant, ./aqd:objectiveType, ./aqd:reportingMetric, ./aqd:protectionTarget, aqd:exceedanceDescription_Final/aqd:ExceedanceDescription/aqd:exceedance :)
+let $countExceedances := count($docRoot//aqd:AQD_Attainment[xs:integer(aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:numberExceedances) gt 0])
+let $allExceedances :=
+    for $attainment in $docRoot//aqd:AQD_Attainment
+    where xs:integer($attainment/aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:numberExceedances) gt 0
+    return
+        $attainment
+
+let $tblAllExceedances :=
+    for $rec in $allExceedances
+    return
+        <tr>
+            <td title="aqd:zone">{xmlconv:checkLink(data($rec/aqd:zone/@xlink:href))}</td>
+            <td title="aqd:pollutant">{xmlconv:checkLink(data($rec/aqd:pollutant/@xlink:href))}</td>
+            <td title="aqd:objectiveType">{xmlconv:checkLink(data($rec/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType/@xlink:href))}</td>
+            <td title="aqd:reportingMetric">{xmlconv:checkLink(data($rec/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric/@xlink:href))}</td>
+            <td title="aqd:protectionTarget">{xmlconv:checkLink(data($rec/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/@xlink:href))}</td>
+            <td title="aqd:exceedance">{data($rec/aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedance)}</td>
+            <td title="aqd:numberExceedances">{data($rec/aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:numberExceedances)}</td>
+        </tr>
+
+
+
+
+(: G7 duplicate @gml:ids and aqd:inspireIds and wf:inspireIds :)
 (: Feedback report shall include the gml:id attribute, ef:inspireId, aqd:inspireId, ef:name and/or ompr:name elements as available. :)
 let $gmlIds := $docRoot//aqd:AQD_Attainment/lower-case(normalize-space(@gml:id))
+let $inspireIds := $docRoot//aqd:AQD_Attainment/lower-case(normalize-space(aqd:inspireId))
+let $efInspireIds := $docRoot//aqd:AQD_Attainment/lower-case(normalize-space(ef:inspireId))
+
 let $invalidDuplicateGmlIds :=
     for $attainment in $docRoot//aqd:AQD_Attainment
     let $id := $attainment/@gml:id
+    let $inspireId := $attainment/aqd:inspireId
+    let $efInspireId := $attainment/ef:inspireId
     where count(index-of($gmlIds, lower-case(normalize-space($id)))) > 1
+        or count(index-of($inspireIds, lower-case(normalize-space($inspireId)))) > 1
+        or (count(index-of($efInspireIds, lower-case(normalize-space($efInspireId)))) > 1 and not(empty($efInspireId)))
     return
         $attainment
 
@@ -287,95 +329,34 @@ let $tblDuplicateGmlIds :=
         <tr>
             <td title="gml:id">{data($rec/@gml:id)}</td>
             <td title="ns:localId">{data($rec/aqd:inspireId/ns:Identifier/ns:localId)}</td>
+            <td title="ns:namespace">{data($rec/aqd:inspireId/ns:Identifier/ns:namespace)}</td>
+            <td title="ns:versionId">{data($rec/aqd:inspireId/ns:Identifier/ns:versionId)}</td>
+            <td title="base:localId">{data($rec/ef:inspireId/base:Identifier/base:localId)}</td>
+            <td title="base:namespace">{data($rec/ef:inspireId/base:Identifier/base:namespace)}</td>
         </tr>
 
-
-
-
-(: C5 duplicate ./aqd:inspireId/base:Identifier/base:localId :)
-let $localIds := $docRoot//aqd:AQD_AssessmentRegime/aqd:inspireId/ns:Identifier/lower-case(normalize-space(ns:localId))
+(: G8 ef:inspireId/base:Identifier/base:localId  must be unique :)
+let $localIds :=  $docRoot//ef:inspireId/base:Identifier/lower-case(normalize-space(base:localId))
 let $invalidDuplicateLocalIds :=
-    for $id in $docRoot//aqd:inspireId/ns:Identifier/ns:localId
-    where count(index-of($gmlIds, lower-case(normalize-space($id)))) > 1
+    for $id in $docRoot//ef:inspireId/base:Identifier/lower-case(normalize-space(base:localId))
+    where count(index-of($localIds, lower-case(normalize-space($id)))) > 1 and not(empty($id))
     return
         $id
 
-(: C16 If ./aqd:zone xlink:href shall be current, then ./AQD_zone/aqd:operationActivityPeriod/gml:endPosition shall be equal to “9999-12-31 23:59:59Z” or nulled (blank)  :)
-let $invalidZoneGmlEndPosition :=
-    for $zone in $docRoot//aqd:zone[@xlink:href='.']/aqd:AQD_Zone
-    let $endPosition := normalize-space($zone/aqd:operationActivityPeriod/gml:endPosition)
-    where upper-case($endPosition) != '9999-12-31 23:59:59Z' and $endPosition !=''
+(: G9 ./ef:inspireId/base:Identifier/base:namespace shall resolve to a unique namespace identifier for the data source (within an annual e-Reporting cycle). :)
+let $namespaces :=  $docRoot//ef:inspireId/base:Identifier/lower-case(normalize-space(base:namespace))
+let $duplicateNamespaces :=
+    for $id in $docRoot//ef:inspireId/base:Identifier/lower-case(normalize-space(base:namespace))
+    where count(index-of($namespaces, lower-case(normalize-space($id)))) > 1 and not(empty($id))
     return
-        <tr>
-            <td title="aqd:AQD_AssessmentRegime/ @gml:id">{data($zone/../../@gml:id)}</td>
-            <td title="aqd:AQD_Zone/@gml:id">{data($zone/@gml:id)}</td>{
-                xmlconv:getErrorTD(data($endPosition), "gml:endPosition", fn:true())
-            }
-        </tr>
+        $id
 
-(: C22 If The lifecycle information of ./aqd:assessmentMethods/aqd:AssessmentMethods/aqd:*AssessmentMetadata xlink:href shall be current,
-    then /AQD_SamplingPoint/aqd:operationActivityPeriod/gml:endPosition or /AQD_ModelType/aqd:operationActivityPeriod/gml:endPosition shall be equal to “9999-12-31 23:59:59Z” or nulled (blank):)
-let $invalidAssessmentGmlEndPosition :=
-    for $assessmentMetadata in $docRoot//aqd:assessmentMethods/aqd:AssessmentMethods/*[ends-with(local-name(), 'AssessmentMetadata') and @xlink:href='.']
+(: G10 pollutant codes :)
+let $invalidPollutantCodes := xmlconv:invalidPollutantRows()
 
-    let $endPosition :=
-        if ($assessmentMetadata/local-name() = 'modelAssessmentMetadata') then
-            normalize-space($assessmentMetadata/aqd:AQD_Model/aqd:operationActivityPeriod/gml:endPosition)
-        else if ($assessmentMetadata/local-name() = 'samplingPointAssessmentMetadata') then
-            normalize-space($assessmentMetadata/aqd:AQD_SamplingPoint/aqd:operationActivityPeriod/gml:endPosition)
-        else
-            ""
 
-        where upper-case($endPosition) != '9999-12-31 23:59:59Z' and $endPosition != ''
-    return
-        <tr>
-            <td title="aqd:AQD_AssessmentRegime/ @gml:id">{data($assessmentMetadata/../../../@gml:id)}</td>{
-                if ($assessmentMetadata/local-name() = 'modelAssessmentMetadata') then
-                    (<td title="aqd:AQD_Model/ @gml:id">{data($assessmentMetadata/aqd:AQD_Model/@gml:id)}</td>,
-                        xmlconv:getErrorTD(data($endPosition), "gml:endPosition", fn:true())
-                    ,<td title="aqd:AQD_SamplingPoint/ @gml:id"/>, <td title="gml:endPosition"/>)
-                else if ($assessmentMetadata/local-name() = 'samplingPointAssessmentMetadata') then
-                    (<td title="aqd:AQD_Model/ @gml:id"/>, <td title="gml:endPosition"/>,
-                        <td title="aqd:AQD_SamplingPoint/ @gml:id">{data($assessmentMetadata/aqd:AQD_SamplingPoint/@gml:id)}</td>,
-                        xmlconv:getErrorTD(data($endPosition), "gml:endPosition", fn:true())
-                    )
-                else
-                    ()
-            }
-
-        </tr>
-
-(: C24 /aqd:AQD_SamplingPoint/aqd:usedAQD or /aqd:AQD_ModelType/aqd:used shall EQUAL “true” for all ./aqd:assessmentMethods/aqd:AssessmentMethods/aqd:*AssessmentMetadata xlink:href citations :)
-let $invalidAssessmentUsed :=
-    for $assessmentMetadata in $docRoot//aqd:assessmentMethods/aqd:AssessmentMethods/*[ends-with(local-name(), 'AssessmentMetadata') and @xlink:href='.']
-
-    let $used :=
-        if ($assessmentMetadata/local-name() = 'modelAssessmentMetadata') then
-            normalize-space($assessmentMetadata/aqd:AQD_Model/aqd:used)
-        else if ($assessmentMetadata/local-name() = 'samplingPointAssessmentMetadata') then
-            normalize-space($assessmentMetadata/aqd:AQD_SamplingPoint/aqd:usedAQD)
-        else
-            ""
-
-        where $used != 'true'
-    return
-        <tr>
-            <td title="aqd:AQD_AssessmentRegime/ @gml:id">{data($assessmentMetadata/../../../@gml:id)}</td>{
-                if ($assessmentMetadata/local-name() = 'modelAssessmentMetadata') then
-                    (<td title="aqd:AQD_Model/ @gml:id">{data($assessmentMetadata/aqd:AQD_Model/@gml:id)}</td>,
-                        xmlconv:getErrorTD(data($used), "aqd:used", fn:true())
-                    ,<td title="aqd:AQD_SamplingPoint/ @gml:id"/>, <td title="aqd:usedAQD"/>)
-                else if ($assessmentMetadata/local-name() = 'samplingPointAssessmentMetadata') then
-                    (<td title="aqd:AQD_Model/ @gml:id"/>, <td title="aqd:used"/>,
-                        <td title="aqd:AQD_SamplingPoint/ @gml:id">{data($assessmentMetadata/aqd:AQD_SamplingPoint/@gml:id)}</td>,
-                        xmlconv:getErrorTD(data($used), "aqd:usedAQD", fn:true())
-                    )
-                else
-                    ()
-            }
-
-        </tr>
-
+(: G9'2' :)
+ let $invalidObjectiveTypes := xmlconv:checkVocabularyConceptValues("aqd:EnvironmentalObjective", "aqd:objectiveType", $xmlconv:OBJECTIVETYPE_VOCABULARY)
 
 return
     <table style="border-collapse:collapse;display:inline">
@@ -387,8 +368,21 @@ return
         </colgroup>
         {xmlconv:buildResultRows("G1", "Total number of attainment statements",
             (), (), "", string($countAttainments), "", "", $tblAllAttainments)}
-        {xmlconv:buildResultRows("G4", "All gml:id attributes shall have unique content within the document or namespace",
+        {xmlconv:buildResultRows("G5", "Total number of exceedances",
+            $allExceedances, (), "", "No exceedances", " exceedance", "", $tblAllExceedances)}
+        {xmlconv:buildResultRows("G7", "All gml:id attributes and ns:localId attributes shall have unique content within the document or namespace",
             $invalidDuplicateGmlIds, (), "", "No duplicates found", " duplicate", "", $tblDuplicateGmlIds)}
+        {xmlconv:buildResultRows("G8", "ef:inspireId/base:Identifier/base:localId  must be unique",
+            $invalidDuplicateLocalIds, (), "base:localId", "No duplicate values found", " duplicate value", "", ())}
+        {xmlconv:buildResultRows("G9", "./ef:inspireId/base:Identifier/base:namespace  must be unique",
+            $duplicateNamespaces, (), "base:namespace", "No duplicate values found", " duplicate value", "", ())}
+        {xmlconv:buildResultRowsWithTotalCount("G10", <span>The content of /aqd:AQD_Attainment/aqd:pollutant shall resolve to an Air pollutant in
+            <a href="{ $xmlconv:POLLUTANT_VOCABULARY }">{ $xmlconv:POLLUTANT_VOCABULARY }</a></span>,
+            (), (), "aqd:pollutant", "", "", "", $invalidPollutantCodes)}
+        {xmlconv:buildResultRowsWithTotalCount("G9.2", <span>The content of /aqd:EnvironmentalObjective/aqd:objectivetype shall resolve to a concept in
+            <a href="{ $xmlconv:OBJECTIVETYPE_VOCABULARY }">{ $xmlconv:OBJECTIVETYPE_VOCABULARY }</a></span>,
+            (), (), "aqd:objectivetype", "", "", "", $invalidObjectiveTypes)}
+
 
 
     </table>
@@ -396,151 +390,111 @@ return
 ;
 
 
-(:
-    Rule implementations
-:)
-declare function xmlconv:checkReportX($source_url as xs:string)
-as element(table) {
-
-(: get reporting country :)
-(:
-let $envelopeUrl := xmlconv:getEnvelopeXML($source_url)
-let $countryCode := if(string-length($envelopeUrl)>0) then lower-case(fn:doc($envelopeUrl)/envelope/countrycode) else ""
-:)
-
-(: FIXME
-let $countryCode := "gb"
-let $countryCode := if ($countryCode = "gb") then "uk" else if ($countryCode = "gr") then "el" else $countryCode
-:)
-
-let $docRoot := doc($source_url)
-(: C1 :)
-let $countAttainments := count($docRoot//aqd:AQD_Attainment)
-let $tblAllAttainments :=
-    for $rec in $docRoot//aqd:AQD_Attainment
-    return
-        <tr>
-        </tr>
 
 
-(: C4 duplicate @gml:ids :)
-let $gmlIds := $docRoot//aqd:AQD_AssessmentRegime/lower-case(normalize-space(@gml:id))
-let $invalidDuplicateGmlIds :=
-    for $id in $docRoot//aqd:AQD_AssessmentRegime/@gml:id
-    where count(index-of($gmlIds, lower-case(normalize-space($id)))) > 1
-    return
-        $id
+declare function xmlconv:checkVocabularyConceptValues($featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string, $limitedIds as xs:string*)
+as element(tr)*{
+    xmlconv:checkVocabularyConceptValues($featureType, $element, $vocabularyUrl, $limitedIds, "")
+};
 
-(: C5 duplicate ./aqd:inspireId/base:Identifier/base:localId :)
-let $localIds := $docRoot//aqd:AQD_AssessmentRegime/aqd:inspireId/ns:Identifier/lower-case(normalize-space(ns:localId))
-let $invalidDuplicateLocalIds :=
-    for $id in $docRoot//aqd:inspireId/ns:Identifier/ns:localId
-    where count(index-of($gmlIds, lower-case(normalize-space($id)))) > 1
-    return
-        $id
+declare function xmlconv:checkVocabularyConceptValues($featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string)
+as element(tr)*{
+    xmlconv:checkVocabularyConceptValues($featureType, $element, $vocabularyUrl, (), "")
+};
+declare function xmlconv:checkVocabularyConceptValues($featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string, $limitedIds as xs:string*, $vocabularyType as xs:string)
+as element(tr)*{
 
-(: C16 If ./aqd:zone xlink:href shall be current, then ./AQD_zone/aqd:operationActivityPeriod/gml:endPosition shall be equal to “9999-12-31 23:59:59Z” or nulled (blank)  :)
-let $invalidZoneGmlEndPosition :=
-    for $zone in $docRoot//aqd:zone[@xlink:href='.']/aqd:AQD_Zone
-    let $endPosition := normalize-space($zone/aqd:operationActivityPeriod/gml:endPosition)
-    where upper-case($endPosition) != '9999-12-31 23:59:59Z' and $endPosition !=''
-    return
-        <tr>
-            <td title="aqd:AQD_AssessmentRegime/ @gml:id">{data($zone/../../@gml:id)}</td>
-            <td title="aqd:AQD_Zone/@gml:id">{data($zone/@gml:id)}</td>{
-                xmlconv:getErrorTD(data($endPosition), "gml:endPosition", fn:true())
-            }
-        </tr>
-
-(: C22 If The lifecycle information of ./aqd:assessmentMethods/aqd:AssessmentMethods/aqd:*AssessmentMetadata xlink:href shall be current,
-    then /AQD_SamplingPoint/aqd:operationActivityPeriod/gml:endPosition or /AQD_ModelType/aqd:operationActivityPeriod/gml:endPosition shall be equal to “9999-12-31 23:59:59Z” or nulled (blank):)
-let $invalidAssessmentGmlEndPosition :=
-    for $assessmentMetadata in $docRoot//aqd:assessmentMethods/aqd:AssessmentMethods/*[ends-with(local-name(), 'AssessmentMetadata') and @xlink:href='.']
-
-    let $endPosition :=
-        if ($assessmentMetadata/local-name() = 'modelAssessmentMetadata') then
-            normalize-space($assessmentMetadata/aqd:AQD_Model/aqd:operationActivityPeriod/gml:endPosition)
-        else if ($assessmentMetadata/local-name() = 'samplingPointAssessmentMetadata') then
-            normalize-space($assessmentMetadata/aqd:AQD_SamplingPoint/aqd:operationActivityPeriod/gml:endPosition)
+    let $sparql :=
+        if ($vocabularyType = "collection") then
+            xmlconv:getCollectionConceptUrlSparql($vocabularyUrl)
         else
-            ""
+            xmlconv:getConceptUrlSparql($vocabularyUrl)
+    let $crConcepts := xmlconv:executeSparqlQuery($sparql)
 
-        where upper-case($endPosition) != '9999-12-31 23:59:59Z' and $endPosition != ''
+    for $rec in doc($source_url)//gml:featureMember/descendant::*[name()=$featureType]
+    for $conceptUrl in $rec/child::*[name() = $element]/@xlink:href
+    let $conceptUrl := normalize-space($conceptUrl)
+
+    where string-length($conceptUrl) > 0
+
     return
-        <tr>
-            <td title="aqd:AQD_AssessmentRegime/ @gml:id">{data($assessmentMetadata/../../../@gml:id)}</td>{
-                if ($assessmentMetadata/local-name() = 'modelAssessmentMetadata') then
-                    (<td title="aqd:AQD_Model/ @gml:id">{data($assessmentMetadata/aqd:AQD_Model/@gml:id)}</td>,
-                        xmlconv:getErrorTD(data($endPosition), "gml:endPosition", fn:true())
-                    ,<td title="aqd:AQD_SamplingPoint/ @gml:id"/>, <td title="gml:endPosition"/>)
-                else if ($assessmentMetadata/local-name() = 'samplingPointAssessmentMetadata') then
-                    (<td title="aqd:AQD_Model/ @gml:id"/>, <td title="gml:endPosition"/>,
-                        <td title="aqd:AQD_SamplingPoint/ @gml:id">{data($assessmentMetadata/aqd:AQD_SamplingPoint/@gml:id)}</td>,
-                        xmlconv:getErrorTD(data($endPosition), "gml:endPosition", fn:true())
-                    )
-                else
-                    ()
-            }
-
+        <tr isvalid="{ xmlconv:isMatchingVocabCode($crConcepts, $conceptUrl) and xmlconv:isValidLimitedValue($conceptUrl, $vocabularyUrl, $limitedIds) }">
+            <td title="Feature type">{ $featureType }</td>
+            <td title="gml:id">{data($rec/@gml:id)}</td>
+            <td title="ef:inspireId">{data($rec/ef:inspireId/base:Identifier/base:localId)}</td>
+            <td title="aqd:inspireId">{data($rec/aqd:inspireId/base:Identifier/base:localId)}</td>
+            <td title="ef:name">{data($rec/ef:name)}</td>
+            <td title="{ $element }" style="color:red">{$conceptUrl}</td>
         </tr>
 
-(: C24 /aqd:AQD_SamplingPoint/aqd:usedAQD or /aqd:AQD_ModelType/aqd:used shall EQUAL “true” for all ./aqd:assessmentMethods/aqd:AssessmentMethods/aqd:*AssessmentMetadata xlink:href citations :)
-let $invalidAssessmentUsed :=
-    for $assessmentMetadata in $docRoot//aqd:assessmentMethods/aqd:AssessmentMethods/*[ends-with(local-name(), 'AssessmentMetadata') and @xlink:href='.']
+};
 
-    let $used :=
-        if ($assessmentMetadata/local-name() = 'modelAssessmentMetadata') then
-            normalize-space($assessmentMetadata/aqd:AQD_Model/aqd:used)
-        else if ($assessmentMetadata/local-name() = 'samplingPointAssessmentMetadata') then
-            normalize-space($assessmentMetadata/aqd:AQD_SamplingPoint/aqd:usedAQD)
-        else
-            ""
+declare function xmlconv:isValidLimitedValue($conceptUrl as xs:string, $vocabularyUrl as xs:string, $limitedIds as xs:string*)
+as xs:boolean {
+    let $limitedUrls :=
+      for $id in $limitedIds
+      return concat($vocabularyUrl, $id)
 
-        where $used != 'true'
     return
-        <tr>
-            <td title="aqd:AQD_AssessmentRegime/ @gml:id">{data($assessmentMetadata/../../../@gml:id)}</td>{
-                if ($assessmentMetadata/local-name() = 'modelAssessmentMetadata') then
-                    (<td title="aqd:AQD_Model/ @gml:id">{data($assessmentMetadata/aqd:AQD_Model/@gml:id)}</td>,
-                        xmlconv:getErrorTD(data($used), "aqd:used", fn:true())
-                    ,<td title="aqd:AQD_SamplingPoint/ @gml:id"/>, <td title="aqd:usedAQD"/>)
-                else if ($assessmentMetadata/local-name() = 'samplingPointAssessmentMetadata') then
-                    (<td title="aqd:AQD_Model/ @gml:id"/>, <td title="aqd:used"/>,
-                        <td title="aqd:AQD_SamplingPoint/ @gml:id">{data($assessmentMetadata/aqd:AQD_SamplingPoint/@gml:id)}</td>,
-                        xmlconv:getErrorTD(data($used), "aqd:usedAQD", fn:true())
-                    )
-                else
-                    ()
-            }
+        empty($limitedIds) or not(empty(index-of($limitedUrls, $conceptUrl)))
+};
 
-        </tr>
+declare function xmlconv:getConceptUrlSparql($scheme as xs:string)
+as xs:string
+{
+    concat("PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+    SELECT ?concepturl ?label
+    WHERE {
+      ?concepturl skos:inScheme <", $scheme, ">;
+                  skos:prefLabel ?label
+    }")
+};
+
+declare function xmlconv:getCollectionConceptUrlSparql($collection as xs:string)
+as xs:string
+{
+    concat("PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+    SELECT ?concepturl
+    WHERE {
+        GRAPH <", $collection, "> {
+            <", $collection, "> skos:member ?concepturl .
+            ?concepturl a skos:Concept
+        }
+    }")
+};
+
+declare function xmlconv:isMatchingVocabCode($crConcepts as element(sparql:results), $concept as xs:string)
+as xs:boolean
+{
+    count($crConcepts//sparql:result/sparql:binding[@name="concepturl" and sparql:uri=$concept]) > 0
+};
+
+declare function xmlconv:invalidPollutantRows()
+as element(tr)* {
+    xmlconv:isinvalidDDConceptLimited("aqd:AQD_Attainment", "aqd:pollutant",  $xmlconv:POLLUTANT_VOCABULARY, $xmlconv:VALID_POLLUTANT_IDS)
+};
+
+declare function xmlconv:isinvalidDDConceptLimited($featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string, $allowedIds as xs:string*)
+as element(tr)* {
+    xmlconv:checkVocabularyConceptValues($featureType,$element,$vocabularyUrl, $allowedIds)
+};
 
 
-return
-    <table style="border-collapse:collapse;display:inline">
-        <colgroup>
-            <col width="15px" style="text-align:center"/>
-            <col width="450px" style="text-align:left"/>
-            <col width="350px" style="text-align:left"/>
-            <col width="*"/>
-        </colgroup>
-        {xmlconv:buildResultRows("G1", "Total number of attainment statements",
-            (), (), "", string($countAttainments), "", "", $tblAllAttainments)}
-(:
-        {xmlconv:buildResultRows("C4", "All gml:id attributes shall have unique content within the document or namespace",
-            $invalidDuplicateGmlIds, (), "@gml:id", "No duplicates found", " duplicate", "", ())}
-        {xmlconv:buildResultRows("C5", "./aqd:inspireId/base:Identifier/base:localId shall be an unique code for the assessment regime.",
-            $invalidDuplicateLocalIds, (), "base:localId", "No duplicates found", " duplicate", "", ())}
-        {xmlconv:buildResultRows("C16", "The lifecycle information of ./aqd:zone xlink:href shall be current, ./AQD_Zone/aqd:operationActivityPeriod/gml:endPosition shall be equal to '9999-12-31 23:59:59Z' or nulled (blank).",
-            (), $invalidZoneGmlEndPosition, "aqd:AQD_Zone", "All values are valid", " invalid value", "", $invalidZoneGmlEndPosition)}
-        {xmlconv:buildResultRows("C22", "The lifecycle information of ./aqd:assessmentMethods/aqd:AssessmentMethods/aqd:*AssessmentMetadata xlink:href shall be current, /AQD_SamplingPoint/aqd:operationActivityPeriod/gml:endPosition or /AQD_ModelType/aqd:operationActivityPeriod/gml:endPosition shall be equal to '9999-12-31 23:59:59Z' or nulled (blank).",
-            (), $invalidAssessmentGmlEndPosition, "aqd:AQD_Model or aqd:AQD_SamplingPoint", "All values are valid", " invalid value", "", ())}
-        {xmlconv:buildResultRows("C24", "/aqd:AQD_SamplingPoint/aqd:usedAQD or /aqd:AQD_Modelype/aqd:used shall EQUAL 'true' for all ./aqd:assessmentMethods/aqd:AssessmentMethods/aqd:*AssessmentMetadata xlink:href citations.",
-            (), $invalidAssessmentUsed, "aqd:AQD_Model or aqd:AQD_SamplingPoint", "All values are valid", " invalid value", "", ())}
-:)
-    </table>
-}
-;
+declare function xmlconv:buildResultRowsWithTotalCount($ruleCode as xs:string, $text, $invalidStrValues as xs:string*, $invalidValues as element()*,
+    $valueHeading as xs:string, $validMsg as xs:string, $invalidMsg as xs:string, $skippedMsg, $recordDetails as element(tr)*)
+as element(tr)*{
+
+    let $countCheckedRecords := count($recordDetails)
+    let $invalidValues := $recordDetails[./@isvalid = "false"]
+
+    let $skippedMsg := if ($countCheckedRecords = 0) then "No values found to check" else ""
+    let $invalidMsg := if (count($invalidValues) > 0) then concat(" invalid value", substring("s ", number(not(count($invalidValues) > 1)) * 2), " found out of ", $countCheckedRecords, " checked") else ""
+    let $validMsg := if (count($invalidValues) = 0) then concat("Checked ", $countCheckedRecords, " value", substring("s", number(not($countCheckedRecords > 1)) * 2), ", all valid") else ""
+
+    return
+        xmlconv:buildResultRows($ruleCode, $text, $invalidStrValues, $invalidValues,
+            $valueHeading, $validMsg, $invalidMsg, $skippedMsg, ())
+};
 
 
 
