@@ -227,7 +227,7 @@
             <aqd:EnvironmentalObjective>
               <aqd:objectiveType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/EE"/>
               <aqd:reportingMetric xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/hrsAbove"/>
-              <aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"/>
+              <aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V"/>
             </aqd:EnvironmentalObjective>
           </aqd:environmentalObjective>
           <aqd:exceedanceDescriptionFinal>
@@ -324,6 +324,16 @@
               <aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"/>
             </aqd:EnvironmentalObjective>
           </aqd:environmentalObjective>
+          <aqd:exceedanceDescriptionBase>
+            <aqd:ExceedanceDescription>
+            <aqd:exceedanceArea>
+            <aqd:ExceedanceArea>
+            <aqd:surfaceArea uom="km">2323</aqd:surfaceArea>
+            <aqd:roadLength uom="m">333</aqd:roadLength>
+            </aqd:ExceedanceArea>
+            </aqd:exceedanceArea>
+            </aqd:ExceedanceDescription>
+          </aqd:exceedanceDescriptionBase>
           <aqd:exceedanceDescriptionFinal>
             <aqd:ExceedanceDescription>
               <aqd:exceedance>false</aqd:exceedance>
@@ -512,6 +522,17 @@
               <aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"/>
             </aqd:EnvironmentalObjective>
           </aqd:environmentalObjective>
+                    <aqd:exceedanceDescriptionBase>
+            <aqd:ExceedanceDescription>
+            <aqd:exceedanceArea>
+            <aqd:ExceedanceArea>
+            <aqd:surfaceArea uom="km">2323</aqd:surfaceArea>
+            <aqd:roadLength uom="km">333</aqd:roadLength>
+            </aqd:ExceedanceArea>
+            </aqd:exceedanceArea>
+            </aqd:ExceedanceDescription>
+          </aqd:exceedanceDescriptionBase>
+
           <aqd:exceedanceDescriptionFinal>
             <aqd:ExceedanceDescription>
               <aqd:exceedance>false</aqd:exceedance>
@@ -5584,7 +5605,7 @@
           <aqd:environmentalObjective>
             <aqd:EnvironmentalObjective>
               <aqd:objectiveType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/CL"/>
-              <aqd:reportingMetric xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/wMean"/>
+              <aqd:reportingMetric xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/AEI"/>
               <aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V"/>
             </aqd:EnvironmentalObjective>
           </aqd:environmentalObjective>
@@ -5630,7 +5651,7 @@
           <aqd:pollutant xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1"/>
           <aqd:environmentalObjective>
             <aqd:EnvironmentalObjective>
-              <aqd:objectiveType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/CL"/>
+              <aqd:objectiveType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/ALT"/>
               <aqd:reportingMetric xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/wMean"/>
               <aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V"/>
             </aqd:EnvironmentalObjective>

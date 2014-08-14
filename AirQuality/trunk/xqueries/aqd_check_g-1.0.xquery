@@ -39,8 +39,11 @@ declare variable $xmlconv:ISO2_CODES as xs:string* := ("AL","AT","BA","BE","BG",
 
 
 declare variable $xmlconv:VALID_POLLUTANT_IDS as xs:string* := ("1", "7", "8", "9", "5", "6001", "10","20", "5012", "5014", "5015", "5018", "5029");
+declare variable $xmlconv:VALID_REPMETRIC_IDS as xs:string* := ("aMean", "wMean", "hrsAbove", "daysAbove", "maxd8hrMean", "AOT40");
 
 declare variable $xmlconv:POLLUTANT_VOCABULARY as xs:string := "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/";
+declare variable $xmlconv:REPMETRIC_VOCABULARY as xs:string := "http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/";
+
 declare variable $xmlconv:OBJECTIVETYPE_VOCABULARY as xs:string := "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/";
 
 declare variable $source_url as xs:string external;
@@ -355,8 +358,65 @@ let $duplicateNamespaces :=
 let $invalidPollutantCodes := xmlconv:invalidPollutantRows()
 
 
+
 (: G9'2' :)
- let $invalidObjectiveTypes := xmlconv:checkVocabularyConceptValues("aqd:EnvironmentalObjective", "aqd:objectiveType", $xmlconv:OBJECTIVETYPE_VOCABULARY)
+let $invalidObjectiveTypes := xmlconv:checkVocabularyConceptValues("aqd:EnvironmentalObjective", "aqd:objectiveType", $xmlconv:OBJECTIVETYPE_VOCABULARY)
+
+(: G11 - reportingMetric :)
+let $invalidReportingMetric := xmlconv:isinvalidDDConceptLimited("aqd:EnvironmentalObjective", "aqd:reportingMetric",
+    $xmlconv:REPMETRIC_VOCABULARY, $xmlconv:VALID_REPMETRIC_IDS)
+
+(: G12 Where ./aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget
+xlink:href attribute EQUALS http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/veg
+./aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType xlink:href
+attribute shall be EQUAL to https://svn.eionet.europa.eu/repositories/Reportnet/AirQuality/trunk/vocabularies/objectivetype.rdf#CL :)
+
+(: FIXME - there are sev eral Env Objects in XML and schema does not correspond to word doc :)
+let $invalidobjectiveTypesForVEG :=
+    for $obj in $docRoot//aqd:EnvironmentalObjective
+    where $obj/aqd:protectionTarget/@xlink:href='http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V'
+        and $obj/aqd:objectiveType/@xlink:href != 'http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/CL'
+   return $obj/../..
+
+   let $tblInvalidobjectiveTypesForVEG :=
+   for $rec in $invalidobjectiveTypesForVEG
+   (: FIXME - there are sev eral Env Objects in XML and schema does not correspond to word doc :)
+   return
+        <tr>
+            <td title="gml:id">{data($rec/@gml:id)}</td>
+            <td title="aqd:protectionTarget">{data($rec//aqd:protectionTarget/@xlink:href)}</td>
+            <td title="aqd:objectiveType">{data($rec//aqd:objectiveType/@xlink:href)}</td>
+        </tr>
+
+ (: G14 /aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:surfaceArea uom attribute shall be “km2” :)
+let $invalidSurfaceAreas :=
+    for $obj in $docRoot//aqd:AQD_Attainment
+    let $uom := $obj//aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:surfaceArea/@uom
+    where not(empty($uom)) and lower-case(data($uom)) != 'km2'
+    return $obj
+
+let $tblInvalidSurfaceAreas :=
+   for $rec in $invalidSurfaceAreas
+   return
+        <tr>
+            <td title="gml:id">{data($rec/@gml:id)}</td>
+            <td title="aqd:protectionTarget">{data($rec/aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:surfaceArea/@uom)}</td>
+        </tr>
+(: G15 /aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:roadLength uom attribute shall be “km” :)
+let $invalidRoadLengths :=
+    for $obj in $docRoot//aqd:AQD_Attainment
+    let $uom := $obj//aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:roadLength/@uom
+    where not(empty($uom)) and lower-case(data($uom)) != 'km'
+    return $obj
+
+let $tblinvalidRoadLengths :=
+   for $rec in $invalidRoadLengths
+   return
+        <tr>
+            <td title="gml:id">{data($rec/@gml:id)}</td>
+            <td title="aqd:protectionTarget">{data($rec/aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:roadLength/@uom)}</td>
+        </tr>
+
 
 return
     <table style="border-collapse:collapse;display:inline">
@@ -382,8 +442,15 @@ return
         {xmlconv:buildResultRowsWithTotalCount("G9.2", <span>The content of /aqd:EnvironmentalObjective/aqd:objectivetype shall resolve to a concept in
             <a href="{ $xmlconv:OBJECTIVETYPE_VOCABULARY }">{ $xmlconv:OBJECTIVETYPE_VOCABULARY }</a></span>,
             (), (), "aqd:objectivetype", "", "", "", $invalidObjectiveTypes)}
-
-
+        {xmlconv:buildResultRowsWithTotalCount("G11", <span>The content of /aqd:EnvironmentalObjective/aqd:reportingMetric shall resolve to a valid concept in
+            <a href="{ $xmlconv:REPMETRIC_VOCABULARY }">{ $xmlconv:REPMETRIC_VOCABULARY }</a></span>,
+            (), (), "aqd:reportingMetric", "", "", "", $invalidReportingMetric)}
+        {xmlconv:buildResultRows("G12", "If protection target is Vegetation objective type has to be Critical",
+            $invalidobjectiveTypesForVEG, (), "", "No invalid objective types for Vegetation found", " invalid", "", $tblInvalidobjectiveTypesForVEG)}
+        {xmlconv:buildResultRows("G14", "Surface area must be measured in km2",
+            $invalidSurfaceAreas, (), "", "No invalid surface area units found", " invalid", "", $tblInvalidSurfaceAreas)}
+        {xmlconv:buildResultRows("G15", "Road Length must be measured in km",
+            $invalidRoadLengths, (), "", "No invalid road length units found", " invalid", "", $tblinvalidRoadLengths)}
 
     </table>
 }
