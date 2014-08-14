@@ -108,7 +108,7 @@
               </aqd:deductionAssessmentMethod>
               <aqd:exceedanceArea>
                 <aqd:ExceedanceArea>
-                  <aqd:areaClassification xlink:href=""/>
+                  <aqd:areaClassification xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/areaclassification/rural"/>
                   <aqd:modelUsed xlink:href="HR_DOC_TYPE_G_ATTTYPE_1"/>
                 </aqd:ExceedanceArea>
               </aqd:exceedanceArea>

@@ -40,11 +40,13 @@ declare variable $xmlconv:ISO2_CODES as xs:string* := ("AL","AT","BA","BE","BG",
 
 declare variable $xmlconv:VALID_POLLUTANT_IDS as xs:string* := ("1", "7", "8", "9", "5", "6001", "10","20", "5012", "5014", "5015", "5018", "5029");
 declare variable $xmlconv:VALID_REPMETRIC_IDS as xs:string* := ("aMean", "wMean", "hrsAbove", "daysAbove", "maxd8hrMean", "AOT40");
+declare variable $xmlconv:VALID_AREACLASSIFICATION_IDS as xs:string* := ("1", "2", "3", "4", "5", "6");
 
 declare variable $xmlconv:POLLUTANT_VOCABULARY as xs:string := "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/";
 declare variable $xmlconv:REPMETRIC_VOCABULARY as xs:string := "http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/";
-
 declare variable $xmlconv:OBJECTIVETYPE_VOCABULARY as xs:string := "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/";
+declare variable $xmlconv:AREACLASSIFICATION_VOCABULARY as xs:string := "http://dd.eionet.europa.eu/vocabulary/aq/areaclassification/";
+
 
 declare variable $source_url as xs:string external;
 (:
@@ -417,6 +419,9 @@ let $tblinvalidRoadLengths :=
             <td title="aqd:protectionTarget">{data($rec/aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:roadLength/@uom)}</td>
         </tr>
 
+(: G16 - areaClassification :)
+let $invalidClassification := xmlconv:checkVocabularyConceptValues("aqd:ExceedanceArea", "aqd:areaClassification", $xmlconv:AREACLASSIFICATION_VOCABULARY)
+
 
 return
     <table style="border-collapse:collapse;display:inline">
@@ -451,6 +456,10 @@ return
             $invalidSurfaceAreas, (), "", "No invalid surface area units found", " invalid", "", $tblInvalidSurfaceAreas)}
         {xmlconv:buildResultRows("G15", "Road Length must be measured in km",
             $invalidRoadLengths, (), "", "No invalid road length units found", " invalid", "", $tblinvalidRoadLengths)}
+
+        {xmlconv:buildResultRowsWithTotalCount("G16", <span>The content of /aqd:ExceedanceArea/aqd:Classification shall resolve to a valid concept in
+            <a href="{ $xmlconv:AREACLASSIFICATION_VOCABULARY }">{ $xmlconv:AREACLASSIFICATION_VOCABULARY }</a></span>,
+            (), (), "aqd:reportingMetric", "", "", "", $invalidClassification)}
 
     </table>
 }
