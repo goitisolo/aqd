@@ -69,7 +69,7 @@
         <aqd:AQD_Attainment gml:id="HR_DOC_TYPE_G_ATTTYPE_1">
           <ef:inspireId>
             <base:Identifier>
-            <base:localId>Zone_UK0099</base:localId>
+            <base:localId>GB_Zone_UK0099</base:localId>
             <base:namespace>gb.defra.AQ.e-reporting</base:namespace>
             <base:versionId>1.0</base:versionId>
             </base:Identifier>
@@ -132,10 +132,39 @@
           <aqd:environmentalObjective>
             <aqd:EnvironmentalObjective>
               <aqd:objectiveType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV"/>
-              <aqd:reportingMetric xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/hrsAbove"/>
+              <aqd:reportingMetric xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/hrsAboveaa"/>
               <aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"/>
             </aqd:EnvironmentalObjective>
           </aqd:environmentalObjective>
+
+
+
+      <aqd:exceedanceDescriptionBase>
+        <aqd:ExceedanceDescription>
+          <aqd:environmentalObjective>
+            <aqd:EnvironmentalObjective>
+              <aqd:objectiveType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/CL"/>
+              <aqd:reportingMetric xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/hrsAbovea"/>
+              <aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"/>
+            </aqd:EnvironmentalObjective>
+          </aqd:environmentalObjective>
+          <aqd:exceedance>true</aqd:exceedance>
+          <aqd:numberExceedances>46</aqd:numberExceedances>
+          <aqd:deductionAssessmentMethod>
+            <aqd:AdjustmentMethod>
+              <aqd:adjustmentType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/noneApplied"/>
+            </aqd:AdjustmentMethod>
+          </aqd:deductionAssessmentMethod>
+          <aqd:exceedanceArea>
+            <aqd:ExceedanceArea>
+              <aqd:areaClassification xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/areaclassification/suburbanlabagg"/>
+              <aqd:areaClassification xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/areaclassification/urban"/>
+              <aqd:modelUsed xlink:href="http://environment.data.gov.uk/air-quality/so/GB_Model_10"/>
+            </aqd:ExceedanceArea>
+          </aqd:exceedanceArea>
+        </aqd:ExceedanceDescription>
+      </aqd:exceedanceDescriptionBase>
+
           <aqd:exceedanceDescriptionFinal>
             <aqd:ExceedanceDescription>
               <aqd:exceedance>false</aqd:exceedance>
@@ -175,7 +204,7 @@
               <ns:versionId>1.0</ns:versionId>
             </ns:Identifier>
           </aqd:inspireId>
-          <aqd:pollutant xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/12"/>
+          <aqd:pollutant xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/11"/>
           <aqd:environmentalObjective>
             <aqd:EnvironmentalObjective>
               <aqd:objectiveType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV"/>
@@ -522,7 +551,7 @@
               <aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"/>
             </aqd:EnvironmentalObjective>
           </aqd:environmentalObjective>
-                    <aqd:exceedanceDescriptionBase>
+          <aqd:exceedanceDescriptionBase>
             <aqd:ExceedanceDescription>
             <aqd:exceedanceArea>
             <aqd:ExceedanceArea>
@@ -6019,7 +6048,7 @@
         <aqd:AQD_Attainment gml:id="HR_DOC_TYPE_G_ATTTYPE_539">
          <ef:inspireId>
             <base:Identifier>
-            <base:localId>Zone_UK0099</base:localId>
+            <base:localId>GB_Zone_UK0099</base:localId>
             <base:namespace>gb.defra.AQ.e-reporting</base:namespace>
             <base:versionId>1.0</base:versionId>
             </base:Identifier>
