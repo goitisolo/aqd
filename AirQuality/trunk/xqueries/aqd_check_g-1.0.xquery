@@ -39,18 +39,23 @@ declare variable $xmlconv:ISO2_CODES as xs:string* := ("AL","AT","BA","BE","BG",
 
 
 declare variable $xmlconv:VALID_POLLUTANT_IDS as xs:string* := ("1", "7", "8", "9", "5", "6001", "10","20", "5012", "5014", "5015", "5018", "5029");
-declare variable $xmlconv:VALID_REPMETRIC_IDS as xs:string* := ("aMean", "wMean", "hrsAbove", "daysAbove", "maxd8hrMean", "AOT40");
+declare variable $xmlconv:VALID_REPMETRIC_IDS as xs:string* := ("aMean", "wMean", "hrsAbove", "daysAbove");
 declare variable $xmlconv:VALID_AREACLASSIFICATION_IDS as xs:string* := ("1", "2", "3", "4", "5", "6");
+declare variable $xmlconv:VALID_OBJECTIVETYPE_IDS as xs:string* := ("TV", "LV", "CL");
+
+
 
 declare variable $xmlconv:POLLUTANT_VOCABULARY as xs:string := "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/";
 declare variable $xmlconv:REPMETRIC_VOCABULARY as xs:string := "http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/";
 declare variable $xmlconv:OBJECTIVETYPE_VOCABULARY as xs:string := "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/";
 declare variable $xmlconv:AREACLASSIFICATION_VOCABULARY as xs:string := "http://dd.eionet.europa.eu/vocabulary/aq/areaclassification/";
 
-
 declare variable $source_url as xs:string external;
+
 (:
 declare variable $source_url := "../test/HR_G_201407281307.xml";
+declare variable $source_url := "../test/ES_G_Attainment.xml";
+declare variable $source_url := "../test/G_GB_Attainment_2012_v1.4.xml";
 Change it for testing locally:
 declare variable $source_url := "http://cdr.eionet.europa.eu/gb/eu/aqd/e2a/colutn32a/envubnpvw/B_GB_Zones.xml";
 :)
@@ -81,6 +86,11 @@ declare function xmlconv:javaScript(){
            <script type="text/javascript">
                <![CDATA[
     function toggle(divName, linkName, checkId) {{
+         toggleItem(divName, linkName, checkId, 'record');
+    }}
+
+
+    function toggleItem(divName, linkName, checkId, itemLabel) {{
         divName = divName + "-" + checkId;
         linkName = linkName + "-" + checkId;
 
@@ -88,13 +98,14 @@ declare function xmlconv:javaScript(){
         var text = document.getElementById(linkName);
         if(elem.style.display == "inline") {{
             elem.style.display = "none";
-            text.innerHTML = "Show records";
+            text.innerHTML = "Show " + itemLabel + "s";
             }}
             else {{
               elem.style.display = "inline";
-              text.innerHTML = "Hide records";
+              text.innerHTML = "Hide " + itemLabel + "s";
             }}
       }}
+
                 ]]>
            </script>
     return
@@ -261,14 +272,15 @@ as element(table) {
 (:
 let $countryCode := "hr"
 :)
+(:
+let $countryCode := if ($countryCode = "gb") then "uk" else if ($countryCode = "gr") then "el" else $countryCode
+:)
+let $countryCode := 'gr'
+(: =============================================== FIXME !!! :)
 
 let $envelopeUrl := xmlconv:getEnvelopeXML($source_url)
 let $countryCode := if(string-length($envelopeUrl)>0) then lower-case(fn:doc($envelopeUrl)/envelope/countrycode) else ""
-(: =============================================== FIXME !!! :)
 
-
-
-let $countryCode := if ($countryCode = "gb") then "uk" else if ($countryCode = "gr") then "el" else $countryCode
 
 let $docRoot := doc($source_url)
 (: G1 :)
@@ -311,7 +323,7 @@ let $tblAllExceedances :=
 
 
 
-(: G7 duplicate @gml:ids and aqd:inspireIds and wf:inspireIds :)
+(: G7 duplicate @gml:ids and aqd:inspireIds and ef:inspireIds :)
 (: Feedback report shall include the gml:id attribute, ef:inspireId, aqd:inspireId, ef:name and/or ompr:name elements as available. :)
 let $gmlIds := $docRoot//aqd:AQD_Attainment/lower-case(normalize-space(@gml:id))
 let $inspireIds := $docRoot//aqd:AQD_Attainment/lower-case(normalize-space(aqd:inspireId))
@@ -340,11 +352,12 @@ let $tblDuplicateGmlIds :=
             <td title="base:namespace">{data($rec/ef:inspireId/base:Identifier/base:namespace)}</td>
         </tr>
 
-(: G8 ef:inspireId/base:Identifier/base:localId  must be unique :)
-let $localIds :=  $docRoot//ef:inspireId/base:Identifier/lower-case(normalize-space(base:localId))
+(: G8 ./ef:inspireId/base:Identifier/base:localId shall be an unique code for the attainment records starting with ISO2-country code :)
+let $localIds :=  $docRoot//ef:inspireId/base:Identifier/lower-case(normalize-space(base:localId))[lower-case(substring(data(.),1,2)) = $countryCode]
 let $invalidDuplicateLocalIds :=
     for $id in $docRoot//ef:inspireId/base:Identifier/lower-case(normalize-space(base:localId))
-    where count(index-of($localIds, lower-case(normalize-space($id)))) > 1 and not(empty($id))
+    let $recCountry := lower-case(substring($id,1,2))
+    where (count(index-of($localIds, lower-case(normalize-space($id)))) > 1 and not(empty($id)))
     return
         $id
 
@@ -357,28 +370,35 @@ let $duplicateNamespaces :=
         $id
 
 (: G10 pollutant codes :)
-let $invalidPollutantCodes := xmlconv:invalidPollutantRows()
+let $invalidPollutantCodes := xmlconv:isinvalidDDConceptLimited("", "aqd:AQD_Attainment", "aqd:pollutant",  $xmlconv:POLLUTANT_VOCABULARY, $xmlconv:VALID_POLLUTANT_IDS)
 
 
 
-(: G9'2' :)
-let $invalidObjectiveTypes := xmlconv:checkVocabularyConceptValues("aqd:EnvironmentalObjective", "aqd:objectiveType", $xmlconv:OBJECTIVETYPE_VOCABULARY)
+(: G19
+.//aqd:ExceedanceDescription/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType xlink:href attribute shall resolve to one of
+:)
+let $invalidObjectiveTypes := xmlconv:isinvalidDDConceptLimited("aqd:exceedanceDescriptionBase", "aqd:EnvironmentalObjective", "aqd:objectiveType", $xmlconv:OBJECTIVETYPE_VOCABULARY, $xmlconv:VALID_OBJECTIVETYPE_IDS)
 
-(: G11 - reportingMetric :)
-let $invalidReportingMetric := xmlconv:isinvalidDDConceptLimited("aqd:EnvironmentalObjective", "aqd:reportingMetric",
+(: G20 - ./aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric xlink:href attribute shall resolve to one of
+... :)
+let $invalidReportingMetric := xmlconv:isinvalidDDConceptLimited("aqd:exceedanceDescriptionBase", "aqd:EnvironmentalObjective", "aqd:reportingMetric",
     $xmlconv:REPMETRIC_VOCABULARY, $xmlconv:VALID_REPMETRIC_IDS)
 
-(: G12 Where ./aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget
-xlink:href attribute EQUALS http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/veg
-./aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType xlink:href
-attribute shall be EQUAL to https://svn.eionet.europa.eu/repositories/Reportnet/AirQuality/trunk/vocabularies/objectivetype.rdf#CL :)
 
-(: FIXME - there are sev eral Env Objects in XML and schema does not correspond to word doc :)
+(: G21
+WHERE
+./aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType xlink:href attribute
+EQUALS http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/CL
+./aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget xlink:href attribute
+EQUALS http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V
+
+:)
 let $invalidobjectiveTypesForVEG :=
-    for $obj in $docRoot//aqd:EnvironmentalObjective
-    where $obj/aqd:protectionTarget/@xlink:href='http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V'
-        and $obj/aqd:objectiveType/@xlink:href != 'http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/CL'
-   return $obj/../..
+    for $obj in $docRoot//aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:environmentalObjective/aqd:EnvironmentalObjective
+    where
+        $obj/aqd:protectionTarget/@xlink:href != 'http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V'
+        and $obj/aqd:objectiveType/@xlink:href = 'http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/CL'
+   return $obj/../../../..
 
    let $tblInvalidobjectiveTypesForVEG :=
    for $rec in $invalidobjectiveTypesForVEG
@@ -386,11 +406,11 @@ let $invalidobjectiveTypesForVEG :=
    return
         <tr>
             <td title="gml:id">{data($rec/@gml:id)}</td>
-            <td title="aqd:protectionTarget">{data($rec//aqd:protectionTarget/@xlink:href)}</td>
-            <td title="aqd:objectiveType">{data($rec//aqd:objectiveType/@xlink:href)}</td>
+            <td title="aqd:protectionTarget">{data($rec//aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/@xlink:href)}</td>
+            <td title="aqd:objectiveType">{data($rec//aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType/@xlink:href)}</td>
         </tr>
 
- (: G14 /aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:surfaceArea uom attribute shall be “km2” :)
+(: G25 /aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:surfaceArea uom attribute shall be “km2” :)
 let $invalidSurfaceAreas :=
     for $obj in $docRoot//aqd:AQD_Attainment
     let $uom := $obj//aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:surfaceArea/@uom
@@ -404,7 +424,7 @@ let $tblInvalidSurfaceAreas :=
             <td title="gml:id">{data($rec/@gml:id)}</td>
             <td title="aqd:protectionTarget">{data($rec/aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:surfaceArea/@uom)}</td>
         </tr>
-(: G15 /aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:roadLength uom attribute shall be “km” :)
+(: G26 /aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:roadLength uom attribute shall be “km” :)
 let $invalidRoadLengths :=
     for $obj in $docRoot//aqd:AQD_Attainment
     let $uom := $obj//aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:roadLength/@uom
@@ -419,8 +439,11 @@ let $tblinvalidRoadLengths :=
             <td title="aqd:protectionTarget">{data($rec/aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:roadLength/@uom)}</td>
         </tr>
 
-(: G16 - areaClassification :)
-let $invalidClassification := xmlconv:checkVocabularyConceptValues("aqd:ExceedanceArea", "aqd:areaClassification", $xmlconv:AREACLASSIFICATION_VOCABULARY)
+(: G27/aqd:AQD_Attainment
+   /aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:areaClassification xlink:href attribute shall resolve to
+... :)
+let $invalidClassification :=
+    xmlconv:checkVocabularyConceptValues("aqd:exceedanceDescriptionBase", "aqd:ExceedanceArea", "aqd:areaClassification", $xmlconv:AREACLASSIFICATION_VOCABULARY)
 
 
 return
@@ -434,30 +457,40 @@ return
         {xmlconv:buildResultRows("G1", "Total number of attainment statements",
             (), (), "", string($countAttainments), "", "", $tblAllAttainments)}
         {xmlconv:buildResultRows("G5", "Total number of exceedances",
-            $allExceedances, (), "", "No exceedances", " exceedance", "", $tblAllExceedances)}
-        {xmlconv:buildResultRows("G7", "All gml:id attributes and ns:localId attributes shall have unique content within the document or namespace",
+            (), (), "", string($countExceedances), " exceedance", "", $tblAllExceedances)}
+        {xmlconv:buildResultRows("G7", "All gml:id attributes, ef:inspireId and aqd:inspireId elements shall have unique content",
             $invalidDuplicateGmlIds, (), "", "No duplicates found", " duplicate", "", $tblDuplicateGmlIds)}
-        {xmlconv:buildResultRows("G8", "ef:inspireId/base:Identifier/base:localId  must be unique",
+        {xmlconv:buildResultRows("G8", "./ef:inspireId/base:Identifier/base:localId  must be unique code for the attainment records starting with ISO2-country code",
             $invalidDuplicateLocalIds, (), "base:localId", "No duplicate values found", " duplicate value", "", ())}
-        {xmlconv:buildResultRows("G9", "./ef:inspireId/base:Identifier/base:namespace  must be unique",
+        {xmlconv:buildResultRows("G9", "./ef:inspireId/base:Identifier/base:namespace shall resolve to a unique namespace identifier for the data source (within an annual e-Reporting cycle). ",
             $duplicateNamespaces, (), "base:namespace", "No duplicate values found", " duplicate value", "", ())}
-        {xmlconv:buildResultRowsWithTotalCount("G10", <span>The content of /aqd:AQD_Attainment/aqd:pollutant shall resolve to an Air pollutant in
-            <a href="{ $xmlconv:POLLUTANT_VOCABULARY }">{ $xmlconv:POLLUTANT_VOCABULARY }</a></span>,
+        {xmlconv:buildResultRowsWithTotalCount("G10", <span>The content of /aqd:AQD_Attainment/aqd:pollutant xlink:xref shall resolve to a pollutant in
+            <a href="{ $xmlconv:POLLUTANT_VOCABULARY }">{ $xmlconv:POLLUTANT_VOCABULARY }</a> that must be one of
+            {xmlconv:buildVocItemsList("G10", $xmlconv:POLLUTANT_VOCABULARY, $xmlconv:VALID_POLLUTANT_IDS)}
+            </span>,
             (), (), "aqd:pollutant", "", "", "", $invalidPollutantCodes)}
-        {xmlconv:buildResultRowsWithTotalCount("G9.2", <span>The content of /aqd:EnvironmentalObjective/aqd:objectivetype shall resolve to a concept in
-            <a href="{ $xmlconv:OBJECTIVETYPE_VOCABULARY }">{ $xmlconv:OBJECTIVETYPE_VOCABULARY }</a></span>,
-            (), (), "aqd:objectivetype", "", "", "", $invalidObjectiveTypes)}
-        {xmlconv:buildResultRowsWithTotalCount("G11", <span>The content of /aqd:EnvironmentalObjective/aqd:reportingMetric shall resolve to a valid concept in
-            <a href="{ $xmlconv:REPMETRIC_VOCABULARY }">{ $xmlconv:REPMETRIC_VOCABULARY }</a></span>,
-            (), (), "aqd:reportingMetric", "", "", "", $invalidReportingMetric)}
-        {xmlconv:buildResultRows("G12", "If protection target is Vegetation objective type has to be Critical",
-            $invalidobjectiveTypesForVEG, (), "", "No invalid objective types for Vegetation found", " invalid", "", $tblInvalidobjectiveTypesForVEG)}
-        {xmlconv:buildResultRows("G14", "Surface area must be measured in km2",
-            $invalidSurfaceAreas, (), "", "No invalid surface area units found", " invalid", "", $tblInvalidSurfaceAreas)}
-        {xmlconv:buildResultRows("G15", "Road Length must be measured in km",
-            $invalidRoadLengths, (), "", "No invalid road length units found", " invalid", "", $tblinvalidRoadLengths)}
 
-        {xmlconv:buildResultRowsWithTotalCount("G16", <span>The content of /aqd:ExceedanceArea/aqd:Classification shall resolve to a valid concept in
+        {xmlconv:buildResultRowsWithTotalCount("G19", <span>./aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType xlink:href attribute shall resolve to one of
+            <a href="{ $xmlconv:OBJECTIVETYPE_VOCABULARY }">{ $xmlconv:OBJECTIVETYPE_VOCABULARY }</a>
+            Allowed items: {xmlconv:buildVocItemsList("G19", $xmlconv:OBJECTIVETYPE_VOCABULARY, $xmlconv:VALID_OBJECTIVETYPE_IDS)}</span>,
+            (), (), "aqd:objectivetype", "", "", "", $invalidObjectiveTypes)}
+
+        {xmlconv:buildResultRowsWithTotalCount("G20", <span>The content of ./aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:EnvironmentalObjective/aqd:reportingMetric shall resolve to a valid concept in
+            <a href="{ $xmlconv:REPMETRIC_VOCABULARY }">{ $xmlconv:REPMETRIC_VOCABULARY }</a> > that must be one of
+            {xmlconv:buildVocItemsList("G11", $xmlconv:REPMETRIC_VOCABULARY, $xmlconv:VALID_REPMETRIC_IDS)}</span>,
+            (), (), "aqd:reportingMetric", "", "", "", $invalidReportingMetric)}
+
+        {xmlconv:buildResultRows("G21", "If
+                    ./aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType xlink:href attribute EQUALS http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/CL (Critical)
+                        ./aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget xlink:href attribute has to be http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V (Vegetation)",
+            $invalidobjectiveTypesForVEG, (), "", "No invalid objective types for Vegetation found", " invalid", "", $tblInvalidobjectiveTypesForVEG)}
+
+        {xmlconv:buildResultRows("G25", "Surface area must be measured in km2",
+            $invalidSurfaceAreas, (), "", "No invalid surface area units found", " invalid", "", $tblInvalidSurfaceAreas)}
+        {xmlconv:buildResultRows("G26", "Road Length must be measured in km",
+            $invalidRoadLengths, (), "", "No invalid road length units found", " invalid", "", $tblinvalidRoadLengths)}
+        {xmlconv:buildResultRowsWithTotalCount("G27", <span>The content of /aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:areaClassification xlink:href attribute shall resolve to
+           a concept in
             <a href="{ $xmlconv:AREACLASSIFICATION_VOCABULARY }">{ $xmlconv:AREACLASSIFICATION_VOCABULARY }</a></span>,
             (), (), "aqd:reportingMetric", "", "", "", $invalidClassification)}
 
@@ -468,16 +501,16 @@ return
 
 
 
-declare function xmlconv:checkVocabularyConceptValues($featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string, $limitedIds as xs:string*)
+declare function xmlconv:checkVocabularyConceptValues($parentObject as xs:string, $featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string, $limitedIds as xs:string*)
 as element(tr)*{
-    xmlconv:checkVocabularyConceptValues($featureType, $element, $vocabularyUrl, $limitedIds, "")
+    xmlconv:checkVocabularyConceptValues($parentObject, $featureType, $element, $vocabularyUrl, $limitedIds, "")
 };
 
-declare function xmlconv:checkVocabularyConceptValues($featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string)
+declare function xmlconv:checkVocabularyConceptValues($parentObject, $featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string)
 as element(tr)*{
-    xmlconv:checkVocabularyConceptValues($featureType, $element, $vocabularyUrl, (), "")
+    xmlconv:checkVocabularyConceptValues($parentObject, $featureType, $element, $vocabularyUrl, (), "")
 };
-declare function xmlconv:checkVocabularyConceptValues($featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string, $limitedIds as xs:string*, $vocabularyType as xs:string)
+declare function xmlconv:checkVocabularyConceptValues($parentObject as xs:string, $featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string, $limitedIds as xs:string*, $vocabularyType as xs:string)
 as element(tr)*{
 
     let $sparql :=
@@ -487,7 +520,13 @@ as element(tr)*{
             xmlconv:getConceptUrlSparql($vocabularyUrl)
     let $crConcepts := xmlconv:executeSparqlQuery($sparql)
 
-    for $rec in doc($source_url)//gml:featureMember/descendant::*[name()=$featureType]
+    let $allRecords :=
+    if ($parentObject != "") then
+        doc($source_url)//gml:featureMember/descendant::*[name()=$parentObject]/descendant::*[name()=$featureType]
+    else
+        doc($source_url)//gml:featureMember/descendant::*[name()=$featureType]
+
+    for $rec in $allRecords
     for $conceptUrl in $rec/child::*[name() = $element]/@xlink:href
     let $conceptUrl := normalize-space($conceptUrl)
 
@@ -545,14 +584,10 @@ as xs:boolean
     count($crConcepts//sparql:result/sparql:binding[@name="concepturl" and sparql:uri=$concept]) > 0
 };
 
-declare function xmlconv:invalidPollutantRows()
-as element(tr)* {
-    xmlconv:isinvalidDDConceptLimited("aqd:AQD_Attainment", "aqd:pollutant",  $xmlconv:POLLUTANT_VOCABULARY, $xmlconv:VALID_POLLUTANT_IDS)
-};
 
-declare function xmlconv:isinvalidDDConceptLimited($featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string, $allowedIds as xs:string*)
+declare function xmlconv:isinvalidDDConceptLimited($parentObject as xs:string, $featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string, $allowedIds as xs:string*)
 as element(tr)* {
-    xmlconv:checkVocabularyConceptValues($featureType,$element,$vocabularyUrl, $allowedIds)
+    xmlconv:checkVocabularyConceptValues($parentObject, $featureType, $element, $vocabularyUrl, $allowedIds)
 };
 
 
@@ -573,6 +608,23 @@ as element(tr)*{
 };
 
 
+declare function xmlconv:buildVocItemsList($ruleId as xs:string, $vocabularyUrl as xs:string, $ids as xs:string*)
+as element(div) {
+    let $list :=
+        for $id in $ids
+        let $refUrl := concat($vocabularyUrl, $id)
+        return
+            <li><a href="{ $refUrl }">{ $refUrl } </a></li>
+
+
+    return
+     <div>
+         <a id='vocLink-{$ruleId}' href='javascript:toggleItem("vocValuesDiv","vocLink", "{$ruleId}", "item")'>Show items</a>
+         <div id="vocValuesDiv-{$ruleId}" style="display:none"><ul>{ $list }</ul></div>
+     </div>
+
+
+};
 
 (:
  : ======================================================================
