@@ -23,6 +23,8 @@ declare namespace base2 = "http://inspire.ec.europa.eu/schemas/base2/1.0";
 declare namespace sparql = "http://www.w3.org/2005/sparql-results#";
 declare namespace xlink = "http://www.w3.org/1999/xlink";
 
+declare variable $xmlconv:AQ_MANAGEMENET_ZONE := "http://inspire.ec.europa.eu/codeList/ZoneTypeCode/airQualityManagementZone";
+
 (:~ declare Content Registry SPARQL endpoint:)
 declare variable $xmlconv:CR_SPARQL_URL := "http://cr.eionet.europa.eu/sparql";
 
@@ -33,16 +35,54 @@ declare variable $xmlconv:ISO2_CODES as xs:string* := ("AL","AT","BA","BE","BG",
 (: Variable given as an external parameter by the QA service                                                 :)
 (:===================================================================:)
 
-declare variable $source_url as xs:string external;
 
+declare variable $source_url as xs:string external;
 (:
-declare variable $source_url := "../test/D_GB_Zones.xml";
+declare variable $source_url := "../test/B.2013_3_.xml";
 declare variable $source_url := "../test/D_GB_Zones.xml";
 declare variable $source_url as xs:untypedAtomic external;
 Change it for testing locally:
 declare variable $source_url as xs:string external;
 declare variable $source_url := "http://cdr.eionet.europa.eu/gb/eu/aqd/e2a/colutn32a/envubnpvw/B_GB_Zones.xml";
 :)
+
+
+
+(:~
+: JavaScript
+:)
+declare function xmlconv:javaScript(){
+
+    let $js :=
+           <script type="text/javascript">
+               <![CDATA[
+    function toggle(divName, linkName, checkId) {{
+         toggleItem(divName, linkName, checkId, 'record');
+    }}
+
+
+    function toggleItem(divName, linkName, checkId, itemLabel) {{
+        divName = divName + "-" + checkId;
+        linkName = linkName + "-" + checkId;
+
+        var elem = document.getElementById(divName);
+        var text = document.getElementById(linkName);
+        if(elem.style.display == "inline") {{
+            elem.style.display = "none";
+            text.innerHTML = "Show " + itemLabel + "s";
+            }}
+            else {{
+              elem.style.display = "inline";
+              text.innerHTML = "Hide " + itemLabel + "s";
+            }}
+      }}
+
+                ]]>
+           </script>
+    return
+        <script type="text/javascript">{normalize-space($js)}</script>
+};
+
 
 (: removes the file part from the end of URL and appends 'xml' for getting the envelope xml description :)
 declare function xmlconv:getEnvelopeXML($url as xs:string) as xs:string{
@@ -216,7 +256,27 @@ let $countZones := count($docRoot//aqd:AQD_Zone)
 (: B3 :)
 let $countZonesWithAmGeometry := count($docRoot//aqd:AQD_Zone/am:geometry)
 (: B4 :)
-let $countZonesWithLAU := count($docRoot//aqd:AQD_Zone/aqd:LAU)
+let $countZonesWithLAU := count($docRoot//aqd:AQD_Zone[not(empty(aqd:LAU)) or not(empty(aqd:shapefileLink))])
+
+(: B7 :)
+(: Compile & feedback a list of aqd:aqdZoneType, aqd:pollutantCode, aqd:protectionTarget combinations in the delivery :)
+let $allB7Combinations :=
+for $pollutant in $docRoot//aqd:Pollutant
+return concat(data($pollutant/../../aqd:aqdZoneType/@xlink:href), "#", data($pollutant/aqd:pollutantCode/@xlink:href), "#",data($pollutant/aqd:protectionTarget/@xlink:href))
+
+let $allB7Combinations := fn:distinct-values($allB7Combinations)
+let $tblB7 :=
+    for $rec in $allB7Combinations
+    let $zoneType := substring-before($rec, "#")
+    let $tmpStr := substring-after($rec, concat($zoneType, "#"))
+    let $pollutant := substring-before($tmpStr, "#")
+    let $protTarget := substring-after($tmpStr, "#")
+    return
+        <tr>
+            <td title="aqd:aqdZoneType">{xmlconv:checkLink($zoneType)}</td>
+            <td title="aqd:pollutantCode">{xmlconv:checkLink($pollutant)}</td>
+            <td title="aqd:protectionTarget">{xmlconv:checkLink($protTarget)}</td>
+        </tr>
 
 (: B8 :)
 let $gmlIds := $docRoot//aqd:AQD_Zone/lower-case(normalize-space(@gml:id))
@@ -226,19 +286,20 @@ let $duplicateGmlIds := distinct-values(
     return
         $id
     )
-let $efInspireIds := for $id in $docRoot//aqd:AQD_Zone/ef:inspireId
+let $amInspireIds := for $id in $docRoot//aqd:AQD_Zone/am:inspireId
                      return
                         lower-case(concat("[", normalize-space($id/base:Identifier/base:localId), ", ", normalize-space($id/base:Identifier/base:namespace),
                             ", ", normalize-space($id/base:Identifier/base:versionId), "]"))
-let $duplicateefInspireIds := distinct-values(
-    for $id in $docRoot//aqd:AQD_Zone/ef:inspireId
+let $duplicateamInspireIds := distinct-values(
+    for $id in $docRoot//aqd:AQD_Zone/am:inspireId
     let $key :=
         concat("[", normalize-space($id/base:Identifier/base:localId), ", ", normalize-space($id/base:Identifier/base:namespace),
             ", ", normalize-space($id/base:Identifier/base:versionId), "]")
-    where string-length(normalize-space($id/base:Identifier/base:localId)) > 0 and count(index-of($efInspireIds, lower-case($key))) > 1
+    where string-length(normalize-space($id/base:Identifier/base:localId)) > 0 and count(index-of($amInspireIds, lower-case($key))) > 1
     return
         $key
     )
+
 
 let $aqdInspireIds := for $id in $docRoot//aqd:AQD_Zone/aqd:inspireId
                      return
@@ -256,9 +317,9 @@ let $duplicateaqdInspireIds := distinct-values(
 
 
 let $countGmlIdDuplicates := count($duplicateGmlIds)
-let $countefInspireIdDuplicates := count($duplicateefInspireIds)
+let $countamInspireIdDuplicates := count($duplicateamInspireIds)
 let $countaqdInspireIdDuplicates := count($duplicateaqdInspireIds)
-let $countB8duplicates := $countGmlIdDuplicates + $countefInspireIdDuplicates + $countaqdInspireIdDuplicates
+let $countB8duplicates := $countGmlIdDuplicates + $countamInspireIdDuplicates + $countaqdInspireIdDuplicates
 
 (: B9 The base:localId needs to be unique within namespace.  :)
 let $amInspireIds := $docRoot//aqd:AQD_Zone/am:inspireId/base:Identifier/concat(lower-case(normalize-space(base:namespace)), '##',
@@ -270,6 +331,8 @@ let $duplicateAmInspireIds := distinct-values(
     return
         concat(normalize-space($identifier/base:namespace), ':', normalize-space($identifier/base:localId))
     )
+
+(: FIXME  :)
 (: wrong rule here.
 The element that "shall be an unique code for network starting with ISO2-country code" is aqd:zoneCode
 with the exception of UnitedKingdom that might use UK instead of GB
@@ -284,6 +347,10 @@ let $invalidIsoAmInspireIds := distinct-values(
 :)
 let $countAmInspireIdDuplicates := count($duplicateAmInspireIds)
 let $countB9duplicates := $countAmInspireIdDuplicates
+
+
+(: B11 :)
+let $emptyNames := distinct-values($docRoot//aqd:AQD_Zone[normalize-space(am:name)=""]/@gml:id)
 
 (: B13 :)
 let $langCodeSparql := xmlconv:getLangCodesSparql()
@@ -314,6 +381,59 @@ let $unknownPronunciation  := distinct-values($docRoot//aqd:AQD_Zone[count(am:na
 let $invalidPosListDimension  := distinct-values($docRoot//aqd:AQD_Zone/am:geometry/gml:Polygon/gml:exterior/gml:LinearRing/gml:posList[@srsDimension != "2"]/
             concat(../../../../../@gml:id, ": srsDimension=", @srsDimension))
 
+(: B23 :)
+(: ./am:zoneType value shall resolve to http://inspire.ec.europa.eu/codeList/ZoneTypeCode/airQualityManagementZone :)
+let $invalidManagementZones  := distinct-values($docRoot//aqd:AQD_Zone/am:zoneType[@xlink:href != $xmlconv:AQ_MANAGEMENET_ZONE]/
+            concat(../@gml:id, ": zoneType=", @xlink:href))
+
+(: B24 :)
+(: ./am:designationPeriod/gml:TimePeriod/gml:beginPosition shall be less than ./am:designationPeri/gml:TimePeriod/gml:endPosition. :)
+let $invalidPosition  :=
+    for $timePeriod in $docRoot//aqd:AQD_Zone/am:designationPeriod/gml:TimePeriod
+        let $beginPosition := if (normalize-space($timePeriod/gml:beginPosition) castable as xs:date) then xs:date($timePeriod/gml:beginPosition) else ()
+        let $endPosition := if (normalize-space($timePeriod/gml:endPosition)  castable as xs:date) then xs:date($timePeriod/gml:endPosition) else ()
+        return
+        if (not(empty($beginPosition)) and not(empty($endPosition)) and $beginPosition > $endPosition) then
+            concat($timePeriod/../../@gml:id, ": gml:beginPosition=", $beginPosition, ": gml:endPosition=", $endPosition)
+        else
+            ()
+
+(: B27 :)
+(: ./am:beginLifespanVersion shall be a valid historical date for the start of the version of the zone in extended ISO format.
+If an am:endLifespanVersion exists its value shall be greater than the am:beginLifespanVersion :)
+let $invalidLifespanVer  :=
+    for $rec in $docRoot//aqd:AQD_Zone
+        let $beginPeriod := if (normalize-space($rec/am:beginLifespanVersion) castable as xs:dateTime) then xs:dateTime($rec/am:beginLifespanVersion) else ()
+        let $endPeriod := if (normalize-space($rec/am:endLifespanVersion)  castable as xs:dateTime) then xs:dateTime($rec/am:endLifespanVersion) else ()
+        return
+        if ((not(empty($beginPeriod)) and not(empty($endPeriod)) and $beginPeriod > $endPeriod) or empty($beginPeriod)) then
+            concat($rec/@gml:id, ": am:beginLifespanVersion=", data($rec/am:beginLifespanVersion),
+            if (not(empty($endPeriod))) then concat(": am:endLifespanVersion=", data($rec/am:endLifespanVersion)) else "")
+        else
+            ()
+(: B28 :)
+(: ./am:beginLifespanVersion shall be LESS THAN OR EQUAL TO ./am:designationPeriod/gml:TimePeriod/gml:endPosition
+./am:beginLifespanVersion shall be GREATER THAN OR EQUAL TO
+./am:designationPeriod/gml:TimePeriod/gml:beginPosition
+:)
+let $invalidLifespanVerB28  :=
+    for $rec in $docRoot//aqd:AQD_Zone
+        let $beginPeriodDate := substring-before(normalize-space($rec/am:beginLifespanVersion), 'T')
+        let $beginPeriod := if ($beginPeriodDate castable as xs:date) then xs:date($beginPeriodDate) else ()
+        let $beginPosition := if (normalize-space($rec/am:designationPeriod/gml:TimePeriod/gml:beginPosition) castable as xs:date) then xs:date($rec/am:designationPeriod/gml:TimePeriod/gml:beginPosition) else ()
+        let $endPosition := if (normalize-space($rec/am:designationPeriod/gml:TimePeriod/gml:endPosition)  castable as xs:date) then xs:date($rec/am:designationPeriod/gml:TimePeriod/gml:endPosition) else ()
+
+        return
+        if (
+        (not(empty($beginPeriod)) and not(empty($endPosition)) and $beginPeriod > $endPosition) or
+         (not(empty($beginPeriod)) and not(empty($beginPosition)) and $beginPeriod < $beginPosition)
+        ) then
+            concat($rec/@gml:id, ": am:beginLifespanVersion=", data($rec/am:beginLifespanVersion),
+                " gml:beginPosition=", $beginPosition," gml:endPosition=", $endPosition)
+        else
+            ()
+
+
 (: B30 :)
 let $invalidLegalBasisName  := distinct-values($docRoot//aqd:AQD_Zone/am:legalBasis/base2:LegislationCitation[normalize-space(base2:name) != "2011/850/EC"]/
             concat(../../@gml:id, ": base2:name=", if (string-length(base2:name) > 20) then concat(substring(base2:name, 1, 20), "...") else base2:name))
@@ -327,6 +447,16 @@ let $invalidLegalBasisLink  := distinct-values($docRoot//aqd:AQD_Zone/am:legalBa
 (: B35 :)
 let $invalidResidentPopulation  := distinct-values($docRoot//aqd:AQD_Zone[not(count(aqd:residentPopulation)>0 and aqd:residentPopulation castable as xs:integer and number(aqd:residentPopulation) > 0)]/
             concat(@gml:id, ": aqd:residentPopulation=", if (string-length(aqd:residentPopulation) = 0) then "missing" else aqd:residentPopulation))
+
+(: B36 :)
+(: ./aqd:residentPopulationYear/gml:TimeInstant/gml:timePosition shall cite the year in which the resident population was estimated in yyyy format :)
+let $invalidPopulationYear :=
+for $zone in $docRoot//aqd:AQD_Zone
+return
+    if (xmlconv:isInvalidYear(data($zone/aqd:residentPopulationYear/gml:TimeInstant/gml:timePosition))) then
+        concat($zone/@gml:id, ": gml:timePosition=",data($zone/aqd:residentPopulationYear/gml:TimeInstant/gml:timePosition))
+    else ()
+
 (: B37 :)
 let $invalidArea  := distinct-values($docRoot//aqd:AQD_Zone[not(count(aqd:area)>0 and number(aqd:area) and number(aqd:area) > 0)]/
             concat(@gml:id, ": aqd:area=", if (string-length(aqd:area) = 0) then "missing" else aqd:area))
@@ -366,12 +496,18 @@ return
         </tr>
         <tr>
             <td style="vertical-align:top;">{ xmlconv:getBullet("B4", "info") }</td>
-            <th style="vertical-align:top;">The number of zones designated with coordinates via the ./aqd:LAU element</th>
+            <th style="vertical-align:top;">The number of zones designated with coordinates via the ./aqd:LAU element and the ./aqd:shapefileLink element</th>
             <td style="vertical-align:top;">{ $countZonesWithLAU }</td>
         </tr>
+
+
+        {xmlconv:buildResultRowsHTML("B7", "Total number  aqd:aqdZoneType, aqd:pollutantCode, aqd:protectionTarget combinations ",
+            (), (), "", string(count($tblB7)), "", "", $tblB7)}
+
+
         <tr>
             <td style="vertical-align:top;">{ xmlconv:getBullet("B8", if ($countB8duplicates = 0) then "info" else "error") }</td>
-            <th style="vertical-align:top;">All gml:id attributes, ef:inspireId and aqd:inspireId elements shall have unique content</th>
+            <th style="vertical-align:top;">All gml:id attributes, am:inspireId and aqd:inspireId elements shall have unique content</th>
             <td style="vertical-align:top;">{
                 if ($countB8duplicates = 0) then
                     "All Ids are unique"
@@ -388,10 +524,10 @@ return
                 ()
         }
         {
-            if ($countefInspireIdDuplicates > 0) then
+            if ($countamInspireIdDuplicates > 0) then
                 <tr style="font-size: 0.9em;color:grey;">
-                    <td colspan="2" style="text-align:right;vertical-align:top;">ef:inspireId - </td>
-                    <td style="font-style:italic;vertical-align:top;">{ string-join($duplicateefInspireIds, ", ")}</td>
+                    <td colspan="2" style="text-align:right;vertical-align:top;">am:inspireId - </td>
+                    <td style="font-style:italic;vertical-align:top;">{ string-join($duplicateamInspireIds, ", ")}</td>
                 </tr>
             else
                 ()
@@ -423,6 +559,10 @@ return
             else
                 ()
         }
+
+        {xmlconv:buildResultRows("B11", "./am:name xsl:nil=""false""",
+            $emptyNames, "aqd:AQD_Zone/@gml:id", "No empty values found", " empty name", "")}
+
         {xmlconv:buildResultRows("B13", <span>/aqd:AQD_Zone/am:name/gn:GeographicalName/gn:language value shall be the language of the name,
  given as a three letters code, in accordance with either <a href="http://dd.eionet.europa.eu/vocabulary/common/iso639-3/view">ISO 639-3</a> or
  <a href="http://dd.eionet.europa.eu/vocabulary/common/iso639-5/view">ISO 639-5</a>.</span>,
@@ -438,6 +578,14 @@ return
             $unknownPronunciation, "aqd:AQD_Zone/@gml:id", "No unknown values found", " unknwon reason", "")}
         {xmlconv:buildResultRows("B21", "./am:geometry/gml:Polygon/gml:exterior/gml:LinearRing/gml:posList the srsDimension attribute shall resolve to ""2"" to allow the x &amp; y-coordinate of the feature of interest",
             $invalidPosListDimension, "aqd:AQD_Zone/@gml:id", "All srsDimension attributes resolve to ""2""", " invalid attribute", "")}
+        {xmlconv:buildResultRows("B23", "./am:zoneType shall resolve to http://inspire.ec.europa.eu/codeList/ZoneTypeCode/airQualityManagementZone",
+            $invalidManagementZones, "aqd:AQD_Zone/@gml:id", "All zoneType attributes are valid", " invalid attribute", "")}
+        {xmlconv:buildResultRows("B24", "./am:designationPeriod/gml:TimePeriod/gml:beginPosition shall be less than ./am:designationPeri/gml:TimePeriod/gml:endPosition.",
+            $invalidPosition, "gml:TimePeriod gml:id", "All positions are valid", " invalid position", "")}
+        {xmlconv:buildResultRows("B27", "./am:beginLifespanVersion shall be a valid historical date for the start of the version of the zone in extended ISO format. If an am:endLifespanVersion exists its value shall be greater than the am:beginLifespanVersion",
+            $invalidLifespanVer, "gml:id", "All LifespanVersion values are valid", " invalid value", "")}
+        {xmlconv:buildResultRows("B28", "./am:beginLifespanVersion shall be less than or equal to ./am:designationPeriod/gml:TimePeriod/gml:endPosition  ./am:beginLifespanVersion shall be greater than or equal to ./am:designationPeriod/gml:TimePeriod/gml:beginPosition ",
+            $invalidLifespanVerB28, "gml:id", "All values are valid ", " invalid value", "")}
         {xmlconv:buildResultRows("B30", "./am:legalBasis/base2:LegislationCitation/base2:name value shall be ""2011/850/EC""",
             $invalidLegalBasisName, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "")}
         {xmlconv:buildResultRows("B31", "./am:legalBasis/base2:LegislationCitation/base2:date value shall be ""2011-12-12""",
@@ -446,6 +594,11 @@ return
             $invalidLegalBasisLink, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "")}
         {xmlconv:buildResultRows("B35", "./aqd:residentPopulation shall be an integer value GREATER THAN 0 (zero)",
             $invalidResidentPopulation, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "")}
+        {xmlconv:buildResultRows("B36", "./aqd:residentPopulationYear/gml:TimeInstant/gml:timePosition shall cite the year in which the resident population was estimated in yyyy format",
+            $invalidPopulationYear, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "")}
+
+
+
         {xmlconv:buildResultRows("B37", "./aqd:area the value will be a decimal number GREATER THAN 0 (zero)",
             $invalidArea, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "")}
 
@@ -459,6 +612,171 @@ return
 ;
 
 
+declare function xmlconv:checkLink($text as xs:string*)
+as element(span)*{
+    for $c at $pos in $text
+    return
+        <span>{
+            if (starts-with($c, "http://")) then <a href="{$c}">{$c}</a> else $c
+        }{  if ($pos < count($text)) then ", " else ""
+        }</span>
+
+}
+;
+
+(:
+    Builds HTML table rows for rules.
+:)
+declare function xmlconv:buildResultRowsHTML($ruleCode as xs:string, $text, $invalidStrValues as xs:string*, $invalidValues as element()*,
+    $valueHeading as xs:string, $validMsg as xs:string, $invalidMsg as xs:string, $skippedMsg, $recordDetails as element(tr)*)
+as element(tr)*{
+    let $countInvalidValues := count($invalidStrValues) + count($invalidValues)
+
+    let $recordDetails := if (count($invalidValues) > 0) then $invalidValues else $recordDetails
+
+    let $bulletType := if (string-length($skippedMsg) > 0) then "skipped" else if ($countInvalidValues = 0) then "info" else "error"
+let $result :=
+    (
+        <tr style="border-top:1px solid #666666;">
+            <td style="padding-top:3px;vertical-align:top;">{ xmlconv:getBullet($ruleCode, $bulletType) }</td>
+            <th style="padding-top:3px;vertical-align:top;text-align:left;">{ $text }</th>
+            <td style="padding-top:3px;vertical-align:top;"><span style="font-size:1.3em;">{
+                if (string-length($skippedMsg) > 0) then
+                    $skippedMsg
+                else if ($countInvalidValues = 0) then
+                    $validMsg
+                else
+                    concat($countInvalidValues, $invalidMsg, substring("s ", number(not($countInvalidValues > 1)) * 2) ,"found") }
+                </span>{
+                if ($countInvalidValues > 0 or count($recordDetails)>0) then
+                    <a id='feedbackLink-{$ruleCode}' href='javascript:toggle("feedbackRow","feedbackLink", "{$ruleCode}")' style="padding-left:10px;">Show records</a>
+                else
+                    ()
+                }
+             </td>
+             <td></td>
+        </tr>,
+            if (count($recordDetails)>0) then
+                <tr>
+                    <td></td>
+                    <td colspan="3">
+                        <table class="datatable" style="font-size: 0.9em;text-align:left;vertical-align:top;display:none;border:0px;" id="feedbackRow-{$ruleCode}">
+                            <tr>{
+                                for $th in $recordDetails[1]//td return <th>{ data($th/@title) }</th>
+                            }</tr>
+                            {$recordDetails}
+                        </table>
+                    </td>
+                </tr>
+            else if (count($invalidStrValues)  > 0) then
+                <tr>
+                    <td></td>
+                    <td colspan="3">
+                        <table style="display:none;margin-top:1em;" id="feedbackRow-{$ruleCode}">
+                            <tr style="font-size: 0.9em;color:#666666;">
+                                <td></td>
+                                <th colspan="3" style="text-align:right;vertical-align:top;background-color:#F6F6F6;font-weight: bold;">{ $valueHeading}</th>
+                                <td style="font-style:italic;vertical-align:top;">{ string-join($invalidStrValues, ", ")}</td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+
+            else
+                ()
+    )
+return $result
+
+};
+
+
+declare function xmlconv:buildResultRowsWithTotalCount($ruleCode as xs:string, $text, $invalidStrValues as xs:string*, $invalidValues as element()*,
+    $valueHeading as xs:string, $validMsg as xs:string, $invalidMsg as xs:string, $skippedMsg, $recordDetails as element(tr)*)
+as element(tr)*{
+
+    let $countCheckedRecords := count($recordDetails)
+    let $invalidValues := $recordDetails[./@isvalid = "false"]
+
+    let $skippedMsg := if ($countCheckedRecords = 0) then "No values found to check" else ""
+    let $invalidMsg := if (count($invalidValues) > 0) then concat(" invalid value", substring("s ", number(not(count($invalidValues) > 1)) * 2), " found out of ", $countCheckedRecords, " checked") else ""
+    let $validMsg := if (count($invalidValues) = 0) then concat("Checked ", $countCheckedRecords, " value", substring("s", number(not($countCheckedRecords > 1)) * 2), ", all valid") else ""
+
+    return
+        xmlconv:buildResultRowsHTML($ruleCode, $text, $invalidStrValues, $invalidValues,
+            $valueHeading, $validMsg, $invalidMsg, $skippedMsg, ())
+};
+
+
+declare function xmlconv:checkVocabularyConceptValues($featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string)
+as element(tr)*{
+    xmlconv:checkVocabularyConceptValues($featureType, $element, $vocabularyUrl, "")
+};
+declare function xmlconv:checkVocabularyConceptValues($featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string, $vocabularyType as xs:string)
+as element(tr)*{
+
+    let $sparql :=
+        if ($vocabularyType = "collection") then
+            xmlconv:getCollectionConceptUrlSparql($vocabularyUrl)
+        else
+            xmlconv:getConceptUrlSparql($vocabularyUrl)
+    let $crConcepts := xmlconv:executeSparqlQuery($sparql)
+
+    for $rec in doc($source_url)//gml:featureMember/descendant::*[name()=$featureType]
+    for $conceptUrl in $rec/child::*[name() = $element]/@xlink:href
+    let $conceptUrl := normalize-space($conceptUrl)
+
+    where string-length($conceptUrl) > 0
+
+    return
+        <tr isvalid="{ xmlconv:isMatchingVocabCode($crConcepts, $conceptUrl) }">
+            <td title="Feature type">{ $featureType }</td>
+            <td title="gml:id">{data($rec/@gml:id)}</td>
+            <td title="ef:inspireId">{data($rec/ef:inspireId/base:Identifier/base:localId)}</td>
+            <td title="aqd:inspireId">{data($rec/aqd:inspireId/base:Identifier/base:localId)}</td>
+            <td title="ef:name">{data($rec/ef:name)}</td>
+            <td title="{ $element }" style="color:red">{$conceptUrl}</td>
+        </tr>
+
+};
+
+declare function xmlconv:getConceptUrlSparql($scheme as xs:string)
+as xs:string
+{
+    concat("PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+    SELECT ?concepturl ?label
+    WHERE {
+      ?concepturl skos:inScheme <", $scheme, ">;
+                  skos:prefLabel ?label
+    }")
+};
+declare function xmlconv:getCollectionConceptUrlSparql($collection as xs:string)
+as xs:string
+{
+    concat("PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+    SELECT ?concepturl
+    WHERE {
+        GRAPH <", $collection, "> {
+            <", $collection, "> skos:member ?concepturl .
+            ?concepturl a skos:Concept
+        }
+    }")
+};
+
+declare function xmlconv:isMatchingVocabCode($crConcepts as element(sparql:results), $concept as xs:string)
+as xs:boolean
+{
+    count($crConcepts//sparql:result/sparql:binding[@name="concepturl" and sparql:uri=$concept]) > 0
+};
+
+declare function xmlconv:isInvalidYear($value as xs:string?) {
+    let $year := if (empty($value)) then ()
+    else
+        if ($value castable as xs:integer) then xs:integer($value) else ()
+
+    return
+        if ((empty($year) and empty($value)) or (not(empty($year)) and $year > 1800 and $year < 9999)) then fn:false() else fn:true()
+
+};
 (:
  : ======================================================================
  : Main function
@@ -471,6 +789,7 @@ let $result := if ($countZones > 0) then xmlconv:checkReport($source_url) else (
 
 return
 <div class="feedbacktext">
+    { xmlconv:javaScript() }
     <div>
         <h2>Check air quality zones - Dataflow B</h2>
         {
