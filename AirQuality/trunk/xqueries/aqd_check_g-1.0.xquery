@@ -49,13 +49,13 @@ declare variable $xmlconv:POLLUTANT_VOCABULARY as xs:string := "http://dd.eionet
 declare variable $xmlconv:REPMETRIC_VOCABULARY as xs:string := "http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/";
 declare variable $xmlconv:OBJECTIVETYPE_VOCABULARY as xs:string := "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/";
 declare variable $xmlconv:AREACLASSIFICATION_VOCABULARY as xs:string := "http://dd.eionet.europa.eu/vocabulary/aq/areaclassification/";
-
-declare variable $source_url as xs:string external;
-
+declare variable $source_url := "http://cdrtest.eionet.europa.eu/hr/eu/aqd/g/envu_2xna/HR_G_201407281307.xml";
 (:
-declare variable $source_url := "../test/HR_G_201407281307.xml";
+declare variable $source_url := "../test/2_HR_G_201407281307.xml";
 declare variable $source_url := "../test/ES_G_Attainment.xml";
 declare variable $source_url := "../test/G_GB_Attainment_2012_v1.4.xml";
+declare variable $source_url := "../test/HR_G_201407281307.xml";
+declare variable $source_url as xs:string external;
 Change it for testing locally:
 declare variable $source_url := "http://cdr.eionet.europa.eu/gb/eu/aqd/e2a/colutn32a/envubnpvw/B_GB_Zones.xml";
 :)
@@ -476,8 +476,8 @@ return
             (), (), "aqd:objectivetype", "", "", "", $invalidObjectiveTypes)}
 
         {xmlconv:buildResultRowsWithTotalCount("G20", <span>The content of ./aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:EnvironmentalObjective/aqd:reportingMetric shall resolve to a valid concept in
-            <a href="{ $xmlconv:REPMETRIC_VOCABULARY }">{ $xmlconv:REPMETRIC_VOCABULARY }</a> > that must be one of
-            {xmlconv:buildVocItemsList("G11", $xmlconv:REPMETRIC_VOCABULARY, $xmlconv:VALID_REPMETRIC_IDS)}</span>,
+            <a href="{ $xmlconv:REPMETRIC_VOCABULARY }">{ $xmlconv:REPMETRIC_VOCABULARY }</a> that must be one of
+            {xmlconv:buildVocItemsList("G20", $xmlconv:REPMETRIC_VOCABULARY, $xmlconv:VALID_REPMETRIC_IDS)}</span>,
             (), (), "aqd:reportingMetric", "", "", "", $invalidReportingMetric)}
 
         {xmlconv:buildResultRows("G21", "If
