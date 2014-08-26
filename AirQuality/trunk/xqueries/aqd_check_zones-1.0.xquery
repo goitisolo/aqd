@@ -38,6 +38,7 @@ declare variable $xmlconv:ISO2_CODES as xs:string* := ("AL","AT","BA","BE","BG",
 
 declare variable $source_url as xs:string external;
 (:
+declare variable $source_url := "../test/FR.xml";
 declare variable $source_url := "../test/B.2013_3_.xml";
 declare variable $source_url as xs:string external;
 declare variable $source_url := "../test/D_GB_Zones.xml";
@@ -272,14 +273,13 @@ let $envelopeUrl := xmlconv:getEnvelopeXML($source_url)
 let $countryCode := if(string-length($envelopeUrl)>0) then lower-case(fn:doc($envelopeUrl)/envelope/countrycode) else ""
 
 (: FIXME
-let $countryCode := "gb"
+TODO: UK has GB in their delivery / is it necessary to change?
 :)
 let $countryCode := if ($countryCode = "gb") then "uk" else if ($countryCode = "gr") then "el" else $countryCode
 
 let $docRoot := doc($source_url)
 (: B1 :)
 let $countZones := count($docRoot//aqd:AQD_Zone)
-
 
 (: B2 :)
 let $nameSpaces := distinct-values($docRoot//base:namespace)
@@ -304,7 +304,6 @@ let $tblB2 :=
 let $countZonesWithAmGeometry := count($docRoot//aqd:AQD_Zone/am:geometry)
 (: B4 :)
 let $countZonesWithLAU := count($docRoot//aqd:AQD_Zone[not(empty(aqd:LAU)) or not(empty(aqd:shapefileLink))])
-
 (: B7 :)
 (: Compile & feedback a list of aqd:aqdZoneType, aqd:pollutantCode, aqd:protectionTarget combinations in the delivery :)
 let $allB7Combinations :=
