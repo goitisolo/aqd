@@ -24,6 +24,7 @@ declare namespace sparql = "http://www.w3.org/2005/sparql-results#";
 declare namespace xlink = "http://www.w3.org/1999/xlink";
 
 declare variable $xmlconv:AQ_MANAGEMENET_ZONE := "http://inspire.ec.europa.eu/codeList/ZoneTypeCode/airQualityManagementZone";
+declare variable $xmlconv:ZONETYPE_VOCABULARY as xs:string := "http://dd.eionet.europa.eu/vocabulary/aq/zonetype/";
 
 (:~ declare Content Registry SPARQL endpoint:)
 declare variable $xmlconv:CR_SPARQL_URL := "http://cr.eionet.europa.eu/sparql";
@@ -35,14 +36,13 @@ declare variable $xmlconv:ISO2_CODES as xs:string* := ("AL","AT","BA","BE","BG",
 (: Variable given as an external parameter by the QA service                                                 :)
 (:===================================================================:)
 
-
 declare variable $source_url as xs:string external;
 (:
 declare variable $source_url := "../test/B.2013_3_.xml";
+declare variable $source_url as xs:string external;
 declare variable $source_url := "../test/D_GB_Zones.xml";
 declare variable $source_url as xs:untypedAtomic external;
 Change it for testing locally:
-declare variable $source_url as xs:string external;
 declare variable $source_url := "http://cdr.eionet.europa.eu/gb/eu/aqd/e2a/colutn32a/envubnpvw/B_GB_Zones.xml";
 :)
 
@@ -185,6 +185,32 @@ as xs:string
     }"
 };
 
+declare function xmlconv:getZonesSparql($nameSpaces as xs:string*)
+as xs:string
+{
+let $nameSpacesStr :=
+for $nameSpace in $nameSpaces
+    return concat("""", $nameSpace, """")
+
+let $nameSpacesStr :=
+    fn:string-join($nameSpacesStr, ",")
+
+return     concat(
+    "PREFIX aqr: <http://reference.eionet.europa.eu/aq/ontology/>
+
+    SELECT ?inspireid
+    FROM <http://rdfdata.eionet.europa.eu/airquality/zones.ttl>
+    WHERE {
+      ?zoneuri a aqr:Zone ;
+                aqr:inspireNamespace ?namespace;
+                 aqr:inspireId ?inspireid .
+    filter (?namespace in (", $nameSpacesStr,  "))
+    }"
+    )
+};
+
+
+
 declare function xmlconv:getBullet($text as xs:string, $level as xs:string)
 as element(div) {
 
@@ -253,6 +279,27 @@ let $countryCode := if ($countryCode = "gb") then "uk" else if ($countryCode = "
 let $docRoot := doc($source_url)
 (: B1 :)
 let $countZones := count($docRoot//aqd:AQD_Zone)
+
+
+(: B2 :)
+let $nameSpaces := distinct-values($docRoot//base:namespace)
+let $zonesSparql := xmlconv:getZonesSparql($nameSpaces)
+let $isZonesAvailable := string-length($zonesSparql) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($zonesSparql, "xml"))
+let $knownZones := if ($isZonesAvailable ) then distinct-values(data(xmlconv:executeSparqlQuery($zonesSparql)//sparql:binding[@name='inspireid']/sparql:literal)) else ()
+let $unknownZones :=
+for $zone in $docRoot//gml:featureMember/aqd:AQD_Zone
+    let $id := if (empty($zone/@gml:id)) then "" else data($zone/@gml:id)
+    where empty(index-of($knownZones, $id))
+    return $zone
+
+let $tblB2 :=
+    for $rec in $unknownZones
+    return
+        <tr>
+            <td title="gml:id">{data($rec/@gml:id)}</td>
+            <td title="aqd:predecessor">{if (empty($rec/aqd:predecessor)) then "not specified" else data($rec/aqd:predecessor/aqd:AQD_Zone/@gml:id)}</td>
+        </tr>
+
 (: B3 :)
 let $countZonesWithAmGeometry := count($docRoot//aqd:AQD_Zone/am:geometry)
 (: B4 :)
@@ -481,6 +528,10 @@ let $lauSkippedMsg := if (fn:string-length($countryCode) != 2) then "The test wa
     else if (not($isNutsAvailable)) then "The test was skipped - NUTS concepts are not available in CR."
     else ""
 
+(: B47 :)
+let $invalidZoneType :=
+    xmlconv:checkVocabularyConceptValues("", "aqd:AQD_Zone", "aqd:aqdZoneType", $xmlconv:ZONETYPE_VOCABULARY)
+
 
 return
     <table style="text-align:left;vertical-align:top;">
@@ -489,6 +540,10 @@ return
             <th style="vertical-align:top;">Total number of AQ zones</th>
             <td style="vertical-align:top;">{ $countZones }</td>
         </tr>
+
+        {xmlconv:buildResultRowsHTML("B2", "Total number of unkown or new records for AQ zone feature for the INSPIRE namespace ",
+            (), (), "", string(count($tblB2)), "", "", $tblB2)}
+
         <tr>
             <td style="vertical-align:top;">{ xmlconv:getBullet("B3", "info") }</td>
             <th style="vertical-align:top;">The number of zones designated with coordinates via the ./am:geometry element</th>
@@ -596,17 +651,19 @@ return
             $invalidResidentPopulation, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "")}
         {xmlconv:buildResultRows("B36", "./aqd:residentPopulationYear/gml:TimeInstant/gml:timePosition shall cite the year in which the resident population was estimated in yyyy format",
             $invalidPopulationYear, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "")}
-
-
-
         {xmlconv:buildResultRows("B37", "./aqd:area the value will be a decimal number GREATER THAN 0 (zero)",
             $invalidArea, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "")}
-
         {xmlconv:buildResultRows("B42", <span>Where ./aqd:LAU has been used
             then the reference must point to a concept in the list of <a href="http://dd.eionet.europa.eu/vocabulary/lau2/{$countryCode}/view">LAU2</a> or
              <a href="http://dd.eionet.europa.eu/vocabulary/common/nuts/view">NUTS</a></span>,
-            $invalidLau, "aqd:AQD_Zone/aqd:LAU/@xlink:href", "All values are valid", " invalid value", $lauSkippedMsg)
-            }
+            $invalidLau, "aqd:AQD_Zone/aqd:LAU/@xlink:href", "All values are valid", " invalid value", $lauSkippedMsg)}
+
+        {xmlconv:buildResultRowsWithTotalCount("B47", <span>./aqd:aqdZoneType attribute must resolve to one of  concept within
+            <a href="{ $xmlconv:ZONETYPE_VOCABULARY }">{ $xmlconv:ZONETYPE_VOCABULARY }</a></span>,
+            (), (), "aqd:reportingMetric", "", "", "", $invalidZoneType)}
+
+
+
     </table>
 }
 ;
@@ -623,6 +680,24 @@ as element(span)*{
 
 }
 ;
+
+
+
+declare function xmlconv:buildResultRowsWithTotalCount($ruleCode as xs:string, $text, $invalidStrValues as xs:string*, $invalidValues as element()*,
+    $valueHeading as xs:string, $validMsg as xs:string, $invalidMsg as xs:string, $skippedMsg, $recordDetails as element(tr)*)
+as element(tr)*{
+
+    let $countCheckedRecords := count($recordDetails)
+    let $invalidValues := $recordDetails[./@isvalid = "false"]
+
+    let $skippedMsg := if ($countCheckedRecords = 0) then "No values found to check" else ""
+    let $invalidMsg := if (count($invalidValues) > 0) then concat(" invalid value", substring("s ", number(not(count($invalidValues) > 1)) * 2), " found out of ", $countCheckedRecords, " checked") else ""
+    let $validMsg := if (count($invalidValues) = 0) then concat("Checked ", $countCheckedRecords, " value", substring("s", number(not($countCheckedRecords > 1)) * 2), ", all valid") else ""
+
+    return
+        xmlconv:buildResultRowsHTML($ruleCode, $text, $invalidStrValues, $invalidValues,
+            $valueHeading, $validMsg, $invalidMsg, $skippedMsg, ())
+};
 
 (:
     Builds HTML table rows for rules.
@@ -690,28 +765,16 @@ return $result
 };
 
 
-declare function xmlconv:buildResultRowsWithTotalCount($ruleCode as xs:string, $text, $invalidStrValues as xs:string*, $invalidValues as element()*,
-    $valueHeading as xs:string, $validMsg as xs:string, $invalidMsg as xs:string, $skippedMsg, $recordDetails as element(tr)*)
+declare function xmlconv:checkVocabularyConceptValues($parentObject as xs:string, $featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string, $limitedIds as xs:string*)
 as element(tr)*{
-
-    let $countCheckedRecords := count($recordDetails)
-    let $invalidValues := $recordDetails[./@isvalid = "false"]
-
-    let $skippedMsg := if ($countCheckedRecords = 0) then "No values found to check" else ""
-    let $invalidMsg := if (count($invalidValues) > 0) then concat(" invalid value", substring("s ", number(not(count($invalidValues) > 1)) * 2), " found out of ", $countCheckedRecords, " checked") else ""
-    let $validMsg := if (count($invalidValues) = 0) then concat("Checked ", $countCheckedRecords, " value", substring("s", number(not($countCheckedRecords > 1)) * 2), ", all valid") else ""
-
-    return
-        xmlconv:buildResultRowsHTML($ruleCode, $text, $invalidStrValues, $invalidValues,
-            $valueHeading, $validMsg, $invalidMsg, $skippedMsg, ())
+    xmlconv:checkVocabularyConceptValues($parentObject, $featureType, $element, $vocabularyUrl, $limitedIds, "")
 };
 
-
-declare function xmlconv:checkVocabularyConceptValues($featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string)
+declare function xmlconv:checkVocabularyConceptValues($parentObject, $featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string)
 as element(tr)*{
-    xmlconv:checkVocabularyConceptValues($featureType, $element, $vocabularyUrl, "")
+    xmlconv:checkVocabularyConceptValues($parentObject, $featureType, $element, $vocabularyUrl, (), "")
 };
-declare function xmlconv:checkVocabularyConceptValues($featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string, $vocabularyType as xs:string)
+declare function xmlconv:checkVocabularyConceptValues($parentObject as xs:string, $featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string, $limitedIds as xs:string*, $vocabularyType as xs:string)
 as element(tr)*{
 
     let $sparql :=
@@ -721,22 +784,35 @@ as element(tr)*{
             xmlconv:getConceptUrlSparql($vocabularyUrl)
     let $crConcepts := xmlconv:executeSparqlQuery($sparql)
 
-    for $rec in doc($source_url)//gml:featureMember/descendant::*[name()=$featureType]
+    let $allRecords :=
+    if ($parentObject != "") then
+        doc($source_url)//gml:featureMember/descendant::*[name()=$parentObject]/descendant::*[name()=$featureType]
+    else
+        doc($source_url)//gml:featureMember/descendant::*[name()=$featureType]
+
+    for $rec in $allRecords
     for $conceptUrl in $rec/child::*[name() = $element]/@xlink:href
     let $conceptUrl := normalize-space($conceptUrl)
 
     where string-length($conceptUrl) > 0
 
     return
-        <tr isvalid="{ xmlconv:isMatchingVocabCode($crConcepts, $conceptUrl) }">
-            <td title="Feature type">{ $featureType }</td>
+        <tr isvalid="{ xmlconv:isMatchingVocabCode($crConcepts, $conceptUrl) and xmlconv:isValidLimitedValue($conceptUrl, $vocabularyUrl, $limitedIds) }">
             <td title="gml:id">{data($rec/@gml:id)}</td>
-            <td title="ef:inspireId">{data($rec/ef:inspireId/base:Identifier/base:localId)}</td>
-            <td title="aqd:inspireId">{data($rec/aqd:inspireId/base:Identifier/base:localId)}</td>
-            <td title="ef:name">{data($rec/ef:name)}</td>
             <td title="{ $element }" style="color:red">{$conceptUrl}</td>
         </tr>
 
+};
+
+
+declare function xmlconv:isValidLimitedValue($conceptUrl as xs:string, $vocabularyUrl as xs:string, $limitedIds as xs:string*)
+as xs:boolean {
+    let $limitedUrls :=
+      for $id in $limitedIds
+      return concat($vocabularyUrl, $id)
+
+    return
+        empty($limitedIds) or not(empty(index-of($limitedUrls, $conceptUrl)))
 };
 
 declare function xmlconv:getConceptUrlSparql($scheme as xs:string)
@@ -802,5 +878,37 @@ return
 </div>
 
 };
+
+declare function xmlconv:aproceed($s as xs:string) {
+let $docRoot := doc("../test/B.2013_3_.xml")
+
+let $nameSpaces := distinct-values(data($docRoot//base:namespace))
+let $zonesSparql := xmlconv:getZonesSparql($nameSpaces)
+let $isZonesAvailable := string-length($zonesSparql) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($zonesSparql, "xml"))
+let $knownZones := if ($isZonesAvailable ) then distinct-values(data(xmlconv:executeSparqlQuery($zonesSparql)//sparql:binding[@name='inspireid']/sparql:literal)) else ()
+
+
+let $unknownZones :=
+for $zone in $docRoot//aqd:AQD_Zone
+    let $id := if (empty($zone/@gml:id)) then "" else data($zone/@gml:id)
+    where empty(index-of($knownZones, $id))
+return $zone
+
+let $dv := distinct-values($unknownZones/@gml:id)
+
+let $tblB2 :=
+    for $rec in $unknownZones
+    return
+        <tr>
+            <td title="gml:id">{data($rec/@gml:id)}</td>
+            <td title="aqd:predecessor">{data($rec/aqd:predecessor/aqd:AQD_Zone/@gml:id)}</td>
+        </tr>
+
+
+
+return $tblB2
+
+};
+
 xmlconv:proceed( $source_url )
 
