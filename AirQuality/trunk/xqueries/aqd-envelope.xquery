@@ -22,9 +22,7 @@ declare namespace aqd = "http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0";
 (: Variable given as an external parameter by the QA service:)
 (:===================================================================:)
 (:
-declare variable $source_url as xs:string :='http://cdr.eionet.europa.eu/dk/eu/aqd/b/envumeiyg/xml';
-declare variable $source_url as xs:string external;
-
+declare variable $source_url as xs:string :='http://cdrtest.eionet.europa.eu/bg/eu/aqd/e1a/envu9iv8g/xml';
 :)
 declare variable $source_url as xs:string external;
 
@@ -84,32 +82,105 @@ declare function xmlconv:validateEnvelope($url as xs:string)
 as element(div)
 {
     let $files := fn:doc($url)//file[string-length(@link)>0]
+    let $xmlFilesWithValidSchema := xmlconv:getFiles($url)
 
     let $filesCountAll := count($files)
     let $filesCountCorrectSchema := count($files[@schema = $xmlconv:SCHEMA or @schema = $xmlconv:SCHEMA2 or @schema = $xmlconv:SCHEMA3])
 (:    let $filesCountXml := count($files[@type="text/xml"]):)
 
+    (: QA doc 2.1.3 Check for Reporting Header within an envelope – NEW – VERY IMPORTANT :)
+
     (:  At least one XML file in the envelope must have an aqd:AQD_ReportingHeader element. :)
     let $containsAqdReportingHeader :=
         count(index-of(
-            for $file in xmlconv:getFiles($url)
+            for $file in $xmlFilesWithValidSchema
             return
                 count(doc($file)//aqd:AQD_ReportingHeader) > 0
             , fn:true()
             )) > 0
+    (: The aqd:AQD_ReportingHeadear must include aqd:inspireId, aqd:reportingAuthority, aqd:reportingPeriod and aqd:change elements, "aqd:reportingPeriod" :)
+    let $mandatoryReportingHeaderElements := ("aqd:inspireId", "aqd:reportingAuthority", "aqd:change")
+    let $missingAqdReportingHeaderSubElements :=
+        distinct-values(
+        for $file in $xmlFilesWithValidSchema
+        return
+            for $elem in $mandatoryReportingHeaderElements
+            where count(doc($file)//aqd:AQD_ReportingHeader) > 0 and count(doc($file)//aqd:AQD_ReportingHeader/*[name()=$elem and string-length(normalize-space(.)) > 0]) = 0
+            return
+                $elem
+        )
 
-    let $errorLevel := if ($filesCountCorrectSchema > 0 and $containsAqdReportingHeader) then "INFO" else "BLOCKER"
+    (: If aqd:change=”true”, the following information must also be provided:)
+    let $mandatoryAqdChangeElements := ("aqd:changeDescription", "aqd:content")
+    let $missingElementsIfAqdChangeIsTrue :=
+        distinct-values(
+        for $file in $xmlFilesWithValidSchema
+        return
+            for $elem in $mandatoryAqdChangeElements
+            where count(doc($file)//aqd:AQD_ReportingHeader) > 0 and count(doc($file)//aqd:AQD_ReportingHeader/*[name()=$elem and aqd:change='true' and string-length(normalize-space(.)) > 0]) = 0
+            return
+               $elem
+        )
+    (: If aqd:change=”true”, aqd:content IS NOT expected. :)
+    let $appearingElementsIfAqdChangeIsFalse :=
+        count(index-of(
+            for $file in $xmlFilesWithValidSchema
+            return
+                count(doc($file)//aqd:AQD_ReportingHeader) > 0 and count(doc($file)//aqd:AQD_ReportingHeader/*[name()='aqd:content' and aqd:change='false' and string-length(normalize-space(.)) > 0]) > 0
+                , fn:true()
+        )) > 0
+
+    let $errorLevel :=
+        if ($filesCountCorrectSchema > 0
+            and $containsAqdReportingHeader
+            and count($missingAqdReportingHeaderSubElements) = 0
+            and count($missingElementsIfAqdChangeIsTrue) = 0
+            and not($appearingElementsIfAqdChangeIsFalse))
+        then "INFO" else "BLOCKER"
 
     let $description :=
         if ($filesCountCorrectSchema = 0) then
-            <div>
+            (<div>
                 <p style="color:red">Your delivery cannot be accepted as you did not provide any XML files with correct XML Schema location.</p>
                 <p>Valid XML Schema location is: {$xmlconv:SCHEMA2}</p>
-            </div>
-        else if (not($containsAqdReportingHeader)) then
-            <p style="color:red">Your delivery cannot be accepted as you did not provide any <strong>aqd:AQD_ReportingHeader</strong> element in non of the reported XML files.</p>
+            </div>)
         else
-            <span>Your delivery contains {$filesCountCorrectSchema} XML file{ substring("s ", number(not($filesCountCorrectSchema > 1)) * 2)}with correct XML Schema.</span>
+            ()
+    let $description :=
+        if (not($containsAqdReportingHeader)) then
+            ($description, <p style="color:red">Your delivery cannot be accepted as you did not provide any <strong>aqd:AQD_ReportingHeader</strong> element in non of the reported XML files.</p>)
+        else
+            $description
+    let $description :=
+        if (count($missingAqdReportingHeaderSubElements) > 0) then
+            ($description, <p style="color:red">Your delivery cannot be accepted as you did not provide <strong>{string-join($missingAqdReportingHeaderSubElements, ',')}</strong>
+                element{substring("s ", number(not(count($missingAqdReportingHeaderSubElements) > 1)) * 2)} in aqd:AQD_ReportingHeader element.</p>)
+        else
+            ()
+    let $description :=
+        if (count($missingAqdReportingHeaderSubElements) > 0) then
+            ($description, <p style="color:red">Your delivery cannot be accepted as you did not provide <strong>{string-join($missingAqdReportingHeaderSubElements, ', ')}</strong>
+                element{substring("s ", number(not(count($missingAqdReportingHeaderSubElements) > 1)) * 2)} in aqd:AQD_ReportingHeader element.</p>)
+        else
+            ()
+    let $description :=
+        if (count($missingElementsIfAqdChangeIsTrue) > 0) then
+            ($description, <p style="color:red">Your delivery cannot be accepted as you did not provide <strong>{string-join($missingElementsIfAqdChangeIsTrue, ', ')}</strong>
+                element{substring("s ", number(not(count($missingElementsIfAqdChangeIsTrue) > 1)) * 2)} in aqd:AQD_ReportingHeader element although aqd:change="true".
+                If aqd:change="true", the following information must also be provided: aqd:AQD_ReportingHeadear/aqd:changeDescription and aqd:AQD_ReportingHeadear/aqd:content</p>)
+        else
+            ()
+    let $description :=
+        if (count($appearingElementsIfAqdChangeIsFalse) > 0) then
+            ($description, <p style="color:red">Your delivery cannot be accepted as you did provide <strong>aqd:content</strong>
+                in aqd:AQD_ReportingHeader element although aqd:change="false". If aqd:change=”false”, aqd:content IS NOT expected.</p>)
+        else
+            ()
+    let $description :=
+        if (count($description) = 0) then
+            <span>Your delivery contains {$filesCountCorrectSchema} XML file{ substring("s ", number(not($filesCountCorrectSchema > 1)) * 2)}with correct XML Schema. Reporting header element (aqd:AQD_ReportingHeader) is reported correctly{ if ($filesCountCorrectSchema > 1) then " at least in one of the XML files." else "."}</span>
+        else
+            $description
     return
     <div class="feedbacktext">
         <h2>Check contents of delivery</h2>
@@ -152,3 +223,5 @@ declare function xmlconv:proceed($url as xs:string) {
 ;
 
 xmlconv:proceed($source_url)
+
+(: TODO remove inline styles :)
