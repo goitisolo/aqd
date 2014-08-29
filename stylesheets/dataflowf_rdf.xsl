@@ -54,7 +54,7 @@
 
   <xsl:template match="ms:Value">
     <ValidatedExceedence>
-      <xsl:attribute name="rdf:about">#<xsl:value-of select="@observation_id"/></xsl:attribute>
+      <xsl:attribute name="rdf:about">#<xsl:value-of select="@observation_id"/>.<xsl:value-of select="@aggregationtype_notation"/></xsl:attribute>
 
       <inspireNamespace><xsl:value-of select="@network_namespace"/></inspireNamespace>
       <station>
