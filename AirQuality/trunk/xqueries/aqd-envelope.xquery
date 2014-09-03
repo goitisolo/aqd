@@ -74,7 +74,6 @@ declare function xmlconv:getFiles($url as xs:string)   {
 
     for $pn in fn:doc($url)//file[(@schema = $xmlconv:SCHEMA or @schema = $xmlconv:SCHEMA2 or @schema = $xmlconv:SCHEMA3) and string-length(@link)>0]
         let $fileUrl := xmlconv:replaceSourceUrl($url, string($pn/@link))
-        where doc-available($fileUrl)
         return
             $fileUrl
 }
@@ -145,11 +144,11 @@ declare function xmlconv:checkFileReportingHeader($file as xs:string, $pos as xs
             $description
     let $description :=
         if (count($description)=0) then
-            <p class="info">The file can be accepted.</p>
+            <p class="info">The file can be accepted. Reporting header element (aqd:AQD_ReportingHeader) is reported correctly<sup>*</sup>.</p>
         else
             $description
     return
-        (<p>{$pos}. Checked file: { $file }</p>, $description)
+        (<p>{$pos}. Checked file: { xmlconv:getCleanUrl($file) }</p>, $description)
 };
 
 declare function xmlconv:validateEnvelope($url as xs:string)
@@ -164,7 +163,11 @@ as element(div)
     let $reportingHeaderCheck :=
         for $file at $pos in $xmlFilesWithValidSchema
         return
-            xmlconv:checkFileReportingHeader($file, $pos)
+            if (doc-available($file)) then
+                xmlconv:checkFileReportingHeader($file, $pos)
+            else
+                <p>{$pos}. File is not available for QA: { xmlconv:getCleanUrl($file) }</p>
+
     let $errorLevel :=
         if ($filesCountCorrectSchema > 0 and count($reportingHeaderCheck//p[class="error"])=0)
         then "INFO" else "BLOCKER"
@@ -176,14 +179,14 @@ as element(div)
                 <p>Valid XML Schema location is: {$xmlconv:SCHEMA2}</p>
             </div>)
         else
-            (<span>Your delivery contains {$filesCountCorrectSchema} XML file{ substring("s ", number(not($filesCountCorrectSchema > 1)) * 2)}with correct XML Schema. Reporting header element (aqd:AQD_ReportingHeader) is reported correctly{ if ($filesCountCorrectSchema > 1) then " at least in one of the XML files." else "."}</span>)
+            (<span>Your delivery contains {$filesCountCorrectSchema} XML file{ substring("s ", number(not($filesCountCorrectSchema > 1)) * 2)}with correct XML Schema.</span>)
 
     let $messages := ($correctFileCountMessage, $reportingHeaderCheck)
     return
     <div class="feedbacktext">
         <style type="text/css">
             <![CDATA[
-                .info {color:blue; font-size:1.1em; margin-left: 15px;}
+                .info {color:blue; margin-left: 15px;}
                 .error {color:red; margin-left: 15px;}
                 .hidden {display:none}
                 .footnote {font-style:italic}
@@ -195,6 +198,7 @@ as element(div)
         </span>{
             $messages
         }
+        <br/>
         <div class="footnote"><sup>*</sup>Detailed information about the QA/QC rules checked in this routine can be found from the <a href="http://www.eionet.europa.eu/aqportal/qaqc/">e-reporting QA/QC rules documentation</a> in chapter "2.1.3 Check for Reporting Header within an envelope".</div>
     </div>
 
