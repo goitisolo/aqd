@@ -24,7 +24,7 @@ declare namespace aqd = "http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0";
 (:
 declare variable $source_url as xs:string external;
 http://cdrtest.eionet.europa.eu/ee/eu/colujh9jw/envujh9qa/xml
-http://cdr.eionet.europa.eu/pt/eu/aqd/e1a/envvacarw/xml
+http://cdr.eionet.europa.eu/at/eu/aqd/d/envvbbjdw/xml
 :)
 declare variable $source_url as xs:string external;
 
@@ -105,14 +105,14 @@ declare function xmlconv:checkFileReportingHeader($file as xs:string, $pos as xs
         distinct-values(
                     for $elem in $mandatoryAqdChangeElements
                     where count(doc($file)//aqd:AQD_ReportingHeader[aqd:change=true()]) > 0 and count(doc($file)//aqd:AQD_ReportingHeader[
-                    (aqd:change=true() and count(child::*[name()=$elem and string-length(normalize-space()) > 0]) = 0)]) > 0
+                        (aqd:change=true() and count(child::*[name()=$elem]) = 0)]) > 0
                     return
                         $elem
         )
-    (: If aqd:change=”true”, aqd:content IS NOT expected. :)
+    (: If aqd:change=”false”, aqd:content IS NOT expected. :)
     let $appearingElementsIfAqdChangeIsFalse :=
         count(index-of(
-                    count(doc($file)//aqd:AQD_ReportingHeader) > 0 and count(doc($file)//aqd:AQD_ReportingHeader/*[name()='aqd:content' and ../aqd:change=false() and string-length(normalize-space(.)) > 0]) > 0
+                    count(doc($file)//aqd:AQD_ReportingHeader) > 0 and count(doc($file)//aqd:AQD_ReportingHeader/*[name()='aqd:content' and ../aqd:change=false()]) > 0
                 , true()
         )) > 0
 
