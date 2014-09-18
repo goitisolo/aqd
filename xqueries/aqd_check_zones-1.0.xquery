@@ -630,14 +630,6 @@ return
  <a href="http://dd.eionet.europa.eu/vocabulary/common/iso639-5/view">ISO 639-5</a>.</span>,
             $invalidLangCode, "/aqd:AQD_Zone/am:name/gn:GeographicalName/gn:language", "All values are valid", " invalid value", $langSkippedMsg)
             }
-        {(: xmlconv:buildResultRows("B14", "./am:name/gn:GeographicalName/gn:nativeness attribute xsi:nil=""true"" nilReason=""unknown""",
-            $unknownNativeness, "aqd:AQD_Zone/@gml:id", "No unknown values found", " unknown reason", "") :) }
-        {(: xmlconv:buildResultRows("B15", "./am:name/gn:GeographicalName/gn:nameStatus  attribute xsi:nil=""true"" nilReason=""unknown""",
-            $unknownNameStatus, "aqd:AQD_Zone/@gml:id", "No unknown values found", " unknown reason", "") :) }
-        {(: xmlconv:buildResultRows("B16", "./am:name/gn:GeographicalName/gn:sourceOfName  attribute xsi:nil=""true"" nilReason=""unknown""",
-            $unknownSourceOfName, "aqd:AQD_Zone/@gml:id", "No unknown values found", " unknown reason", "") :) }
-        {(: xmlconv:buildResultRows("B17", "./am:name/gn:GeographicalName/gn:pronunciation  attribute xsi:nil=""true"" nilReason=""unknown""",
-            $unknownPronunciation, "aqd:AQD_Zone/@gml:id", "No unknown values found", " unknown reason", "") :) }
         {xmlconv:buildResultRows("B21", "./am:geometry/gml:Polygon/gml:exterior/gml:LinearRing/gml:posList the srsDimension attribute shall resolve to ""2"" to allow the x &amp; y-coordinate of the feature of interest",
             $invalidPosListDimension, "aqd:AQD_Zone/@gml:id", "All srsDimension attributes resolve to ""2""", " invalid attribute", "")}
         {xmlconv:buildResultRows("B23", "./am:zoneType shall resolve to http://inspire.ec.europa.eu/codeList/ZoneTypeCode/airQualityManagementZone",
