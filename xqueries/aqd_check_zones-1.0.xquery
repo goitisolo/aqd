@@ -22,12 +22,15 @@ declare namespace gn = "urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
 declare namespace base2 = "http://inspire.ec.europa.eu/schemas/base2/1.0";
 declare namespace sparql = "http://www.w3.org/2005/sparql-results#";
 declare namespace xlink = "http://www.w3.org/1999/xlink";
+declare namespace functx = "http://www.functx.com";
 
 declare variable $xmlconv:AQ_MANAGEMENET_ZONE := "http://inspire.ec.europa.eu/codeList/ZoneTypeCode/airQualityManagementZone";
 declare variable $xmlconv:ZONETYPE_VOCABULARY as xs:string := "http://dd.eionet.europa.eu/vocabulary/aq/zonetype/";
 
 (:~ declare Content Registry SPARQL endpoint:)
 declare variable $xmlconv:CR_SPARQL_URL := "http://cr.eionet.europa.eu/sparql";
+declare variable $invalidCount as xs:integer := 0;
+
 
 declare variable $xmlconv:ISO2_CODES as xs:string* := ("AL","AT","BA","BE","BG","CH","CY","CZ","DE","DK","DZ","EE","EG","ES","FI",
     "FR","GB","GR","HR","HU","IE","IL","IS","IT","JO","LB","LI","LT","LU","LV","MA","ME","MK","MT","NL","NO","PL","PS","PT",
@@ -37,11 +40,12 @@ declare variable $xmlconv:ISO2_CODES as xs:string* := ("AL","AT","BA","BE","BG",
 (:===================================================================:)
 
 declare variable $source_url as xs:string external;
+
 (:
 declare variable $source_url := "../test/FR.xml";
 declare variable $source_url := "../test/B.2013_3_.xml";
 declare variable $source_url as xs:string external;
-declare variable $source_url := "../test/D_GB_Zones.xml";
+declare variable $ source_url := "../test/D_GB_Zones.xml";
 declare variable $source_url as xs:untypedAtomic external;
 Change it for testing locally:
 declare variable $source_url := "http://cdr.eionet.europa.eu/gb/eu/aqd/e2a/colutn32a/envubnpvw/B_GB_Zones.xml";
@@ -52,6 +56,7 @@ declare variable $source_url := "http://cdr.eionet.europa.eu/gb/eu/aqd/e2a/colut
 (:~
 : JavaScript
 :)
+
 declare function xmlconv:javaScript(){
 
     let $js :=
@@ -168,6 +173,21 @@ as xs:string
                   skos:notation ?code
     }")
 };
+
+declare function xmlconv:getLau1Sparql($countryCode as xs:string)
+as xs:string
+{
+
+    concat("PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+    SELECT ?concepturl ?label ?code
+    WHERE {
+      ?concepturl skos:inScheme <http://dd.eionet.europa.eu/vocabulary/lau1/", $countryCode, "/>;
+                  skos:prefLabel ?label;
+                  skos:notation ?code
+    }")
+};
+
+
 declare function xmlconv:getLangCodesSparql()
 as xs:string
 {
@@ -225,21 +245,22 @@ as element(div) {
         else
             "deepskyblue"
 return
-    <div style="background-color: { $color }; font-size: 0.8em; color: white; padding-left:5px;padding-right:5px;margin-right:5px;margin-top:2px;text-align:center">{ $text }</div>
+    <div class="{$level}" style="background-color: { $color }; font-size: 0.8em; color: white; padding-left:5px;padding-right:5px;margin-right:5px;margin-top:2px;text-align:center">{ $text }</div>
 };
 
 (:
     Builds HTML table rows for rules B13 - B17.
 :)
 declare function xmlconv:buildResultRows($ruleCode as xs:string, $text, $invalidValues as xs:string*,
-    $valueHeading as xs:string, $validMsg as xs:string, $invalidMsg as xs:string, $skippedMsg)
+    $valueHeading as xs:string, $validMsg as xs:string, $invalidMsg as xs:string, $skippedMsg, $errorLevel as xs:string)
 as element(tr)*{
     let $countInvalidValues := count($invalidValues)
-    let $bulletType := if (string-length($skippedMsg) > 0) then "skipped" else if ($countInvalidValues = 0) then "info" else "error"
+    let $bulletType := if (string-length($skippedMsg) > 0) then "skipped" else if ($countInvalidValues = 0) then "info" else $errorLevel
 let $result :=
     (
         <tr>
-            <td style="vertical-align:top;">{ xmlconv:getBullet($ruleCode, $bulletType) }</td>
+            <td style="vertical-align:top;">{ xmlconv:getBullet($ruleCode, $bulletType) }
+            </td>
             <th style="vertical-align:top;">{ $text }</th>
             <td style="vertical-align:top;">{
                 if (string-length($skippedMsg) > 0) then
@@ -247,7 +268,7 @@ let $result :=
                 else if ($countInvalidValues = 0) then
                     $validMsg
                 else
-                    concat($countInvalidValues, $invalidMsg, substring("s ", number(not($countInvalidValues > 1)) * 2) ,"found") }</td>
+                     concat($countInvalidValues, $invalidMsg, substring("s ", number(not($countInvalidValues > 1)) * 2) ,"found") }</td>
         </tr>,
             if ($countInvalidValues > 0) then
                 <tr style="font-size: 0.9em;color:grey;">
@@ -265,6 +286,13 @@ return $result
 (:
     Rule implementations
 :)
+
+
+
+
+
+
+
 declare function xmlconv:checkReport($source_url as xs:string)
 as element(table) {
 
@@ -278,6 +306,9 @@ TODO: UK has GB in their delivery / is it necessary to change?
 let $countryCode := if ($countryCode = "gb") then "uk" else if ($countryCode = "gr") then "el" else $countryCode
 
 let $docRoot := doc($source_url)
+
+
+
 (: B1 :)
 let $countZones := count($docRoot//aqd:AQD_Zone)
 
@@ -398,6 +429,7 @@ let $countB9duplicates := $countAmInspireIdDuplicates
 (: B11 :)
 let $emptyNames := distinct-values($docRoot//aqd:AQD_Zone[normalize-space(am:name)=""]/@gml:id)
 
+
 (: B13 :)
 let $langCodeSparql := xmlconv:getLangCodesSparql()
 let $isLangCodesAvailable := string-length($langCodeSparql) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($langCodeSparql, "xml"))
@@ -431,26 +463,47 @@ let $unknownSourceOfName := distinct-values($docRoot//aqd:AQD_Zone[count(am:name
 let $unknownPronunciation  := distinct-values($docRoot//aqd:AQD_Zone[count(am:name/gn:GeographicalName/gn:pronunciation[@xsi:nil="true" and @nilReason="unknown"])>0]/@gml:id)
 :)
 
+(: B20 :)
+
+ let $invalidPolygonName := distinct-values($docRoot//aqd:AQD_Zone[count(am:geometry/gml:Polygon) >0 and am:geometry/gml:Polygon/@srsName != "urn:ogc:def:crs:EPSG::4258" and am:geometry/gml:Polygon/@srsName != "urn:ogc:def:crs:EPSG::4326"]/@gml:id)
+
 (: B21 :)
 let $invalidPosListDimension  := distinct-values($docRoot//aqd:AQD_Zone/am:geometry/gml:Polygon/gml:exterior/gml:LinearRing/gml:posList[@srsDimension != "2"]/
             concat(../../../../../@gml:id, ": srsDimension=", @srsDimension))
 
 (: B23 :)
 (: ./am:zoneType value shall resolve to http://inspire.ec.europa.eu/codeList/ZoneTypeCode/airQualityManagementZone :)
-let $invalidManagementZones  := distinct-values($docRoot//aqd:AQD_Zone/am:zoneType[@xlink:href != $xmlconv:AQ_MANAGEMENET_ZONE]/
+ let $invalidManagementZones  := distinct-values($docRoot//aqd:AQD_Zone/am:zoneType[@xlink:href != $xmlconv:AQ_MANAGEMENET_ZONE]/
             concat(../@gml:id, ": zoneType=", @xlink:href))
 
 (: B24 :)
 (: ./am:designationPeriod/gml:TimePeriod/gml:beginPosition shall be less than ./am:designationPeri/gml:TimePeriod/gml:endPosition. :)
 let $invalidPosition  :=
     for $timePeriod in $docRoot//aqd:AQD_Zone/am:designationPeriod/gml:TimePeriod
-        let $beginPosition := if (normalize-space($timePeriod/gml:beginPosition) castable as xs:date) then xs:date($timePeriod/gml:beginPosition) else ()
-        let $endPosition := if (normalize-space($timePeriod/gml:endPosition)  castable as xs:date) then xs:date($timePeriod/gml:endPosition) else ()
+        let $beginPosition := if (normalize-space($timePeriod/gml:beginPosition) castable as xs:dateTime) then xs:dateTime($timePeriod/gml:beginPosition) else ()
+        let $endPosition := if (normalize-space($timePeriod/gml:endPosition)  castable as xs:dateTime) then xs:dateTime($timePeriod/gml:endPosition) else ()
         return
+            (:  concat($timePeriod/../../@gml:id, ": gml:beginPosition=", $beginPosition, ": gml:endPosition=", $endPosition) :)
+
         if (not(empty($beginPosition)) and not(empty($endPosition)) and $beginPosition > $endPosition) then
             concat($timePeriod/../../@gml:id, ": gml:beginPosition=", $beginPosition, ": gml:endPosition=", $endPosition)
         else
             ()
+
+
+ (: B25 :)
+
+ let $allAmDesignationPeriods :=
+ for $designationPeriods in $docRoot//aqd:AQD_Zone/am:designationPeriod
+ where $designationPeriods/gml:TimePeriod/gml:endPosition[normalize-space(@indeterminatePosition)="unknown"]
+ return
+       <tr>
+         <td title="aqd:AQD_Zone">{data($designationPeriods/../@gml:id)}</td>
+         <td title="gml:TimePeriod">{data($designationPeriods/gml:TimePeriod/@gml:id)}</td>
+         <td title="gml:beginPosition">{$designationPeriods/gml:TimePeriod/gml:beginPosition}</td>
+         <td title="gml:endPosition">{$designationPeriods/gml:TimePeriod/gml:endPosition}</td>
+     </tr>
+
 
 (: B27 :)
 (: ./am:beginLifespanVersion shall be a valid historical date for the start of the version of the zone in extended ISO format.
@@ -498,6 +551,20 @@ let $invalidLegalBasisDate  := distinct-values($docRoot//aqd:AQD_Zone/am:legalBa
 let $invalidLegalBasisLink  := distinct-values($docRoot//aqd:AQD_Zone/am:legalBasis/base2:LegislationCitation[normalize-space(base2:link) != "http://rod.eionet.europa.eu/instruments/650"]/
             concat(../../@gml:id, ": base2:link=", if (string-length(base2:link) > 40) then concat(substring(base2:link, 1, 40), "...") else base2:link))
 
+(: B34 :)
+let $amNamespaceAndaqdZoneCodeIds := $docRoot//aqd:AQD_Zone/concat(am:inspireId/base:Identifier/lower-case(normalize-space(base:namespace)), '##', lower-case(normalize-space(aqd:zoneCode)))
+
+let $dublicateAmNamespaceAndaqdZoneCodeIds := distinct-values(
+        for $identifier in $docRoot//aqd:AQD_Zone
+where string-length(normalize-space($identifier/am:inspireId/base:Identifier/base:namespace)) > 0 and count(index-of($amNamespaceAndaqdZoneCodeIds,
+        concat($identifier/am:inspireId/base:Identifier/lower-case(normalize-space(base:namespace)), '##', $identifier/lower-case(normalize-space(aqd:zoneCode))))) > 1
+return
+    concat(normalize-space($identifier/am:inspireId/base:Identifier/base:namespace), ':', normalize-space($identifier/aqd:zoneCode))
+)
+
+let $countAmNamespaceAndaqdZoneCodeDuplicates := count($dublicateAmNamespaceAndaqdZoneCodeIds)
+let $countB34duplicates := $countAmNamespaceAndaqdZoneCodeDuplicates
+
 (: B35 :)
 let $invalidResidentPopulation  := distinct-values($docRoot//aqd:AQD_Zone[not(count(aqd:residentPopulation)>0 and aqd:residentPopulation castable as xs:integer and number(aqd:residentPopulation) > 0)]/
             concat(@gml:id, ": aqd:residentPopulation=", if (string-length(aqd:residentPopulation) = 0) then "missing" else aqd:residentPopulation))
@@ -514,30 +581,99 @@ return
 (: B37 :)
 let $invalidArea  := distinct-values($docRoot//aqd:AQD_Zone[not(count(aqd:area)>0 and number(aqd:area) and number(aqd:area) > 0)]/
             concat(@gml:id, ": aqd:area=", if (string-length(aqd:area) = 0) then "missing" else aqd:area))
-(: B42 :)
+
+(: B39 :)
+
+let $tempStr := xmlconv:checkVocabularyConceptValues("", "aqd:AQD_Zone", "aqd:timeExtensionExemption", "http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/")
+let $invalidTimeExtensionExemption := $tempStr
+
+(: 40 :)
+
+let $zoneIds :=
+for $x in $docRoot//aqd:AQD_Zone/aqd:pollutants
+where ($x/aqd:Pollutant/aqd:pollutantCode/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/8" and $x/aqd:Pollutant/aqd:protectionTarget/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H")
+       and ($x/../aqd:timeExtensionExemption/fn:normalize-space(@xlink:href) = "http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/NO2-1h"
+        or $x/../aqd:timeExtensionExemption/fn:normalize-space(@xlink:href) = "http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/NO2-annual")
+return $x/../@gml:id
+
+let $invalidPollutans :=
+    for $y in $docRoot//aqd:AQD_Zone[aqd:timeExtensionExemption/fn:normalize-space(@xlink:href) = "http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/NO2-1h"
+            or aqd:timeExtensionExemption/fn:normalize-space(@xlink:href) = "http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/NO2-annual"]
+    where empty(index-of($zoneIds,$y/@gml:id))
+return $y/@gml:id
+
+(: 41 :)
+
+let $zoneIds :=
+    for $x in $docRoot//aqd:AQD_Zone/aqd:pollutants
+    where ($x/aqd:Pollutant/aqd:pollutantCode/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5" and $x/aqd:Pollutant/aqd:protectionTarget/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H")
+            and ($x/../aqd:timeExtensionExemption/fn:normalize-space(@xlink:href) = "http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/PM10-24h"
+                    or $x/../aqd:timeExtensionExemption/fn:normalize-space(@xlink:href) = "http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/PM10-annual")
+    return $x/../@gml:id
+
+let $aqdInvalidPollutans :=
+    for $y in $docRoot//aqd:AQD_Zone[aqd:timeExtensionExemption/fn:normalize-space(@xlink:href) = "http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/PM10-24h"
+            or aqd:timeExtensionExemption/fn:normalize-space(@xlink:href) = "http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/PM10-annual"]
+    where empty(index-of($zoneIds,$y/@gml:id))
+    return $y/@gml:id
+
+
+ (: B44 :)
+
 let $lau2Sparql := if (fn:string-length($countryCode) = 2) then xmlconv:getLau2Sparql($countryCode) else ""
 let $isLau2CodesAvailable := string-length($lau2Sparql) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($lau2Sparql, "xml"))
 let $lau2Codes := if ($isLau2CodesAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($lau2Sparql)//sparql:binding[@name='concepturl']/sparql:uri)) else ()
 let $isLau2CodesAvailable := count($lau2Codes) > 0
+
+let $lau1Sparql := if (fn:string-length($countryCode) = 2) then xmlconv:getLau1Sparql($countryCode) else ""
+let $isLau1CodesAvailable := string-length($lau1Sparql) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($lau1Sparql, "xml"))
+let $lau1Codes := if ($isLau1CodesAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($lau1Sparql)//sparql:binding[@name='concepturl']/sparql:uri)) else ()
+let $isLau1CodesAvailable := count($lau1Codes) > 0
 
 let $nutsSparql := if (fn:string-length($countryCode) = 2) then xmlconv:getNutsSparql($countryCode) else ""
 let $isNutsCodesAvailable := doc-available(xmlconv:getSparqlEndpointUrl($nutsSparql, "xml"))
 let $nutsCodes := if ($isNutsCodesAvailable) then  distinct-values(data(xmlconv:executeSparqlQuery($nutsSparql)//sparql:binding[@name='concepturl']/sparql:uri)) else ()
 let $isNutsAvailable := count($nutsSparql) > 0
 
-let $invalidLau := if ($isLau2CodesAvailable and $isNutsAvailable) then
+let $invalidLau := if ($isLau2CodesAvailable and $isNutsAvailable and $isLau1CodesAvailable) then
         distinct-values($docRoot//aqd:AQD_Zone/aqd:LAU[string-length(normalize-space(@xlink:href)) > 0 and
-            empty(index-of($lau2Codes, normalize-space(@xlink:href))) and empty(index-of($nutsCodes, normalize-space(@xlink:href)))]/@xlink:href)
+            empty(index-of($lau2Codes, normalize-space(@xlink:href))) and empty(index-of($nutsCodes, normalize-space(@xlink:href))) and empty(index-of($lau1Codes, normalize-space(@xlink:href)))]/@xlink:href)
     else
         ()
 let $lauSkippedMsg := if (fn:string-length($countryCode) != 2) then "The test was skipped - reporting country code not found."
     else if (not($isLau2CodesAvailable)) then "The test was skipped - LAU2 concepts are not available in CR."
     else if (not($isNutsAvailable)) then "The test was skipped - NUTS concepts are not available in CR."
+    else if (not($isLau1CodesAvailable)) then "The test skipped - LAU1 concepts are not available in CR"
     else ""
 
+
+(: B45 :)
+
+let $amGeometry := $docRoot//aqd:AQD_Zone[count(am:geometry/@xlink:href)>0]/@gml:id
+let $invalidGeometry :=
+for $x in $amGeometry
+    where (empty($amGeometry)=false())
+return $x
+
+(: 46 :)
+
+let $aqdShapeFileLink := $docRoot//aqd:AQD_Zone/aqd:shapefileLink
+
+(: KL 141009
+let $tmpStr := fn:substring-after($aqdShapeFileLink,"b/")
+let $tempEnv := fn:substring-before($tmpStr,"/")
+let $envLink := concat(substring-before($aqdShapeFileLink,"b/"),"b/",$tempEnv,"/xml")
+:)
+let $envLink := $envelopeUrl
+
+(: TESTING on localhost :)
+let $envLink := "http://cdrtest.eionet.europa.eu/ee/eu/colujh9jw/envvdy3dq/xml"
+let $invalidLink :=  if (empty(doc($envLink)/envelope/file[contains(fn:normalize-space(@link),".shp")]/@name)) then $aqdShapeFileLink
+else ()
+
+
 (: B47 :)
-let $invalidZoneType :=
-    xmlconv:checkVocabularyConceptValues("", "aqd:AQD_Zone", "aqd:aqdZoneType", $xmlconv:ZONETYPE_VOCABULARY)
+let $invalidZoneType := xmlconv:checkVocabularyConceptValues("", "aqd:AQD_Zone", "aqd:aqdZoneType", $xmlconv:ZONETYPE_VOCABULARY)
 
 
 return
@@ -568,7 +704,7 @@ return
 
 
         <tr>
-            <td style="vertical-align:top;">{ xmlconv:getBullet("B8", if ($countB8duplicates = 0) then "info" else "error") }</td>
+            <td style="vertical-align:top;">{ xmlconv:getBullet("B8", if ($countB8duplicates = 0) then "info" else "warning") }</td>
             <th style="vertical-align:top;">All gml:id attributes, am:inspireId and aqd:inspireId elements shall have unique content</th>
             <td style="vertical-align:top;">{
                 if ($countB8duplicates = 0) then
@@ -623,40 +759,73 @@ return
         }
 
         {xmlconv:buildResultRows("B11", "./am:name xsl:nil=""false""",
-            $emptyNames, "aqd:AQD_Zone/@gml:id", "No empty values found", " empty name", "")}
+            $emptyNames, "aqd:AQD_Zone/@gml:id", "No empty values found", " empty name", "","warning")}
 
         {xmlconv:buildResultRows("B13", <span>/aqd:AQD_Zone/am:name/gn:GeographicalName/gn:language value shall be the language of the name,
  given as a three letters code, in accordance with either <a href="http://dd.eionet.europa.eu/vocabulary/common/iso639-3/view">ISO 639-3</a> or
  <a href="http://dd.eionet.europa.eu/vocabulary/common/iso639-5/view">ISO 639-5</a>.</span>,
-            $invalidLangCode, "/aqd:AQD_Zone/am:name/gn:GeographicalName/gn:language", "All values are valid", " invalid value", $langSkippedMsg)
+            $invalidLangCode, "/aqd:AQD_Zone/am:name/gn:GeographicalName/gn:language", "All values are valid", " invalid value", $langSkippedMsg,"warring")
             }
+        {xmlconv:buildResultRows("B20", "./am:geometry/gml:Polygon the srsName attribute  shall  be  a  recognisable  URN .  The  following  2  srsNames  are  expected urn:ogc:def:crs:EPSG::4258 or urn:ogc:def:crs:EPSG::4326",
+                $invalidPolygonName, "aqd:AQD_Zone/@gml:id","All smsName attributes are valid"," invalid attribute","", "error")}
         {xmlconv:buildResultRows("B21", "./am:geometry/gml:Polygon/gml:exterior/gml:LinearRing/gml:posList the srsDimension attribute shall resolve to ""2"" to allow the x &amp; y-coordinate of the feature of interest",
-            $invalidPosListDimension, "aqd:AQD_Zone/@gml:id", "All srsDimension attributes resolve to ""2""", " invalid attribute", "")}
+            $invalidPosListDimension, "aqd:AQD_Zone/@gml:id", "All srsDimension attributes resolve to ""2""", " invalid attribute", "","warning")}
         {xmlconv:buildResultRows("B23", "./am:zoneType shall resolve to http://inspire.ec.europa.eu/codeList/ZoneTypeCode/airQualityManagementZone",
-            $invalidManagementZones, "aqd:AQD_Zone/@gml:id", "All zoneType attributes are valid", " invalid attribute", "")}
+            $invalidManagementZones, "aqd:AQD_Zone/@gml:id", "All zoneType attributes are valid", " invalid attribute", "","warning")}
         {xmlconv:buildResultRows("B24", "./am:designationPeriod/gml:TimePeriod/gml:beginPosition shall be less than ./am:designationPeri/gml:TimePeriod/gml:endPosition.",
-            $invalidPosition, "gml:TimePeriod gml:id", "All positions are valid", " invalid position", "")}
+            $invalidPosition, "gml:TimePeriod gml:id", "All positions are valid", " invalid position", "","error")}
+        {xmlconv:buildResultRowsHTML("B25", "Total number  aqd:aqdZoneType, aqd:pollutantCode, aqd:protectionTarget combinations ",
+                (), (), "", string(count($allAmDesignationPeriods)), "", "", $allAmDesignationPeriods)}
         {xmlconv:buildResultRows("B27", "./am:beginLifespanVersion shall be a valid historical date for the start of the version of the zone in extended ISO format. If an am:endLifespanVersion exists its value shall be greater than the am:beginLifespanVersion",
-            $invalidLifespanVer, "gml:id", "All LifespanVersion values are valid", " invalid value", "")}
+            $invalidLifespanVer, "gml:id", "All LifespanVersion values are valid", " invalid value", "","error")}
         {xmlconv:buildResultRows("B28", "./am:beginLifespanVersion shall be less than or equal to ./am:designationPeriod/gml:TimePeriod/gml:endPosition  ./am:beginLifespanVersion shall be greater than or equal to ./am:designationPeriod/gml:TimePeriod/gml:beginPosition ",
-            $invalidLifespanVerB28, "gml:id", "All values are valid ", " invalid value", "")}
+            $invalidLifespanVerB28, "gml:id", "All values are valid ", " invalid value", "", "error")}
         {xmlconv:buildResultRows("B30", "./am:legalBasis/base2:LegislationCitation/base2:name value shall be ""2011/850/EC""",
-            $invalidLegalBasisName, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "")}
+            $invalidLegalBasisName, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "","warning")}
         {xmlconv:buildResultRows("B31", "./am:legalBasis/base2:LegislationCitation/base2:date value shall be ""2011-12-12""",
-            $invalidLegalBasisDate, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "")}
+            $invalidLegalBasisDate, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "","warning")}
         {xmlconv:buildResultRows("B32", "./am:legalBasis/base2:LegislationCitation/base2:link value shall be ""http://rod.eionet.europa.eu/instruments/650""",
-            $invalidLegalBasisLink, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "")}
-        {xmlconv:buildResultRows("B35", "./aqd:residentPopulation shall be an integer value GREATER THAN 0 (zero)",
-            $invalidResidentPopulation, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "")}
-        {xmlconv:buildResultRows("B36", "./aqd:residentPopulationYear/gml:TimeInstant/gml:timePosition shall cite the year in which the resident population was estimated in yyyy format",
-            $invalidPopulationYear, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "")}
-        {xmlconv:buildResultRows("B37", "./aqd:area the value will be a decimal number GREATER THAN 0 (zero)",
-            $invalidArea, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "")}
-        {xmlconv:buildResultRows("B42", <span>Where ./aqd:LAU has been used
-            then the reference must point to a concept in the list of <a href="http://dd.eionet.europa.eu/vocabulary/lau2/{$countryCode}/view">LAU2</a> or
-             <a href="http://dd.eionet.europa.eu/vocabulary/common/nuts/view">NUTS</a></span>,
-            $invalidLau, "aqd:AQD_Zone/aqd:LAU/@xlink:href", "All values are valid", " invalid value", $lauSkippedMsg)}
+            $invalidLegalBasisLink, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "","warning")}
+        <tr>
+            <td style="vertical-align:top;">{ xmlconv:getBullet("B34", if ($countB34duplicates = 0) then "info" else "error") }</td>
+            <th style="vertical-align:top;">./aqd:zoneCode shall be a unique code for the zone within the ./am:inspireId/base:Identifier/base:namespace.  ./aqd:zoneCode</th>
+            <td style="vertical-align:top;">{
+                if ($countB34duplicates = 0) then
+                    "All Ids are unique"
+                else
+                    concat($countB34duplicates, " error", substring("s ", number(not($countB34duplicates > 1)) * 2) ,"found") }</td>
+        </tr>
+        {
+            if ($countAmNamespaceAndaqdZoneCodeDuplicates > 0) then
+                <tr style="font-size: 0.9em;color:grey;">
+                    <td colspan="2" style="text-align:right;vertical-align:top;">Duplicate base:namespace:aqd:zoneCode - </td>
+                    <td style="font-style:italic;vertical-align:top;">{ string-join($dublicateAmNamespaceAndaqdZoneCodeIds, ", ")}</td>
+                </tr>
+            else
+                ()
+        }
 
+
+        {xmlconv:buildResultRows("B35", "./aqd:residentPopulation shall be an integer value GREATER THAN 0 (zero)",
+            $invalidResidentPopulation, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "", "error")}
+        {xmlconv:buildResultRows("B36", "./aqd:residentPopulationYear/gml:TimeInstant/gml:timePosition shall cite the year in which the resident population was estimated in yyyy format",
+            $invalidPopulationYear, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "","warning")}
+        {xmlconv:buildResultRows("B37", "./aqd:area the value will be a decimal number GREATER THAN 0 (zero)",
+            $invalidArea, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "", "error")}
+        {xmlconv:buildResultRowsWithTotalCount("B39", <span>./aqd:timeExtensionExemption attribute must resolve to one of concept within http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/
+            </span>,(), (), "aqd:timeExtensionExemption", "", "", "", $invalidTimeExtensionExemption)}
+        {xmlconv:buildResultRows("B40", "Where ./aqd:timeExtensionExemption resolves  to http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/NO2 1h OR http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/NO2 annual at  least  one  combination  within ./aqd:pollutants which  includes ./aqd:pollutants/aqd:Pollutant/aqd:pollutantCode AND ./aqd:pollutants/aqd:Pollutant/aqd:protectionTarget shall  be  constrained  to Nitro gen  dioxide  Nitrogen  dioxide  (air)  +  health http://dd.eionet.europa.eu/vocabulary/aq/pollutant/8 http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H ",
+                $invalidPollutans, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "", "error")}
+        {xmlconv:buildResultRows("B41", "Where ./aqd:timeExtensionExemption resolves to http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/PM10-24h OR http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/PM10-annual at least one combination  within ./aqd:pollutants which  includes ./aqd:pollutants/aqd:Pollutant/aqd:pollutantCode AND ./aqd:pollutants/aqd:Pollutant/aqd:protectionTarget shall  be  constrained  to Particulate  matter  <  10  μm  (aerosol)  +  health http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5 http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H  ",
+                $aqdInvalidPollutans, "aqd:AQD_Zone/@gml:id", "All values are valid", " crucial invalid value", "", "error")}
+        {xmlconv:buildResultRows("B44", <span>Where ./aqd:LAU has been used
+            then the reference must point to a concept in the list of <a href="http://dd.eionet.europa.eu/vocabulary/lau2/{$countryCode}/view">LAU2</a> or
+             <a href="http://dd.eionet.europa.eu/vocabulary/common/nuts/view">NUTS</a> or <a href="http://dd.eionet.europa.eu/vocabulary/lau1/{$countryCode}/view">LAU1</a></span>,
+            $invalidLau, "aqd:AQD_Zone/aqd:LAU/@xlink:href", "All values are valid", " invalid value", $lauSkippedMsg, "error")}
+        {xmlconv:buildResultRows("B45", "./am:geometry shall  not  be  a  href  xlink. If geometry is provided via shapefile, please use element aqd:shapefileLink",
+                $invalidGeometry, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "","warning")}
+        {xmlconv:buildResultRows("B46", "Where ./aqd:shapefileLink has been used the is should return a link to a valid and existing link in cdr (e.g. http://cdr.eionet.europa.eu/es/eu/aqd/b/envurng9g/ES_Zones_2014.shp",
+                $invalidLink, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "", "error")}
         {xmlconv:buildResultRowsWithTotalCount("B47", <span>./aqd:aqdZoneType attribute must resolve to one of  concept within
             <a href="{ $xmlconv:ZONETYPE_VOCABULARY }">{ $xmlconv:ZONETYPE_VOCABULARY }</a></span>,
             (), (), "aqd:reportingMetric", "", "", "", $invalidZoneType)}
@@ -857,6 +1026,23 @@ declare function xmlconv:isInvalidYear($value as xs:string?) {
  : Main function
  : ======================================================================
  :)
+
+declare function functx:index-of-string
+( $arg as xs:string? ,
+        $substring as xs:string )  as xs:integer* {
+
+    if (contains($arg, $substring))
+    then (string-length(substring-before($arg, $substring))+1,
+    for $other in
+        functx:index-of-string(substring-after($arg, $substring),
+                $substring)
+    return
+        $other +
+                string-length(substring-before($arg, $substring)) +
+                string-length($substring))
+    else ()
+} ;
+
 declare function xmlconv:proceed($source_url as xs:string) {
 
 let $countZones := count(doc($source_url)//aqd:AQD_Zone)
@@ -868,12 +1054,19 @@ return
     <div>
         <h2>Check air quality zones - Dataflow B</h2>
         {
+        if ($result//div/@class = 'error') then
+            <p>This XML file did NOT passed the following cruical checks: {string-join($result//div[@class='error'], ',')}</p>
+        else
+            <p>This XML file passed all crucial checks' which in this case are :B1,B2,B3,B4,B8,B9,B20,B24,B27,B28,B34,B35,B37,B40,B41,B42,B46</p>
+                }
+        {
         if ( $countZones = 0) then
             <p>No aqd:Zone elements found from this XML.</p>
         else
             $result
         }
     </div>
+
 </div>
 
 };
