@@ -23,6 +23,7 @@ declare namespace base2 = "http://inspire.ec.europa.eu/schemas/base2/1.0";
 declare namespace sparql = "http://www.w3.org/2005/sparql-results#";
 declare namespace xlink = "http://www.w3.org/1999/xlink";
 declare namespace functx = "http://www.functx.com";
+declare namespace ompr = "http://inspire.ec.europa.eu/schemas/ompr/2.0";
 
 declare variable $xmlconv:AQ_MANAGEMENET_ZONE := "http://inspire.ec.europa.eu/codeList/ZoneTypeCode/airQualityManagementZone";
 declare variable $xmlconv:ZONETYPE_VOCABULARY as xs:string := "http://dd.eionet.europa.eu/vocabulary/aq/zonetype/";
@@ -335,11 +336,38 @@ let $tblB2 :=
 let $countZonesWithAmGeometry := count($docRoot//aqd:AQD_Zone/am:geometry)
 (: B4 :)
 let $countZonesWithLAU := count($docRoot//aqd:AQD_Zone[not(empty(aqd:LAU)) or not(empty(aqd:shapefileLink))])
+
+(: B6 :)
+
+let $allB6Combinations :=
+for $aqdZone in $docRoot//aqd:AQD_Zone
+return concat(data($aqdZone/@gml:id), "#", $aqdZone/am:inspireId, "#", $aqdZone/aqd:inspireId, "#", $aqdZone/ef:name, "#", $aqdZone/ompr:name )
+
+let $allB6Combinations := fn:distinct-values($allB6Combinations)
+let $tblB6 :=
+    for $rec in $allB6Combinations
+    let $zoneType := substring-before($rec, "#")
+    let $tmpStr := substring-after($rec, concat($zoneType, "#"))
+    let $inspireId := substring-before($tmpStr, "#")
+    let $tmpInspireId := substring-after($tmpStr, concat($inspireId, "#"))
+    let $aqdInspireId := substring-before($tmpInspireId, "#")
+    let $tmpEfName := substring-after($tmpInspireId, concat($aqdInspireId, "#"))
+    let $efName := substring-before($tmpEfName, "#")
+    let $omprName := substring-after($tmpEfName,concat($efName,"#"))
+    return
+        <tr>
+            <td title="agml:id">{xmlconv:checkLink($zoneType)}</td>
+            <td title="am:inspireId">{xmlconv:checkLink($inspireId)}</td>
+            <td title="aqd:inspireId">{xmlconv:checkLink($aqdInspireId)}</td>
+            <td title="ef:name">{xmlconv:checkLink($efName)}</td>
+            <td title="ompr:name">{xmlconv:checkLink($omprName)}</td>
+</tr>
+
 (: B7 :)
 (: Compile & feedback a list of aqd:aqdZoneType, aqd:pollutantCode, aqd:protectionTarget combinations in the delivery :)
 let $allB7Combinations :=
-for $pollutant in $docRoot//aqd:Pollutant
-return concat(data($pollutant/../../aqd:aqdZoneType/@xlink:href), "#", data($pollutant/aqd:pollutantCode/@xlink:href), "#",data($pollutant/aqd:protectionTarget/@xlink:href))
+    for $pollutant in $docRoot//aqd:Pollutant
+    return concat(data($pollutant/../../aqd:aqdZoneType/@xlink:href), "#", data($pollutant/aqd:pollutantCode/@xlink:href), "#",data($pollutant/aqd:protectionTarget/@xlink:href))
 
 let $allB7Combinations := fn:distinct-values($allB7Combinations)
 let $tblB7 :=
@@ -667,8 +695,8 @@ let $envLink := concat(substring-before($aqdShapeFileLink,"b/"),"b/",$tempEnv,"/
 let $envLink := $envelopeUrl
 
 (: TESTING on localhost :)
-let $envLink := "http://cdrtest.eionet.europa.eu/ee/eu/colujh9jw/envvdy3dq/xml"
-let $invalidLink :=  if (empty(doc($envLink)/envelope/file[contains(fn:normalize-space(@link),".shp")]/@name)) then $aqdShapeFileLink
+(:let $envLink := "http://cdrtest.eionet.europa.eu/ee/eu/colujh9jw/envvdy3dq/xml" :)
+let $invalidLink :=  if (string-length($envelopeUrl)>0 and empty(doc($envLink)/envelope/file[contains(fn:normalize-space(@link),".shp")]/@name)) then $aqdShapeFileLink
 else ()
 
 
@@ -698,6 +726,9 @@ return
             <td style="vertical-align:top;">{ $countZonesWithLAU }</td>
         </tr>
 
+
+        {xmlconv:buildResultRowsHTML("B6", "Total number  aqd:aqdZoneType, aqd:inspireId, ef:name, ompr:nam  combinations ",
+                (), (), "", string(count($tblB6)), "", "", $tblB6)}
 
         {xmlconv:buildResultRowsHTML("B7", "Total number  aqd:aqdZoneType, aqd:pollutantCode, aqd:protectionTarget combinations ",
             (), (), "", string(count($tblB7)), "", "", $tblB7)}
