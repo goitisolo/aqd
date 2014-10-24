@@ -696,7 +696,7 @@ let $envLink := $envelopeUrl
 
 (: TESTING on localhost :)
 (:let $envLink := "http://cdrtest.eionet.europa.eu/ee/eu/colujh9jw/envvdy3dq/xml" :)
-let $invalidLink :=  if (string-length($envelopeUrl)>0 and empty(doc($envLink)/envelope/file[contains(fn:normalize-space(@link),".shp")]/@name)) then $aqdShapeFileLink
+let $invalidLink :=  if (string-length($envelopeUrl)>0 and empty(doc($envLink)/envelope/file[contains(fn:normalize-space(@link),".shp")]/@name)) then distinct-values($aqdShapeFileLink)
 else ()
 
 
