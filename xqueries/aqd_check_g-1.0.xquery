@@ -593,6 +593,7 @@ let $invalidAssessmentZone :=
 (: /aqd:AQD_Zone/am:designationPeriod/gml:TimePeriod/gml:endPosition  ei leia kus asub:)
 
 (: G17 :)
+
 let $resultXml := if (fn:string-length($countryCode) = 2) then xmlconv:getZoneLocallD($countryCode) else ""
 let $isZoneLocallDCodesAvailable := string-length($resultXml) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($resultXml, "xml"))
 let $zoneLocallD := if($isZoneLocallDCodesAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($resultXml)//sparql:binding[@name='localId']/sparql:literal)) else ""
