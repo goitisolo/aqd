@@ -378,7 +378,7 @@ let $countryCode := 'hr'
 
 let $envelopeUrl := xmlconv:getEnvelopeXML($source_url)
 let $countryCode := if(string-length($envelopeUrl)>0) then lower-case(fn:doc($envelopeUrl)/envelope/countrycode) else ""
-let $countryCode := "hr"
+(:)let $countryCode := "hr":)
 
 let $docRoot := doc($source_url)
 (: G1 :)
