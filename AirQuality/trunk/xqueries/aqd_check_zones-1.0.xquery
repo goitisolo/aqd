@@ -453,6 +453,16 @@ let $invalidIsoAmInspireIds := distinct-values(
 let $countAmInspireIdDuplicates := count($duplicateAmInspireIds)
 let $countB9duplicates := $countAmInspireIdDuplicates
 
+(: B10 :)
+let $allBaseNamespace := distinct-values($docRoot//aqd:AQD_Zone/am:inspireId/base:Identifier/base:namespace)
+let  $tblB10 :=
+    for $id in $allBaseNamespace
+    let $localId := $docRoot//aqd:AQD_Zone/am:inspireId/base:Identifier[base:namespace = $id]/base:localId
+ return
+        <tr>
+            <td title="base:namespace">{$id}</td>
+            <td title="base:localId">{count($localId)}</td>
+        </tr>
 
 (: B11 :)
 let $emptyNames := distinct-values($docRoot//aqd:AQD_Zone[normalize-space(am:name)=""]/@gml:id)
@@ -720,6 +730,8 @@ else ()
 (: B47 :)
 let $invalidZoneType := xmlconv:checkVocabularyConceptValues("", "aqd:AQD_Zone", "aqd:aqdZoneType", $xmlconv:ZONETYPE_VOCABULARY)
 
+(: TODO 48:)
+
 
 return
     <table style="text-align:left;vertical-align:top;">
@@ -805,7 +817,9 @@ return
             else
                 ()
         }
-
+        {xmlconv:buildResultRowsHTML("10", "./am:inspireId/base:Identifier/base:namespace
+List base:namespace and  count the number of base:localId assigned to each base:namespace. ",
+                (), (), "", string(count($tblB10)), "", "",$tblB10)}
         {xmlconv:buildResultRows("B11", "./am:name xsl:nil=""false""",
             $emptyNames, "aqd:AQD_Zone/@gml:id", "No empty values found", " empty name", "","warning")}
 
