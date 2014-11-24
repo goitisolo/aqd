@@ -967,11 +967,11 @@ return
         {xmlconv:buildResultRows("G1", "Total number of attainment statements",
             (), (), "", string($countAttainments), "", "", $tblAllAttainments)}
         {xmlconv:buildResultRows("G4", " A list of the unique identifier information for all attainment records",
-                $tblAllAttainmentsG4, (), "", "No duplicates found", " duplicate", "", $tblAllAttainmentsG4)}
+                (), (), "", string(count($tblAllAttainmentsG4)), " ", "", $tblAllAttainmentsG4)}
         {xmlconv:buildResultRows("G5", "Total number of exceedances",
             (), (), "", string($countExceedances), " exceedance", "", $tblAllExceedances)}
-        {xmlconv:buildResultRows("G6", "Total number of attainment",
-                $aqdObjectiveType,(), "", "", " attainment", "", $tblAllAttainment)}
+        {xmlconv:buildResultRows("G6", "Total number of attainment records that have been assessed against the objectiveType for zones with time extens",
+                $aqdObjectiveType,(), "", string(count($aqdObjectiveType)), " attainment", "", $tblAllAttainment)}
         {xmlconv:buildResultRows("G7", "All gml:id attributes, ef:inspireId and aqd:inspireId elements shall have unique content",
             $invalidDuplicateGmlIds, (), "", "No duplicates found", " duplicate", "", $tblDuplicateGmlIds)}
         {xmlconv:buildResultRows("G8", "./ef:inspireId/base:Identifier/base:localId  must be unique code for the attainment records starting with ISO2-country code",
