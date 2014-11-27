@@ -24,6 +24,7 @@ declare namespace gn = "urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
 declare namespace base2 = "http://inspire.ec.europa.eu/schemas/base2/1.0";
 declare namespace sparql = "http://www.w3.org/2005/sparql-results#";
 declare namespace xlink = "http://www.w3.org/1999/xlink";
+declare namespace ompr="http://inspire.ec.europa.eu/schemas/ompr/2.0";
 
 (:~ declare Content Registry SPARQL endpoint:)
 declare variable $xmlconv:CR_SPARQL_URL := "http://cr.eionet.europa.eu/sparql";
@@ -46,6 +47,14 @@ declare variable $xmlconv:DISPERSION_LOCAL_VOCABULARY := "http://dd.eionet.europ
 declare variable $xmlconv:DISPERSION_REGIONAL_VOCABULARY := "http://dd.eionet.europa.eu/vocabulary/aq/dispersionregional/";
 declare variable $xmlconv:TIMEZONE_VOCABULARY := "http://dd.eionet.europa.eu/vocabulary/aq/timezone/";
 declare variable $xmlconv:POLLUTANT_VOCABULARY := "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/";
+declare variable $xmlconv:MEASUREMENTTYPE_VOCABULARY := "http://dd.eionet.europa.eu/vocabulary/aq/measurementtype/";
+declare variable $xmlconv:MEASUREMENTMETHOD_VOCABULARY := "http://dd.eionet.europa.eu/vocabulary/aq/measurementmethod/";
+declare variable $xmlconv:ANALYTICALTECHNIQUE_VOCABULARY :=  "http://dd.eionet.europa.eu/vocabulary/aq/analyticaltechnique/";
+declare variable $xmlconv:SAMPLINGEQUIPMENT_VOCABULARY := "http://dd.eionet.europa.eu/vocabulary/aq/samplingequipment/";
+declare variable $xmlconv:MEASUREMENTEQUIPMENT_VOCABULARY :="http://dd.eionet.europa.eu/vocabulary/aq/measurementequipment/";
+declare variable $xmlconv:UOM_CONCENTRATION_VOCABULARY := "http://dd.eionet.europa.eu/vocabulary/uom/concentration/";
+declare variable $xmlconv:EQUIVALENCEDEMONSTRATED_VOCABULARY := "http://dd.eionet.europa.eu/vocabulary/aq/equivalencedemonstrated/";
+
 
 (:===================================================================:)
 (: Variable given as an external parameter by the QA service :)
@@ -691,7 +700,102 @@ let $allInvalidZoneXlinks :=
             <td title="aqd:zone">{data($invalidZoneXlinks/@xlink:href)}</td>
         </tr>
 
-(:,D54,D55,D56,D57,D58,D57,D58,D59:)
+(: D54 Done by Rait:)
+let $localSamplingPointProcessIds := $docRoot//gml:featureMember/aqd:AQD_SamplingPointProcess/ompr:inspireId/base:Identifier
+let $invalidDuplicateSamplingPointProcessIds :=
+    for $idSamplingPointProcessCode in $docRoot//gml:featureMember/aqd:AQD_SamplingPointProcess/ompr:inspireId/base:Identifier
+    where
+        count(index-of($localSamplingPointProcessIds/base:localId, normalize-space($idSamplingPointProcessCode/base:localId))) > 1 and
+                count(index-of($localSamplingPointProcessIds/base:namespace, normalize-space($idSamplingPointProcessCode/base:namespace))) > 1
+    return
+        <tr>
+            <td title="aqd:AQD_SamplingPointProcess">{data($idSamplingPointProcessCode/../../@gml:id)}</td>
+            <td title="base:localId">{data($idSamplingPointProcessCode/base:localId)}</td>
+            <td title="base:namespace">{data($idSamplingPointProcessCode/base:namespace)}</td>
+        </tr>
+
+(:ToDo D55 like C6:)
+
+
+(:D56 Done by Rait:)
+let  $allInvalidMeasurementType
+     := xmlconv:checkVocabularyConceptValues("aqd:AQD_SamplingPointProcess", "aqd:measurementType", $xmlconv:MEASUREMENTTYPE_VOCABULARY)
+
+
+(:D57 Done by Rait:)
+let $allConceptUrl57 :=
+for $conceptUrl in doc($source_url)//gml:featureMember/aqd:AQD_SamplingPointProcess/aqd:measurementType/@xlink:href
+    where $conceptUrl = 'http://dd.eionet.europa.eu/vocabulary/aq/measurementtype/automatic' or
+        $conceptUrl = 'http://dd.eionet.europa.eu/vocabulary/aq/measurementtype/remote'
+return $conceptUrl
+
+(:D58 Done by Rait:)
+let $allConceptUrl58 :=
+    for $conceptUrl in doc($source_url)//gml:featureMember/aqd:AQD_SamplingPointProcess/aqd:measurementType/@xlink:href
+    where $conceptUrl = 'http://dd.eionet.europa.eu/vocabulary/aq/measurementtype/active' or
+            $conceptUrl = 'http://dd.eionet.europa.eu/vocabulary/aq/measurementtype/passive'
+    return $conceptUrl
+
+let $elementsIncluded :=
+    for $checkElements in $allConceptUrl58
+        let $style1 := if(count($checkElements/../../aqd:samplingMethod) = 0 ) then "color:red;" else ""
+        let $style2 := if(count($checkElements/../../aqd:analyticalTechnique) = 0) then "color:red;" else ""
+        let $style3 := if(count($checkElements/../../aqd:measurementMethod) >= 1) then "color:red;" else ""
+    where (count($checkElements/../../aqd:samplingMethod) = 0 or count($checkElements/../../aqd:analyticalTechnique) = 0)
+             or count($checkElements/../../aqd:measurementMethod) >= 1
+    return
+        <tr>
+            <td title="gml:id">{data($checkElements/../../@gml:id)}</td>
+            <td style="{$style1}" title="aqd:samplingMethod">{if(count($checkElements/../../aqd:samplingMethod) = 0 ) then "Error, shall  be provided." else "Valid."}</td>
+            <td style="{$style2}" title="aqd:analyticalTechnique">{if(count($checkElements/../../aqd:analyticalTechnique) = 0) then "Error, shall  be provided." else "Valid."}</td>
+            <td style="{$style3}" title="aqd:measurementMethod">{if(count($checkElements/../../aqd:measurementMethod) >= 1) then "Error, shall not be provided." else "Valid."}</td>
+        </tr>
+
+(:D59 Done by Rait:)
+let  $allInvalidAnalyticalTechnique
+    := xmlconv:checkVocabularyaqdAnalyticalTechniqueValues("aqd:AQD_SamplingPointProcess", "aqd:analyticalTechnique", $xmlconv:ANALYTICALTECHNIQUE_VOCABULARY, "")
+
+(:D60 Done by Rait:)
+let  $allInvalid60_1
+    := xmlconv:checkVocabularyConceptEquipmentValues("aqd:AQD_SamplingPointProcess", "aqd:measurementEquipment", $xmlconv:MEASUREMENTEQUIPMENT_VOCABULARY, "")
+let  $allInvalid60_2
+    := xmlconv:checkVocabularyConceptEquipmentValues("aqd:AQD_SamplingPointProcess", "aqd:samplingEquipment", $xmlconv:SAMPLINGEQUIPMENT_VOCABULARY, "")
+(:D61  Done by Rait:)
+    (:let $allInvalid61
+    := for $allDetectionLimits in  doc($source_url)//gml:featureMember/aqd:AQD_SamplingPointProcess/aqd:dataQuality/aqd:DataQuality[name(./*)= 'aqd:detectionLimit']
+        where string(number($allDetectionLimits/aqd:detectionLimit)) = 'NaN'
+    return
+        <tr>
+            <td title="gml:id">{data($allDetectionLimits/../../@gml:id)}</td>
+            <td style="color:red;" title="aqd:detectionLimit">{if(string-length(data($allDetectionLimits/aqd:detectionLimit))> 0) then data($allDetectionLimits/aqd:detectionLimit) else "Error, element is empty! "}</td>
+        </tr>
+:)
+
+(:D63 Done by Rait:)
+let  $allInvalid63
+    := xmlconv:checkVocabularyConceptValues("aqd:AQD_SamplingPointProcess", "aqd:detectionLimit", $xmlconv:UOM_CONCENTRATION_VOCABULARY)
+
+(:D67 Done by Rait:)
+let  $invalid67
+    :=
+    for $usedAQDisTrue in doc($source_url)//gml:featureMember/aqd:AQD_SamplingPoint/aqd:usedAQD
+    where data($usedAQDisTrue) = "true"
+    return
+        $usedAQDisTrue
+
+
+let $allInvalid67 :=
+            for $i67 in   xmlconv:checkVocabularyConceptValues3("aqd:AQD_SamplingPointProcess","aqd:equivalenceDemonstrated", $xmlconv:EQUIVALENCEDEMONSTRATED_VOCABULARY,"")
+            where data($invalid67/../ef:observingCapability/ef:ObservingCapability/ef:procedure/@xlink:href) = (concat(data($i67/../ompr:inspireId/base:Identifier/base:namespace),'/',data($i67/../ompr:inspireId/base:Identifier/base:localId)))
+            return
+                <tr>
+                    <!--<td>{data($invalid67[../ef:observingCapability/ef:ObservingCapability/ef:procedure/@xlink:href = (concat(data($i67/../ompr:inspireId/base:Identifier/base:namespace),'/',data($i67/../ompr:inspireId/base:Identifier/base:localId)))]/../@gml:id)}</td>-->
+                    <td title="AQD_SamplingPointProcess/gml:id">{data($i67/../@gml:id)}</td>
+                    <td title="aqd:equivalenceDemonstrated" style="color:red;" >{data($i67/@xlink:href)}</td>
+                    <!--<td title="">{concat(data($i67/../ompr:inspireId/base:Identifier/base:namespace),'/',data($i67/../ompr:inspireId/base:Identifier/base:localId))}</td>-->
+                </tr>
+
+(:D68,D69,D70,D71,D72,D73,D74,D78:)
 
 return
     <table style="border-collapse:collapse;display:inline">
@@ -768,7 +872,6 @@ return
         {xmlconv:buildResultRowsWithTotalCount("D33", <span>The content of /aqd:AQD_SamplingPoint/ef:mediaMonitored shall resolve to any concept in
             <a href="{ $xmlconv:MEDIA_VALUE_VOCABULARY }">{ $xmlconv:MEDIA_VALUE_VOCABULARY }</a></span>,
             (), (), "ef:mediaMonitored", "", "", "", $invalidSamplingPointMedia)}
-        <!-- FIX ME D35 /aqd:AQD_SamplingPoint do not have ef:geometry-->
         {xmlconv:buildResultRows("D35", "./ef:geometry/gml:Point/gml:pos the srsDimension attribute shall resolve to ""2"" to allow the coordinate of the station",
                 $invalidPos, () , "aqd:AQD_SamplingPoint/@gml:id", "All srsDimension attributes resolve to ""2""", " invalid attribute", "",())}
 
@@ -791,6 +894,45 @@ return
                 (), $allInvalidTrueUsedAQD, "", concat(fn:string(count($allInvalidTrueUsedAQD))," errors found"), "", "", ())}
         {xmlconv:buildResultRows("D53", " Number of invalid aqd:AQD_SamplingPoint/aqd:zone xlinks: ",
                 (),  $allInvalidZoneXlinks, "", concat(fn:string(count( $allInvalidZoneXlinks))," errors found"), "", "", ())}
+        {xmlconv:buildResultRows("D54", "aqd:AQD_SamplingPointProcess/ompr:inspireId/base:Identifier/base:localId not unique codes: ",
+                (),$invalidDuplicateSamplingPointProcessIds, "", concat(string(count($invalidDuplicateSamplingPointProcessIds))," errors found.") , "", "", ())}
+
+        {xmlconv:buildResultRowsWithTotalCount("D56", <span>The content of /aqd:AQD_SamplingPoint/ef:mediaMonitored shall resolve to any concept in
+            <a href="{ $xmlconv:MEASUREMENTTYPE_VOCABULARY }">{ $xmlconv:MEASUREMENTTYPE_VOCABULARY }</a></span>,
+                (), (), "aqd:measurementType", "", "", "", $allInvalidMeasurementType)}
+
+        { xmlconv:buildResultRowsWithTotalCount("D57", <span>./aqd:measurementType witch resolves
+            to ./measurementtype/automatic or ./measurementtype/remote  shall be included and resolves to content of /aqd:AQD_SamplingPointProcess/aqd:measurementMethod that resolve to any concept in
+            <a href="{ $xmlconv:MEASUREMENTMETHOD_VOCABULARY }">{ $xmlconv:MEASUREMENTMETHOD_VOCABULARY }</a></span>,
+                (), (), "aqd:measurementType", "", "", "",xmlconv:checkMeasurementMethodLinkValues($allConceptUrl57,"aqd:AQD_SamplingPointProcess", $xmlconv:MEASUREMENTMETHOD_VOCABULARY, "") )}
+
+        {xmlconv:buildResultRows("D58", " aqd:measurementType  witch resolves
+            to ./measurementtype/active or ./measurementtype/passive  shall be included ./aqd:samplingMethod and ./aqd:analyticalTechnique. ./aqd:measurementMethod shall not be provided.",
+                (), $elementsIncluded, "", concat(fn:string(count($elementsIncluded))," errors found"), "", "", ())}
+
+        {xmlconv:buildResultRowsWithTotalCount("D59", <span>The content of /aqd:AQD_SamplingPoint/aqd:analyticalTechnique shall resolve to any concept in
+            <a href="{ $xmlconv:ANALYTICALTECHNIQUE_VOCABULARY }">{ $xmlconv:ANALYTICALTECHNIQUE_VOCABULARY }</a></span>,
+                (), (), "aqd:analyticalTechnique", "", "", "",$allInvalidAnalyticalTechnique )}
+
+        {xmlconv:buildResultRowsWithTotalCount("D60_1", <span>The content of ./aqd:AQD_SamplingPoint/aqd:measurementType shall resolve to any concept in
+            <a href="{ $xmlconv:MEASUREMENTEQUIPMENT_VOCABULARY }">{ $xmlconv:MEASUREMENTEQUIPMENT_VOCABULARY }</a></span>,
+                (), (), "aqd:measurementEquipment", "", "", "",$allInvalid60_1 )}
+        {xmlconv:buildResultRowsWithTotalCount("D60_2", <span>The content of ./aqd:AQD_SamplingPoint/aqd:samplingEquipment shall resolve to any concept in
+            <a href="{ $xmlconv:SAMPLINGEQUIPMENT_VOCABULARY }">{ $xmlconv:SAMPLINGEQUIPMENT_VOCABULARY }</a></span>,
+                (), (), "aqd:samplingEquipment", "", "", "",$allInvalid60_2 )}
+        <!--{xmlconv:buildResultRows("D61", "Total number ./aqd:dataQuality/aqd:DataQuality/aqd:detectionLimit witch does not contain an integer, fixed point or floating point number ",
+                (), $allInvalid61, "", concat(fn:string(count($allInvalid61))," errors found"), "", "", ())}-->
+        {xmlconv:buildResultRowsWithTotalCount("D63", <span>The content of ./aqd:AQD_SamplingPoint/aqd:samplingEquipment shall resolve to any concept in
+            <a href="{ $xmlconv:UOM_CONCENTRATION_VOCABULARY }">{ $xmlconv:UOM_CONCENTRATION_VOCABULARY }</a></span>,
+                (), (), "aqd:samplingEquipment", "", "", "",$allInvalid63 )}
+        {xmlconv:buildResultRows("D67", <span>Where .AQD_SamplingPoint/aqd:usedAQD is 'true' the content of ./aqd:AQD_SamplingPointProcess/aqd:equivalenceDemonstrated shall resolve to any concept in
+            <a href="{ $xmlconv:EQUIVALENCEDEMONSTRATED_VOCABULARY }">{ $xmlconv:EQUIVALENCEDEMONSTRATED_VOCABULARY }</a></span>,
+                (),$allInvalid67, "", concat(string(count($allInvalid67))," errors found.") , "", "", ())}
+
+        <!--{xmlconv:buildResultRowsWithTotalCount("D67", <span>The content of ./aqd:AQD_SamplingPoint/aqd:samplingEquipment shall resolve to any concept in
+            <a href="{ $xmlconv:UOM_CONCENTRATION_VOCABULARY }">{ $xmlconv:UOM_CONCENTRATION_VOCABULARY }</a></span>,
+                (), (), "aqd:samplingEquipment", "", "", "",$allInvalid67 )}
+-->
 
     </table>
 }
@@ -801,6 +943,7 @@ as element(tr)*{
 };
 declare function xmlconv:checkVocabularyConceptValues($featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string, $vocabularyType as xs:string)
 as element(tr)*{
+
     if(doc-available($source_url))
     then
 
@@ -812,7 +955,11 @@ as element(tr)*{
         let $crConcepts := xmlconv:executeSparqlQuery($sparql)
 
         for $rec in doc($source_url)//gml:featureMember/descendant::*[name()=$featureType]
+
         for $conceptUrl in $rec/child::*[name() = $element]/@xlink:href
+
+
+
         let $conceptUrl := normalize-space($conceptUrl)
 
         where string-length($conceptUrl) > 0
@@ -821,14 +968,173 @@ as element(tr)*{
             <tr isvalid="{ xmlconv:isMatchingVocabCode($crConcepts, $conceptUrl) }">
                 <td title="Feature type">{ $featureType }</td>
                 <td title="gml:id">{data($rec/@gml:id)}</td>
-                <td title="ef:inspireId">{data($rec/ef:inspireId/base:Identifier/base:localId)}</td>
-                <td title="aqd:inspireId">{data($rec/aqd:inspireId/base:Identifier/base:localId)}</td>
                 <td title="ef:name">{data($rec/ef:name)}</td>
                 <td title="{ $element }" style="color:red">{$conceptUrl}</td>
             </tr>
     else
         ()
 };
+
+declare function xmlconv:checkVocabularyConceptValues2($concept , $featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string, $vocabularyType as xs:string)
+as element(tr)*{
+
+    if(doc-available($source_url))
+    then
+
+        let $sparql :=
+            if ($vocabularyType = "collection") then
+                xmlconv:getCollectionConceptUrlSparql($vocabularyUrl)
+            else
+                xmlconv:getConceptUrlSparql($vocabularyUrl)
+        let $crConcepts := xmlconv:executeSparqlQuery($sparql)
+
+        for $rec in $concept/ancestor::*[name()=$featureType]
+
+        for $conceptUrl in $concept
+
+
+
+        let $conceptUrl := normalize-space($conceptUrl)
+
+        where string-length($conceptUrl) > 0
+
+        return
+            <tr isvalid="{ xmlconv:isMatchingVocabCode($crConcepts, $conceptUrl) }">
+                <td title="Feature type">{ $featureType }</td>
+                <td title="gml:id">{data($rec/@gml:id)}</td>
+                <td title="ef:name">{data($rec/ef:name)}</td>
+                <td title="{ $element }" style="color:red">{$conceptUrl}</td>
+            </tr>
+    else
+        ()
+};
+
+declare function xmlconv:checkVocabularyConceptValues3($featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string, $vocabularyType as xs:string){
+
+    if(doc-available($source_url))
+    then
+
+        let $sparql :=
+            if ($vocabularyType = "collection") then
+                xmlconv:getCollectionConceptUrlSparql($vocabularyUrl)
+            else
+                xmlconv:getConceptUrlSparql($vocabularyUrl)
+        let $crConcepts := xmlconv:executeSparqlQuery($sparql)
+
+        for $rec in doc($source_url)//gml:featureMember/descendant::*[name()=$featureType]
+
+        for $conceptUrl in $rec/child::*[name() = $element]
+
+
+
+
+
+        where  not(xmlconv:isMatchingVocabCode($crConcepts, normalize-space($conceptUrl/@xlink:href)))
+
+        return
+            $conceptUrl
+    else
+        ()
+};
+
+
+declare function xmlconv:checkVocabularyaqdAnalyticalTechniqueValues($featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string, $vocabularyType as xs:string)
+as element(tr)*{
+
+    if(doc-available($source_url))
+    then
+
+        let $sparql :=
+            if ($vocabularyType = "collection") then
+                xmlconv:getCollectionConceptUrlSparql($vocabularyUrl)
+            else
+                xmlconv:getConceptUrlSparql($vocabularyUrl)
+        let $crConcepts := xmlconv:executeSparqlQuery($sparql)
+
+        for $rec in doc($source_url)//gml:featureMember/descendant::*[name()=$featureType]
+
+        for $conceptUrl in $rec/child::*[name() = $element]/aqd:AnalyticalTechnique/child::*[name() = $element]/@xlink:href
+
+
+
+        let $conceptUrl := normalize-space($conceptUrl)
+
+        where string-length($conceptUrl) > 0
+
+        return
+            <tr isvalid="{ xmlconv:isMatchingVocabCode($crConcepts, $conceptUrl) }">
+                <td title="Feature type">{ $featureType }</td>
+                <td title="gml:id">{data($rec/@gml:id)}</td>
+                <td title="ef:name">{data($rec/ef:name)}</td>
+                <td title="{ $element }" style="color:red">{$conceptUrl}</td>
+            </tr>
+    else
+        ()
+};
+
+
+declare function xmlconv:checkVocabularyConceptEquipmentValues($featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string, $vocabularyType as xs:string)
+as element(tr)*{
+
+    if(doc-available($source_url))
+    then
+
+        let $sparql :=
+            if ($vocabularyType = "collection") then
+                xmlconv:getCollectionConceptUrlSparql($vocabularyUrl)
+            else
+                xmlconv:getConceptUrlSparql($vocabularyUrl)
+        let $crConcepts := xmlconv:executeSparqlQuery($sparql)
+
+        for $rec in doc($source_url)//gml:featureMember/descendant::*[name()=$featureType]
+
+        for $conceptUrl in $rec/child::*[name() = $element]/*/aqd:equipment/@xlink:href
+
+
+
+        let $conceptUrl := normalize-space($conceptUrl)
+
+        where string-length($conceptUrl) > 0
+
+        return
+            <tr isvalid="{ xmlconv:isMatchingVocabCode($crConcepts, $conceptUrl) }">
+                <td title="Feature type">{ $featureType }</td>
+                <td title="gml:id">{data($rec/@gml:id)}</td>
+                <td title="ef:name">{data($rec/ef:name)}</td>
+                <td title="{ $element }" style="color:red">{$conceptUrl}</td>
+            </tr>
+    else
+        ()
+};
+declare function xmlconv:checkMeasurementMethodLinkValues($concept,$featureType as xs:string,  $vocabularyUrl as xs:string, $vocabularyType as xs:string)
+as element(tr)*{
+    if(doc-available($source_url))
+    then
+
+        let $sparql :=
+            if ($vocabularyType = "collection") then
+                xmlconv:getCollectionConceptUrlSparql($vocabularyUrl)
+            else
+                xmlconv:getConceptUrlSparql($vocabularyUrl)
+        let $crConcepts := xmlconv:executeSparqlQuery($sparql)
+        for $conceptUrl in $concept/../../aqd:measurementMethod/aqd:MeasurementMethod/aqd:measurementMethod/@xlink:href
+            let $measurementMethodStyle := if(xmlconv:isMatchingVocabCode($crConcepts, $conceptUrl))then "" else "color:red"
+            let $analyticalTechniqueStyle := if(count($conceptUrl/../../../../*[name(.) = "aqd:analyticalTechnique"])=0)then "" else "color:red"
+            let $samplingMethod := if(count($conceptUrl/../../../../*[name(.) = "aqd:samplingMethod"])=0)then "" else "color:red"
+
+        return
+            <tr isvalid="{ xmlconv:isMatchingVocabCode($crConcepts, $conceptUrl) and count($conceptUrl/../../../../*[name(.) = "aqd:analyticalTechnique"])=0  and count($conceptUrl/../../../../*[name(.) = "aqd:samplingMethod"])=0}">
+                <td title="gml:id">{data($conceptUrl/../../../../@gml:id)}</td>
+                <td style="{$measurementMethodStyle}" title="{name($conceptUrl/..)}" >{data($conceptUrl)}</td>
+                <td style="{$analyticalTechniqueStyle}" title=" aqd:analyticalTechnique " >{if(count($conceptUrl/../../../../*[name(.) = "aqd:analyticalTechnique"])=0)then "Valid." else "Error, shall not be provided."}</td>
+                <td style="{$samplingMethod}" title=" aqd:samplingMethod " >{if(count($conceptUrl/../../../../*[name(.) = "aqd:samplingMethod"])=0)then "Valid." else "Error, shall not be provided."}</td>
+            </tr>
+    else
+        ()
+};
+
+
+
 declare function xmlconv:getConceptUrlSparql($scheme as xs:string)
 as xs:string
 {
