@@ -939,6 +939,7 @@ let  $tblD72 :=
 
 (: D73 :)
 
+
 let $invalidGmlPointName := distinct-values($docRoot//aqd:AQD_Sample[count(sams:shape/gml:Point) >0 and sams:shape/gml:Point/@srsName != "urn:ogc:def:crs:EPSG::4258" and sams:shape/gml:Point/@srsName != "urn:ogc:def:crs:EPSG::4326"]/@gml:id)
 
 (: D74 :)
