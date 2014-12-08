@@ -25,6 +25,8 @@ declare namespace base2 = "http://inspire.ec.europa.eu/schemas/base2/1.0";
 declare namespace sparql = "http://www.w3.org/2005/sparql-results#";
 declare namespace xlink = "http://www.w3.org/1999/xlink";
 declare namespace ompr="http://inspire.ec.europa.eu/schemas/ompr/2.0";
+declare namespace sams="http://www.opengis.net/samplingSpatial/2.0";
+declare namespace functx = "http://www.functx.com";
 
 (:~ declare Content Registry SPARQL endpoint:)
 declare variable $xmlconv:CR_SPARQL_URL := "http://cr.eionet.europa.eu/sparql";
@@ -69,6 +71,8 @@ Change it for testing locally:
 declare variable $source_url as xs:string external;
 declare variable $source_url := "http://cdr.eionet.europa.eu/gb/eu/aqd/e2a/colutn32a/envubnpvw/B_GB_Zones.xml";
 :)
+
+
 
 (: removes the file part from the end of URL and appends 'xml' for getting the envelope xml description :)
 declare function xmlconv:getEnvelopeXML($url as xs:string) as xs:string{
@@ -175,6 +179,10 @@ as xs:string
     return $uri
 };
 
+declare function functx:is-a-number( $value as xs:anyAtomicType? )
+as xs:boolean {
+    string(number($value)) != 'NaN'
+} ;
 
 declare function xmlconv:getBullet($text as xs:string, $level as xs:string)
 as element(div) {
@@ -367,6 +375,17 @@ let $duplicateEUStationCode := distinct-values(
 let $countAmInspireIdDuplicates := count($duplicateEUStationCode)
 let $countD6duplicates := $countAmInspireIdDuplicates
 
+(: D7 :)
+let $allBaseNamespace := distinct-values($docRoot//aqd:AQD_Network/ef:inspireId/base:Identifier/base:namespace)
+let  $tblD7 :=
+    for $id in $allBaseNamespace
+    let $localId := $docRoot//aqd:AQD_Network/ef:inspireId/base:Identifier[base:namespace = $id]/base:localId
+    return
+        <tr>
+            <td title="base:namespace">{$id}</td>
+            <td title="base:localId">{count($localId)}</td>
+        </tr>
+
 (: D8 :)
 let $invalidNetworkMedia := xmlconv:checkVocabularyConceptValues("aqd:AQD_Network", "ef:mediaMonitored", $xmlconv:MEDIA_VALUE_VOCABULARY_BASE_URI)
 (: D9 :)
@@ -388,6 +407,18 @@ let $duplicateEUStationCode := distinct-values(
 let $countAmInspireIdDuplicates := count($duplicateEUStationCode)
 let $countD15duplicates := $countAmInspireIdDuplicates
 
+(: D16 :)
+
+let $allBaseNamespace := distinct-values($docRoot//aqd:AQD_Station/ef:inspireId/base:Identifier/base:namespace)
+
+let  $tblD16 :=
+    for $id in $allBaseNamespace
+    let $localId := $docRoot//aqd:AQD_Station/ef:inspireId/base:Identifier[base:namespace = $id]/base:localId
+    return
+        <tr>
+            <td title="base:namespace">{$id}</td>
+            <td title="base:localId">{count($localId)}</td>
+        </tr>
 
 (: D19 :)
 let $invalidStationMedia := xmlconv:checkVocabularyConceptValues("aqd:AQD_Station", "ef:mediaMonitored", $xmlconv:MEDIA_VALUE_VOCABULARY_BASE_URI)
@@ -464,6 +495,18 @@ let $invalidDuplicateSamplingPointIds :=
         <tr>
             <td title="aqd:AQD_SamplingPoint">{data($idCode/../../../@gml:id)}</td>
             <td title="base:localId">{data($idCode)}</td>
+        </tr>
+
+(: D32 :)
+let $allBaseNamespace := distinct-values($docRoot//aqd:AQD_SamplingPoint/base:Identifier/base:namespace)
+
+let  $tblD32 :=
+    for $id in $allBaseNamespace
+    let $localId := $docRoot//aqd:AQD_SamplingPoint/base:Identifier[base:namespace = $id]/base:localId
+    return
+        <tr>
+            <td title="base:namespace">{$id}</td>
+            <td title="base:localId">{count($localId)}</td>
         </tr>
 
 (: D33 :)
@@ -715,7 +758,16 @@ let $invalidDuplicateSamplingPointProcessIds :=
         </tr>
 
 (:ToDo D55 like C6:)
+let $allBaseNamespace := distinct-values($docRoot//aqd:AQD_SamplingPointProcess/ompr:inspireld/base:Identifier/base:namespace)
 
+let  $tblD55 :=
+    for $id in $allBaseNamespace
+    let $localId := $docRoot//aqd:AQD_SamplingPointProcess/ompr:inspireld/base:Identifier[base:namespace = $id]/base:localId
+    return
+        <tr>
+            <td title="base:namespace">{$id}</td>
+            <td title="base:localId">{count($localId)}</td>
+        </tr>
 
 (:D56 Done by Rait:)
 let  $allInvalidMeasurementType
@@ -795,7 +847,111 @@ let $allInvalid67 :=
                     <!--<td title="">{concat(data($i67/../ompr:inspireId/base:Identifier/base:namespace),'/',data($i67/../ompr:inspireId/base:Identifier/base:localId))}</td>-->
                 </tr>
 
-(:D68,D69,D70,D71,D72,D73,D74,D78:)
+(: D68 :)
+
+let  $invalid68
+    :=
+    for $usedAQDisTrue in doc($source_url)//gml:featureMember/aqd:AQD_SamplingPoint/aqd:usedAQD
+    where data($usedAQDisTrue) = "true"
+    return
+        $usedAQDisTrue
+
+
+    let $allInvalid68 :=
+    for $i68 in    doc($source_url)//gml:featureMember/aqd:AQD_SamplingPointProcess[aqd:demonstrationReport=0]
+    where data($invalid68/../ef:observingCapability/ef:ObservingCapability/ef:procedure/@xlink:href) = (concat(data($i68/../ompr:inspireId/base:Identifier/base:namespace),'/',data($i68/../ompr:inspireId/base:Identifier/base:localId)))
+    return
+        <tr>
+            <!--<td>{data($invalid67[../ef:observingCapability/ef:ObservingCapability/ef:procedure/@xlink:href = (concat(data($i67/../ompr:inspireId/base:Identifier/base:namespace),'/',data($i67/../ompr:inspireId/base:Identifier/base:localId)))]/../@gml:id)}</td>-->
+            <td title="AQD_SamplingPointProcess/gml:id">{data($i68/../@gml:id)}</td>
+            <td title="aqd:demonstrationReport" style="color:red;" >{data($i68/@xlink:href)}</td>
+            <!--<td title="">{concat(data($i67/../ompr:inspireId/base:Identifier/base:namespace),'/',data($i67/../ompr:inspireId/base:Identifier/base:localId))}</td>-->
+        </tr>
+
+(: D69 :)
+
+let  $invalid69
+    :=
+    for $usedAQDisTrue in doc($source_url)//gml:featureMember/aqd:AQD_SamplingPoint/aqd:usedAQD
+    where data($usedAQDisTrue) = "true"
+    return
+        $usedAQDisTrue
+
+
+let $allInvalid69 :=
+    for $i69 in    doc($source_url)//gml:featureMember/aqd:AQD_SamplingPointProcess[aqd:documentation=0]
+    where data($invalid69/../ef:observingCapability/ef:ObservingCapability/ef:procedure/@xlink:href) = (concat(data($i69/../ompr:inspireId/base:Identifier/base:namespace),'/',data($i69/../ompr:inspireId/base:Identifier/base:localId)))
+    return
+        <tr>
+            <!--<td>{data($invalid67[../ef:observingCapability/ef:ObservingCapability/ef:procedure/@xlink:href = (concat(data($i67/../ompr:inspireId/base:Identifier/base:namespace),'/',data($i67/../ompr:inspireId/base:Identifier/base:localId)))]/../@gml:id)}</td>-->
+            <td title="AQD_SamplingPointProcess/gml:id">{data($i69/../@gml:id)}</td>
+            <td title="aqd:documentation" style="color:red;" >{data($i69/@xlink:href)}</td>
+            <!--<td title="">{concat(data($i67/../ompr:inspireId/base:Identifier/base:namespace),'/',data($i67/../ompr:inspireId/base:Identifier/base:localId))}</td>-->
+        </tr>
+
+(: D70 :)
+
+let  $invalid70
+    :=
+    for $usedAQDisTrue in doc($source_url)//gml:featureMember/aqd:AQD_SamplingPoint/aqd:usedAQD
+    where data($usedAQDisTrue) = "true"
+    return
+        $usedAQDisTrue
+
+
+let $allInvalid70 :=
+    for $i70 in    doc($source_url)//gml:featureMember/aqd:AQD_SamplingPointProcess[aqd:qaReport=0]
+    where data($invalid70/../ef:observingCapability/ef:ObservingCapability/ef:procedure/@xlink:href) = (concat(data($i70/../ompr:inspireId/base:Identifier/base:namespace),'/',data($i70/../ompr:inspireId/base:Identifier/base:localId)))
+    return
+        <tr>
+            <!--<td>{data($invalid67[../ef:observingCapability/ef:ObservingCapability/ef:procedure/@xlink:href = (concat(data($i67/../ompr:inspireId/base:Identifier/base:namespace),'/',data($i67/../ompr:inspireId/base:Identifier/base:localId)))]/../@gml:id)}</td>-->
+            <td title="AQD_SamplingPointProcess/gml:id">{data($i70/../@gml:id)}</td>
+            <td title="aqd:qaReport" style="color:red;" >{data($i70/@xlink:href)}</td>
+            <!--<td title="">{concat(data($i67/../ompr:inspireId/base:Identifier/base:namespace),'/',data($i67/../ompr:inspireId/base:Identifier/base:localId))}</td>-->
+        </tr>
+
+(: D71 :)
+
+let $localSampleIds := $docRoot//gml:featureMember/aqd:AQD_Sample/aqd:inspireId/base:Identifier
+let $invalidDuplicateSampleIds :=
+    for $idSampleCode in $docRoot//gml:featureMember/aqd:AQD_Sample/aqd:inspireId/base:Identifier
+    where
+        count(index-of($localSampleIds/base:localId, normalize-space($idSampleCode/base:localId))) > 1 and
+                count(index-of($localSampleIds/base:namespace, normalize-space($idSampleCode/base:namespace))) > 1
+    return
+        <tr>
+            <td title="aqd:AQD_Sample">{data($idSampleCode/../../@gml:id)}</td>
+            <td title="base:localId">{data($idSampleCode/base:localId)}</td>
+            <td title="base:namespace">{data($idSampleCode/base:namespace)}</td>
+        </tr>
+
+(: D72 :)
+let $allBaseNamespace := distinct-values($docRoot//aqd:AQD_Sample/aqd:inspireId/base:Identifier/base:namespace)
+
+let  $tblD72 :=
+    for $id in $allBaseNamespace
+    let $localId := $docRoot//aqd:AQD_Sample/aqd:inspireId/base:Identifier[base:namespace = $id]/base:localId
+    return
+        <tr>
+            <td title="base:namespace">{$id}</td>
+            <td title="base:localId">{count($localId)}</td>
+        </tr>
+
+(: D73 :)
+
+let $invalidGmlPointName := distinct-values($docRoot//aqd:AQD_Sample[count(sams:shape/gml:Point) >0 and sams:shape/gml:Point/@srsName != "urn:ogc:def:crs:EPSG::4258" and sams:shape/gml:Point/@srsName != "urn:ogc:def:crs:EPSG::4326"]/@gml:id)
+
+(: D74 :)
+
+let $invalidPointDimension  := distinct-values($docRoot//aqd:AQD_Sample/sams:shape/gml:Point[@srsDimension != "2"]/
+concat(../@gml:id, ": srsDimension=", @srsDimension))
+
+(: D78 :)
+let $invalidInletHeigh :=
+for $inletHeigh in  $docRoot//aqd:AQD_Sample/aqd:inletHeight
+    return if (($inletHeigh/@uom != "m") or (functx:is-a-number(data($inletHeigh))=false())) then $inletHeigh/../@gml:id else ()
+
+
 
 return
     <table style="border-collapse:collapse;display:inline">
@@ -816,6 +972,8 @@ return
                 else
                     concat($countD6duplicates, " error", substring("s ", number(not($countD6duplicates > 1)) * 2) ,"found") }</td>
         </tr>
+        {xmlconv:buildResultRows("D7", "./ef:inspireId/base:Identifier/base:namespace List base:namespace and  count the number of base:localId assigned to each base:namespace. ",
+                (), (), "", string(count($tblD7)), "", "",$tblD7)}
         {xmlconv:buildResultRowsWithTotalCount("D8", <span>The content of /aqd:AQD_Network/ef:mediaMonitored shall resolve to any concept in
             <a href="{ $xmlconv:MEDIA_VALUE_VOCABULARY }">{ $xmlconv:MEDIA_VALUE_VOCABULARY }</a></span>,
             (), (), "ef:mediaMonitored", "", "", "", $invalidNetworkMedia)}
@@ -839,6 +997,8 @@ return
                 else
                     concat($countD15duplicates, " error", substring("s ", number(not($countD15duplicates > 1)) * 2) ,"found") }</td>
         </tr>
+        {xmlconv:buildResultRows("D16", "./ef:inspireId/base:Identifier/base:namespace List base:namespace and  count the number of base:localId assigned to each base:namespace. ",
+                (), (), "", string(count($tblD16)), "", "",$tblD16)}
         {xmlconv:buildResultRowsWithTotalCount("D19", <span>The content of /aqd:AQD_Station/ef:mediaMonitored shall resolve to any concept in
             <a href="{ $xmlconv:MEDIA_VALUE_VOCABULARY }">{ $xmlconv:MEDIA_VALUE_VOCABULARY }</a></span>,
             (), (), "ef:mediaMonitored", "", "", "", $invalidStationMedia)}
@@ -869,6 +1029,8 @@ return
             (), (), "aqd:dispersionRegional", "", "", "", $invalidDispersionRegional)}
         {xmlconv:buildResultRows("D31", "./AQD_SamplingPoint/ef:inspireId/base:Identifier/base:localId not unique codes: ",
                 (), $invalidDuplicateSamplingPointIds, "", concat(string(count($invalidDuplicateSamplingPointIds))," errors found.") , "", "", ())}
+        {xmlconv:buildResultRows("D32", "./base:Identifier/base:namespace List base:namespace and  count the number of base:localId assigned to each base:namespace. ",
+                (), (), "", string(count($tblD32)), "", "",$tblD32)}
         {xmlconv:buildResultRowsWithTotalCount("D33", <span>The content of /aqd:AQD_SamplingPoint/ef:mediaMonitored shall resolve to any concept in
             <a href="{ $xmlconv:MEDIA_VALUE_VOCABULARY }">{ $xmlconv:MEDIA_VALUE_VOCABULARY }</a></span>,
             (), (), "ef:mediaMonitored", "", "", "", $invalidSamplingPointMedia)}
@@ -896,7 +1058,8 @@ return
                 (),  $allInvalidZoneXlinks, "", concat(fn:string(count( $allInvalidZoneXlinks))," errors found"), "", "", ())}
         {xmlconv:buildResultRows("D54", "aqd:AQD_SamplingPointProcess/ompr:inspireId/base:Identifier/base:localId not unique codes: ",
                 (),$invalidDuplicateSamplingPointProcessIds, "", concat(string(count($invalidDuplicateSamplingPointProcessIds))," errors found.") , "", "", ())}
-
+        {xmlconv:buildResultRows("D55", "./ompr:inspireld/base:Identifier/base:namespace List base:namespace and  count the number of base:localId assigned to each base:namespace. ",
+                (), (), "", string(count($tblD55)), "", "",$tblD55)}
         {xmlconv:buildResultRowsWithTotalCount("D56", <span>The content of /aqd:AQD_SamplingPoint/ef:mediaMonitored shall resolve to any concept in
             <a href="{ $xmlconv:MEASUREMENTTYPE_VOCABULARY }">{ $xmlconv:MEASUREMENTTYPE_VOCABULARY }</a></span>,
                 (), (), "aqd:measurementType", "", "", "", $allInvalidMeasurementType)}
@@ -928,7 +1091,22 @@ return
         {xmlconv:buildResultRows("D67", <span>Where .AQD_SamplingPoint/aqd:usedAQD is 'true' the content of ./aqd:AQD_SamplingPointProcess/aqd:equivalenceDemonstrated shall resolve to any concept in
             <a href="{ $xmlconv:EQUIVALENCEDEMONSTRATED_VOCABULARY }">{ $xmlconv:EQUIVALENCEDEMONSTRATED_VOCABULARY }</a></span>,
                 (),$allInvalid67, "", concat(string(count($allInvalid67))," errors found.") , "", "", ())}
-
+        {xmlconv:buildResultRows("D68", <span>Where ./AQD_SamplingPoint/aqd:usedAQD is “true”, ./aqd:demonstrationReport shall be  populate</span>,
+                (),$allInvalid68, "", concat(string(count($allInvalid68))," errors found.") , "", "", ())}
+        {xmlconv:buildResultRows("D69", <span>Where ./AQD_SamplingPoint/aqd:usedAQD is “true”, ./aqd:documentation shall be populate</span>,
+            (),$allInvalid69, "", concat(string(count($allInvalid69))," errors found.") , "", "", ())}
+        {xmlconv:buildResultRows("D70", <span>Where ./AQD_SamplingPoint/aqd:usedAQD is “true”, ./aqd:qaReport shall be populated</span>,
+                (),$allInvalid70, "", concat(string(count($allInvalid70))," errors found.") , "", "", ())}
+        {xmlconv:buildResultRows("D71", "aqd:AQD_Sample/ompr:inspireId/base:Identifier/base:localId not unique codes: ",
+                (),$invalidDuplicateSampleIds, "", concat(string(count($invalidDuplicateSampleIds))," errors found.") , "", "", ())}
+        {xmlconv:buildResultRows("D72", "./aqd:inspireId/base:Identifier/base:namespace List base:namespace and  count the number of base:localId assigned to each base:namespace. ",
+                (), (), "", string(count($tblD72)), "", "",$tblD72)}
+        {xmlconv:buildResultRows("D73", "./sams:shape/gml:Point the srsName attribute  shall  be  a  recognisable  URN .  The  following  2  srsNames  are  expected urn:ogc:def:crs:EPSG::4258 or urn:ogc:def:crs:EPSG::4326",
+                $invalidGmlPointName,(), "aqd:AQD_Sample/@gml:id","All srsName attributes are valid"," invalid attribute","", ())}
+        {xmlconv:buildResultRows("D74", "./sams:shape/gml:Point, the srsDimension attribute shall resolve to “2” to allow the coordinate  of  the  feature  of  intere",
+                $invalidPointDimension,(), "aqd:AQD_Sample/@gml:id","All srsDimension attributes are valid"," invalid attribute","", ())}
+        {xmlconv:buildResultRows("D78", "./aqd:inletHeight shall contain a numerical value, uom within it shall resolve to http://dd.eionet.europa.eu/vocabulary/uom/length/m",
+                $invalidInletHeigh,(), "aqd:AQD_Sample/@gml:id","All values are valid"," invalid attribute","", ())}
         <!--{xmlconv:buildResultRowsWithTotalCount("D67", <span>The content of ./aqd:AQD_SamplingPoint/aqd:samplingEquipment shall resolve to any concept in
             <a href="{ $xmlconv:UOM_CONCENTRATION_VOCABULARY }">{ $xmlconv:UOM_CONCENTRATION_VOCABULARY }</a></span>,
                 (), (), "aqd:samplingEquipment", "", "", "",$allInvalid67 )}
