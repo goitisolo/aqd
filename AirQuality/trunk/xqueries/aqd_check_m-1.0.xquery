@@ -362,6 +362,87 @@ let $tblAllFeatureTypes :=
             <td title="Total number">{$countFeatureTypes[$pos]}</td>
         </tr>
 
+(: M4 :)
+
+
+    let $M4Combinations :=
+        for $featureType in $xmlconv:FEATURE_TYPES
+        return
+            doc($source_url)//gml:featureMember/descendant::*[name()=$featureType]
+
+    let $allM4Combinations :=
+    for $aqdModel in $M4Combinations
+    return concat(data($aqdModel/@gml:id), "#", $aqdModel/am:inspireId, "#", $aqdModel/aqd:inspireId, "#", $aqdModel/ef:name, "#", $aqdModel/ompr:name )
+
+let $allM4Combinations := fn:distinct-values($allM4Combinations)
+let $tblM4 :=
+    for $rec in $allM4Combinations
+    let $modelType := substring-before($rec, "#")
+    let $tmpStr := substring-after($rec, concat($modelType, "#"))
+    let $inspireId := substring-before($tmpStr, "#")
+    let $tmpInspireId := substring-after($tmpStr, concat($inspireId, "#"))
+    let $aqdInspireId := substring-before($tmpInspireId, "#")
+    let $tmpEfName := substring-after($tmpInspireId, concat($aqdInspireId, "#"))
+    let $efName := substring-before($tmpEfName, "#")
+    let $omprName := substring-after($tmpEfName,concat($efName,"#"))
+    return
+        <tr>
+
+            <td title="agml:id">{xmlconv:checkLink($modelType)}</td>
+            <td title="am:inspireId">{xmlconv:checkLink($inspireId)}</td>
+            <td title="aqd:inspireId">{xmlconv:checkLink($aqdInspireId)}</td>
+            <td title="ef:name">{xmlconv:checkLink($efName)}</td>
+            <td title="ompr:name">{xmlconv:checkLink($omprName)}</td>
+        </tr>
+
+(: M5 :)
+let $M5Combinations :=
+    for $featureType in $xmlconv:FEATURE_TYPES
+    return
+        doc($source_url)//gml:featureMember/descendant::*[name()=$featureType]
+
+let $gmlIds := $M5Combinations/lower-case(normalize-space(@gml:id))
+let $duplicateGmlIds := distinct-values(
+        for $id in $M5Combinations/@gml:id
+        where string-length(normalize-space($id)) > 0 and count(index-of($gmlIds, lower-case(normalize-space($id)))) > 1
+        return
+            $id
+)
+let $amInspireIds := for $id in $M5Combinations/am:inspireId
+return
+    lower-case(concat("[", normalize-space($id/base:Identifier/base:localId), ", ", normalize-space($id/base:Identifier/base:namespace),
+            ", ", normalize-space($id/base:Identifier/base:versionId), "]"))
+let $duplicateamInspireIds := distinct-values(
+        for $id in $M5Combinations/am:inspireId
+        let $key :=
+            concat("[", normalize-space($id/base:Identifier/base:localId), ", ", normalize-space($id/base:Identifier/base:namespace),
+                    ", ", normalize-space($id/base:Identifier/base:versionId), "]")
+        where string-length(normalize-space($id/base:Identifier/base:localId)) > 0 and count(index-of($amInspireIds, lower-case($key))) > 1
+        return
+            $key
+)
+
+
+let $aqdInspireIds := for $id in $M5Combinations/aqd:inspireId
+return
+    lower-case(concat("[", normalize-space($id/base:Identifier/base:localId), ", ", normalize-space($id/base:Identifier/base:namespace),
+            ", ", normalize-space($id/base:Identifier/base:versionId), "]"))
+let $duplicateaqdInspireIds := distinct-values(
+        for $id in $M5Combinations/aqd:inspireId
+        let $key :=
+            concat("[", normalize-space($id/base:Identifier/base:localId), ", ", normalize-space($id/base:Identifier/base:namespace),
+                    ", ", normalize-space($id/base:Identifier/base:versionId), "]")
+        where  string-length(normalize-space($id/base:Identifier/base:localId)) > 0 and count(index-of($aqdInspireIds, lower-case($key))) > 1
+        return
+            $key
+)
+
+
+let $countGmlIdDuplicates := count($duplicateGmlIds)
+let $countamInspireIdDuplicates := count($duplicateamInspireIds)
+let $countaqdInspireIdDuplicates := count($duplicateaqdInspireIds)
+let $countB8duplicates := $countGmlIdDuplicates + $countamInspireIdDuplicates + $countaqdInspireIdDuplicates
+
 (: M6 :)
 let $amInspireIds := $docRoot//aqd:AQD_Model/ef:inspireId/base:Identifier/concat(lower-case(normalize-space(base:namespace)), '##',
         lower-case(normalize-space(base:localId)))
@@ -542,6 +623,11 @@ let $invalidObservedPropertyCombinations :=
             <td title="aqd:objectiveType">{data($oPC/aqd:protectionTarget/@xlink:href)}</td>
 
         </tr>
+
+(: 24 :)
+
+let $invalidAssessmentType := $docRoot//aqd:AQD_Model/aqd:assessmentType[fn:normalize-space(@xlink:href) != "http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/model" and fn:normalize-space(@xlink:href) != "http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/objective" ]/../@gml:id
+
 (: M25 :)
 
     let $allTrueUsedAQD :=
@@ -599,6 +685,17 @@ let $allInvalidZoneXlinks :=
                 <td title="base:localId">{count($localId)}</td>
             </tr>
 
+(: M41 :)
+let $allBaseNamespace := distinct-values($docRoot//aqd:AQD_ModelArea/aqd:inspireId/base:Identifier/base:namespace)
+let  $tblM41 :=
+    for $id in $allBaseNamespace
+    let $localId := $docRoot//aqd:AQD_ModelArea/aqd:inspireId/base:Identifier[base:namespace = $id]/base:localId
+    return
+        <tr>
+            <td title="base:namespace">{$id}</td>
+            <td title="base:localId">{count($localId)}</td>
+        </tr>
+
 (: M43 :)
 
     let $invalidSrsName := distinct-values($docRoot//aqd:AQD_Sample[count(sams:shape) >0 and sams:shape/@srsName != "urn:ogc:def:crs:EPSG::4258" and sams:shape/@srsName != "urn:ogc:def:crs:EPSG::4326"]/@gml:id)
@@ -613,7 +710,46 @@ let $allInvalidZoneXlinks :=
         </colgroup>
         {xmlconv:buildResultRows("M1", "Total number of each environmental monitoring feature types",
             (), (), "", string(sum($countFeatureTypes)), "", "", $tblAllFeatureTypes)}
-
+        {xmlconv:buildResultRows("M4", "Total number  aqd:aqdModelType, aqd:inspireId, ef:name, ompr:nam  combinations ",
+                (), (), "", string(count($tblM4)), "", "",$tblM4)}
+        <tr style="border-top:1px solid #666666">
+        <tr>
+            <td style="vertical-align:top;">{ xmlconv:getBullet("M5", if ($countB8duplicates = 0) then "info" else "error") }</td>
+            <th style="vertical-align:top;">All gml:id attributes, am:inspireId and aqd:inspireId elements shall have unique content</th>
+            <td style="vertical-align:top;">{
+                if ($countB8duplicates = 0) then
+                    "All Ids are unique"
+                else
+                    concat($countB8duplicates, " duplicate", substring("s ", number(not($countB8duplicates > 1)) * 2) ,"found") }</td>
+        </tr>
+        {
+            if ($countGmlIdDuplicates > 0) then
+                <tr style="font-size: 0.9em;color:grey;">
+                    <td colspan="2" style="text-align:right;vertical-align:top;">aqd:AQD_Model/@gml:id - </td>
+                    <td style="font-style:italic;vertical-align:top;">{ string-join($duplicateGmlIds, ", ")}</td>
+                </tr>
+            else
+                ()
+        }
+        {
+            if ($countamInspireIdDuplicates > 0) then
+                <tr style="font-size: 0.9em;color:grey;">
+                    <td colspan="2" style="text-align:right;vertical-align:top;">am:inspireId - </td>
+                    <td style="font-style:italic;vertical-align:top;">{ string-join($duplicateamInspireIds, ", ")}</td>
+                </tr>
+            else
+                ()
+        }
+        {
+            if ($countaqdInspireIdDuplicates > 0) then
+                <tr style="font-size: 0.9em;color:grey;">
+                    <td colspan="2" style="text-align:right;vertical-align:top;">aqd:inspireId - </td>
+                    <td style="font-style:italic;vertical-align:top;">{ string-join($duplicateaqdInspireIds, ", ")}</td>
+                </tr>
+            else
+                ()
+        }
+        </tr>
         <tr style="border-top:1px solid #666666">
             <td style="vertical-align:top;">{ xmlconv:getBullet("M6", if ($countM6duplicates = 0) then "info" else "error") }</td>
             <th style="vertical-align:top;">./am:inspireId/base:Identifier/base:localId shall be an unique code within namespace</th>
@@ -635,6 +771,8 @@ let $allInvalidZoneXlinks :=
                 (), (), "aqd:AQD_Model", "", "", "", $invalidObservedProperty)}
         {xmlconv:buildResultRows("M23", "Number of invalid 3 elements /aqd:AQD_Model/aqd:environmentalObjective/aqd:EnvironmentalObjective/ combinations: ",
                 (), $invalidObservedPropertyCombinations, "", concat(fn:string(count($invalidObservedPropertyCombinations))," errors found"), "", "", ())}
+        {xmlconv:buildResultRows("M24", "/aqd:assessmentType shall resolve to http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/ via xlink:href to either http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/model or http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/objective",
+                $invalidAssessmentType, (), "", concat(fn:string(count($invalidAssessmentType))," errors found"), "", "", ())}
         {xmlconv:buildResultRows("M25", " Number of AQD_Model(s) witch has ./aqd:usedAQD equals “true” but does not have at least at one /aqd:Model xkinked: ",
                 (), $allInvalidTrueUsedAQD, "", concat(fn:string(count($allInvalidTrueUsedAQD))," errors found"), "", "", ())}
         {xmlconv:buildResultRows("M26", " Number of invalid aqd:AQD_Model/aqd:zone xlinks: ",
@@ -643,6 +781,8 @@ let $allInvalidZoneXlinks :=
                 (),$invalidDuplicateModelProcessIds, "", concat(string(count($invalidDuplicateModelProcessIds))," errors found.") , "", "", ())}
         {xmlconv:buildResultRows("M28", "./ompr:inspireld/base:Identifier/base:namespace List base:namespace and  count the number of base:localId assigned to each base:namespace. ",
                 (), (), "", string(count($tblM28)), "", "",$tblM28)}
+        {xmlconv:buildResultRows("M41", "./aqd:inspireId/base:Identifier/base:namespace List base:namespace and  count the number of base:localId assigned to each base:namespace. ",
+                (), (), "", string(count($tblM41)), "", "",$tblM41)}
         {xmlconv:buildResultRows("M43", "./sams:shape, the srsDimension attribute shall resolve to “2” to allow the coordinate  of  the  feature  of  intere",
                 $invalidSrsName,(), "aqd:AQD_ModelArea/@gml:id","All srsDimension attributes are valid"," invalid attribute","", ())}
 
