@@ -362,6 +362,86 @@ let $tblAllFeatureTypes :=
             <td title="Total number">{$countFeatureTypes[$pos]}</td>
         </tr>
 
+(: D4 :)
+let $D4Combinations :=
+    for $featureType in $xmlconv:FEATURE_TYPES
+    return
+        doc($source_url)//gml:featureMember/descendant::*[name()=$featureType]
+
+let $allD4Combinations :=
+    for $aqdModel in $D4Combinations
+    return concat(data($aqdModel/@gml:id), "#", $aqdModel/am:inspireId, "#", $aqdModel/aqd:inspireId, "#", $aqdModel/ef:name, "#", $aqdModel/ompr:name )
+
+let $allD4Combinations := fn:distinct-values($allD4Combinations)
+let $tblD4 :=
+    for $rec in $allD4Combinations
+    let $modelType := substring-before($rec, "#")
+    let $tmpStr := substring-after($rec, concat($modelType, "#"))
+    let $inspireId := substring-before($tmpStr, "#")
+    let $tmpInspireId := substring-after($tmpStr, concat($inspireId, "#"))
+    let $aqdInspireId := substring-before($tmpInspireId, "#")
+    let $tmpEfName := substring-after($tmpInspireId, concat($aqdInspireId, "#"))
+    let $efName := substring-before($tmpEfName, "#")
+    let $omprName := substring-after($tmpEfName,concat($efName,"#"))
+    return
+        <tr>
+
+            <td title="agml:id">{xmlconv:checkLink($modelType)}</td>
+            <td title="am:inspireId">{xmlconv:checkLink($inspireId)}</td>
+            <td title="aqd:inspireId">{xmlconv:checkLink($aqdInspireId)}</td>
+            <td title="ef:name">{xmlconv:checkLink($efName)}</td>
+            <td title="ompr:name">{xmlconv:checkLink($omprName)}</td>
+        </tr>
+
+(: D5 :)
+
+let $D5Combinations :=
+    for $featureType in $xmlconv:FEATURE_TYPES
+    return
+        doc($source_url)//gml:featureMember/descendant::*[name()=$featureType]
+
+let $gmlIds := $D5Combinations/lower-case(normalize-space(@gml:id))
+let $duplicateGmlIds := distinct-values(
+        for $id in $D5Combinations/@gml:id
+        where string-length(normalize-space($id)) > 0 and count(index-of($gmlIds, lower-case(normalize-space($id)))) > 1
+        return
+            $id
+)
+let $amInspireIds := for $id in $D5Combinations/am:inspireId
+return
+    lower-case(concat("[", normalize-space($id/base:Identifier/base:localId), ", ", normalize-space($id/base:Identifier/base:namespace),
+            ", ", normalize-space($id/base:Identifier/base:versionId), "]"))
+let $duplicateamInspireIds := distinct-values(
+        for $id in $D5Combinations/am:inspireId
+        let $key :=
+            concat("[", normalize-space($id/base:Identifier/base:localId), ", ", normalize-space($id/base:Identifier/base:namespace),
+                    ", ", normalize-space($id/base:Identifier/base:versionId), "]")
+        where string-length(normalize-space($id/base:Identifier/base:localId)) > 0 and count(index-of($amInspireIds, lower-case($key))) > 1
+        return
+            $key
+)
+
+
+let $aqdInspireIds := for $id in $D5Combinations/aqd:inspireId
+return
+    lower-case(concat("[", normalize-space($id/base:Identifier/base:localId), ", ", normalize-space($id/base:Identifier/base:namespace),
+            ", ", normalize-space($id/base:Identifier/base:versionId), "]"))
+let $duplicateaqdInspireIds := distinct-values(
+        for $id in $D5Combinations/aqd:inspireId
+        let $key :=
+            concat("[", normalize-space($id/base:Identifier/base:localId), ", ", normalize-space($id/base:Identifier/base:namespace),
+                    ", ", normalize-space($id/base:Identifier/base:versionId), "]")
+        where  string-length(normalize-space($id/base:Identifier/base:localId)) > 0 and count(index-of($aqdInspireIds, lower-case($key))) > 1
+        return
+            $key
+)
+
+
+let $countGmlIdDuplicates := count($duplicateGmlIds)
+let $countamInspireIdDuplicates := count($duplicateamInspireIds)
+let $countaqdInspireIdDuplicates := count($duplicateaqdInspireIds)
+let $countD5duplicates := $countGmlIdDuplicates + $countamInspireIdDuplicates + $countaqdInspireIdDuplicates
+
 (: D6 Done by Rait ./ef:inspireId/base:Identifier/base:localId shall be an unique code for AQD_network and unique within the namespace.:)
 let $amInspireIds := $docRoot//aqd:AQD_Network/ef:inspireId/base:Identifier/concat(lower-case(normalize-space(base:namespace)), '##',
         lower-case(normalize-space(base:localId)))
@@ -964,6 +1044,46 @@ return
         </colgroup>
         {xmlconv:buildResultRows("D1", "Total number of each environmental monitoring feature types",
             (), (), "", string(sum($countFeatureTypes)), "", "", $tblAllFeatureTypes)}
+        {xmlconv:buildResultRows("D4", "Total number  aqd:aqdModelType, aqd:inspireId, ef:name, ompr:nam  combinations ",
+                (), (), "", string(count($tblD4)), "", "",$tblD4)}
+        <tr style="border-top:1px solid #666666">
+            <tr>
+                <td style="vertical-align:top;">{ xmlconv:getBullet("D5", if ($countD5duplicates = 0) then "info" else "error") }</td>
+                <th style="vertical-align:top;">All gml:id attributes, am:inspireId and aqd:inspireId elements shall have unique content</th>
+                <td style="vertical-align:top;">{
+                    if ($countD5duplicates = 0) then
+                        "All Ids are unique"
+                    else
+                        concat($countD5duplicates, " duplicate", substring("s ", number(not($countD5duplicates > 1)) * 2) ,"found") }</td>
+            </tr>
+            {
+                if ($countGmlIdDuplicates > 0) then
+                    <tr style="font-size: 0.9em;color:grey;">
+                        <td colspan="2" style="text-align:right;vertical-align:top;">aqd:AQD_Model/@gml:id - </td>
+                        <td style="font-style:italic;vertical-align:top;">{ string-join($duplicateGmlIds, ", ")}</td>
+                    </tr>
+                else
+                    ()
+            }
+            {
+                if ($countamInspireIdDuplicates > 0) then
+                    <tr style="font-size: 0.9em;color:grey;">
+                        <td colspan="2" style="text-align:right;vertical-align:top;">am:inspireId - </td>
+                        <td style="font-style:italic;vertical-align:top;">{ string-join($duplicateamInspireIds, ", ")}</td>
+                    </tr>
+                else
+                    ()
+            }
+            {
+                if ($countaqdInspireIdDuplicates > 0) then
+                    <tr style="font-size: 0.9em;color:grey;">
+                        <td colspan="2" style="text-align:right;vertical-align:top;">aqd:inspireId - </td>
+                        <td style="font-style:italic;vertical-align:top;">{ string-join($duplicateaqdInspireIds, ", ")}</td>
+                    </tr>
+                else
+                    ()
+            }
+        </tr>
         <tr style="border-top:1px solid #666666">
             <td style="vertical-align:top;">{ xmlconv:getBullet("D6", if ($countD6duplicates = 0) then "info" else "error") }</td>
             <th style="vertical-align:top;">./am:inspireId/base:Identifier/base:localId shall be an unique code within namespace</th>
