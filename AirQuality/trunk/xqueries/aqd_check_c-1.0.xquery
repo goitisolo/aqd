@@ -473,7 +473,7 @@ let $envelopeUrl := xmlconv:getEnvelopeXML($source_url)
 
 
 (: FIXME   :)
-(:)let $countryCode := "fr":)
+(:)let $countryCode := "fr":) 
 let $countryCode := if ($countryCode = "gb") then "uk" else if ($countryCode = "gr") then "el" else $countryCode
 
 
