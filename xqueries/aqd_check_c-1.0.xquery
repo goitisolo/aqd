@@ -282,6 +282,22 @@ concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 } LIMIT 500")
 };
 
+declare function xmlconv:getAssessmentTypeModel($countryCode as xs:string)
+as xs:string
+{concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+         PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
+         PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+
+    SELECT ?zone ?inspireId ?inspireLabel ?assessmentType
+        WHERE {
+         ?zone a aqd:AQD_Model ;
+         aqd:inspireId ?inspireId .
+         ?inspireId rdfs:label ?inspireLabel .
+         ?zone aqd:assessmentType ?assessmentType
+       FILTER (STRSTARTS(str(?zone), 'http://cdr.eionet.europa.eu/",$countryCode,"/eu/aqd/d/'))
+   } LIMIT 500")
+};
+
 declare function xmlconv:getAssessmentType($countryCode as xs:string)
 as xs:string
 {concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -457,7 +473,7 @@ let $envelopeUrl := xmlconv:getEnvelopeXML($source_url)
 
 
 (: FIXME   :)
-let $countryCode := "fr"
+(:)let $countryCode := "fr":)
 let $countryCode := if ($countryCode = "gb") then "uk" else if ($countryCode = "gr") then "el" else $countryCode
 
 
@@ -747,7 +763,7 @@ let $isEndPositionCodesAvailable := count($resultXml) > 0
 
 let $invalidGmlEndPosition :=
     for $gmlEndPosition in $docRoot//aqd:AQD_AssessmentRegime/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata
-    where empty(fn:index-of($samplingPointInspireLebelD,$gmlEndPosition/normalize-space(@xlink:href)))=false() or empty(fn:index-of($modelInspireLebelD,$gmlEndPosition/normalize-space(@xlink:href)))=false()
+    where (empty(fn:index-of($samplingPointInspireLebelD,$gmlEndPosition/normalize-space(@xlink:href)))=false() or empty(fn:index-of($modelInspireLebelD,$gmlEndPosition/normalize-space(@xlink:href)))=false()) and empty($docRoot//aqd:AQD_ReportingHeader/aqd:reportingPeriod/gml:TimePeriod/gml:endPosition)=false()
     return  if (empty(index-of($samplinPointEndPosition,$docRoot//aqd:AQD_ReportingHeader/aqd:reportingPeriod/gml:TimePeriod/gml:endPosition)) or empty(index-of($modelEndPosition,$docRoot//aqd:AQD_ReportingHeader/aqd:reportingPeriod/gml:TimePeriod/gml:endPosition)) ) then $docRoot//aqd:AQD_ReportingHeader/@gml:id else ()
 
 (: 27 :)
@@ -837,14 +853,22 @@ return if(empty(fn:index-of($aqdProtectionTarget, $aqdProtectionTargetLink)) or 
 
 (: C32 :)
 let $resultXml := if (fn:string-length($countryCode) = 2) then xmlconv:getAssessmentType($countryCode) else ""
-let $isSamplingPointaqdAssessmentTypeAvailable := string-length($resultXml) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($resultXml, "xml")) 
+let $resultXmlModel := if (fn:string-length($countryCode) = 2) then xmlconv:getAssessmentTypeModel($countryCode) else ""
+let $isSamplingPointaqdAssessmentTypeAvailable := string-length($resultXml) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($resultXml, "xml"))
+let $isModelAssessmentTypeAvailable := string-length($resultXml) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($resultXmlModel, "xml"))
 let $aqdSamplingPointInspireLabel  := if($isSamplingPointaqdAssessmentTypeAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($resultXml)//sparql:binding[@name='inspireLabel']/sparql:literal)) else ""
-let $aqdSamplingPointAssessmentType  := if($isSamplingPointaqdAssessmentTypeAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($resultXml)//sparql:binding[@name='assessmentType']/sparql:uri)) else ""
+let $aqdSamplingPointAssessmentType  := if($isSamplingPointaqdAssessmentTypeAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($resultXml)//sparql:result/concat(sparql:binding[@name='inspireLabel']/sparql:literal,"|",sparql:binding[@name='assessmentType']/sparql:uri))) else ""
+let $aqdModelInspireLabel  := if($isModelAssessmentTypeAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($resultXmlModel)//sparql:binding[@name='inspireLabel']/sparql:literal)) else ""
+let $aqdModelAssessmentType  := if($isModelAssessmentTypeAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($resultXmlModel)//sparql:result/concat(sparql:binding[@name='inspireLabel']/sparql:literal,"|",sparql:binding[@name='assessmentType']/sparql:uri))) else ""
+
 let $isSamplingPointaqdAssessmentTypeAvailable := count($resultXml) > 0
 
-let $invalidAssessmentType:= $aqdSamplingPointAssessmentType
-
-
+let $invalidAssessmentType:=
+    for $x in $docRoot//aqd:AQD_AssessmentRegime/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata/@xlink:href
+let $str := concat($x,"|",$x/../../aqd:assessmentType/@xlink:href)
+where (empty(index-of($aqdSamplingPointInspireLabel,fn:substring-before($str,"|")))=false() or empty(index-of($aqdModelInspireLabel,fn:substring-before($str,"|")))=false()) and fn:substring-after($str,"|")!="http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/objective"
+return if (empty(index-of($aqdSamplingPointAssessmentType,$str)) and empty($aqdSamplingPointAssessmentType)=false()) then $str else
+       if (empty(index-of($aqdModelAssessmentType,$str)) and empty($aqdModelAssessmentType)=false()) then $str else ()
 
 (: C33 If The lifecycle information of ./aqd:assessmentMethods/aqd:AssessmentMethods/aqd:*AssessmentMetadata xlink:href shall be current,
     then /AQD_SamplingPoint/aqd:operationActivityPeriod/gml:endPosition or /AQD_ModelType/aqd:operationActivityPeriod/gml:endPosition shall be equal to “9999-12-31 23:59:59Z” or nulled (blank):)
@@ -985,7 +1009,7 @@ return
         {xmlconv:buildResultRows("C5", "./aqd:inspireId/base:Identifier/base:localId shall be an unique code for the assessment regime.",
             $invalidDuplicateLocalIds, (), "base:localId", "No duplicates found", " duplicate", "", ())}
         {xmlconv:buildResultRows("C6", "./aqd:inspireId/base:Identifier/base:namespace List base:namespace and  count the number of base:localId assigned to each base:namespace. ",
-                (), (), "", string(count($tblC6)), "", "",$tblC6)}
+            (), (), "", string(count($tblC6)), "", "",$tblC6)}
         {xmlconv:buildResultRows("C7", "Each of the number of /aqd:AQD_AssessmentRegime records shall contain a maximum of 1 ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmental Objective records per /aqd:AQD_AssessmentRegime element",
                 $invalidAssessmentRegim,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "", ())}
         {xmlconv:buildResultRows("C8", "./aqd:pollutant xlink:href attribute may resolve to one of",
@@ -1045,7 +1069,7 @@ Exception : Where ./aqd:pollutant resolves to the list in  C9 and http://dd.eion
             $invalidEqual, (), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "", ())}
         {xmlconv:buildResultRows("C31", "./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget and ./aqd:pollutant combinations  shall  reconcile  to  corresponding  information  within /aqd:AQD_Zone/aqd:pollutants/aqd:Pollutant for  the  zone  cited  by ./aqd:zone",
                 $aqdEnvironmentalObjective, (), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "", ())}
-        {xmlconv:buildResultRows("C32", "Where ./aqd:pollutant resolves to the list in C9 ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:exceedanceAttainment xlink:href attribute shall resolve to http://dd.eionet.europa.eu/vocabulary/aq/assessmentthresholdexceedance/NA",
+        {xmlconv:buildResultRows("C32", "./aqd:assessmentMethods/aqd:AssessmentMethods/aqd:assessmentType shall be compared with the /aqd:AQD_SamplingPoint/aqd:assessmentType for assessment method cited by ./aqd:assessmentMethods/aqd:AssessmentMethods/aqd:samplingPoint Assessm entMetadata xlink:href attribute and/ or /aqd:AQD_Model /aqd:assessmentType for  assessment  method  cited  by ./aqd:assessmentMet hods/aqd:AssessmentMethods/aqd:samplingPoint Assessm entMetadata xlink:href attribute",
                 $invalidAssessmentType,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "", ())}
         {xmlconv:buildResultRows("C33", "If The lifecycle information of ./aqd:assessmentMethods/aqd:AssessmentMethods/aqd:*AssessmentMetadata xlink:href shall be current, then /AQD_SamplingPoint/aqd:operationActivityPeriod/gml:endPosition or /AQD_ModelType/aqd:operationActivityPeriod/gml:endPosition shall be equal to “9999-12-31 23:59:59Z” or nulled (blank)",
                 $invalidAssessmentGmlEndPosition,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "", ())}
