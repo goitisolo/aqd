@@ -469,11 +469,11 @@ as element(table) {
 (: get reporting country :)
 
 let $envelopeUrl := xmlconv:getEnvelopeXML($source_url)
-(:let $countryCode := if(string-length($envelopeUrl)>0) then lower-case(fn:doc($envelopeUrl)/envelope/countrycode) else "":)
+let $countryCode := if(string-length($envelopeUrl)>0) then lower-case(fn:doc($envelopeUrl)/envelope/countrycode) else ""
 
 
 (: FIXME   :)
-(:)let $countryCode := "fr":) 
+(:)let $countryCode := "fr":)
 let $countryCode := if ($countryCode = "gb") then "uk" else if ($countryCode = "gr") then "el" else $countryCode
 
 
@@ -519,7 +519,6 @@ let  $tblC6 :=
             <td title="base:namespace">{$id}</td>
             <td title="base:localId">{count($localId)}</td>
         </tr>
-
 (: C7 :)
 
 let $invalidAssessmentRegim :=
