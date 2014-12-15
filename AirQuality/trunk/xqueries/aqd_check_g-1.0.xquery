@@ -674,7 +674,7 @@ let $invalidObjectiveTypes := xmlconv:isinvalidDDConceptLimited("", "aqd:Environ
 (: G20 - ./aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric xlink:href attribute shall resolve to one of
 ... :)
 let $invalidReportingMetric := xmlconv:isinvalidDDConceptLimited("", "aqd:EnvironmentalObjective", "aqd:reportingMetric",
-    $xmlconv:REPMETRIC_VOCABULARY, $xmlconv:VALID_REPMETRIC_IDS)
+    $xmlconv:REPMETRIC_VOCABULARY, $xmlconv:VALID_REPMETRIC_IDS_20)
 
 
 (: G21
@@ -1017,7 +1017,7 @@ return
 
         {xmlconv:buildResultRowsWithTotalCount("G20", <span>The content of ./aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:EnvironmentalObjective/aqd:reportingMetric shall resolve to a valid concept in
             <a href="{ $xmlconv:REPMETRIC_VOCABULARY }">{ $xmlconv:REPMETRIC_VOCABULARY }</a> that must be one of
-            {xmlconv:buildVocItemsList("G20", $xmlconv:REPMETRIC_VOCABULARY, $xmlconv:VALID_REPMETRIC_IDS)}</span>,
+            {xmlconv:buildVocItemsList("G20", $xmlconv:REPMETRIC_VOCABULARY, $xmlconv:VALID_REPMETRIC_IDS_20)}</span>,
             (), (), "aqd:reportingMetric", "", "", "", $invalidReportingMetric)}
 
         {xmlconv:buildResultRows("G21", "If
