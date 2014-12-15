@@ -7,7 +7,7 @@ xquery version "1.0" encoding "UTF-8";
  : Copyright:   European Environment Agency
  :)
 (:~
- : XQuery script implements dataflow C tier-1 checks as documented in http://taskman.eionet.europa.eu/documents/3 .
+ : XQuery script implements dataflow G tier-1 checks as documented in http://taskman.eionet.europa.eu/documents/3 .
  :
  : @author Enriko Käsper
  :)
@@ -67,7 +67,12 @@ declare variable $xmlconv:ADJUSTMENTSOURCE_VOCABLUARY as xs:string := "http://dd
 declare variable $xmlconv:ASSESSMENTTYPE_VOCABLUARY as xs:string := "http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/";
 declare variable $xmlconv:PROTECTIONTARGET_VOCABLUARY as xs:string := "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/";
 declare variable $source_url as xs:string external;
+(:)
+declare variable $source_url as xs:string external;
+:)
 (:
+declare variable $source_url as xs:string := "http://cdrtest.eionet.europa.eu/es/eu/aqd/g/envvbgwea/ES_G_Attainment.xml";
+declare variable $source_url := "http://cdrtest.eionet.europa.eu/hr/eu/aqd/g/envu_2xna/HR_G_201407281307.xml";
 declare variable $source_url := "http://cdrtest.eionet.europa.eu/hr/eu/aqd/g/envu_2xna/HR_G_201407281307.xml";
 declare variable $source_url := "../test/2_HR_G_201407281307.xml";
 declare variable $source_url := "../test/ES_G_Attainment.xml";
@@ -138,7 +143,45 @@ as element(td)
         }
         </td>
 };
-
+(:~
+ : Checks if XML element is missing or not.
+ : @param $node XML node
+ : return Boolean value.
+ :)
+declare function xmlconv:isMissing($node as node()*)
+as xs:boolean
+{
+    if (fn:count($node) = 0) then
+        fn:true()
+    else
+        fn:false()
+};
+(:~
+ : Checks if XML element is missing or value is empty.
+ : @param $node XML element or value
+ : return Boolean value.
+ :)
+declare function xmlconv:isMissingOrEmpty($node as item()*)
+as xs:boolean
+{
+    if (xmlconv:isMissing($node)) then
+        fn:true()
+    else
+        xmlconv:isEmpty(string-join($node, ""))
+};
+(:~
+ : Checks if element value is empty or not.
+ : @param $value Element value.
+ : @return Boolean value.
+ :)
+declare function xmlconv:isEmpty($value as xs:string)
+as xs:boolean
+{
+    if (fn:empty($value) or fn:string(fn:normalize-space($value)) = "") then
+        fn:true()
+    else
+        fn:false()
+};
 (:
  : ======================================================================
  :              SPARQL HELPER methods
@@ -373,12 +416,14 @@ let $countryCode := "hr"
 (:
 let $countryCode := if ($countryCode = "gb") then "uk" else if ($countryCode = "gr") then "el" else $countryCode
 :)
+(:
 let $countryCode := 'hr'
+:)
 (: =============================================== FIXME !!! :)
 
 let $envelopeUrl := xmlconv:getEnvelopeXML($source_url)
 let $countryCode := if(string-length($envelopeUrl)>0) then lower-case(fn:doc($envelopeUrl)/envelope/countrycode) else ""
-(:)let $countryCode := "hr":)
+(:)let $countryCode := "es":)
 
 let $docRoot := doc($source_url)
 (: G1 :)
@@ -480,7 +525,8 @@ let $isAqdZoneCodesAvailable := count($resultXml) > 0
 
 let $aqdObjectiveType :=
    for $x in $docRoot//aqd:AQD_Attainment
-    where $isAqdZoneCodesAvailable and  empty(index-of($localId, $x/aqd:zone/@xlink:href))=false()
+    let $href := if (xmlconv:isMissingOrEmpty($x/aqd:zone/@xlink:href)) then "" else data($x/aqd:zone/@xlink:href)
+    where $isAqdZoneCodesAvailable and $href != "" and not(empty($localId)) and empty(index-of($localId, $href)) = false()
     return if ($x/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LVmaxMOT")  then  $x else ()
 let $tblAllAttainment :=
     for $rec in $aqdObjectiveType
@@ -640,39 +686,30 @@ EQUALS http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V
 
 :)
 let $invalidobjectiveTypesForVEG :=
-    for $obj in $docRoot//../../aqd:environmentalObjective/aqd:EnvironmentalObjective
+    for $obj in $docRoot//aqd:environmentalObjective/aqd:EnvironmentalObjective
     where
         $obj/aqd:protectionTarget/@xlink:href != 'http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V'
         and $obj/aqd:objectiveType/@xlink:href = 'http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/CL'
-   return $obj/../../../..
-
-   let $tblInvalidobjectiveTypesForVEG :=
-   for $rec in $invalidobjectiveTypesForVEG
-   (: FIXME - there are sev eral Env Objects in XML and schema does not correspond to word doc :)
    return
         <tr>
-            <td title="gml:id">{data($rec/@gml:id)}</td>
-            <td title="aqd:protectionTarget">{data($rec//aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/@xlink:href)}</td>
-            <td title="aqd:objectiveType">{data($rec//aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType/@xlink:href)}</td>
+            <td title="gml:id">{data($obj/../../@gml:id)}</td>
+            <td title="aqd:protectionTarget">{data($obj/aqd:protectionTarget/@xlink:href)}</td>
+            <td title="aqd:objectiveType">{data($obj/aqd:objectiveType/@xlink:href)}</td>
         </tr>
 
 (: 22 :)
 let $invalidobjectiveTypesForVEGG22 :=
-    for $obj in $docRoot//../../aqd:environmentalObjective/aqd:EnvironmentalObjective
-    where
+    for $obj in $docRoot//aqd:environmentalObjective/aqd:EnvironmentalObjective
+    let $isInvalid :=
         $obj/aqd:protectionTarget/@xlink:href != 'http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H'
-        and $obj/aqd:objectiveType/@xlink:href = 'http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV'
-        or $obj/aqd:objectiveType/@xlink:href = 'http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/TV'
-    return $obj/../../../..
-
-let $tblInvalidobjectiveTypesForVEGG22 :=
-    for $rec in $invalidobjectiveTypesForVEGG22
-    (: FIXME - there are sev eral Env Objects in XML and schema does not correspond to word doc :)
+        and ($obj/aqd:objectiveType/@xlink:href = 'http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV'
+        or $obj/aqd:objectiveType/@xlink:href = 'http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/TV')
+    where $isInvalid
     return
         <tr>
-            <td title="gml:id">{data($rec/@gml:id)}</td>
-            <td title="aqd:protectionTarget">{data($rec//aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/@xlink:href)}</td>
-            <td title="aqd:objectiveType">{data($rec//aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType/@xlink:href)}</td>
+            <td title="gml:id">{data($obj/../../@gml:id)}</td>
+            <td title="aqd:protectionTarget">{data($obj/aqd:protectionTarget/@xlink:href)}</td>
+            <td title="aqd:objectiveType">{data($obj/aqd:objectiveType/@xlink:href)}</td>
         </tr>
 
 
@@ -766,58 +803,45 @@ let $invalidobjectiveTypesForCriticalL :=
     where
         $obj/aqd:protectionTarget/@xlink:href != 'http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V'
                 and $obj/aqd:objectiveType/@xlink:href = 'http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/CL'
-    return $obj/../../../..
-
-let $tblInvalidobjectiveTypesForCriticalL :=
-    for $rec in $invalidobjectiveTypesForCriticalL
-    (: FIXME - there are sev eral Env Objects in XML and schema does not correspond to word doc :)
     return
         <tr>
-            <td title="gml:id">{data($rec/@gml:id)}</td>
-            <td title="aqd:protectionTarget">{data($rec//aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/@xlink:href)}</td>
-            <td title="aqd:objectiveType">{data($rec//aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType/@xlink:href)}</td>
+            <td title="gml:id">{data($obj/../../@gml:id)}</td>
+            <td title="aqd:protectionTarget">{data($obj/aqd:protectionTarget/@xlink:href)}</td>
+            <td title="aqd:objectiveType">{data($obj/aqd:objectiveType/@xlink:href)}</td>
         </tr>
 
 (: G31 :)
 
 let $invalidobjectiveTypesForAOT31 :=
     for $obj in $docRoot//aqd:environmentalObjective/aqd:EnvironmentalObjective
-    where
+    let $isInvalid :=
         $obj/aqd:protectionTarget/@xlink:href != 'http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V'
-         and $obj/aqd:reportingMetric/@xlink:href = 'http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/AOT40c'
-          or $obj/aqd:reportingMetric/@xlink:href ='http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/AOT40c-5y'
-    return $obj/../../../..
-
-let $tblInvalidobjectiveTypesForAOT31 :=
-    for $rec in $invalidobjectiveTypesForAOT31
-    (: FIXME - there are sev eral Env Objects in XML and schema does not correspond to word doc :)
+         and ($obj/aqd:reportingMetric/@xlink:href = 'http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/AOT40c'
+          or $obj/aqd:reportingMetric/@xlink:href ='http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/AOT40c-5y')
+    where $isInvalid
     return
         <tr>
-            <td title="gml:id">{data($rec/@gml:id)}</td>
-            <td title="aqd:protectionTarget">{data($rec//aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/@xlink:href)}</td>
-            <td title="aqd:objectiveType">{data($rec//aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType/@xlink:href)}</td>
+            <td title="gml:id">{data($obj/../../@gml:id)}</td>
+            <td title="aqd:protectionTarget">{data($obj/aqd:protectionTarget/@xlink:href)}</td>
+            <td title="aqd:objectiveType">{data($obj/aqd:objectiveType/@xlink:href)}</td>
         </tr>
 
 (: G32 :)
 
 let $invalidobjectiveTypesForHealth :=
     for $obj in $docRoot//aqd:environmentalObjective/aqd:EnvironmentalObjective
-     where
+     let $isInvalid :=
         $obj/aqd:protectionTarget/@xlink:href != 'http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H'
                 and $obj/../../aqd:pollutant/@xlink:href != 'http://dd.eionet.europa.eu/vocabulary/aq/pollutant/6001'
                 and ($obj/aqd:objectiveType/@xlink:href = 'http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV'
                  or $obj/aqd:objectiveType/@xlink:href = 'http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/TV'
                  or $obj/aqd:objectiveType/@xlink:href = 'http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LVmaxMOT')
-    return $obj/../../../..
-
-let $tblInvalidobjectiveTypesForHealth :=
-    for $rec in $invalidobjectiveTypesForHealth
-    (: FIXME - there are sev eral Env Objects in XML and schema does not correspond to word doc :)
+    where $isInvalid
     return
         <tr>
-            <td title="gml:id">{data($rec/@gml:id)}</td>
-            <td title="aqd:protectionTarget">{data($rec//aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/@xlink:href)}</td>
-            <td title="aqd:objectiveType">{data($rec//aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType/@xlink:href)}</td>
+            <td title="gml:id">{data($obj/../../@gml:id)}</td>
+            <td title="aqd:protectionTarget">{data($obj/aqd:protectionTarget/@xlink:href)}</td>
+            <td title="aqd:objectiveType">{data($obj/aqd:objectiveType/@xlink:href)}</td>
         </tr>
 
 
@@ -825,21 +849,17 @@ let $tblInvalidobjectiveTypesForHealth :=
 
 let $invalidobjectiveTypesForLV :=
     for $obj in $docRoot//aqd:environmentalObjective/aqd:EnvironmentalObjective
-    where
-        $obj/aqd:protectionTarget/@xlink:href != 'http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H-S1'
-                 or $obj/aqd:protectionTarget/@xlink:href != 'http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H­S2'
-                and $obj/../../aqd:pollutant/@xlink:href != 'http://dd.eionet.europa.eu/vocabulary/aq/pollutant/6001'
-                and $obj/aqd:objectiveType/@xlink:href = 'http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV'
-    return $obj/../../../..
-
-let $tblInvalidobjectiveTypesForLV :=
-    for $rec in $invalidobjectiveTypesForLV
-    (: FIXME - there are sev eral Env Objects in XML and schema does not correspond to word doc :)
+    let $isInvalid :=
+        $obj/aqd:objectiveType/@xlink:href = 'http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV'
+        and $obj/../../aqd:pollutant/@xlink:href = 'http://dd.eionet.europa.eu/vocabulary/aq/pollutant/6001'
+        and $obj/aqd:protectionTarget/@xlink:href != 'http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H-S1'
+        and $obj/aqd:protectionTarget/@xlink:href != 'http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H­S2'
+    where $isInvalid
     return
         <tr>
-            <td title="gml:id">{data($rec/@gml:id)}</td>
-            <td title="aqd:protectionTarget">{data($rec//aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/@xlink:href)}</td>
-            <td title="aqd:objectiveType">{data($rec//aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType/@xlink:href)}</td>
+            <td title="gml:id">{data($obj/../../@gml:id)}</td>
+            <td title="aqd:protectionTarget">{data($obj/aqd:protectionTarget/@xlink:href)}</td>
+            <td title="aqd:objectiveType">{data($obj/aqd:objectiveType/@xlink:href)}</td>
         </tr>
 
 
@@ -1003,12 +1023,12 @@ return
         {xmlconv:buildResultRows("G21", "If
                     ./aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType xlink:href attribute EQUALS http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/CL (Critical)
                         ./aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget xlink:href attribute has to be http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V (Vegetation)",
-            $invalidobjectiveTypesForVEG, (), "", "No invalid objective types for Vegetation found", " invalid", "", $tblInvalidobjectiveTypesForVEG)}
+            $invalidobjectiveTypesForVEG, (), "", "No invalid objective types for Vegetation found", " invalid value", "", $invalidobjectiveTypesForVEG)}
         {xmlconv:buildResultRows("G22", "If
                  ./aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType xlink:href attribute EQUALS http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/TV (Target Value)
                     ./aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType xlink:href attribute EQUALS http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV (Limit Value)
                         ./aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget xlink:href attribute has to be http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H (Health)",
-                $invalidobjectiveTypesForVEGG22, (), "", "No invalid objective types for Health found", " invalid", "", $tblInvalidobjectiveTypesForVEGG22)}
+                $invalidobjectiveTypesForVEGG22, (), "", "No invalid objective types for Health found", " invalid value", "", $invalidobjectiveTypesForVEGG22)}
         {xmlconv:buildResultRows("G23", <span>The content of ./aqd:EnvironmentalObjective/aqd:reportingMetric shall resolve to a valid concept in
             <a href="{ $xmlconv:REPMETRIC_VOCABULARY }">{ $xmlconv:REPMETRIC_VOCABULARY }</a> that must be one of
             {xmlconv:buildVocItemsList("G23", $xmlconv:REPMETRIC_VOCABULARY, $xmlconv:VALID_REPMETRIC_IDS)}</span>,
@@ -1032,25 +1052,25 @@ return
         {xmlconv:buildResultRows("G30", "If
                  ./aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType xlink:href attribute EQUALS http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/CL (Critical level)
                         ./aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget xlink:href attribute has to be http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V (Vegetation)",
-                $invalidobjectiveTypesForCriticalL, (), "", "No invalid objective types for Vegetation found", " invalid", "", $tblInvalidobjectiveTypesForCriticalL)}
+                $invalidobjectiveTypesForCriticalL, (), "", "No invalid objective types for Vegetation found", " invalid", "", $invalidobjectiveTypesForCriticalL)}
         {xmlconv:buildResultRows("G31", <span>The content of ./aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget xlink:href attribute shall EQUAL
             http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V and /aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric xlink:href attribute on shall resolve to a valid concept in
             <a href="{ $xmlconv:REPMETRIC_VOCABULARY }">{ $xmlconv:REPMETRIC_VOCABULARY }</a> that must be one of
             {xmlconv:buildVocItemsList("G31", $xmlconv:REPMETRIC_VOCABULARY, $xmlconv:VALID_REPMETRIC_IDS_31)}</span>,
-                $invalidobjectiveTypesForAOT31, (), "aqd:reportingMetric", "", "", "",$tblInvalidobjectiveTypesForAOT31)}
+                $invalidobjectiveTypesForAOT31, (), "aqd:reportingMetric", "", "", "",$invalidobjectiveTypesForAOT31)}
         {xmlconv:buildResultRows("G32", <span>The content of ./aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget xlink:href attribute shall EQUAL
             http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H AND /aqd:polluntant is NOT EQUAL to
             http://dd.eionet.europa.eu/vocabulary/aq/pollutant/6001 where ./aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType  xlink:href attribute on shall resolve to a valid concept in
             <a href="{ $xmlconv:POLLUTANT_VOCABULARY }">{ $xmlconv:POLLUTANT_VOCABULARY }</a> that must be one of
             {xmlconv:buildVocItemsList("G32", $xmlconv:POLLUTANT_VOCABULARY, $xmlconv:VALID_OBJECTIVETYPE_IDS_32)}</span>,
-                $invalidobjectiveTypesForHealth, (), "aqd:reportingMetric", "", "", "",$tblInvalidobjectiveTypesForHealth)}
+                $invalidobjectiveTypesForHealth, (), "aqd:reportingMetric",  "All values are valid", " invalid value", "", $invalidobjectiveTypesForHealth)}
         {xmlconv:buildResultRows("G33", <span>The content of ./aqd:polluntant is EQUAL to http://dd.eionet.europa.eu/vocabulary/aq/pollutant/6001
             ./aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget xlink:href attribute EQUALS
             http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H-S1
             http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H-S2 where ./aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType  xlink:href attribute on shall resolve to a valid concept in
             <a href="{ $xmlconv:POLLUTANT_VOCABULARY }">{ $xmlconv:POLLUTANT_VOCABULARY }</a> that must be one of
             {xmlconv:buildVocItemsList("G33", $xmlconv:POLLUTANT_VOCABULARY, $xmlconv:VALID_OBJECTIVETYPE_IDS_33)}</span>,
-                $invalidobjectiveTypesForLV, (), "aqd:reportingMetric", "", "", "",$tblInvalidobjectiveTypesForLV)}
+                $invalidobjectiveTypesForLV, (), "aqd:reportingMetric", "All values are valid", " invalid value", "",$invalidobjectiveTypesForLV)}
         {xmlconv:buildResultRowsWithTotalCount("G38", <span>The content of /aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:areaClassification xlink:xref shall resolve to a areaClassification in
             <a href="{ $xmlconv:AREACLASSIFICATION_VOCABULARY}">{ $xmlconv:AREACLASSIFICATION_VOCABULARY}</a> that must be one of
             {xmlconv:buildVocItemsList("G38", $xmlconv:AREACLASSIFICATION_VOCABULARY, $xmlconv:VALID_AREACLASSIFICATION_IDS)}
