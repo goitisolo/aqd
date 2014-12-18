@@ -1065,6 +1065,7 @@ for $x in $aqdSamplingPointAssessmentMetadata
 where empty(index-of($aqdSamplingPointID, $x)) != false()
 return $x
 
+
 (: 40 :)
 
 let $invalidsamplingPointAssessmentMetadata :=
