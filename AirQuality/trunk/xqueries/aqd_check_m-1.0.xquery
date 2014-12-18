@@ -313,6 +313,31 @@ as xs:string
                     FILTER(?inspireId='",$inspireId,"' and ?inspireNamespace='",$inspireNamespace,"')
                   }")
 };
+
+declare function xmlconv:getZonesSparql($nameSpaces as xs:string*)
+as xs:string
+{
+    let $nameSpacesStr :=
+        for $nameSpace in $nameSpaces
+        return concat("""", $nameSpace, """")
+
+    let $nameSpacesStr :=
+        fn:string-join($nameSpacesStr, ",")
+
+    return     concat(
+            "PREFIX aqr: <http://reference.eionet.europa.eu/aq/ontology/>
+
+            SELECT ?inspireid
+            FROM <http://rdfdata.eionet.europa.eu/airquality/zones.ttl>
+            WHERE {
+              ?zoneuri a aqr:Zone ;
+                        aqr:inspireNamespace ?namespace;
+                         aqr:inspireId ?inspireid .
+            filter (?namespace in (", $nameSpacesStr,  "))
+    }"
+    )
+};
+
 declare function xmlconv:getSamplingPointZone($zoneId as xs:string*)
 as xs:string
 {
@@ -361,6 +386,51 @@ let $tblAllFeatureTypes :=
             <td title="Feature type">{$featureType }</td>
             <td title="Total number">{$countFeatureTypes[$pos]}</td>
         </tr>
+
+(: M2 :)
+
+let $M2Combinations :=
+    for $featureType in $xmlconv:FEATURE_TYPES
+    return
+        doc($source_url)//gml:featureMember/descendant::*[name()=$featureType]
+
+let $nameSpaces := distinct-values($docRoot//base:namespace)
+let $zonesSparql := xmlconv:getZonesSparql($nameSpaces)
+let $isZonesAvailable := string-length($zonesSparql) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($zonesSparql, "xml"))
+let $knownZones := if ($isZonesAvailable ) then distinct-values(data(xmlconv:executeSparqlQuery($zonesSparql)//sparql:binding[@name='inspireid']/sparql:literal)) else ()
+let $unknownZones :=
+    for $zone in $M2Combinations
+    let $id := if (empty($zone/@gml:id)) then "" else data($zone/@gml:id)
+    where empty(index-of($knownZones, $id))
+    return $zone
+
+let $tblM2 :=
+    for $rec in $unknownZones
+    return
+        $rec/@gml:id
+
+
+(: M3 :)
+
+let $M3Combinations :=
+    for $featureType in $xmlconv:FEATURE_TYPES
+    return
+        doc($source_url)//gml:featureMember/descendant::*[name()=$featureType]
+
+let $nameSpaces := distinct-values($docRoot//base:namespace)
+let $zonesSparql := xmlconv:getZonesSparql($nameSpaces)
+let $isZonesAvailable := string-length($zonesSparql) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($zonesSparql, "xml"))
+let $knownZones := if ($isZonesAvailable ) then distinct-values(data(xmlconv:executeSparqlQuery($zonesSparql)//sparql:binding[@name='inspireid']/sparql:literal)) else ()
+let $unknownZones :=
+    for $zone in $M3Combinations
+    let $id := if (empty($zone/@gml:id)) then "" else data($zone/@gml:id)
+    where empty(index-of($knownZones, $id))=false()
+    return $zone
+
+let $tblM3 :=
+    for $rec in $unknownZones
+    return
+        $rec/@gml:id
 
 (: M4 :)
 
@@ -685,6 +755,20 @@ let $allInvalidZoneXlinks :=
                 <td title="base:localId">{count($localId)}</td>
             </tr>
 
+(: M40 :)
+let $localModelAreaIds := $docRoot//gml:featureMember/aqd:AQD_ModelArea/ompr:inspireId/base:Identifier
+let $invalidDuplicateModelAreaIds :=
+    for $idModelAreaCode in $docRoot//gml:featureMember/aqd:AQD_ModelArea/ompr:inspireId/base:Identifier
+    where
+        count(index-of($localModelAreaIds/base:localId, normalize-space($idModelAreaCode/base:localId))) > 1 and
+                count(index-of($localModelAreaIds/base:namespace, normalize-space($idModelAreaCode/base:namespace))) > 1
+    return
+        <tr>
+            <td title="aqd:AQD_ModelProcess">{data($idModelAreaCode/../../@gml:id)}</td>
+            <td title="base:localId">{data($idModelAreaCode/base:localId)}</td>
+            <td title="base:namespace">{data($idModelAreaCode/base:namespace)}</td>
+        </tr>
+
 (: M41 :)
 let $allBaseNamespace := distinct-values($docRoot//aqd:AQD_ModelArea/aqd:inspireId/base:Identifier/base:namespace)
 let  $tblM41 :=
@@ -710,6 +794,10 @@ let  $tblM41 :=
         </colgroup>
         {xmlconv:buildResultRows("M1", "Total number of each environmental monitoring feature types",
             (), (), "", string(sum($countFeatureTypes)), "", "", $tblAllFeatureTypes)}
+        {xmlconv:buildResultRows("M2", "Compile and feedback upon the total number of new records for each environmental monitoring feature types included in the delivery",
+                (), (), "", string(count($tblM2)), "", "",())}
+        {xmlconv:buildResultRows("M3", "Compile and feedback upon the total number of modification to existing for each environmental monitoring feature types included in the delivery",
+        (), (), "", string(count($tblM3)), "", "",())}
         {xmlconv:buildResultRows("M4", "Total number  aqd:aqdModelType, aqd:inspireId, ef:name, ompr:nam  combinations ",
                 (), (), "", string(count($tblM4)), "", "",$tblM4)}
         <tr style="border-top:1px solid #666666">
@@ -773,14 +861,16 @@ let  $tblM41 :=
                 (), $invalidObservedPropertyCombinations, "", concat(fn:string(count($invalidObservedPropertyCombinations))," errors found"), "", "", ())}
         {xmlconv:buildResultRows("M24", "/aqd:assessmentType shall resolve to http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/ via xlink:href to either http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/model or http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/objective",
                 $invalidAssessmentType, (), "", concat(fn:string(count($invalidAssessmentType))," errors found"), "", "", ())}
-        {xmlconv:buildResultRows("M25", " Number of AQD_Model(s) witch has ./aqd:usedAQD equals “true” but does not have at least at one /aqd:Model xkinked: ",
+        {xmlconv:buildResultRows("M25", " Number of AQD_Model(s) witch has ./aqd:usedAQD equals “true” but does not have at least at one /aqd:Model xlinked: ",
                 (), $allInvalidTrueUsedAQD, "", concat(fn:string(count($allInvalidTrueUsedAQD))," errors found"), "", "", ())}
         {xmlconv:buildResultRows("M26", " Number of invalid aqd:AQD_Model/aqd:zone xlinks: ",
                 (),  $allInvalidZoneXlinks, "", concat(fn:string(count( $allInvalidZoneXlinks))," errors found"), "", "", ())}
-        {xmlconv:buildResultRows("M27", "aqd:AQD_ModelProcess/ompr:inspireId/base:Identifier/base:localId not unique codes: ",
+        {xmlconv:buildResultRows("M27", "./aqd:inspireId/base:Identifier/base:localId shall be an unique code for AQD_ModelProgress and unique within the namespace",
                 (),$invalidDuplicateModelProcessIds, "", concat(string(count($invalidDuplicateModelProcessIds))," errors found.") , "", "", ())}
         {xmlconv:buildResultRows("M28", "./ompr:inspireld/base:Identifier/base:namespace List base:namespace and  count the number of base:localId assigned to each base:namespace. ",
                 (), (), "", string(count($tblM28)), "", "",$tblM28)}
+        {xmlconv:buildResultRows("M40", "./aqd:inspireId/base:Identifier/base:localId shall be an unique code for AQD_ModelArea and unique within the namespace",
+                (),$invalidDuplicateModelAreaIds, "", concat(string(count($invalidDuplicateModelAreaIds))," errors found.") , "", "", ())}
         {xmlconv:buildResultRows("M41", "./aqd:inspireId/base:Identifier/base:namespace List base:namespace and  count the number of base:localId assigned to each base:namespace. ",
                 (), (), "", string(count($tblM41)), "", "",$tblM41)}
         {xmlconv:buildResultRows("M43", "./sams:shape, the srsDimension attribute shall resolve to “2” to allow the coordinate  of  the  feature  of  intere",
