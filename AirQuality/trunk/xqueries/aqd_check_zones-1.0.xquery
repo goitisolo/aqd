@@ -508,11 +508,24 @@ let $invalidgnSpellingOfName := $docRoot//aqd:AQD_Zone[string-length(am:name/gn:
  let $invalidPolygonName := distinct-values($docRoot//aqd:AQD_Zone[count(am:geometry/gml:Polygon) >0 and am:geometry/gml:Polygon/@srsName != "urn:ogc:def:crs:EPSG::4258" and am:geometry/gml:Polygon/@srsName != "urn:ogc:def:crs:EPSG::4326"]/@gml:id)
 
 (: B21 :)
-let $invalidPosListDimension  := distinct-values($docRoot//aqd:AQD_Zone/am:geometry/gml:Polygon/gml:exterior/gml:LinearRing/gml:posList[@srsDimension != "2"]/
+let $invalidPosListDimension  := distinct-values($docRoot//aqd:AQD_Zone/am:geometry/gml:MultiSurface/gml:surfaceMember/gml:Polygon/gml:exterior/gml:LinearRing/gml:posList[@srsDimension != "2"]/
             concat(../../../../../@gml:id, ": srsDimension=", @srsDimension))
 
 (: B22 :)
 
+let $invalidPosListCount :=
+for $posList in  $docRoot//aqd:AQD_Zone/am:geometry/gml:MultiSurface/gml:surfaceMember/gml:Polygon/gml:exterior/gml:LinearRing/gml:posList
+let $posListCount := count(fn:tokenize($posList," ")) div 2
+return if ((count($posList/@count) > 0) and ($posList/@count != $posListCount)) then $posList/../../../../../@gml:id else ()
+
+(: B23 :)
+
+let $invalidLatLong :=
+for $latLong  in $docRoot//aqd:AQD_Zone/am:geometry/gml:MultiSurface/gml:surfaceMember/gml:Polygon/gml:exterior/gml:LinearRing/gml:posList
+let $latlongToken := fn:tokenize($latLong,'\s+')
+for $long at $pos in $latlongToken
+where $pos mod 2 = 0
+return if ($latlongToken[$pos -1] <= $long)  then concat($latLong/../../../@gml:id,": ",$long) else ()
 
 (: B24 :)
 (: ./am:zoneType value shall resolve to http://inspire.ec.europa.eu/codeList/ZoneTypeCode/airQualityManagementZone :)
@@ -834,6 +847,10 @@ List base:namespace and  count the number of base:localId assigned to each base:
                 $invalidPolygonName, "aqd:AQD_Zone/@gml:id","All smsName attributes are valid"," invalid attribute","", "error")}
         {xmlconv:buildResultRows("B21", "./am:geometry/gml:Polygon/gml:exterior/gml:LinearRing/gml:posList the srsDimension attribute shall resolve to ""2"" to allow the x &amp; y-coordinate of the feature of interest",
             $invalidPosListDimension, "aqd:AQD_Zone/@gml:id", "All srsDimension attributes resolve to ""2""", " invalid attribute", "","warning")}
+        {xmlconv:buildResultRows("B22", "./am:geometry/gml:Polygon/gml:exterior/gml:LinearRing/gml:posList the count attribute shall resolve to the sum of y and x-coordinate  doublets. ",
+               $invalidPosListCount, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid attribute", "","error")}
+        {xmlconv:buildResultRows("B23", "Check that the coordinates lists in ./am:geometry/gml:Polygon/gml:exterior/gml:LinearRing/gml:posListar presented in lat/long(y - axis/x - axis)  notation.",
+                $invalidLatLong, "gml:Polygon", "All values are valid", " invalid attribute", "","error")}
         {xmlconv:buildResultRows("B24", "./am:zoneType shall resolve to http://inspire.ec.europa.eu/codeList/ZoneTypeCode/airQualityManagementZone",
             $invalidManagementZones, "aqd:AQD_Zone/@gml:id", "All zoneType attributes are valid", " invalid attribute", "","warning")}
         {xmlconv:buildResultRows("B25", "./am:designationPeriod/gml:TimePeriod/gml:beginPosition shall be less than ./am:designationPeri/gml:TimePeriod/gml:endPosition.",
@@ -1121,7 +1138,7 @@ return
         if ($result//div/@class = 'error') then
             <p>This XML file did NOT passed the following cruical checks: {string-join($result//div[@class='error'], ',')}</p>
         else
-            <p>This XML file passed all crucial checks' which in this case are :B1,B2,B3,B4,B8,B9,B20,B24,B27,B28,B34,B35,B37,B40,B41,B42,B46</p>
+            <p>This XML file passed all crucial checks' which in this case are :B1,B2,B3,B4,B8,B9,B20,B21,B22,B23,B24,B27,B28,B34,B35,B37,B40,B41,B42,B46</p>
                 }
         {
         if ( $countZones = 0) then
