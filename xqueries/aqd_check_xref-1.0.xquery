@@ -242,6 +242,9 @@ declare function xmlconv:getVocabularyMapping(){
         <vocabulary label="AQ reference" url="http://reference.eionet.europa.eu/page/" ruleType="mustNotStartWith">
             <element>*</element>
         </vocabulary>
+        <vocabulary label="Zone type code" url="http://inspire.ec.europa.eu/codeList/ZoneTypeCode/airQualityManagementZone" ruleType="exactMatch">
+            <element checkConceptOnly="true">am:zoneType</element>
+        </vocabulary>
     </mapping>
 };
 
@@ -277,6 +280,8 @@ declare function xmlconv:checkVocabularyReferences(){
             else if ($vocabulary/@ruleType = "mustNotStartWith") then
                 (:distinct-values($codes[starts-with(., $vocabularyUrl)]):)
                 distinct-values($allRefElements[starts-with(@xlink:href, $vocabularyUrl)]/concat(name(),'=',@xlink:href))
+            else if ($vocabulary/@ruleType = "exactMatch") then
+                    distinct-values($codes[. != $vocabularyUrl])
             else
                 xmlconv:validateCode(distinct-values($codes), $vocabularyUrl)
         let $ruleHeading :=
@@ -284,6 +289,8 @@ declare function xmlconv:checkVocabularyReferences(){
                 <span>The reference must start with { $vocabularyUrl }</span>
             else if ($vocabulary/@ruleType = "mustNotStartWith") then
                 <span>The reference must NOT start with { $vocabularyUrl }</span>
+            else if ($vocabulary/@ruleType = "exactMatch") then
+                    <span>The reference shall resolve to <a href="{ $vocabularyUrl }">{ $vocabularyUrl }</a></span>
             else
                 <span>The reference must point to concept in <a href="{ $vocabularyUrl }">{ data($vocabulary/@label) } vocabulary</a></span>
 
