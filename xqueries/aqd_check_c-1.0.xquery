@@ -1,6 +1,6 @@
 xquery version "1.0" encoding "UTF-8";
 (:
- : Module Name: Implementing Decision 2011/850/EU: AQ info exchange & reporting (Main module)
+ : Module Name: Implementing Decision 2011/850/EU: AQ info exchange & reporting (Library module)
  :
  : Version:     $Id$
  : Created:     13 September 2013
@@ -12,7 +12,8 @@ xquery version "1.0" encoding "UTF-8";
  : @author Enriko Käsper
  :)
 
-declare namespace xmlconv = "http://converters.eionet.europa.eu";
+module namespace xmlconv = "http://converters.eionet.europa.eu/dataflowC";
+
 declare namespace aqd = "http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0";
 declare namespace gml = "http://www.opengis.net/gml/3.2";
 declare namespace am = "http://inspire.ec.europa.eu/schemas/am/3.0";
@@ -113,8 +114,9 @@ declare variable $xmlconv:VALID_POLLUTANT_IDS_21 as xs:string* := ("1","8","9","
 
 declare variable $xmlconv:POLLUTANT_VOCABULARY as xs:string := "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/";
 
+(:
 declare variable $source_url as xs:string external;
-
+:)
 (:
 declare variable $source_url := "../test/C_GB_AssessmentRegime.xml";
 declare variable $source_url as xs:untypedAtomic external;
@@ -545,19 +547,10 @@ return $result
 (:
     Rule implementations
 :)
-declare function xmlconv:checkReport($source_url as xs:string)
+declare function xmlconv:checkReport($source_url as xs:string, $countryCode as xs:string)
 as element(table) {
 
-(: get reporting country :)
-
 let $envelopeUrl := xmlconv:getEnvelopeXML($source_url)
-let $countryCode := if(string-length($envelopeUrl)>0) then lower-case(fn:doc($envelopeUrl)/envelope/countrycode) else ""
-
-
-(: FIXME   :)
-(:)let $countryCode := "fr":)
-let $countryCode := if ($countryCode = "gb") then "uk" else if ($countryCode = "gr") then "el" else $countryCode
-
 
 let $docRoot := doc($source_url)
 (: C1 :)
@@ -1209,14 +1202,12 @@ as element(div) {
  : Main function
  : ======================================================================
  :)
-declare function xmlconv:proceed($source_url as xs:string) {
+declare function xmlconv:proceed($source_url as xs:string, $countryCode as xs:string) {
 
 let $countZones := count(doc($source_url)//aqd:AQD_AssessmentRegime)
-let $result := if ($countZones > 0) then xmlconv:checkReport($source_url) else ()
+let $result := if ($countZones > 0) then xmlconv:checkReport($source_url, $countryCode) else ()
 
 return
-<div class="feedbacktext">
-    { xmlconv:javaScript() }
     <div>
         <h2>Check air quality assessment regimes - Dataflow C</h2>
         {
@@ -1237,8 +1228,8 @@ return
             )
         }
     </div>
-</div>
-
 };
+(:
 xmlconv:proceed( $source_url )
+:)
 

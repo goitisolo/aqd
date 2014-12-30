@@ -1,6 +1,6 @@
 xquery version "1.0" encoding "UTF-8";
 (:
- : Module Name: Implementing Decision 2011/850/EU: AQ info exchange & reporting (Main module)
+ : Module Name: Implementing Decision 2011/850/EU: AQ info exchange & reporting (Library module)
  :
  : Version:     $Id$
  : Created:     13 September 2013
@@ -14,7 +14,7 @@ xquery version "1.0" encoding "UTF-8";
  :Quality Assurance and Control rules version: 3.9d
  :)
 
-declare namespace xmlconv = "http://converters.eionet.europa.eu";
+module namespace xmlconv = "http://converters.eionet.europa.eu/dataflowD";
 declare namespace aqd = "http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0";
 declare namespace gml = "http://www.opengis.net/gml/3.2";
 declare namespace am = "http://inspire.ec.europa.eu/schemas/am/3.0";
@@ -26,7 +26,6 @@ declare namespace sparql = "http://www.w3.org/2005/sparql-results#";
 declare namespace xlink = "http://www.w3.org/1999/xlink";
 declare namespace ompr="http://inspire.ec.europa.eu/schemas/ompr/2.0";
 declare namespace sams="http://www.opengis.net/samplingSpatial/2.0";
-declare namespace functx = "http://www.functx.com";
 
 (:~ declare Content Registry SPARQL endpoint:)
 declare variable $xmlconv:CR_SPARQL_URL := "http://cr.eionet.europa.eu/sparql";
@@ -61,9 +60,9 @@ declare variable $xmlconv:EQUIVALENCEDEMONSTRATED_VOCABULARY := "http://dd.eione
 (:===================================================================:)
 (: Variable given as an external parameter by the QA service :)
 (:===================================================================:)
-
+(:
 declare variable $source_url as xs:string external;
-
+:)
 (:
 declare variable $source_url := "../test/DE_D_Station.xml";
 declare variable $source_url as xs:untypedAtomic external;
@@ -179,7 +178,7 @@ as xs:string
     return $uri
 };
 
-declare function functx:is-a-number( $value as xs:anyAtomicType? )
+declare function xmlconv:is-a-number( $value as xs:anyAtomicType? )
 as xs:boolean {
     string(number($value)) != 'NaN'
 } ;
@@ -333,19 +332,9 @@ as xs:string
 (:
     Rule implementations
 :)
-declare function xmlconv:checkReport($source_url as xs:string)
+declare function xmlconv:checkReport($source_url as xs:string, $countryCode as xs:string)
 as element(table) {
 
-(: get reporting country :)
-(:
-let $envelopeUrl := xmlconv:getEnvelopeXML($source_url)
-let $countryCode := if(string-length($envelopeUrl)>0) then lower-case(fn:doc($envelopeUrl)/envelope/countrycode) else ""
-:)
-
-(: FIXME
-let $countryCode := "gb"
-let $countryCode := if ($countryCode = "gb") then "uk" else if ($countryCode = "gr") then "el" else $countryCode
-:)
 
 let $docRoot := doc($source_url)
 (: D1 :)
@@ -467,13 +456,13 @@ let  $tblD7 :=
         </tr>
 
 (: D8 :)
-let $invalidNetworkMedia := xmlconv:checkVocabularyConceptValues("aqd:AQD_Network", "ef:mediaMonitored", $xmlconv:MEDIA_VALUE_VOCABULARY_BASE_URI)
+let $invalidNetworkMedia := xmlconv:checkVocabularyConceptValues($source_url, "aqd:AQD_Network", "ef:mediaMonitored", $xmlconv:MEDIA_VALUE_VOCABULARY_BASE_URI)
 (: D9 :)
-let $invalidOrganisationalLevel := xmlconv:checkVocabularyConceptValues("aqd:AQD_Station", "ef:organisationLevel", $xmlconv:ORGANISATIONAL_LEVEL_VOCABULARY)
+let $invalidOrganisationalLevel := xmlconv:checkVocabularyConceptValues($source_url, "aqd:AQD_Station", "ef:organisationLevel", $xmlconv:ORGANISATIONAL_LEVEL_VOCABULARY)
 (: D13 :)
-let $invalidNetworkType := xmlconv:checkVocabularyConceptValues("aqd:AQD_Station", "aqd:networkType", $xmlconv:NETWORK_TYPE_VOCABULARY)
+let $invalidNetworkType := xmlconv:checkVocabularyConceptValues($source_url, "aqd:AQD_Station", "aqd:networkType", $xmlconv:NETWORK_TYPE_VOCABULARY)
 (: D14 Done by Rait  :)
-let $invalidTimeZone := xmlconv:checkVocabularyConceptValues("aqd:AQD_Network", "aqd:aggregationTimeZone", $xmlconv:TIMEZONE_VOCABULARY)
+let $invalidTimeZone := xmlconv:checkVocabularyConceptValues($source_url, "aqd:AQD_Network", "aqd:aggregationTimeZone", $xmlconv:TIMEZONE_VOCABULARY)
 (: D15 Done by Rait :)
 let $amInspireIds := $docRoot//aqd:AQD_Station/ef:inspireId/base:Identifier/concat(lower-case(normalize-space(base:namespace)), '##',
         lower-case(normalize-space(base:localId)))
@@ -501,7 +490,7 @@ let  $tblD16 :=
         </tr>
 
 (: D19 :)
-let $invalidStationMedia := xmlconv:checkVocabularyConceptValues("aqd:AQD_Station", "ef:mediaMonitored", $xmlconv:MEDIA_VALUE_VOCABULARY_BASE_URI)
+let $invalidStationMedia := xmlconv:checkVocabularyConceptValues($source_url, "aqd:AQD_Station", "ef:mediaMonitored", $xmlconv:MEDIA_VALUE_VOCABULARY_BASE_URI)
 
 (: D20 Done by Rait:)
 let $invalidPoints := distinct-values($docRoot//aqd:AQD_Station[count(ef:geometry/gml:Point) >0 and ef:geometry/gml:Point/@srsName != "urn:ogc:def:crs:EPSG::4258" and ef:geometry/gml:Point/@srsName != "urn:ogc:def:crs:EPSG::4326"]/@gml:id)
@@ -558,13 +547,13 @@ let $invalidDuplicateLocalIds :=
         </tr>
 
 (: D27 :)
-let $invalidMeteoParams := xmlconv:checkVocabularyConceptValues("aqd:AQD_Station", "aqd:meteoParams", $xmlconv:METEO_PARAMS_VOCABULARY, "collection")
+let $invalidMeteoParams := xmlconv:checkVocabularyConceptValues($source_url, "aqd:AQD_Station", "aqd:meteoParams", $xmlconv:METEO_PARAMS_VOCABULARY, "collection")
 (: D28 :)
-let $invalidAreaClassification := xmlconv:checkVocabularyConceptValues("aqd:AQD_Station", "aqd:areaClassification", $xmlconv:AREA_CLASSIFICATION_VOCABULARY)
+let $invalidAreaClassification := xmlconv:checkVocabularyConceptValues($source_url, "aqd:AQD_Station", "aqd:areaClassification", $xmlconv:AREA_CLASSIFICATION_VOCABULARY)
 (: D29 :)
-let $invalidDispersionLocal := xmlconv:checkVocabularyConceptValues("aqd:AQD_Station", "aqd:dispersionLocal", $xmlconv:DISPERSION_LOCAL_VOCABULARY)
+let $invalidDispersionLocal := xmlconv:checkVocabularyConceptValues($source_url, "aqd:AQD_Station", "aqd:dispersionLocal", $xmlconv:DISPERSION_LOCAL_VOCABULARY)
 (: D30 :)
-let $invalidDispersionRegional := xmlconv:checkVocabularyConceptValues("aqd:AQD_Station", "aqd:dispersionRegional", $xmlconv:DISPERSION_REGIONAL_VOCABULARY)
+let $invalidDispersionRegional := xmlconv:checkVocabularyConceptValues($source_url, "aqd:AQD_Station", "aqd:dispersionRegional", $xmlconv:DISPERSION_REGIONAL_VOCABULARY)
 (: D31 Done by Rait:)
 let $localSamplingPointIds := $docRoot//gml:featureMember/aqd:AQD_SamplingPoint/ef:inspireId/base:Identifier/base:localId
 let $invalidDuplicateSamplingPointIds :=
@@ -590,7 +579,7 @@ let  $tblD32 :=
         </tr>
 
 (: D33 :)
-let $invalidSamplingPointMedia := xmlconv:checkVocabularyConceptValues("aqd:AQD_SamplingPoint", "ef:mediaMonitored", $xmlconv:MEDIA_VALUE_VOCABULARY_BASE_URI)
+let $invalidSamplingPointMedia := xmlconv:checkVocabularyConceptValues($source_url, "aqd:AQD_SamplingPoint", "ef:mediaMonitored", $xmlconv:MEDIA_VALUE_VOCABULARY_BASE_URI)
 
 (: D35 FIX ME :)
 let $invalidPos  := distinct-values($docRoot/gml:featureMember//aqd:AQD_SamplingPoint/ef:geometry/gml:Point/gml:pos[@srsDimension != "2"]/
@@ -620,7 +609,7 @@ let $allObservingCapabilityPeriod :=
 
 
 (:D40 Done by Rait:)
-let $invalidObservedProperty := xmlconv:checkVocabularyConceptValues("aqd:AQD_SamplingPoint/ef:observingCapability/ef:ObservingCapability", "ef:observedProperty", $xmlconv:POLLUTANT_VOCABULARY)
+let $invalidObservedProperty := xmlconv:checkVocabularyConceptValues($source_url, "aqd:AQD_SamplingPoint/ef:observingCapability/ef:ObservingCapability", "ef:observedProperty", $xmlconv:POLLUTANT_VOCABULARY)
 
 (: D45 Done by Rait:)
 (: Find all period with out end period :)
@@ -851,7 +840,7 @@ let  $tblD55 :=
 
 (:D56 Done by Rait:)
 let  $allInvalidMeasurementType
-     := xmlconv:checkVocabularyConceptValues("aqd:AQD_SamplingPointProcess", "aqd:measurementType", $xmlconv:MEASUREMENTTYPE_VOCABULARY)
+     := xmlconv:checkVocabularyConceptValues($source_url, "aqd:AQD_SamplingPointProcess", "aqd:measurementType", $xmlconv:MEASUREMENTTYPE_VOCABULARY)
 
 
 (:D57 Done by Rait:)
@@ -885,13 +874,13 @@ let $elementsIncluded :=
 
 (:D59 Done by Rait:)
 let  $allInvalidAnalyticalTechnique
-    := xmlconv:checkVocabularyaqdAnalyticalTechniqueValues("aqd:AQD_SamplingPointProcess", "aqd:analyticalTechnique", $xmlconv:ANALYTICALTECHNIQUE_VOCABULARY, "")
+    := xmlconv:checkVocabularyaqdAnalyticalTechniqueValues($source_url, "aqd:AQD_SamplingPointProcess", "aqd:analyticalTechnique", $xmlconv:ANALYTICALTECHNIQUE_VOCABULARY, "")
 
 (:D60 Done by Rait:)
 let  $allInvalid60_1
-    := xmlconv:checkVocabularyConceptEquipmentValues("aqd:AQD_SamplingPointProcess", "aqd:measurementEquipment", $xmlconv:MEASUREMENTEQUIPMENT_VOCABULARY, "")
+    := xmlconv:checkVocabularyConceptEquipmentValues($source_url, "aqd:AQD_SamplingPointProcess", "aqd:measurementEquipment", $xmlconv:MEASUREMENTEQUIPMENT_VOCABULARY, "")
 let  $allInvalid60_2
-    := xmlconv:checkVocabularyConceptEquipmentValues("aqd:AQD_SamplingPointProcess", "aqd:samplingEquipment", $xmlconv:SAMPLINGEQUIPMENT_VOCABULARY, "")
+    := xmlconv:checkVocabularyConceptEquipmentValues($source_url, "aqd:AQD_SamplingPointProcess", "aqd:samplingEquipment", $xmlconv:SAMPLINGEQUIPMENT_VOCABULARY, "")
 (:D61  Done by Rait:)
     (:let $allInvalid61
     := for $allDetectionLimits in  doc($source_url)//gml:featureMember/aqd:AQD_SamplingPointProcess/aqd:dataQuality/aqd:DataQuality[name(./*)= 'aqd:detectionLimit']
@@ -905,7 +894,7 @@ let  $allInvalid60_2
 
 (:D63 Done by Rait:)
 let  $allInvalid63
-    := xmlconv:checkVocabularyConceptValues("aqd:AQD_SamplingPointProcess", "aqd:detectionLimit", $xmlconv:UOM_CONCENTRATION_VOCABULARY)
+    := xmlconv:checkVocabularyConceptValues($source_url, "aqd:AQD_SamplingPointProcess", "aqd:detectionLimit", $xmlconv:UOM_CONCENTRATION_VOCABULARY)
 
 (:D67 Done by Rait:)
 let  $invalid67
@@ -917,7 +906,7 @@ let  $invalid67
 
 
 let $allInvalid67 :=
-            for $i67 in   xmlconv:checkVocabularyConceptValues3("aqd:AQD_SamplingPointProcess","aqd:equivalenceDemonstrated", $xmlconv:EQUIVALENCEDEMONSTRATED_VOCABULARY,"")
+            for $i67 in   xmlconv:checkVocabularyConceptValues3($source_url, "aqd:AQD_SamplingPointProcess","aqd:equivalenceDemonstrated", $xmlconv:EQUIVALENCEDEMONSTRATED_VOCABULARY,"")
             where data($invalid67/../ef:observingCapability/ef:ObservingCapability/ef:procedure/@xlink:href) = (concat(data($i67/../ompr:inspireId/base:Identifier/base:namespace),'/',data($i67/../ompr:inspireId/base:Identifier/base:localId)))
             return
                 <tr>
@@ -1030,7 +1019,7 @@ concat(../@gml:id, ": srsDimension=", @srsDimension))
 (: D78 :)
 let $invalidInletHeigh :=
 for $inletHeigh in  $docRoot//aqd:AQD_Sample/aqd:inletHeight
-    return if (($inletHeigh/@uom != "m") or (functx:is-a-number(data($inletHeigh))=false())) then $inletHeigh/../@gml:id else ()
+    return if (($inletHeigh/@uom != "m") or (xmlconv:is-a-number(data($inletHeigh))=false())) then $inletHeigh/../@gml:id else ()
 
 
 
@@ -1188,7 +1177,7 @@ return
         { xmlconv:buildResultRowsWithTotalCount("D57", <span>./aqd:measurementType witch resolves
             to ./measurementtype/automatic or ./measurementtype/remote  shall be included and resolves to content of /aqd:AQD_SamplingPointProcess/aqd:measurementMethod that resolve to any concept in
             <a href="{ $xmlconv:MEASUREMENTMETHOD_VOCABULARY }">{ $xmlconv:MEASUREMENTMETHOD_VOCABULARY }</a></span>,
-                (), (), "aqd:measurementType", "", "", "",xmlconv:checkMeasurementMethodLinkValues($allConceptUrl57,"aqd:AQD_SamplingPointProcess", $xmlconv:MEASUREMENTMETHOD_VOCABULARY, "") )}
+                (), (), "aqd:measurementType", "", "", "",xmlconv:checkMeasurementMethodLinkValues($source_url, $allConceptUrl57,"aqd:AQD_SamplingPointProcess", $xmlconv:MEASUREMENTMETHOD_VOCABULARY, "") )}
 
         {xmlconv:buildResultRows("D58", " aqd:measurementType  witch resolves
             to ./measurementtype/active or ./measurementtype/passive  shall be included ./aqd:samplingMethod and ./aqd:analyticalTechnique. ./aqd:measurementMethod shall not be provided.",
@@ -1236,11 +1225,11 @@ return
     </table>
 }
 ;
-declare function xmlconv:checkVocabularyConceptValues($featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string)
+declare function xmlconv:checkVocabularyConceptValues($source_url as xs:string, $featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string)
 as element(tr)*{
-    xmlconv:checkVocabularyConceptValues($featureType, $element, $vocabularyUrl, "")
+    xmlconv:checkVocabularyConceptValues($source_url, $featureType, $element, $vocabularyUrl, "")
 };
-declare function xmlconv:checkVocabularyConceptValues($featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string, $vocabularyType as xs:string)
+declare function xmlconv:checkVocabularyConceptValues($source_url as xs:string, $featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string, $vocabularyType as xs:string)
 as element(tr)*{
 
     if(doc-available($source_url))
@@ -1274,7 +1263,7 @@ as element(tr)*{
         ()
 };
 
-declare function xmlconv:checkVocabularyConceptValues2($concept , $featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string, $vocabularyType as xs:string)
+declare function xmlconv:checkVocabularyConceptValues2($source_url as xs:string, $concept , $featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string, $vocabularyType as xs:string)
 as element(tr)*{
 
     if(doc-available($source_url))
@@ -1308,7 +1297,7 @@ as element(tr)*{
         ()
 };
 
-declare function xmlconv:checkVocabularyConceptValues3($featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string, $vocabularyType as xs:string){
+declare function xmlconv:checkVocabularyConceptValues3($source_url as xs:string, $featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string, $vocabularyType as xs:string){
 
     if(doc-available($source_url))
     then
@@ -1337,7 +1326,7 @@ declare function xmlconv:checkVocabularyConceptValues3($featureType as xs:string
 };
 
 
-declare function xmlconv:checkVocabularyaqdAnalyticalTechniqueValues($featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string, $vocabularyType as xs:string)
+declare function xmlconv:checkVocabularyaqdAnalyticalTechniqueValues($source_url as xs:string, $featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string, $vocabularyType as xs:string)
 as element(tr)*{
 
     if(doc-available($source_url))
@@ -1372,7 +1361,7 @@ as element(tr)*{
 };
 
 
-declare function xmlconv:checkVocabularyConceptEquipmentValues($featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string, $vocabularyType as xs:string)
+declare function xmlconv:checkVocabularyConceptEquipmentValues($source_url as xs:string, $featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string, $vocabularyType as xs:string)
 as element(tr)*{
 
     if(doc-available($source_url))
@@ -1405,7 +1394,7 @@ as element(tr)*{
     else
         ()
 };
-declare function xmlconv:checkMeasurementMethodLinkValues($concept,$featureType as xs:string,  $vocabularyUrl as xs:string, $vocabularyType as xs:string)
+declare function xmlconv:checkMeasurementMethodLinkValues($source_url as xs:string, $concept,$featureType as xs:string,  $vocabularyUrl as xs:string, $vocabularyType as xs:string)
 as element(tr)*{
     if(doc-available($source_url))
     then
@@ -1469,16 +1458,14 @@ as xs:boolean
  : Main function
  : ======================================================================
  :)
-declare function xmlconv:proceed($source_url as xs:string) {
+declare function xmlconv:proceed($source_url as xs:string, $countryCode as xs:string) {
 
 let $countFeatures := count(doc($source_url)//gml:featureMember/descendant::*[
     not(empty(index-of($xmlconv:FEATURE_TYPES, name())))]
     )
-let $result := if ($countFeatures > 0) then xmlconv:checkReport($source_url) else ()
+let $result := if ($countFeatures > 0) then xmlconv:checkReport($source_url, $countryCode) else ()
 
 return
-<div class="feedbacktext">
-    { xmlconv:javaScript() }
     <div>
         <h2>Check environmental monitoring feature types - Dataflow D</h2>
         {
@@ -1493,8 +1480,8 @@ return
             )
         }
     </div>
-</div>
 
 };
+(:)
 xmlconv:proceed( $source_url )
-
+:)

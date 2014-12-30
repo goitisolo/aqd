@@ -30,10 +30,11 @@ declare namespace xmlconv = "http://converters.eionet.europa.eu";
 (: Variable given as an external parameter by the QA service                                                 :)
 (:===================================================================:)
 
-declare variable $source_url as xs:string external;
+declare variable $source_url as xs:string := "http://cdrtest.eionet.europa.eu/es/eu/aqd/b/copy_of_envveunkq/ES_B_Zones.xml";
 
 (:
 declare variable $source_url as xs:string external;
+declare variable $source_url as xs:string := "";
 B
 http://cdrtest.eionet.europa.eu/es/eu/aqd/b/envveunkq/ES_B_Zones.xml
 C
@@ -128,11 +129,22 @@ as xs:boolean {
             true()
     ))
 };
+
+declare function xmlconv:getSublist($seq1 as xs:string*, $seq2 as xs:string*)
+as xs:string* {
+
+    distinct-values(
+            for $str in $seq2
+            where not(empty(index-of($seq1, $str)))
+            return
+                $str
+    )
+};
 declare function xmlconv:proceed($source_url as xs:string) {
 
     (: get reporting obligation & country :)
     let $envelopeUrl := xmlconv:getEnvelopeXML($source_url)
-    let $obligations := if(string-length($envelopeUrl)>0) then lower-case(fn:doc($envelopeUrl)/envelope/obligation) else ()
+    let $obligations := if(string-length($envelopeUrl)>0) then fn:doc($envelopeUrl)/envelope/obligation else ()
     let $countryCode := if(string-length($envelopeUrl)>0) then lower-case(fn:doc($envelopeUrl)/envelope/countrycode) else ""
     let $countryCode := if ($countryCode = "gb") then "uk" else if ($countryCode = "gr") then "el" else $countryCode
 
@@ -142,6 +154,9 @@ declare function xmlconv:proceed($source_url as xs:string) {
     let $countryCode := "ES"
     :)
     (: END - testing properties -------------------  :)
+
+    let $validObligations := xmlconv:getSublist($obligations,
+            ($xmlconv:B_OBLIGATIONS, $xmlconv:C_OBLIGATIONS, $xmlconv:D_OBLIGATIONS, $xmlconv:G_OBLIGATIONS, $xmlconv:M_OBLIGATIONS))
 
     let $result := ()
     let $resultB :=
@@ -173,12 +188,34 @@ declare function xmlconv:proceed($source_url as xs:string) {
 
 return
         <div class="feedbacktext">
-            { xmlconv:javaScript() }
-            { $resultB }
-            { $resultC }
-            { $resultD }
-            { $resultG }
-            { $resultM }
+            {
+            if (empty($validObligations)) then
+                <p>Nothing to check - the envelope is not attached to any of the Air Quiality obligation where QA script is available.</p>
+            else
+                <div>
+                    {xmlconv:javaScript()}
+                    {
+                    if (count($validObligations) = 1) then
+                        <p>The envelope is attached to the following obligation: <a href="{$validObligations[1]}">{$validObligations[1]}</a></p>
+                    else
+                        <span>
+                            <p>The envelope is attached to the following obligations:</p>
+                            <ul>
+                                {
+                                    for $obligation in $validObligations
+                                    return
+                                        <li><a href="{$obligation}">{$obligation}</a></li>
+                                }
+                            </ul>
+                        </span>
+                    }
+                    {$resultB}
+                    {$resultC}
+                    {$resultD}
+                    {$resultG}
+                    {$resultM}
+                </div>
+            }
         </div>
 };
 xmlconv:proceed( $source_url )

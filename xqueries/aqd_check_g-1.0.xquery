@@ -1,6 +1,6 @@
 xquery version "1.0" encoding "UTF-8";
 (:
- : Module Name: Implementing Decision 2011/850/EU: AQ info exchange & reporting (Main module)
+ : Module Name: Implementing Decision 2011/850/EU: AQ info exchange & reporting (Library module)
  :
  : Version:     $Id$
  : Created:     13 September 2013
@@ -12,7 +12,7 @@ xquery version "1.0" encoding "UTF-8";
  : @author Enriko Käsper
  :)
 
-declare namespace xmlconv = "http://converters.eionet.europa.eu";
+module namespace xmlconv = "http://converters.eionet.europa.eu/dataflowG";
 declare namespace aqd = "http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0";
 declare namespace gml = "http://www.opengis.net/gml/3.2";
 declare namespace am = "http://inspire.ec.europa.eu/schemas/am/3.0";
@@ -66,7 +66,6 @@ declare variable $xmlconv:ADJUSTMENTTYPE_VOCABULARY as xs:string := "http://dd.e
 declare variable $xmlconv:ADJUSTMENTSOURCE_VOCABLUARY as xs:string := "http://dd.eionet.europa.eu/vocabulary/aq/adjustmentsourcetype/";
 declare variable $xmlconv:ASSESSMENTTYPE_VOCABLUARY as xs:string := "http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/";
 declare variable $xmlconv:PROTECTIONTARGET_VOCABLUARY as xs:string := "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/";
-declare variable $source_url as xs:string external;
 (:)
 declare variable $source_url as xs:string external;
 :)
@@ -406,24 +405,10 @@ return $result
 (:
     Rule implementations
 :)
-declare function xmlconv:checkReport($source_url as xs:string)
+declare function xmlconv:checkReport($source_url as xs:string, $countryCode as xs:string)
 as element(table) {
 
-(: get reporting country :)
-(:
-let $countryCode := "hr"
-:)
-(:
-let $countryCode := if ($countryCode = "gb") then "uk" else if ($countryCode = "gr") then "el" else $countryCode
-:)
-(:
-let $countryCode := 'hr'
-:)
-(: =============================================== FIXME !!! :)
-
 let $envelopeUrl := xmlconv:getEnvelopeXML($source_url)
-let $countryCode := if(string-length($envelopeUrl)>0) then lower-case(fn:doc($envelopeUrl)/envelope/countrycode) else ""
-(:)let $countryCode := "es":)
 
 let $docRoot := doc($source_url)
 (: G1 :)
@@ -590,7 +575,7 @@ let $duplicateNamespaces :=
         $id
 
 (: G10 pollutant codes :)
-let $invalidPollutantCodes := xmlconv:isinvalidDDConceptLimited("", "aqd:AQD_Attainment", "aqd:pollutant",  $xmlconv:POLLUTANT_VOCABULARY, $xmlconv:VALID_POLLUTANT_IDS)
+let $invalidPollutantCodes := xmlconv:isinvalidDDConceptLimited($source_url, "", "aqd:AQD_Attainment", "aqd:pollutant",  $xmlconv:POLLUTANT_VOCABULARY, $xmlconv:VALID_POLLUTANT_IDS)
 
 (: G11 :)
 
@@ -669,11 +654,11 @@ return  if ($x/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/objectiv
 
 (: G19
 .//aqd:ExceedanceDescription/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType xlink:href attribute shall resolve to one of:)
-let $invalidObjectiveTypes := xmlconv:isinvalidDDConceptLimited("", "aqd:EnvironmentalObjective", "aqd:objectiveType", $xmlconv:OBJECTIVETYPE_VOCABULARY, $xmlconv:VALID_OBJECTIVETYPE_IDS)
+let $invalidObjectiveTypes := xmlconv:isinvalidDDConceptLimited($source_url, "", "aqd:EnvironmentalObjective", "aqd:objectiveType", $xmlconv:OBJECTIVETYPE_VOCABULARY, $xmlconv:VALID_OBJECTIVETYPE_IDS)
 
 (: G20 - ./aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric xlink:href attribute shall resolve to one of
 ... :)
-let $invalidReportingMetric := xmlconv:isinvalidDDConceptLimited("", "aqd:EnvironmentalObjective", "aqd:reportingMetric",
+let $invalidReportingMetric := xmlconv:isinvalidDDConceptLimited($source_url, "", "aqd:EnvironmentalObjective", "aqd:reportingMetric",
     $xmlconv:REPMETRIC_VOCABULARY, $xmlconv:VALID_REPMETRIC_IDS_20)
 
 
@@ -865,7 +850,7 @@ let $invalidobjectiveTypesForLV :=
 
 (: G38 :)
 
-let $invalidAreaClassificationCodes := xmlconv:isinvalidDDConceptLimited("aqd:exceedanceDescriptionBase", "aqd:ExceedanceArea", "aqd:areaClassification",  $xmlconv:AREACLASSIFICATION_VOCABULARY, $xmlconv:VALID_AREACLASSIFICATION_IDS)
+let $invalidAreaClassificationCodes := xmlconv:isinvalidDDConceptLimited($source_url, "aqd:exceedanceDescriptionBase", "aqd:ExceedanceArea", "aqd:areaClassification",  $xmlconv:AREACLASSIFICATION_VOCABULARY, $xmlconv:VALID_AREACLASSIFICATION_IDS)
         (:)let $invalidAqdReportingMetricG37 :=
     for $aqdReportingMetricG37 in $docRoot//aqd:AQD_Attainment
     let $reportingXlink:= fn:substring-after(data($aqdReportingMetricG37/aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:environmentalObjective/aqd:EnvironmentalObjective//aqd:protectionTarget/fn:normalize-space(@xlink:href)),"protectiontarget/")
@@ -877,11 +862,11 @@ let $invalidAreaClassificationCodes := xmlconv:isinvalidDDConceptLimited("aqd:ex
 
 (: TODO G41
 
-let $invalidObjectiveCodes := xmlconv:isinvalidDDConceptLimited("", "aqd:AQD_Attainment", "aqd:objectiveType",  $xmlconv:OBJECTIVETYPE_VOCABULARY, $xmlconv:VALID_OBJECTIVETYPE_IDS)
+let $invalidObjectiveCodes := xmlconv:isinvalidDDConceptLimited($source_url, "", "aqd:AQD_Attainment", "aqd:objectiveType",  $xmlconv:OBJECTIVETYPE_VOCABULARY, $xmlconv:VALID_OBJECTIVETYPE_IDS)
 :)
 (: TODO G42
 
-let $invalidReportingMetricCodes := xmlconv:isinvalidDDConceptLimited("", "aqd:AQD_Attainment", "aqd:reportingMetric",  $xmlconv:REPMETRIC_VOCABULARY, $xmlconv:VALID_REPMETRIC_IDS)
+let $invalidReportingMetricCodes := xmlconv:isinvalidDDConceptLimited($source_url, "", "aqd:AQD_Attainment", "aqd:reportingMetric",  $xmlconv:REPMETRIC_VOCABULARY, $xmlconv:VALID_REPMETRIC_IDS)
 :)
 
 (: G44 :)
@@ -915,7 +900,7 @@ let $invalidAqdAdjustmentType := distinct-values($docRoot//aqd:AQD_Attainment[aq
 (: G50 :)
 (: G51 :)
 (: G52 :)
-let $invalidAreaClassificationAdjusmentCodes := xmlconv:isinvalidDDConceptLimited("aqd:exceedanceDescriptionAdjustment", "aqd:ExceedanceArea", "aqd:areaClassification",  $xmlconv:AREACLASSIFICATION_VOCABULARY, $xmlconv:VALID_AREACLASSIFICATION_IDS)
+let $invalidAreaClassificationAdjusmentCodes := xmlconv:isinvalidDDConceptLimited($source_url, "aqd:exceedanceDescriptionAdjustment", "aqd:ExceedanceArea", "aqd:areaClassification",  $xmlconv:AREACLASSIFICATION_VOCABULARY, $xmlconv:VALID_AREACLASSIFICATION_IDS)
 
 (: G53 :)
 (: G54 :)
@@ -946,15 +931,15 @@ let $invalidAdjustmentReportingMetricG57 :=
 
 (: G61 :)
 
-let $invalidExceedanceDescriptionAdjustment := xmlconv:isinvalidDDConceptLimited("aqd:exceedanceDescriptionAdjustment", "aqd:AdjustmentMethod", "aqd:adjustmentType", $xmlconv:ADJUSTMENTTYPE_VOCABULARY, $xmlconv:VALID_ADJUSTMENTTYPE_IDS)
+let $invalidExceedanceDescriptionAdjustment := xmlconv:isinvalidDDConceptLimited($source_url, "aqd:exceedanceDescriptionAdjustment", "aqd:AdjustmentMethod", "aqd:adjustmentType", $xmlconv:ADJUSTMENTTYPE_VOCABULARY, $xmlconv:VALID_ADJUSTMENTTYPE_IDS)
 
 (: G62 :)
 
-let $invalidExceedanceDescriptionAdjustmentSrc := xmlconv:isinvalidDDConceptLimited("aqd:exceedanceDescriptionAdjustment", "aqd:AdjustmentMethod", "aqd:adjustmentSource", $xmlconv:ADJUSTMENTSOURCE_VOCABLUARY, $xmlconv:VALID_ADJUSTMENTSOURCE_IDS)
+let $invalidExceedanceDescriptionAdjustmentSrc := xmlconv:isinvalidDDConceptLimited($source_url, "aqd:exceedanceDescriptionAdjustment", "aqd:AdjustmentMethod", "aqd:adjustmentSource", $xmlconv:ADJUSTMENTSOURCE_VOCABLUARY, $xmlconv:VALID_ADJUSTMENTSOURCE_IDS)
 
 (: G63 :)
 
-let $invalidExceedanceDescriptionAdjustmentAssessment := xmlconv:isinvalidDDConceptLimited("aqd:exceedanceDescriptionAdjustment", "aqd:AssessmentMethods", "aqd:assessmentType", $xmlconv:ASSESSMENTTYPE_VOCABLUARY, $xmlconv:VALID_ASSESSMENTTYPE_IDS)
+let $invalidExceedanceDescriptionAdjustmentAssessment := xmlconv:isinvalidDDConceptLimited($source_url, "aqd:exceedanceDescriptionAdjustment", "aqd:AssessmentMethods", "aqd:assessmentType", $xmlconv:ASSESSMENTTYPE_VOCABLUARY, $xmlconv:VALID_ASSESSMENTTYPE_IDS)
 
 (: G70 :)
 
@@ -965,7 +950,7 @@ let $aqdroadLength := $docRoot//aqd:AQD_Attainment/aqd:exceedanceDescriptionFina
 
 (: G72 :)
 
-let $invalidAreaClassificationCode  := xmlconv:isinvalidDDConceptLimited("aqd:exceedanceDescriptionFinal", "aqd:ExceedanceArea",  "aqd:areaClassification",  $xmlconv:AREACLASSIFICATION_VOCABULARY, $xmlconv:VALID_AREACLASSIFICATION_IDS)
+let $invalidAreaClassificationCode  := xmlconv:isinvalidDDConceptLimited($source_url, "aqd:exceedanceDescriptionFinal", "aqd:ExceedanceArea",  "aqd:areaClassification",  $xmlconv:AREACLASSIFICATION_VOCABULARY, $xmlconv:VALID_AREACLASSIFICATION_IDS)
 
 (: G81 :)
 
@@ -1117,16 +1102,16 @@ return
 
 
 
-declare function xmlconv:checkVocabularyConceptValues($parentObject as xs:string, $featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string, $limitedIds as xs:string*)
+declare function xmlconv:checkVocabularyConceptValues($source_url as xs:string, $parentObject as xs:string, $featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string, $limitedIds as xs:string*)
 as element(tr)*{
-    xmlconv:checkVocabularyConceptValues($parentObject, $featureType, $element, $vocabularyUrl, $limitedIds, "")
+    xmlconv:checkVocabularyConceptValues($source_url, $parentObject, $featureType, $element, $vocabularyUrl, $limitedIds, "")
 };
 
-declare function xmlconv:checkVocabularyConceptValues($parentObject, $featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string)
+declare function xmlconv:checkVocabularyConceptValues($source_url as xs:string, $parentObject, $featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string)
 as element(tr)*{
-    xmlconv:checkVocabularyConceptValues($parentObject, $featureType, $element, $vocabularyUrl, (), "")
+    xmlconv:checkVocabularyConceptValues($source_url, $parentObject, $featureType, $element, $vocabularyUrl, (), "")
 };
-declare function xmlconv:checkVocabularyConceptValues($parentObject as xs:string, $featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string, $limitedIds as xs:string*, $vocabularyType as xs:string)
+declare function xmlconv:checkVocabularyConceptValues($source_url as xs:string, $parentObject as xs:string, $featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string, $limitedIds as xs:string*, $vocabularyType as xs:string)
 as element(tr)*{
 
     let $sparql :=
@@ -1201,9 +1186,9 @@ as xs:boolean
 };
 
 
-declare function xmlconv:isinvalidDDConceptLimited($parentObject as xs:string, $featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string, $allowedIds as xs:string*)
+declare function xmlconv:isinvalidDDConceptLimited($source_url as xs:string, $parentObject as xs:string, $featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string, $allowedIds as xs:string*)
 as element(tr)* {
-    xmlconv:checkVocabularyConceptValues($parentObject, $featureType, $element, $vocabularyUrl, $allowedIds)
+    xmlconv:checkVocabularyConceptValues($source_url, $parentObject, $featureType, $element, $vocabularyUrl, $allowedIds)
 };
 
 
@@ -1247,21 +1232,19 @@ as element(div) {
  : Main function
  : ======================================================================
  :)
-declare function xmlconv:proceed($source_url as xs:string) {
+declare function xmlconv:proceed($source_url as xs:string, $countryCode as xs:string) {
 
 let $countZones := count(doc($source_url)//aqd:AQD_Attainment)
-let $result := if ($countZones > 0) then xmlconv:checkReport($source_url) else ()
+let $result := if ($countZones > 0) then xmlconv:checkReport($source_url, $countryCode) else ()
 
 return
-<div class="feedbacktext">
-    { xmlconv:javaScript() }
     <div>
         <h2>Check air quality attainment of environmental objectives  - Dataflow G</h2>
         {
             if ($result//div/@class = 'error') then
                 <p>This XML file did NOT passed the following cruical checks: {string-join($result//div[@class='error'], ',')}</p>
             else
-                <p>This XML file passed all crucial checks' which in this case are :G1,G4,G5,G6,G7,G8,G9,G10,G11,G12,G13,G15,G17,G18,G19,G20,G21,
+                <p>This XML file passed all crucial checks' which in this case are: G1,G4,G5,G6,G7,G8,G9,G10,G11,G12,G13,G15,G17,G18,G19,G20,G21,
                 G22,G23,G24,G25,G26,G27,G28,G29,G30,G31,G32,G33,G38,G47,G52,G61,G62,G63,G70,G71,G72,G81</p>
         }
         {
@@ -1276,8 +1259,8 @@ return
             )
         }
     </div>
-</div>
 
 };
+(:
 xmlconv:proceed( $source_url )
-
+:)
