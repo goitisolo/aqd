@@ -1,6 +1,6 @@
 xquery version "1.0" encoding "UTF-8";
 (:
- : Module Name: Implementing Decision 2011/850/EU: AQ info exchange & reporting (Main module)
+ : Module Name: Implementing Decision 2011/850/EU: AQ info exchange & reporting (Library module)
  :
  : Version:     $Id$
  : Created:     20 June 2013
@@ -12,7 +12,7 @@ xquery version "1.0" encoding "UTF-8";
  : @author Enriko Käsper
  :)
 
-declare namespace xmlconv = "http://converters.eionet.europa.eu";
+module namespace xmlconv = "http://converters.eionet.europa.eu/dataflowB";
 declare namespace aqd = "http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0";
 declare namespace gml = "http://www.opengis.net/gml/3.2";
 declare namespace am = "http://inspire.ec.europa.eu/schemas/am/3.0";
@@ -22,7 +22,6 @@ declare namespace gn = "urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
 declare namespace base2 = "http://inspire.ec.europa.eu/schemas/base2/1.0";
 declare namespace sparql = "http://www.w3.org/2005/sparql-results#";
 declare namespace xlink = "http://www.w3.org/1999/xlink";
-declare namespace functx = "http://www.functx.com";
 declare namespace ompr = "http://inspire.ec.europa.eu/schemas/ompr/2.0";
 
 declare variable $xmlconv:AQ_MANAGEMENET_ZONE := "http://inspire.ec.europa.eu/codeList/ZoneTypeCode/airQualityManagementZone";
@@ -30,7 +29,7 @@ declare variable $xmlconv:ZONETYPE_VOCABULARY as xs:string := "http://dd.eionet.
 
 (:~ declare Content Registry SPARQL endpoint:)
 declare variable $xmlconv:CR_SPARQL_URL := "http://cr.eionet.europa.eu/sparql";
-declare variable $invalidCount as xs:integer := 0;
+declare variable $xmlconv:invalidCount as xs:integer := 0;
 
 
 declare variable $xmlconv:ISO2_CODES as xs:string* := ("AL","AT","BA","BE","BG","CH","CY","CZ","DE","DK","DZ","EE","EG","ES","FI",
@@ -40,9 +39,9 @@ declare variable $xmlconv:ISO2_CODES as xs:string* := ("AL","AT","BA","BE","BG",
 (: Variable given as an external parameter by the QA service                                                 :)
 (:===================================================================:)
 
-declare variable $source_url as xs:string external;
 
 (:
+declare variable $source_url as xs:string external;
 declare variable $source_url := "../test/FR.xml";
 declare variable $source_url := "../test/B.2013_3_.xml";
 declare variable $source_url as xs:string external;
@@ -294,21 +293,12 @@ return $result
 
 
 
-declare function xmlconv:checkReport($source_url as xs:string)
+declare function xmlconv:checkReport($source_url as xs:string, $countryCode as xs:string)
 as element(table) {
 
-(: get reporting country :)
 let $envelopeUrl := xmlconv:getEnvelopeXML($source_url)
-let $countryCode := if(string-length($envelopeUrl)>0) then lower-case(fn:doc($envelopeUrl)/envelope/countrycode) else ""
-
-(: FIXME
-TODO: UK has GB in their delivery / is it necessary to change?
-:)
-let $countryCode := if ($countryCode = "gb") then "uk" else if ($countryCode = "gr") then "el" else $countryCode
 
 let $docRoot := doc($source_url)
-
-
 
 (: B1 :)
 let $countZones := count($docRoot//aqd:AQD_Zone)
@@ -640,7 +630,7 @@ let $invalidArea  := distinct-values($docRoot//aqd:AQD_Zone[not(count(aqd:area)>
 
 (: B40 :)
 
-let $tempStr := xmlconv:checkVocabularyConceptValues("", "aqd:AQD_Zone", "aqd:timeExtensionExemption", "http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/")
+let $tempStr := xmlconv:checkVocabularyConceptValues($source_url, "", "aqd:AQD_Zone", "aqd:timeExtensionExemption", "http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/")
 let $invalidTimeExtensionExemption := $tempStr
 
 (: 41 :)
@@ -741,7 +731,7 @@ else ()
 
 
 (: B47 :)
-let $invalidZoneType := xmlconv:checkVocabularyConceptValues("", "aqd:AQD_Zone", "aqd:aqdZoneType", $xmlconv:ZONETYPE_VOCABULARY)
+let $invalidZoneType := xmlconv:checkVocabularyConceptValues($source_url, "", "aqd:AQD_Zone", "aqd:aqdZoneType", $xmlconv:ZONETYPE_VOCABULARY)
 
 (: TODO 48:)
 
@@ -1014,16 +1004,16 @@ return $result
 };
 
 
-declare function xmlconv:checkVocabularyConceptValues($parentObject as xs:string, $featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string, $limitedIds as xs:string*)
+declare function xmlconv:checkVocabularyConceptValues($source_url as xs:string, $parentObject as xs:string, $featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string, $limitedIds as xs:string*)
 as element(tr)*{
-    xmlconv:checkVocabularyConceptValues($parentObject, $featureType, $element, $vocabularyUrl, $limitedIds, "")
+    xmlconv:checkVocabularyConceptValues($source_url, $parentObject, $featureType, $element, $vocabularyUrl, $limitedIds, "")
 };
 
-declare function xmlconv:checkVocabularyConceptValues($parentObject, $featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string)
+declare function xmlconv:checkVocabularyConceptValues($source_url as xs:string, $parentObject, $featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string)
 as element(tr)*{
-    xmlconv:checkVocabularyConceptValues($parentObject, $featureType, $element, $vocabularyUrl, (), "")
+    xmlconv:checkVocabularyConceptValues($source_url, $parentObject, $featureType, $element, $vocabularyUrl, (), "")
 };
-declare function xmlconv:checkVocabularyConceptValues($parentObject as xs:string, $featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string, $limitedIds as xs:string*, $vocabularyType as xs:string)
+declare function xmlconv:checkVocabularyConceptValues($source_url as xs:string, $parentObject as xs:string, $featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string, $limitedIds as xs:string*, $vocabularyType as xs:string)
 as element(tr)*{
 
     let $sparql :=
@@ -1108,37 +1098,19 @@ declare function xmlconv:isInvalidYear($value as xs:string?) {
  : ======================================================================
  :)
 
-declare function functx:index-of-string
-( $arg as xs:string? ,
-        $substring as xs:string )  as xs:integer* {
-
-    if (contains($arg, $substring))
-    then (string-length(substring-before($arg, $substring))+1,
-    for $other in
-        functx:index-of-string(substring-after($arg, $substring),
-                $substring)
-    return
-        $other +
-                string-length(substring-before($arg, $substring)) +
-                string-length($substring))
-    else ()
-} ;
-
-declare function xmlconv:proceed($source_url as xs:string) {
+declare function xmlconv:proceed($source_url as xs:string, $countryCode as xs:string) {
 
 let $countZones := count(doc($source_url)//aqd:AQD_Zone)
-let $result := if ($countZones > 0) then xmlconv:checkReport($source_url) else ()
+let $result := if ($countZones > 0) then xmlconv:checkReport($source_url, $countryCode) else ()
 
 return
-<div class="feedbacktext">
-    { xmlconv:javaScript() }
     <div>
         <h2>Check air quality zones - Dataflow B</h2>
         {
         if ($result//div/@class = 'error') then
             <p>This XML file did NOT passed the following cruical checks: {string-join($result//div[@class='error'], ',')}</p>
         else
-            <p>This XML file passed all crucial checks' which in this case are :B1,B2,B3,B4,B8,B9,B20,B21,B22,B23,B24,B27,B28,B34,B35,B37,B40,B41,B42,B46</p>
+            <p>This XML file passed all crucial checks' which in this case are: B1,B2,B3,B4,B8,B9,B20,B21,B22,B23,B24,B27,B28,B34,B35,B37,B40,B41,B42,B46</p>
                 }
         {
         if ( $countZones = 0) then
@@ -1147,9 +1119,6 @@ return
             $result
         }
     </div>
-
-</div>
-
 };
 
 declare function xmlconv:aproceed($s as xs:string) {
@@ -1182,6 +1151,6 @@ let $tblB2 :=
 return $tblB2
 
 };
-
+(:
 xmlconv:proceed( $source_url )
-
+:)

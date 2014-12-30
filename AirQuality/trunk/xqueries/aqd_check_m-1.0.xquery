@@ -1,6 +1,6 @@
 xquery version "1.0" encoding "UTF-8";
 (:
- : Module Name: Implementing Decision 2011/850/EU: AQ info exchange & reporting (Main module)
+ : Module Name: Implementing Decision 2011/850/EU: AQ info exchange & reporting (Library module)
  :
  : Version:     $Id$
  : Created:     13 September 2013
@@ -14,7 +14,7 @@ xquery version "1.0" encoding "UTF-8";
  :Quality Assurance and Control rules version: 3.9d
  :)
 
-declare namespace xmlconv = "http://converters.eionet.europa.eu";
+module namespace xmlconv = "http://converters.eionet.europa.eu/dataflowM";
 declare namespace aqd = "http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0";
 declare namespace gml = "http://www.opengis.net/gml/3.2";
 declare namespace am = "http://inspire.ec.europa.eu/schemas/am/3.0";
@@ -26,7 +26,6 @@ declare namespace sparql = "http://www.w3.org/2005/sparql-results#";
 declare namespace xlink = "http://www.w3.org/1999/xlink";
 declare namespace ompr="http://inspire.ec.europa.eu/schemas/ompr/2.0";
 declare namespace sams="http://www.opengis.net/samplingSpatial/2.0";
-declare namespace functx = "http://www.functx.com";
 
 (:~ declare Content Registry SPARQL endpoint:)
 declare variable $xmlconv:CR_SPARQL_URL := "http://cr.eionet.europa.eu/sparql";
@@ -61,9 +60,9 @@ declare variable $xmlconv:EQUIVALENCEDEMONSTRATED_VOCABULARY := "http://dd.eione
 (: Variable given as an external parameter by the QA service :)
 (:===================================================================:)
 
+(:
 declare variable $source_url as xs:string external;
 
-(:
 declare variable $source_url := "../test/DE_D_Station.xml";
 declare variable $source_url as xs:untypedAtomic external;
 Change it for testing locally:
@@ -178,7 +177,7 @@ as xs:string
     return $uri
 };
 
-declare function functx:is-a-number( $value as xs:anyAtomicType? )
+declare function xmlconv:is-a-number( $value as xs:anyAtomicType? )
 as xs:boolean {
     string(number($value)) != 'NaN'
 } ;
@@ -357,19 +356,8 @@ as xs:string
 (:
     Rule implementations
 :)
-declare function xmlconv:checkReport($source_url as xs:string)
+declare function xmlconv:checkReport($source_url as xs:string, $countryCode as xs:string)
 as element(table) {
-
-(: get reporting country :)
-(:
-let $envelopeUrl := xmlconv:getEnvelopeXML($source_url)
-let $countryCode := if(string-length($envelopeUrl)>0) then lower-case(fn:doc($envelopeUrl)/envelope/countrycode) else ""
-:)
-
-(: FIXME
-let $countryCode := "gb"
-let $countryCode := if ($countryCode = "gb") then "uk" else if ($countryCode = "gr") then "el" else $countryCode
-:)
 
 let $docRoot := doc($source_url)
 
@@ -562,7 +550,7 @@ let $allObservingCapabilityPeriod :=
 
 (: M18 :)
 
-let $invalidObservedProperty := xmlconv:checkVocabularyConceptValues("aqd:AQD_Model/ef:observingCapability/ef:ObservingCapability", "ef:observedProperty", $xmlconv:POLLUTANT_VOCABULARY)
+let $invalidObservedProperty := xmlconv:checkVocabularyConceptValues($source_url, "aqd:AQD_Model/ef:observingCapability/ef:ObservingCapability", "ef:observedProperty", $xmlconv:POLLUTANT_VOCABULARY)
 
 (: M23 :)
 let $invalidObservedPropertyCombinations :=
@@ -879,11 +867,11 @@ let  $tblM41 :=
     </table>
 }
 ;
-declare function xmlconv:checkVocabularyConceptValues($featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string)
+declare function xmlconv:checkVocabularyConceptValues($source_url as xs:string, $featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string)
 as element(tr)*{
-    xmlconv:checkVocabularyConceptValues($featureType, $element, $vocabularyUrl, "")
+    xmlconv:checkVocabularyConceptValues($source_url, $featureType, $element, $vocabularyUrl, "")
 };
-declare function xmlconv:checkVocabularyConceptValues($featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string, $vocabularyType as xs:string)
+declare function xmlconv:checkVocabularyConceptValues($source_url as xs:string, $featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string, $vocabularyType as xs:string)
 as element(tr)*{
 
     if(doc-available($source_url))
@@ -917,7 +905,7 @@ as element(tr)*{
         ()
 };
 
-declare function xmlconv:checkVocabularyConceptValues2($concept , $featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string, $vocabularyType as xs:string)
+declare function xmlconv:checkVocabularyConceptValues2($source_url as xs:string, $concept , $featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string, $vocabularyType as xs:string)
 as element(tr)*{
 
     if(doc-available($source_url))
@@ -951,7 +939,7 @@ as element(tr)*{
         ()
 };
 
-declare function xmlconv:checkVocabularyConceptValues3($featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string, $vocabularyType as xs:string){
+declare function xmlconv:checkVocabularyConceptValues3($source_url as xs:string, $featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string, $vocabularyType as xs:string){
 
     if(doc-available($source_url))
     then
@@ -980,7 +968,7 @@ declare function xmlconv:checkVocabularyConceptValues3($featureType as xs:string
 };
 
 
-declare function xmlconv:checkVocabularyaqdAnalyticalTechniqueValues($featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string, $vocabularyType as xs:string)
+declare function xmlconv:checkVocabularyaqdAnalyticalTechniqueValues($source_url as xs:string, $featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string, $vocabularyType as xs:string)
 as element(tr)*{
 
     if(doc-available($source_url))
@@ -1015,7 +1003,7 @@ as element(tr)*{
 };
 
 
-declare function xmlconv:checkVocabularyConceptEquipmentValues($featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string, $vocabularyType as xs:string)
+declare function xmlconv:checkVocabularyConceptEquipmentValues($source_url as xs:string,  $featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string, $vocabularyType as xs:string)
 as element(tr)*{
 
     if(doc-available($source_url))
@@ -1048,7 +1036,7 @@ as element(tr)*{
     else
         ()
 };
-declare function xmlconv:checkMeasurementMethodLinkValues($concept,$featureType as xs:string,  $vocabularyUrl as xs:string, $vocabularyType as xs:string)
+declare function xmlconv:checkMeasurementMethodLinkValues($source_url as xs:string,  $concept,$featureType as xs:string,  $vocabularyUrl as xs:string, $vocabularyType as xs:string)
 as element(tr)*{
     if(doc-available($source_url))
     then
@@ -1112,23 +1100,21 @@ as xs:boolean
  : Main function
  : ======================================================================
  :)
-declare function xmlconv:proceed($source_url as xs:string) {
+declare function xmlconv:proceed($source_url as xs:string, $countryCode as xs:string) {
 
 let $countFeatures := count(doc($source_url)//gml:featureMember/descendant::*[
     not(empty(index-of($xmlconv:FEATURE_TYPES, name())))]
     )
-let $result := if ($countFeatures > 0) then xmlconv:checkReport($source_url) else ()
+let $result := if ($countFeatures > 0) then xmlconv:checkReport($source_url, $countryCode) else ()
 
 return
-<div class="feedbacktext">
-    { xmlconv:javaScript() }
     <div>
-        <h2>Check environmental monitoring feature types - Dataflow M</h2>
+        <h2>Check environmental monitoring feature types - Dataflow D on Models and Objective Estimation</h2>
         {
         if ( $countFeatures = 0) then
             <p>No environmental monitoring feature type elements ({string-join($xmlconv:FEATURE_TYPES, ", ")}) found from this XML.</p>
         else
-            (<p>This feedback report provides a summary overview of feature types reported and some consistency checks defined in Dataflow M.
+            (<p>This feedback report provides a summary overview of feature types reported and some consistency checks defined in data flow D on Models and Objective Estimation.
             Red bullet in front of the test result indicates that errenous records found from the delivery.
             Blue bullet means that the data confirms to rule, but additional feedback is provided. </p>,
             <p>Please click on the "Show records" link to see more details.</p>,
@@ -1136,8 +1122,8 @@ return
             )
         }
     </div>
-</div>
 
 };
+(:)
 xmlconv:proceed( $source_url )
-
+:)
