@@ -30,7 +30,7 @@ declare namespace xmlconv = "http://converters.eionet.europa.eu";
 (: Variable given as an external parameter by the QA service                                                 :)
 (:===================================================================:)
 
-declare variable $source_url as xs:string := "http://cdrtest.eionet.europa.eu/es/eu/aqd/b/copy_of_envveunkq/ES_B_Zones.xml";
+declare variable $source_url as xs:string external;
 
 (:
 declare variable $source_url as xs:string external;
@@ -52,6 +52,8 @@ declare variable $xmlconv:C_OBLIGATIONS as xs:string* := (concat($xmlconv:ROD_PR
 declare variable $xmlconv:D_OBLIGATIONS as xs:string* := (concat($xmlconv:ROD_PREFIX, "672"));
 declare variable $xmlconv:M_OBLIGATIONS as xs:string* := (concat($xmlconv:ROD_PREFIX, "672"));
 declare variable $xmlconv:G_OBLIGATIONS as xs:string* := (concat($xmlconv:ROD_PREFIX, "679"));
+
+declare variable $xmlconv:SOURCE_URL_PARAM := "source_url=";
 
 (:~
 : JavaScript
@@ -116,6 +118,30 @@ declare function xmlconv:getEnvelopeXML($url as xs:string) as xs:string{
         else
             ""
 (:              "http://cdrtest.eionet.europa.eu/ee/eu/art17/envriytkg/xml" :)
+}
+;
+(:~
+ : Get the cleaned URL without authorisation info
+ : @param $url URL of the source XML file
+ : @return String
+ :)
+declare function xmlconv:getCleanUrl($url)
+as xs:string
+{
+    if ( contains($url, $xmlconv:SOURCE_URL_PARAM)) then
+        fn:substring-after($url, $xmlconv:SOURCE_URL_PARAM)
+    else
+        $url
+};
+
+(: XMLCONV QA sends the file URL to XQuery engine as source_file paramter value in URL which is able to retreive restricted content from CDR.
+   This method replaces the source file url value in source_url parameter with another URL. source_file url must be the last parameter :)
+declare function xmlconv:replaceSourceUrl($url as xs:string, $url2 as xs:string) as xs:string{
+
+    if (contains($url,$xmlconv:SOURCE_URL_PARAM)) then
+        fn:concat(fn:substring-before($url, $xmlconv:SOURCE_URL_PARAM), $xmlconv:SOURCE_URL_PARAM, $url2)
+    else
+        $url2
 }
 ;
 
@@ -188,6 +214,7 @@ declare function xmlconv:proceed($source_url as xs:string) {
 
 return
         <div class="feedbacktext">
+            <p>Checked XML file: <a href="{xmlconv:getCleanUrl($source_url)}">{xmlconv:getCleanUrl($source_url)}</a></p>
             {
             if (empty($validObligations)) then
                 <p>Nothing to check - the envelope is not attached to any of the Air Quiality obligation where QA script is available.</p>
