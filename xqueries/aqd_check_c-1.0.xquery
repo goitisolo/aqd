@@ -136,8 +136,8 @@ declare function xmlconv:getEnvelopeXML($url as xs:string) as xs:string{
             if(fn:doc-available($ret)) then
                 $ret
             else
-             "http://cdr.eionet.europa.eu/fr/eu/aqd/b/"
-(:   "http://cdrtest.eionet.europa.eu/ee/eu/art17/envriytkg/xml" :)
+                (:)    "http://cdr.eionet.europa.eu/fr/eu/aqd/b/":)
+   "http://cdrtest.eionet.europa.eu/ee/eu/art17/envriytkg/xml"
 }
 ;
 
@@ -259,7 +259,7 @@ aqd:inspireId ?inspireId .
 ?inspireId rdfs:label ?inspireLabel .
 ?zone aqd:usedAQD ?usedAQD .
 FILTER (STRSTARTS(str(?zone), 'http://cdr.eionet.europa.eu/",$countryCode,"/eu/aqd/d/')and xsd:boolean(?usedAQD))
-} LIMIT 500")
+}")
 };
 
 declare function xmlconv:getProtectionTarget($countryCode as xs:string)
@@ -293,7 +293,7 @@ SELECT ?zone ?inspireId ?inspireLabel ?relevantEmissions ?stationClassification
          ?zone aqd:relevantEmissions ?relevantEmissions .
          ?relevantEmissions aqd:stationClassification ?stationClassification
   FILTER (STRSTARTS(str(?zone), 'http://cdr.eionet.europa.eu/", $countryCode,"/eu/aqd/d/') and str(?stationClassification)!='http://dd.eionet.europa.eu/vocabulary/aq/stationclassification/background')
-  } LIMIT 500")
+  }")
 };
 
 declare function xmlconv:getPollutantCode($countryCode as xs:string)
@@ -325,7 +325,7 @@ as xs:string
               aqd:inspireId ?inspireId .
               ?inspireId rdfs:label ?inspireLabel .
          FILTER (STRSTARTS(str(?zone), 'http://cdr.eionet.europa.eu/",$countryCode,"/eu/aqd/d/'))
-} LIMIT 500")
+}")
 };
 
 declare function xmlconv:getModelEndPosition ($countryCode as xs:string)
@@ -344,7 +344,7 @@ concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
         ?observingCapability aqd:observingTime ?observingTime .
         ?observingTime aqd:beginPosition ?endPosition
     FILTER (STRSTARTS(str(?zone), 'http://cdr.eionet.europa.eu/",$countryCode,"/eu/aqd/d/'))
-} LIMIT 500")
+}")
 };
 
 declare function xmlconv:getSamplingPointEndPosition ($countryCode as xs:string)
@@ -363,7 +363,7 @@ concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
         ?observingCapability aqd:observingTime ?observingTime .
         ?observingTime aqd:beginPosition ?endPosition
     FILTER (STRSTARTS(str(?zone), 'http://cdr.eionet.europa.eu/",$countryCode,"/eu/aqd/d/'))
-} LIMIT 500")
+}")
 };
 
 declare function xmlconv:getAssessmentTypeModel($countryCode as xs:string)
@@ -379,7 +379,7 @@ as xs:string
          ?inspireId rdfs:label ?inspireLabel .
          ?zone aqd:assessmentType ?assessmentType
        FILTER (STRSTARTS(str(?zone), 'http://cdr.eionet.europa.eu/",$countryCode,"/eu/aqd/d/'))
-   } LIMIT 500")
+   }")
 };
 
 declare function xmlconv:getAssessmentType($countryCode as xs:string)
@@ -395,7 +395,7 @@ as xs:string
          ?inspireId rdfs:label ?inspireLabel .
          ?zone aqd:assessmentType ?assessmentType
        FILTER (STRSTARTS(str(?zone), 'http://cdr.eionet.europa.eu/",$countryCode,"/eu/aqd/d/'))
-   } LIMIT 500")
+   }")
 };
 
 declare function xmlconv:getInspireLabelD($countryCode as xs:string)
@@ -411,7 +411,7 @@ concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
           aqd:inspireId ?inspireId .
           ?inspireId rdfs:label ?inspireLabel .
       FILTER (STRSTARTS(str(?zone), 'http://cdr.eionet.europa.eu/", $countryCode, "/eu/aqd/d/'))
-} LIMIT 500")
+}")
 };
 
 declare function xmlconv:getInspireId($countryCode as xs:string)
@@ -427,7 +427,7 @@ PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
         aqd:inspireId ?inspireId .
         ?inspireId rdfs:label ?inspireLabel .
    FILTER (STRSTARTS(str(?zone), 'http://cdr.eionet.europa.eu/", $countryCode, "/eu/aqd/b/'))
-  } LIMIT 500")
+  }")
 };
 
 declare function xmlconv:getPollutantCodeAndProtectionTarge($countryCode as xs:string)
@@ -446,7 +446,7 @@ as xs:string
               ?pollutants aqd:pollutantCode ?pollutantCode .
               ?pollutants aqd:protectionTarget ?protectionTarget .
       FILTER (STRSTARTS(str(?zone), 'http://cdr.eionet.europa.eu/", $countryCode, "/eu/aqd/b/'))
-    } LIMIT 500")
+    }")
 };
 
 
@@ -1134,7 +1134,7 @@ return
         {xmlconv:buildResultRows("C24", "The assessment methods referenced by ./aqd:assessmentMethods/aqd:AssessmentMethods/aqd:modelAssessmentMeta data xlink:href attribute shall resolve to a traversable link to an assessment method /aqd:AQD_Model reported under cdr.eionet.europa.eu/ZZ/eu/aqd/d/... ",
                 $invalidModelAssessmentMetadata,(), "aqd:AQD_AssesmentRegime", "All values are valid", " invalid value", "", ())}
         {xmlconv:buildResultRows("C25", "The assessment methods referenced by ./aqd:assessmentMethods/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata xlink:href attribute shall resolve to a traversable link to an assessment method /aqd:AQD_SamplingPoint reported under cdr.eionet.europa.eu/ZZ/eu/aqd/d/...",
-                $invalidSamplingPointAssessmentMetadata,(),  "aqd:AQD_SamplingPoint", "All values are valid", " invalid value", "", ())}
+                $invalidSamplingPointAssessmentMetadata,(),  "aqd:samplingPointAssessmentMetadata", "All values are valid", " invalid value", "", ())}
         {xmlconv:buildResultRows("C26", "The assessment methods referenced by ./aqd:assessmentMethods/aqd:AssessmentMethods/aqd:modelAssessmentMeta data or ./aqd:assessmentMethods/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata xlink:href attribute  shall  contain one  element /aqd:AQD_Model/ef:observingCapability/ef:ObservingCapability/ef:observingTime/gml:TimePeriod/gml:endPosition or /aqd:AQD_SamplingPoint/ef:observingCapability/ef:ObservingCapability/ef:observingTime/gml:TimePeriod/gml:endPosition that is operational within the aqd:reportingPeriod  included  in  the  ReportingHead",
                 $invalidGmlEndPosition,(),  "aqd:AQD_SamplingPoint", "All values are valid", " invalid value", "", ())}
         {xmlconv:buildResultRows("C27", "aqd:zone xlink:href attribute shall resolve to a traversable link to an AQ zone in /aqd:AQD_Zone reported under cdr.eionet.europa.eu/ZZ/eu/aqd/b/...  The ./aqd:pollutant and ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget within the Assessment Regime shall equal one combination /aqd:AQD_Zone/aqd:pollutants/aqd:Pollutant/aqd:pollutantCode and /aqd:AQD_Zone/aqd:pollutants/aqd:Pollutant/aqd:protectionTarget within  the  linked  zone  aqd:AQD_Zone/aqd:pollutants
