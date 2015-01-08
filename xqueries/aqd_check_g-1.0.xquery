@@ -266,7 +266,7 @@ concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
                 ?zone aqd:inspireId ?inspireid .
                 ?inspireid aqd:localId ?localId
         FILTER (STRSTARTS(str(?zone), 'http://cdr.eionet.europa.eu/",$countryCode,"/eu/aqd/b/') and (?timeExtensionExemption != 'http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/none'))
-      } LIMIT 500")
+      } ")
 };
 
 declare function xmlconv:getAqdZone($countryCode as xs:string)
@@ -282,7 +282,7 @@ aqd:timeExtensionExemption ?timeExtensionExemption .
 ?zone aqd:inspireId ?inspireid .
 ?inspireid aqd:localId ?localId
 FILTER (STRSTARTS(str(?zone), 'http://cdr.eionet.europa.eu/", $countryCode,"/eu/aqd/b/') and (?timeExtensionExemption != ""))
-} LIMIT 500")
+} ")
 
 };
 
@@ -299,7 +299,7 @@ concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
               aqd:inspireId ?inspireId .
               ?inspireId aqd:localId ?localId .
        FILTER (STRSTARTS(str(?zone), 'http://cdr.eionet.europa.eu/", $countryCode, "/eu/aqd/c/'))
-   } LIMIT 500")
+   } ")
 };
 
 declare function xmlconv:getZoneLocallD($countryCode as xs:string)
@@ -315,7 +315,7 @@ as xs:string
               aqd:inspireId ?inspireId .
               ?inspireId aqd:localId ?localId .
        FILTER (STRSTARTS(str(?zone), 'http://cdr.eionet.europa.eu/", $countryCode, "/eu/aqd/b/'))
-   } LIMIT 500")
+   } ")
 };
 
 declare function xmlconv:getPollutantlD($countryCode as xs:string)
@@ -333,7 +333,7 @@ as xs:string
                  ?zone aqd:pollutants ?pollutants .
                  ?pollutants aqd:pollutantCode ?pollutantCode .
           FILTER (STRSTARTS(str(?zone), 'http://cdr.eionet.europa.eu/",$countryCode,"/eu/aqd/b/'))
-          } LIMIT 500")
+          } ")
     };
 
 
@@ -1277,7 +1277,7 @@ return
         <h2>Check air quality attainment of environmental objectives  - Dataflow G</h2>
         {
             if ($result//div/@class = 'error') then
-                <p>This XML file did NOT passed the following cruical checks: {string-join($result//div[@class='error'], ',')}</p>
+                <p>This XML file did NOT pass the following crucial checks: {string-join($result//div[@class='error'], ',')}</p>
             else
                 <p>This XML file passed all crucial checks' which in this case are: G1,G4,G5,G6,G7,G8,G9,G10,G11,G12,G13,G15,G17,G18,G19,G20,G21,
                 G22,G23,G24,G25,G26,G27,G28,G29,G30,G31,G32,G33,G38,G47,G52,G61,G62,G63,G70,G71,G72,G81</p>
