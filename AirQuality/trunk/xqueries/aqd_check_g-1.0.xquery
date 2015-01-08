@@ -39,6 +39,7 @@ declare variable $xmlconv:ISO2_CODES as xs:string* := ("AL","AT","BA","BE","BG",
 
 
 declare variable $xmlconv:VALID_POLLUTANT_IDS as xs:string* := ("1", "7", "8", "9", "5", "6001", "10","20", "5012", "5014", "5015", "5018", "5029");
+declare variable $xmlconv:VALID_POLLUTANT_IDS_11 as xs:string* := ("1", "5", "6001", "10");
 declare variable $xmlconv:VALID_POLLUTANT_IDS_27 as xs:string* := ("5", "8", "6001", "10","20", "5012", "5014", "5015", "5018", "5029");
 declare variable $xmlconv:VALID_REPMETRIC_IDS as xs:string* := ("aMean", "wMean", "hrsAbove", "daysAbove");
 declare variable $xmlconv:VALID_REPMETRIC_IDS_20 as xs:string* := ("aMean", "wMean", "hrsAbove", "daysAbove","daysAbove-3er", "maxd8hrMean", "AOT40c", "AOT40c-5yr", "AEI");
@@ -580,20 +581,30 @@ let $invalidPollutantCodes := xmlconv:isinvalidDDConceptLimited($source_url, "",
 (: G11 :)
 
 let $invalidExceedanceDescriptionBase :=
-        for $exceedanceDescriptionBase in $docRoot//aqd:AQD_Attainment/aqd:pollutant/@xlink:href
-        let $pollutantXlinkG11:= fn:substring-after(data($exceedanceDescriptionBase),"pollutant/")
-        where empty(index-of(('1','5','6001','10'),$pollutantXlinkG11))
-        return if (empty($exceedanceDescriptionBase/../../aqd:exceedanceDescriptionBase))
-        then () else $exceedanceDescriptionBase/../../@gml:id
+        for $exceedanceDescriptionBase in $docRoot//aqd:AQD_Attainment/aqd:pollutant
+        let $pollutantXlinkG11:= fn:substring-after(data($exceedanceDescriptionBase/fn:normalize-space(@xlink:href)),"pollutant/")
+        where empty(index-of(('1','5','6001','10'),$pollutantXlinkG11))=false()
+        return if (exists($exceedanceDescriptionBase/../aqd:exceedanceDescriptionBase))
+        then () else
+            <tr>
+                <td title="Feature type">{ "aqd:AQD_Attainment" }</td>
+                <td title="gml:id">{data($exceedanceDescriptionBase/../@gml:id)}</td>
+                <td title="aqd:pollutant">{data($exceedanceDescriptionBase/fn:normalize-space(@xlink:href))}</td>
+            </tr>
 
 (: G12 :)
 
 let $invalidExceedanceDescriptionAdjustment:=
-    for $exceedanceDescriptionAdjustment in $docRoot//aqd:AQD_Attainment/aqd:pollutant/@xlink:href
-    let $pollutantXlinkG12:= fn:substring-after(data($exceedanceDescriptionAdjustment),"pollutant/")
-    where empty(index-of(('1','5','6001','10'),$pollutantXlinkG12))
-    return if (empty($exceedanceDescriptionAdjustment/../../aqd:exceedanceDescriptionAdjustment))
-    then () else $exceedanceDescriptionAdjustment/../../@gml:id
+    for $exceedanceDescriptionAdjustment in $docRoot//aqd:AQD_Attainment/aqd:pollutant
+    let $pollutantXlinkG12:= fn:substring-after(data($exceedanceDescriptionAdjustment/fn:normalize-space(@xlink:href)),"pollutant/")
+    where empty(index-of(('1','5','6001','10'),$pollutantXlinkG12))=false()
+    return if (exists($exceedanceDescriptionAdjustment/../aqd:exceedanceDescriptionAdjustment))
+    then () else
+     <tr>
+        <td title="Feature type">{ "aqd:AQD_Attainment" }</td>
+        <td title="gml:id">{data($exceedanceDescriptionAdjustment/../@gml:id)}</td>
+         <td title="aqd:pollutant">{data($exceedanceDescriptionAdjustment/fn:normalize-space(@xlink:href))}</td>
+     </tr>
 
 (: G13 :)
 
@@ -605,7 +616,13 @@ let $isLocallDCodesAvailable := count($resultXml) > 0
 let $invalidAssessment :=
      for $x in $docRoot//aqd:AQD_Attainment/aqd:assessment
     where $isLocallDCodesAvailable
-    return  if (empty(index-of($locallD, $x/fn:normalize-space(@xlink:href)))) then $x/../@gml:id else ()
+    return  if (empty(index-of($locallD, $x/fn:normalize-space(@xlink:href)))) then
+        <tr>
+        <td title="Feature type">{ "aqd:AQD_Attainment" }</td>
+        <td title="gml:id">{data($x/../@gml:id)}</td>
+        <td title="aqd:assessment">{data($x/fn:normalize-space(@xlink:href))}</td>
+    </tr>
+    else ()
 
 (: G14 :)
 
@@ -618,7 +635,12 @@ let $isZoneLocallDCodesAvailable := count($resultXml) > 0
 let $invalidAssessmentZone :=
   for $x in $docRoot//aqd:AQD_Attainment/aqd:zone
     where $isZoneLocallDCodesAvailable
-    return  if (empty(index-of($zoneLocallD, $x/fn:normalize-space(@xlink:href)))) then $x/../@gml:id else ()
+    return  if (empty(index-of($zoneLocallD, $x/fn:normalize-space(@xlink:href)))) then <tr>
+        <td title="Feature type">{ "aqd:AQD_Attainment" }</td>
+        <td title="gml:id">{data($x/../@gml:id)}</td>
+        <td title="aqd:zone">{data($x/fn:normalize-space(@xlink:href))}</td>
+    </tr>
+    else ()
 
 (: G16 :)
 (: /aqd:AQD_Zone/am:designationPeriod/gml:TimePeriod/gml:endPosition  ei leia kus asub:)
@@ -755,7 +777,12 @@ let $invalidAqdReportingMetricG26 :=
     for $aqdReportingMetricG26 in $docRoot//aqd:AQD_Attainment
     let $reportingXlink:= fn:substring-after(data($aqdReportingMetricG26/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric/fn:normalize-space(@xlink:href)),"reportingmetric/")
     where empty(index-of(data($aqdReportingMetricG26/aqd:pollutant/fn:normalize-space(@xlink:href)),"http://dd.eionet.europa.eu/vocabulary/aq/pollutant/10"))=false()
-    return  if (empty(index-of(('daysAbove'),$reportingXlink))) then $aqdReportingMetricG26/@gml:id else ()
+    return  if (empty(index-of(('daysAbove'),$reportingXlink))) then
+        <tr>
+        <td title="Feature type">{ "aqd:AQD_Attainment" }</td>
+        <td title="gml:id">{data($aqdReportingMetricG26/@gml:id)}</td>
+        <td title="aqd:pollutant">{data($aqdReportingMetricG26/aqd:pollutant/fn:normalize-space(@xlink:href))}</td>
+    </tr> else ()
 
 (: G27/aqd:AQD_Attainment
    /aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:areaClassification xlink:href attribute shall resolve to
@@ -777,7 +804,13 @@ let $invalidAqdReportingMetricG27 :=
             or $aqdReportingMetricG27/aqd:pollutant/fn:normalize-space(@xlink:href) = "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5015"
             or $aqdReportingMetricG27/aqd:pollutant/fn:normalize-space(@xlink:href) = "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5018"
             or $aqdReportingMetricG27/aqd:pollutant/fn:normalize-space(@xlink:href) = "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5029"
-    return  if (empty(index-of("V",$reportingXlink))) then $aqdReportingMetricG27/@gml:id  else ()
+    return  if (empty(index-of("V",$reportingXlink))) then
+        <tr>
+        <td title="Feature type">{ "aqd:AQD_Attainment" }</td>
+        <td title="gml:id">{data($aqdReportingMetricG27/@gml:id)}</td>
+        <td title="aqd:pollutant">{data($aqdReportingMetricG27/aqd:pollutant/fn:normalize-space(@xlink:href))}</td>
+    </tr>
+    else ()
 
 
 
@@ -931,7 +964,7 @@ let $invalidAdjustmentReportingMetricG57 :=
 
 (: G61 :)
 
-let $invalidExceedanceDescriptionAdjustment := xmlconv:isinvalidDDConceptLimited($source_url, "aqd:exceedanceDescriptionAdjustment", "aqd:AdjustmentMethod", "aqd:adjustmentType", $xmlconv:ADJUSTMENTTYPE_VOCABULARY, $xmlconv:VALID_ADJUSTMENTTYPE_IDS)
+let $invalidExceedanceDescriptionAdjustmentType := xmlconv:isinvalidDDConceptLimited($source_url, "aqd:exceedanceDescriptionAdjustment", "aqd:AdjustmentMethod", "aqd:adjustmentType", $xmlconv:ADJUSTMENTTYPE_VOCABULARY, $xmlconv:VALID_ADJUSTMENTTYPE_IDS)
 
 (: G62 :)
 
@@ -983,14 +1016,16 @@ return
             {xmlconv:buildVocItemsList("G10", $xmlconv:POLLUTANT_VOCABULARY, $xmlconv:VALID_POLLUTANT_IDS)}
             </span>,
             (), (), "aqd:pollutant", "", "", "", $invalidPollutantCodes)}
-        {xmlconv:buildResultRows("G11", ".WHERE ./aqd:pollutant xlink:href attribute EQUALs",
-            $invalidExceedanceDescriptionBase, (), "base:namespace", "All values are valid", " invalid value", "", ())}
-        {xmlconv:buildResultRows("G12", ".WHERE ./aqd:pollutant xlink:href attribute EQUALs",
-                $invalidExceedanceDescriptionAdjustment, (), "base:namespace", "All values are valid", " invalid value", "", ())}
+        {xmlconv:buildResultRows("G11", <span>WHERE ./aqd:pollutant xlink:href attribute EQUALs  <a href="{ $xmlconv:POLLUTANT_VOCABULARY }">{ $xmlconv:POLLUTANT_VOCABULARY }</a> that must be one of
+            {xmlconv:buildVocItemsList("G11", $xmlconv:POLLUTANT_VOCABULARY, $xmlconv:VALID_POLLUTANT_IDS_11)} ./aqd:exceedanceDescriptionBase may occur</span>,
+            $invalidExceedanceDescriptionBase, (), "base:namespace", "All values are valid", " invalid value", "", $invalidExceedanceDescriptionBase)}
+        {xmlconv:buildResultRows("G12", <span>WHERE ./aqd:pollutant xlink:href attribute EQUALs  <a href="{ $xmlconv:POLLUTANT_VOCABULARY }">{ $xmlconv:POLLUTANT_VOCABULARY }</a> that must be one of
+            {xmlconv:buildVocItemsList("G12", $xmlconv:POLLUTANT_VOCABULARY, $xmlconv:VALID_POLLUTANT_IDS_11)} ./aqd:exceedanceDescriptionAdjustment may occur</span>,
+                $invalidExceedanceDescriptionAdjustment, (), "base:namespace", "All values are valid", " invalid value", "", $invalidExceedanceDescriptionAdjustment)}
         {xmlconv:buildResultRows("G13", "./aqd:assessment xlink:href attribute shall resolve to a valid assessment regime with in /aqd:AQD_AssessmentRegime",
-                $invalidAssessment, (), "base:namespace", "All values are valid", " invalid value", "", ())}
+                $invalidAssessment, (), "base:namespace", "All values are valid", " invalid value", "", $invalidAssessment)}
         {xmlconv:buildResultRows("G15", "./aqd:zone xlink:href attribute shall resolve to a valid AQ zone with /aqd:AQD_Zone",
-                $invalidAssessmentZone, (), "base:namespace", "All values are valid", " invalid value", "", ())}
+                $invalidAssessmentZone, (), "base:namespace", "All values are valid", " invalid value", "", $invalidAssessmentZone)}
         {xmlconv:buildResultRows("G17", "The subject of the ./aqd: zone xlink:href attribute shall contain a /aqd:AQD_Zone/aqd:pollutant EQUAL  to ./aqd:pollutan",
             $invalidPollutant, (), "base:namespace", "All values are valid", " invalid value", "", ())}
         {xmlconv:buildResultRows("G18", "The  subject  of  the ./aqd: zone xlink:href attribute shall contain a /aqd:AQD_Zone/aqd:timeExtensionExemption shall NOT EQUAL http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/none WHERE ./aqd:exceedanceDescription_Final/aqd:ExceedanceDescription/aqd:environmentalObj ective/aqd:EnvironmentalObjective/aqd:objectiveType xlink:href attribute EQUALs http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LVmaxMOT",
@@ -1014,26 +1049,26 @@ return
                     ./aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType xlink:href attribute EQUALS http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV (Limit Value)
                         ./aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget xlink:href attribute has to be http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H (Health)",
                 $invalidobjectiveTypesForVEGG22, (), "", "No invalid objective types for Health found", " invalid value", "", $invalidobjectiveTypesForVEGG22)}
-        {xmlconv:buildResultRows("G23", <span>The content of ./aqd:EnvironmentalObjective/aqd:reportingMetric shall resolve to a valid concept in
+        {xmlconv:buildResultRows("G23", <span>WHERE ./aqd:pollutant xlink:href attribute resolves to http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1 ./aqd:EnvironmentalObjective/aqd:reportingMetric shall resolve to a valid concept in
             <a href="{ $xmlconv:REPMETRIC_VOCABULARY }">{ $xmlconv:REPMETRIC_VOCABULARY }</a> that must be one of
             {xmlconv:buildVocItemsList("G23", $xmlconv:REPMETRIC_VOCABULARY, $xmlconv:VALID_REPMETRIC_IDS)}</span>,
-                $invalidAqdReportingMetric, (), "aqd:reportingMetric", "", "", "",())}
-        {xmlconv:buildResultRows("G24", <span>The content of ./aqd:EnvironmentalObjective/aqd:reportingMetric shall resolve to a valid concept in
-            <a href="{ $xmlconv:REPMETRIC_VOCABULARY }">{ $xmlconv:REPMETRIC_VOCABULARY }</a> that must be one of
+                $invalidAqdReportingMetric, (), "aqd:reportingMetric", "All values are valid", " invalid value", "",())}
+        {xmlconv:buildResultRows("G24", <span>WHERE ./aqd:pollutant xlink:href attribute resolves to http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5 ./aqd:EnvironmentalObjective/aqd:reportingMetric shall resolve to a valid concept in
+            <a href="{ $xmlconv:REPMETRIC_VOCABULARY }">{ $xmlconv:REPMETRIC_VOCABULARY }</a> that must be one ofS
             {xmlconv:buildVocItemsList("G24", $xmlconv:REPMETRIC_VOCABULARY, $xmlconv:VALID_REPMETRIC_IDS_24)}</span>,
-                $invalidAqdReportingMetricG24, (), "aqd:reportingMetric", "", "", "",())}
-        {xmlconv:buildResultRows("G25", <span>The content of ./aqd:EnvironmentalObjective/aqd:reportingMetric shall resolve to a valid concept in
+                $invalidAqdReportingMetricG24, (), "aqd:reportingMetric", "All values are valid", " invalid value", "",())}
+        {xmlconv:buildResultRows("G25", <span>WHERE ./aqd:pollutant xlink:href attribute resolves to http://dd.eionet.europa.eu/vocabulary/aq/pollutant/6001 ./aqd:EnvironmentalObjective/aqd:reportingMetric shall resolve to a valid concept in
             <a href="{ $xmlconv:REPMETRIC_VOCABULARY }">{ $xmlconv:REPMETRIC_VOCABULARY }</a> that must be one of
             {xmlconv:buildVocItemsList("G25", $xmlconv:REPMETRIC_VOCABULARY, $xmlconv:VALID_REPMETRIC_IDS_25)}</span>,
-                $invalidAqdReportingMetricG25, (), "aqd:reportingMetric", "", "", "",())}
-        {xmlconv:buildResultRows("G26", <span>The content of ./aqd:EnvironmentalObjective/aqd:reportingMetric shall resolve to a valid concept in
+                $invalidAqdReportingMetricG25, (), "aqd:reportingMetric", "All values are valid", " invalid value", "",())}
+        {xmlconv:buildResultRows("G26", <span>WHERE ./aqd:pollutant xlink:href attribute resolves to http://dd.eionet.europa.eu/vocabulary/aq/pollutant/10 ./aqd:EnvironmentalObjective/aqd:reportingMetric shall resolve to a valid concept in
             <a href="{ $xmlconv:REPMETRIC_VOCABULARY }">{ $xmlconv:REPMETRIC_VOCABULARY }</a> that must be one of
             {xmlconv:buildVocItemsList("G26", $xmlconv:REPMETRIC_VOCABULARY, $xmlconv:VALID_REPMETRIC_IDS_26)}</span>,
-                $invalidAqdReportingMetricG26, (), "aqd:reportingMetric", "", "", "",())}
+                $invalidAqdReportingMetricG26, (), "aqd:reportingMetric", "All values are valid", " invalid value", "",$invalidAqdReportingMetricG26)}
         {xmlconv:buildResultRows("G27", <span>./aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget xlink:href attribute shall NOT EQUAL http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V and
             <a href="{ $xmlconv:POLLUTANT_VOCABULARY }">{ $xmlconv:POLLUTANT_VOCABULARY }</a> that must be one of
             {xmlconv:buildVocItemsList("G27", $xmlconv:POLLUTANT_VOCABULARY, $xmlconv:VALID_POLLUTANT_IDS_27)}</span>,
-                $invalidAqdReportingMetricG27, (), "aqd:reportingMetric", "All values are valid", " invalid value", "", ())}
+                $invalidAqdReportingMetricG27, (), "aqd:reportingMetric", "All values are valid", " invalid value", "", $invalidAqdReportingMetricG27)}
         {xmlconv:buildResultRows("G30", "If
                  ./aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType xlink:href attribute EQUALS http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/CL (Critical level)
                         ./aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget xlink:href attribute has to be http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V (Vegetation)",
@@ -1072,7 +1107,7 @@ return
             <a href="{ $xmlconv:ADJUSTMENTTYPE_VOCABULARY}">{ $xmlconv:ADJUSTMENTTYPE_VOCABULARY}</a> that must be one of
             {xmlconv:buildVocItemsList("G61", $xmlconv:ADJUSTMENTTYPE_VOCABULARY, $xmlconv:VALID_ADJUSTMENTTYPE_IDS)}
         </span>,
-                (), (), "aqd:areaClassification", "", "", "", $invalidExceedanceDescriptionAdjustment)}
+                (), (), "aqd:areaClassification", "", "", "", $invalidExceedanceDescriptionAdjustmentType)}
         {xmlconv:buildResultRowsWithTotalCount("G62", <span>The content of /aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:adjustmenSource xlink:xref shall resolve to a adjustmenSource in
             <a href="{ $xmlconv:ADJUSTMENTSOURCE_VOCABLUARY}">{ $xmlconv:ADJUSTMENTSOURCE_VOCABLUARY}</a> that must be one of
             {xmlconv:buildVocItemsList("G62", $xmlconv:ADJUSTMENTSOURCE_VOCABLUARY, $xmlconv:VALID_ADJUSTMENTSOURCE_IDS)}
