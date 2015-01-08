@@ -581,12 +581,24 @@ let  $tblD32 :=
 (: D33 :)
 let $invalidSamplingPointMedia := xmlconv:checkVocabularyConceptValues($source_url, "aqd:AQD_SamplingPoint", "ef:mediaMonitored", $xmlconv:MEDIA_VALUE_VOCABULARY_BASE_URI)
 
+(: D34 :)
+let $invalidGeometryPoint := distinct-values($docRoot//aqd:AQD_SamplingPoint[count(ef:geometry/gml:Point) >0 and ef:geometry/gml:Point/@srsName != "urn:ogc:def:crs:EPSG::4258" and ef:geometry/gml:Point/@srsName != "urn:ogc:def:crs:EPSG::4326"]/@gml:id)
+
 (: D35 FIX ME :)
 let $invalidPos  := distinct-values($docRoot/gml:featureMember//aqd:AQD_SamplingPoint/ef:geometry/gml:Point/gml:pos[@srsDimension != "2"]/
 concat(../../../../../@gml:id, ": srsDimension=", @srsDimension))
 
-(: D36 FIX ME ask  /aqd:AQD_SamplingPoint do not have ef:geometry:)
+(: D36 FIX ME ask  /aqd:AQD_SamplingPoint do not have ef:geometry :)
 
+let $aqdStationPos :=
+    for $allPos in $docRoot//aqd:AQD_Station
+    return concat($allPos/ef:inspireId/base:Identifier/base:namespace,"/",$allPos/ef:inspireId/base:Identifier/base:localId,"|",$allPos/ef:geometry/gml:Point/gml:pos)
+
+let $invalidSamplingPointPos :=
+    for $x in $aqdStationPos
+    for $gmlPos in $docRoot//aqd:AQD_SamplingPoint/ef:broader
+     where empty(index-of(fn:substring-before($x,"|"),$gmlPos/@xlink:href))=false()
+    return  if ($gmlPos/../ef:geometry/gml:Point/gml:pos != fn:substring-after($x,"|")) then  $gmlPos/../@gml:id else ()
 
 (: D37 Done by Rait:)
 (: Find all period with out end period :)
@@ -1144,9 +1156,12 @@ return
         {xmlconv:buildResultRowsWithTotalCount("D33", <span>The content of /aqd:AQD_SamplingPoint/ef:mediaMonitored shall resolve to any concept in
             <a href="{ $xmlconv:MEDIA_VALUE_VOCABULARY }">{ $xmlconv:MEDIA_VALUE_VOCABULARY }</a></span>,
             (), (), "ef:mediaMonitored", "", "", "", $invalidSamplingPointMedia)}
+        {xmlconv:buildResultRows("D34", "./am:geometry/gml:Point the srsName attribute  shall  be  a  recognisable  URN .  The  following  2  srsNames  are  expected urn:ogc:def:crs:EPSG::4258 or urn:ogc:def:crs:EPSG::4326",
+                $invalidGeometryPoint,(), "aqd:AQD_SamplingPoint/@gml:id","All smsName attributes are valid"," invalid attribute","", ())}
         {xmlconv:buildResultRows("D35", "./ef:geometry/gml:Point/gml:pos the srsDimension attribute shall resolve to ""2"" to allow the coordinate of the station",
                 $invalidPos, () , "aqd:AQD_SamplingPoint/@gml:id", "All srsDimension attributes resolve to ""2""", " invalid attribute", "",())}
-
+        {xmlconv:buildResultRows("D36", "./ef:geometry/gml:Point/gml:pos shall resolve to within the approximate geographic location of the AQD_Station cited by .aqd:AQD_SamplingPoint ef:broader",
+                $invalidSamplingPointPos, () , "aqd:AQD_SamplingPoint/@gml:id", "All attributes are valid", " invalid attribute", "",())}
         {xmlconv:buildResultRows("D37", "Total number aqd:AQD_SamplingPoint/ef:observingCapability/ef:ObservingCapability/ef:observingTime/gml:TimePeriod/ invalid operational activity periods ",
                 (), $allObservingCapabilityPeriod, "", concat(fn:string(count($allObservingCapabilityPeriod))," errors found"), "", "", ())}
 
@@ -1156,7 +1171,8 @@ return
 
         {xmlconv:buildResultRows("D45", "Total number aqd:AQD_SamplingPoint/ef:operationActivityPeriod/ef:OperationActivityPeriod/ef:activityTime/gml:TimePeriod/ invalid operational activity periods ",
                 (), $allOperationActivitPeriod, "", concat(fn:string(count($allOperationActivitPeriod))," errors found"), "", "", ())}
-
+        {xmlconv:buildResultRows("D46", "./ef:operationActivityPeriod/ef:OperationActivityPeriod/ef:activityTime/gml:TimePeriod/gml:endPosition shall be unclosed (null) or have an indeterminatePosition='unknown' attribute ./ef:operationActivityPeriod/ef:OperationActivityPeriod/ef:activityTime/gml:Time Period/gml:endPosition must be equal to the oldest /ef:operationalActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:endPosition",
+                (), $allUnknownEfOperationActivityPeriod, "", "", "", "", ())}
         {xmlconv:buildResultRows("D50", "Total number/aqd:stationClassification witch resolve to http://dd.eionet.europa.eu/vocabulary/aq/stationclassification/ via xlink:href ",
                 (), $invalidStationClassificationLink, "", concat(fn:string(count($invalidStationClassificationLink))," errors found"), "", "", ())}
         {xmlconv:buildResultRows("D51", "Number of invalid 3 elements /aqd:AQD_SamplingPoint/aqd:environmentalObjective/aqd:EnvironmentalObjective/ combinations: ",
