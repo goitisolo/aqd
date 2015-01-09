@@ -1279,7 +1279,7 @@ return
             if ($result//div/@class = 'error') then
                 <p>This XML file did NOT pass the following crucial checks: {string-join($result//div[@class='error'], ',')}</p>
             else
-                <p>This XML file passed all crucial checks' which in this case are: G1,G4,G5,G6,G7,G8,G9,G10,G11,G12,G13,G15,G17,G18,G19,G20,G21,
+                <p>This XML file passed all crucial checks which in this case are: G1,G4,G5,G6,G7,G8,G9,G10,G11,G12,G13,G15,G17,G18,G19,G20,G21,
                 G22,G23,G24,G25,G26,G27,G28,G29,G30,G31,G32,G33,G38,G47,G52,G61,G62,G63,G70,G71,G72,G81</p>
         }
         {

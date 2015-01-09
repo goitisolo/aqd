@@ -1485,6 +1485,8 @@ return
     <div>
         <h2>Check environmental monitoring feature types - Dataflow D</h2>
         {
+
+            (: TODO add info about passing/not passing the crucioal checks :)
         if ( $countFeatures = 0) then
             <p>No environmental monitoring feature type elements ({string-join($xmlconv:FEATURE_TYPES, ", ")}) found from this XML.</p>
         else

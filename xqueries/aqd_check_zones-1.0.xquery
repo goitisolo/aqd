@@ -241,7 +241,7 @@ as element(div) {
         else if ($level = "warning") then
             "orange"
         else if ($level = "skipped") then
-            "brown"
+            "gray"
         else
             "deepskyblue"
 return
@@ -1108,7 +1108,7 @@ return
         <h2>Check air quality zones - Dataflow B</h2>
         {
         if ($result//div/@class = 'error') then
-            <p>This XML file did NOT passed the following cruical checks: {string-join($result//div[@class='error'], ',')}</p>
+            <p>This XML file did NOT pass the following crucial checks: {string-join($result//div[@class='error'], ',')}</p>
         else
             <p>This XML file passed all crucial checks' which in this case are: B1,B2,B3,B4,B8,B9,B20,B21,B22,B23,B24,B27,B28,B34,B35,B37,B40,B41,B42,B46</p>
                 }

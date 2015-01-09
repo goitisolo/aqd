@@ -459,9 +459,11 @@ as element(div) {
         else if ($level = "warning") then
             "orange"
         else if ($level = "skipped") then
-            "brown"
+            "gray"
         else
             "deepskyblue"
+
+
 return
     <div class="{$level}" style="background-color: { $color }; font-size: 0.8em; color: white; padding-left:5px;padding-right:5px;margin-right:5px;margin-top:2px;text-align:center">{ $text }</div>
 };
@@ -1211,21 +1213,29 @@ return
     <div>
         <h2>Check air quality assessment regimes - Dataflow C</h2>
         {
-            if ($result//div/@class = 'error') then
-                <p>This XML file did NOT passed the following cruical checks: {string-join($result//div[@class = 'error'], ',')}</p>
-            else
-                <p>This XML file passed all crucial checks' which in this case are :C4,C5,C6,C7,C8,C9,C10,C11,C12,C13,C14,C16,C17,C18,C20,C21,C23,C28,C32,C33,C34,C35,C38 as well as cross-checks: C24,C25,C26,C27,C31</p>
-        }
-        {
         if ( $countZones = 0) then
             <p>No aqd:AQD_AssessmentRegime elements found from this XML.</p>
         else
-            (<p>This check evaluated the delivery by executing the tier-1 tests on air quality assessment regimes data in Dataflow C.
-            Red bullet in front of the test result indicates that errenous records found from the delivery.
-            Blue bullet means that the data confirms to rule, but additional feedback could be provided. </p>,
-            <p>Please click on the "Show records" link to see more details.</p>,
-            $result
-            )
+        <div>
+            {
+                if ($result//div/@class = 'error') then
+                    <p>This XML file did NOT pass the following crucial checks: {string-join($result//div[@class = 'error'], ',')}</p>
+                else
+                    <p>This XML file passed all crucial checks which in this case are: C4,C5,C6,C7,C8,C9,C10,C11,C12,C13,C14,C16,C17,C18,C20,C21,C23,C28,C32,C33,C34,C35,C38 as well as cross-checks: C24,C25,C26,C27,C31</p>
+            }
+            <p>This check evaluated the delivery by executing tier-1 tests on air quality assessment regimes data in Dataflow C.
+            All check results are labeled with coloured bullets below. The number in the bullet reffers to the rule code in <a href="http://www.eionet.europa.eu/aqportal/qaqc/">e-reporting QA/QC rules documentation</a>.
+            The background colours of the bullets mean:
+            <ul style="list-style-type: none;">
+                <li><div style="width:50px; display:inline-block;margin-left:10px">{xmlconv:getBullet('Blue', 'info')}</div> - the data confirms to the rule, but additional feedback could be provided in QA result.</li>
+                <li><div style="width:50px; display:inline-block;margin-left:10px">{xmlconv:getBullet('Red', 'error')}</div> - the crucial check did NOT pass and errenous records found from the delivery.</li>
+                <li><div style="width:50px; display:inline-block;margin-left:10px">{xmlconv:getBullet('Orange', 'warning')}</div> - the non-crucial check did NOT pass.</li>
+                <li><div style="width:50px; display:inline-block;margin-left:10px">{xmlconv:getBullet('Grey', 'skipped')}</div> - the check was skipped due to technical or unknown reason.</li>
+            </ul>
+            </p>
+            <p>Please click on the "Show records" link to see more details.</p>
+            {$result}
+        </div>
         }
     </div>
 };
