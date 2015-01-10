@@ -43,10 +43,11 @@ D
 http://cdrtest.eionet.europa.eu/es/eu/aqd/d/envvcqwog/ES_D_SamplingPoint.xml
 G
 http://cdrtest.eionet.europa.eu/es/eu/aqd/g/envvbgwea/ES_G_Attainment.xml
+http://cdrtest.eionet.europa.eu/es/eu/aqd/g/envvbgwea/ES_G_Attainment.xml
 M
 http://cdrtest.eionet.europa.eu/es/eu/aqd/d/envvcqwog/ES_D_Model.xml
 :)
-declare variable $xmlconv:ROD_PREFIX as xs:string := "http://rod.eionet.europa.eu/obligations/";
+declare variable $xmlconv:ROD_PREFIX as xs:string := "../test/ES_G_Attainment.xml";
 declare variable $xmlconv:B_OBLIGATIONS as xs:string* := (concat($xmlconv:ROD_PREFIX, "670"), concat($xmlconv:ROD_PREFIX, "693"));
 declare variable $xmlconv:C_OBLIGATIONS as xs:string* := (concat($xmlconv:ROD_PREFIX, "671"), concat($xmlconv:ROD_PREFIX, "694"));
 declare variable $xmlconv:D_OBLIGATIONS as xs:string* := (concat($xmlconv:ROD_PREFIX, "672"));
@@ -63,6 +64,14 @@ declare function xmlconv:javaScript(){
     let $js :=
         <script type="text/javascript">
             <![CDATA[
+    function showLegend(){
+        document.getElementById('legend').style.display='inline';
+        document.getElementById('legendLink').style.display='none';
+    }
+    function hideLegend(){
+        document.getElementById('legend').style.display='none';
+        document.getElementById('legendLink').style.display='inline';
+    }
     function toggle(divName, linkName, checkId) {{
          toggleItem(divName, linkName, checkId, 'record');
     }}
@@ -176,9 +185,9 @@ declare function xmlconv:proceed($source_url as xs:string) {
 
     (: FIXME - testing properties +++++++++++++++++++  :)
     (:
-    let $obligations := $xmlconv:M_OBLIGATIONS
+    let $obligations := $xmlconv:B_OBLIGATIONS
     let $countryCode := "ES"
-    :)
+:)
     (: END - testing properties -------------------  :)
 
     let $validObligations := xmlconv:getSublist($obligations,
