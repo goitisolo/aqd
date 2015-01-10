@@ -1276,22 +1276,33 @@ return
     <div>
         <h2>Check air quality attainment of environmental objectives  - Dataflow G</h2>
         {
-            if ($result//div/@class = 'error') then
-                <p>This XML file did NOT pass the following crucial checks: {string-join($result//div[@class='error'], ',')}</p>
-            else
-                <p>This XML file passed all crucial checks which in this case are: G1,G4,G5,G6,G7,G8,G9,G10,G11,G12,G13,G15,G17,G18,G19,G20,G21,
-                G22,G23,G24,G25,G26,G27,G28,G29,G30,G31,G32,G33,G38,G47,G52,G61,G62,G63,G70,G71,G72,G81</p>
-        }
-        {
         if ( $countZones = 0) then
             <p>No aqd:AQD_Attainment elements found from this XML.</p>
         else
-            (<p>This check evaluated the delivery by executing the tier-1 tests on air quality assessment regimes data in Dataflow G.
-            Red bullet in front of the test result indicates that errenous records found from the delivery.
-            Blue bullet means that the data confirms to rule, but additional feedback could be provided. </p>,
-            <p>Please click on the "Show records" link to see more details.</p>,
-            $result
-            )
+        <div>
+            {
+                if ($result//div/@class = 'error') then
+                    <p>This XML file did NOT pass the following crucial checks: {string-join($result//div[@class='error'], ',')}</p>
+                else
+                    <p>This XML file passed all crucial checks which in this case are: G1,G4,G5,G6,G7,G8,G9,G10,G11,G12,G13,G15,G17,G18,G19,G20,G21,
+                        G22,G23,G24,G25,G26,G27,G28,G29,G30,G31,G32,G33,G38,G47,G52,G61,G62,G63,G70,G71,G72,G81</p>
+            }
+            <p>This check evaluated the delivery by executing the tier-1 tests on air quality assessment regimes data in Dataflow G as specified in <a href="http://www.eionet.europa.eu/aqportal/qaqc/">e-reporting QA/QC rules documentation</a>.</p>
+            <div><a id='legendLink' href="javascript: showLegend()" style="padding-left:10px;">How to read the test results?</a></div>
+            <fieldset style="font-size: 90%; display:none" id="legend">
+                <legend>How to read the test results</legend>
+                All test results are labeled with coloured bullets. The number in the bullet reffers to the rule code. The background colour of the bullets means:
+                <ul style="list-style-type: none;">
+                    <li><div style="width:50px; display:inline-block;margin-left:10px">{xmlconv:getBullet('Blue', 'info')}</div> - the data confirms to the rule, but additional feedback could be provided in QA result.</li>
+                    <li><div style="width:50px; display:inline-block;margin-left:10px">{xmlconv:getBullet('Red', 'error')}</div> - the crucial check did NOT pass and errenous records found from the delivery.</li>
+                    <li><div style="width:50px; display:inline-block;margin-left:10px">{xmlconv:getBullet('Orange', 'warning')}</div> - the non-crucial check did NOT pass.</li>
+                    <li><div style="width:50px; display:inline-block;margin-left:10px">{xmlconv:getBullet('Grey', 'skipped')}</div> - the check was skipped due to technical or unknown reason.</li>
+                </ul>
+                <p>Click on the "Show records" link to see more details about the test result.</p>
+            </fieldset>
+            <h3>Test results</h3>
+            {$result}
+        </div>
         }
     </div>
 
