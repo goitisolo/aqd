@@ -47,7 +47,7 @@ http://cdrtest.eionet.europa.eu/es/eu/aqd/g/envvbgwea/ES_G_Attainment.xml
 M
 http://cdrtest.eionet.europa.eu/es/eu/aqd/d/envvcqwog/ES_D_Model.xml
 :)
-declare variable $xmlconv:ROD_PREFIX as xs:string := "../test/ES_G_Attainment.xml";
+declare variable $xmlconv:ROD_PREFIX as xs:string := "http://rod.eionet.europa.eu/obligations/";
 declare variable $xmlconv:B_OBLIGATIONS as xs:string* := (concat($xmlconv:ROD_PREFIX, "670"), concat($xmlconv:ROD_PREFIX, "693"));
 declare variable $xmlconv:C_OBLIGATIONS as xs:string* := (concat($xmlconv:ROD_PREFIX, "671"), concat($xmlconv:ROD_PREFIX, "694"));
 declare variable $xmlconv:D_OBLIGATIONS as xs:string* := (concat($xmlconv:ROD_PREFIX, "672"));
