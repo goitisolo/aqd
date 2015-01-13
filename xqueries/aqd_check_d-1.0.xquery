@@ -459,6 +459,8 @@ let  $tblD7 :=
 let $invalidNetworkMedia := xmlconv:checkVocabularyConceptValues($source_url, "aqd:AQD_Network", "ef:mediaMonitored", $xmlconv:MEDIA_VALUE_VOCABULARY_BASE_URI)
 (: D9 :)
 let $invalidOrganisationalLevel := xmlconv:checkVocabularyConceptValues($source_url, "aqd:AQD_Station", "ef:organisationLevel", $xmlconv:ORGANISATIONAL_LEVEL_VOCABULARY)
+(: D11 :)
+let $invalidAQDNetworkBeginPosition := distinct-values($docRoot//aqd:AQD_Network/aqd:operationActivityPeriod/gml:TimePeriod[((gml:beginPosition>=gml:endPosition) and (gml:endPosition!=""))]/../../@gml:id)
 (: D13 :)
 let $invalidNetworkType := xmlconv:checkVocabularyConceptValues($source_url, "aqd:AQD_Station", "aqd:networkType", $xmlconv:NETWORK_TYPE_VOCABULARY)
 (: D14 Done by Rait  :)
@@ -509,7 +511,7 @@ concat(../../../../../@gml:id, ": srsDimension=", @srsDimension))
 
     let $allInvalidEfOperationActivityPeriod :=
             for $operationActivityPeriod in  $allEfOperationActivityPeriod
-            where ((xs:dateTime($operationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:endPosition) < xs:dateTime($operationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:beginPosition)))
+            where ($operationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:endPosition < $operationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:beginPosition)and ($operationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:endPosition!="")
     return
         <tr>
             <td title="aqd:AQD_Station">{data($operationActivityPeriod/../@gml:id)}</td>
@@ -622,6 +624,63 @@ let $allObservingCapabilityPeriod :=
 
 (:D40 Done by Rait:)
 let $invalidObservedProperty := xmlconv:checkVocabularyConceptValues($source_url, "aqd:AQD_SamplingPoint/ef:observingCapability/ef:ObservingCapability", "ef:observedProperty", $xmlconv:POLLUTANT_VOCABULARY)
+
+(: D41 :)
+let $aqdSampleLocal :=
+    for $allSampleLocal in $docRoot//aqd:AQD_Sample
+    return $allSampleLocal/@gml:id
+
+let $invalideFeatureOfInterest :=
+    for $x in $docRoot//aqd:AQD_SamplingPoint/ef:observingCapability/ef:ObservingCapability/ef:featureOfInterest
+    where empty(index-of($aqdSampleLocal,fn:normalize-space(fn:substring-after($x/@xlink:href,"/"))))
+    return
+    <tr>
+        <td title="aqd:AQD_SamplingPoint">{data($x/../../../@gml:id)}</td>
+        <td title="ef:featureOfInterest">{data(fn:normalize-space(fn:substring-after($x/@xlink:href,"/")))}</td>
+    </tr>
+
+(: D42 :)
+let $aqdProcessLocal :=
+    for $allProcessLocal in $docRoot//aqd:AQD_Process
+    return $allProcessLocal/@gml:id
+
+let $invalidEfprocedure :=
+    for $x in $docRoot//aqd:AQD_SamplingPoint/ef:observingCapability/ef:ObservingCapability/ef:procedure
+    where empty(index-of($aqdProcessLocal,fn:normalize-space(fn:substring-after($x/@xlink:href,"/"))))
+    return
+    <tr>
+        <td title="aqd:AQD_SamplingPoint">{data($x/../../../@gml:id)}</td>
+      <td title="ef:procedure">{data(fn:normalize-space(fn:substring-after($x/@xlink:href,"/")))}</td>
+    </tr>
+
+(: D43 :)
+let $aqdStationLocal :=
+    for $allStationLocal in $docRoot//aqd:AQD_Station/ef:inspireId/base:Identifier/base:localId
+    return $allStationLocal
+
+let $invalidEfbroader :=
+    for $x in $docRoot//aqd:AQD_SamplingPoint/ef:broader
+    where empty(index-of($aqdStationLocal,fn:normalize-space(fn:substring-after($x/@xlink:href,"/"))))
+return
+    <tr>
+        <td title="aqd:AQD_SamplingPoint">{data($x/../@gml:id)}</td>
+        <td title="ef:broader">{data(fn:normalize-space(fn:substring-after($x/@xlink:href,"/")))}</td>
+    </tr>
+
+(: D44 :)
+
+let $aqdNetworkLocal :=
+    for $allNetworkLocal in $docRoot//aqd:AQD_Network/@gml:id
+    return $allNetworkLocal
+
+let $invalidEfbelongsTo :=
+    for $x in $docRoot//aqd:AQD_SamplingPoint/ef:belongsTo
+    where empty(index-of($aqdNetworkLocal,fn:normalize-space(fn:substring-after($x/@xlink:href,"/"))))
+    return
+    <tr>
+      <td title="aqd:AQD_SamplingPoint">{data($x/../@gml:id)}</td>
+      <td title="ef:belongsTo">{data(fn:normalize-space(fn:substring-after($x/@xlink:href,"/")))}</td>
+    </tr>
 
 (: D45 Done by Rait:)
 (: Find all period with out end period :)
@@ -1103,6 +1162,8 @@ return
         {xmlconv:buildResultRowsWithTotalCount("D9", <span>The content of /aqd:AQD_Station/ef:organisationLevel shall resolve to any concept in
             <a href="{ $xmlconv:ORGANISATIONAL_LEVEL_VOCABULARY }">{ $xmlconv:ORGANISATIONAL_LEVEL_VOCABULARY }</a></span>,
             (), (), "ef:organisationLevel", "", "", "", $invalidOrganisationalLevel)}
+        {xmlconv:buildResultRows("D11", "/aqd:AQD_Network/aqd:operationActivityPeriod/gml:TimePeriod/gml:beginPosition shall be less than gml:endPosition",
+                $invalidAQDNetworkBeginPosition, () , "aqd:AQD_Network/@gml:id", "All attributes is invalid", " invalid attribute", "",())}
         {xmlconv:buildResultRowsWithTotalCount("D13", <span>The content of /aqd:AQD_Station/aqd:networkType shall resolve to any concept in
             <a href="{ $xmlconv:NETWORK_TYPE_VOCABULARY }">{ $xmlconv:NETWORK_TYPE_VOCABULARY }</a></span>,
             (), (), "aqd:networkType", "", "", "", $invalidNetworkType)}
@@ -1168,7 +1229,14 @@ return
         {xmlconv:buildResultRowsWithTotalCount("D40", <span>The content of ./ef:observedProperty shall resolve to a valid code within
             <a href="{ $xmlconv:POLLUTANT_VOCABULARY }">{ $xmlconv:POLLUTANT_VOCABULARY }</a></span>,
                 (), (), "aqd:AQD_SamplingPoint", "", "", "", $invalidObservedProperty)}
-
+        {xmlconv:buildResultRows("D41", "./ef:observingCapability/ef:ObservingCapability/ef:featureOfInterest shall resolve to a traversable local of global URI to an ../AQD_Sample",
+                (),$invalideFeatureOfInterest,"aqd:AQD_SamplingPoint/@gml:id", "All attributes is invalid", " invalid attribute", "", ())}
+        {xmlconv:buildResultRows("D42", "./ef:observingCapability/ef:ObservingCapability/ef:procedure shall resolve to a traversable local of global URI to  ../AQD_Process",
+                (),$invalidEfprocedure, "aqd:AQD_SamplingPoint/@gml:id", "All attributes is invalid", " invalid attribute", "", ())}
+        {xmlconv:buildResultRows("D43", "./ef:broader shall resolve to a traversable local of global URI to ../AQD_Station",
+                (),$invalidEfbroader, "aqd:AQD_SamplingPoint/@gml:id", "All attributes is invalid", " invalid attribute", "", ())}
+        {xmlconv:buildResultRows("D44", "./ef:belongsTo shall resolve to a traversable local of global URI to ../AQD_Network",
+                (),$invalidEfbelongsTo, "aqd:AQD_SamplingPoint/@gml:id", "All attributes is invalid", " invalid attribute", "", ())}
         {xmlconv:buildResultRows("D45", "Total number aqd:AQD_SamplingPoint/ef:operationActivityPeriod/ef:OperationActivityPeriod/ef:activityTime/gml:TimePeriod/ invalid operational activity periods ",
                 (), $allOperationActivitPeriod, "", concat(fn:string(count($allOperationActivitPeriod))," errors found"), "", "", ())}
         {xmlconv:buildResultRows("D46", "./ef:operationActivityPeriod/ef:OperationActivityPeriod/ef:activityTime/gml:TimePeriod/gml:endPosition shall be unclosed (null) or have an indeterminatePosition='unknown' attribute ./ef:operationActivityPeriod/ef:OperationActivityPeriod/ef:activityTime/gml:Time Period/gml:endPosition must be equal to the oldest /ef:operationalActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:endPosition",
