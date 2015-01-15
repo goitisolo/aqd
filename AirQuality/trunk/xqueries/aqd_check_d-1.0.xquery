@@ -43,6 +43,8 @@ declare variable $xmlconv:MEDIA_VALUE_VOCABULARY := "http://dd.eionet.europa.eu/
 declare variable $xmlconv:ORGANISATIONAL_LEVEL_VOCABULARY := "http://dd.eionet.europa.eu/vocabulary/aq/organisationallevel/";
 declare variable $xmlconv:NETWORK_TYPE_VOCABULARY := "http://dd.eionet.europa.eu/vocabulary/aq/networktype/";
 declare variable $xmlconv:METEO_PARAMS_VOCABULARY := "http://vocab.nerc.ac.uk/collection/P07/current/";
+declare variable $xmlconv:METEO_PARAMS_VOCABULARY_I01 := "http://vocab.nerc.ac.uk/collection/I01/current/";
+declare variable $xmlconv:METEO_PARAMS_VOCABULARY_aq := "http://dd.eionet.europa.eu/vocabulary/aq/meteoparameter/";
 declare variable $xmlconv:AREA_CLASSIFICATION_VOCABULARY := "http://dd.eionet.europa.eu/vocabulary/aq/areaclassification/";
 declare variable $xmlconv:DISPERSION_LOCAL_VOCABULARY := "http://dd.eionet.europa.eu/vocabulary/aq/dispersionlocal/";
 declare variable $xmlconv:DISPERSION_REGIONAL_VOCABULARY := "http://dd.eionet.europa.eu/vocabulary/aq/dispersionregional/";
@@ -329,6 +331,30 @@ as xs:string
                   }")
 };
 
+declare function xmlconv:getZonesSparql($nameSpaces as xs:string*)
+as xs:string
+{
+    let $nameSpacesStr :=
+        for $nameSpace in $nameSpaces
+        return concat("""", $nameSpace, """")
+
+    let $nameSpacesStr :=
+        fn:string-join($nameSpacesStr, ",")
+
+    return     concat(
+            "PREFIX aqr: <http://reference.eionet.europa.eu/aq/ontology/>
+
+            SELECT ?inspireid
+            FROM <http://rdfdata.eionet.europa.eu/airquality/zones.ttl>
+            WHERE {
+              ?zoneuri a aqr:Zone ;
+                        aqr:inspireNamespace ?namespace;
+                         aqr:inspireId ?inspireid .
+            filter (?namespace in (", $nameSpacesStr,  "))
+    }"
+    )
+};
+
 (:
     Rule implementations
 :)
@@ -350,6 +376,50 @@ let $tblAllFeatureTypes :=
             <td title="Feature type">{ $featureType }</td>
             <td title="Total number">{$countFeatureTypes[$pos]}</td>
         </tr>
+
+        (: D2 :)
+
+let $D2Combinations :=
+    for $featureType in $xmlconv:FEATURE_TYPES
+    return
+        doc($source_url)//gml:featureMember/descendant::*[name()=$featureType]
+
+let $nameSpaces := distinct-values($docRoot//base:namespace)
+let $zonesSparql := xmlconv:getZonesSparql($nameSpaces)
+let $isZonesAvailable := string-length($zonesSparql) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($zonesSparql, "xml"))
+let $knownZones := if ($isZonesAvailable ) then distinct-values(data(xmlconv:executeSparqlQuery($zonesSparql)//sparql:binding[@name='inspireid']/sparql:literal)) else ()
+let $unknownZones :=
+    for $zone in $D2Combinations
+    let $id := if (empty($zone/@gml:id)) then "" else data($zone/@gml:id)
+    where empty(index-of($knownZones, $id))
+    return $zone
+
+let $tblD2 :=
+    for $rec in $unknownZones
+    return
+        $rec/@gml:id
+
+(: D3 :)
+
+let $D3Combinations :=
+    for $featureType in $xmlconv:FEATURE_TYPES
+    return
+        doc($source_url)//gml:featureMember/descendant::*[name()=$featureType]
+
+let $nameSpaces := distinct-values($docRoot//base:namespace)
+let $zonesSparql := xmlconv:getZonesSparql($nameSpaces)
+let $isZonesAvailable := string-length($zonesSparql) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($zonesSparql, "xml"))
+let $knownZones := if ($isZonesAvailable ) then distinct-values(data(xmlconv:executeSparqlQuery($zonesSparql)//sparql:binding[@name='inspireid']/sparql:literal)) else ()
+let $unknownZones :=
+    for $zone in $D3Combinations
+    let $id := if (empty($zone/@gml:id)) then "" else data($zone/@gml:id)
+    where empty(index-of($knownZones, $id))=false()
+    return $zone
+
+let $tblD3 :=
+    for $rec in $unknownZones
+    return
+        $rec/@gml:id
 
 (: D4 :)
 let $D4Combinations :=
@@ -549,7 +619,10 @@ let $invalidDuplicateLocalIds :=
         </tr>
 
 (: D27 :)
-let $invalidMeteoParams := xmlconv:checkVocabularyConceptValues($source_url, "aqd:AQD_Station", "aqd:meteoParams", $xmlconv:METEO_PARAMS_VOCABULARY, "collection")
+let $invalidMeteoParams_07 :=xmlconv:checkVocabularyConceptValues($source_url, "aqd:AQD_Station", "aqd:meteoParams", $xmlconv:METEO_PARAMS_VOCABULARY, "collection")
+let $invalidMeteoParams_I01 := xmlconv:checkVocabularyConceptValues($source_url, "aqd:AQD_Station", "aqd:meteoParams", $xmlconv:METEO_PARAMS_VOCABULARY_I01, "collection")
+let $invalidMeteoParams_aq := xmlconv:checkVocabularyConceptValues($source_url, "aqd:AQD_Station", "aqd:meteoParams", $xmlconv:METEO_PARAMS_VOCABULARY_aq, "collection")
+let $invalidMeteoParams := ($invalidMeteoParams_07,$invalidMeteoParams_I01,$invalidMeteoParams_aq)
 (: D28 :)
 let $invalidAreaClassification := xmlconv:checkVocabularyConceptValues($source_url, "aqd:AQD_Station", "aqd:areaClassification", $xmlconv:AREA_CLASSIFICATION_VOCABULARY)
 (: D29 :)
@@ -1104,6 +1177,10 @@ return
         </colgroup>
         {xmlconv:buildResultRows("D1", "Total number of each environmental monitoring feature types",
             (), (), "", string(sum($countFeatureTypes)), "", "", $tblAllFeatureTypes)}
+        {xmlconv:buildResultRows("D2", "Compile and feedback upon the total number of new records for each environmental monitoring feature types included in the delivery",
+                (), (), "", string(count($tblD2)), "", "",())}
+        {xmlconv:buildResultRows("D3", "Compile and feedback upon the total number of modification to existing for each environmental monitoring feature types included in the delivery",
+                (), (), "", string(count($tblD3)), "", "",())}
         {xmlconv:buildResultRows("D4", "Total number  aqd:aqdModelType, aqd:inspireId, ef:name, ompr:nam  combinations ",
                 (), (), "", string(count($tblD4)), "", "",$tblD4)}
         <tr style="border-top:1px solid #666666">
@@ -1200,7 +1277,7 @@ return
 
         {xmlconv:buildResultRowsWithTotalCount("D27", <span>The content of /aqd:AQD_Station/aqd:meteoParams shall resolve to any concept in
             <a href="{ $xmlconv:METEO_PARAMS_VOCABULARY }">{ $xmlconv:METEO_PARAMS_VOCABULARY }</a></span>,
-            (), (), "aqd:meteoParams", "", "", "", $invalidMeteoParams)}
+                (), (), "aqd:meteoParams", "", "", "",$invalidMeteoParams)}
         {xmlconv:buildResultRowsWithTotalCount("D28", <span>The content of /aqd:AQD_Station/aqd:areaClassification shall resolve to any concept in
             <a href="{ $xmlconv:AREA_CLASSIFICATION_VOCABULARY }">{ $xmlconv:AREA_CLASSIFICATION_VOCABULARY }</a></span>,
             (), (), "aqd:areaClassification", "", "", "", $invalidAreaClassification)}
