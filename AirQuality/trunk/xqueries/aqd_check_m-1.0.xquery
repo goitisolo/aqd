@@ -552,6 +552,21 @@ let $allObservingCapabilityPeriod :=
 
 let $invalidObservedProperty := xmlconv:checkVocabularyConceptValues($source_url, "aqd:AQD_Model/ef:observingCapability/ef:ObservingCapability", "ef:observedProperty", $xmlconv:POLLUTANT_VOCABULARY)
 
+(: M19 :)
+
+let $aqdModelArea :=
+    for $allModelArea in $docRoot//aqd:AQD_ModelArea
+    return $allModelArea/@gml:id
+
+let $invalideFeatureOfInterest :=
+    for $x in $docRoot//aqd:AQD_Model/ef:observingCapability/ef:ObservingCapability/ef:featureOfInterest
+    where empty(index-of($aqdModelArea,fn:normalize-space(fn:substring-after($x/@xlink:href,"/"))))
+    return
+        <tr>
+            <td title="aqd:AQD_AQD_Model">{data($x/../../../@gml:id)}</td>
+            <td title="ef:featureOfInterest">{data(fn:normalize-space(fn:substring-after($x/@xlink:href,"/")))}</td>
+        </tr>
+
 (: M23 :)
 let $invalidObservedPropertyCombinations :=
     for $oPC in $docRoot//gml:featureMember/aqd:AQD_Model/aqd:environmentalObjective/aqd:EnvironmentalObjective
@@ -845,6 +860,8 @@ let  $tblM41 :=
         {xmlconv:buildResultRowsWithTotalCount("M18", <span>The content of ./ef:observedProperty shall resolve to a valid code within
             <a href="{ $xmlconv:POLLUTANT_VOCABULARY }">{ $xmlconv:POLLUTANT_VOCABULARY }</a></span>,
                 (), (), "aqd:AQD_Model", "", "", "", $invalidObservedProperty)}
+        {xmlconv:buildResultRows("M19", "./ef:observingCapability/ef:ObservingCapability/ef:featureOfInterest shall resolve to a traversable local of global URI to an ../AQD_ModelArea",
+                (),$invalideFeatureOfInterest,"aqd:AQD_Model/@gml:id", "All attributes is invalid", " invalid attribute", "", ())}
         {xmlconv:buildResultRows("M23", "Number of invalid 3 elements /aqd:AQD_Model/aqd:environmentalObjective/aqd:EnvironmentalObjective/ combinations: ",
                 (), $invalidObservedPropertyCombinations, "", concat(fn:string(count($invalidObservedPropertyCombinations))," errors found"), "", "", ())}
         {xmlconv:buildResultRows("M24", "/aqd:assessmentType shall resolve to http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/ via xlink:href to either http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/model or http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/objective",
