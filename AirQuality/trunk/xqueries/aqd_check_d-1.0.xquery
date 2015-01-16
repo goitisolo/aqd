@@ -42,7 +42,7 @@ declare variable $xmlconv:MEDIA_VALUE_VOCABULARY_BASE_URI := "http://inspire.ec.
 declare variable $xmlconv:MEDIA_VALUE_VOCABULARY := "http://dd.eionet.europa.eu/vocabulary/inspire/MediaValue/";
 declare variable $xmlconv:ORGANISATIONAL_LEVEL_VOCABULARY := "http://dd.eionet.europa.eu/vocabulary/aq/organisationallevel/";
 declare variable $xmlconv:NETWORK_TYPE_VOCABULARY := "http://dd.eionet.europa.eu/vocabulary/aq/networktype/";
-declare variable $xmlconv:METEO_PARAMS_VOCABULARY := "http://vocab.nerc.ac.uk/collection/P07/current/";
+declare variable $xmlconv:METEO_PARAMS_VOCABULARY := ("http://vocab.nerc.ac.uk/collection/P07/current/","http://vocab.nerc.ac.uk/collection/I01/current/","http://dd.eionet.europa.eu/vocabulary/aq/meteoparameter/");
 declare variable $xmlconv:METEO_PARAMS_VOCABULARY_I01 := "http://vocab.nerc.ac.uk/collection/I01/current/";
 declare variable $xmlconv:METEO_PARAMS_VOCABULARY_aq := "http://dd.eionet.europa.eu/vocabulary/aq/meteoparameter/";
 declare variable $xmlconv:AREA_CLASSIFICATION_VOCABULARY := "http://dd.eionet.europa.eu/vocabulary/aq/areaclassification/";
@@ -198,7 +198,7 @@ as element(div) {
         else
             "deepskyblue"
 return
-    <div style="background-color: { $color }; font-size: 0.8em; color: white; padding-left:5px;padding-right:5px;margin-right:5px;margin-top:2px;text-align:center">{ $text }</div>
+    <div class="{$level}" style="background-color: { $color }; font-size: 0.8em; color: white; padding-left:5px;padding-right:5px;margin-right:5px;margin-top:2px;text-align:center">{ $text }</div>
 };
 
 declare function xmlconv:checkLink($text as xs:string*)
@@ -619,10 +619,8 @@ let $invalidDuplicateLocalIds :=
         </tr>
 
 (: D27 :)
-let $invalidMeteoParams_07 :=xmlconv:checkVocabularyConceptValues($source_url, "aqd:AQD_Station", "aqd:meteoParams", $xmlconv:METEO_PARAMS_VOCABULARY, "collection")
-let $invalidMeteoParams_I01 := xmlconv:checkVocabularyConceptValues($source_url, "aqd:AQD_Station", "aqd:meteoParams", $xmlconv:METEO_PARAMS_VOCABULARY_I01, "collection")
-let $invalidMeteoParams_aq := xmlconv:checkVocabularyConceptValues($source_url, "aqd:AQD_Station", "aqd:meteoParams", $xmlconv:METEO_PARAMS_VOCABULARY_aq, "collection")
-let $invalidMeteoParams := ($invalidMeteoParams_07,$invalidMeteoParams_I01,$invalidMeteoParams_aq)
+let $invalidMeteoParams :=xmlconv:checkVocabulariesConceptEquipmentValues($source_url, "aqd:AQD_Station", "aqd:meteoParams", $xmlconv:METEO_PARAMS_VOCABULARY, "collection")
+
 (: D28 :)
 let $invalidAreaClassification := xmlconv:checkVocabularyConceptValues($source_url, "aqd:AQD_Station", "aqd:areaClassification", $xmlconv:AREA_CLASSIFICATION_VOCABULARY)
 (: D29 :)
@@ -1521,6 +1519,44 @@ as element(tr)*{
         ()
 };
 
+declare function xmlconv:checkVocabulariesConceptEquipmentValues($source_url as xs:string, $featureType as xs:string, $element as xs:string, $vocabularyUrls as xs:string*, $vocabularyType as xs:string)
+as element(tr)*{
+
+    if(doc-available($source_url))
+    then
+      let $crConcepts :=
+        for  $vocabularyUrl in  $vocabularyUrls
+
+            let $sparql :=
+              if ($vocabularyType = "collection") then
+                xmlconv:getCollectionConceptUrlSparql($vocabularyUrl)
+            else
+                xmlconv:getConceptUrlSparql($vocabularyUrl)
+        return
+        xmlconv:executeSparqlQuery($sparql)
+
+        for $rec in doc($source_url)//gml:featureMember/descendant::*[name()=$featureType]
+
+        for $conceptUrl in $rec/child::*[name() = $element]/@xlink:href
+
+
+
+        let $conceptUrl := normalize-space($conceptUrl)
+
+       where string-length($conceptUrl) > 0
+
+        return
+               <tr isvalid="{ xmlconv:isMatchingVocabCode($crConcepts, $conceptUrl) }">
+                <td title="Feature type">{ $featureType }</td>
+                <td title="gml:id">{data($rec/@gml:id)}</td>
+                <td title="ef:name">{data($rec/ef:name)}</td>
+                <td title="{ $element }" style="color:red">{$conceptUrl}</td>
+            </tr>
+    else
+        ()
+};
+
+
 
 declare function xmlconv:checkVocabularyConceptEquipmentValues($source_url as xs:string, $featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string, $vocabularyType as xs:string)
 as element(tr)*{
@@ -1608,7 +1644,7 @@ as xs:string
     }")
 };
 
-declare function xmlconv:isMatchingVocabCode($crConcepts as element(sparql:results), $concept as xs:string)
+declare function xmlconv:isMatchingVocabCode($crConcepts as element(sparql:results)*, $concept as xs:string)
 as xs:boolean
 {
     count($crConcepts//sparql:result/sparql:binding[@name="concepturl" and sparql:uri=$concept]) > 0
@@ -1629,6 +1665,12 @@ let $result := if ($countFeatures > 0) then xmlconv:checkReport($source_url, $co
 return
     <div>
         <h2>Check environmental monitoring feature types - Dataflow D</h2>
+        {
+            if ($result//div/@class = 'error') then
+                <p>This XML file did NOT passed the following cruical checks: {string-join($result//div[@class = 'error'], ',')}</p>
+            else
+                <p>This XML file passed all crucial checks' which in this case are :D1,D2,D3,D4,D5,D6,D7,D11,D14,D15,D16,D20,D21,D22,D23,D26,D28,D31,D32,D34,D35,D36,D37,D40,D41,D42,D43,D44,D45,D46,D50,D51,D52,D53,D54,D55,D56,D57,D58,D57,D58,D59,D60,D63,D67,D68,D69,D70,D71,D72,D73,D74,D78</p>
+        }
         {
 
         if ( $countFeatures = 0) then
