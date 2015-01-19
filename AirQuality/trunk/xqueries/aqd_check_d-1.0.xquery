@@ -1274,7 +1274,9 @@ return
                 (), $invalidDuplicateLocalIds, "", string(count($invalidDuplicateLocalIds)), "", "", ())}
 
         {xmlconv:buildResultRowsWithTotalCount("D27", <span>The content of /aqd:AQD_Station/aqd:meteoParams shall resolve to any concept in
-            <a href="{ $xmlconv:METEO_PARAMS_VOCABULARY }">{ $xmlconv:METEO_PARAMS_VOCABULARY }</a></span>,
+            <a href="{ $xmlconv:METEO_PARAMS_VOCABULARY[1] }">{ $xmlconv:METEO_PARAMS_VOCABULARY[1] }</a>,
+            <a href="{ $xmlconv:METEO_PARAMS_VOCABULARY[2] }">{ $xmlconv:METEO_PARAMS_VOCABULARY[2] }</a>,
+            <a href="{ $xmlconv:METEO_PARAMS_VOCABULARY[3] }">{ $xmlconv:METEO_PARAMS_VOCABULARY[3] }</a></span>,
                 (), (), "aqd:meteoParams", "", "", "",$invalidMeteoParams)}
         {xmlconv:buildResultRowsWithTotalCount("D28", <span>The content of /aqd:AQD_Station/aqd:areaClassification shall resolve to any concept in
             <a href="{ $xmlconv:AREA_CLASSIFICATION_VOCABULARY }">{ $xmlconv:AREA_CLASSIFICATION_VOCABULARY }</a></span>,
@@ -1667,9 +1669,11 @@ return
         <h2>Check environmental monitoring feature types - Dataflow D</h2>
         {
             if ($result//div/@class = 'error') then
-                <p>This XML file did NOT passed the following cruical checks: {string-join($result//div[@class = 'error'], ',')}</p>
+                <p>This XML file did NOT pass the following crucial checks: {string-join($result//div[@class = 'error'], ',')}</p>
             else
-                <p>This XML file passed all crucial checks' which in this case are :D1,D2,D3,D4,D5,D6,D7,D11,D14,D15,D16,D20,D21,D22,D23,D26,D28,D31,D32,D34,D35,D36,D37,D40,D41,D42,D43,D44,D45,D46,D50,D51,D52,D53,D54,D55,D56,D57,D58,D57,D58,D59,D60,D63,D67,D68,D69,D70,D71,D72,D73,D74,D78</p>
+                <p>This XML file passed all crucial checks' which in this case are: D1, D2, D3, D4, D5, D6, D7, D11, D14, D15, D16,
+                    D20, D21, D22, D23, D26, D28, D31, D32, D34, D35, D36, D37, D40, D41, D42, D43, D44, D45, D46, D50, D51, D52,
+                    D53, D54, D55, D56, D57, D58, D57, D58, D59, D60, D63, D67, D68, D69, D70, D71, D72, D73, D74, D78</p>
         }
         {
 
@@ -1687,7 +1691,7 @@ return
                     <li><div style="width:50px; display:inline-block;margin-left:10px">{xmlconv:getBullet('Blue', 'info')}</div> - the data confirms to the rule, but additional feedback could be provided in QA result.</li>
                     <li><div style="width:50px; display:inline-block;margin-left:10px">{xmlconv:getBullet('Red', 'error')}</div> - the crucial check did NOT pass and errenous records found from the delivery.</li>
                     <li><div style="width:50px; display:inline-block;margin-left:10px">{xmlconv:getBullet('Orange', 'warning')}</div> - the non-crucial check did NOT pass.</li>
-                    <li><div style="width:50px; display:inline-block;margin-left:10px">{xmlconv:getBullet('Grey', 'skipped')}</div> - the check was skipped due to technical or unknown reason.</li>
+                    <li><div style="width:50px; display:inline-block;margin-left:10px">{xmlconv:getBullet('Grey', 'skipped')}</div> - the check was skipped due to no relevant values found to check.</li>
                 </ul>
                 <p>Click on the "Show records" link to see more details about the test result.</p>
             </fieldset>
