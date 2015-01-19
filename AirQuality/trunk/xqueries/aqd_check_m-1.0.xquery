@@ -195,7 +195,7 @@ as element(div) {
         else
             "deepskyblue"
 return
-    <div style="background-color: { $color }; font-size: 0.8em; color: white; padding-left:5px;padding-right:5px;margin-right:5px;margin-top:2px;text-align:center">{ $text }</div>
+    <div class="{$level}" style="background-color: { $color }; font-size: 0.8em; color: white; padding-left:5px;padding-right:5px;margin-right:5px;margin-top:2px;text-align:center">{ $text }</div>
 };
 
 declare function xmlconv:checkLink($text as xs:string*)
@@ -214,7 +214,7 @@ as element(span)*{
     Builds HTML table rows for rules.
 :)
 declare function xmlconv:buildResultRows($ruleCode as xs:string, $text, $invalidStrValues as xs:string*, $invalidValues as element()*,
-    $valueHeading as xs:string, $validMsg as xs:string, $invalidMsg as xs:string, $skippedMsg, $recordDetails as element(tr)*)
+    $valueHeading as xs:string, $validMsg as xs:string, $invalidMsg as xs:string, $skippedMsg, $errorLevel as xs:string, $recordDetails as element(tr)*)
 as element(tr)*{
 
     let $countInvalidValues := count($invalidStrValues) + count($invalidValues)
@@ -280,7 +280,7 @@ return $result
 
 };
 declare function xmlconv:buildResultRowsWithTotalCount($ruleCode as xs:string, $text, $invalidStrValues as xs:string*, $invalidValues as element()*,
-    $valueHeading as xs:string, $validMsg as xs:string, $invalidMsg as xs:string, $skippedMsg, $recordDetails as element(tr)*)
+    $valueHeading as xs:string, $validMsg as xs:string, $invalidMsg as xs:string, $skippedMsg, $errorLevel as xs:string,$recordDetails as element(tr)*)
 as element(tr)*{
 
     let $countCheckedRecords := count($recordDetails)
@@ -292,7 +292,7 @@ as element(tr)*{
 
     return
         xmlconv:buildResultRows($ruleCode, $text, $invalidStrValues, $invalidValues,
-            $valueHeading, $validMsg, $invalidMsg, $skippedMsg, ())
+            $valueHeading, $validMsg, $invalidMsg, $skippedMsg,$errorLevel, ())
 };
 declare function xmlconv:getSamplingPointAssessment($inspireId as xs:string, $inspireNamespace as xs:string)
 as xs:string
@@ -758,7 +758,31 @@ let $allInvalidZoneXlinks :=
                 <td title="base:localId">{count($localId)}</td>
             </tr>
 
-(: M40 :)
+(: M29 :)
+
+let $invalidBase2link :=
+    for $baseLink in  $docRoot//aqd:AQD_ModelProcess/ompr:documentation/base2:DocumentationCitation/base2:link
+    let $invalidLink:= fn:substring-before($baseLink,":")
+where (fn:lower-case($invalidLink) !="http")and(fn:lower-case($invalidLink) !="https")
+return
+<tr>
+    <td title="aqd:AQD_ModelProcess">{data($baseLink/../../../@gml:id)}</td>
+    <td title="base2:link">{data($baseLink)}</td>
+</tr>
+
+(: M39 :)
+
+let $invalidDataQualityReport :=
+    for $dataQualityReport in  $docRoot//aqd:AQD_ModelProcess/dataQualityReport
+    let $invalidLink:= fn:substring-before($dataQualityReport,":")
+where (fn:lower-case($invalidLink) !="http")and(fn:lower-case($invalidLink) !="https")
+return
+<tr>
+    <td title="aqd:AQD_ModelProcess">{data($dataQualityReport/../@gml:id)}</td>
+    <td title="base2:link">{data($dataQualityReport)}</td>
+</tr>
+
+    (: M40 :)
 let $localModelAreaIds := $docRoot//gml:featureMember/aqd:AQD_ModelArea/ompr:inspireId/base:Identifier
 let $invalidDuplicateModelAreaIds :=
     for $idModelAreaCode in $docRoot//gml:featureMember/aqd:AQD_ModelArea/ompr:inspireId/base:Identifier
@@ -796,13 +820,13 @@ let  $tblM41 :=
             <col width="*"/>
         </colgroup>
         {xmlconv:buildResultRows("M1", "Total number of each environmental monitoring feature types",
-            (), (), "", string(sum($countFeatureTypes)), "", "", $tblAllFeatureTypes)}
+            (), (), "", string(sum($countFeatureTypes)), "", "","error", $tblAllFeatureTypes)}
         {xmlconv:buildResultRows("M2", "Compile and feedback upon the total number of new records for each environmental monitoring feature types included in the delivery",
-                (), (), "", string(count($tblM2)), "", "",())}
+                (), (), "", string(count($tblM2)), "", "","error",())}
         {xmlconv:buildResultRows("M3", "Compile and feedback upon the total number of modification to existing for each environmental monitoring feature types included in the delivery",
-        (), (), "", string(count($tblM3)), "", "",())}
+        (), (), "", string(count($tblM3)), "", "","error",())}
         {xmlconv:buildResultRows("M4", "Total number  aqd:aqdModelType, aqd:inspireId, ef:name, ompr:nam  combinations ",
-                (), (), "", string(count($tblM4)), "", "",$tblM4)}
+                (), (), "", string(count($tblM4)), "", "","error",$tblM4)}
         <tr style="border-top:1px solid #666666">
         <tr>
             <td style="vertical-align:top;">{ xmlconv:getBullet("M5", if ($countB8duplicates = 0) then "info" else "error") }</td>
@@ -851,35 +875,39 @@ let  $tblM41 :=
                     concat($countM6duplicates, " error", substring("s ", number(not($countM6duplicates > 1)) * 2) ,"found") }</td>
         </tr>
         {xmlconv:buildResultRows("M7", "./ef:inspireId/base:Identifier/base:namespace List base:namespace and  count the number of base:localId assigned to each base:namespace. ",
-                (), (), "", string(count($tblM7)), "", "",$tblM7)}
+                (), (), "", string(count($tblM7)), "", "","error",$tblM7)}
 
         {xmlconv:buildResultRows("M12", "./ef:geometry the srsName attribute  shall  be  a  recognisable  URN .  The  following  2  srsNames  are  expected urn:ogc:def:crs:EPSG::4258 or urn:ogc:def:crs:EPSG::4326",
-                $invalidGeometry,(), "aqd:AQD_Model/@gml:id","All smsName attributes are valid"," invalid attribute","", ())}
+                $invalidGeometry,(), "aqd:AQD_Model/@gml:id","All smsName attributes are valid"," invalid attribute","","error", ())}
         {xmlconv:buildResultRows("M15", "Total number aqd:AQD_Model/ef:observingCapability/ef:ObservingCapability/ef:observingTime/gml:TimePeriod/ invalid operational activity periods ",
-                (), $allObservingCapabilityPeriod, "", concat(fn:string(count($allObservingCapabilityPeriod))," errors found"), "", "", ())}
+                (), $allObservingCapabilityPeriod, "", concat(fn:string(count($allObservingCapabilityPeriod))," errors found"), "", "","error", ())}
         {xmlconv:buildResultRowsWithTotalCount("M18", <span>The content of ./ef:observedProperty shall resolve to a valid code within
             <a href="{ $xmlconv:POLLUTANT_VOCABULARY }">{ $xmlconv:POLLUTANT_VOCABULARY }</a></span>,
-                (), (), "aqd:AQD_Model", "", "", "", $invalidObservedProperty)}
+                (), (), "aqd:AQD_Model", "", "", "", "error", $invalidObservedProperty)}
         {xmlconv:buildResultRows("M19", "./ef:observingCapability/ef:ObservingCapability/ef:featureOfInterest shall resolve to a traversable local of global URI to an ../AQD_ModelArea",
-                (),$invalideFeatureOfInterest,"aqd:AQD_Model/@gml:id", "All attributes is invalid", " invalid attribute", "", ())}
+                (),$invalideFeatureOfInterest,"aqd:AQD_Model/@gml:id", "All attributes is invalid", " invalid attribute", "","error", ())}
         {xmlconv:buildResultRows("M23", "Number of invalid 3 elements /aqd:AQD_Model/aqd:environmentalObjective/aqd:EnvironmentalObjective/ combinations: ",
-                (), $invalidObservedPropertyCombinations, "", concat(fn:string(count($invalidObservedPropertyCombinations))," errors found"), "", "", ())}
+                (), $invalidObservedPropertyCombinations, "", concat(fn:string(count($invalidObservedPropertyCombinations))," errors found"), "", "","error", ())}
         {xmlconv:buildResultRows("M24", "/aqd:assessmentType shall resolve to http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/ via xlink:href to either http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/model or http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/objective",
-                $invalidAssessmentType, (), "", concat(fn:string(count($invalidAssessmentType))," errors found"), "", "", ())}
+                $invalidAssessmentType, (), "", concat(fn:string(count($invalidAssessmentType))," errors found"), "", "","error", ())}
         {xmlconv:buildResultRows("M25", " Number of AQD_Model(s) witch has ./aqd:usedAQD equals “true” but does not have at least at one /aqd:Model xlinked: ",
-                (), $allInvalidTrueUsedAQD, "", concat(fn:string(count($allInvalidTrueUsedAQD))," errors found"), "", "", ())}
+                (), $allInvalidTrueUsedAQD, "", concat(fn:string(count($allInvalidTrueUsedAQD))," errors found"), "", "","warning", ())}
         {xmlconv:buildResultRows("M26", " Number of invalid aqd:AQD_Model/aqd:zone xlinks: ",
-                (),  $allInvalidZoneXlinks, "", concat(fn:string(count( $allInvalidZoneXlinks))," errors found"), "", "", ())}
+                (),  $allInvalidZoneXlinks, "", concat(fn:string(count( $allInvalidZoneXlinks))," errors found"), "", "","error", ())}
         {xmlconv:buildResultRows("M27", "./aqd:inspireId/base:Identifier/base:localId shall be an unique code for AQD_ModelProgress and unique within the namespace",
-                (),$invalidDuplicateModelProcessIds, "", concat(string(count($invalidDuplicateModelProcessIds))," errors found.") , "", "", ())}
+                (),$invalidDuplicateModelProcessIds, "", concat(string(count($invalidDuplicateModelProcessIds))," errors found.") , "", "","error", ())}
         {xmlconv:buildResultRows("M28", "./ompr:inspireld/base:Identifier/base:namespace List base:namespace and  count the number of base:localId assigned to each base:namespace. ",
-                (), (), "", string(count($tblM28)), "", "",$tblM28)}
+                (), (), "", string(count($tblM28)), "", "","error",$tblM28)}
+        {xmlconv:buildResultRows("M29", "./ompr:documentation/base2:DocumentationCitation/base2:link shall resolve to a traversable URL to a documentation report",
+                (),$invalidBase2link, "aqd:AQD_ModelProcess/@gml:id","All attributes are valid"," invalid attribute","","error", ())}
+        {xmlconv:buildResultRows("M39", "./dataQualityReport shall provide a traversable URL to a report describing the data quality equaluati on proces",
+                (),$invalidDataQualityReport, "aqd:AQD_ModelProcess/@gml:id","All attributes are valid"," invalid attribute","","error", ())}
         {xmlconv:buildResultRows("M40", "./aqd:inspireId/base:Identifier/base:localId shall be an unique code for AQD_ModelArea and unique within the namespace",
-                (),$invalidDuplicateModelAreaIds, "", concat(string(count($invalidDuplicateModelAreaIds))," errors found.") , "", "", ())}
+                (),$invalidDuplicateModelAreaIds, "", concat(string(count($invalidDuplicateModelAreaIds))," errors found.") , "", "","error",())}
         {xmlconv:buildResultRows("M41", "./aqd:inspireId/base:Identifier/base:namespace List base:namespace and  count the number of base:localId assigned to each base:namespace. ",
-                (), (), "", string(count($tblM41)), "", "",$tblM41)}
+                (), (), "", string(count($tblM41)), "", "","error",$tblM41)}
         {xmlconv:buildResultRows("M43", "./sams:shape, the srsDimension attribute shall resolve to “2” to allow the coordinate  of  the  feature  of  intere",
-                $invalidSrsName,(), "aqd:AQD_ModelArea/@gml:id","All srsDimension attributes are valid"," invalid attribute","", ())}
+                $invalidSrsName,(), "aqd:AQD_ModelArea/@gml:id","All srsDimension attributes are valid"," invalid attribute","","error", ())}
 
     </table>
 }
@@ -1127,6 +1155,12 @@ let $result := if ($countFeatures > 0) then xmlconv:checkReport($source_url, $co
 return
     <div>
         <h2>Check environmental monitoring feature types - Dataflow D on Models and Objective Estimation</h2>
+        {
+            if ($result//div/@class = 'error') then
+                <p>This XML file did NOT passed the following cruical checks: {string-join($result//div[@class = 'error'], ',')}</p>
+            else
+                <p>This XML file passed all crucial checks' which in this case are :M1,M2,M3,M4,M5,M6,M7,M12,M15,M18,M19,M21,M22,M23,M24,M26,M27,M28,M29,M30,M38,M39,M40,M41,M43</p>
+        }
         {
         if ( $countFeatures = 0) then
             <p>No environmental monitoring feature type elements ({string-join($xmlconv:FEATURE_TYPES, ", ")}) found from this XML.</p>
