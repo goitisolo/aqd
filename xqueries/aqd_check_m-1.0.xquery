@@ -221,7 +221,7 @@ as element(tr)*{
 
     let $recordDetails := if (count($invalidValues) > 0) then $invalidValues else $recordDetails
 
-    let $bulletType := if (string-length($skippedMsg) > 0) then "skipped" else if ($countInvalidValues = 0) then "info" else "error"
+    let $bulletType := if (string-length($skippedMsg) > 0) then "skipped" else if ($countInvalidValues = 0) then "info" else $errorLevel
 let $result :=
     (
         <tr style="border-top:1px solid #666666;">
