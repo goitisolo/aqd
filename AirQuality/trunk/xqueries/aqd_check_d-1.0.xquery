@@ -217,14 +217,14 @@ as element(span)*{
     Builds HTML table rows for rules.
 :)
 declare function xmlconv:buildResultRows($ruleCode as xs:string, $text, $invalidStrValues as xs:string*, $invalidValues as element()*,
-    $valueHeading as xs:string, $validMsg as xs:string, $invalidMsg as xs:string, $skippedMsg, $recordDetails as element(tr)*)
+    $valueHeading as xs:string, $validMsg as xs:string, $invalidMsg as xs:string, $skippedMsg, $errorLevel as xs:string, $recordDetails as element(tr)*)
 as element(tr)*{
 
     let $countInvalidValues := count($invalidStrValues) + count($invalidValues)
 
     let $recordDetails := if (count($invalidValues) > 0) then $invalidValues else $recordDetails
 
-    let $bulletType := if (string-length($skippedMsg) > 0) then "skipped" else if ($countInvalidValues = 0) then "info" else "error"
+    let $bulletType := if (string-length($skippedMsg) > 0) then "skipped" else if ($countInvalidValues = 0) then "info" else $errorLevel
 let $result :=
     (
         <tr style="border-top:1px solid #666666;">
@@ -283,7 +283,7 @@ return $result
 
 };
 declare function xmlconv:buildResultRowsWithTotalCount($ruleCode as xs:string, $text, $invalidStrValues as xs:string*, $invalidValues as element()*,
-    $valueHeading as xs:string, $validMsg as xs:string, $invalidMsg as xs:string, $skippedMsg, $recordDetails as element(tr)*)
+    $valueHeading as xs:string, $validMsg as xs:string, $invalidMsg as xs:string, $skippedMsg, $errorLevel as xs:string,$recordDetails as element(tr)*)
 as element(tr)*{
 
     let $countCheckedRecords := count($recordDetails)
@@ -295,7 +295,7 @@ as element(tr)*{
 
     return
         xmlconv:buildResultRows($ruleCode, $text, $invalidStrValues, $invalidValues,
-            $valueHeading, $validMsg, $invalidMsg, $skippedMsg, ())
+            $valueHeading, $validMsg, $invalidMsg, $skippedMsg,$errorLevel, ())
 };
 declare function xmlconv:getSamplingPointAssessment($inspireId as xs:string, $inspireNamespace as xs:string)
 as xs:string
@@ -1174,13 +1174,13 @@ return
             <col width="*"/>
         </colgroup>
         {xmlconv:buildResultRows("D1", "Total number of each environmental monitoring feature types",
-            (), (), "", string(sum($countFeatureTypes)), "", "", $tblAllFeatureTypes)}
+            (), (), "", string(sum($countFeatureTypes)), "", "","warring", $tblAllFeatureTypes)}
         {xmlconv:buildResultRows("D2", "Compile and feedback upon the total number of new records for each environmental monitoring feature types included in the delivery",
-                (), (), "", string(count($tblD2)), "", "",())}
+                (), (), "", string(count($tblD2)), "", "","error",())}
         {xmlconv:buildResultRows("D3", "Compile and feedback upon the total number of modification to existing for each environmental monitoring feature types included in the delivery",
-                (), (), "", string(count($tblD3)), "", "",())}
+                (), (), "", string(count($tblD3)), "", "","error",())}
         {xmlconv:buildResultRows("D4", "Total number  aqd:aqdModelType, aqd:inspireId, ef:name, ompr:nam  combinations ",
-                (), (), "", string(count($tblD4)), "", "",$tblD4)}
+                (), (), "", string(count($tblD4)), "", "","error",$tblD4)}
         <tr style="border-top:1px solid #666666">
             <tr>
                 <td style="vertical-align:top;">{ xmlconv:getBullet("D5", if ($countD5duplicates = 0) then "info" else "error") }</td>
@@ -1229,23 +1229,23 @@ return
                     concat($countD6duplicates, " error", substring("s ", number(not($countD6duplicates > 1)) * 2) ,"found") }</td>
         </tr>
         {xmlconv:buildResultRows("D7", "./ef:inspireId/base:Identifier/base:namespace List base:namespace and  count the number of base:localId assigned to each base:namespace. ",
-                (), (), "", string(count($tblD7)), "", "",$tblD7)}
+                (), (), "", string(count($tblD7)), "", "","error",$tblD7)}
         {xmlconv:buildResultRowsWithTotalCount("D8", <span>The content of /aqd:AQD_Network/ef:mediaMonitored shall resolve to any concept in
             <a href="{ $xmlconv:MEDIA_VALUE_VOCABULARY }">{ $xmlconv:MEDIA_VALUE_VOCABULARY }</a></span>,
-            (), (), "ef:mediaMonitored", "", "", "", $invalidNetworkMedia)}
+            (), (), "ef:mediaMonitored", "", "", "", "warning",$invalidNetworkMedia)}
 
         {xmlconv:buildResultRowsWithTotalCount("D9", <span>The content of /aqd:AQD_Station/ef:organisationLevel shall resolve to any concept in
             <a href="{ $xmlconv:ORGANISATIONAL_LEVEL_VOCABULARY }">{ $xmlconv:ORGANISATIONAL_LEVEL_VOCABULARY }</a></span>,
-            (), (), "ef:organisationLevel", "", "", "", $invalidOrganisationalLevel)}
+            (), (), "ef:organisationLevel", "", "", "","warning", $invalidOrganisationalLevel)}
         {xmlconv:buildResultRows("D11", "/aqd:AQD_Network/aqd:operationActivityPeriod/gml:TimePeriod/gml:beginPosition shall be less than gml:endPosition",
-                $invalidAQDNetworkBeginPosition, () , "aqd:AQD_Network/@gml:id", "All attributes is invalid", " invalid attribute", "",())}
+                $invalidAQDNetworkBeginPosition, () , "aqd:AQD_Network/@gml:id", "All attributes is invalid", " invalid attribute", "","error", ())}
         {xmlconv:buildResultRowsWithTotalCount("D13", <span>The content of /aqd:AQD_Station/aqd:networkType shall resolve to any concept in
             <a href="{ $xmlconv:NETWORK_TYPE_VOCABULARY }">{ $xmlconv:NETWORK_TYPE_VOCABULARY }</a></span>,
-            (), (), "aqd:networkType", "", "", "", $invalidNetworkType)}
+            (), (), "aqd:networkType", "", "", "","warning", $invalidNetworkType)}
 
         {xmlconv:buildResultRowsWithTotalCount("D14", <span>The content of ./aqd:aggregationTimeZone attribute shall resolve to a valid code in
             <a href="{ $xmlconv:TIMEZONE_VOCABULARY }">{ $xmlconv:TIMEZONE_VOCABULARY }</a></span>,
-                (), (), "aqd:aggregationTimeZone", "", "", "", $invalidTimeZone)}
+                (), (), "aqd:aggregationTimeZone", "", "", "","error",$invalidTimeZone)}
         <tr style="border-top:1px solid #666666">
             <td style="vertical-align:top;">{ xmlconv:getBullet("D15", if ($countD15duplicates = 0) then "info" else "error") }</td>
             <th style="vertical-align:top;">./am:inspireId/base:Identifier/base:localId shall be an unique code within namespace</th>
@@ -1256,128 +1256,128 @@ return
                     concat($countD15duplicates, " error", substring("s ", number(not($countD15duplicates > 1)) * 2) ,"found") }</td>
         </tr>
         {xmlconv:buildResultRows("D16", "./ef:inspireId/base:Identifier/base:namespace List base:namespace and  count the number of base:localId assigned to each base:namespace. ",
-                (), (), "", string(count($tblD16)), "", "",$tblD16)}
+                (), (), "", string(count($tblD16)), "", "","error",$tblD16)}
         {xmlconv:buildResultRowsWithTotalCount("D19", <span>The content of /aqd:AQD_Station/ef:mediaMonitored shall resolve to any concept in
             <a href="{ $xmlconv:MEDIA_VALUE_VOCABULARY }">{ $xmlconv:MEDIA_VALUE_VOCABULARY }</a></span>,
-            (), (), "ef:mediaMonitored", "", "", "", $invalidStationMedia)}
+            (), (), "ef:mediaMonitored", "", "", "","warning", $invalidStationMedia)}
         {xmlconv:buildResultRows("D20", "./ef:geometry/gml:Points the srsName attribute  shall  be  a  recognisable  URN .  The  following  2  srsNames  are  expected urn:ogc:def:crs:EPSG::4258 or urn:ogc:def:crs:EPSG::4326",
-                $invalidPoints,(), "aqd:AQD_Station/@gml:id","All smsName attributes are valid"," invalid attribute","", ())}
+                $invalidPoints,(), "aqd:AQD_Station/@gml:id","All smsName attributes are valid"," invalid attribute","", "error",())}
         {xmlconv:buildResultRows("D21", "./ef:geometry/gml:Point/gml:pos the srsDimension attribute shall resolve to ""2"" to allow the coordinate of the station",
-                $invalidPos, () , "aqd:AQD_Zone/@gml:id", "All srsDimension attributes resolve to ""2""", " invalid attribute", "",())}
+                $invalidPos, () , "aqd:AQD_Zone/@gml:id", "All srsDimension attributes resolve to ""2""", " invalid attribute", "","error",())}
 
        {xmlconv:buildResultRows("D23", "Total number  aqd:AQD_Station invalid operational activity periods ",
-            (), $allInvalidEfOperationActivityPeriod, "", fn:string(count($allInvalidEfOperationActivityPeriod)), "", "", ())}
+            (), $allInvalidEfOperationActivityPeriod, "", fn:string(count($allInvalidEfOperationActivityPeriod)), "", "","error", ())}
 
         {xmlconv:buildResultRows("D24", "Total number operational activity periods where ending period is unclosed (null) or have an indeterminatePosition='unknown' ",
-                (), $allUnknownEfOperationActivityPeriod, "", string(count($allUnknownEfOperationActivityPeriod)), "", "", ())}
+                (), $allUnknownEfOperationActivityPeriod, "", string(count($allUnknownEfOperationActivityPeriod)), "", "","warning",())}
         {xmlconv:buildResultRows("D26", "./aqd:EUStationCode shall be an unique code for the station starting with ISO2-country code",
-                (), $invalidDuplicateLocalIds, "", string(count($invalidDuplicateLocalIds)), "", "", ())}
+                (), $invalidDuplicateLocalIds, "", string(count($invalidDuplicateLocalIds)), "", "","error", ())}
 
         {xmlconv:buildResultRowsWithTotalCount("D27", <span>The content of /aqd:AQD_Station/aqd:meteoParams shall resolve to any concept in
             <a href="{ $xmlconv:METEO_PARAMS_VOCABULARY[1] }">{ $xmlconv:METEO_PARAMS_VOCABULARY[1] }</a>,
             <a href="{ $xmlconv:METEO_PARAMS_VOCABULARY[2] }">{ $xmlconv:METEO_PARAMS_VOCABULARY[2] }</a>,
             <a href="{ $xmlconv:METEO_PARAMS_VOCABULARY[3] }">{ $xmlconv:METEO_PARAMS_VOCABULARY[3] }</a></span>,
-                (), (), "aqd:meteoParams", "", "", "",$invalidMeteoParams)}
+                (), (), "aqd:meteoParams", "", "", "","warning",$invalidMeteoParams)}
         {xmlconv:buildResultRowsWithTotalCount("D28", <span>The content of /aqd:AQD_Station/aqd:areaClassification shall resolve to any concept in
             <a href="{ $xmlconv:AREA_CLASSIFICATION_VOCABULARY }">{ $xmlconv:AREA_CLASSIFICATION_VOCABULARY }</a></span>,
-            (), (), "aqd:areaClassification", "", "", "", $invalidAreaClassification)}
+            (), (), "aqd:areaClassification", "", "", "","warning", $invalidAreaClassification)}
         {xmlconv:buildResultRowsWithTotalCount("D29", <span>The content of /aqd:AQD_Station/aqd:dispersionLocal shall resolve to any concept in
             <a href="{ $xmlconv:DISPERSION_LOCAL_VOCABULARY }">{ $xmlconv:DISPERSION_LOCAL_VOCABULARY }</a></span>,
-            (), (), "aqd:dispersionLocal", "", "", "", $invalidDispersionLocal)}
+            (), (), "aqd:dispersionLocal", "", "", "","warning", $invalidDispersionLocal)}
         {xmlconv:buildResultRowsWithTotalCount("D30", <span>The content of /aqd:AQD_Station/aqd:dispersionRegional shall resolve to any concept in
             <a href="{ $xmlconv:DISPERSION_REGIONAL_VOCABULARY }">{ $xmlconv:DISPERSION_REGIONAL_VOCABULARY }</a></span>,
-            (), (), "aqd:dispersionRegional", "", "", "", $invalidDispersionRegional)}
+            (), (), "aqd:dispersionRegional", "", "", "","warning", $invalidDispersionRegional)}
         {xmlconv:buildResultRows("D31", "./AQD_SamplingPoint/ef:inspireId/base:Identifier/base:localId not unique codes: ",
-                (), $invalidDuplicateSamplingPointIds, "", concat(string(count($invalidDuplicateSamplingPointIds))," errors found.") , "", "", ())}
+                (), $invalidDuplicateSamplingPointIds, "", concat(string(count($invalidDuplicateSamplingPointIds))," errors found.") , "", "","error", ())}
         {xmlconv:buildResultRows("D32", "./base:Identifier/base:namespace List base:namespace and  count the number of base:localId assigned to each base:namespace. ",
-                (), (), "", string(count($tblD32)), "", "",$tblD32)}
+                (), (), "", string(count($tblD32)), "", "","error",$tblD32)}
         {xmlconv:buildResultRowsWithTotalCount("D33", <span>The content of /aqd:AQD_SamplingPoint/ef:mediaMonitored shall resolve to any concept in
             <a href="{ $xmlconv:MEDIA_VALUE_VOCABULARY }">{ $xmlconv:MEDIA_VALUE_VOCABULARY }</a></span>,
-            (), (), "ef:mediaMonitored", "", "", "", $invalidSamplingPointMedia)}
+            (), (), "ef:mediaMonitored", "", "", "","warning", $invalidSamplingPointMedia)}
         {xmlconv:buildResultRows("D34", "./am:geometry/gml:Point the srsName attribute  shall  be  a  recognisable  URN .  The  following  2  srsNames  are  expected urn:ogc:def:crs:EPSG::4258 or urn:ogc:def:crs:EPSG::4326",
-                $invalidGeometryPoint,(), "aqd:AQD_SamplingPoint/@gml:id","All smsName attributes are valid"," invalid attribute","", ())}
+                $invalidGeometryPoint,(), "aqd:AQD_SamplingPoint/@gml:id","All smsName attributes are valid"," invalid attribute","","error", ())}
         {xmlconv:buildResultRows("D35", "./ef:geometry/gml:Point/gml:pos the srsDimension attribute shall resolve to ""2"" to allow the coordinate of the station",
-                $invalidPos, () , "aqd:AQD_SamplingPoint/@gml:id", "All srsDimension attributes resolve to ""2""", " invalid attribute", "",())}
+                $invalidPos, () , "aqd:AQD_SamplingPoint/@gml:id", "All srsDimension attributes resolve to ""2""", " invalid attribute", "","error",())}
         {xmlconv:buildResultRows("D36", "./ef:geometry/gml:Point/gml:pos shall resolve to within the approximate geographic location of the AQD_Station cited by .aqd:AQD_SamplingPoint ef:broader",
-                $invalidSamplingPointPos, () , "aqd:AQD_SamplingPoint/@gml:id", "All attributes are valid", " invalid attribute", "",())}
+                $invalidSamplingPointPos, () , "aqd:AQD_SamplingPoint/@gml:id", "All attributes are valid", " invalid attribute", "","error",())}
         {xmlconv:buildResultRows("D37", "Total number aqd:AQD_SamplingPoint/ef:observingCapability/ef:ObservingCapability/ef:observingTime/gml:TimePeriod/ invalid operational activity periods ",
-                (), $allObservingCapabilityPeriod, "", concat(fn:string(count($allObservingCapabilityPeriod))," errors found"), "", "", ())}
+                (), $allObservingCapabilityPeriod, "", concat(fn:string(count($allObservingCapabilityPeriod))," errors found"), "", "","error", ())}
 
         {xmlconv:buildResultRowsWithTotalCount("D40", <span>The content of ./ef:observedProperty shall resolve to a valid code within
             <a href="{ $xmlconv:POLLUTANT_VOCABULARY }">{ $xmlconv:POLLUTANT_VOCABULARY }</a></span>,
-                (), (), "aqd:AQD_SamplingPoint", "", "", "", $invalidObservedProperty)}
+                (), (), "aqd:AQD_SamplingPoint", "", "", "","error", $invalidObservedProperty)}
         {xmlconv:buildResultRows("D41", "./ef:observingCapability/ef:ObservingCapability/ef:featureOfInterest shall resolve to a traversable local of global URI to an ../AQD_Sample",
-                (),$invalideFeatureOfInterest,"aqd:AQD_SamplingPoint/@gml:id", "All attributes is invalid", " invalid attribute", "", ())}
+                (),$invalideFeatureOfInterest,"aqd:AQD_SamplingPoint/@gml:id", "All attributes is invalid", " invalid attribute", "","error", ())}
         {xmlconv:buildResultRows("D42", "./ef:observingCapability/ef:ObservingCapability/ef:procedure shall resolve to a traversable local of global URI to  ../AQD_Process",
-                (),$invalidEfprocedure, "aqd:AQD_SamplingPoint/@gml:id", "All attributes is invalid", " invalid attribute", "", ())}
+                (),$invalidEfprocedure, "aqd:AQD_SamplingPoint/@gml:id", "All attributes is invalid", " invalid attribute", "","error", ())}
         {xmlconv:buildResultRows("D43", "./ef:broader shall resolve to a traversable local of global URI to ../AQD_Station",
-                (),$invalidEfbroader, "aqd:AQD_SamplingPoint/@gml:id", "All attributes is invalid", " invalid attribute", "", ())}
+                (),$invalidEfbroader, "aqd:AQD_SamplingPoint/@gml:id", "All attributes is invalid", " invalid attribute", "","error", ())}
         {xmlconv:buildResultRows("D44", "./ef:belongsTo shall resolve to a traversable local of global URI to ../AQD_Network",
-                (),$invalidEfbelongsTo, "aqd:AQD_SamplingPoint/@gml:id", "All attributes is invalid", " invalid attribute", "", ())}
+                (),$invalidEfbelongsTo, "aqd:AQD_SamplingPoint/@gml:id", "All attributes is invalid", " invalid attribute", "","error", ())}
         {xmlconv:buildResultRows("D45", "Total number aqd:AQD_SamplingPoint/ef:operationActivityPeriod/ef:OperationActivityPeriod/ef:activityTime/gml:TimePeriod/ invalid operational activity periods ",
-                (), $allOperationActivitPeriod, "", concat(fn:string(count($allOperationActivitPeriod))," errors found"), "", "", ())}
+                (), $allOperationActivitPeriod, "", concat(fn:string(count($allOperationActivitPeriod))," errors found"), "", "", "error",())}
         {xmlconv:buildResultRows("D46", "./ef:operationActivityPeriod/ef:OperationActivityPeriod/ef:activityTime/gml:TimePeriod/gml:endPosition shall be unclosed (null) or have an indeterminatePosition='unknown' attribute ./ef:operationActivityPeriod/ef:OperationActivityPeriod/ef:activityTime/gml:Time Period/gml:endPosition must be equal to the oldest /ef:operationalActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:endPosition",
-                (), $allUnknownEfOperationActivityPeriod, "", "", "", "", ())}
+                (), $allUnknownEfOperationActivityPeriod, "", "", "", "","error", ())}
         {xmlconv:buildResultRows("D50", "Total number/aqd:stationClassification witch resolve to http://dd.eionet.europa.eu/vocabulary/aq/stationclassification/ via xlink:href ",
-                (), $invalidStationClassificationLink, "", concat(fn:string(count($invalidStationClassificationLink))," errors found"), "", "", ())}
+                (), $invalidStationClassificationLink, "", concat(fn:string(count($invalidStationClassificationLink))," errors found"), "", "","error", ())}
         {xmlconv:buildResultRows("D51", "Number of invalid 3 elements /aqd:AQD_SamplingPoint/aqd:environmentalObjective/aqd:EnvironmentalObjective/ combinations: ",
-                (), $invalidObservedPropertyCombinations, "", concat(fn:string(count($invalidObservedPropertyCombinations))," errors found"), "", "", ())}
+                (), $invalidObservedPropertyCombinations, "", concat(fn:string(count($invalidObservedPropertyCombinations))," errors found"), "", "", "error",())}
 
         {xmlconv:buildResultRows("D52", " Number of AQD_SamplingPoint(s) witch has ./aqd:usedAQD equals “true” but does not have at least at one /aqd:samplingPointAssessment xkinked: ",
-                (), $allInvalidTrueUsedAQD, "", concat(fn:string(count($allInvalidTrueUsedAQD))," errors found"), "", "", ())}
+                (), $allInvalidTrueUsedAQD, "", concat(fn:string(count($allInvalidTrueUsedAQD))," errors found"), "", "", "error",())}
         {xmlconv:buildResultRows("D53", " Number of invalid aqd:AQD_SamplingPoint/aqd:zone xlinks: ",
-                (),  $allInvalidZoneXlinks, "", concat(fn:string(count( $allInvalidZoneXlinks))," errors found"), "", "", ())}
+                (),  $allInvalidZoneXlinks, "", concat(fn:string(count( $allInvalidZoneXlinks))," errors found"), "", "", "error",())}
         {xmlconv:buildResultRows("D54", "aqd:AQD_SamplingPointProcess/ompr:inspireId/base:Identifier/base:localId not unique codes: ",
-                (),$invalidDuplicateSamplingPointProcessIds, "", concat(string(count($invalidDuplicateSamplingPointProcessIds))," errors found.") , "", "", ())}
+                (),$invalidDuplicateSamplingPointProcessIds, "", concat(string(count($invalidDuplicateSamplingPointProcessIds))," errors found.") , "", "","error", ())}
         {xmlconv:buildResultRows("D55", "./ompr:inspireld/base:Identifier/base:namespace List base:namespace and  count the number of base:localId assigned to each base:namespace. ",
-                (), (), "", string(count($tblD55)), "", "",$tblD55)}
+                (), (), "", string(count($tblD55)), "", "","error",$tblD55)}
         {xmlconv:buildResultRowsWithTotalCount("D56", <span>The content of /aqd:AQD_SamplingPoint/ef:mediaMonitored shall resolve to any concept in
             <a href="{ $xmlconv:MEASUREMENTTYPE_VOCABULARY }">{ $xmlconv:MEASUREMENTTYPE_VOCABULARY }</a></span>,
-                (), (), "aqd:measurementType", "", "", "", $allInvalidMeasurementType)}
+                (), (), "aqd:measurementType", "", "", "","error", $allInvalidMeasurementType)}
 
         { xmlconv:buildResultRowsWithTotalCount("D57", <span>./aqd:measurementType witch resolves
             to ./measurementtype/automatic or ./measurementtype/remote  shall be included and resolves to content of /aqd:AQD_SamplingPointProcess/aqd:measurementMethod that resolve to any concept in
             <a href="{ $xmlconv:MEASUREMENTMETHOD_VOCABULARY }">{ $xmlconv:MEASUREMENTMETHOD_VOCABULARY }</a></span>,
-                (), (), "aqd:measurementType", "", "", "",xmlconv:checkMeasurementMethodLinkValues($source_url, $allConceptUrl57,"aqd:AQD_SamplingPointProcess", $xmlconv:MEASUREMENTMETHOD_VOCABULARY, "") )}
+                (), (), "aqd:measurementType", "", "", "","error",xmlconv:checkMeasurementMethodLinkValues($source_url, $allConceptUrl57,"aqd:AQD_SamplingPointProcess", $xmlconv:MEASUREMENTMETHOD_VOCABULARY, "") )}
 
         {xmlconv:buildResultRows("D58", " aqd:measurementType  witch resolves
             to ./measurementtype/active or ./measurementtype/passive  shall be included ./aqd:samplingMethod and ./aqd:analyticalTechnique. ./aqd:measurementMethod shall not be provided.",
-                (), $elementsIncluded, "", concat(fn:string(count($elementsIncluded))," errors found"), "", "", ())}
+                (), $elementsIncluded, "", concat(fn:string(count($elementsIncluded))," errors found"), "", "","error", ())}
 
         {xmlconv:buildResultRowsWithTotalCount("D59", <span>The content of /aqd:AQD_SamplingPoint/aqd:analyticalTechnique shall resolve to any concept in
             <a href="{ $xmlconv:ANALYTICALTECHNIQUE_VOCABULARY }">{ $xmlconv:ANALYTICALTECHNIQUE_VOCABULARY }</a></span>,
-                (), (), "aqd:analyticalTechnique", "", "", "",$allInvalidAnalyticalTechnique )}
+                (), (), "aqd:analyticalTechnique", "", "", "","error",$allInvalidAnalyticalTechnique )}
 
         {xmlconv:buildResultRowsWithTotalCount("D60_1", <span>The content of ./aqd:AQD_SamplingPoint/aqd:measurementType shall resolve to any concept in
             <a href="{ $xmlconv:MEASUREMENTEQUIPMENT_VOCABULARY }">{ $xmlconv:MEASUREMENTEQUIPMENT_VOCABULARY }</a></span>,
-                (), (), "aqd:measurementEquipment", "", "", "",$allInvalid60_1 )}
+                (), (), "aqd:measurementEquipment", "", "", "","error",$allInvalid60_1 )}
         {xmlconv:buildResultRowsWithTotalCount("D60_2", <span>The content of ./aqd:AQD_SamplingPoint/aqd:samplingEquipment shall resolve to any concept in
             <a href="{ $xmlconv:SAMPLINGEQUIPMENT_VOCABULARY }">{ $xmlconv:SAMPLINGEQUIPMENT_VOCABULARY }</a></span>,
-                (), (), "aqd:samplingEquipment", "", "", "",$allInvalid60_2 )}
+                (), (), "aqd:samplingEquipment", "", "", "","error",$allInvalid60_2 )}
         <!--{xmlconv:buildResultRows("D61", "Total number ./aqd:dataQuality/aqd:DataQuality/aqd:detectionLimit witch does not contain an integer, fixed point or floating point number ",
                 (), $allInvalid61, "", concat(fn:string(count($allInvalid61))," errors found"), "", "", ())}-->
         {xmlconv:buildResultRowsWithTotalCount("D63", <span>The content of ./aqd:AQD_SamplingPoint/aqd:samplingEquipment shall resolve to any concept in
             <a href="{ $xmlconv:UOM_CONCENTRATION_VOCABULARY }">{ $xmlconv:UOM_CONCENTRATION_VOCABULARY }</a></span>,
-                (), (), "aqd:samplingEquipment", "", "", "",$allInvalid63 )}
+                (), (), "aqd:samplingEquipment", "", "", "","error",$allInvalid63 )}
         {xmlconv:buildResultRows("D67", <span>Where .AQD_SamplingPoint/aqd:usedAQD is 'true' the content of ./aqd:AQD_SamplingPointProcess/aqd:equivalenceDemonstrated shall resolve to any concept in
             <a href="{ $xmlconv:EQUIVALENCEDEMONSTRATED_VOCABULARY }">{ $xmlconv:EQUIVALENCEDEMONSTRATED_VOCABULARY }</a></span>,
-                (),$allInvalid67, "", concat(string(count($allInvalid67))," errors found.") , "", "", ())}
+                (),$allInvalid67, "", concat(string(count($allInvalid67))," errors found.") , "", "","error", ())}
         {xmlconv:buildResultRows("D68", <span>Where ./AQD_SamplingPoint/aqd:usedAQD is “true”, ./aqd:demonstrationReport shall be  populate</span>,
-                (),$allInvalid68, "", concat(string(count($allInvalid68))," errors found.") , "", "", ())}
+                (),$allInvalid68, "", concat(string(count($allInvalid68))," errors found.") , "", "","error", ())}
         {xmlconv:buildResultRows("D69", <span>Where ./AQD_SamplingPoint/aqd:usedAQD is “true”, ./aqd:documentation shall be populate</span>,
-            (),$allInvalid69, "", concat(string(count($allInvalid69))," errors found.") , "", "", ())}
+            (),$allInvalid69, "", concat(string(count($allInvalid69))," errors found.") , "", "","error", ())}
         {xmlconv:buildResultRows("D70", <span>Where ./AQD_SamplingPoint/aqd:usedAQD is “true”, ./aqd:qaReport shall be populated</span>,
-                (),$allInvalid70, "", concat(string(count($allInvalid70))," errors found.") , "", "", ())}
+                (),$allInvalid70, "", concat(string(count($allInvalid70))," errors found.") , "", "","error", ())}
         {xmlconv:buildResultRows("D71", "aqd:AQD_Sample/ompr:inspireId/base:Identifier/base:localId not unique codes: ",
-                (),$invalidDuplicateSampleIds, "", concat(string(count($invalidDuplicateSampleIds))," errors found.") , "", "", ())}
+                (),$invalidDuplicateSampleIds, "", concat(string(count($invalidDuplicateSampleIds))," errors found.") , "", "","error", ())}
         {xmlconv:buildResultRows("D72", "./aqd:inspireId/base:Identifier/base:namespace List base:namespace and  count the number of base:localId assigned to each base:namespace. ",
-                (), (), "", string(count($tblD72)), "", "",$tblD72)}
+                (), (), "", string(count($tblD72)), "", "","error",$tblD72)}
         {xmlconv:buildResultRows("D73", "./sams:shape/gml:Point the srsName attribute  shall  be  a  recognisable  URN .  The  following  2  srsNames  are  expected urn:ogc:def:crs:EPSG::4258 or urn:ogc:def:crs:EPSG::4326",
-                $invalidGmlPointName,(), "aqd:AQD_Sample/@gml:id","All srsName attributes are valid"," invalid attribute","", ())}
+                $invalidGmlPointName,(), "aqd:AQD_Sample/@gml:id","All srsName attributes are valid"," invalid attribute","","error", ())}
         {xmlconv:buildResultRows("D74", "./sams:shape/gml:Point, the srsDimension attribute shall resolve to “2” to allow the coordinate  of  the  feature  of  intere",
-                $invalidPointDimension,(), "aqd:AQD_Sample/@gml:id","All srsDimension attributes are valid"," invalid attribute","", ())}
+                $invalidPointDimension,(), "aqd:AQD_Sample/@gml:id","All srsDimension attributes are valid"," invalid attribute","","error", ())}
         {xmlconv:buildResultRows("D78", "./aqd:inletHeight shall contain a numerical value, uom within it shall resolve to http://dd.eionet.europa.eu/vocabulary/uom/length/m",
-                $invalidInletHeigh,(), "aqd:AQD_Sample/@gml:id","All values are valid"," invalid attribute","", ())}
+                $invalidInletHeigh,(), "aqd:AQD_Sample/@gml:id","All values are valid"," invalid attribute","", "error",())}
         <!--{xmlconv:buildResultRowsWithTotalCount("D67", <span>The content of ./aqd:AQD_SamplingPoint/aqd:samplingEquipment shall resolve to any concept in
             <a href="{ $xmlconv:UOM_CONCENTRATION_VOCABULARY }">{ $xmlconv:UOM_CONCENTRATION_VOCABULARY }</a></span>,
                 (), (), "aqd:samplingEquipment", "", "", "",$allInvalid67 )}
