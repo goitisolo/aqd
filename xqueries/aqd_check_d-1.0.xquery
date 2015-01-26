@@ -1668,20 +1668,19 @@ return
     <div>
         <h2>Check environmental monitoring feature types - Dataflow D</h2>
         {
-            if ($result//div/@class = 'error') then
-                <p>This XML file did NOT pass the following crucial checks: {string-join($result//div[@class = 'error'], ',')}</p>
-            else
-                <p>This XML file passed all crucial checks' which in this case are: D1, D2, D3, D4, D5, D6, D7, D11, D14, D15, D16,
-                    D20, D21, D22, D23, D26, D28, D31, D32, D34, D35, D36, D37, D40, D41, D42, D43, D44, D45, D46, D50, D51, D52,
-                    D53, D54, D55, D56, D57, D58, D57, D58, D59, D60, D63, D67, D68, D69, D70, D71, D72, D73, D74, D78</p>
-        }
-        {
 
         if ( $countFeatures = 0) then
             <p>No environmental monitoring feature type elements ({string-join($xmlconv:FEATURE_TYPES, ", ")}) found from this XML.</p>
         else
         <div>
-            {()(: TODO add info about passing/not passing the crucioal checks :)}
+            {
+                if ($result//div/@class = 'error') then
+                    <p>This XML file did NOT pass the following crucial checks: {string-join($result//div[@class = 'error'], ',')}</p>
+                else
+                    <p>This XML file passed all crucial checks' which in this case are: D1, D2, D3, D4, D5, D6, D7, D11, D14, D15, D16,
+                        D20, D21, D22, D23, D26, D28, D31, D32, D34, D35, D36, D37, D40, D41, D42, D43, D44, D45, D46, D50, D51, D52,
+                        D53, D54, D55, D56, D57, D58, D57, D58, D59, D60, D63, D67, D68, D69, D70, D71, D72, D73, D74, D78</p>
+            }
             <p>This feedback report provides a summary overview of feature types reported and some consistency checks defined in Dataflow D as specified in <a href="http://www.eionet.europa.eu/aqportal/qaqc/">e-reporting QA/QC rules documentation</a>.</p>
             <div><a id='legendLink' href="javascript: showLegend()" style="padding-left:10px;">How to read the test results?</a></div>
             <fieldset style="font-size: 90%; display:none" id="legend">
