@@ -1156,17 +1156,16 @@ return
     <div>
         <h2>Check environmental monitoring feature types - Dataflow D on Models and Objective Estimation</h2>
         {
-            if ($result//div/@class = 'error') then
-                <p>This XML file did NOT passed the following cruical checks: {string-join($result//div[@class = 'error'], ',')}</p>
-            else
-                <p>This XML file passed all crucial checks' which in this case are :M1,M2,M3,M4,M5,M6,M7,M12,M15,M18,M19,M21,M22,M23,M24,M26,M27,M28,M29,M30,M38,M39,M40,M41,M43</p>
-        }
-        {
         if ( $countFeatures = 0) then
             <p>No environmental monitoring feature type elements ({string-join($xmlconv:FEATURE_TYPES, ", ")}) found from this XML.</p>
         else
         <div>
-            {()(: TODO add info about passing/not passing the crucioal checks :)}
+            {
+                if ($result//div/@class = 'error') then
+                    <p>This XML file did NOT pass the following crucial checks: {string-join($result//div[@class = 'error'], ',')}</p>
+                else
+                    <p>This XML file passed all crucial checks' which in this case are: M1,M2,M3,M4,M5,M6,M7,M12,M15,M18,M19,M21,M22,M23,M24,M26,M27,M28,M29,M30,M38,M39,M40,M41,M43</p>
+            }
             <p>This feedback report provides a summary overview of feature types reported and some consistency checks defined in Dataflow D on Models and Objective Estimation as specified in <a href="http://www.eionet.europa.eu/aqportal/qaqc/">e-reporting QA/QC rules documentation</a>.</p>
             <div><a id='legendLink' href="javascript: showLegend()" style="padding-left:10px;">How to read the test results?</a></div>
             <fieldset style="font-size: 90%; display:none" id="legend">
