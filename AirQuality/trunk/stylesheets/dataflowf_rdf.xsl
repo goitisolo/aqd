@@ -81,9 +81,11 @@
           <xsl:with-param name="localid" select="@procedure_localid"/>
         </xsl:call-template>
       </procedure>
+      <xsl:if test="@station_lat != 'missing'"><station_lat rdf:datatype="&xsd;decimal"><xsl:value-of select="@station_lat"/></station_lat></xsl:if>
+      <xsl:if test="@station_lon != 'missing'"><station_lon rdf:datatype="&xsd;decimal"><xsl:value-of select="@station_lon"/></station_lon></xsl:if>
+      <xsl:if test="@samplingpoint_lat != 'missing'"><samplingpoint_lat rdf:datatype="&xsd;decimal"><xsl:value-of select="@samplingpoint_lat"/></samplingpoint_lat></xsl:if>
+      <xsl:if test="@samplingpoint_lon != 'missing'"><samplingpoint_lon rdf:datatype="&xsd;decimal"><xsl:value-of select="@samplingpoint_lon"/></samplingpoint_lon></xsl:if>
       <!--
-      <xsl:if test="@station_lat != 'missing'"><geo:lat><xsl:value-of select="@station_lat"/></geo:lat></xsl:if>
-      <xsl:if test="@station_long != 'missing'"><geo:long><xsl:value-of select="@station_long"/></geo:long></xsl:if>
       -->
       <beginPosition rdf:datatype="&xsd;dateTime"><xsl:value-of select="@datetime_begin"/></beginPosition>
       <endPosition rdf:datatype="&xsd;dateTime"><xsl:value-of select="@datetime_end"/></endPosition>
