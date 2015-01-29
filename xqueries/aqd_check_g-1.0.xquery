@@ -426,8 +426,10 @@ let $tblAllAttainments :=
             <td title="aqd:protectionTarget">{xmlconv:checkLink(data($rec/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/@xlink:href))}</td>
         </tr>
 
-(: G2 :)
+(: G2 TODO :)
         (:)let $countAttainments := count($docRoot//aqd:AQD_Attainment)  Vaata B scripti:)
+
+(: G3 TODO :)
 
 (: G4 :)
 
@@ -624,7 +626,7 @@ let $invalidAssessment :=
     </tr>
     else ()
 
-(: G14 :)
+(: G14 TODO :)
 
 (: G15 :)
 let $resultXml := if (fn:string-length($countryCode) = 2) then xmlconv:getZoneLocallD($countryCode) else ""
@@ -642,7 +644,7 @@ let $invalidAssessmentZone :=
     </tr>
     else ()
 
-(: G16 :)
+(: G16 TODO :)
 (: /aqd:AQD_Zone/am:designationPeriod/gml:TimePeriod/gml:endPosition  ei leia kus asub:)
 
 (: G17 :)
@@ -812,7 +814,9 @@ let $invalidAqdReportingMetricG27 :=
     </tr>
     else ()
 
+(: G28 TODO :)
 
+(: G29 TODO :)
 
  (: 30 :)
 
@@ -892,6 +896,9 @@ let $invalidAreaClassificationCodes := xmlconv:isinvalidDDConceptLimited($source
        or empty(index-of(data($aqdReportingMetricG37/aqd:pollutant/fn:normalize-space(@xlink:href)),"http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5"))=false()
     return  if (empty(index-of(('V'),$reportingXlink))) then $reportingXlink else ():)
 
+(: G39 TODO:)
+
+(: G40 TODO:)
 
 (: TODO G41
 
@@ -926,18 +933,17 @@ let $tblInvalidobjectiveTypesForLimitV :=
 let $invalidAqdAdjustmentType := distinct-values($docRoot//aqd:AQD_Attainment[aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:adjustmentType/fn:normalize-space(@xlink:href)!="http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/noneApplied"]/@gml:id)
 
 
-(: G49 :)
 
 
 
-(: G50 :)
-(: G51 :)
+
+
 (: G52 :)
 let $invalidAreaClassificationAdjusmentCodes := xmlconv:isinvalidDDConceptLimited($source_url, "aqd:exceedanceDescriptionAdjustment", "aqd:ExceedanceArea", "aqd:areaClassification",  $xmlconv:AREACLASSIFICATION_VOCABULARY, $xmlconv:VALID_AREACLASSIFICATION_IDS_52)
 
-(: G53 :)
-(: G54 :)
-(: G55 :)
+(: G53  TODO:)
+(: G54  TODO:)
+(: G55 TODO:)
 
 (: TODO )let $invalidAdjustmentReportingMetric :=
     for $aqdAdjustmentReportingMetric in $docRoot//aqd:AQD_Attainment
@@ -945,7 +951,7 @@ let $invalidAreaClassificationAdjusmentCodes := xmlconv:isinvalidDDConceptLimite
     where empty(index-of(data($aqdAdjustmentReportingMetric/aqd:pollutant/fn:normalize-space(@xlink:href)),"http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1"))=false()
     return  if (empty(index-of(('daysAbove','hrsAbove','wMean','aMean'),$reportingXlink))) then $reportingXlink else () :)
 
-(: G56 :)
+(: G56 TODO:)
 
 (:TODO)let $invalidAdjustmentReportingMetricG56 :=
     for $aqdAdjustmentReportingMetricG56 in $docRoot//aqd:AQD_Attainment
@@ -974,6 +980,14 @@ let $invalidExceedanceDescriptionAdjustmentSrc := xmlconv:isinvalidDDConceptLimi
 
 let $invalidExceedanceDescriptionAdjustmentAssessment := xmlconv:isinvalidDDConceptLimited($source_url, "aqd:exceedanceDescriptionAdjustment", "aqd:AssessmentMethods", "aqd:assessmentType", $xmlconv:ASSESSMENTTYPE_VOCABLUARY, $xmlconv:VALID_ASSESSMENTTYPE_IDS)
 
+(: G64 TODO:)
+
+(: G65 TODO:)
+
+(: G66 TODO:)
+
+(: G67 TODO:)
+
 (: G70 :)
 
 let $aqdSurfaceArea := $docRoot//aqd:AQD_Attainment/aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:surfaceArea[count(@uom)>0 and fn:normalize-space(@uom)!="http://dd.eionet.europa.eu/vocabulary/uom/area/km2"]/../../../../../@gml:id
@@ -985,9 +999,19 @@ let $aqdroadLength := $docRoot//aqd:AQD_Attainment/aqd:exceedanceDescriptionFina
 
 let $invalidAreaClassificationCode  := xmlconv:isinvalidDDConceptLimited($source_url, "aqd:exceedanceDescriptionFinal", "aqd:ExceedanceArea",  "aqd:areaClassification",  $xmlconv:AREACLASSIFICATION_VOCABULARY, $xmlconv:VALID_AREACLASSIFICATION_IDS_52)
 
+(: G73 TODO:)
+
+(: G74 TODO:)
+
+(: G75 TODO:)
+
+(: G76 TODO:)
+
 (: G81 :)
 
 let $invalidAdjustmentType := distinct-values($docRoot//aqd:AQD_Attainment[aqd:exceedanceDescriptionAdjustmen/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:adjustmentType/fn:normalize-space(@xlink:href)!="http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/fullyCorrected"]/@gml:id)
+
+(: G82 TODO:)
 
 return
     <table style="border-collapse:collapse;display:inline">
