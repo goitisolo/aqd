@@ -41,8 +41,8 @@ declare variable $xmlconv:ISO2_CODES as xs:string* := ("AL","AT","BA","BE","BG",
 declare variable $xmlconv:VALID_POLLUTANT_IDS as xs:string* := ("1", "7", "8", "9", "5", "6001", "10","20", "5012", "5014", "5015", "5018", "5029");
 declare variable $xmlconv:VALID_POLLUTANT_IDS_11 as xs:string* := ("1", "5", "6001", "10");
 declare variable $xmlconv:VALID_POLLUTANT_IDS_27 as xs:string* := ("5", "8", "6001", "10","20", "5012", "5014", "5015", "5018", "5029");
-declare variable $xmlconv:VALID_REPMETRIC_IDS as xs:string* := ("aMean", "wMean", "hrsAbove", "daysAbove");
-declare variable $xmlconv:VALID_REPMETRIC_IDS_20 as xs:string* := ("aMean", "wMean", "hrsAbove", "daysAbove","daysAbove-3er", "maxd8hrMean", "AOT40c", "AOT40c-5yr", "AEI");
+declare variable $xmlconv:VALID_REPMETRIC_IDS_20 as xs:string* := ("aMean", "wMean", "hrsAbove", "daysAbove");
+declare variable $xmlconv:VALID_REPMETRIC_IDS_29 as xs:string* := ("aMean", "wMean", "hrsAbove", "daysAbove","daysAbove-3er", "maxd8hrMean", "AOT40c", "AOT40c-5yr", "AEI");
 declare variable $xmlconv:VALID_REPMETRIC_IDS_24 as xs:string* := ("aMean", "daysAbove");
 declare variable $xmlconv:VALID_REPMETRIC_IDS_25 as xs:string* := ("aMean");
 declare variable $xmlconv:VALID_REPMETRIC_IDS_26 as xs:string* := ("daysAbove");
@@ -50,6 +50,8 @@ declare variable $xmlconv:VALID_REPMETRIC_IDS_31 as xs:string* := ("AOT40c", "AO
 declare variable $xmlconv:VALID_AREACLASSIFICATION_IDS as xs:string* := ("1", "2", "3", "4", "5", "6");
 declare variable $xmlconv:VALID_AREACLASSIFICATION_IDS_52 as xs:string* := ("rural","rural-nearcity","rural-regional","rural-remote","urban","suburban");
 declare variable $xmlconv:VALID_OBJECTIVETYPE_IDS as xs:string* := ("TV", "LV", "CL","LTO","ECO","LVmaxMOT","INT","ALT");
+declare variable $xmlconv:VALID_OBJECTIVETYPE_IDS_19 as xs:string* := ("TV", "LV", "CL");
+declare variable $xmlconv:VALID_OBJECTIVETYPE_IDS_28 as xs:string* := ("TV", "LV", "CL","LTO","ECO","LVmaxMOT");
 declare variable $xmlconv:VALID_OBJECTIVETYPE_IDS_32 as xs:string* := ("TV", "LV","LVmaxMOT");
 declare variable $xmlconv:VALID_OBJECTIVETYPE_IDS_33 as xs:string* := ("LV");
 declare variable $xmlconv:VALID_ADJUSTMENTTYPE_IDS as xs:string* := ("nsCorrection","wssCorrection");
@@ -336,7 +338,21 @@ as xs:string
           } ")
     };
 
+declare function xmlconv:getModel($countryCode as xs:string)
+as xs:string
+{
+concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+        PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
+        PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
 
+        SELECT ?model ?inspireId ?inspireLabel
+        WHERE {
+                ?model a aqd:AQD_Model ;
+                 aqd:inspireId ?inspireId .
+                 ?inspireId rdfs:label ?inspireLabel .
+        FILTER(STRSTARTS(str(?model), 'http://cdr.eionet.europa.eu/",$countryCode,"/eu/aqd/d/')
+      } ")
+};
 (:
     Builds HTML table rows for rules.
 :)
@@ -426,10 +442,10 @@ let $tblAllAttainments :=
             <td title="aqd:protectionTarget">{xmlconv:checkLink(data($rec/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/@xlink:href))}</td>
         </tr>
 
-(: G2 TODO :)
-        (:)let $countAttainments := count($docRoot//aqd:AQD_Attainment)  Vaata B scripti:)
+(: G2 TODO: Can not be done because there is not indication for new attainment in xml file :)
+        (:)let $countAttainments := count($docRoot//aqd:AQD_Attainment)  :)
 
-(: G3 TODO :)
+(: G3 TODO: Can not be done because there is not indication for modification/updated attainment in xml file :)
 
 (: G4 :)
 
@@ -626,7 +642,7 @@ let $invalidAssessment :=
     </tr>
     else ()
 
-(: G14 TODO :)
+(: G14 TODO Need's clarification , number of fields doesn't match :)
 
 (: G15 :)
 let $resultXml := if (fn:string-length($countryCode) = 2) then xmlconv:getZoneLocallD($countryCode) else ""
@@ -644,8 +660,8 @@ let $invalidAssessmentZone :=
     </tr>
     else ()
 
-(: G16 TODO :)
-(: /aqd:AQD_Zone/am:designationPeriod/gml:TimePeriod/gml:endPosition  ei leia kus asub:)
+(: G16 TODO Doesn't have am:designationPeriod element :)
+(: /aqd:AQD_Zone/am:designationPeriod/gml:TimePeriod/gml:endPosition  :)
 
 (: G17 :)
 
@@ -678,12 +694,12 @@ return  if ($x/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/objectiv
 
 (: G19
 .//aqd:ExceedanceDescription/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType xlink:href attribute shall resolve to one of:)
-let $invalidObjectiveTypes := xmlconv:isinvalidDDConceptLimited($source_url, "", "aqd:EnvironmentalObjective", "aqd:objectiveType", $xmlconv:OBJECTIVETYPE_VOCABULARY, $xmlconv:VALID_OBJECTIVETYPE_IDS)
+let $invalidObjectiveTypes_19 := xmlconv:isinvalidDDConceptLimited($source_url, "", "aqd:EnvironmentalObjective", "aqd:objectiveType", $xmlconv:OBJECTIVETYPE_VOCABULARY, $xmlconv:VALID_OBJECTIVETYPE_IDS_19)
 
 (: G20 - ./aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric xlink:href attribute shall resolve to one of
 ... :)
 let $invalidReportingMetric := xmlconv:isinvalidDDConceptLimited($source_url, "", "aqd:EnvironmentalObjective", "aqd:reportingMetric",
-    $xmlconv:REPMETRIC_VOCABULARY, $xmlconv:VALID_REPMETRIC_IDS)
+    $xmlconv:REPMETRIC_VOCABULARY, $xmlconv:VALID_REPMETRIC_IDS_20)
 
 
 (: G21
@@ -814,9 +830,15 @@ let $invalidAqdReportingMetricG27 :=
     </tr>
     else ()
 
-(: G28 TODO :)
+(: G28  :)
 
-(: G29 TODO :)
+let $invalidObjectiveTypes_28 := xmlconv:isinvalidDDConceptLimited($source_url, "", "aqd:EnvironmentalObjective", "aqd:objectiveType", $xmlconv:OBJECTIVETYPE_VOCABULARY, $xmlconv:VALID_OBJECTIVETYPE_IDS_28)
+
+(: G29 :)
+
+
+let $invalidReportingMetric_29 := xmlconv:isinvalidDDConceptLimited($source_url, "", "aqd:EnvironmentalObjective", "aqd:reportingMetric",
+    $xmlconv:REPMETRIC_VOCABULARY, $xmlconv:VALID_REPMETRIC_IDS_29)
 
  (: 30 :)
 
@@ -897,7 +919,21 @@ let $invalidAreaClassificationCodes := xmlconv:isinvalidDDConceptLimited($source
     return  if (empty(index-of(('V'),$reportingXlink))) then $reportingXlink else ():)
 
 (: G39 TODO:)
+(: G15 :)
+let $resultXml := if (fn:string-length($countryCode) = 2) then xmlconv:getModel($countryCode) else ""
+let $isModelCodesAvailable := string-length($resultXml) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($resultXml, "xml"))
+let $modelLocallD := if($isModelCodesAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($resultXml)//sparql:binding[@name='inspireLabel']/sparql:literal)) else ""
+let $isModelCodesAvailable := count($resultXml) > 0
 
+let $invalidAssessmentModel :=
+  for $x in $docRoot//aqd:AQD_Attainment/aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:modelUsed
+    where $isModelCodesAvailable
+    return  if (empty(index-of($modelLocallD, $x/fn:normalize-space(@xlink:href)))) then <tr>
+        <td title="Feature type">{ "aqd:AQD_Attainment" }</td>
+        <td title="gml:id">{data($x/../../../../../@gml:id)}</td>
+        <td title="aqd:AQD_Model">{data($x/fn:normalize-space(@xlink:href))}</td>
+    </tr>
+    else ()
 (: G40 TODO:)
 
 (: TODO G41
@@ -1056,12 +1092,12 @@ return
                 $invalidObjectiveType, (), "base:namespace", "All values are valid", " invalid value", "","error", ())}
         {xmlconv:buildResultRowsWithTotalCount("G19", <span>./aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType xlink:href attribute shall resolve to one of
             <a href="{ $xmlconv:OBJECTIVETYPE_VOCABULARY }">{ $xmlconv:OBJECTIVETYPE_VOCABULARY }</a>
-            Allowed items: {xmlconv:buildVocItemsList("G19", $xmlconv:OBJECTIVETYPE_VOCABULARY, $xmlconv:VALID_OBJECTIVETYPE_IDS)}</span>,
-            (), (), "aqd:objectivetype", "", "", "","error", $invalidObjectiveTypes)}
+            Allowed items: {xmlconv:buildVocItemsList("G19", $xmlconv:OBJECTIVETYPE_VOCABULARY, $xmlconv:VALID_OBJECTIVETYPE_IDS_19)}</span>,
+            (), (), "aqd:objectivetype", "", "", "","error", $invalidObjectiveTypes_19)}
 
         {xmlconv:buildResultRowsWithTotalCount("G20", <span>The content of ./aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:EnvironmentalObjective/aqd:reportingMetric shall resolve to a valid concept in
             <a href="{ $xmlconv:REPMETRIC_VOCABULARY }">{ $xmlconv:REPMETRIC_VOCABULARY }</a> that must be one of
-            {xmlconv:buildVocItemsList("G20", $xmlconv:REPMETRIC_VOCABULARY, $xmlconv:VALID_REPMETRIC_IDS)}</span>,
+            {xmlconv:buildVocItemsList("G20", $xmlconv:REPMETRIC_VOCABULARY, $xmlconv:VALID_REPMETRIC_IDS_20)}</span>,
             (), (), "aqd:reportingMetric", "", "", "","error", $invalidReportingMetric)}
 
         {xmlconv:buildResultRows("G21", "If
@@ -1075,7 +1111,7 @@ return
                 $invalidobjectiveTypesForVEGG22, (), "", "No invalid objective types for Health found", " invalid value", "","error", $invalidobjectiveTypesForVEGG22)}
         {xmlconv:buildResultRows("G23", <span>WHERE ./aqd:pollutant xlink:href attribute resolves to http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1 ./aqd:EnvironmentalObjective/aqd:reportingMetric shall resolve to a valid concept in
             <a href="{ $xmlconv:REPMETRIC_VOCABULARY }">{ $xmlconv:REPMETRIC_VOCABULARY }</a> that must be one of
-            {xmlconv:buildVocItemsList("G23", $xmlconv:REPMETRIC_VOCABULARY, $xmlconv:VALID_REPMETRIC_IDS)}</span>,
+            {xmlconv:buildVocItemsList("G23", $xmlconv:REPMETRIC_VOCABULARY, $xmlconv:VALID_REPMETRIC_IDS_20)}</span>,
                 $invalidAqdReportingMetric, (), "aqd:reportingMetric", "All values are valid", " invalid value", "","error",())}
         {xmlconv:buildResultRows("G24", <span>WHERE ./aqd:pollutant xlink:href attribute resolves to http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5 ./aqd:EnvironmentalObjective/aqd:reportingMetric shall resolve to a valid concept in
             <a href="{ $xmlconv:REPMETRIC_VOCABULARY }">{ $xmlconv:REPMETRIC_VOCABULARY }</a> that must be one ofS
@@ -1093,6 +1129,14 @@ return
             <a href="{ $xmlconv:POLLUTANT_VOCABULARY }">{ $xmlconv:POLLUTANT_VOCABULARY }</a> that must be one of
             {xmlconv:buildVocItemsList("G27", $xmlconv:POLLUTANT_VOCABULARY, $xmlconv:VALID_POLLUTANT_IDS_27)}</span>,
                 $invalidAqdReportingMetricG27, (), "aqd:reportingMetric", "All values are valid", " invalid value", "","error", $invalidAqdReportingMetricG27)}
+        {xmlconv:buildResultRowsWithTotalCount("G28", <span>./aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType xlink:href attribute shall resolve to one of
+            <a href="{ $xmlconv:OBJECTIVETYPE_VOCABULARY }">{ $xmlconv:OBJECTIVETYPE_VOCABULARY }</a>
+            Allowed items: {xmlconv:buildVocItemsList("G28", $xmlconv:OBJECTIVETYPE_VOCABULARY, $xmlconv:VALID_OBJECTIVETYPE_IDS_28)}</span>,
+            (), (), "aqd:objectivetype", "", "", "","error", $invalidObjectiveTypes_28)}
+        {xmlconv:buildResultRowsWithTotalCount("G20", <span>The content of ./aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:EnvironmentalObjective/aqd:reportingMetric shall resolve to a valid concept in
+            <a href="{ $xmlconv:REPMETRIC_VOCABULARY }">{ $xmlconv:REPMETRIC_VOCABULARY }</a> that must be one of
+            {xmlconv:buildVocItemsList("G29", $xmlconv:REPMETRIC_VOCABULARY, $xmlconv:VALID_REPMETRIC_IDS_29)}</span>,
+            (), (), "aqd:reportingMetric", "", "", "","error", $invalidReportingMetric_29)}
         {xmlconv:buildResultRows("G30", "If
                  ./aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType xlink:href attribute EQUALS http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/CL (Critical level)
                         ./aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget xlink:href attribute has to be http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V (Vegetation)",
@@ -1120,6 +1164,8 @@ return
             {xmlconv:buildVocItemsList("G38", $xmlconv:AREACLASSIFICATION_VOCABULARY, $xmlconv:VALID_AREACLASSIFICATION_IDS_52)}
         </span>,
                 (), (), "aqd:areaClassification", "", "", "","error", $invalidAreaClassificationCodes)}
+        {xmlconv:buildResultRows("G39", "The subject of ./aqd:Model xlink:href attribute shall resolve to a model description in  /aqd:AQD_Model",
+                $invalidAssessmentModel, (), "base:namespace", "All values are valid", " invalid value", "","error", $invalidAssessmentModel)}
         {xmlconv:buildResultRows("G47", "./aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:adjustmentType xlink:href attribute shall resolve to http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/noneApplied",
                 $invalidAqdAdjustmentType, (), "base:namespace", "All values are valid", " invalid value", "","error", ())}
         {xmlconv:buildResultRowsWithTotalCount("G52", <span>The content of /aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:areaClassification xlink:xref shall resolve to a areaClassification in
