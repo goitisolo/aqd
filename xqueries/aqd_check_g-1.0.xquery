@@ -202,6 +202,13 @@ as element(sparql:results)
     return fn:doc($uri)//sparql:results
 };
 
+declare function xmlconv:executeSparqlCountQuery($sparql as xs:string)
+as element(sparql:results)
+{
+    let $uri :=  xmlconv:getSparqlEndpointUrl($sparql, "xml") (:"E:/sparql-result-1.xml":)
+
+    return fn:doc($uri)
+};
 
 (:~
  : Get the SPARQL endpoint URL.
@@ -267,7 +274,7 @@ concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
                 aqd:timeExtensionExemption ?timeExtensionExemption .
                 ?zone aqd:inspireId ?inspireid .
                 ?inspireid aqd:localId ?localId
-        FILTER (STRSTARTS(str(?zone), 'http://cdr.eionet.europa.eu/",$countryCode,"/eu/aqd/b/') and (?timeExtensionExemption != 'http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/none'))
+        FILTER (STRSTARTS(str(?zone), 'http://cdr.eionet.europa.eu/",lower-case($countryCode),"/eu/aqd/b/') and (?timeExtensionExemption != 'http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/none'))
       } ")
 };
 
@@ -283,7 +290,7 @@ WHERE {
 aqd:timeExtensionExemption ?timeExtensionExemption .
 ?zone aqd:inspireId ?inspireid .
 ?inspireid aqd:localId ?localId
-FILTER (STRSTARTS(str(?zone), 'http://cdr.eionet.europa.eu/", $countryCode,"/eu/aqd/b/') and (?timeExtensionExemption != ""))
+FILTER (STRSTARTS(str(?zone), 'http://cdr.eionet.europa.eu/",  lower-case($countryCode),"/eu/aqd/b/') and (?timeExtensionExemption != ""))
 } ")
 
 };
@@ -300,7 +307,7 @@ concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
               ?zone a aqd:AQD_AssessmentRegime ;
               aqd:inspireId ?inspireId .
               ?inspireId aqd:localId ?localId .
-       FILTER (STRSTARTS(str(?zone), 'http://cdr.eionet.europa.eu/", $countryCode, "/eu/aqd/c/'))
+       FILTER (STRSTARTS(str(?zone), 'http://cdr.eionet.europa.eu/",  lower-case($countryCode), "/eu/aqd/c/'))
    } ")
 };
 
@@ -316,7 +323,39 @@ as xs:string
               ?zone a aqd:AQD_Zone ;
               aqd:inspireId ?inspireId .
               ?inspireId aqd:localId ?localId .
-       FILTER (STRSTARTS(str(?zone), 'http://cdr.eionet.europa.eu/", $countryCode, "/eu/aqd/b/'))
+       FILTER (STRSTARTS(str(?zone), 'http://cdr.eionet.europa.eu/",  lower-case($countryCode), "/eu/aqd/b/'))
+   } ")
+};
+
+declare function xmlconv:countAssessmentRegime($countryCode as xs:string)
+as xs:string
+{
+    concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+            PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
+            PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+
+       SELECT count(*)
+       WHERE {
+              ?assessmentRegime a aqd:AQD_AssessmentRegime ;
+              aqd:inspireId ?inspireId .
+              ?inspireId aqd:localId ?localId .
+       FILTER (STRSTARTS(str(?assessmentRegime), 'http://cdr.eionet.europa.eu/", lower-case($countryCode), "/eu/aqd/c/'))
+   } ")
+};
+
+declare function xmlconv:getAssessmentRegime($countryCode as xs:string)
+as xs:string
+{
+    concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+            PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
+            PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+
+       SELECT ?assessmentRegime ?inspireId ?localId
+       WHERE {
+              ?assessmentRegime a aqd:AQD_AssessmentRegime ;
+              aqd:inspireId ?inspireId .
+              ?inspireId aqd:localId ?localId .
+       FILTER (STRSTARTS(str(?assessmentRegime), 'http://cdr.eionet.europa.eu/", lower-case($countryCode), "/eu/aqd/c/'))
    } ")
 };
 
@@ -334,7 +373,7 @@ as xs:string
                  ?inspireId rdfs:label ?inspireLabel .
                  ?zone aqd:pollutants ?pollutants .
                  ?pollutants aqd:pollutantCode ?pollutantCode .
-          FILTER (STRSTARTS(str(?zone), 'http://cdr.eionet.europa.eu/",$countryCode,"/eu/aqd/b/'))
+          FILTER (STRSTARTS(str(?zone), 'http://cdr.eionet.europa.eu/",lower-case($countryCode),"/eu/aqd/b/'))
           } ")
     };
 
@@ -350,8 +389,14 @@ concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
                 ?model a aqd:AQD_Model ;
                  aqd:inspireId ?inspireId .
                  ?inspireId rdfs:label ?inspireLabel .
-        FILTER(STRSTARTS(str(?model), 'http://cdr.eionet.europa.eu/",$countryCode,"/eu/aqd/d/')
+        FILTER(STRSTARTS(str(?model), 'http://cdr.eionet.europa.eu/",lower-case($countryCode),"/eu/aqd/d/')
       } ")
+};
+
+declare function xmlconv:setLimitAndOffset($sparql as xs:string, $orderBy as xs:string, $limit as xs:string, $offset as xs:string)
+as xs:string
+{
+concat($sparql, " order by ",$orderBy," offset ",$offset," limit ",$limit)
 };
 (:
     Builds HTML table rows for rules.
@@ -919,7 +964,6 @@ let $invalidAreaClassificationCodes := xmlconv:isinvalidDDConceptLimited($source
     return  if (empty(index-of(('V'),$reportingXlink))) then $reportingXlink else ():)
 
 (: G39 TODO:)
-(: G15 :)
 let $resultXml := if (fn:string-length($countryCode) = 2) then xmlconv:getModel($countryCode) else ""
 let $isModelCodesAvailable := string-length($resultXml) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($resultXml, "xml"))
 let $modelLocallD := if($isModelCodesAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($resultXml)//sparql:binding[@name='inspireLabel']/sparql:literal)) else ""
@@ -934,7 +978,55 @@ let $invalidAssessmentModel :=
         <td title="aqd:AQD_Model">{data($x/fn:normalize-space(@xlink:href))}</td>
     </tr>
     else ()
-(: G40 TODO:)
+(: G40 TODO xmlconv:getAssessmentRegime  :)
+
+(: Counting AssessmentRegime:)
+let $count := if (fn:string-length($countryCode) = 2) then xmlconv:countAssessmentRegime($countryCode) else ""
+let $isCountAvailable := string-length($count) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($count, "xml"))
+let $countResult := if($isCountAvailable) then (data(xmlconv:executeSparqlQuery($count)//sparql:binding[@name='callret-0']/sparql:literal)) else ""
+
+let $divCountResult := if($isCountAvailable) then ceiling(number($countResult) div number(2000)) else number("1")
+
+
+let $allResults :=
+    for $r in (1 to  xs:integer(number($divCountResult)))
+      let $offset := if ($r > 1) then string(((number($r)-1) * 2000)+1) else "1"
+      let $resultXml := if (fn:string-length($countryCode) = 2) then xmlconv:setLimitAndOffset(xmlconv:getAssessmentRegime($countryCode), "?assessmentRegime", "2000", $offset) else ""
+      let $isAssessmentRegimeAvailable := string-length($resultXml) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($resultXml, "xml"))
+      let $assessmentRegime := if($isAssessmentRegimeAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($resultXml)//sparql:binding[@name='localId']/sparql:literal)) else ""
+    return $assessmentRegime
+
+let $countResults := count($allResults)
+
+
+
+
+
+let $resultXml := if (fn:string-length($countryCode) = 2) then xmlconv:setLimitAndOffset(xmlconv:getAssessmentRegime($countryCode), "?assessmentRegime", "2000", "1") else ""
+let $isAssessmentRegimeAvailable := string-length($resultXml) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($resultXml, "xml"))
+let $assessmentRegime := if($isAssessmentRegimeAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($resultXml)//sparql:binding[@name='localId']/sparql:literal)) else ""
+let $isAssessmentRegimeAvailable := count($resultXml) > 0
+
+(: G13 :)
+
+let $resultXml := if (fn:string-length($countryCode) = 2) then xmlconv:getLocallD($countryCode) else ""
+let $isLocallDCodesAvailable := string-length($resultXml) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($resultXml, "xml"))
+let $locallD := if($isLocallDCodesAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($resultXml)//sparql:binding[@name='localId']/sparql:literal)) else ""
+let $isLocallDCodesAvailable := count($resultXml) > 0
+
+
+
+
+let $invalidAssessment_40 :=
+     for $x in $docRoot//aqd:AQD_Attainment/aqd:assessment
+    where $isLocallDCodesAvailable
+    return  if (empty(index-of($locallD, $x/fn:normalize-space(@xlink:href)))) then
+        <tr>
+        <td title="Feature type">{ "aqd:AQD_Attainment" }</td>
+        <td title="gml:id">{data($x/../@gml:id)}</td>
+        <td title="aqd:assessment">{data($x/fn:normalize-space(@xlink:href))}</td>
+    </tr>
+    else ()
 
 (: TODO G41
 
@@ -1166,6 +1258,16 @@ return
                 (), (), "aqd:areaClassification", "", "", "","error", $invalidAreaClassificationCodes)}
         {xmlconv:buildResultRows("G39", "The subject of ./aqd:Model xlink:href attribute shall resolve to a model description in  /aqd:AQD_Model",
                 $invalidAssessmentModel, (), "base:namespace", "All values are valid", " invalid value", "","error", $invalidAssessmentModel)}
+         <tr>
+            <td>{$countResults}</td>
+            <td>COUNT</td>
+
+
+         </tr>
+         
+         {xmlconv:buildResultRows("G40", "./aqd:assessment xlink:href attribute shall resolve to a valid assessment regime with in /aqd:AQD_AssessmentRegime",
+                $invalidAssessment_40, (), "base:namespace", "All values are valid", " invalid value", "","error", $invalidAssessment_40)}
+
         {xmlconv:buildResultRows("G47", "./aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:adjustmentType xlink:href attribute shall resolve to http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/noneApplied",
                 $invalidAqdAdjustmentType, (), "base:namespace", "All values are valid", " invalid value", "","error", ())}
         {xmlconv:buildResultRowsWithTotalCount("G52", <span>The content of /aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:areaClassification xlink:xref shall resolve to a areaClassification in
