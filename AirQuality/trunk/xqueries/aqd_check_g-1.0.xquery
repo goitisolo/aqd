@@ -194,21 +194,65 @@ as xs:boolean
  : @param $sparql SPARQL query.
  : @return sparql:results element containing zero or more sparql:result subelements in SPARQL result format.
  :)
-declare function xmlconv:executeSparqlQuery($sparql as xs:string)
+declare function xmlconv:executeSparqlEndpoint($sparql as xs:string)
 as element(sparql:results)
 {
-    let $uri :=  xmlconv:getSparqlEndpointUrl($sparql, "xml") (:"E:/sparql-result-1.xml":)
+    let $uri :=  xmlconv:getSparqlEndpointUrl($sparql, "xml")(:"E:/sparql-result-1.xml":)
 
     return fn:doc($uri)//sparql:results
 };
 
-declare function xmlconv:executeSparqlCountQuery($sparql as xs:string)
-as element(sparql:results)
+(:----------------------------------------------------------------------------------------------------------------------------------------------:)
+declare function xmlconv:setLimitAndOffset($sparql as xs:string, $limit as xs:string, $offset as xs:string)
+as xs:string
 {
-    let $uri :=  xmlconv:getSparqlEndpointUrl($sparql, "xml") (:"E:/sparql-result-1.xml":)
-
-    return fn:doc($uri)
+    concat($sparql," offset ",$offset," limit ",$limit)
 };
+
+declare function xmlconv:toCountSparql($sparql as xs:string)
+as xs:string
+{       let $s :=if (fn:contains($sparql,"order")) then tokenize($sparql, "order") else tokenize($sparql, "ORDER")
+        let $firstPart := tokenize($s[1], "SELECT")
+        let $secondPart := tokenize($s[1], "WHERE")
+    return concat($firstPart[1], " SELECT count(*) WHERE ", $secondPart[2])
+};
+
+declare function xmlconv:countsSparqlResults($sparql as xs:string)
+as xs:integer
+{    let $countingSparql := xmlconv:toCountSparql($sparql)
+    let $endpoint :=  xmlconv:executeSparqlEndpoint($countingSparql)
+
+
+
+    (: Counting all results:)
+    let $count :=  $countingSparql
+    let $isCountAvailable := string-length($count) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($count, "xml"))
+    let $countResult := if($isCountAvailable) then (data($endpoint//sparql:binding[@name='callret-0']/sparql:literal)) else ""
+    return $countResult[1]
+};
+
+declare function xmlconv:executeSparqlQuery($sparql as xs:string)
+as element(sparql:result)*
+{
+    let $countResult := xmlconv:countsSparqlResults($sparql)
+
+    (:integer - how many times must sparql function repeat :)
+    let $divCountResult := if($countResult>0) then ceiling(number($countResult) div number(2000)) else number("1")
+
+    (:Collects all sparql results:)
+    let $allResults :=
+        for $r in (1 to  xs:integer(number($divCountResult)))
+            let $offset := if ($r > 1) then string(((number($r)-1) * 2000)+1) else "1"
+            let $resultXml := xmlconv:setLimitAndOffset($sparql,"2000", $offset)
+            let $isResultsAvailable := string-length($resultXml) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($resultXml, "xml"))
+        (:let $result := if($isResultsAvailable) then distinct-values(data(xmlconv:executeSparqlEndpoint($resultXml)//sparql:binding[@name='localId']/sparql:literal)) else "":)
+        let $result := if($isResultsAvailable) then xmlconv:executeSparqlEndpoint($resultXml)//sparql:result else ()
+    return $result
+
+    return  $allResults
+};
+
+(:----------------------------------------------------------------------------------------------------------------------------------------------:)
 
 (:~
  : Get the SPARQL endpoint URL.
@@ -275,7 +319,7 @@ concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
                 ?zone aqd:inspireId ?inspireid .
                 ?inspireid aqd:localId ?localId
         FILTER (STRSTARTS(str(?zone), 'http://cdr.eionet.europa.eu/",lower-case($countryCode),"/eu/aqd/b/') and (?timeExtensionExemption != 'http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/none'))
-      } ")
+      } order by  ?zone ")
 };
 
 declare function xmlconv:getAqdZone($countryCode as xs:string)
@@ -291,7 +335,7 @@ aqd:timeExtensionExemption ?timeExtensionExemption .
 ?zone aqd:inspireId ?inspireid .
 ?inspireid aqd:localId ?localId
 FILTER (STRSTARTS(str(?zone), 'http://cdr.eionet.europa.eu/",  lower-case($countryCode),"/eu/aqd/b/') and (?timeExtensionExemption != ""))
-} ")
+} order by  ?zone ")
 
 };
 
@@ -308,7 +352,7 @@ concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
               aqd:inspireId ?inspireId .
               ?inspireId aqd:localId ?localId .
        FILTER (STRSTARTS(str(?zone), 'http://cdr.eionet.europa.eu/",  lower-case($countryCode), "/eu/aqd/c/'))
-   } ")
+   }  order by  ?zone")
 };
 
 declare function xmlconv:getZoneLocallD($countryCode as xs:string)
@@ -324,10 +368,10 @@ as xs:string
               aqd:inspireId ?inspireId .
               ?inspireId aqd:localId ?localId .
        FILTER (STRSTARTS(str(?zone), 'http://cdr.eionet.europa.eu/",  lower-case($countryCode), "/eu/aqd/b/'))
-   } ")
+   }  order by ?zone")
 };
 
-declare function xmlconv:countAssessmentRegime($countryCode as xs:string)
+(:declare function xmlconv:countAssessmentRegime($countryCode as xs:string)
 as xs:string
 {
     concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -340,8 +384,8 @@ as xs:string
               aqd:inspireId ?inspireId .
               ?inspireId aqd:localId ?localId .
        FILTER (STRSTARTS(str(?assessmentRegime), 'http://cdr.eionet.europa.eu/", lower-case($countryCode), "/eu/aqd/c/'))
-   } ")
-};
+   }   ")
+};:)
 
 declare function xmlconv:getAssessmentRegime($countryCode as xs:string)
 as xs:string
@@ -356,7 +400,7 @@ as xs:string
               aqd:inspireId ?inspireId .
               ?inspireId aqd:localId ?localId .
        FILTER (STRSTARTS(str(?assessmentRegime), 'http://cdr.eionet.europa.eu/", lower-case($countryCode), "/eu/aqd/c/'))
-   } ")
+   } order by ?assessmentRegime ")
 };
 
 declare function xmlconv:getPollutantlD($countryCode as xs:string)
@@ -374,7 +418,7 @@ as xs:string
                  ?zone aqd:pollutants ?pollutants .
                  ?pollutants aqd:pollutantCode ?pollutantCode .
           FILTER (STRSTARTS(str(?zone), 'http://cdr.eionet.europa.eu/",lower-case($countryCode),"/eu/aqd/b/'))
-          } ")
+          }  order by ?zone")
     };
 
 declare function xmlconv:getModel($countryCode as xs:string)
@@ -390,14 +434,13 @@ concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
                  aqd:inspireId ?inspireId .
                  ?inspireId rdfs:label ?inspireLabel .
         FILTER(STRSTARTS(str(?model), 'http://cdr.eionet.europa.eu/",lower-case($countryCode),"/eu/aqd/d/')
-      } ")
+      } order by ?model")
 };
 
-declare function xmlconv:setLimitAndOffset($sparql as xs:string, $orderBy as xs:string, $limit as xs:string, $offset as xs:string)
-as xs:string
-{
-concat($sparql, " order by ",$orderBy," offset ",$offset," limit ",$limit)
-};
+
+
+
+
 (:
     Builds HTML table rows for rules.
 :)
@@ -568,7 +611,7 @@ let $tblAllExceedances :=
 
 let $resultXml := if (fn:string-length($countryCode) = 2) then xmlconv:getAqdZone($countryCode) else ""
 let $isAqdZoneCodesAvailable := string-length($resultXml) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($resultXml, "xml"))
-let $localId := if($isAqdZoneCodesAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($resultXml)//sparql:binding[@name='localId']/sparql:literal)) else ""
+let $localId := if($isAqdZoneCodesAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($resultXml)//sparql:binding[@name='localId']/sparql:literal))  else ""
 let $timeExtensionExemption := if($isAqdZoneCodesAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($resultXml)//sparql:binding[@name='timeExtensionExemption']/sparql:uri)) else ""
 let $isAqdZoneCodesAvailable := count($resultXml) > 0
 
@@ -719,6 +762,7 @@ let $resultSparql := if (fn:string-length($countryCode) = 2) then xmlconv:getPol
 let $isPollutantCodesAvailable := string-length($resultSparql) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($resultSparql, "xml"))
 let $pollutansCode:= if($isPollutantCodesAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($resultSparql)//sparql:binding[@name='pollutantCode']/sparql:uri)) else ""
 let $isPollutantCodesAvailable := count($resultSparql) > 0
+let $testResult := $resultSparql
 
 let $invalidPollutant :=
     for $x in $docRoot//aqd:AQD_Attainment
@@ -978,31 +1022,32 @@ let $invalidAssessmentModel :=
         <td title="aqd:AQD_Model">{data($x/fn:normalize-space(@xlink:href))}</td>
     </tr>
     else ()
+
 (: G40 TODO xmlconv:getAssessmentRegime  :)
 
 (: Counting AssessmentRegime:)
-let $count := if (fn:string-length($countryCode) = 2) then xmlconv:countAssessmentRegime($countryCode) else ""
+(:let $count := if (fn:string-length($countryCode) = 2) then xmlconv:countAssessmentRegime($countryCode) else ""
 let $isCountAvailable := string-length($count) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($count, "xml"))
 let $countResult := if($isCountAvailable) then (data(xmlconv:executeSparqlQuery($count)//sparql:binding[@name='callret-0']/sparql:literal)) else ""
 
 let $divCountResult := if($isCountAvailable) then ceiling(number($countResult) div number(2000)) else number("1")
 
-
 let $allResults :=
     for $r in (1 to  xs:integer(number($divCountResult)))
       let $offset := if ($r > 1) then string(((number($r)-1) * 2000)+1) else "1"
-      let $resultXml := if (fn:string-length($countryCode) = 2) then xmlconv:setLimitAndOffset(xmlconv:getAssessmentRegime($countryCode), "?assessmentRegime", "2000", $offset) else ""
+      let $resultXml := if (fn:string-length($countryCode) = 2) then xmlconv:setLimitAndOffset(xmlconv:getAssessmentRegime($countryCode), "2000", $offset) else ""
       let $isAssessmentRegimeAvailable := string-length($resultXml) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($resultXml, "xml"))
+
       let $assessmentRegime := if($isAssessmentRegimeAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($resultXml)//sparql:binding[@name='localId']/sparql:literal)) else ""
     return $assessmentRegime
 
 let $countResults := count($allResults)
+:)
+let $query  :=  ((xmlconv:executeSparqlQuery(xmlconv:getAssessmentRegime($countryCode))))
 
 
 
-
-
-let $resultXml := if (fn:string-length($countryCode) = 2) then xmlconv:setLimitAndOffset(xmlconv:getAssessmentRegime($countryCode), "?assessmentRegime", "2000", "1") else ""
+let $resultXml := if (fn:string-length($countryCode) = 2) then xmlconv:setLimitAndOffset(xmlconv:getAssessmentRegime($countryCode), "2000", "1") else ""
 let $isAssessmentRegimeAvailable := string-length($resultXml) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($resultXml, "xml"))
 let $assessmentRegime := if($isAssessmentRegimeAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($resultXml)//sparql:binding[@name='localId']/sparql:literal)) else ""
 let $isAssessmentRegimeAvailable := count($resultXml) > 0
@@ -1258,13 +1303,13 @@ return
                 (), (), "aqd:areaClassification", "", "", "","error", $invalidAreaClassificationCodes)}
         {xmlconv:buildResultRows("G39", "The subject of ./aqd:Model xlink:href attribute shall resolve to a model description in  /aqd:AQD_Model",
                 $invalidAssessmentModel, (), "base:namespace", "All values are valid", " invalid value", "","error", $invalidAssessmentModel)}
-         <tr>
-            <td>{$countResults}</td>
-            <td>COUNT</td>
+         <!--<tr>
+            <td>{$testResult}</td>
+            <td>test</td>
+            <td></td>
 
+         </tr>-->
 
-         </tr>
-         
          {xmlconv:buildResultRows("G40", "./aqd:assessment xlink:href attribute shall resolve to a valid assessment regime with in /aqd:AQD_AssessmentRegime",
                 $invalidAssessment_40, (), "base:namespace", "All values are valid", " invalid value", "","error", $invalidAssessment_40)}
 
@@ -1326,7 +1371,7 @@ as element(tr)*{
             xmlconv:getCollectionConceptUrlSparql($vocabularyUrl)
         else
             xmlconv:getConceptUrlSparql($vocabularyUrl)
-    let $crConcepts := xmlconv:executeSparqlQuery($sparql)
+    let $crConcepts := xmlconv:executeSparqlEndpoint($sparql)
 
     let $allRecords :=
     if ($parentObject != "") then
