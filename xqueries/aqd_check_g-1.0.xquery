@@ -194,6 +194,9 @@ as xs:boolean
  : @param $sparql SPARQL query.
  : @return sparql:results element containing zero or more sparql:result subelements in SPARQL result format.
  :)
+
+
+(:---------------------------------Old xmlconv:executeSparqlQuery function----------------------------------------------------------------------:)
 declare function xmlconv:executeSparqlEndpoint($sparql as xs:string)
 as element(sparql:results)
 {
@@ -245,7 +248,6 @@ as element(sparql:result)*
             let $offset := if ($r > 1) then string(((number($r)-1) * 2000)+1) else "1"
             let $resultXml := xmlconv:setLimitAndOffset($sparql,"2000", $offset)
             let $isResultsAvailable := string-length($resultXml) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($resultXml, "xml"))
-        (:let $result := if($isResultsAvailable) then distinct-values(data(xmlconv:executeSparqlEndpoint($resultXml)//sparql:binding[@name='localId']/sparql:literal)) else "":)
         let $result := if($isResultsAvailable) then xmlconv:executeSparqlEndpoint($resultXml)//sparql:result else ()
     return $result
 
@@ -346,14 +348,57 @@ concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
         PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
         PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
 
-       SELECT ?zone ?inspireId ?localId
+       SELECT ?zone ?inspireId ?localId ?inspireLabel
        WHERE {
               ?zone a aqd:AQD_AssessmentRegime ;
               aqd:inspireId ?inspireId .
+              ?inspireId rdfs:label ?inspireLabel .
               ?inspireId aqd:localId ?localId .
        FILTER (STRSTARTS(str(?zone), 'http://cdr.eionet.europa.eu/",  lower-case($countryCode), "/eu/aqd/c/'))
    }  order by  ?zone")
 };
+
+declare function xmlconv:getAssessmentMethods()
+as xs:string
+{
+      "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+       PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
+       PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+       PREFIX aq: <http://reference.eionet.europa.eu/aq/ontology/>
+
+       SELECT ?assessmentRegime ?inspireId ?localId ?inspireLabel ?assessmentMethods  ?assessmentMetadata ?assessmentMetadataNamespace ?assessmentMetadataId ?samplingPointAssessmentMetadata
+       WHERE {
+              ?assessmentRegime a aqd:AQD_AssessmentRegime ;
+              aqd:inspireId ?inspireId .
+              ?inspireId rdfs:label ?inspireLabel .
+              ?inspireId aqd:localId ?localId .
+              ?assessmentRegime aqd:assessmentMethods ?assessmentMethods .
+              ?assessmentMethods aqd:modelAssessmentMetadata ?assessmentMetadata .
+              ?assessmentMetadata aq:inspireNamespace ?assessmentMetadataNamespace .
+              ?assessmentMetadata aq:inspireId ?assessmentMetadataId .
+              OPTIONAL { ?assessmentMethods aqd:samplingPointAssessmentMetadata ?samplingPointAssessmentMetadata. }
+        }"
+};
+
+declare function xmlconv:getSamplingPointAssessmentMetadata()
+as xs:string
+{
+        "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+        PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
+        PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+        PREFIX aq: <http://reference.eionet.europa.eu/aq/ontology/>
+
+       SELECT ?assessmentRegime ?inspireId ?localId ?inspireLabel ?assessmentMethods  ?samplingPointAssessmentMetadata
+       WHERE {
+              ?assessmentRegime a aqd:AQD_AssessmentRegime ;
+              aqd:inspireId ?inspireId .
+              ?inspireId rdfs:label ?inspireLabel .
+              ?inspireId aqd:localId ?localId .
+              ?assessmentRegime aqd:assessmentMethods ?assessmentMethods .
+              ?assessmentMethods aqd:samplingPointAssessmentMetadata ?samplingPointAssessmentMetadata.
+   }"
+};
+
 
 declare function xmlconv:getZoneLocallD($countryCode as xs:string)
 as xs:string
@@ -362,10 +407,11 @@ as xs:string
         PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
         PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
 
-       SELECT ?zone ?inspireId ?localId
+       SELECT ?zone ?inspireId ?localId ?inspireLabel
        WHERE {
               ?zone a aqd:AQD_Zone ;
               aqd:inspireId ?inspireId .
+              ?inspireId rdfs:label ?inspireLabel .
               ?inspireId aqd:localId ?localId .
        FILTER (STRSTARTS(str(?zone), 'http://cdr.eionet.europa.eu/",  lower-case($countryCode), "/eu/aqd/b/'))
    }  order by ?zone")
@@ -433,10 +479,25 @@ concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
                 ?model a aqd:AQD_Model ;
                  aqd:inspireId ?inspireId .
                  ?inspireId rdfs:label ?inspireLabel .
-        FILTER(STRSTARTS(str(?model), 'http://cdr.eionet.europa.eu/",lower-case($countryCode),"/eu/aqd/d/')
+        FILTER(STRSTARTS(str(?model), 'http://cdr.eionet.europa.eu/",lower-case($countryCode),"/eu/aqd/d/'))
       } order by ?model")
 };
 
+declare function xmlconv:getSamplingPoint($countryCode as xs:string)
+as xs:string
+{
+concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+        PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
+        PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+
+        SELECT ?samplingPoint ?inspireId ?inspireLabel
+        WHERE {
+                ?samplingPoint a aqd:AQD_SamplingPoint ;
+                 aqd:inspireId ?inspireId .
+                 ?inspireId rdfs:label ?inspireLabel .
+        FILTER(STRSTARTS(str(?samplingPoint), 'http://cdr.eionet.europa.eu/",lower-case($countryCode),"/eu/aqd/d/'))
+      }")
+};
 
 
 
@@ -716,16 +777,17 @@ let $invalidExceedanceDescriptionAdjustment:=
 
 let $resultXml := if (fn:string-length($countryCode) = 2) then xmlconv:getLocallD($countryCode) else ""
 let $isLocallDCodesAvailable := string-length($resultXml) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($resultXml, "xml"))
-let $locallD := if($isLocallDCodesAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($resultXml)//sparql:binding[@name='localId']/sparql:literal)) else ""
+let $inspireLabel := if($isLocallDCodesAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($resultXml)//sparql:binding[@name='inspireLabel']/sparql:literal)) else "x"
 let $isLocallDCodesAvailable := count($resultXml) > 0
 
 let $invalidAssessment :=
      for $x in $docRoot//aqd:AQD_Attainment/aqd:assessment
     where $isLocallDCodesAvailable
-    return  if (empty(index-of($locallD, $x/fn:normalize-space(@xlink:href)))) then
+    return  if (empty(index-of($inspireLabel, $x/fn:normalize-space(@xlink:href)))) then
         <tr>
         <td title="Feature type">{ "aqd:AQD_Attainment" }</td>
         <td title="gml:id">{data($x/../@gml:id)}</td>
+        <!--<td title="gml:id">{data($inspireLabel)}</td>-->
         <td title="aqd:assessment">{data($x/fn:normalize-space(@xlink:href))}</td>
     </tr>
     else ()
@@ -735,7 +797,7 @@ let $invalidAssessment :=
 (: G15 :)
 let $resultXml := if (fn:string-length($countryCode) = 2) then xmlconv:getZoneLocallD($countryCode) else ""
 let $isZoneLocallDCodesAvailable := string-length($resultXml) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($resultXml, "xml"))
-let $zoneLocallD := if($isZoneLocallDCodesAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($resultXml)//sparql:binding[@name='localId']/sparql:literal)) else ""
+let $zoneLocallD := if($isZoneLocallDCodesAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($resultXml)//sparql:binding[@name='inspireLabel']/sparql:literal)) else ""
 let $isZoneLocallDCodesAvailable := count($resultXml) > 0
 
 let $invalidAssessmentZone :=
@@ -1023,64 +1085,87 @@ let $invalidAssessmentModel :=
     </tr>
     else ()
 
-(: G40 TODO xmlconv:getAssessmentRegime  :)
-
-(: Counting AssessmentRegime:)
-(:let $count := if (fn:string-length($countryCode) = 2) then xmlconv:countAssessmentRegime($countryCode) else ""
-let $isCountAvailable := string-length($count) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($count, "xml"))
-let $countResult := if($isCountAvailable) then (data(xmlconv:executeSparqlQuery($count)//sparql:binding[@name='callret-0']/sparql:literal)) else ""
-
-let $divCountResult := if($isCountAvailable) then ceiling(number($countResult) div number(2000)) else number("1")
-
-let $allResults :=
-    for $r in (1 to  xs:integer(number($divCountResult)))
-      let $offset := if ($r > 1) then string(((number($r)-1) * 2000)+1) else "1"
-      let $resultXml := if (fn:string-length($countryCode) = 2) then xmlconv:setLimitAndOffset(xmlconv:getAssessmentRegime($countryCode), "2000", $offset) else ""
-      let $isAssessmentRegimeAvailable := string-length($resultXml) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($resultXml, "xml"))
-
-      let $assessmentRegime := if($isAssessmentRegimeAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($resultXml)//sparql:binding[@name='localId']/sparql:literal)) else ""
-    return $assessmentRegime
-
-let $countResults := count($allResults)
-:)
-let $query  :=  ((xmlconv:executeSparqlQuery(xmlconv:getAssessmentRegime($countryCode))))
-
-
-
-let $resultXml := if (fn:string-length($countryCode) = 2) then xmlconv:setLimitAndOffset(xmlconv:getAssessmentRegime($countryCode), "2000", "1") else ""
-let $isAssessmentRegimeAvailable := string-length($resultXml) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($resultXml, "xml"))
-let $assessmentRegime := if($isAssessmentRegimeAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($resultXml)//sparql:binding[@name='localId']/sparql:literal)) else ""
-let $isAssessmentRegimeAvailable := count($resultXml) > 0
-
-(: G13 :)
+(: G40   :)
 
 let $resultXml := if (fn:string-length($countryCode) = 2) then xmlconv:getLocallD($countryCode) else ""
 let $isLocallDCodesAvailable := string-length($resultXml) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($resultXml, "xml"))
-let $locallD := if($isLocallDCodesAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($resultXml)//sparql:binding[@name='localId']/sparql:literal)) else ""
+let $inspireLabel := if($isLocallDCodesAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($resultXml)//sparql:binding[@name='inspireLabel']/sparql:literal)) else ""
 let $isLocallDCodesAvailable := count($resultXml) > 0
 
 
+let $resultXml2 :=  xmlconv:getAssessmentMethods()
+let $isAssessmentMethodsAvailable := string-length($resultXml2) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($resultXml2, "xml"))
+let $assessmentMetadataNamespace := if($isAssessmentMethodsAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($resultXml2)//sparql:binding[@name='assessmentMetadataNamespace']/sparql:literal)) else ""
+let $assessmentMetadataId := if($isAssessmentMethodsAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($resultXml2)//sparql:binding[@name='assessmentMetadataId']/sparql:literal)) else ""
+let $assessmentMetadata := if($isAssessmentMethodsAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($resultXml2)//sparql:binding[@name='assessmentMetadata']/sparql:literal)) else ""
+(: for G42 :)
+let $samplingPointAssessmentMetadata := if($isAssessmentMethodsAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($resultXml2)//sparql:binding[@name='samplingPointAssessmentMetadata']/sparql:literal)) else ""
+
+let $isAssessmentMethodsAvailable := count($resultXml2) > 0
 
 
-let $invalidAssessment_40 :=
+  let $validAssessment_40 :=
      for $x in $docRoot//aqd:AQD_Attainment/aqd:assessment
     where $isLocallDCodesAvailable
-    return  if (empty(index-of($locallD, $x/fn:normalize-space(@xlink:href)))) then
-        <tr>
-        <td title="Feature type">{ "aqd:AQD_Attainment" }</td>
-        <td title="gml:id">{data($x/../@gml:id)}</td>
-        <td title="aqd:assessment">{data($x/fn:normalize-space(@xlink:href))}</td>
-    </tr>
-    else ()
+    return  if (not(empty(index-of($inspireLabel, $x/fn:normalize-space(@xlink:href))))) then $x else ()
 
-(: TODO G41
+  let $invalidModelUsed  :=
+    for $r in $validAssessment_40/../aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:modelUsed
+        where $isAssessmentMethodsAvailable
+        return  if ((empty(index-of($assessmentMetadata, $r/fn:normalize-space(@xlink:href))))) then
+                <tr>
+                    <td title="gml:id">{data($r/../../../../../@gml:id)}</td>
+                    <td title="aqd:assessment">{data($r/../../../../../aqd:assessment/fn:normalize-space(@xlink:href))}</td>
+                    <td title="aqd:modelUsed">{data($r/fn:normalize-space(@xlink:href))}</td>
+                </tr>
+                else ()
 
-let $invalidObjectiveCodes := xmlconv:isinvalidDDConceptLimited($source_url, "", "aqd:AQD_Attainment", "aqd:objectiveType",  $xmlconv:OBJECTIVETYPE_VOCABULARY, $xmlconv:VALID_OBJECTIVETYPE_IDS)
+
+
+(: G41 :)
+let $resultXml := if (fn:string-length($countryCode) = 2) then xmlconv:getSamplingPoint($countryCode) else ""
+let $isSamplingPointAvailable := string-length($resultXml) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($resultXml, "xml"))
+let $samplingPointlD := if($isSamplingPointAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($resultXml)//sparql:binding[@name='inspireId']/sparql:literal)) else ""
+let $isSamplingPointAvailable := count($resultXml) > 0
+let $invalidStationUsed  :=
+    for $r in $docRoot//aqd:AQD_Attainment/aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:stationUsed
+       where $isSamplingPointAvailable
+    return  if (empty(index-of($samplingPointlD, $r/fn:normalize-space(@xlink:href)))) then
+                <tr>
+                    <td title="gml:id">{data($r/../../../../../../../@gml:id)}</td>
+                    <td title="aqd:SamplingPoint">{data($r/fn:normalize-space(@xlink:href))}</td>
+                </tr>
+         else ()
+
+(: TODO G42 :)
+(:let $resultXml := if (fn:string-length($countryCode) = 2) then xmlconv:getLocallD($countryCode) else ""
+let $isLocallDCodesAvailable := string-length($resultXml) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($resultXml, "xml"))
+let $inspireLabel := if($isLocallDCodesAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($resultXml)//sparql:binding[@name='inspireLabel']/sparql:literal)) else ""
+let $isLocallDCodesAvailable := count($resultXml) > 0
 :)
-(: TODO G42
 
-let $invalidReportingMetricCodes := xmlconv:isinvalidDDConceptLimited($source_url, "", "aqd:AQD_Attainment", "aqd:reportingMetric",  $xmlconv:REPMETRIC_VOCABULARY, $xmlconv:VALID_REPMETRIC_IDS)
+(:let $resultXml3 :=  xmlconv:getSamplingPointAssessmentMetadata()
+let $isSamplingPointAssessmentMetadataAvailable := string-length($resultXml3) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($resultXml3, "xml"))
+let $samplingPointAssessmentMetadata := if($isSamplingPointAssessmentMetadataAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($resultXml3)//sparql:binding[@name='samplingPointAssessmentMetadata']/sparql:literal)) else ""
+
+let $isSamplingPointAssessmentMetadataAvailable := count($resultXml3) > 0
 :)
+
+(:let $validAssessment_42 :=
+     for $x in $docRoot//aqd:AQD_Attainment/aqd:assessment
+    where $isLocallDCodesAvailable
+    return  if (not(empty(index-of($inspireLabel, $x/fn:normalize-space(@xlink:href))))) then $x else ()
+:)
+  let $invalidStationlUsed  :=
+    for $r in $validAssessment_40/../aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:stationlUsed
+        where $isAssessmentMethodsAvailable
+        return  if ((empty(index-of($samplingPointAssessmentMetadata, concat("http://reference.eionet.europa.eu/aq/",$r/fn:normalize-space(@xlink:href)))))) then
+                <tr>
+                    <td title="gml:id">{data($r/../../../../../@gml:id)}</td>
+                    <td title="aqd:assessment">{data($r/../../../../../aqd:assessment/fn:normalize-space(@xlink:href))}</td>
+                    <td title="aqd:stationlUsed">{data($r/fn:normalize-space(@xlink:href))}</td>
+                </tr>
+                else ()
 
 (: G44 :)
 
@@ -1270,7 +1355,7 @@ return
             <a href="{ $xmlconv:OBJECTIVETYPE_VOCABULARY }">{ $xmlconv:OBJECTIVETYPE_VOCABULARY }</a>
             Allowed items: {xmlconv:buildVocItemsList("G28", $xmlconv:OBJECTIVETYPE_VOCABULARY, $xmlconv:VALID_OBJECTIVETYPE_IDS_28)}</span>,
             (), (), "aqd:objectivetype", "", "", "","error", $invalidObjectiveTypes_28)}
-        {xmlconv:buildResultRowsWithTotalCount("G20", <span>The content of ./aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:EnvironmentalObjective/aqd:reportingMetric shall resolve to a valid concept in
+        {xmlconv:buildResultRowsWithTotalCount("G29", <span>The content of ./aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:EnvironmentalObjective/aqd:reportingMetric shall resolve to a valid concept in
             <a href="{ $xmlconv:REPMETRIC_VOCABULARY }">{ $xmlconv:REPMETRIC_VOCABULARY }</a> that must be one of
             {xmlconv:buildVocItemsList("G29", $xmlconv:REPMETRIC_VOCABULARY, $xmlconv:VALID_REPMETRIC_IDS_29)}</span>,
             (), (), "aqd:reportingMetric", "", "", "","error", $invalidReportingMetric_29)}
@@ -1303,15 +1388,16 @@ return
                 (), (), "aqd:areaClassification", "", "", "","error", $invalidAreaClassificationCodes)}
         {xmlconv:buildResultRows("G39", "The subject of ./aqd:Model xlink:href attribute shall resolve to a model description in  /aqd:AQD_Model",
                 $invalidAssessmentModel, (), "base:namespace", "All values are valid", " invalid value", "","error", $invalidAssessmentModel)}
-         <!--<tr>
-            <td>{$testResult}</td>
-            <td>test</td>
-            <td></td>
 
-         </tr>-->
+         {xmlconv:buildResultRows("G40", "aqd:modelUsed    xlink:href attribute    shall   be  found   in aqd:modelAssessmentMetadata",
+                $invalidModelUsed, (), "base:namespace", "All values are valid", " invalid value", "","error", $invalidModelUsed)}
 
-         {xmlconv:buildResultRows("G40", "./aqd:assessment xlink:href attribute shall resolve to a valid assessment regime with in /aqd:AQD_AssessmentRegime",
-                $invalidAssessment_40, (), "base:namespace", "All values are valid", " invalid value", "","error", $invalidAssessment_40)}
+         {xmlconv:buildResultRows("G41", "aqd:stationUsed xlink:href attribute shall resolve to a sampling point description in /aqd:AQD_SamplingPoint",
+                $invalidStationUsed, (), "base:namespace", "All values are valid", " invalid value", "","error", $invalidStationUsed)}
+
+         (:{xmlconv:buildResultRows("G42", "aqd::stationlUsed xlink:href attribute    shall   be  found   in aqd:samplingPointAssessmentMetadat",
+                $invalidStationlUsed, (), "base:namespace", "All values are valid", " invalid value", "","error", $invalidStationlUsed)}
+         :)
 
         {xmlconv:buildResultRows("G47", "./aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:adjustmentType xlink:href attribute shall resolve to http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/noneApplied",
                 $invalidAqdAdjustmentType, (), "base:namespace", "All values are valid", " invalid value", "","error", ())}
