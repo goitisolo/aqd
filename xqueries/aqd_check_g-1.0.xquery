@@ -237,16 +237,17 @@ as xs:integer
 declare function xmlconv:executeSparqlQuery($sparql as xs:string)
 as element(sparql:result)*
 {
+    let $limit := number(2000)
     let $countResult := xmlconv:countsSparqlResults($sparql)
 
     (:integer - how many times must sparql function repeat :)
-    let $divCountResult := if($countResult>0) then ceiling(number($countResult) div number(2000)) else number("1")
+    let $divCountResult := if($countResult>0) then ceiling(number($countResult) div number($limit)) else number("1")
 
     (:Collects all sparql results:)
     let $allResults :=
         for $r in (1 to  xs:integer(number($divCountResult)))
-            let $offset := if ($r > 1) then string(((number($r)-1) * 2000)+1) else "1"
-            let $resultXml := xmlconv:setLimitAndOffset($sparql,"2000", $offset)
+            let $offset := if ($r > 1) then string(((number($r)-1) * $limit)+1) else "1"
+            let $resultXml := xmlconv:setLimitAndOffset($sparql,xs:string($limit), $offset)
             let $isResultsAvailable := string-length($resultXml) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($resultXml, "xml"))
         let $result := if($isResultsAvailable) then xmlconv:executeSparqlEndpoint($resultXml)//sparql:result else ()
     return $result
