@@ -35,17 +35,24 @@ declare variable $source_url as xs:string external;
 (:
 declare variable $source_url as xs:string external;
 declare variable $source_url as xs:string := "";
+declare variable $source_url as xs:string := "../test/HR_G_201407281307.xml";
 B
 http://cdrtest.eionet.europa.eu/es/eu/aqd/b/envveunkq/ES_B_Zones.xml
 C
 http://cdrtest.eionet.europa.eu/es/eu/aqd/c/envvfnnpg/ES_C_AssessmentRegime_period_chngd.xml
+declare variable $source_url as xs:string := "../test/ES_C_AssessmentRegime_period_chngd.xml";
 D
 http://cdrtest.eionet.europa.eu/es/eu/aqd/d/envvcqwog/ES_D_SamplingPoint.xml
+declare variable $source_url as xs:string := "../test/ES_D_SamplingPoint-1.xml";
+declare variable $source_url as xs:string := "../test/ES_D_SamplingPoint-2.xml";
+
 G
+declare variable $source_url as xs:string := "../test/ES_G_Attainment.xml";
 http://cdrtest.eionet.europa.eu/es/eu/aqd/g/envvbgwea/ES_G_Attainment.xml
 http://cdrtest.eionet.europa.eu/es/eu/aqd/g/envvbgwea/ES_G_Attainment.xml
 M
 http://cdrtest.eionet.europa.eu/es/eu/aqd/d/envvcqwog/ES_D_Model.xml
+declare variable $source_url as xs:string := "../test/ES_D_Model.xml";
 :)
 declare variable $xmlconv:ROD_PREFIX as xs:string := "http://rod.eionet.europa.eu/obligations/";
 declare variable $xmlconv:B_OBLIGATIONS as xs:string* := (concat($xmlconv:ROD_PREFIX, "670"), concat($xmlconv:ROD_PREFIX, "693"));

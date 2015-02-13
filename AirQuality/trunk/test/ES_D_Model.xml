@@ -1,0 +1,3811 @@
+<?xml version="1.0" encoding="utf-8"?>
+<gml:FeatureCollection xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:om="http://www.opengis.net/om/2.0" xmlns:aqd="http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0" xmlns:am="http://inspire.ec.europa.eu/schemas/am/3.0" xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3" xmlns:gmd="http://www.isotc211.org/2005/gmd" xmlns:swe="http://www.opengis.net/swe/2.0" xmlns:sams="http://www.opengis.net/samplingSpatial/2.0" xmlns:ompr="http://inspire.ec.europa.eu/schemas/ompr/2.0" xmlns:ef="http://inspire.ec.europa.eu/schemas/ef/3.0" xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" xmlns:sam="http://www.opengis.net/sampling/2.0" xmlns:base2="http://inspire.ec.europa.eu/schemas/base2/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gco="http://www.isotc211.org/2005/gco" xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0" xsi:schemaLocation="http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0 http://dd.eionet.europa.eu/schemas/id2011850eu-1.0/AirQualityReporting.xsd" gml:id="ReportingHeader" xmlns:gml="http://www.opengis.net/gml/3.2">
+	<gml:featureMember>
+		<aqd:AQD_ReportingHeader gml:id="RH_ES_20140828">
+			<aqd:change>true</aqd:change>
+			<aqd:changeDescription>First version 2013</aqd:changeDescription>
+			<aqd:inspireId>
+				<base:Identifier>
+					<base:localId>RH_ES_D_Model_20140828</base:localId>
+					<base:namespace>ES.BDCA.AQD</base:namespace>
+					<base:versionId />
+				</base:Identifier>
+			</aqd:inspireId>
+			<aqd:reportingAuthority>
+				<base2:RelatedParty>
+					<base2:individualName>
+						<gmd:LocalisedCharacterString>MAJ BRITT LARKA ABELLÁN</gmd:LocalisedCharacterString>
+					</base2:individualName>
+					<base2:organisationName>
+						<gmd:LocalisedCharacterString>MINISTERIO DE AGRICULTURA, ALIMENTACIÓN Y MEDIO AMBIENTE</gmd:LocalisedCharacterString>
+					</base2:organisationName>
+					<base2:contact>
+						<base2:Contact>
+							<base2:address>
+								<ad:AddressRepresentation>
+									<ad:adminUnit>
+										<gn:GeographicalName>
+											<gn:language>spa</gn:language>
+											<gn:nativeness>endonym</gn:nativeness>
+											<gn:nameStatus xsi:nil="true" />
+											<gn:sourceOfName xsi:nil="true" />
+											<gn:pronunciation xsi:nil="true" />
+											<gn:spelling>
+												<gn:SpellingOfName>
+													<gn:text>PLAZA SAN JUAN DE LA CRUZ, S/N   28071  MADRID, MADRID</gn:text>
+													<gn:script xsi:nil="true" />
+												</gn:SpellingOfName>
+											</gn:spelling>
+										</gn:GeographicalName>
+									</ad:adminUnit>
+									<ad:locatorDesignator>Spain</ad:locatorDesignator>
+								</ad:AddressRepresentation>
+							</base2:address>
+							<base2:electronicMailAddress>mblarka@magrama.es</base2:electronicMailAddress>
+							<base2:telephoneVoice>915975428</base2:telephoneVoice>
+							<base2:website>http://www.magrama.gob.es/es/</base2:website>
+						</base2:Contact>
+					</base2:contact>
+				</base2:RelatedParty>
+			</aqd:reportingAuthority>
+			<aqd:reportingPeriod>
+				<gml:TimePeriod gml:id="ReportingPeriod_Timestamp">
+					<gml:beginPosition>2013-01-01T01:00:01</gml:beginPosition>
+					<gml:endPosition>2013-12-31T24:00:00</gml:endPosition>
+				</gml:TimePeriod>
+			</aqd:reportingPeriod>
+			<aqd:content>
+				<aqd:AQD_Model gml:id="OBE_ES_EO_SO2_H_LV_daysAbove_2013_6f12fa1b-8e49-4377-9174-f26a1b7ab105">
+					<ef:inspireId>
+						<base:Identifier>
+							<base:localId>OBE_ES_EO_SO2_H_LV_daysAbove_2013</base:localId>
+							<base:namespace>ES.BDCA.AQD</base:namespace>
+							<base:versionId>First version 2013</base:versionId>
+						</base:Identifier>
+					</ef:inspireId>
+					<ef:name>EO</ef:name>
+					<ef:mediaMonitored xlink:href="http://dd.eionet.europa.eu/vocabulary/common/environmentaldomain/air" />
+					<ef:responsibleParty>
+						<base2:RelatedParty>
+							<base2:individualName>
+								<gmd:LocalisedCharacterString>MAJ BRITT LARKA ABELLÁN</gmd:LocalisedCharacterString>
+							</base2:individualName>
+							<base2:organisationName>
+								<gmd:LocalisedCharacterString>MINISTERIO DE AGRICULTURA, ALIMENTACIÓN Y MEDIO AMBIENTE</gmd:LocalisedCharacterString>
+							</base2:organisationName>
+							<base2:contact>
+								<base2:Contact>
+									<base2:address>
+										<ad:AddressRepresentation>
+											<ad:adminUnit>
+												<gn:GeographicalName>
+													<gn:language>spa</gn:language>
+													<gn:nativeness>endonym</gn:nativeness>
+													<gn:nameStatus xsi:nil="true" />
+													<gn:sourceOfName xsi:nil="true" />
+													<gn:pronunciation xsi:nil="true" />
+													<gn:spelling>
+														<gn:SpellingOfName>
+															<gn:text>PLAZA SAN JUAN DE LA CRUZ, S/N   28071  MADRID, MADRID</gn:text>
+															<gn:script xsi:nil="true" />
+														</gn:SpellingOfName>
+													</gn:spelling>
+												</gn:GeographicalName>
+											</ad:adminUnit>
+											<ad:locatorDesignator>Spain</ad:locatorDesignator>
+										</ad:AddressRepresentation>
+									</base2:address>
+									<base2:electronicMailAddress>mblarka@magrama.es</base2:electronicMailAddress>
+									<base2:telephoneVoice>915975428</base2:telephoneVoice>
+									<base2:website>http://www.magrama.gob.es/es/</base2:website>
+								</base2:Contact>
+							</base2:contact>
+						</base2:RelatedParty>
+					</ef:responsibleParty>
+					<ef:observingCapability>
+						<ef:ObservingCapability gml:id="ModelObservingCapability_db6ee141-34e5-4caa-a505-dce0ae8ff790">
+							<ef:observingTime>
+								<gml:TimePeriod gml:id="TimePeriod_9cdcffa9-00b2-4f62-a886-ae5a8d16ca97">
+									<gml:beginPosition>2013-01-01T00:00:00+00:00</gml:beginPosition>
+									<gml:endPosition>2013-12-31T24:00:00+00:00</gml:endPosition>
+								</gml:TimePeriod>
+							</ef:observingTime>
+							<ef:processType xlink:href="http://inspire.ec.europa.eu/codeList/ProcessTypeValue/process" />
+							<ef:resultNature xlink:href="http://inspire.ec.europa.eu/codelist/ResultNatureValue/simulated" />
+							<ef:procedure xlink:href="ES.BDCA.AQD/OBP_ES_EO_SO2_H_LV_daysAbove_2013" />
+							<ef:featureOfInterest xlink:href="ES.BDCA.AQD/MOA_ES" />
+							<ef:observedProperty xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1" />
+						</ef:ObservingCapability>
+					</ef:observingCapability>
+					<ef:organisationLevel xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/organisationallevel/national" />
+					<aqd:environmentalObjective>
+						<aqd:EnvironmentalObjective>
+							<aqd:objectiveType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV" />
+							<aqd:reportingMetric xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/daysAbove" />
+							<aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H" />
+						</aqd:EnvironmentalObjective>
+					</aqd:environmentalObjective>
+					<aqd:assessmentType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/objective" />
+					<aqd:zone nilReason="inapplicable" />
+				</aqd:AQD_Model>
+			</aqd:content>
+			<aqd:content>
+				<aqd:AQD_Model gml:id="OBE_ES_EO_SO2_V_CL_aMean_2013_8ea8e061-c0e7-41d9-bde8-75c67747e6da">
+					<ef:inspireId>
+						<base:Identifier>
+							<base:localId>OBE_ES_EO_SO2_V_CL_aMean_2013</base:localId>
+							<base:namespace>ES.BDCA.AQD</base:namespace>
+							<base:versionId>First version 2013</base:versionId>
+						</base:Identifier>
+					</ef:inspireId>
+					<ef:name>EO</ef:name>
+					<ef:mediaMonitored xlink:href="http://dd.eionet.europa.eu/vocabulary/common/environmentaldomain/air" />
+					<ef:responsibleParty>
+						<base2:RelatedParty>
+							<base2:individualName>
+								<gmd:LocalisedCharacterString>MAJ BRITT LARKA ABELLÁN</gmd:LocalisedCharacterString>
+							</base2:individualName>
+							<base2:organisationName>
+								<gmd:LocalisedCharacterString>MINISTERIO DE AGRICULTURA, ALIMENTACIÓN Y MEDIO AMBIENTE</gmd:LocalisedCharacterString>
+							</base2:organisationName>
+							<base2:contact>
+								<base2:Contact>
+									<base2:address>
+										<ad:AddressRepresentation>
+											<ad:adminUnit>
+												<gn:GeographicalName>
+													<gn:language>spa</gn:language>
+													<gn:nativeness>endonym</gn:nativeness>
+													<gn:nameStatus xsi:nil="true" />
+													<gn:sourceOfName xsi:nil="true" />
+													<gn:pronunciation xsi:nil="true" />
+													<gn:spelling>
+														<gn:SpellingOfName>
+															<gn:text>PLAZA SAN JUAN DE LA CRUZ, S/N   28071  MADRID, MADRID</gn:text>
+															<gn:script xsi:nil="true" />
+														</gn:SpellingOfName>
+													</gn:spelling>
+												</gn:GeographicalName>
+											</ad:adminUnit>
+											<ad:locatorDesignator>Spain</ad:locatorDesignator>
+										</ad:AddressRepresentation>
+									</base2:address>
+									<base2:electronicMailAddress>mblarka@magrama.es</base2:electronicMailAddress>
+									<base2:telephoneVoice>915975428</base2:telephoneVoice>
+									<base2:website>http://www.magrama.gob.es/es/</base2:website>
+								</base2:Contact>
+							</base2:contact>
+						</base2:RelatedParty>
+					</ef:responsibleParty>
+					<ef:observingCapability>
+						<ef:ObservingCapability gml:id="ModelObservingCapability_473b1800-7272-4f54-84c7-0240c36c5ea3">
+							<ef:observingTime>
+								<gml:TimePeriod gml:id="TimePeriod_6baf3539-4a47-4aab-b62b-a79719b7a5fb">
+									<gml:beginPosition>2013-01-01T00:00:00+00:00</gml:beginPosition>
+									<gml:endPosition>2013-12-31T24:00:00+00:00</gml:endPosition>
+								</gml:TimePeriod>
+							</ef:observingTime>
+							<ef:processType xlink:href="http://inspire.ec.europa.eu/codeList/ProcessTypeValue/process" />
+							<ef:resultNature xlink:href="http://inspire.ec.europa.eu/codelist/ResultNatureValue/simulated" />
+							<ef:procedure xlink:href="ES.BDCA.AQD/OBP_ES_EO_SO2_V_CL_aMean_2013" />
+							<ef:featureOfInterest xlink:href="ES.BDCA.AQD/MOA_ES" />
+							<ef:observedProperty xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1" />
+						</ef:ObservingCapability>
+					</ef:observingCapability>
+					<ef:organisationLevel xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/organisationallevel/national" />
+					<aqd:environmentalObjective>
+						<aqd:EnvironmentalObjective>
+							<aqd:objectiveType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/CL" />
+							<aqd:reportingMetric xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean" />
+							<aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V" />
+						</aqd:EnvironmentalObjective>
+					</aqd:environmentalObjective>
+					<aqd:assessmentType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/objective" />
+					<aqd:zone nilReason="inapplicable" />
+				</aqd:AQD_Model>
+			</aqd:content>
+			<aqd:content>
+				<aqd:AQD_Model gml:id="OBE_ES_EO_SO2_V_CL_wMean_2013_f6f90ca1-4379-4b2f-b8de-5de0536a5332">
+					<ef:inspireId>
+						<base:Identifier>
+							<base:localId>OBE_ES_EO_SO2_V_CL_wMean_2013</base:localId>
+							<base:namespace>ES.BDCA.AQD</base:namespace>
+							<base:versionId>First version 2013</base:versionId>
+						</base:Identifier>
+					</ef:inspireId>
+					<ef:name>EO</ef:name>
+					<ef:mediaMonitored xlink:href="http://dd.eionet.europa.eu/vocabulary/common/environmentaldomain/air" />
+					<ef:responsibleParty>
+						<base2:RelatedParty>
+							<base2:individualName>
+								<gmd:LocalisedCharacterString>MAJ BRITT LARKA ABELLÁN</gmd:LocalisedCharacterString>
+							</base2:individualName>
+							<base2:organisationName>
+								<gmd:LocalisedCharacterString>MINISTERIO DE AGRICULTURA, ALIMENTACIÓN Y MEDIO AMBIENTE</gmd:LocalisedCharacterString>
+							</base2:organisationName>
+							<base2:contact>
+								<base2:Contact>
+									<base2:address>
+										<ad:AddressRepresentation>
+											<ad:adminUnit>
+												<gn:GeographicalName>
+													<gn:language>spa</gn:language>
+													<gn:nativeness>endonym</gn:nativeness>
+													<gn:nameStatus xsi:nil="true" />
+													<gn:sourceOfName xsi:nil="true" />
+													<gn:pronunciation xsi:nil="true" />
+													<gn:spelling>
+														<gn:SpellingOfName>
+															<gn:text>PLAZA SAN JUAN DE LA CRUZ, S/N   28071  MADRID, MADRID</gn:text>
+															<gn:script xsi:nil="true" />
+														</gn:SpellingOfName>
+													</gn:spelling>
+												</gn:GeographicalName>
+											</ad:adminUnit>
+											<ad:locatorDesignator>Spain</ad:locatorDesignator>
+										</ad:AddressRepresentation>
+									</base2:address>
+									<base2:electronicMailAddress>mblarka@magrama.es</base2:electronicMailAddress>
+									<base2:telephoneVoice>915975428</base2:telephoneVoice>
+									<base2:website>http://www.magrama.gob.es/es/</base2:website>
+								</base2:Contact>
+							</base2:contact>
+						</base2:RelatedParty>
+					</ef:responsibleParty>
+					<ef:observingCapability>
+						<ef:ObservingCapability gml:id="ModelObservingCapability_bb079184-2d5f-43c9-802d-aa1e37a17d2c">
+							<ef:observingTime>
+								<gml:TimePeriod gml:id="TimePeriod_1d4de654-77f1-4abc-a1bb-c9bd1cd526bf">
+									<gml:beginPosition>2013-01-01T00:00:00+00:00</gml:beginPosition>
+									<gml:endPosition>2013-12-31T24:00:00+00:00</gml:endPosition>
+								</gml:TimePeriod>
+							</ef:observingTime>
+							<ef:processType xlink:href="http://inspire.ec.europa.eu/codeList/ProcessTypeValue/process" />
+							<ef:resultNature xlink:href="http://inspire.ec.europa.eu/codelist/ResultNatureValue/simulated" />
+							<ef:procedure xlink:href="ES.BDCA.AQD/OBP_ES_EO_SO2_V_CL_wMean_2013" />
+							<ef:featureOfInterest xlink:href="ES.BDCA.AQD/MOA_ES" />
+							<ef:observedProperty xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1" />
+						</ef:ObservingCapability>
+					</ef:observingCapability>
+					<ef:organisationLevel xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/organisationallevel/national" />
+					<aqd:environmentalObjective>
+						<aqd:EnvironmentalObjective>
+							<aqd:objectiveType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/CL" />
+							<aqd:reportingMetric xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/wMean" />
+							<aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V" />
+						</aqd:EnvironmentalObjective>
+					</aqd:environmentalObjective>
+					<aqd:assessmentType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/objective" />
+					<aqd:zone nilReason="inapplicable" />
+				</aqd:AQD_Model>
+			</aqd:content>
+			<aqd:content>
+				<aqd:AQD_Model gml:id="OBE_ES_EO_CO_H_LV_daysAbove_2013_94f422d9-1f35-4bfa-b87e-a68843a3f486">
+					<ef:inspireId>
+						<base:Identifier>
+							<base:localId>OBE_ES_EO_CO_H_LV_daysAbove_2013</base:localId>
+							<base:namespace>ES.BDCA.AQD</base:namespace>
+							<base:versionId>First version 2013</base:versionId>
+						</base:Identifier>
+					</ef:inspireId>
+					<ef:name>EO</ef:name>
+					<ef:mediaMonitored xlink:href="http://dd.eionet.europa.eu/vocabulary/common/environmentaldomain/air" />
+					<ef:responsibleParty>
+						<base2:RelatedParty>
+							<base2:individualName>
+								<gmd:LocalisedCharacterString>MAJ BRITT LARKA ABELLÁN</gmd:LocalisedCharacterString>
+							</base2:individualName>
+							<base2:organisationName>
+								<gmd:LocalisedCharacterString>MINISTERIO DE AGRICULTURA, ALIMENTACIÓN Y MEDIO AMBIENTE</gmd:LocalisedCharacterString>
+							</base2:organisationName>
+							<base2:contact>
+								<base2:Contact>
+									<base2:address>
+										<ad:AddressRepresentation>
+											<ad:adminUnit>
+												<gn:GeographicalName>
+													<gn:language>spa</gn:language>
+													<gn:nativeness>endonym</gn:nativeness>
+													<gn:nameStatus xsi:nil="true" />
+													<gn:sourceOfName xsi:nil="true" />
+													<gn:pronunciation xsi:nil="true" />
+													<gn:spelling>
+														<gn:SpellingOfName>
+															<gn:text>PLAZA SAN JUAN DE LA CRUZ, S/N   28071  MADRID, MADRID</gn:text>
+															<gn:script xsi:nil="true" />
+														</gn:SpellingOfName>
+													</gn:spelling>
+												</gn:GeographicalName>
+											</ad:adminUnit>
+											<ad:locatorDesignator>Spain</ad:locatorDesignator>
+										</ad:AddressRepresentation>
+									</base2:address>
+									<base2:electronicMailAddress>mblarka@magrama.es</base2:electronicMailAddress>
+									<base2:telephoneVoice>915975428</base2:telephoneVoice>
+									<base2:website>http://www.magrama.gob.es/es/</base2:website>
+								</base2:Contact>
+							</base2:contact>
+						</base2:RelatedParty>
+					</ef:responsibleParty>
+					<ef:observingCapability>
+						<ef:ObservingCapability gml:id="ModelObservingCapability_e9aff087-e7ef-4a8e-b4c3-fd355ab96177">
+							<ef:observingTime>
+								<gml:TimePeriod gml:id="TimePeriod_cd253b4e-df3e-4dd3-a064-47993ad19e57">
+									<gml:beginPosition>2013-01-01T00:00:00+00:00</gml:beginPosition>
+									<gml:endPosition>2013-12-31T24:00:00+00:00</gml:endPosition>
+								</gml:TimePeriod>
+							</ef:observingTime>
+							<ef:processType xlink:href="http://inspire.ec.europa.eu/codeList/ProcessTypeValue/process" />
+							<ef:resultNature xlink:href="http://inspire.ec.europa.eu/codelist/ResultNatureValue/simulated" />
+							<ef:procedure xlink:href="ES.BDCA.AQD/OBP_ES_EO_CO_H_LV_daysAbove_2013" />
+							<ef:featureOfInterest xlink:href="ES.BDCA.AQD/MOA_ES" />
+							<ef:observedProperty xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/10" />
+						</ef:ObservingCapability>
+					</ef:observingCapability>
+					<ef:organisationLevel xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/organisationallevel/national" />
+					<aqd:environmentalObjective>
+						<aqd:EnvironmentalObjective>
+							<aqd:objectiveType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV" />
+							<aqd:reportingMetric xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/daysAbove" />
+							<aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H" />
+						</aqd:EnvironmentalObjective>
+					</aqd:environmentalObjective>
+					<aqd:assessmentType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/objective" />
+					<aqd:zone nilReason="inapplicable" />
+				</aqd:AQD_Model>
+			</aqd:content>
+			<aqd:content>
+				<aqd:AQD_Model gml:id="OBE_ES_EO_NOX_V_CL_aMean_2013_be21b67c-c015-45bb-802d-ab5eabdfdd7a">
+					<ef:inspireId>
+						<base:Identifier>
+							<base:localId>OBE_ES_EO_NOX_V_CL_aMean_2013</base:localId>
+							<base:namespace>ES.BDCA.AQD</base:namespace>
+							<base:versionId>First version 2013</base:versionId>
+						</base:Identifier>
+					</ef:inspireId>
+					<ef:name>EO</ef:name>
+					<ef:mediaMonitored xlink:href="http://dd.eionet.europa.eu/vocabulary/common/environmentaldomain/air" />
+					<ef:responsibleParty>
+						<base2:RelatedParty>
+							<base2:individualName>
+								<gmd:LocalisedCharacterString>MAJ BRITT LARKA ABELLÁN</gmd:LocalisedCharacterString>
+							</base2:individualName>
+							<base2:organisationName>
+								<gmd:LocalisedCharacterString>MINISTERIO DE AGRICULTURA, ALIMENTACIÓN Y MEDIO AMBIENTE</gmd:LocalisedCharacterString>
+							</base2:organisationName>
+							<base2:contact>
+								<base2:Contact>
+									<base2:address>
+										<ad:AddressRepresentation>
+											<ad:adminUnit>
+												<gn:GeographicalName>
+													<gn:language>spa</gn:language>
+													<gn:nativeness>endonym</gn:nativeness>
+													<gn:nameStatus xsi:nil="true" />
+													<gn:sourceOfName xsi:nil="true" />
+													<gn:pronunciation xsi:nil="true" />
+													<gn:spelling>
+														<gn:SpellingOfName>
+															<gn:text>PLAZA SAN JUAN DE LA CRUZ, S/N   28071  MADRID, MADRID</gn:text>
+															<gn:script xsi:nil="true" />
+														</gn:SpellingOfName>
+													</gn:spelling>
+												</gn:GeographicalName>
+											</ad:adminUnit>
+											<ad:locatorDesignator>Spain</ad:locatorDesignator>
+										</ad:AddressRepresentation>
+									</base2:address>
+									<base2:electronicMailAddress>mblarka@magrama.es</base2:electronicMailAddress>
+									<base2:telephoneVoice>915975428</base2:telephoneVoice>
+									<base2:website>http://www.magrama.gob.es/es/</base2:website>
+								</base2:Contact>
+							</base2:contact>
+						</base2:RelatedParty>
+					</ef:responsibleParty>
+					<ef:observingCapability>
+						<ef:ObservingCapability gml:id="ModelObservingCapability_b2e9dfe0-7a85-4f59-bb10-b5cfdbead359">
+							<ef:observingTime>
+								<gml:TimePeriod gml:id="TimePeriod_5bd58138-793f-4a4a-8290-9e756701f23c">
+									<gml:beginPosition>2013-01-01T00:00:00+00:00</gml:beginPosition>
+									<gml:endPosition>2013-12-31T24:00:00+00:00</gml:endPosition>
+								</gml:TimePeriod>
+							</ef:observingTime>
+							<ef:processType xlink:href="http://inspire.ec.europa.eu/codeList/ProcessTypeValue/process" />
+							<ef:resultNature xlink:href="http://inspire.ec.europa.eu/codelist/ResultNatureValue/simulated" />
+							<ef:procedure xlink:href="ES.BDCA.AQD/OBP_ES_EO_NOX_V_CL_aMean_2013" />
+							<ef:featureOfInterest xlink:href="ES.BDCA.AQD/MOA_ES" />
+							<ef:observedProperty xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/9" />
+						</ef:ObservingCapability>
+					</ef:observingCapability>
+					<ef:organisationLevel xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/organisationallevel/national" />
+					<aqd:environmentalObjective>
+						<aqd:EnvironmentalObjective>
+							<aqd:objectiveType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/CL" />
+							<aqd:reportingMetric xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean" />
+							<aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V" />
+						</aqd:EnvironmentalObjective>
+					</aqd:environmentalObjective>
+					<aqd:assessmentType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/objective" />
+					<aqd:zone nilReason="inapplicable" />
+				</aqd:AQD_Model>
+			</aqd:content>
+			<aqd:content>
+				<aqd:AQD_Model gml:id="OBE_ES_EO_Pb_H_LV_aMean_2013_7800baf5-9d4c-46c8-bb9a-765e00a61662">
+					<ef:inspireId>
+						<base:Identifier>
+							<base:localId>OBE_ES_EO_Pb_H_LV_aMean_2013</base:localId>
+							<base:namespace>ES.BDCA.AQD</base:namespace>
+							<base:versionId>First version 2013</base:versionId>
+						</base:Identifier>
+					</ef:inspireId>
+					<ef:name>EO</ef:name>
+					<ef:mediaMonitored xlink:href="http://dd.eionet.europa.eu/vocabulary/common/environmentaldomain/air" />
+					<ef:responsibleParty>
+						<base2:RelatedParty>
+							<base2:individualName>
+								<gmd:LocalisedCharacterString>MAJ BRITT LARKA ABELLÁN</gmd:LocalisedCharacterString>
+							</base2:individualName>
+							<base2:organisationName>
+								<gmd:LocalisedCharacterString>MINISTERIO DE AGRICULTURA, ALIMENTACIÓN Y MEDIO AMBIENTE</gmd:LocalisedCharacterString>
+							</base2:organisationName>
+							<base2:contact>
+								<base2:Contact>
+									<base2:address>
+										<ad:AddressRepresentation>
+											<ad:adminUnit>
+												<gn:GeographicalName>
+													<gn:language>spa</gn:language>
+													<gn:nativeness>endonym</gn:nativeness>
+													<gn:nameStatus xsi:nil="true" />
+													<gn:sourceOfName xsi:nil="true" />
+													<gn:pronunciation xsi:nil="true" />
+													<gn:spelling>
+														<gn:SpellingOfName>
+															<gn:text>PLAZA SAN JUAN DE LA CRUZ, S/N   28071  MADRID, MADRID</gn:text>
+															<gn:script xsi:nil="true" />
+														</gn:SpellingOfName>
+													</gn:spelling>
+												</gn:GeographicalName>
+											</ad:adminUnit>
+											<ad:locatorDesignator>Spain</ad:locatorDesignator>
+										</ad:AddressRepresentation>
+									</base2:address>
+									<base2:electronicMailAddress>mblarka@magrama.es</base2:electronicMailAddress>
+									<base2:telephoneVoice>915975428</base2:telephoneVoice>
+									<base2:website>http://www.magrama.gob.es/es/</base2:website>
+								</base2:Contact>
+							</base2:contact>
+						</base2:RelatedParty>
+					</ef:responsibleParty>
+					<ef:observingCapability>
+						<ef:ObservingCapability gml:id="ModelObservingCapability_6ab47772-0162-4ed9-86c0-2114b629bfc1">
+							<ef:observingTime>
+								<gml:TimePeriod gml:id="TimePeriod_5e9c0658-09a3-4106-bf26-6c2bef119e69">
+									<gml:beginPosition>2013-01-01T00:00:00+00:00</gml:beginPosition>
+									<gml:endPosition>2013-12-31T24:00:00+00:00</gml:endPosition>
+								</gml:TimePeriod>
+							</ef:observingTime>
+							<ef:processType xlink:href="http://inspire.ec.europa.eu/codeList/ProcessTypeValue/process" />
+							<ef:resultNature xlink:href="http://inspire.ec.europa.eu/codelist/ResultNatureValue/simulated" />
+							<ef:procedure xlink:href="ES.BDCA.AQD/OBP_ES_EO_Pb_H_LV_aMean_2013" />
+							<ef:featureOfInterest xlink:href="ES.BDCA.AQD/MOA_ES" />
+							<ef:observedProperty xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5012" />
+						</ef:ObservingCapability>
+					</ef:observingCapability>
+					<ef:organisationLevel xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/organisationallevel/national" />
+					<aqd:environmentalObjective>
+						<aqd:EnvironmentalObjective>
+							<aqd:objectiveType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV" />
+							<aqd:reportingMetric xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean" />
+							<aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H" />
+						</aqd:EnvironmentalObjective>
+					</aqd:environmentalObjective>
+					<aqd:assessmentType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/objective" />
+					<aqd:zone nilReason="inapplicable" />
+				</aqd:AQD_Model>
+			</aqd:content>
+			<aqd:content>
+				<aqd:AQD_Model gml:id="OBE_ES_EO_Cd_H_TV_aMean_2013_1449f5a6-2f38-4ced-8845-4a92db62c228">
+					<ef:inspireId>
+						<base:Identifier>
+							<base:localId>OBE_ES_EO_Cd_H_TV_aMean_2013</base:localId>
+							<base:namespace>ES.BDCA.AQD</base:namespace>
+							<base:versionId>First version 2013</base:versionId>
+						</base:Identifier>
+					</ef:inspireId>
+					<ef:name>EO</ef:name>
+					<ef:mediaMonitored xlink:href="http://dd.eionet.europa.eu/vocabulary/common/environmentaldomain/air" />
+					<ef:responsibleParty>
+						<base2:RelatedParty>
+							<base2:individualName>
+								<gmd:LocalisedCharacterString>MAJ BRITT LARKA ABELLÁN</gmd:LocalisedCharacterString>
+							</base2:individualName>
+							<base2:organisationName>
+								<gmd:LocalisedCharacterString>MINISTERIO DE AGRICULTURA, ALIMENTACIÓN Y MEDIO AMBIENTE</gmd:LocalisedCharacterString>
+							</base2:organisationName>
+							<base2:contact>
+								<base2:Contact>
+									<base2:address>
+										<ad:AddressRepresentation>
+											<ad:adminUnit>
+												<gn:GeographicalName>
+													<gn:language>spa</gn:language>
+													<gn:nativeness>endonym</gn:nativeness>
+													<gn:nameStatus xsi:nil="true" />
+													<gn:sourceOfName xsi:nil="true" />
+													<gn:pronunciation xsi:nil="true" />
+													<gn:spelling>
+														<gn:SpellingOfName>
+															<gn:text>PLAZA SAN JUAN DE LA CRUZ, S/N   28071  MADRID, MADRID</gn:text>
+															<gn:script xsi:nil="true" />
+														</gn:SpellingOfName>
+													</gn:spelling>
+												</gn:GeographicalName>
+											</ad:adminUnit>
+											<ad:locatorDesignator>Spain</ad:locatorDesignator>
+										</ad:AddressRepresentation>
+									</base2:address>
+									<base2:electronicMailAddress>mblarka@magrama.es</base2:electronicMailAddress>
+									<base2:telephoneVoice>915975428</base2:telephoneVoice>
+									<base2:website>http://www.magrama.gob.es/es/</base2:website>
+								</base2:Contact>
+							</base2:contact>
+						</base2:RelatedParty>
+					</ef:responsibleParty>
+					<ef:observingCapability>
+						<ef:ObservingCapability gml:id="ModelObservingCapability_9c70e3f6-2b29-40a2-b555-add225f73f28">
+							<ef:observingTime>
+								<gml:TimePeriod gml:id="TimePeriod_674c94f1-77e3-4716-8003-80efd7f1d3fb">
+									<gml:beginPosition>2013-01-01T00:00:00+00:00</gml:beginPosition>
+									<gml:endPosition>2013-12-31T24:00:00+00:00</gml:endPosition>
+								</gml:TimePeriod>
+							</ef:observingTime>
+							<ef:processType xlink:href="http://inspire.ec.europa.eu/codeList/ProcessTypeValue/process" />
+							<ef:resultNature xlink:href="http://inspire.ec.europa.eu/codelist/ResultNatureValue/simulated" />
+							<ef:procedure xlink:href="ES.BDCA.AQD/OBP_ES_EO_Cd_H_TV_aMean_2013" />
+							<ef:featureOfInterest xlink:href="ES.BDCA.AQD/MOA_ES" />
+							<ef:observedProperty xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5014" />
+						</ef:ObservingCapability>
+					</ef:observingCapability>
+					<ef:organisationLevel xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/organisationallevel/national" />
+					<aqd:environmentalObjective>
+						<aqd:EnvironmentalObjective>
+							<aqd:objectiveType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/TV" />
+							<aqd:reportingMetric xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean" />
+							<aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H" />
+						</aqd:EnvironmentalObjective>
+					</aqd:environmentalObjective>
+					<aqd:assessmentType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/objective" />
+					<aqd:zone nilReason="inapplicable" />
+				</aqd:AQD_Model>
+			</aqd:content>
+			<aqd:content>
+				<aqd:AQD_Model gml:id="OBE_ES_EO_NI_H_TV_aMean_2013_143395bd-ccdd-4032-a192-1b350e206f4e">
+					<ef:inspireId>
+						<base:Identifier>
+							<base:localId>OBE_ES_EO_NI_H_TV_aMean_2013</base:localId>
+							<base:namespace>ES.BDCA.AQD</base:namespace>
+							<base:versionId>First version 2013</base:versionId>
+						</base:Identifier>
+					</ef:inspireId>
+					<ef:name>EO</ef:name>
+					<ef:mediaMonitored xlink:href="http://dd.eionet.europa.eu/vocabulary/common/environmentaldomain/air" />
+					<ef:responsibleParty>
+						<base2:RelatedParty>
+							<base2:individualName>
+								<gmd:LocalisedCharacterString>MAJ BRITT LARKA ABELLÁN</gmd:LocalisedCharacterString>
+							</base2:individualName>
+							<base2:organisationName>
+								<gmd:LocalisedCharacterString>MINISTERIO DE AGRICULTURA, ALIMENTACIÓN Y MEDIO AMBIENTE</gmd:LocalisedCharacterString>
+							</base2:organisationName>
+							<base2:contact>
+								<base2:Contact>
+									<base2:address>
+										<ad:AddressRepresentation>
+											<ad:adminUnit>
+												<gn:GeographicalName>
+													<gn:language>spa</gn:language>
+													<gn:nativeness>endonym</gn:nativeness>
+													<gn:nameStatus xsi:nil="true" />
+													<gn:sourceOfName xsi:nil="true" />
+													<gn:pronunciation xsi:nil="true" />
+													<gn:spelling>
+														<gn:SpellingOfName>
+															<gn:text>PLAZA SAN JUAN DE LA CRUZ, S/N   28071  MADRID, MADRID</gn:text>
+															<gn:script xsi:nil="true" />
+														</gn:SpellingOfName>
+													</gn:spelling>
+												</gn:GeographicalName>
+											</ad:adminUnit>
+											<ad:locatorDesignator>Spain</ad:locatorDesignator>
+										</ad:AddressRepresentation>
+									</base2:address>
+									<base2:electronicMailAddress>mblarka@magrama.es</base2:electronicMailAddress>
+									<base2:telephoneVoice>915975428</base2:telephoneVoice>
+									<base2:website>http://www.magrama.gob.es/es/</base2:website>
+								</base2:Contact>
+							</base2:contact>
+						</base2:RelatedParty>
+					</ef:responsibleParty>
+					<ef:observingCapability>
+						<ef:ObservingCapability gml:id="ModelObservingCapability_fa177e21-7d52-4e4b-b65a-80eb5e1bc53f">
+							<ef:observingTime>
+								<gml:TimePeriod gml:id="TimePeriod_e7775825-e255-4e2c-ba43-0b3ae86d0d8b">
+									<gml:beginPosition>2013-01-01T00:00:00+00:00</gml:beginPosition>
+									<gml:endPosition>2013-12-31T24:00:00+00:00</gml:endPosition>
+								</gml:TimePeriod>
+							</ef:observingTime>
+							<ef:processType xlink:href="http://inspire.ec.europa.eu/codeList/ProcessTypeValue/process" />
+							<ef:resultNature xlink:href="http://inspire.ec.europa.eu/codelist/ResultNatureValue/simulated" />
+							<ef:procedure xlink:href="ES.BDCA.AQD/OBP_ES_EO_NI_H_TV_aMean_2013" />
+							<ef:featureOfInterest xlink:href="ES.BDCA.AQD/MOA_ES" />
+							<ef:observedProperty xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5015" />
+						</ef:ObservingCapability>
+					</ef:observingCapability>
+					<ef:organisationLevel xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/organisationallevel/national" />
+					<aqd:environmentalObjective>
+						<aqd:EnvironmentalObjective>
+							<aqd:objectiveType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/TV" />
+							<aqd:reportingMetric xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean" />
+							<aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H" />
+						</aqd:EnvironmentalObjective>
+					</aqd:environmentalObjective>
+					<aqd:assessmentType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/objective" />
+					<aqd:zone nilReason="inapplicable" />
+				</aqd:AQD_Model>
+			</aqd:content>
+			<aqd:content>
+				<aqd:AQD_Model gml:id="OBE_ES_EO_O3_H_LTO_daysAbove_2013_ac418d9d-2a63-489e-8d73-1c64b460d126">
+					<ef:inspireId>
+						<base:Identifier>
+							<base:localId>OBE_ES_EO_O3_H_LTO_daysAbove_2013</base:localId>
+							<base:namespace>ES.BDCA.AQD</base:namespace>
+							<base:versionId>First version 2013</base:versionId>
+						</base:Identifier>
+					</ef:inspireId>
+					<ef:name>EO</ef:name>
+					<ef:mediaMonitored xlink:href="http://dd.eionet.europa.eu/vocabulary/common/environmentaldomain/air" />
+					<ef:responsibleParty>
+						<base2:RelatedParty>
+							<base2:individualName>
+								<gmd:LocalisedCharacterString>MAJ BRITT LARKA ABELLÁN</gmd:LocalisedCharacterString>
+							</base2:individualName>
+							<base2:organisationName>
+								<gmd:LocalisedCharacterString>MINISTERIO DE AGRICULTURA, ALIMENTACIÓN Y MEDIO AMBIENTE</gmd:LocalisedCharacterString>
+							</base2:organisationName>
+							<base2:contact>
+								<base2:Contact>
+									<base2:address>
+										<ad:AddressRepresentation>
+											<ad:adminUnit>
+												<gn:GeographicalName>
+													<gn:language>spa</gn:language>
+													<gn:nativeness>endonym</gn:nativeness>
+													<gn:nameStatus xsi:nil="true" />
+													<gn:sourceOfName xsi:nil="true" />
+													<gn:pronunciation xsi:nil="true" />
+													<gn:spelling>
+														<gn:SpellingOfName>
+															<gn:text>PLAZA SAN JUAN DE LA CRUZ, S/N   28071  MADRID, MADRID</gn:text>
+															<gn:script xsi:nil="true" />
+														</gn:SpellingOfName>
+													</gn:spelling>
+												</gn:GeographicalName>
+											</ad:adminUnit>
+											<ad:locatorDesignator>Spain</ad:locatorDesignator>
+										</ad:AddressRepresentation>
+									</base2:address>
+									<base2:electronicMailAddress>mblarka@magrama.es</base2:electronicMailAddress>
+									<base2:telephoneVoice>915975428</base2:telephoneVoice>
+									<base2:website>http://www.magrama.gob.es/es/</base2:website>
+								</base2:Contact>
+							</base2:contact>
+						</base2:RelatedParty>
+					</ef:responsibleParty>
+					<ef:observingCapability>
+						<ef:ObservingCapability gml:id="ModelObservingCapability_976ea4d7-5968-49a5-8e40-683b9c482d27">
+							<ef:observingTime>
+								<gml:TimePeriod gml:id="TimePeriod_8bd76c10-4da4-46a4-b902-91996dcdb977">
+									<gml:beginPosition>2013-01-01T00:00:00+00:00</gml:beginPosition>
+									<gml:endPosition>2013-12-31T24:00:00+00:00</gml:endPosition>
+								</gml:TimePeriod>
+							</ef:observingTime>
+							<ef:processType xlink:href="http://inspire.ec.europa.eu/codeList/ProcessTypeValue/process" />
+							<ef:resultNature xlink:href="http://inspire.ec.europa.eu/codelist/ResultNatureValue/simulated" />
+							<ef:procedure xlink:href="ES.BDCA.AQD/OBP_ES_EO_O3_H_LTO_daysAbove_2013" />
+							<ef:featureOfInterest xlink:href="ES.BDCA.AQD/MOA_ES" />
+							<ef:observedProperty xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/7" />
+						</ef:ObservingCapability>
+					</ef:observingCapability>
+					<ef:organisationLevel xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/organisationallevel/national" />
+					<aqd:environmentalObjective>
+						<aqd:EnvironmentalObjective>
+							<aqd:objectiveType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LTO" />
+							<aqd:reportingMetric xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/daysAbove" />
+							<aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H" />
+						</aqd:EnvironmentalObjective>
+					</aqd:environmentalObjective>
+					<aqd:assessmentType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/objective" />
+					<aqd:zone nilReason="inapplicable" />
+				</aqd:AQD_Model>
+			</aqd:content>
+			<aqd:content>
+				<aqd:AQD_Model gml:id="OBE_ES_EO_NO2_H_LV_aMean_2013_20147f29-000a-42c7-a023-b5423129821d">
+					<ef:inspireId>
+						<base:Identifier>
+							<base:localId>OBE_ES_EO_NO2_H_LV_aMean_2013</base:localId>
+							<base:namespace>ES.BDCA.AQD</base:namespace>
+							<base:versionId>First version 2013</base:versionId>
+						</base:Identifier>
+					</ef:inspireId>
+					<ef:name>EO</ef:name>
+					<ef:mediaMonitored xlink:href="http://dd.eionet.europa.eu/vocabulary/common/environmentaldomain/air" />
+					<ef:responsibleParty>
+						<base2:RelatedParty>
+							<base2:individualName>
+								<gmd:LocalisedCharacterString>MAJ BRITT LARKA ABELLÁN</gmd:LocalisedCharacterString>
+							</base2:individualName>
+							<base2:organisationName>
+								<gmd:LocalisedCharacterString>MINISTERIO DE AGRICULTURA, ALIMENTACIÓN Y MEDIO AMBIENTE</gmd:LocalisedCharacterString>
+							</base2:organisationName>
+							<base2:contact>
+								<base2:Contact>
+									<base2:address>
+										<ad:AddressRepresentation>
+											<ad:adminUnit>
+												<gn:GeographicalName>
+													<gn:language>spa</gn:language>
+													<gn:nativeness>endonym</gn:nativeness>
+													<gn:nameStatus xsi:nil="true" />
+													<gn:sourceOfName xsi:nil="true" />
+													<gn:pronunciation xsi:nil="true" />
+													<gn:spelling>
+														<gn:SpellingOfName>
+															<gn:text>PLAZA SAN JUAN DE LA CRUZ, S/N   28071  MADRID, MADRID</gn:text>
+															<gn:script xsi:nil="true" />
+														</gn:SpellingOfName>
+													</gn:spelling>
+												</gn:GeographicalName>
+											</ad:adminUnit>
+											<ad:locatorDesignator>Spain</ad:locatorDesignator>
+										</ad:AddressRepresentation>
+									</base2:address>
+									<base2:electronicMailAddress>mblarka@magrama.es</base2:electronicMailAddress>
+									<base2:telephoneVoice>915975428</base2:telephoneVoice>
+									<base2:website>http://www.magrama.gob.es/es/</base2:website>
+								</base2:Contact>
+							</base2:contact>
+						</base2:RelatedParty>
+					</ef:responsibleParty>
+					<ef:observingCapability>
+						<ef:ObservingCapability gml:id="ModelObservingCapability_bb3bf8b8-ee69-4150-bf5d-6c4bcdce88e8">
+							<ef:observingTime>
+								<gml:TimePeriod gml:id="TimePeriod_fc91b628-3d2a-409e-8986-dbc66498b5b9">
+									<gml:beginPosition>2013-01-01T00:00:00+00:00</gml:beginPosition>
+									<gml:endPosition>2013-12-31T24:00:00+00:00</gml:endPosition>
+								</gml:TimePeriod>
+							</ef:observingTime>
+							<ef:processType xlink:href="http://inspire.ec.europa.eu/codeList/ProcessTypeValue/process" />
+							<ef:resultNature xlink:href="http://inspire.ec.europa.eu/codelist/ResultNatureValue/simulated" />
+							<ef:procedure xlink:href="ES.BDCA.AQD/OBP_ES_EO_NO2_H_LV_aMean_2013" />
+							<ef:featureOfInterest xlink:href="ES.BDCA.AQD/MOA_ES" />
+							<ef:observedProperty xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/8" />
+						</ef:ObservingCapability>
+					</ef:observingCapability>
+					<ef:organisationLevel xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/organisationallevel/national" />
+					<aqd:environmentalObjective>
+						<aqd:EnvironmentalObjective>
+							<aqd:objectiveType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV" />
+							<aqd:reportingMetric xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean" />
+							<aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H" />
+						</aqd:EnvironmentalObjective>
+					</aqd:environmentalObjective>
+					<aqd:assessmentType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/objective" />
+					<aqd:zone nilReason="inapplicable" />
+				</aqd:AQD_Model>
+			</aqd:content>
+			<aqd:content>
+				<aqd:AQD_Model gml:id="OBE_ES_EO_SO2_H_LV_hrsAbove_2013_662cfe6f-21b3-4549-8712-5645276c099a">
+					<ef:inspireId>
+						<base:Identifier>
+							<base:localId>OBE_ES_EO_SO2_H_LV_hrsAbove_2013</base:localId>
+							<base:namespace>ES.BDCA.AQD</base:namespace>
+							<base:versionId>First version 2013</base:versionId>
+						</base:Identifier>
+					</ef:inspireId>
+					<ef:name>EO</ef:name>
+					<ef:mediaMonitored xlink:href="http://dd.eionet.europa.eu/vocabulary/common/environmentaldomain/air" />
+					<ef:responsibleParty>
+						<base2:RelatedParty>
+							<base2:individualName>
+								<gmd:LocalisedCharacterString>MAJ BRITT LARKA ABELLÁN</gmd:LocalisedCharacterString>
+							</base2:individualName>
+							<base2:organisationName>
+								<gmd:LocalisedCharacterString>MINISTERIO DE AGRICULTURA, ALIMENTACIÓN Y MEDIO AMBIENTE</gmd:LocalisedCharacterString>
+							</base2:organisationName>
+							<base2:contact>
+								<base2:Contact>
+									<base2:address>
+										<ad:AddressRepresentation>
+											<ad:adminUnit>
+												<gn:GeographicalName>
+													<gn:language>spa</gn:language>
+													<gn:nativeness>endonym</gn:nativeness>
+													<gn:nameStatus xsi:nil="true" />
+													<gn:sourceOfName xsi:nil="true" />
+													<gn:pronunciation xsi:nil="true" />
+													<gn:spelling>
+														<gn:SpellingOfName>
+															<gn:text>PLAZA SAN JUAN DE LA CRUZ, S/N   28071  MADRID, MADRID</gn:text>
+															<gn:script xsi:nil="true" />
+														</gn:SpellingOfName>
+													</gn:spelling>
+												</gn:GeographicalName>
+											</ad:adminUnit>
+											<ad:locatorDesignator>Spain</ad:locatorDesignator>
+										</ad:AddressRepresentation>
+									</base2:address>
+									<base2:electronicMailAddress>mblarka@magrama.es</base2:electronicMailAddress>
+									<base2:telephoneVoice>915975428</base2:telephoneVoice>
+									<base2:website>http://www.magrama.gob.es/es/</base2:website>
+								</base2:Contact>
+							</base2:contact>
+						</base2:RelatedParty>
+					</ef:responsibleParty>
+					<ef:observingCapability>
+						<ef:ObservingCapability gml:id="ModelObservingCapability_9f4e181c-061f-426d-b7ff-8427493d3ba2">
+							<ef:observingTime>
+								<gml:TimePeriod gml:id="TimePeriod_f8ef3e8c-d135-456f-8e26-a9588b8ab9f8">
+									<gml:beginPosition>2013-01-01T00:00:00+00:00</gml:beginPosition>
+									<gml:endPosition>2013-12-31T24:00:00+00:00</gml:endPosition>
+								</gml:TimePeriod>
+							</ef:observingTime>
+							<ef:processType xlink:href="http://inspire.ec.europa.eu/codeList/ProcessTypeValue/process" />
+							<ef:resultNature xlink:href="http://inspire.ec.europa.eu/codelist/ResultNatureValue/simulated" />
+							<ef:procedure xlink:href="ES.BDCA.AQD/OBP_ES_EO_SO2_H_LV_hrsAbove_2013" />
+							<ef:featureOfInterest xlink:href="ES.BDCA.AQD/MOA_ES" />
+							<ef:observedProperty xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1" />
+						</ef:ObservingCapability>
+					</ef:observingCapability>
+					<ef:organisationLevel xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/organisationallevel/national" />
+					<aqd:environmentalObjective>
+						<aqd:EnvironmentalObjective>
+							<aqd:objectiveType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV" />
+							<aqd:reportingMetric xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/hrsAbove" />
+							<aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H" />
+						</aqd:EnvironmentalObjective>
+					</aqd:environmentalObjective>
+					<aqd:assessmentType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/objective" />
+					<aqd:zone nilReason="inapplicable" />
+				</aqd:AQD_Model>
+			</aqd:content>
+			<aqd:content>
+				<aqd:AQD_Model gml:id="OBE_ES_EO_O3_V_LTO_AOT40c_2013_a81d1111-9c9c-4fec-bbe4-eefa8eb1f810">
+					<ef:inspireId>
+						<base:Identifier>
+							<base:localId>OBE_ES_EO_O3_V_LTO_AOT40c_2013</base:localId>
+							<base:namespace>ES.BDCA.AQD</base:namespace>
+							<base:versionId>First version 2013</base:versionId>
+						</base:Identifier>
+					</ef:inspireId>
+					<ef:name>EO</ef:name>
+					<ef:mediaMonitored xlink:href="http://dd.eionet.europa.eu/vocabulary/common/environmentaldomain/air" />
+					<ef:responsibleParty>
+						<base2:RelatedParty>
+							<base2:individualName>
+								<gmd:LocalisedCharacterString>MAJ BRITT LARKA ABELLÁN</gmd:LocalisedCharacterString>
+							</base2:individualName>
+							<base2:organisationName>
+								<gmd:LocalisedCharacterString>MINISTERIO DE AGRICULTURA, ALIMENTACIÓN Y MEDIO AMBIENTE</gmd:LocalisedCharacterString>
+							</base2:organisationName>
+							<base2:contact>
+								<base2:Contact>
+									<base2:address>
+										<ad:AddressRepresentation>
+											<ad:adminUnit>
+												<gn:GeographicalName>
+													<gn:language>spa</gn:language>
+													<gn:nativeness>endonym</gn:nativeness>
+													<gn:nameStatus xsi:nil="true" />
+													<gn:sourceOfName xsi:nil="true" />
+													<gn:pronunciation xsi:nil="true" />
+													<gn:spelling>
+														<gn:SpellingOfName>
+															<gn:text>PLAZA SAN JUAN DE LA CRUZ, S/N   28071  MADRID, MADRID</gn:text>
+															<gn:script xsi:nil="true" />
+														</gn:SpellingOfName>
+													</gn:spelling>
+												</gn:GeographicalName>
+											</ad:adminUnit>
+											<ad:locatorDesignator>Spain</ad:locatorDesignator>
+										</ad:AddressRepresentation>
+									</base2:address>
+									<base2:electronicMailAddress>mblarka@magrama.es</base2:electronicMailAddress>
+									<base2:telephoneVoice>915975428</base2:telephoneVoice>
+									<base2:website>http://www.magrama.gob.es/es/</base2:website>
+								</base2:Contact>
+							</base2:contact>
+						</base2:RelatedParty>
+					</ef:responsibleParty>
+					<ef:observingCapability>
+						<ef:ObservingCapability gml:id="ModelObservingCapability_407c56b0-562f-4781-a8db-05bea1c2e03f">
+							<ef:observingTime>
+								<gml:TimePeriod gml:id="TimePeriod_043da818-3cca-4958-9ffd-0a8753e0718b">
+									<gml:beginPosition>2013-01-01T00:00:00+00:00</gml:beginPosition>
+									<gml:endPosition>2013-12-31T24:00:00+00:00</gml:endPosition>
+								</gml:TimePeriod>
+							</ef:observingTime>
+							<ef:processType xlink:href="http://inspire.ec.europa.eu/codeList/ProcessTypeValue/process" />
+							<ef:resultNature xlink:href="http://inspire.ec.europa.eu/codelist/ResultNatureValue/simulated" />
+							<ef:procedure xlink:href="ES.BDCA.AQD/OBP_ES_EO_O3_V_LTO_AOT40c_2013" />
+							<ef:featureOfInterest xlink:href="ES.BDCA.AQD/MOA_ES" />
+							<ef:observedProperty xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/7" />
+						</ef:ObservingCapability>
+					</ef:observingCapability>
+					<ef:organisationLevel xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/organisationallevel/national" />
+					<aqd:environmentalObjective>
+						<aqd:EnvironmentalObjective>
+							<aqd:objectiveType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LTO" />
+							<aqd:reportingMetric xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/AOT40c" />
+							<aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V" />
+						</aqd:EnvironmentalObjective>
+					</aqd:environmentalObjective>
+					<aqd:assessmentType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/objective" />
+					<aqd:zone nilReason="inapplicable" />
+				</aqd:AQD_Model>
+			</aqd:content>
+			<aqd:content>
+				<aqd:AQD_Model gml:id="OBE_ES_EO_O3_V_TV_AOT40c-5yr_2013_cd196174-741c-41d4-a09b-8d2db98c9e7c">
+					<ef:inspireId>
+						<base:Identifier>
+							<base:localId>OBE_ES_EO_O3_V_TV_AOT40c-5yr_2013</base:localId>
+							<base:namespace>ES.BDCA.AQD</base:namespace>
+							<base:versionId>First version 2013</base:versionId>
+						</base:Identifier>
+					</ef:inspireId>
+					<ef:name>EO</ef:name>
+					<ef:mediaMonitored xlink:href="http://dd.eionet.europa.eu/vocabulary/common/environmentaldomain/air" />
+					<ef:responsibleParty>
+						<base2:RelatedParty>
+							<base2:individualName>
+								<gmd:LocalisedCharacterString>MAJ BRITT LARKA ABELLÁN</gmd:LocalisedCharacterString>
+							</base2:individualName>
+							<base2:organisationName>
+								<gmd:LocalisedCharacterString>MINISTERIO DE AGRICULTURA, ALIMENTACIÓN Y MEDIO AMBIENTE</gmd:LocalisedCharacterString>
+							</base2:organisationName>
+							<base2:contact>
+								<base2:Contact>
+									<base2:address>
+										<ad:AddressRepresentation>
+											<ad:adminUnit>
+												<gn:GeographicalName>
+													<gn:language>spa</gn:language>
+													<gn:nativeness>endonym</gn:nativeness>
+													<gn:nameStatus xsi:nil="true" />
+													<gn:sourceOfName xsi:nil="true" />
+													<gn:pronunciation xsi:nil="true" />
+													<gn:spelling>
+														<gn:SpellingOfName>
+															<gn:text>PLAZA SAN JUAN DE LA CRUZ, S/N   28071  MADRID, MADRID</gn:text>
+															<gn:script xsi:nil="true" />
+														</gn:SpellingOfName>
+													</gn:spelling>
+												</gn:GeographicalName>
+											</ad:adminUnit>
+											<ad:locatorDesignator>Spain</ad:locatorDesignator>
+										</ad:AddressRepresentation>
+									</base2:address>
+									<base2:electronicMailAddress>mblarka@magrama.es</base2:electronicMailAddress>
+									<base2:telephoneVoice>915975428</base2:telephoneVoice>
+									<base2:website>http://www.magrama.gob.es/es/</base2:website>
+								</base2:Contact>
+							</base2:contact>
+						</base2:RelatedParty>
+					</ef:responsibleParty>
+					<ef:observingCapability>
+						<ef:ObservingCapability gml:id="ModelObservingCapability_11d14f60-6629-4310-8227-6a8d20328bb8">
+							<ef:observingTime>
+								<gml:TimePeriod gml:id="TimePeriod_4976bbec-310a-4ef2-8c7f-91173c45f29f">
+									<gml:beginPosition>2013-01-01T00:00:00+00:00</gml:beginPosition>
+									<gml:endPosition>2013-12-31T24:00:00+00:00</gml:endPosition>
+								</gml:TimePeriod>
+							</ef:observingTime>
+							<ef:processType xlink:href="http://inspire.ec.europa.eu/codeList/ProcessTypeValue/process" />
+							<ef:resultNature xlink:href="http://inspire.ec.europa.eu/codelist/ResultNatureValue/simulated" />
+							<ef:procedure xlink:href="ES.BDCA.AQD/OBP_ES_EO_O3_V_TV_AOT40c-5yr_2013" />
+							<ef:featureOfInterest xlink:href="ES.BDCA.AQD/MOA_ES" />
+							<ef:observedProperty xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/7" />
+						</ef:ObservingCapability>
+					</ef:observingCapability>
+					<ef:organisationLevel xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/organisationallevel/national" />
+					<aqd:environmentalObjective>
+						<aqd:EnvironmentalObjective>
+							<aqd:objectiveType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/TV" />
+							<aqd:reportingMetric xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/AOT40c-5yr" />
+							<aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V" />
+						</aqd:EnvironmentalObjective>
+					</aqd:environmentalObjective>
+					<aqd:assessmentType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/objective" />
+					<aqd:zone nilReason="inapplicable" />
+				</aqd:AQD_Model>
+			</aqd:content>
+			<aqd:content>
+				<aqd:AQD_Model gml:id="OBE_ES_EO_O3_H_TV_daysAbove-3yr_2013_211d8ee9-3327-404c-bea0-4fbe0fc17e23">
+					<ef:inspireId>
+						<base:Identifier>
+							<base:localId>OBE_ES_EO_O3_H_TV_daysAbove-3yr_2013</base:localId>
+							<base:namespace>ES.BDCA.AQD</base:namespace>
+							<base:versionId>First version 2013</base:versionId>
+						</base:Identifier>
+					</ef:inspireId>
+					<ef:name>EO</ef:name>
+					<ef:mediaMonitored xlink:href="http://dd.eionet.europa.eu/vocabulary/common/environmentaldomain/air" />
+					<ef:responsibleParty>
+						<base2:RelatedParty>
+							<base2:individualName>
+								<gmd:LocalisedCharacterString>MAJ BRITT LARKA ABELLÁN</gmd:LocalisedCharacterString>
+							</base2:individualName>
+							<base2:organisationName>
+								<gmd:LocalisedCharacterString>MINISTERIO DE AGRICULTURA, ALIMENTACIÓN Y MEDIO AMBIENTE</gmd:LocalisedCharacterString>
+							</base2:organisationName>
+							<base2:contact>
+								<base2:Contact>
+									<base2:address>
+										<ad:AddressRepresentation>
+											<ad:adminUnit>
+												<gn:GeographicalName>
+													<gn:language>spa</gn:language>
+													<gn:nativeness>endonym</gn:nativeness>
+													<gn:nameStatus xsi:nil="true" />
+													<gn:sourceOfName xsi:nil="true" />
+													<gn:pronunciation xsi:nil="true" />
+													<gn:spelling>
+														<gn:SpellingOfName>
+															<gn:text>PLAZA SAN JUAN DE LA CRUZ, S/N   28071  MADRID, MADRID</gn:text>
+															<gn:script xsi:nil="true" />
+														</gn:SpellingOfName>
+													</gn:spelling>
+												</gn:GeographicalName>
+											</ad:adminUnit>
+											<ad:locatorDesignator>Spain</ad:locatorDesignator>
+										</ad:AddressRepresentation>
+									</base2:address>
+									<base2:electronicMailAddress>mblarka@magrama.es</base2:electronicMailAddress>
+									<base2:telephoneVoice>915975428</base2:telephoneVoice>
+									<base2:website>http://www.magrama.gob.es/es/</base2:website>
+								</base2:Contact>
+							</base2:contact>
+						</base2:RelatedParty>
+					</ef:responsibleParty>
+					<ef:observingCapability>
+						<ef:ObservingCapability gml:id="ModelObservingCapability_9b67e811-a04a-4e91-9c5a-0e7e4ac306cd">
+							<ef:observingTime>
+								<gml:TimePeriod gml:id="TimePeriod_5f8ca2ab-a6fc-42f0-af8e-e8b10d748257">
+									<gml:beginPosition>2013-01-01T00:00:00+00:00</gml:beginPosition>
+									<gml:endPosition>2013-12-31T24:00:00+00:00</gml:endPosition>
+								</gml:TimePeriod>
+							</ef:observingTime>
+							<ef:processType xlink:href="http://inspire.ec.europa.eu/codeList/ProcessTypeValue/process" />
+							<ef:resultNature xlink:href="http://inspire.ec.europa.eu/codelist/ResultNatureValue/simulated" />
+							<ef:procedure xlink:href="ES.BDCA.AQD/OBP_ES_EO_O3_H_TV_daysAbove-3yr_2013" />
+							<ef:featureOfInterest xlink:href="ES.BDCA.AQD/MOA_ES" />
+							<ef:observedProperty xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/7" />
+						</ef:ObservingCapability>
+					</ef:observingCapability>
+					<ef:organisationLevel xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/organisationallevel/national" />
+					<aqd:environmentalObjective>
+						<aqd:EnvironmentalObjective>
+							<aqd:objectiveType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/TV" />
+							<aqd:reportingMetric xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/daysAbove-3yr" />
+							<aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H" />
+						</aqd:EnvironmentalObjective>
+					</aqd:environmentalObjective>
+					<aqd:assessmentType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/objective" />
+					<aqd:zone nilReason="inapplicable" />
+				</aqd:AQD_Model>
+			</aqd:content>
+			<aqd:content>
+				<aqd:AQD_Model gml:id="OBE_ES_EO_C6H6_H_LV_aMean_2013_11cb5e69-b747-48d1-8237-cb3ac6a12d7d">
+					<ef:inspireId>
+						<base:Identifier>
+							<base:localId>OBE_ES_EO_C6H6_H_LV_aMean_2013</base:localId>
+							<base:namespace>ES.BDCA.AQD</base:namespace>
+							<base:versionId>First version 2013</base:versionId>
+						</base:Identifier>
+					</ef:inspireId>
+					<ef:name>EO</ef:name>
+					<ef:mediaMonitored xlink:href="http://dd.eionet.europa.eu/vocabulary/common/environmentaldomain/air" />
+					<ef:responsibleParty>
+						<base2:RelatedParty>
+							<base2:individualName>
+								<gmd:LocalisedCharacterString>MAJ BRITT LARKA ABELLÁN</gmd:LocalisedCharacterString>
+							</base2:individualName>
+							<base2:organisationName>
+								<gmd:LocalisedCharacterString>MINISTERIO DE AGRICULTURA, ALIMENTACIÓN Y MEDIO AMBIENTE</gmd:LocalisedCharacterString>
+							</base2:organisationName>
+							<base2:contact>
+								<base2:Contact>
+									<base2:address>
+										<ad:AddressRepresentation>
+											<ad:adminUnit>
+												<gn:GeographicalName>
+													<gn:language>spa</gn:language>
+													<gn:nativeness>endonym</gn:nativeness>
+													<gn:nameStatus xsi:nil="true" />
+													<gn:sourceOfName xsi:nil="true" />
+													<gn:pronunciation xsi:nil="true" />
+													<gn:spelling>
+														<gn:SpellingOfName>
+															<gn:text>PLAZA SAN JUAN DE LA CRUZ, S/N   28071  MADRID, MADRID</gn:text>
+															<gn:script xsi:nil="true" />
+														</gn:SpellingOfName>
+													</gn:spelling>
+												</gn:GeographicalName>
+											</ad:adminUnit>
+											<ad:locatorDesignator>Spain</ad:locatorDesignator>
+										</ad:AddressRepresentation>
+									</base2:address>
+									<base2:electronicMailAddress>mblarka@magrama.es</base2:electronicMailAddress>
+									<base2:telephoneVoice>915975428</base2:telephoneVoice>
+									<base2:website>http://www.magrama.gob.es/es/</base2:website>
+								</base2:Contact>
+							</base2:contact>
+						</base2:RelatedParty>
+					</ef:responsibleParty>
+					<ef:observingCapability>
+						<ef:ObservingCapability gml:id="ModelObservingCapability_04be3935-0094-4445-ac31-659a166ba582">
+							<ef:observingTime>
+								<gml:TimePeriod gml:id="TimePeriod_811d15a0-8576-47ec-aeeb-9554398f02c9">
+									<gml:beginPosition>2013-01-01T00:00:00+00:00</gml:beginPosition>
+									<gml:endPosition>2013-12-31T24:00:00+00:00</gml:endPosition>
+								</gml:TimePeriod>
+							</ef:observingTime>
+							<ef:processType xlink:href="http://inspire.ec.europa.eu/codeList/ProcessTypeValue/process" />
+							<ef:resultNature xlink:href="http://inspire.ec.europa.eu/codelist/ResultNatureValue/simulated" />
+							<ef:procedure xlink:href="ES.BDCA.AQD/OBP_ES_EO_C6H6_H_LV_aMean_2013" />
+							<ef:featureOfInterest xlink:href="ES.BDCA.AQD/MOA_ES" />
+							<ef:observedProperty xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/20" />
+						</ef:ObservingCapability>
+					</ef:observingCapability>
+					<ef:organisationLevel xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/organisationallevel/national" />
+					<aqd:environmentalObjective>
+						<aqd:EnvironmentalObjective>
+							<aqd:objectiveType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV" />
+							<aqd:reportingMetric xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean" />
+							<aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H" />
+						</aqd:EnvironmentalObjective>
+					</aqd:environmentalObjective>
+					<aqd:assessmentType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/objective" />
+					<aqd:zone nilReason="inapplicable" />
+				</aqd:AQD_Model>
+			</aqd:content>
+			<aqd:content>
+				<aqd:AQD_Model gml:id="OBE_ES_EO_BAP_H_TV_aMean_2013_29b32c6a-5cad-450d-8b8b-15bb1eec8de1">
+					<ef:inspireId>
+						<base:Identifier>
+							<base:localId>OBE_ES_EO_BAP_H_TV_aMean_2013</base:localId>
+							<base:namespace>ES.BDCA.AQD</base:namespace>
+							<base:versionId>First version 2013</base:versionId>
+						</base:Identifier>
+					</ef:inspireId>
+					<ef:name>EO</ef:name>
+					<ef:mediaMonitored xlink:href="http://dd.eionet.europa.eu/vocabulary/common/environmentaldomain/air" />
+					<ef:responsibleParty>
+						<base2:RelatedParty>
+							<base2:individualName>
+								<gmd:LocalisedCharacterString>MAJ BRITT LARKA ABELLÁN</gmd:LocalisedCharacterString>
+							</base2:individualName>
+							<base2:organisationName>
+								<gmd:LocalisedCharacterString>MINISTERIO DE AGRICULTURA, ALIMENTACIÓN Y MEDIO AMBIENTE</gmd:LocalisedCharacterString>
+							</base2:organisationName>
+							<base2:contact>
+								<base2:Contact>
+									<base2:address>
+										<ad:AddressRepresentation>
+											<ad:adminUnit>
+												<gn:GeographicalName>
+													<gn:language>spa</gn:language>
+													<gn:nativeness>endonym</gn:nativeness>
+													<gn:nameStatus xsi:nil="true" />
+													<gn:sourceOfName xsi:nil="true" />
+													<gn:pronunciation xsi:nil="true" />
+													<gn:spelling>
+														<gn:SpellingOfName>
+															<gn:text>PLAZA SAN JUAN DE LA CRUZ, S/N   28071  MADRID, MADRID</gn:text>
+															<gn:script xsi:nil="true" />
+														</gn:SpellingOfName>
+													</gn:spelling>
+												</gn:GeographicalName>
+											</ad:adminUnit>
+											<ad:locatorDesignator>Spain</ad:locatorDesignator>
+										</ad:AddressRepresentation>
+									</base2:address>
+									<base2:electronicMailAddress>mblarka@magrama.es</base2:electronicMailAddress>
+									<base2:telephoneVoice>915975428</base2:telephoneVoice>
+									<base2:website>http://www.magrama.gob.es/es/</base2:website>
+								</base2:Contact>
+							</base2:contact>
+						</base2:RelatedParty>
+					</ef:responsibleParty>
+					<ef:observingCapability>
+						<ef:ObservingCapability gml:id="ModelObservingCapability_f0e8be25-b247-4139-a0cd-67630b6e9531">
+							<ef:observingTime>
+								<gml:TimePeriod gml:id="TimePeriod_b05b6004-52b5-4864-b428-e4ce734b08e3">
+									<gml:beginPosition>2013-01-01T00:00:00+00:00</gml:beginPosition>
+									<gml:endPosition>2013-12-31T24:00:00+00:00</gml:endPosition>
+								</gml:TimePeriod>
+							</ef:observingTime>
+							<ef:processType xlink:href="http://inspire.ec.europa.eu/codeList/ProcessTypeValue/process" />
+							<ef:resultNature xlink:href="http://inspire.ec.europa.eu/codelist/ResultNatureValue/simulated" />
+							<ef:procedure xlink:href="ES.BDCA.AQD/OBP_ES_EO_BAP_H_TV_aMean_2013" />
+							<ef:featureOfInterest xlink:href="ES.BDCA.AQD/MOA_ES" />
+							<ef:observedProperty xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5029" />
+						</ef:ObservingCapability>
+					</ef:observingCapability>
+					<ef:organisationLevel xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/organisationallevel/national" />
+					<aqd:environmentalObjective>
+						<aqd:EnvironmentalObjective>
+							<aqd:objectiveType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/TV" />
+							<aqd:reportingMetric xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean" />
+							<aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H" />
+						</aqd:EnvironmentalObjective>
+					</aqd:environmentalObjective>
+					<aqd:assessmentType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/objective" />
+					<aqd:zone nilReason="inapplicable" />
+				</aqd:AQD_Model>
+			</aqd:content>
+			<aqd:content>
+				<aqd:AQD_Model gml:id="OBE_ES_EO_As_H_TV_aMean_2013_b9592aee-622e-4a09-96bc-404b49a035e8">
+					<ef:inspireId>
+						<base:Identifier>
+							<base:localId>OBE_ES_EO_As_H_TV_aMean_2013</base:localId>
+							<base:namespace>ES.BDCA.AQD</base:namespace>
+							<base:versionId>First version 2013</base:versionId>
+						</base:Identifier>
+					</ef:inspireId>
+					<ef:name>EO</ef:name>
+					<ef:mediaMonitored xlink:href="http://dd.eionet.europa.eu/vocabulary/common/environmentaldomain/air" />
+					<ef:responsibleParty>
+						<base2:RelatedParty>
+							<base2:individualName>
+								<gmd:LocalisedCharacterString>MAJ BRITT LARKA ABELLÁN</gmd:LocalisedCharacterString>
+							</base2:individualName>
+							<base2:organisationName>
+								<gmd:LocalisedCharacterString>MINISTERIO DE AGRICULTURA, ALIMENTACIÓN Y MEDIO AMBIENTE</gmd:LocalisedCharacterString>
+							</base2:organisationName>
+							<base2:contact>
+								<base2:Contact>
+									<base2:address>
+										<ad:AddressRepresentation>
+											<ad:adminUnit>
+												<gn:GeographicalName>
+													<gn:language>spa</gn:language>
+													<gn:nativeness>endonym</gn:nativeness>
+													<gn:nameStatus xsi:nil="true" />
+													<gn:sourceOfName xsi:nil="true" />
+													<gn:pronunciation xsi:nil="true" />
+													<gn:spelling>
+														<gn:SpellingOfName>
+															<gn:text>PLAZA SAN JUAN DE LA CRUZ, S/N   28071  MADRID, MADRID</gn:text>
+															<gn:script xsi:nil="true" />
+														</gn:SpellingOfName>
+													</gn:spelling>
+												</gn:GeographicalName>
+											</ad:adminUnit>
+											<ad:locatorDesignator>Spain</ad:locatorDesignator>
+										</ad:AddressRepresentation>
+									</base2:address>
+									<base2:electronicMailAddress>mblarka@magrama.es</base2:electronicMailAddress>
+									<base2:telephoneVoice>915975428</base2:telephoneVoice>
+									<base2:website>http://www.magrama.gob.es/es/</base2:website>
+								</base2:Contact>
+							</base2:contact>
+						</base2:RelatedParty>
+					</ef:responsibleParty>
+					<ef:observingCapability>
+						<ef:ObservingCapability gml:id="ModelObservingCapability_30eabc16-15de-45b0-b37b-a7d691556f22">
+							<ef:observingTime>
+								<gml:TimePeriod gml:id="TimePeriod_c6707672-c451-425c-bb79-1774e9540445">
+									<gml:beginPosition>2013-01-01T00:00:00+00:00</gml:beginPosition>
+									<gml:endPosition>2013-12-31T24:00:00+00:00</gml:endPosition>
+								</gml:TimePeriod>
+							</ef:observingTime>
+							<ef:processType xlink:href="http://inspire.ec.europa.eu/codeList/ProcessTypeValue/process" />
+							<ef:resultNature xlink:href="http://inspire.ec.europa.eu/codelist/ResultNatureValue/simulated" />
+							<ef:procedure xlink:href="ES.BDCA.AQD/OBP_ES_EO_As_H_TV_aMean_2013" />
+							<ef:featureOfInterest xlink:href="ES.BDCA.AQD/MOA_ES" />
+							<ef:observedProperty xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5018" />
+						</ef:ObservingCapability>
+					</ef:observingCapability>
+					<ef:organisationLevel xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/organisationallevel/national" />
+					<aqd:environmentalObjective>
+						<aqd:EnvironmentalObjective>
+							<aqd:objectiveType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/TV" />
+							<aqd:reportingMetric xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean" />
+							<aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H" />
+						</aqd:EnvironmentalObjective>
+					</aqd:environmentalObjective>
+					<aqd:assessmentType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/objective" />
+					<aqd:zone nilReason="inapplicable" />
+				</aqd:AQD_Model>
+			</aqd:content>
+			<aqd:content>
+				<aqd:AQD_Model gml:id="OBE_ES_EO_PM10_H_LV_daysAbove_2013_6e853592-589d-49ca-8284-c61d081fc5ff">
+					<ef:inspireId>
+						<base:Identifier>
+							<base:localId>OBE_ES_EO_PM10_H_LV_daysAbove_2013</base:localId>
+							<base:namespace>ES.BDCA.AQD</base:namespace>
+							<base:versionId>First version 2013</base:versionId>
+						</base:Identifier>
+					</ef:inspireId>
+					<ef:name>EO</ef:name>
+					<ef:mediaMonitored xlink:href="http://dd.eionet.europa.eu/vocabulary/common/environmentaldomain/air" />
+					<ef:responsibleParty>
+						<base2:RelatedParty>
+							<base2:individualName>
+								<gmd:LocalisedCharacterString>MAJ BRITT LARKA ABELLÁN</gmd:LocalisedCharacterString>
+							</base2:individualName>
+							<base2:organisationName>
+								<gmd:LocalisedCharacterString>MINISTERIO DE AGRICULTURA, ALIMENTACIÓN Y MEDIO AMBIENTE</gmd:LocalisedCharacterString>
+							</base2:organisationName>
+							<base2:contact>
+								<base2:Contact>
+									<base2:address>
+										<ad:AddressRepresentation>
+											<ad:adminUnit>
+												<gn:GeographicalName>
+													<gn:language>spa</gn:language>
+													<gn:nativeness>endonym</gn:nativeness>
+													<gn:nameStatus xsi:nil="true" />
+													<gn:sourceOfName xsi:nil="true" />
+													<gn:pronunciation xsi:nil="true" />
+													<gn:spelling>
+														<gn:SpellingOfName>
+															<gn:text>PLAZA SAN JUAN DE LA CRUZ, S/N   28071  MADRID, MADRID</gn:text>
+															<gn:script xsi:nil="true" />
+														</gn:SpellingOfName>
+													</gn:spelling>
+												</gn:GeographicalName>
+											</ad:adminUnit>
+											<ad:locatorDesignator>Spain</ad:locatorDesignator>
+										</ad:AddressRepresentation>
+									</base2:address>
+									<base2:electronicMailAddress>mblarka@magrama.es</base2:electronicMailAddress>
+									<base2:telephoneVoice>915975428</base2:telephoneVoice>
+									<base2:website>http://www.magrama.gob.es/es/</base2:website>
+								</base2:Contact>
+							</base2:contact>
+						</base2:RelatedParty>
+					</ef:responsibleParty>
+					<ef:observingCapability>
+						<ef:ObservingCapability gml:id="ModelObservingCapability_841069c9-fbc7-4cc0-8445-af140a072759">
+							<ef:observingTime>
+								<gml:TimePeriod gml:id="TimePeriod_fb5b405a-415e-4d86-af05-2755c22efb19">
+									<gml:beginPosition>2013-01-01T00:00:00+00:00</gml:beginPosition>
+									<gml:endPosition>2013-12-31T24:00:00+00:00</gml:endPosition>
+								</gml:TimePeriod>
+							</ef:observingTime>
+							<ef:processType xlink:href="http://inspire.ec.europa.eu/codeList/ProcessTypeValue/process" />
+							<ef:resultNature xlink:href="http://inspire.ec.europa.eu/codelist/ResultNatureValue/simulated" />
+							<ef:procedure xlink:href="ES.BDCA.AQD/OBP_ES_EO_PM10_H_LV_daysAbove_2013" />
+							<ef:featureOfInterest xlink:href="ES.BDCA.AQD/MOA_ES" />
+							<ef:observedProperty xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5" />
+						</ef:ObservingCapability>
+					</ef:observingCapability>
+					<ef:organisationLevel xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/organisationallevel/national" />
+					<aqd:environmentalObjective>
+						<aqd:EnvironmentalObjective>
+							<aqd:objectiveType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV" />
+							<aqd:reportingMetric xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/daysAbove" />
+							<aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H" />
+						</aqd:EnvironmentalObjective>
+					</aqd:environmentalObjective>
+					<aqd:assessmentType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/objective" />
+					<aqd:zone nilReason="inapplicable" />
+				</aqd:AQD_Model>
+			</aqd:content>
+			<aqd:content>
+				<aqd:AQD_Model gml:id="OBE_ES_EO_PM10_H_LV_aMean_2013_7e5cc383-f659-4a5e-8565-b88e70940693">
+					<ef:inspireId>
+						<base:Identifier>
+							<base:localId>OBE_ES_EO_PM10_H_LV_aMean_2013</base:localId>
+							<base:namespace>ES.BDCA.AQD</base:namespace>
+							<base:versionId>First version 2013</base:versionId>
+						</base:Identifier>
+					</ef:inspireId>
+					<ef:name>EO</ef:name>
+					<ef:mediaMonitored xlink:href="http://dd.eionet.europa.eu/vocabulary/common/environmentaldomain/air" />
+					<ef:responsibleParty>
+						<base2:RelatedParty>
+							<base2:individualName>
+								<gmd:LocalisedCharacterString>MAJ BRITT LARKA ABELLÁN</gmd:LocalisedCharacterString>
+							</base2:individualName>
+							<base2:organisationName>
+								<gmd:LocalisedCharacterString>MINISTERIO DE AGRICULTURA, ALIMENTACIÓN Y MEDIO AMBIENTE</gmd:LocalisedCharacterString>
+							</base2:organisationName>
+							<base2:contact>
+								<base2:Contact>
+									<base2:address>
+										<ad:AddressRepresentation>
+											<ad:adminUnit>
+												<gn:GeographicalName>
+													<gn:language>spa</gn:language>
+													<gn:nativeness>endonym</gn:nativeness>
+													<gn:nameStatus xsi:nil="true" />
+													<gn:sourceOfName xsi:nil="true" />
+													<gn:pronunciation xsi:nil="true" />
+													<gn:spelling>
+														<gn:SpellingOfName>
+															<gn:text>PLAZA SAN JUAN DE LA CRUZ, S/N   28071  MADRID, MADRID</gn:text>
+															<gn:script xsi:nil="true" />
+														</gn:SpellingOfName>
+													</gn:spelling>
+												</gn:GeographicalName>
+											</ad:adminUnit>
+											<ad:locatorDesignator>Spain</ad:locatorDesignator>
+										</ad:AddressRepresentation>
+									</base2:address>
+									<base2:electronicMailAddress>mblarka@magrama.es</base2:electronicMailAddress>
+									<base2:telephoneVoice>915975428</base2:telephoneVoice>
+									<base2:website>http://www.magrama.gob.es/es/</base2:website>
+								</base2:Contact>
+							</base2:contact>
+						</base2:RelatedParty>
+					</ef:responsibleParty>
+					<ef:observingCapability>
+						<ef:ObservingCapability gml:id="ModelObservingCapability_2bdfa4ea-8785-44cc-b959-ee538dba81bd">
+							<ef:observingTime>
+								<gml:TimePeriod gml:id="TimePeriod_f6a8c0a8-a6e7-4960-b8ba-77a6eee39df9">
+									<gml:beginPosition>2013-01-01T00:00:00+00:00</gml:beginPosition>
+									<gml:endPosition>2013-12-31T24:00:00+00:00</gml:endPosition>
+								</gml:TimePeriod>
+							</ef:observingTime>
+							<ef:processType xlink:href="http://inspire.ec.europa.eu/codeList/ProcessTypeValue/process" />
+							<ef:resultNature xlink:href="http://inspire.ec.europa.eu/codelist/ResultNatureValue/simulated" />
+							<ef:procedure xlink:href="ES.BDCA.AQD/OBP_ES_EO_PM10_H_LV_aMean_2013" />
+							<ef:featureOfInterest xlink:href="ES.BDCA.AQD/MOA_ES" />
+							<ef:observedProperty xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5" />
+						</ef:ObservingCapability>
+					</ef:observingCapability>
+					<ef:organisationLevel xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/organisationallevel/national" />
+					<aqd:environmentalObjective>
+						<aqd:EnvironmentalObjective>
+							<aqd:objectiveType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV" />
+							<aqd:reportingMetric xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean" />
+							<aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H" />
+						</aqd:EnvironmentalObjective>
+					</aqd:environmentalObjective>
+					<aqd:assessmentType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/objective" />
+					<aqd:zone nilReason="inapplicable" />
+				</aqd:AQD_Model>
+			</aqd:content>
+			<aqd:content>
+				<aqd:AQD_Model gml:id="OBE_ES_EO_NO2_H_LV_hrsAbove_2013_23cf932f-f4f7-4f7f-941e-50bf6ee5f69a">
+					<ef:inspireId>
+						<base:Identifier>
+							<base:localId>OBE_ES_EO_NO2_H_LV_hrsAbove_2013</base:localId>
+							<base:namespace>ES.BDCA.AQD</base:namespace>
+							<base:versionId>First version 2013</base:versionId>
+						</base:Identifier>
+					</ef:inspireId>
+					<ef:name>EO</ef:name>
+					<ef:mediaMonitored xlink:href="http://dd.eionet.europa.eu/vocabulary/common/environmentaldomain/air" />
+					<ef:responsibleParty>
+						<base2:RelatedParty>
+							<base2:individualName>
+								<gmd:LocalisedCharacterString>MAJ BRITT LARKA ABELLÁN</gmd:LocalisedCharacterString>
+							</base2:individualName>
+							<base2:organisationName>
+								<gmd:LocalisedCharacterString>MINISTERIO DE AGRICULTURA, ALIMENTACIÓN Y MEDIO AMBIENTE</gmd:LocalisedCharacterString>
+							</base2:organisationName>
+							<base2:contact>
+								<base2:Contact>
+									<base2:address>
+										<ad:AddressRepresentation>
+											<ad:adminUnit>
+												<gn:GeographicalName>
+													<gn:language>spa</gn:language>
+													<gn:nativeness>endonym</gn:nativeness>
+													<gn:nameStatus xsi:nil="true" />
+													<gn:sourceOfName xsi:nil="true" />
+													<gn:pronunciation xsi:nil="true" />
+													<gn:spelling>
+														<gn:SpellingOfName>
+															<gn:text>PLAZA SAN JUAN DE LA CRUZ, S/N   28071  MADRID, MADRID</gn:text>
+															<gn:script xsi:nil="true" />
+														</gn:SpellingOfName>
+													</gn:spelling>
+												</gn:GeographicalName>
+											</ad:adminUnit>
+											<ad:locatorDesignator>Spain</ad:locatorDesignator>
+										</ad:AddressRepresentation>
+									</base2:address>
+									<base2:electronicMailAddress>mblarka@magrama.es</base2:electronicMailAddress>
+									<base2:telephoneVoice>915975428</base2:telephoneVoice>
+									<base2:website>http://www.magrama.gob.es/es/</base2:website>
+								</base2:Contact>
+							</base2:contact>
+						</base2:RelatedParty>
+					</ef:responsibleParty>
+					<ef:observingCapability>
+						<ef:ObservingCapability gml:id="ModelObservingCapability_f1817e27-fcc6-4200-8ae3-2ee4778b53c0">
+							<ef:observingTime>
+								<gml:TimePeriod gml:id="TimePeriod_68f0a16a-bc5f-40f0-aa28-21e1325fa475">
+									<gml:beginPosition>2013-01-01T00:00:00+00:00</gml:beginPosition>
+									<gml:endPosition>2013-12-31T24:00:00+00:00</gml:endPosition>
+								</gml:TimePeriod>
+							</ef:observingTime>
+							<ef:processType xlink:href="http://inspire.ec.europa.eu/codeList/ProcessTypeValue/process" />
+							<ef:resultNature xlink:href="http://inspire.ec.europa.eu/codelist/ResultNatureValue/simulated" />
+							<ef:procedure xlink:href="ES.BDCA.AQD/OBP_ES_EO_NO2_H_LV_hrsAbove_2013" />
+							<ef:featureOfInterest xlink:href="ES.BDCA.AQD/MOA_ES" />
+							<ef:observedProperty xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/8" />
+						</ef:ObservingCapability>
+					</ef:observingCapability>
+					<ef:organisationLevel xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/organisationallevel/national" />
+					<aqd:environmentalObjective>
+						<aqd:EnvironmentalObjective>
+							<aqd:objectiveType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV" />
+							<aqd:reportingMetric xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/hrsAbove" />
+							<aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H" />
+						</aqd:EnvironmentalObjective>
+					</aqd:environmentalObjective>
+					<aqd:assessmentType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/objective" />
+					<aqd:zone nilReason="inapplicable" />
+				</aqd:AQD_Model>
+			</aqd:content>
+			<aqd:content>
+				<aqd:AQD_Model gml:id="OBE_ES_CSIC_NS_PM10_H_LV_daysAbove_2013_86f83bf1-202d-4f04-b2ab-c993e6e052e5">
+					<ef:inspireId>
+						<base:Identifier>
+							<base:localId>OBE_ES_CSIC_NS_PM10_H_LV_daysAbove_2013</base:localId>
+							<base:namespace>ES.BDCA.AQD</base:namespace>
+							<base:versionId>First version 2013</base:versionId>
+						</base:Identifier>
+					</ef:inspireId>
+					<ef:name>CSIC_NS</ef:name>
+					<ef:mediaMonitored xlink:href="http://dd.eionet.europa.eu/vocabulary/common/environmentaldomain/air" />
+					<ef:responsibleParty>
+						<base2:RelatedParty>
+							<base2:individualName>
+								<gmd:LocalisedCharacterString>XAVIER QUEROL</gmd:LocalisedCharacterString>
+							</base2:individualName>
+							<base2:organisationName>
+								<gmd:LocalisedCharacterString>CENTRO SUPERIOR DE INVESTIGACIONES CIENTÍFICAS (CSIC) </gmd:LocalisedCharacterString>
+							</base2:organisationName>
+							<base2:contact>
+								<base2:Contact>
+									<base2:address>
+										<ad:AddressRepresentation>
+											<ad:adminUnit>
+												<gn:GeographicalName>
+													<gn:language>spa</gn:language>
+													<gn:nativeness>endonym</gn:nativeness>
+													<gn:nameStatus xsi:nil="true" />
+													<gn:sourceOfName xsi:nil="true" />
+													<gn:pronunciation xsi:nil="true" />
+													<gn:spelling>
+														<gn:SpellingOfName>
+															<gn:text>C/ Jordi Girona 18-26</gn:text>
+															<gn:script xsi:nil="true" />
+														</gn:SpellingOfName>
+													</gn:spelling>
+												</gn:GeographicalName>
+											</ad:adminUnit>
+											<ad:locatorDesignator>Spain</ad:locatorDesignator>
+										</ad:AddressRepresentation>
+									</base2:address>
+									<base2:electronicMailAddress>xavier.querol@idaea.csic.es</base2:electronicMailAddress>
+									<base2:telephoneVoice>934006149</base2:telephoneVoice>
+									<base2:website>http://www.idaea.csic.es</base2:website>
+								</base2:Contact>
+							</base2:contact>
+						</base2:RelatedParty>
+					</ef:responsibleParty>
+					<ef:observingCapability>
+						<ef:ObservingCapability gml:id="ModelObservingCapability_f87986ba-efa1-40d1-808e-362662113cd6">
+							<ef:observingTime>
+								<gml:TimePeriod gml:id="TimePeriod_59411e8a-45cb-4f00-ab4d-11f956aaa86a">
+									<gml:beginPosition>2013-01-01T00:00:00+00:00</gml:beginPosition>
+									<gml:endPosition>2013-12-31T24:00:00+00:00</gml:endPosition>
+								</gml:TimePeriod>
+							</ef:observingTime>
+							<ef:processType xlink:href="http://inspire.ec.europa.eu/codeList/ProcessTypeValue/process" />
+							<ef:resultNature xlink:href="http://inspire.ec.europa.eu/codelist/ResultNatureValue/simulated" />
+							<ef:procedure xlink:href="ES.BDCA.AQD/OBP_ES_CSIC_NS_PM10_H_LV_daysAbove_2013" />
+							<ef:featureOfInterest xlink:href="ES.BDCA.AQD/MOA_ES" />
+							<ef:observedProperty xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5" />
+						</ef:ObservingCapability>
+					</ef:observingCapability>
+					<ef:involvedIn xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/samplingpointpurpose/NS" />
+					<ef:organisationLevel xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/organisationallevel/national" />
+					<aqd:environmentalObjective>
+						<aqd:EnvironmentalObjective>
+							<aqd:objectiveType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV" />
+							<aqd:reportingMetric xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/daysAbove" />
+							<aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H" />
+						</aqd:EnvironmentalObjective>
+					</aqd:environmentalObjective>
+					<aqd:assessmentType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/objective" />
+					<aqd:zone nilReason="inapplicable" />
+				</aqd:AQD_Model>
+			</aqd:content>
+			<aqd:content>
+				<aqd:AQD_Model gml:id="OBE_ES_CSIC_NS_PM10_H_LV_aMean_2013_00e1db59-7e12-499a-8415-840316bdd34c">
+					<ef:inspireId>
+						<base:Identifier>
+							<base:localId>OBE_ES_CSIC_NS_PM10_H_LV_aMean_2013</base:localId>
+							<base:namespace>ES.BDCA.AQD</base:namespace>
+							<base:versionId>First version 2013</base:versionId>
+						</base:Identifier>
+					</ef:inspireId>
+					<ef:name>CSIC_NS</ef:name>
+					<ef:mediaMonitored xlink:href="http://dd.eionet.europa.eu/vocabulary/common/environmentaldomain/air" />
+					<ef:responsibleParty>
+						<base2:RelatedParty>
+							<base2:individualName>
+								<gmd:LocalisedCharacterString>XAVIER QUEROL</gmd:LocalisedCharacterString>
+							</base2:individualName>
+							<base2:organisationName>
+								<gmd:LocalisedCharacterString>CENTRO SUPERIOR DE INVESTIGACIONES CIENTÍFICAS (CSIC) </gmd:LocalisedCharacterString>
+							</base2:organisationName>
+							<base2:contact>
+								<base2:Contact>
+									<base2:address>
+										<ad:AddressRepresentation>
+											<ad:adminUnit>
+												<gn:GeographicalName>
+													<gn:language>spa</gn:language>
+													<gn:nativeness>endonym</gn:nativeness>
+													<gn:nameStatus xsi:nil="true" />
+													<gn:sourceOfName xsi:nil="true" />
+													<gn:pronunciation xsi:nil="true" />
+													<gn:spelling>
+														<gn:SpellingOfName>
+															<gn:text>C/ Jordi Girona 18-26</gn:text>
+															<gn:script xsi:nil="true" />
+														</gn:SpellingOfName>
+													</gn:spelling>
+												</gn:GeographicalName>
+											</ad:adminUnit>
+											<ad:locatorDesignator>Spain</ad:locatorDesignator>
+										</ad:AddressRepresentation>
+									</base2:address>
+									<base2:electronicMailAddress>xavier.querol@idaea.csic.es</base2:electronicMailAddress>
+									<base2:telephoneVoice>934006149</base2:telephoneVoice>
+									<base2:website>http://www.idaea.csic.es</base2:website>
+								</base2:Contact>
+							</base2:contact>
+						</base2:RelatedParty>
+					</ef:responsibleParty>
+					<ef:observingCapability>
+						<ef:ObservingCapability gml:id="ModelObservingCapability_2bb7a0f5-ca6c-4d1b-a0bd-f8771056cc0d">
+							<ef:observingTime>
+								<gml:TimePeriod gml:id="TimePeriod_6d3d574f-98d2-4c9d-a766-60a34b29e817">
+									<gml:beginPosition>2013-01-01T00:00:00+00:00</gml:beginPosition>
+									<gml:endPosition>2013-12-31T24:00:00+00:00</gml:endPosition>
+								</gml:TimePeriod>
+							</ef:observingTime>
+							<ef:processType xlink:href="http://inspire.ec.europa.eu/codeList/ProcessTypeValue/process" />
+							<ef:resultNature xlink:href="http://inspire.ec.europa.eu/codelist/ResultNatureValue/simulated" />
+							<ef:procedure xlink:href="ES.BDCA.AQD/OBP_ES_CSIC_NS_PM10_H_LV_aMean_2013" />
+							<ef:featureOfInterest xlink:href="ES.BDCA.AQD/MOA_ES" />
+							<ef:observedProperty xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5" />
+						</ef:ObservingCapability>
+					</ef:observingCapability>
+					<ef:involvedIn xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/samplingpointpurpose/NS" />
+					<ef:organisationLevel xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/organisationallevel/national" />
+					<aqd:environmentalObjective>
+						<aqd:EnvironmentalObjective>
+							<aqd:objectiveType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV" />
+							<aqd:reportingMetric xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean" />
+							<aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H" />
+						</aqd:EnvironmentalObjective>
+					</aqd:environmentalObjective>
+					<aqd:assessmentType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/objective" />
+					<aqd:zone nilReason="inapplicable" />
+				</aqd:AQD_Model>
+			</aqd:content>
+			<aqd:content>
+				<aqd:AQD_Model gml:id="MOD_ES_CIEMAT_PM10_H_LV_aMean_2013_fbaf5398-4eed-4b06-bdc7-ba0ace0739dc">
+					<ef:inspireId>
+						<base:Identifier>
+							<base:localId>MOD_ES_CIEMAT_PM10_H_LV_aMean_2013</base:localId>
+							<base:namespace>ES.BDCA.AQD</base:namespace>
+							<base:versionId>First version 2013</base:versionId>
+						</base:Identifier>
+					</ef:inspireId>
+					<ef:name>CIEMAT</ef:name>
+					<ef:mediaMonitored xlink:href="http://dd.eionet.europa.eu/vocabulary/common/environmentaldomain/air" />
+					<ef:responsibleParty>
+						<base2:RelatedParty>
+							<base2:individualName>
+								<gmd:LocalisedCharacterString>FERNANDO MARTÍN</gmd:LocalisedCharacterString>
+							</base2:individualName>
+							<base2:organisationName>
+								<gmd:LocalisedCharacterString>CENTRO DE INVESTIGACIONES ENERGÉTICAS, MEDIOAMBIENTALES Y TECNOLÓGICAS (CIEMAT)</gmd:LocalisedCharacterString>
+							</base2:organisationName>
+							<base2:contact>
+								<base2:Contact>
+									<base2:address>
+										<ad:AddressRepresentation>
+											<ad:adminUnit>
+												<gn:GeographicalName>
+													<gn:language>spa</gn:language>
+													<gn:nativeness>endonym</gn:nativeness>
+													<gn:nameStatus xsi:nil="true" />
+													<gn:sourceOfName xsi:nil="true" />
+													<gn:pronunciation xsi:nil="true" />
+													<gn:spelling>
+														<gn:SpellingOfName>
+															<gn:text>AV/ COMPLUTENSE 40 (ANTIGUO 22) EDIFICIO 3</gn:text>
+															<gn:script xsi:nil="true" />
+														</gn:SpellingOfName>
+													</gn:spelling>
+												</gn:GeographicalName>
+											</ad:adminUnit>
+											<ad:locatorDesignator>Spain</ad:locatorDesignator>
+										</ad:AddressRepresentation>
+									</base2:address>
+									<base2:electronicMailAddress>fernando.martin@ciemat.es</base2:electronicMailAddress>
+									<base2:telephoneVoice>913466065</base2:telephoneVoice>
+									<base2:website>http://www.ciemat.es/portal.do?IDM=162&amp;NM=4</base2:website>
+								</base2:Contact>
+							</base2:contact>
+						</base2:RelatedParty>
+					</ef:responsibleParty>
+					<ef:observingCapability>
+						<ef:ObservingCapability gml:id="ModelObservingCapability_2bc3318b-aa55-4f5f-98c5-d727fa1c0f15">
+							<ef:observingTime>
+								<gml:TimePeriod gml:id="TimePeriod_b51ba40e-91eb-485b-be63-81079a577550">
+									<gml:beginPosition>2013-01-01T00:00:00+00:00</gml:beginPosition>
+									<gml:endPosition>2013-12-31T24:00:00+00:00</gml:endPosition>
+								</gml:TimePeriod>
+							</ef:observingTime>
+							<ef:processType xlink:href="http://inspire.ec.europa.eu/codeList/ProcessTypeValue/process" />
+							<ef:resultNature xlink:href="http://inspire.ec.europa.eu/codelist/ResultNatureValue/simulated" />
+							<ef:procedure xlink:href="ES.BDCA.AQD/MODP_ES_CIEMAT_PM10_H_LV_aMean_2013" />
+							<ef:featureOfInterest xlink:href="ES.BDCA.AQD/MOA_ES_WITHOUT_CANARY_ISLANDS" />
+							<ef:observedProperty xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5" />
+						</ef:ObservingCapability>
+					</ef:observingCapability>
+					<ef:organisationLevel xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/organisationallevel/national" />
+					<aqd:environmentalObjective>
+						<aqd:EnvironmentalObjective>
+							<aqd:objectiveType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV" />
+							<aqd:reportingMetric xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean" />
+							<aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H" />
+						</aqd:EnvironmentalObjective>
+					</aqd:environmentalObjective>
+					<aqd:assessmentType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/model" />
+					<aqd:zone nilReason="inapplicable" />
+				</aqd:AQD_Model>
+			</aqd:content>
+			<aqd:content>
+				<aqd:AQD_Model gml:id="MOD_ES_CIEMAT_O3_V_TV_AOT40c-5yr_2013_be9f8993-6ee4-46ab-b290-4033e0ab35f4">
+					<ef:inspireId>
+						<base:Identifier>
+							<base:localId>MOD_ES_CIEMAT_O3_V_TV_AOT40c-5yr_2013</base:localId>
+							<base:namespace>ES.BDCA.AQD</base:namespace>
+							<base:versionId>First version 2013</base:versionId>
+						</base:Identifier>
+					</ef:inspireId>
+					<ef:name>CIEMAT</ef:name>
+					<ef:mediaMonitored xlink:href="http://dd.eionet.europa.eu/vocabulary/common/environmentaldomain/air" />
+					<ef:responsibleParty>
+						<base2:RelatedParty>
+							<base2:individualName>
+								<gmd:LocalisedCharacterString>FERNANDO MARTÍN</gmd:LocalisedCharacterString>
+							</base2:individualName>
+							<base2:organisationName>
+								<gmd:LocalisedCharacterString>CENTRO DE INVESTIGACIONES ENERGÉTICAS, MEDIOAMBIENTALES Y TECNOLÓGICAS (CIEMAT)</gmd:LocalisedCharacterString>
+							</base2:organisationName>
+							<base2:contact>
+								<base2:Contact>
+									<base2:address>
+										<ad:AddressRepresentation>
+											<ad:adminUnit>
+												<gn:GeographicalName>
+													<gn:language>spa</gn:language>
+													<gn:nativeness>endonym</gn:nativeness>
+													<gn:nameStatus xsi:nil="true" />
+													<gn:sourceOfName xsi:nil="true" />
+													<gn:pronunciation xsi:nil="true" />
+													<gn:spelling>
+														<gn:SpellingOfName>
+															<gn:text>AV/ COMPLUTENSE 40 (ANTIGUO 22) EDIFICIO 3</gn:text>
+															<gn:script xsi:nil="true" />
+														</gn:SpellingOfName>
+													</gn:spelling>
+												</gn:GeographicalName>
+											</ad:adminUnit>
+											<ad:locatorDesignator>Spain</ad:locatorDesignator>
+										</ad:AddressRepresentation>
+									</base2:address>
+									<base2:electronicMailAddress>fernando.martin@ciemat.es</base2:electronicMailAddress>
+									<base2:telephoneVoice>913466065</base2:telephoneVoice>
+									<base2:website>http://www.ciemat.es/portal.do?IDM=162&amp;NM=4</base2:website>
+								</base2:Contact>
+							</base2:contact>
+						</base2:RelatedParty>
+					</ef:responsibleParty>
+					<ef:observingCapability>
+						<ef:ObservingCapability gml:id="ModelObservingCapability_d9b4fd15-d457-4601-bb02-a6fa39d9a0bd">
+							<ef:observingTime>
+								<gml:TimePeriod gml:id="TimePeriod_f1803525-7c43-4ea6-bfb4-4c72f3365c47">
+									<gml:beginPosition>2013-01-01T00:00:00+00:00</gml:beginPosition>
+									<gml:endPosition>2013-12-31T24:00:00+00:00</gml:endPosition>
+								</gml:TimePeriod>
+							</ef:observingTime>
+							<ef:processType xlink:href="http://inspire.ec.europa.eu/codeList/ProcessTypeValue/process" />
+							<ef:resultNature xlink:href="http://inspire.ec.europa.eu/codelist/ResultNatureValue/simulated" />
+							<ef:procedure xlink:href="ES.BDCA.AQD/MODP_ES_CIEMAT_O3_V_TV_AOT40c-5yr_2013" />
+							<ef:featureOfInterest xlink:href="ES.BDCA.AQD/MOA_ES_WITHOUT_CANARY_ISLANDS" />
+							<ef:observedProperty xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/7" />
+						</ef:ObservingCapability>
+					</ef:observingCapability>
+					<ef:organisationLevel xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/organisationallevel/national" />
+					<aqd:environmentalObjective>
+						<aqd:EnvironmentalObjective>
+							<aqd:objectiveType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/TV" />
+							<aqd:reportingMetric xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/AOT40c-5yr" />
+							<aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V" />
+						</aqd:EnvironmentalObjective>
+					</aqd:environmentalObjective>
+					<aqd:assessmentType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/model" />
+					<aqd:zone nilReason="inapplicable" />
+				</aqd:AQD_Model>
+			</aqd:content>
+			<aqd:content>
+				<aqd:AQD_Model gml:id="MOD_ES_CIEMAT_SO2_V_CL_aMean_2013_83433030-fb15-40a9-98ea-92313f368059">
+					<ef:inspireId>
+						<base:Identifier>
+							<base:localId>MOD_ES_CIEMAT_SO2_V_CL_aMean_2013</base:localId>
+							<base:namespace>ES.BDCA.AQD</base:namespace>
+							<base:versionId>First version 2013</base:versionId>
+						</base:Identifier>
+					</ef:inspireId>
+					<ef:name>CIEMAT</ef:name>
+					<ef:mediaMonitored xlink:href="http://dd.eionet.europa.eu/vocabulary/common/environmentaldomain/air" />
+					<ef:responsibleParty>
+						<base2:RelatedParty>
+							<base2:individualName>
+								<gmd:LocalisedCharacterString>FERNANDO MARTÍN</gmd:LocalisedCharacterString>
+							</base2:individualName>
+							<base2:organisationName>
+								<gmd:LocalisedCharacterString>CENTRO DE INVESTIGACIONES ENERGÉTICAS, MEDIOAMBIENTALES Y TECNOLÓGICAS (CIEMAT)</gmd:LocalisedCharacterString>
+							</base2:organisationName>
+							<base2:contact>
+								<base2:Contact>
+									<base2:address>
+										<ad:AddressRepresentation>
+											<ad:adminUnit>
+												<gn:GeographicalName>
+													<gn:language>spa</gn:language>
+													<gn:nativeness>endonym</gn:nativeness>
+													<gn:nameStatus xsi:nil="true" />
+													<gn:sourceOfName xsi:nil="true" />
+													<gn:pronunciation xsi:nil="true" />
+													<gn:spelling>
+														<gn:SpellingOfName>
+															<gn:text>AV/ COMPLUTENSE 40 (ANTIGUO 22) EDIFICIO 3</gn:text>
+															<gn:script xsi:nil="true" />
+														</gn:SpellingOfName>
+													</gn:spelling>
+												</gn:GeographicalName>
+											</ad:adminUnit>
+											<ad:locatorDesignator>Spain</ad:locatorDesignator>
+										</ad:AddressRepresentation>
+									</base2:address>
+									<base2:electronicMailAddress>fernando.martin@ciemat.es</base2:electronicMailAddress>
+									<base2:telephoneVoice>913466065</base2:telephoneVoice>
+									<base2:website>http://www.ciemat.es/portal.do?IDM=162&amp;NM=4</base2:website>
+								</base2:Contact>
+							</base2:contact>
+						</base2:RelatedParty>
+					</ef:responsibleParty>
+					<ef:observingCapability>
+						<ef:ObservingCapability gml:id="ModelObservingCapability_4b36b835-f4a1-4757-a3f6-d2c3afe1357a">
+							<ef:observingTime>
+								<gml:TimePeriod gml:id="TimePeriod_8f37dbd0-73aa-4b4f-b540-78417402e9d9">
+									<gml:beginPosition>2013-01-01T00:00:00+00:00</gml:beginPosition>
+									<gml:endPosition>2013-12-31T24:00:00+00:00</gml:endPosition>
+								</gml:TimePeriod>
+							</ef:observingTime>
+							<ef:processType xlink:href="http://inspire.ec.europa.eu/codeList/ProcessTypeValue/process" />
+							<ef:resultNature xlink:href="http://inspire.ec.europa.eu/codelist/ResultNatureValue/simulated" />
+							<ef:procedure xlink:href="ES.BDCA.AQD/MODP_ES_CIEMAT_SO2_V_CL_aMean_2013" />
+							<ef:featureOfInterest xlink:href="ES.BDCA.AQD/MOA_ES_WITHOUT_CANARY_ISLANDS" />
+							<ef:observedProperty xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1" />
+						</ef:ObservingCapability>
+					</ef:observingCapability>
+					<ef:organisationLevel xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/organisationallevel/national" />
+					<aqd:environmentalObjective>
+						<aqd:EnvironmentalObjective>
+							<aqd:objectiveType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/CL" />
+							<aqd:reportingMetric xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean" />
+							<aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V" />
+						</aqd:EnvironmentalObjective>
+					</aqd:environmentalObjective>
+					<aqd:assessmentType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/model" />
+					<aqd:zone nilReason="inapplicable" />
+				</aqd:AQD_Model>
+			</aqd:content>
+			<aqd:content>
+				<aqd:AQD_Model gml:id="MOD_ES_CIEMAT_SO2_V_CL_wMean_2013_50bfb75c-e1b7-47ee-ac31-482bc31035cc">
+					<ef:inspireId>
+						<base:Identifier>
+							<base:localId>MOD_ES_CIEMAT_SO2_V_CL_wMean_2013</base:localId>
+							<base:namespace>ES.BDCA.AQD</base:namespace>
+							<base:versionId>First version 2013</base:versionId>
+						</base:Identifier>
+					</ef:inspireId>
+					<ef:name>CIEMAT</ef:name>
+					<ef:mediaMonitored xlink:href="http://dd.eionet.europa.eu/vocabulary/common/environmentaldomain/air" />
+					<ef:responsibleParty>
+						<base2:RelatedParty>
+							<base2:individualName>
+								<gmd:LocalisedCharacterString>FERNANDO MARTÍN</gmd:LocalisedCharacterString>
+							</base2:individualName>
+							<base2:organisationName>
+								<gmd:LocalisedCharacterString>CENTRO DE INVESTIGACIONES ENERGÉTICAS, MEDIOAMBIENTALES Y TECNOLÓGICAS (CIEMAT)</gmd:LocalisedCharacterString>
+							</base2:organisationName>
+							<base2:contact>
+								<base2:Contact>
+									<base2:address>
+										<ad:AddressRepresentation>
+											<ad:adminUnit>
+												<gn:GeographicalName>
+													<gn:language>spa</gn:language>
+													<gn:nativeness>endonym</gn:nativeness>
+													<gn:nameStatus xsi:nil="true" />
+													<gn:sourceOfName xsi:nil="true" />
+													<gn:pronunciation xsi:nil="true" />
+													<gn:spelling>
+														<gn:SpellingOfName>
+															<gn:text>AV/ COMPLUTENSE 40 (ANTIGUO 22) EDIFICIO 3</gn:text>
+															<gn:script xsi:nil="true" />
+														</gn:SpellingOfName>
+													</gn:spelling>
+												</gn:GeographicalName>
+											</ad:adminUnit>
+											<ad:locatorDesignator>Spain</ad:locatorDesignator>
+										</ad:AddressRepresentation>
+									</base2:address>
+									<base2:electronicMailAddress>fernando.martin@ciemat.es</base2:electronicMailAddress>
+									<base2:telephoneVoice>913466065</base2:telephoneVoice>
+									<base2:website>http://www.ciemat.es/portal.do?IDM=162&amp;NM=4</base2:website>
+								</base2:Contact>
+							</base2:contact>
+						</base2:RelatedParty>
+					</ef:responsibleParty>
+					<ef:observingCapability>
+						<ef:ObservingCapability gml:id="ModelObservingCapability_df3ca2cc-ae3c-4d7b-af0c-00af311648d8">
+							<ef:observingTime>
+								<gml:TimePeriod gml:id="TimePeriod_90433f04-7a32-42e2-b373-48b6e78d4add">
+									<gml:beginPosition>2013-01-01T00:00:00+00:00</gml:beginPosition>
+									<gml:endPosition>2013-12-31T24:00:00+00:00</gml:endPosition>
+								</gml:TimePeriod>
+							</ef:observingTime>
+							<ef:processType xlink:href="http://inspire.ec.europa.eu/codeList/ProcessTypeValue/process" />
+							<ef:resultNature xlink:href="http://inspire.ec.europa.eu/codelist/ResultNatureValue/simulated" />
+							<ef:procedure xlink:href="ES.BDCA.AQD/MODP_ES_CIEMAT_SO2_V_CL_wMean_2013" />
+							<ef:featureOfInterest xlink:href="ES.BDCA.AQD/MOA_ES_WITHOUT_CANARY_ISLANDS" />
+							<ef:observedProperty xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1" />
+						</ef:ObservingCapability>
+					</ef:observingCapability>
+					<ef:organisationLevel xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/organisationallevel/national" />
+					<aqd:environmentalObjective>
+						<aqd:EnvironmentalObjective>
+							<aqd:objectiveType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/CL" />
+							<aqd:reportingMetric xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/wMean" />
+							<aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V" />
+						</aqd:EnvironmentalObjective>
+					</aqd:environmentalObjective>
+					<aqd:assessmentType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/model" />
+					<aqd:zone nilReason="inapplicable" />
+				</aqd:AQD_Model>
+			</aqd:content>
+			<aqd:content>
+				<aqd:AQD_Model gml:id="MOD_ES_CIEMAT_SO2_H_LV_daysAbove_2013_8ce08e94-0e30-464f-9f3a-c6c66cba8558">
+					<ef:inspireId>
+						<base:Identifier>
+							<base:localId>MOD_ES_CIEMAT_SO2_H_LV_daysAbove_2013</base:localId>
+							<base:namespace>ES.BDCA.AQD</base:namespace>
+							<base:versionId>First version 2013</base:versionId>
+						</base:Identifier>
+					</ef:inspireId>
+					<ef:name>CIEMAT</ef:name>
+					<ef:mediaMonitored xlink:href="http://dd.eionet.europa.eu/vocabulary/common/environmentaldomain/air" />
+					<ef:responsibleParty>
+						<base2:RelatedParty>
+							<base2:individualName>
+								<gmd:LocalisedCharacterString>FERNANDO MARTÍN</gmd:LocalisedCharacterString>
+							</base2:individualName>
+							<base2:organisationName>
+								<gmd:LocalisedCharacterString>CENTRO DE INVESTIGACIONES ENERGÉTICAS, MEDIOAMBIENTALES Y TECNOLÓGICAS (CIEMAT)</gmd:LocalisedCharacterString>
+							</base2:organisationName>
+							<base2:contact>
+								<base2:Contact>
+									<base2:address>
+										<ad:AddressRepresentation>
+											<ad:adminUnit>
+												<gn:GeographicalName>
+													<gn:language>spa</gn:language>
+													<gn:nativeness>endonym</gn:nativeness>
+													<gn:nameStatus xsi:nil="true" />
+													<gn:sourceOfName xsi:nil="true" />
+													<gn:pronunciation xsi:nil="true" />
+													<gn:spelling>
+														<gn:SpellingOfName>
+															<gn:text>AV/ COMPLUTENSE 40 (ANTIGUO 22) EDIFICIO 3</gn:text>
+															<gn:script xsi:nil="true" />
+														</gn:SpellingOfName>
+													</gn:spelling>
+												</gn:GeographicalName>
+											</ad:adminUnit>
+											<ad:locatorDesignator>Spain</ad:locatorDesignator>
+										</ad:AddressRepresentation>
+									</base2:address>
+									<base2:electronicMailAddress>fernando.martin@ciemat.es</base2:electronicMailAddress>
+									<base2:telephoneVoice>913466065</base2:telephoneVoice>
+									<base2:website>http://www.ciemat.es/portal.do?IDM=162&amp;NM=4</base2:website>
+								</base2:Contact>
+							</base2:contact>
+						</base2:RelatedParty>
+					</ef:responsibleParty>
+					<ef:observingCapability>
+						<ef:ObservingCapability gml:id="ModelObservingCapability_5a524fc7-8078-41d9-b018-cc852ccdcbc4">
+							<ef:observingTime>
+								<gml:TimePeriod gml:id="TimePeriod_1f9304cb-c565-44c6-ba27-54c8b7dab9dd">
+									<gml:beginPosition>2013-01-01T00:00:00+00:00</gml:beginPosition>
+									<gml:endPosition>2013-12-31T24:00:00+00:00</gml:endPosition>
+								</gml:TimePeriod>
+							</ef:observingTime>
+							<ef:processType xlink:href="http://inspire.ec.europa.eu/codeList/ProcessTypeValue/process" />
+							<ef:resultNature xlink:href="http://inspire.ec.europa.eu/codelist/ResultNatureValue/simulated" />
+							<ef:procedure xlink:href="ES.BDCA.AQD/MODP_ES_CIEMAT_SO2_H_LV_daysAbove_2013" />
+							<ef:featureOfInterest xlink:href="ES.BDCA.AQD/MOA_ES_WITHOUT_CANARY_ISLANDS" />
+							<ef:observedProperty xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1" />
+						</ef:ObservingCapability>
+					</ef:observingCapability>
+					<ef:organisationLevel xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/organisationallevel/national" />
+					<aqd:environmentalObjective>
+						<aqd:EnvironmentalObjective>
+							<aqd:objectiveType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV" />
+							<aqd:reportingMetric xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/daysAbove" />
+							<aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H" />
+						</aqd:EnvironmentalObjective>
+					</aqd:environmentalObjective>
+					<aqd:assessmentType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/model" />
+					<aqd:zone nilReason="inapplicable" />
+				</aqd:AQD_Model>
+			</aqd:content>
+			<aqd:content>
+				<aqd:AQD_Model gml:id="MOD_ES_CIEMAT_PM10_H_LV_daysAbove_2013_92ff7303-23f8-4ce6-9d72-3406f88a0505">
+					<ef:inspireId>
+						<base:Identifier>
+							<base:localId>MOD_ES_CIEMAT_PM10_H_LV_daysAbove_2013</base:localId>
+							<base:namespace>ES.BDCA.AQD</base:namespace>
+							<base:versionId>First version 2013</base:versionId>
+						</base:Identifier>
+					</ef:inspireId>
+					<ef:name>CIEMAT</ef:name>
+					<ef:mediaMonitored xlink:href="http://dd.eionet.europa.eu/vocabulary/common/environmentaldomain/air" />
+					<ef:responsibleParty>
+						<base2:RelatedParty>
+							<base2:individualName>
+								<gmd:LocalisedCharacterString>FERNANDO MARTÍN</gmd:LocalisedCharacterString>
+							</base2:individualName>
+							<base2:organisationName>
+								<gmd:LocalisedCharacterString>CENTRO DE INVESTIGACIONES ENERGÉTICAS, MEDIOAMBIENTALES Y TECNOLÓGICAS (CIEMAT)</gmd:LocalisedCharacterString>
+							</base2:organisationName>
+							<base2:contact>
+								<base2:Contact>
+									<base2:address>
+										<ad:AddressRepresentation>
+											<ad:adminUnit>
+												<gn:GeographicalName>
+													<gn:language>spa</gn:language>
+													<gn:nativeness>endonym</gn:nativeness>
+													<gn:nameStatus xsi:nil="true" />
+													<gn:sourceOfName xsi:nil="true" />
+													<gn:pronunciation xsi:nil="true" />
+													<gn:spelling>
+														<gn:SpellingOfName>
+															<gn:text>AV/ COMPLUTENSE 40 (ANTIGUO 22) EDIFICIO 3</gn:text>
+															<gn:script xsi:nil="true" />
+														</gn:SpellingOfName>
+													</gn:spelling>
+												</gn:GeographicalName>
+											</ad:adminUnit>
+											<ad:locatorDesignator>Spain</ad:locatorDesignator>
+										</ad:AddressRepresentation>
+									</base2:address>
+									<base2:electronicMailAddress>fernando.martin@ciemat.es</base2:electronicMailAddress>
+									<base2:telephoneVoice>913466065</base2:telephoneVoice>
+									<base2:website>http://www.ciemat.es/portal.do?IDM=162&amp;NM=4</base2:website>
+								</base2:Contact>
+							</base2:contact>
+						</base2:RelatedParty>
+					</ef:responsibleParty>
+					<ef:observingCapability>
+						<ef:ObservingCapability gml:id="ModelObservingCapability_033f1568-27f5-4baf-97f7-8f14bc60fb32">
+							<ef:observingTime>
+								<gml:TimePeriod gml:id="TimePeriod_05e975ba-1f3b-4572-a2dd-1c75e3cce90b">
+									<gml:beginPosition>2013-01-01T00:00:00+00:00</gml:beginPosition>
+									<gml:endPosition>2013-12-31T24:00:00+00:00</gml:endPosition>
+								</gml:TimePeriod>
+							</ef:observingTime>
+							<ef:processType xlink:href="http://inspire.ec.europa.eu/codeList/ProcessTypeValue/process" />
+							<ef:resultNature xlink:href="http://inspire.ec.europa.eu/codelist/ResultNatureValue/simulated" />
+							<ef:procedure xlink:href="ES.BDCA.AQD/MODP_ES_CIEMAT_PM10_H_LV_daysAbove_2013" />
+							<ef:featureOfInterest xlink:href="ES.BDCA.AQD/MOA_ES_WITHOUT_CANARY_ISLANDS" />
+							<ef:observedProperty xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5" />
+						</ef:ObservingCapability>
+					</ef:observingCapability>
+					<ef:organisationLevel xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/organisationallevel/national" />
+					<aqd:environmentalObjective>
+						<aqd:EnvironmentalObjective>
+							<aqd:objectiveType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV" />
+							<aqd:reportingMetric xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/daysAbove" />
+							<aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H" />
+						</aqd:EnvironmentalObjective>
+					</aqd:environmentalObjective>
+					<aqd:assessmentType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/model" />
+					<aqd:zone nilReason="inapplicable" />
+				</aqd:AQD_Model>
+			</aqd:content>
+			<aqd:content>
+				<aqd:AQD_Model gml:id="MOD_ES_CIEMAT_PM2.5_H_TV_aMean_2013_3faf4879-87cc-4cff-8fe3-00986787d120">
+					<ef:inspireId>
+						<base:Identifier>
+							<base:localId>MOD_ES_CIEMAT_PM2.5_H_TV_aMean_2013</base:localId>
+							<base:namespace>ES.BDCA.AQD</base:namespace>
+							<base:versionId>First version 2013</base:versionId>
+						</base:Identifier>
+					</ef:inspireId>
+					<ef:name>CIEMAT</ef:name>
+					<ef:mediaMonitored xlink:href="http://dd.eionet.europa.eu/vocabulary/common/environmentaldomain/air" />
+					<ef:responsibleParty>
+						<base2:RelatedParty>
+							<base2:individualName>
+								<gmd:LocalisedCharacterString>FERNANDO MARTÍN</gmd:LocalisedCharacterString>
+							</base2:individualName>
+							<base2:organisationName>
+								<gmd:LocalisedCharacterString>CENTRO DE INVESTIGACIONES ENERGÉTICAS, MEDIOAMBIENTALES Y TECNOLÓGICAS (CIEMAT)</gmd:LocalisedCharacterString>
+							</base2:organisationName>
+							<base2:contact>
+								<base2:Contact>
+									<base2:address>
+										<ad:AddressRepresentation>
+											<ad:adminUnit>
+												<gn:GeographicalName>
+													<gn:language>spa</gn:language>
+													<gn:nativeness>endonym</gn:nativeness>
+													<gn:nameStatus xsi:nil="true" />
+													<gn:sourceOfName xsi:nil="true" />
+													<gn:pronunciation xsi:nil="true" />
+													<gn:spelling>
+														<gn:SpellingOfName>
+															<gn:text>AV/ COMPLUTENSE 40 (ANTIGUO 22) EDIFICIO 3</gn:text>
+															<gn:script xsi:nil="true" />
+														</gn:SpellingOfName>
+													</gn:spelling>
+												</gn:GeographicalName>
+											</ad:adminUnit>
+											<ad:locatorDesignator>Spain</ad:locatorDesignator>
+										</ad:AddressRepresentation>
+									</base2:address>
+									<base2:electronicMailAddress>fernando.martin@ciemat.es</base2:electronicMailAddress>
+									<base2:telephoneVoice>913466065</base2:telephoneVoice>
+									<base2:website>http://www.ciemat.es/portal.do?IDM=162&amp;NM=4</base2:website>
+								</base2:Contact>
+							</base2:contact>
+						</base2:RelatedParty>
+					</ef:responsibleParty>
+					<ef:observingCapability>
+						<ef:ObservingCapability gml:id="ModelObservingCapability_ff3f5f0b-1302-4218-b2c6-6527f7667b44">
+							<ef:observingTime>
+								<gml:TimePeriod gml:id="TimePeriod_39369834-da09-4743-b063-fe06a8e34b97">
+									<gml:beginPosition>2013-01-01T00:00:00+00:00</gml:beginPosition>
+									<gml:endPosition>2013-12-31T24:00:00+00:00</gml:endPosition>
+								</gml:TimePeriod>
+							</ef:observingTime>
+							<ef:processType xlink:href="http://inspire.ec.europa.eu/codeList/ProcessTypeValue/process" />
+							<ef:resultNature xlink:href="http://inspire.ec.europa.eu/codelist/ResultNatureValue/simulated" />
+							<ef:procedure xlink:href="ES.BDCA.AQD/MODP_ES_CIEMAT_PM2.5_H_TV_aMean_2013" />
+							<ef:featureOfInterest xlink:href="ES.BDCA.AQD/MOA_ES_WITHOUT_CANARY_ISLANDS" />
+							<ef:observedProperty xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/6001" />
+						</ef:ObservingCapability>
+					</ef:observingCapability>
+					<ef:organisationLevel xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/organisationallevel/national" />
+					<aqd:environmentalObjective>
+						<aqd:EnvironmentalObjective>
+							<aqd:objectiveType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/TV" />
+							<aqd:reportingMetric xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean" />
+							<aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H" />
+						</aqd:EnvironmentalObjective>
+					</aqd:environmentalObjective>
+					<aqd:assessmentType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/model" />
+					<aqd:zone nilReason="inapplicable" />
+				</aqd:AQD_Model>
+			</aqd:content>
+			<aqd:content>
+				<aqd:AQD_Model gml:id="MOD_ES_CIEMAT_O3_H_TV_daysAbove-3yr_2013_e82f5c17-b4d7-4fea-ab96-fe4a55e2ebc7">
+					<ef:inspireId>
+						<base:Identifier>
+							<base:localId>MOD_ES_CIEMAT_O3_H_TV_daysAbove-3yr_2013</base:localId>
+							<base:namespace>ES.BDCA.AQD</base:namespace>
+							<base:versionId>First version 2013</base:versionId>
+						</base:Identifier>
+					</ef:inspireId>
+					<ef:name>CIEMAT</ef:name>
+					<ef:mediaMonitored xlink:href="http://dd.eionet.europa.eu/vocabulary/common/environmentaldomain/air" />
+					<ef:responsibleParty>
+						<base2:RelatedParty>
+							<base2:individualName>
+								<gmd:LocalisedCharacterString>FERNANDO MARTÍN</gmd:LocalisedCharacterString>
+							</base2:individualName>
+							<base2:organisationName>
+								<gmd:LocalisedCharacterString>CENTRO DE INVESTIGACIONES ENERGÉTICAS, MEDIOAMBIENTALES Y TECNOLÓGICAS (CIEMAT)</gmd:LocalisedCharacterString>
+							</base2:organisationName>
+							<base2:contact>
+								<base2:Contact>
+									<base2:address>
+										<ad:AddressRepresentation>
+											<ad:adminUnit>
+												<gn:GeographicalName>
+													<gn:language>spa</gn:language>
+													<gn:nativeness>endonym</gn:nativeness>
+													<gn:nameStatus xsi:nil="true" />
+													<gn:sourceOfName xsi:nil="true" />
+													<gn:pronunciation xsi:nil="true" />
+													<gn:spelling>
+														<gn:SpellingOfName>
+															<gn:text>AV/ COMPLUTENSE 40 (ANTIGUO 22) EDIFICIO 3</gn:text>
+															<gn:script xsi:nil="true" />
+														</gn:SpellingOfName>
+													</gn:spelling>
+												</gn:GeographicalName>
+											</ad:adminUnit>
+											<ad:locatorDesignator>Spain</ad:locatorDesignator>
+										</ad:AddressRepresentation>
+									</base2:address>
+									<base2:electronicMailAddress>fernando.martin@ciemat.es</base2:electronicMailAddress>
+									<base2:telephoneVoice>913466065</base2:telephoneVoice>
+									<base2:website>http://www.ciemat.es/portal.do?IDM=162&amp;NM=4</base2:website>
+								</base2:Contact>
+							</base2:contact>
+						</base2:RelatedParty>
+					</ef:responsibleParty>
+					<ef:observingCapability>
+						<ef:ObservingCapability gml:id="ModelObservingCapability_d49b9435-d331-4f83-9167-c8cf4dee8705">
+							<ef:observingTime>
+								<gml:TimePeriod gml:id="TimePeriod_12b58be0-7dd0-43df-ba32-bb2bff9b4124">
+									<gml:beginPosition>2013-01-01T00:00:00+00:00</gml:beginPosition>
+									<gml:endPosition>2013-12-31T24:00:00+00:00</gml:endPosition>
+								</gml:TimePeriod>
+							</ef:observingTime>
+							<ef:processType xlink:href="http://inspire.ec.europa.eu/codeList/ProcessTypeValue/process" />
+							<ef:resultNature xlink:href="http://inspire.ec.europa.eu/codelist/ResultNatureValue/simulated" />
+							<ef:procedure xlink:href="ES.BDCA.AQD/MODP_ES_CIEMAT_O3_H_TV_daysAbove-3yr_2013" />
+							<ef:featureOfInterest xlink:href="ES.BDCA.AQD/MOA_ES_WITHOUT_CANARY_ISLANDS" />
+							<ef:observedProperty xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/7" />
+						</ef:ObservingCapability>
+					</ef:observingCapability>
+					<ef:organisationLevel xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/organisationallevel/national" />
+					<aqd:environmentalObjective>
+						<aqd:EnvironmentalObjective>
+							<aqd:objectiveType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/TV" />
+							<aqd:reportingMetric xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/daysAbove-3yr" />
+							<aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H" />
+						</aqd:EnvironmentalObjective>
+					</aqd:environmentalObjective>
+					<aqd:assessmentType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/model" />
+					<aqd:zone nilReason="inapplicable" />
+				</aqd:AQD_Model>
+			</aqd:content>
+			<aqd:content>
+				<aqd:AQD_Model gml:id="MOD_ES_CIEMAT_O3_H_LTO_daysAbove_2013_c43534e2-67da-40af-8830-4d086d7dbc57">
+					<ef:inspireId>
+						<base:Identifier>
+							<base:localId>MOD_ES_CIEMAT_O3_H_LTO_daysAbove_2013</base:localId>
+							<base:namespace>ES.BDCA.AQD</base:namespace>
+							<base:versionId>First version 2013</base:versionId>
+						</base:Identifier>
+					</ef:inspireId>
+					<ef:name>CIEMAT</ef:name>
+					<ef:mediaMonitored xlink:href="http://dd.eionet.europa.eu/vocabulary/common/environmentaldomain/air" />
+					<ef:responsibleParty>
+						<base2:RelatedParty>
+							<base2:individualName>
+								<gmd:LocalisedCharacterString>FERNANDO MARTÍN</gmd:LocalisedCharacterString>
+							</base2:individualName>
+							<base2:organisationName>
+								<gmd:LocalisedCharacterString>CENTRO DE INVESTIGACIONES ENERGÉTICAS, MEDIOAMBIENTALES Y TECNOLÓGICAS (CIEMAT)</gmd:LocalisedCharacterString>
+							</base2:organisationName>
+							<base2:contact>
+								<base2:Contact>
+									<base2:address>
+										<ad:AddressRepresentation>
+											<ad:adminUnit>
+												<gn:GeographicalName>
+													<gn:language>spa</gn:language>
+													<gn:nativeness>endonym</gn:nativeness>
+													<gn:nameStatus xsi:nil="true" />
+													<gn:sourceOfName xsi:nil="true" />
+													<gn:pronunciation xsi:nil="true" />
+													<gn:spelling>
+														<gn:SpellingOfName>
+															<gn:text>AV/ COMPLUTENSE 40 (ANTIGUO 22) EDIFICIO 3</gn:text>
+															<gn:script xsi:nil="true" />
+														</gn:SpellingOfName>
+													</gn:spelling>
+												</gn:GeographicalName>
+											</ad:adminUnit>
+											<ad:locatorDesignator>Spain</ad:locatorDesignator>
+										</ad:AddressRepresentation>
+									</base2:address>
+									<base2:electronicMailAddress>fernando.martin@ciemat.es</base2:electronicMailAddress>
+									<base2:telephoneVoice>913466065</base2:telephoneVoice>
+									<base2:website>http://www.ciemat.es/portal.do?IDM=162&amp;NM=4</base2:website>
+								</base2:Contact>
+							</base2:contact>
+						</base2:RelatedParty>
+					</ef:responsibleParty>
+					<ef:observingCapability>
+						<ef:ObservingCapability gml:id="ModelObservingCapability_0af3d0be-627d-4b7f-b9ec-6549ed8f0ef1">
+							<ef:observingTime>
+								<gml:TimePeriod gml:id="TimePeriod_16203583-1dd0-410c-9783-cfd033861e66">
+									<gml:beginPosition>2013-01-01T00:00:00+00:00</gml:beginPosition>
+									<gml:endPosition>2013-12-31T24:00:00+00:00</gml:endPosition>
+								</gml:TimePeriod>
+							</ef:observingTime>
+							<ef:processType xlink:href="http://inspire.ec.europa.eu/codeList/ProcessTypeValue/process" />
+							<ef:resultNature xlink:href="http://inspire.ec.europa.eu/codelist/ResultNatureValue/simulated" />
+							<ef:procedure xlink:href="ES.BDCA.AQD/MODP_ES_CIEMAT_O3_H_LTO_daysAbove_2013" />
+							<ef:featureOfInterest xlink:href="ES.BDCA.AQD/MOA_ES_WITHOUT_CANARY_ISLANDS" />
+							<ef:observedProperty xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/7" />
+						</ef:ObservingCapability>
+					</ef:observingCapability>
+					<ef:organisationLevel xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/organisationallevel/national" />
+					<aqd:environmentalObjective>
+						<aqd:EnvironmentalObjective>
+							<aqd:objectiveType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LTO" />
+							<aqd:reportingMetric xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/daysAbove" />
+							<aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H" />
+						</aqd:EnvironmentalObjective>
+					</aqd:environmentalObjective>
+					<aqd:assessmentType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/model" />
+					<aqd:zone nilReason="inapplicable" />
+				</aqd:AQD_Model>
+			</aqd:content>
+			<aqd:content>
+				<aqd:AQD_Model gml:id="MOD_ES_CIEMAT_O3_V_LTO_AOT40c_2013_04d33903-6515-4ea9-96d5-271d5b46a369">
+					<ef:inspireId>
+						<base:Identifier>
+							<base:localId>MOD_ES_CIEMAT_O3_V_LTO_AOT40c_2013</base:localId>
+							<base:namespace>ES.BDCA.AQD</base:namespace>
+							<base:versionId>First version 2013</base:versionId>
+						</base:Identifier>
+					</ef:inspireId>
+					<ef:name>CIEMAT</ef:name>
+					<ef:mediaMonitored xlink:href="http://dd.eionet.europa.eu/vocabulary/common/environmentaldomain/air" />
+					<ef:responsibleParty>
+						<base2:RelatedParty>
+							<base2:individualName>
+								<gmd:LocalisedCharacterString>FERNANDO MARTÍN</gmd:LocalisedCharacterString>
+							</base2:individualName>
+							<base2:organisationName>
+								<gmd:LocalisedCharacterString>CENTRO DE INVESTIGACIONES ENERGÉTICAS, MEDIOAMBIENTALES Y TECNOLÓGICAS (CIEMAT)</gmd:LocalisedCharacterString>
+							</base2:organisationName>
+							<base2:contact>
+								<base2:Contact>
+									<base2:address>
+										<ad:AddressRepresentation>
+											<ad:adminUnit>
+												<gn:GeographicalName>
+													<gn:language>spa</gn:language>
+													<gn:nativeness>endonym</gn:nativeness>
+													<gn:nameStatus xsi:nil="true" />
+													<gn:sourceOfName xsi:nil="true" />
+													<gn:pronunciation xsi:nil="true" />
+													<gn:spelling>
+														<gn:SpellingOfName>
+															<gn:text>AV/ COMPLUTENSE 40 (ANTIGUO 22) EDIFICIO 3</gn:text>
+															<gn:script xsi:nil="true" />
+														</gn:SpellingOfName>
+													</gn:spelling>
+												</gn:GeographicalName>
+											</ad:adminUnit>
+											<ad:locatorDesignator>Spain</ad:locatorDesignator>
+										</ad:AddressRepresentation>
+									</base2:address>
+									<base2:electronicMailAddress>fernando.martin@ciemat.es</base2:electronicMailAddress>
+									<base2:telephoneVoice>913466065</base2:telephoneVoice>
+									<base2:website>http://www.ciemat.es/portal.do?IDM=162&amp;NM=4</base2:website>
+								</base2:Contact>
+							</base2:contact>
+						</base2:RelatedParty>
+					</ef:responsibleParty>
+					<ef:observingCapability>
+						<ef:ObservingCapability gml:id="ModelObservingCapability_26cb6453-0d67-4230-86da-e14d06a12ad3">
+							<ef:observingTime>
+								<gml:TimePeriod gml:id="TimePeriod_d23dc275-084e-42cb-9d7e-18e894c5756c">
+									<gml:beginPosition>2013-01-01T00:00:00+00:00</gml:beginPosition>
+									<gml:endPosition>2013-12-31T24:00:00+00:00</gml:endPosition>
+								</gml:TimePeriod>
+							</ef:observingTime>
+							<ef:processType xlink:href="http://inspire.ec.europa.eu/codeList/ProcessTypeValue/process" />
+							<ef:resultNature xlink:href="http://inspire.ec.europa.eu/codelist/ResultNatureValue/simulated" />
+							<ef:procedure xlink:href="ES.BDCA.AQD/MODP_ES_CIEMAT_O3_V_LTO_AOT40c_2013" />
+							<ef:featureOfInterest xlink:href="ES.BDCA.AQD/MOA_ES_WITHOUT_CANARY_ISLANDS" />
+							<ef:observedProperty xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/7" />
+						</ef:ObservingCapability>
+					</ef:observingCapability>
+					<ef:organisationLevel xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/organisationallevel/national" />
+					<aqd:environmentalObjective>
+						<aqd:EnvironmentalObjective>
+							<aqd:objectiveType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LTO" />
+							<aqd:reportingMetric xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/AOT40c" />
+							<aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V" />
+						</aqd:EnvironmentalObjective>
+					</aqd:environmentalObjective>
+					<aqd:assessmentType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/model" />
+					<aqd:zone nilReason="inapplicable" />
+				</aqd:AQD_Model>
+			</aqd:content>
+			<aqd:content>
+				<aqd:AQD_Model gml:id="MOD_ES_CIEMAT_NO2_H_LV_hrsAbove_2013_e8b55ffe-726b-4a0c-9402-362f1e4c1733">
+					<ef:inspireId>
+						<base:Identifier>
+							<base:localId>MOD_ES_CIEMAT_NO2_H_LV_hrsAbove_2013</base:localId>
+							<base:namespace>ES.BDCA.AQD</base:namespace>
+							<base:versionId>First version 2013</base:versionId>
+						</base:Identifier>
+					</ef:inspireId>
+					<ef:name>CIEMAT</ef:name>
+					<ef:mediaMonitored xlink:href="http://dd.eionet.europa.eu/vocabulary/common/environmentaldomain/air" />
+					<ef:responsibleParty>
+						<base2:RelatedParty>
+							<base2:individualName>
+								<gmd:LocalisedCharacterString>FERNANDO MARTÍN</gmd:LocalisedCharacterString>
+							</base2:individualName>
+							<base2:organisationName>
+								<gmd:LocalisedCharacterString>CENTRO DE INVESTIGACIONES ENERGÉTICAS, MEDIOAMBIENTALES Y TECNOLÓGICAS (CIEMAT)</gmd:LocalisedCharacterString>
+							</base2:organisationName>
+							<base2:contact>
+								<base2:Contact>
+									<base2:address>
+										<ad:AddressRepresentation>
+											<ad:adminUnit>
+												<gn:GeographicalName>
+													<gn:language>spa</gn:language>
+													<gn:nativeness>endonym</gn:nativeness>
+													<gn:nameStatus xsi:nil="true" />
+													<gn:sourceOfName xsi:nil="true" />
+													<gn:pronunciation xsi:nil="true" />
+													<gn:spelling>
+														<gn:SpellingOfName>
+															<gn:text>AV/ COMPLUTENSE 40 (ANTIGUO 22) EDIFICIO 3</gn:text>
+															<gn:script xsi:nil="true" />
+														</gn:SpellingOfName>
+													</gn:spelling>
+												</gn:GeographicalName>
+											</ad:adminUnit>
+											<ad:locatorDesignator>Spain</ad:locatorDesignator>
+										</ad:AddressRepresentation>
+									</base2:address>
+									<base2:electronicMailAddress>fernando.martin@ciemat.es</base2:electronicMailAddress>
+									<base2:telephoneVoice>913466065</base2:telephoneVoice>
+									<base2:website>http://www.ciemat.es/portal.do?IDM=162&amp;NM=4</base2:website>
+								</base2:Contact>
+							</base2:contact>
+						</base2:RelatedParty>
+					</ef:responsibleParty>
+					<ef:observingCapability>
+						<ef:ObservingCapability gml:id="ModelObservingCapability_05127d57-e1ac-4ff2-89bc-15a7581650a1">
+							<ef:observingTime>
+								<gml:TimePeriod gml:id="TimePeriod_1de00b27-82cd-478d-8494-99142f7f29f3">
+									<gml:beginPosition>2013-01-01T00:00:00+00:00</gml:beginPosition>
+									<gml:endPosition>2013-12-31T24:00:00+00:00</gml:endPosition>
+								</gml:TimePeriod>
+							</ef:observingTime>
+							<ef:processType xlink:href="http://inspire.ec.europa.eu/codeList/ProcessTypeValue/process" />
+							<ef:resultNature xlink:href="http://inspire.ec.europa.eu/codelist/ResultNatureValue/simulated" />
+							<ef:procedure xlink:href="ES.BDCA.AQD/MODP_ES_CIEMAT_NO2_H_LV_hrsAbove_2013" />
+							<ef:featureOfInterest xlink:href="ES.BDCA.AQD/MOA_ES_WITHOUT_CANARY_ISLANDS" />
+							<ef:observedProperty xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/8" />
+						</ef:ObservingCapability>
+					</ef:observingCapability>
+					<ef:organisationLevel xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/organisationallevel/national" />
+					<aqd:environmentalObjective>
+						<aqd:EnvironmentalObjective>
+							<aqd:objectiveType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV" />
+							<aqd:reportingMetric xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/hrsAbove" />
+							<aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H" />
+						</aqd:EnvironmentalObjective>
+					</aqd:environmentalObjective>
+					<aqd:assessmentType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/model" />
+					<aqd:zone nilReason="inapplicable" />
+				</aqd:AQD_Model>
+			</aqd:content>
+			<aqd:content>
+				<aqd:AQD_Model gml:id="MOD_ES_CIEMAT_NOX_V_CL_aMean_2013_c73dbefd-f736-4a21-a046-6d58f1d2838d">
+					<ef:inspireId>
+						<base:Identifier>
+							<base:localId>MOD_ES_CIEMAT_NOX_V_CL_aMean_2013</base:localId>
+							<base:namespace>ES.BDCA.AQD</base:namespace>
+							<base:versionId>First version 2013</base:versionId>
+						</base:Identifier>
+					</ef:inspireId>
+					<ef:name>CIEMAT</ef:name>
+					<ef:mediaMonitored xlink:href="http://dd.eionet.europa.eu/vocabulary/common/environmentaldomain/air" />
+					<ef:responsibleParty>
+						<base2:RelatedParty>
+							<base2:individualName>
+								<gmd:LocalisedCharacterString>FERNANDO MARTÍN</gmd:LocalisedCharacterString>
+							</base2:individualName>
+							<base2:organisationName>
+								<gmd:LocalisedCharacterString>CENTRO DE INVESTIGACIONES ENERGÉTICAS, MEDIOAMBIENTALES Y TECNOLÓGICAS (CIEMAT)</gmd:LocalisedCharacterString>
+							</base2:organisationName>
+							<base2:contact>
+								<base2:Contact>
+									<base2:address>
+										<ad:AddressRepresentation>
+											<ad:adminUnit>
+												<gn:GeographicalName>
+													<gn:language>spa</gn:language>
+													<gn:nativeness>endonym</gn:nativeness>
+													<gn:nameStatus xsi:nil="true" />
+													<gn:sourceOfName xsi:nil="true" />
+													<gn:pronunciation xsi:nil="true" />
+													<gn:spelling>
+														<gn:SpellingOfName>
+															<gn:text>AV/ COMPLUTENSE 40 (ANTIGUO 22) EDIFICIO 3</gn:text>
+															<gn:script xsi:nil="true" />
+														</gn:SpellingOfName>
+													</gn:spelling>
+												</gn:GeographicalName>
+											</ad:adminUnit>
+											<ad:locatorDesignator>Spain</ad:locatorDesignator>
+										</ad:AddressRepresentation>
+									</base2:address>
+									<base2:electronicMailAddress>fernando.martin@ciemat.es</base2:electronicMailAddress>
+									<base2:telephoneVoice>913466065</base2:telephoneVoice>
+									<base2:website>http://www.ciemat.es/portal.do?IDM=162&amp;NM=4</base2:website>
+								</base2:Contact>
+							</base2:contact>
+						</base2:RelatedParty>
+					</ef:responsibleParty>
+					<ef:observingCapability>
+						<ef:ObservingCapability gml:id="ModelObservingCapability_11ed2047-2807-4ec0-b8af-bc3a066fb3a1">
+							<ef:observingTime>
+								<gml:TimePeriod gml:id="TimePeriod_129924b8-cfc9-448b-bebb-e0e053ff004e">
+									<gml:beginPosition>2013-01-01T00:00:00+00:00</gml:beginPosition>
+									<gml:endPosition>2013-12-31T24:00:00+00:00</gml:endPosition>
+								</gml:TimePeriod>
+							</ef:observingTime>
+							<ef:processType xlink:href="http://inspire.ec.europa.eu/codeList/ProcessTypeValue/process" />
+							<ef:resultNature xlink:href="http://inspire.ec.europa.eu/codelist/ResultNatureValue/simulated" />
+							<ef:procedure xlink:href="ES.BDCA.AQD/MODP_ES_CIEMAT_NOX_V_CL_aMean_2013" />
+							<ef:featureOfInterest xlink:href="ES.BDCA.AQD/MOA_ES_WITHOUT_CANARY_ISLANDS" />
+							<ef:observedProperty xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/9" />
+						</ef:ObservingCapability>
+					</ef:observingCapability>
+					<ef:organisationLevel xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/organisationallevel/national" />
+					<aqd:environmentalObjective>
+						<aqd:EnvironmentalObjective>
+							<aqd:objectiveType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/CL" />
+							<aqd:reportingMetric xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean" />
+							<aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V" />
+						</aqd:EnvironmentalObjective>
+					</aqd:environmentalObjective>
+					<aqd:assessmentType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/model" />
+					<aqd:zone nilReason="inapplicable" />
+				</aqd:AQD_Model>
+			</aqd:content>
+			<aqd:content>
+				<aqd:AQD_Model gml:id="MOD_ES_CIEMAT_C6H6_H_LV_aMean_2013_5a51bd32-3cef-42bf-a9d2-4f07c8e7dc9e">
+					<ef:inspireId>
+						<base:Identifier>
+							<base:localId>MOD_ES_CIEMAT_C6H6_H_LV_aMean_2013</base:localId>
+							<base:namespace>ES.BDCA.AQD</base:namespace>
+							<base:versionId>First version 2013</base:versionId>
+						</base:Identifier>
+					</ef:inspireId>
+					<ef:name>CIEMAT</ef:name>
+					<ef:mediaMonitored xlink:href="http://dd.eionet.europa.eu/vocabulary/common/environmentaldomain/air" />
+					<ef:responsibleParty>
+						<base2:RelatedParty>
+							<base2:individualName>
+								<gmd:LocalisedCharacterString>FERNANDO MARTÍN</gmd:LocalisedCharacterString>
+							</base2:individualName>
+							<base2:organisationName>
+								<gmd:LocalisedCharacterString>CENTRO DE INVESTIGACIONES ENERGÉTICAS, MEDIOAMBIENTALES Y TECNOLÓGICAS (CIEMAT)</gmd:LocalisedCharacterString>
+							</base2:organisationName>
+							<base2:contact>
+								<base2:Contact>
+									<base2:address>
+										<ad:AddressRepresentation>
+											<ad:adminUnit>
+												<gn:GeographicalName>
+													<gn:language>spa</gn:language>
+													<gn:nativeness>endonym</gn:nativeness>
+													<gn:nameStatus xsi:nil="true" />
+													<gn:sourceOfName xsi:nil="true" />
+													<gn:pronunciation xsi:nil="true" />
+													<gn:spelling>
+														<gn:SpellingOfName>
+															<gn:text>AV/ COMPLUTENSE 40 (ANTIGUO 22) EDIFICIO 3</gn:text>
+															<gn:script xsi:nil="true" />
+														</gn:SpellingOfName>
+													</gn:spelling>
+												</gn:GeographicalName>
+											</ad:adminUnit>
+											<ad:locatorDesignator>Spain</ad:locatorDesignator>
+										</ad:AddressRepresentation>
+									</base2:address>
+									<base2:electronicMailAddress>fernando.martin@ciemat.es</base2:electronicMailAddress>
+									<base2:telephoneVoice>913466065</base2:telephoneVoice>
+									<base2:website>http://www.ciemat.es/portal.do?IDM=162&amp;NM=4</base2:website>
+								</base2:Contact>
+							</base2:contact>
+						</base2:RelatedParty>
+					</ef:responsibleParty>
+					<ef:observingCapability>
+						<ef:ObservingCapability gml:id="ModelObservingCapability_928a926d-34e9-4aba-91d0-bd5d64291545">
+							<ef:observingTime>
+								<gml:TimePeriod gml:id="TimePeriod_cbc443b3-5e3f-4e8a-b26b-40ba20f41667">
+									<gml:beginPosition>2013-01-01T00:00:00+00:00</gml:beginPosition>
+									<gml:endPosition>2013-12-31T24:00:00+00:00</gml:endPosition>
+								</gml:TimePeriod>
+							</ef:observingTime>
+							<ef:processType xlink:href="http://inspire.ec.europa.eu/codeList/ProcessTypeValue/process" />
+							<ef:resultNature xlink:href="http://inspire.ec.europa.eu/codelist/ResultNatureValue/simulated" />
+							<ef:procedure xlink:href="ES.BDCA.AQD/MODP_ES_CIEMAT_C6H6_H_LV_aMean_2013" />
+							<ef:featureOfInterest xlink:href="ES.BDCA.AQD/MOA_ES_WITHOUT_CANARY_ISLANDS" />
+							<ef:observedProperty xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/20" />
+						</ef:ObservingCapability>
+					</ef:observingCapability>
+					<ef:organisationLevel xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/organisationallevel/national" />
+					<aqd:environmentalObjective>
+						<aqd:EnvironmentalObjective>
+							<aqd:objectiveType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV" />
+							<aqd:reportingMetric xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean" />
+							<aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H" />
+						</aqd:EnvironmentalObjective>
+					</aqd:environmentalObjective>
+					<aqd:assessmentType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/model" />
+					<aqd:zone nilReason="inapplicable" />
+				</aqd:AQD_Model>
+			</aqd:content>
+			<aqd:content>
+				<aqd:AQD_Model gml:id="MOD_ES_CIEMAT_As_H_TV_aMean_2013_67136f42-ba22-44ad-a36b-99766f0eaacc">
+					<ef:inspireId>
+						<base:Identifier>
+							<base:localId>MOD_ES_CIEMAT_As_H_TV_aMean_2013</base:localId>
+							<base:namespace>ES.BDCA.AQD</base:namespace>
+							<base:versionId>First version 2013</base:versionId>
+						</base:Identifier>
+					</ef:inspireId>
+					<ef:name>CIEMAT</ef:name>
+					<ef:mediaMonitored xlink:href="http://dd.eionet.europa.eu/vocabulary/common/environmentaldomain/air" />
+					<ef:responsibleParty>
+						<base2:RelatedParty>
+							<base2:individualName>
+								<gmd:LocalisedCharacterString>FERNANDO MARTÍN</gmd:LocalisedCharacterString>
+							</base2:individualName>
+							<base2:organisationName>
+								<gmd:LocalisedCharacterString>CENTRO DE INVESTIGACIONES ENERGÉTICAS, MEDIOAMBIENTALES Y TECNOLÓGICAS (CIEMAT)</gmd:LocalisedCharacterString>
+							</base2:organisationName>
+							<base2:contact>
+								<base2:Contact>
+									<base2:address>
+										<ad:AddressRepresentation>
+											<ad:adminUnit>
+												<gn:GeographicalName>
+													<gn:language>spa</gn:language>
+													<gn:nativeness>endonym</gn:nativeness>
+													<gn:nameStatus xsi:nil="true" />
+													<gn:sourceOfName xsi:nil="true" />
+													<gn:pronunciation xsi:nil="true" />
+													<gn:spelling>
+														<gn:SpellingOfName>
+															<gn:text>AV/ COMPLUTENSE 40 (ANTIGUO 22) EDIFICIO 3</gn:text>
+															<gn:script xsi:nil="true" />
+														</gn:SpellingOfName>
+													</gn:spelling>
+												</gn:GeographicalName>
+											</ad:adminUnit>
+											<ad:locatorDesignator>Spain</ad:locatorDesignator>
+										</ad:AddressRepresentation>
+									</base2:address>
+									<base2:electronicMailAddress>fernando.martin@ciemat.es</base2:electronicMailAddress>
+									<base2:telephoneVoice>913466065</base2:telephoneVoice>
+									<base2:website>http://www.ciemat.es/portal.do?IDM=162&amp;NM=4</base2:website>
+								</base2:Contact>
+							</base2:contact>
+						</base2:RelatedParty>
+					</ef:responsibleParty>
+					<ef:observingCapability>
+						<ef:ObservingCapability gml:id="ModelObservingCapability_55636848-899a-4503-9a18-340b9baf49f9">
+							<ef:observingTime>
+								<gml:TimePeriod gml:id="TimePeriod_265a8f20-a1f4-492d-b601-be870d69a044">
+									<gml:beginPosition>2013-01-01T00:00:00+00:00</gml:beginPosition>
+									<gml:endPosition>2013-12-31T24:00:00+00:00</gml:endPosition>
+								</gml:TimePeriod>
+							</ef:observingTime>
+							<ef:processType xlink:href="http://inspire.ec.europa.eu/codeList/ProcessTypeValue/process" />
+							<ef:resultNature xlink:href="http://inspire.ec.europa.eu/codelist/ResultNatureValue/simulated" />
+							<ef:procedure xlink:href="ES.BDCA.AQD/MODP_ES_CIEMAT_As_H_TV_aMean_2013" />
+							<ef:featureOfInterest xlink:href="ES.BDCA.AQD/MOA_ES_WITHOUT_CANARY_ISLANDS" />
+							<ef:observedProperty xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5018" />
+						</ef:ObservingCapability>
+					</ef:observingCapability>
+					<ef:organisationLevel xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/organisationallevel/national" />
+					<aqd:environmentalObjective>
+						<aqd:EnvironmentalObjective>
+							<aqd:objectiveType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/TV" />
+							<aqd:reportingMetric xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean" />
+							<aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H" />
+						</aqd:EnvironmentalObjective>
+					</aqd:environmentalObjective>
+					<aqd:assessmentType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/model" />
+					<aqd:zone nilReason="inapplicable" />
+				</aqd:AQD_Model>
+			</aqd:content>
+			<aqd:content>
+				<aqd:AQD_Model gml:id="MOD_ES_CIEMAT_CO_H_LV_daysAbove_2013_2fe4235f-017e-4294-a470-387d8da3f043">
+					<ef:inspireId>
+						<base:Identifier>
+							<base:localId>MOD_ES_CIEMAT_CO_H_LV_daysAbove_2013</base:localId>
+							<base:namespace>ES.BDCA.AQD</base:namespace>
+							<base:versionId>First version 2013</base:versionId>
+						</base:Identifier>
+					</ef:inspireId>
+					<ef:name>CIEMAT</ef:name>
+					<ef:mediaMonitored xlink:href="http://dd.eionet.europa.eu/vocabulary/common/environmentaldomain/air" />
+					<ef:responsibleParty>
+						<base2:RelatedParty>
+							<base2:individualName>
+								<gmd:LocalisedCharacterString>FERNANDO MARTÍN</gmd:LocalisedCharacterString>
+							</base2:individualName>
+							<base2:organisationName>
+								<gmd:LocalisedCharacterString>CENTRO DE INVESTIGACIONES ENERGÉTICAS, MEDIOAMBIENTALES Y TECNOLÓGICAS (CIEMAT)</gmd:LocalisedCharacterString>
+							</base2:organisationName>
+							<base2:contact>
+								<base2:Contact>
+									<base2:address>
+										<ad:AddressRepresentation>
+											<ad:adminUnit>
+												<gn:GeographicalName>
+													<gn:language>spa</gn:language>
+													<gn:nativeness>endonym</gn:nativeness>
+													<gn:nameStatus xsi:nil="true" />
+													<gn:sourceOfName xsi:nil="true" />
+													<gn:pronunciation xsi:nil="true" />
+													<gn:spelling>
+														<gn:SpellingOfName>
+															<gn:text>AV/ COMPLUTENSE 40 (ANTIGUO 22) EDIFICIO 3</gn:text>
+															<gn:script xsi:nil="true" />
+														</gn:SpellingOfName>
+													</gn:spelling>
+												</gn:GeographicalName>
+											</ad:adminUnit>
+											<ad:locatorDesignator>Spain</ad:locatorDesignator>
+										</ad:AddressRepresentation>
+									</base2:address>
+									<base2:electronicMailAddress>fernando.martin@ciemat.es</base2:electronicMailAddress>
+									<base2:telephoneVoice>913466065</base2:telephoneVoice>
+									<base2:website>http://www.ciemat.es/portal.do?IDM=162&amp;NM=4</base2:website>
+								</base2:Contact>
+							</base2:contact>
+						</base2:RelatedParty>
+					</ef:responsibleParty>
+					<ef:observingCapability>
+						<ef:ObservingCapability gml:id="ModelObservingCapability_7d3331fe-a92b-4552-8a42-d347b23aa570">
+							<ef:observingTime>
+								<gml:TimePeriod gml:id="TimePeriod_148bae88-cb48-414f-a8c4-24c90c6fe420">
+									<gml:beginPosition>2013-01-01T00:00:00+00:00</gml:beginPosition>
+									<gml:endPosition>2013-12-31T24:00:00+00:00</gml:endPosition>
+								</gml:TimePeriod>
+							</ef:observingTime>
+							<ef:processType xlink:href="http://inspire.ec.europa.eu/codeList/ProcessTypeValue/process" />
+							<ef:resultNature xlink:href="http://inspire.ec.europa.eu/codelist/ResultNatureValue/simulated" />
+							<ef:procedure xlink:href="ES.BDCA.AQD/MODP_ES_CIEMAT_CO_H_LV_daysAbove_2013" />
+							<ef:featureOfInterest xlink:href="ES.BDCA.AQD/MOA_ES_WITHOUT_CANARY_ISLANDS" />
+							<ef:observedProperty xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/10" />
+						</ef:ObservingCapability>
+					</ef:observingCapability>
+					<ef:organisationLevel xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/organisationallevel/national" />
+					<aqd:environmentalObjective>
+						<aqd:EnvironmentalObjective>
+							<aqd:objectiveType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV" />
+							<aqd:reportingMetric xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/daysAbove" />
+							<aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H" />
+						</aqd:EnvironmentalObjective>
+					</aqd:environmentalObjective>
+					<aqd:assessmentType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/model" />
+					<aqd:zone nilReason="inapplicable" />
+				</aqd:AQD_Model>
+			</aqd:content>
+			<aqd:content>
+				<aqd:AQD_Model gml:id="MOD_ES_CIEMAT_Cd_H_TV_aMean_2013_87fdde5c-6c58-4bdb-9649-55d2d944b197">
+					<ef:inspireId>
+						<base:Identifier>
+							<base:localId>MOD_ES_CIEMAT_Cd_H_TV_aMean_2013</base:localId>
+							<base:namespace>ES.BDCA.AQD</base:namespace>
+							<base:versionId>First version 2013</base:versionId>
+						</base:Identifier>
+					</ef:inspireId>
+					<ef:name>CIEMAT</ef:name>
+					<ef:mediaMonitored xlink:href="http://dd.eionet.europa.eu/vocabulary/common/environmentaldomain/air" />
+					<ef:responsibleParty>
+						<base2:RelatedParty>
+							<base2:individualName>
+								<gmd:LocalisedCharacterString>FERNANDO MARTÍN</gmd:LocalisedCharacterString>
+							</base2:individualName>
+							<base2:organisationName>
+								<gmd:LocalisedCharacterString>CENTRO DE INVESTIGACIONES ENERGÉTICAS, MEDIOAMBIENTALES Y TECNOLÓGICAS (CIEMAT)</gmd:LocalisedCharacterString>
+							</base2:organisationName>
+							<base2:contact>
+								<base2:Contact>
+									<base2:address>
+										<ad:AddressRepresentation>
+											<ad:adminUnit>
+												<gn:GeographicalName>
+													<gn:language>spa</gn:language>
+													<gn:nativeness>endonym</gn:nativeness>
+													<gn:nameStatus xsi:nil="true" />
+													<gn:sourceOfName xsi:nil="true" />
+													<gn:pronunciation xsi:nil="true" />
+													<gn:spelling>
+														<gn:SpellingOfName>
+															<gn:text>AV/ COMPLUTENSE 40 (ANTIGUO 22) EDIFICIO 3</gn:text>
+															<gn:script xsi:nil="true" />
+														</gn:SpellingOfName>
+													</gn:spelling>
+												</gn:GeographicalName>
+											</ad:adminUnit>
+											<ad:locatorDesignator>Spain</ad:locatorDesignator>
+										</ad:AddressRepresentation>
+									</base2:address>
+									<base2:electronicMailAddress>fernando.martin@ciemat.es</base2:electronicMailAddress>
+									<base2:telephoneVoice>913466065</base2:telephoneVoice>
+									<base2:website>http://www.ciemat.es/portal.do?IDM=162&amp;NM=4</base2:website>
+								</base2:Contact>
+							</base2:contact>
+						</base2:RelatedParty>
+					</ef:responsibleParty>
+					<ef:observingCapability>
+						<ef:ObservingCapability gml:id="ModelObservingCapability_22691d3e-b319-4612-9580-8a804a43ac5e">
+							<ef:observingTime>
+								<gml:TimePeriod gml:id="TimePeriod_966947e7-08a6-4eb2-9aec-5d1420884e52">
+									<gml:beginPosition>2013-01-01T00:00:00+00:00</gml:beginPosition>
+									<gml:endPosition>2013-12-31T24:00:00+00:00</gml:endPosition>
+								</gml:TimePeriod>
+							</ef:observingTime>
+							<ef:processType xlink:href="http://inspire.ec.europa.eu/codeList/ProcessTypeValue/process" />
+							<ef:resultNature xlink:href="http://inspire.ec.europa.eu/codelist/ResultNatureValue/simulated" />
+							<ef:procedure xlink:href="ES.BDCA.AQD/MODP_ES_CIEMAT_Cd_H_TV_aMean_2013" />
+							<ef:featureOfInterest xlink:href="ES.BDCA.AQD/MOA_ES_WITHOUT_CANARY_ISLANDS" />
+							<ef:observedProperty xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5014" />
+						</ef:ObservingCapability>
+					</ef:observingCapability>
+					<ef:organisationLevel xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/organisationallevel/national" />
+					<aqd:environmentalObjective>
+						<aqd:EnvironmentalObjective>
+							<aqd:objectiveType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/TV" />
+							<aqd:reportingMetric xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean" />
+							<aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H" />
+						</aqd:EnvironmentalObjective>
+					</aqd:environmentalObjective>
+					<aqd:assessmentType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/model" />
+					<aqd:zone nilReason="inapplicable" />
+				</aqd:AQD_Model>
+			</aqd:content>
+			<aqd:content>
+				<aqd:AQD_Model gml:id="MOD_ES_CIEMAT_SO2_H_LV_hrsAbove_2013_70fdfd5e-a648-4918-ab4a-6e398dc8f20c">
+					<ef:inspireId>
+						<base:Identifier>
+							<base:localId>MOD_ES_CIEMAT_SO2_H_LV_hrsAbove_2013</base:localId>
+							<base:namespace>ES.BDCA.AQD</base:namespace>
+							<base:versionId>First version 2013</base:versionId>
+						</base:Identifier>
+					</ef:inspireId>
+					<ef:name>CIEMAT</ef:name>
+					<ef:mediaMonitored xlink:href="http://dd.eionet.europa.eu/vocabulary/common/environmentaldomain/air" />
+					<ef:responsibleParty>
+						<base2:RelatedParty>
+							<base2:individualName>
+								<gmd:LocalisedCharacterString>FERNANDO MARTÍN</gmd:LocalisedCharacterString>
+							</base2:individualName>
+							<base2:organisationName>
+								<gmd:LocalisedCharacterString>CENTRO DE INVESTIGACIONES ENERGÉTICAS, MEDIOAMBIENTALES Y TECNOLÓGICAS (CIEMAT)</gmd:LocalisedCharacterString>
+							</base2:organisationName>
+							<base2:contact>
+								<base2:Contact>
+									<base2:address>
+										<ad:AddressRepresentation>
+											<ad:adminUnit>
+												<gn:GeographicalName>
+													<gn:language>spa</gn:language>
+													<gn:nativeness>endonym</gn:nativeness>
+													<gn:nameStatus xsi:nil="true" />
+													<gn:sourceOfName xsi:nil="true" />
+													<gn:pronunciation xsi:nil="true" />
+													<gn:spelling>
+														<gn:SpellingOfName>
+															<gn:text>AV/ COMPLUTENSE 40 (ANTIGUO 22) EDIFICIO 3</gn:text>
+															<gn:script xsi:nil="true" />
+														</gn:SpellingOfName>
+													</gn:spelling>
+												</gn:GeographicalName>
+											</ad:adminUnit>
+											<ad:locatorDesignator>Spain</ad:locatorDesignator>
+										</ad:AddressRepresentation>
+									</base2:address>
+									<base2:electronicMailAddress>fernando.martin@ciemat.es</base2:electronicMailAddress>
+									<base2:telephoneVoice>913466065</base2:telephoneVoice>
+									<base2:website>http://www.ciemat.es/portal.do?IDM=162&amp;NM=4</base2:website>
+								</base2:Contact>
+							</base2:contact>
+						</base2:RelatedParty>
+					</ef:responsibleParty>
+					<ef:observingCapability>
+						<ef:ObservingCapability gml:id="ModelObservingCapability_d7f2e79a-c5aa-4ae2-9cb1-9659e492e045">
+							<ef:observingTime>
+								<gml:TimePeriod gml:id="TimePeriod_30a05a11-6817-4501-aa59-13c3ce7aa14a">
+									<gml:beginPosition>2013-01-01T00:00:00+00:00</gml:beginPosition>
+									<gml:endPosition>2013-12-31T24:00:00+00:00</gml:endPosition>
+								</gml:TimePeriod>
+							</ef:observingTime>
+							<ef:processType xlink:href="http://inspire.ec.europa.eu/codeList/ProcessTypeValue/process" />
+							<ef:resultNature xlink:href="http://inspire.ec.europa.eu/codelist/ResultNatureValue/simulated" />
+							<ef:procedure xlink:href="ES.BDCA.AQD/MODP_ES_CIEMAT_SO2_H_LV_hrsAbove_2013" />
+							<ef:featureOfInterest xlink:href="ES.BDCA.AQD/MOA_ES_WITHOUT_CANARY_ISLANDS" />
+							<ef:observedProperty xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1" />
+						</ef:ObservingCapability>
+					</ef:observingCapability>
+					<ef:organisationLevel xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/organisationallevel/national" />
+					<aqd:environmentalObjective>
+						<aqd:EnvironmentalObjective>
+							<aqd:objectiveType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV" />
+							<aqd:reportingMetric xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/hrsAbove" />
+							<aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H" />
+						</aqd:EnvironmentalObjective>
+					</aqd:environmentalObjective>
+					<aqd:assessmentType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/model" />
+					<aqd:zone nilReason="inapplicable" />
+				</aqd:AQD_Model>
+			</aqd:content>
+			<aqd:content>
+				<aqd:AQD_Model gml:id="MOD_ES_CIEMAT_PM2.5_H_LV_aMean_2013_c27551d4-4b50-421a-89c5-f5d4ece6a72f">
+					<ef:inspireId>
+						<base:Identifier>
+							<base:localId>MOD_ES_CIEMAT_PM2.5_H_LV_aMean_2013</base:localId>
+							<base:namespace>ES.BDCA.AQD</base:namespace>
+							<base:versionId>First version 2013</base:versionId>
+						</base:Identifier>
+					</ef:inspireId>
+					<ef:name>CIEMAT</ef:name>
+					<ef:mediaMonitored xlink:href="http://dd.eionet.europa.eu/vocabulary/common/environmentaldomain/air" />
+					<ef:responsibleParty>
+						<base2:RelatedParty>
+							<base2:individualName>
+								<gmd:LocalisedCharacterString>FERNANDO MARTÍN</gmd:LocalisedCharacterString>
+							</base2:individualName>
+							<base2:organisationName>
+								<gmd:LocalisedCharacterString>CENTRO DE INVESTIGACIONES ENERGÉTICAS, MEDIOAMBIENTALES Y TECNOLÓGICAS (CIEMAT)</gmd:LocalisedCharacterString>
+							</base2:organisationName>
+							<base2:contact>
+								<base2:Contact>
+									<base2:address>
+										<ad:AddressRepresentation>
+											<ad:adminUnit>
+												<gn:GeographicalName>
+													<gn:language>spa</gn:language>
+													<gn:nativeness>endonym</gn:nativeness>
+													<gn:nameStatus xsi:nil="true" />
+													<gn:sourceOfName xsi:nil="true" />
+													<gn:pronunciation xsi:nil="true" />
+													<gn:spelling>
+														<gn:SpellingOfName>
+															<gn:text>AV/ COMPLUTENSE 40 (ANTIGUO 22) EDIFICIO 3</gn:text>
+															<gn:script xsi:nil="true" />
+														</gn:SpellingOfName>
+													</gn:spelling>
+												</gn:GeographicalName>
+											</ad:adminUnit>
+											<ad:locatorDesignator>Spain</ad:locatorDesignator>
+										</ad:AddressRepresentation>
+									</base2:address>
+									<base2:electronicMailAddress>fernando.martin@ciemat.es</base2:electronicMailAddress>
+									<base2:telephoneVoice>913466065</base2:telephoneVoice>
+									<base2:website>http://www.ciemat.es/portal.do?IDM=162&amp;NM=4</base2:website>
+								</base2:Contact>
+							</base2:contact>
+						</base2:RelatedParty>
+					</ef:responsibleParty>
+					<ef:observingCapability>
+						<ef:ObservingCapability gml:id="ModelObservingCapability_d0dbf20d-32c9-4575-ae66-92fa5eb1704b">
+							<ef:observingTime>
+								<gml:TimePeriod gml:id="TimePeriod_dd126df1-11eb-4845-8145-05d44cef65fd">
+									<gml:beginPosition>2013-01-01T00:00:00+00:00</gml:beginPosition>
+									<gml:endPosition>2013-12-31T24:00:00+00:00</gml:endPosition>
+								</gml:TimePeriod>
+							</ef:observingTime>
+							<ef:processType xlink:href="http://inspire.ec.europa.eu/codeList/ProcessTypeValue/process" />
+							<ef:resultNature xlink:href="http://inspire.ec.europa.eu/codelist/ResultNatureValue/simulated" />
+							<ef:procedure xlink:href="ES.BDCA.AQD/MODP_ES_CIEMAT_PM2.5_H_LV_aMean_2013" />
+							<ef:featureOfInterest xlink:href="ES.BDCA.AQD/MOA_ES_WITHOUT_CANARY_ISLANDS" />
+							<ef:observedProperty xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/6001" />
+						</ef:ObservingCapability>
+					</ef:observingCapability>
+					<ef:organisationLevel xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/organisationallevel/national" />
+					<aqd:environmentalObjective>
+						<aqd:EnvironmentalObjective>
+							<aqd:objectiveType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV" />
+							<aqd:reportingMetric xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean" />
+							<aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H" />
+						</aqd:EnvironmentalObjective>
+					</aqd:environmentalObjective>
+					<aqd:assessmentType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/model" />
+					<aqd:zone nilReason="inapplicable" />
+				</aqd:AQD_Model>
+			</aqd:content>
+			<aqd:content>
+				<aqd:AQD_Model gml:id="MOD_ES_CIEMAT_NO2_H_LV_aMean_2013_06daf520-fdd4-4de2-aaaf-663a07081e6e">
+					<ef:inspireId>
+						<base:Identifier>
+							<base:localId>MOD_ES_CIEMAT_NO2_H_LV_aMean_2013</base:localId>
+							<base:namespace>ES.BDCA.AQD</base:namespace>
+							<base:versionId>First version 2013</base:versionId>
+						</base:Identifier>
+					</ef:inspireId>
+					<ef:name>CIEMAT</ef:name>
+					<ef:mediaMonitored xlink:href="http://dd.eionet.europa.eu/vocabulary/common/environmentaldomain/air" />
+					<ef:responsibleParty>
+						<base2:RelatedParty>
+							<base2:individualName>
+								<gmd:LocalisedCharacterString>FERNANDO MARTÍN</gmd:LocalisedCharacterString>
+							</base2:individualName>
+							<base2:organisationName>
+								<gmd:LocalisedCharacterString>CENTRO DE INVESTIGACIONES ENERGÉTICAS, MEDIOAMBIENTALES Y TECNOLÓGICAS (CIEMAT)</gmd:LocalisedCharacterString>
+							</base2:organisationName>
+							<base2:contact>
+								<base2:Contact>
+									<base2:address>
+										<ad:AddressRepresentation>
+											<ad:adminUnit>
+												<gn:GeographicalName>
+													<gn:language>spa</gn:language>
+													<gn:nativeness>endonym</gn:nativeness>
+													<gn:nameStatus xsi:nil="true" />
+													<gn:sourceOfName xsi:nil="true" />
+													<gn:pronunciation xsi:nil="true" />
+													<gn:spelling>
+														<gn:SpellingOfName>
+															<gn:text>AV/ COMPLUTENSE 40 (ANTIGUO 22) EDIFICIO 3</gn:text>
+															<gn:script xsi:nil="true" />
+														</gn:SpellingOfName>
+													</gn:spelling>
+												</gn:GeographicalName>
+											</ad:adminUnit>
+											<ad:locatorDesignator>Spain</ad:locatorDesignator>
+										</ad:AddressRepresentation>
+									</base2:address>
+									<base2:electronicMailAddress>fernando.martin@ciemat.es</base2:electronicMailAddress>
+									<base2:telephoneVoice>913466065</base2:telephoneVoice>
+									<base2:website>http://www.ciemat.es/portal.do?IDM=162&amp;NM=4</base2:website>
+								</base2:Contact>
+							</base2:contact>
+						</base2:RelatedParty>
+					</ef:responsibleParty>
+					<ef:observingCapability>
+						<ef:ObservingCapability gml:id="ModelObservingCapability_85a9751a-dc62-4683-83bb-33945c4e3580">
+							<ef:observingTime>
+								<gml:TimePeriod gml:id="TimePeriod_19755041-14b9-4665-85ee-e611b26be2be">
+									<gml:beginPosition>2013-01-01T00:00:00+00:00</gml:beginPosition>
+									<gml:endPosition>2013-12-31T24:00:00+00:00</gml:endPosition>
+								</gml:TimePeriod>
+							</ef:observingTime>
+							<ef:processType xlink:href="http://inspire.ec.europa.eu/codeList/ProcessTypeValue/process" />
+							<ef:resultNature xlink:href="http://inspire.ec.europa.eu/codelist/ResultNatureValue/simulated" />
+							<ef:procedure xlink:href="ES.BDCA.AQD/MODP_ES_CIEMAT_NO2_H_LV_aMean_2013" />
+							<ef:featureOfInterest xlink:href="ES.BDCA.AQD/MOA_ES_WITHOUT_CANARY_ISLANDS" />
+							<ef:observedProperty xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/8" />
+						</ef:ObservingCapability>
+					</ef:observingCapability>
+					<ef:organisationLevel xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/organisationallevel/national" />
+					<aqd:environmentalObjective>
+						<aqd:EnvironmentalObjective>
+							<aqd:objectiveType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV" />
+							<aqd:reportingMetric xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean" />
+							<aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H" />
+						</aqd:EnvironmentalObjective>
+					</aqd:environmentalObjective>
+					<aqd:assessmentType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/model" />
+					<aqd:zone nilReason="inapplicable" />
+				</aqd:AQD_Model>
+			</aqd:content>
+			<aqd:content>
+				<aqd:AQD_Model gml:id="MOD_ES_CIEMAT_Pb_H_LV_aMean_2013_fe6b2c58-2e0a-490c-85f7-35329c7d8c86">
+					<ef:inspireId>
+						<base:Identifier>
+							<base:localId>MOD_ES_CIEMAT_Pb_H_LV_aMean_2013</base:localId>
+							<base:namespace>ES.BDCA.AQD</base:namespace>
+							<base:versionId>First version 2013</base:versionId>
+						</base:Identifier>
+					</ef:inspireId>
+					<ef:name>CIEMAT</ef:name>
+					<ef:mediaMonitored xlink:href="http://dd.eionet.europa.eu/vocabulary/common/environmentaldomain/air" />
+					<ef:responsibleParty>
+						<base2:RelatedParty>
+							<base2:individualName>
+								<gmd:LocalisedCharacterString>FERNANDO MARTÍN</gmd:LocalisedCharacterString>
+							</base2:individualName>
+							<base2:organisationName>
+								<gmd:LocalisedCharacterString>CENTRO DE INVESTIGACIONES ENERGÉTICAS, MEDIOAMBIENTALES Y TECNOLÓGICAS (CIEMAT)</gmd:LocalisedCharacterString>
+							</base2:organisationName>
+							<base2:contact>
+								<base2:Contact>
+									<base2:address>
+										<ad:AddressRepresentation>
+											<ad:adminUnit>
+												<gn:GeographicalName>
+													<gn:language>spa</gn:language>
+													<gn:nativeness>endonym</gn:nativeness>
+													<gn:nameStatus xsi:nil="true" />
+													<gn:sourceOfName xsi:nil="true" />
+													<gn:pronunciation xsi:nil="true" />
+													<gn:spelling>
+														<gn:SpellingOfName>
+															<gn:text>AV/ COMPLUTENSE 40 (ANTIGUO 22) EDIFICIO 3</gn:text>
+															<gn:script xsi:nil="true" />
+														</gn:SpellingOfName>
+													</gn:spelling>
+												</gn:GeographicalName>
+											</ad:adminUnit>
+											<ad:locatorDesignator>Spain</ad:locatorDesignator>
+										</ad:AddressRepresentation>
+									</base2:address>
+									<base2:electronicMailAddress>fernando.martin@ciemat.es</base2:electronicMailAddress>
+									<base2:telephoneVoice>913466065</base2:telephoneVoice>
+									<base2:website>http://www.ciemat.es/portal.do?IDM=162&amp;NM=4</base2:website>
+								</base2:Contact>
+							</base2:contact>
+						</base2:RelatedParty>
+					</ef:responsibleParty>
+					<ef:observingCapability>
+						<ef:ObservingCapability gml:id="ModelObservingCapability_f675e6bb-54ad-4ce3-a66c-efbf0d384042">
+							<ef:observingTime>
+								<gml:TimePeriod gml:id="TimePeriod_31f8b640-1388-42d1-b86f-902d5a6fc3d2">
+									<gml:beginPosition>2013-01-01T00:00:00+00:00</gml:beginPosition>
+									<gml:endPosition>2013-12-31T24:00:00+00:00</gml:endPosition>
+								</gml:TimePeriod>
+							</ef:observingTime>
+							<ef:processType xlink:href="http://inspire.ec.europa.eu/codeList/ProcessTypeValue/process" />
+							<ef:resultNature xlink:href="http://inspire.ec.europa.eu/codelist/ResultNatureValue/simulated" />
+							<ef:procedure xlink:href="ES.BDCA.AQD/MODP_ES_CIEMAT_Pb_H_LV_aMean_2013" />
+							<ef:featureOfInterest xlink:href="ES.BDCA.AQD/MOA_ES_WITHOUT_CANARY_ISLANDS" />
+							<ef:observedProperty xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5012" />
+						</ef:ObservingCapability>
+					</ef:observingCapability>
+					<ef:organisationLevel xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/organisationallevel/national" />
+					<aqd:environmentalObjective>
+						<aqd:EnvironmentalObjective>
+							<aqd:objectiveType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV" />
+							<aqd:reportingMetric xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean" />
+							<aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H" />
+						</aqd:EnvironmentalObjective>
+					</aqd:environmentalObjective>
+					<aqd:assessmentType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/model" />
+					<aqd:zone nilReason="inapplicable" />
+				</aqd:AQD_Model>
+			</aqd:content>
+			<aqd:content>
+				<aqd:AQD_Model gml:id="MOD_ES_CIEMAT_NI_H_TV_aMean_2013_339eab87-2b0f-45b7-b9b6-c8e236452979">
+					<ef:inspireId>
+						<base:Identifier>
+							<base:localId>MOD_ES_CIEMAT_NI_H_TV_aMean_2013</base:localId>
+							<base:namespace>ES.BDCA.AQD</base:namespace>
+							<base:versionId>First version 2013</base:versionId>
+						</base:Identifier>
+					</ef:inspireId>
+					<ef:name>CIEMAT</ef:name>
+					<ef:mediaMonitored xlink:href="http://dd.eionet.europa.eu/vocabulary/common/environmentaldomain/air" />
+					<ef:responsibleParty>
+						<base2:RelatedParty>
+							<base2:individualName>
+								<gmd:LocalisedCharacterString>FERNANDO MARTÍN</gmd:LocalisedCharacterString>
+							</base2:individualName>
+							<base2:organisationName>
+								<gmd:LocalisedCharacterString>CENTRO DE INVESTIGACIONES ENERGÉTICAS, MEDIOAMBIENTALES Y TECNOLÓGICAS (CIEMAT)</gmd:LocalisedCharacterString>
+							</base2:organisationName>
+							<base2:contact>
+								<base2:Contact>
+									<base2:address>
+										<ad:AddressRepresentation>
+											<ad:adminUnit>
+												<gn:GeographicalName>
+													<gn:language>spa</gn:language>
+													<gn:nativeness>endonym</gn:nativeness>
+													<gn:nameStatus xsi:nil="true" />
+													<gn:sourceOfName xsi:nil="true" />
+													<gn:pronunciation xsi:nil="true" />
+													<gn:spelling>
+														<gn:SpellingOfName>
+															<gn:text>AV/ COMPLUTENSE 40 (ANTIGUO 22) EDIFICIO 3</gn:text>
+															<gn:script xsi:nil="true" />
+														</gn:SpellingOfName>
+													</gn:spelling>
+												</gn:GeographicalName>
+											</ad:adminUnit>
+											<ad:locatorDesignator>Spain</ad:locatorDesignator>
+										</ad:AddressRepresentation>
+									</base2:address>
+									<base2:electronicMailAddress>fernando.martin@ciemat.es</base2:electronicMailAddress>
+									<base2:telephoneVoice>913466065</base2:telephoneVoice>
+									<base2:website>http://www.ciemat.es/portal.do?IDM=162&amp;NM=4</base2:website>
+								</base2:Contact>
+							</base2:contact>
+						</base2:RelatedParty>
+					</ef:responsibleParty>
+					<ef:observingCapability>
+						<ef:ObservingCapability gml:id="ModelObservingCapability_4da65565-160b-471e-9f75-0f0731b5e3ca">
+							<ef:observingTime>
+								<gml:TimePeriod gml:id="TimePeriod_0d04d4d8-3a0f-4b6c-8ccf-ca5ed77e819d">
+									<gml:beginPosition>2013-01-01T00:00:00+00:00</gml:beginPosition>
+									<gml:endPosition>2013-12-31T24:00:00+00:00</gml:endPosition>
+								</gml:TimePeriod>
+							</ef:observingTime>
+							<ef:processType xlink:href="http://inspire.ec.europa.eu/codeList/ProcessTypeValue/process" />
+							<ef:resultNature xlink:href="http://inspire.ec.europa.eu/codelist/ResultNatureValue/simulated" />
+							<ef:procedure xlink:href="ES.BDCA.AQD/MODP_ES_CIEMAT_NI_H_TV_aMean_2013" />
+							<ef:featureOfInterest xlink:href="ES.BDCA.AQD/MOA_ES_WITHOUT_CANARY_ISLANDS" />
+							<ef:observedProperty xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5015" />
+						</ef:ObservingCapability>
+					</ef:observingCapability>
+					<ef:organisationLevel xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/organisationallevel/national" />
+					<aqd:environmentalObjective>
+						<aqd:EnvironmentalObjective>
+							<aqd:objectiveType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/TV" />
+							<aqd:reportingMetric xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean" />
+							<aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H" />
+						</aqd:EnvironmentalObjective>
+					</aqd:environmentalObjective>
+					<aqd:assessmentType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/model" />
+					<aqd:zone nilReason="inapplicable" />
+				</aqd:AQD_Model>
+			</aqd:content>
+			<aqd:content>
+				<aqd:AQD_Model gml:id="MOD_ES_SINQLAIR_SO2_H_LV_daysAbove_2013_370dc3d3-3139-4638-b931-6c5df3f2777c">
+					<ef:inspireId>
+						<base:Identifier>
+							<base:localId>MOD_ES_SINQLAIR_SO2_H_LV_daysAbove_2013</base:localId>
+							<base:namespace>ES.BDCA.AQD</base:namespace>
+							<base:versionId>First version 2013</base:versionId>
+						</base:Identifier>
+					</ef:inspireId>
+					<ef:name>SINQLAIR</ef:name>
+					<ef:mediaMonitored xlink:href="http://dd.eionet.europa.eu/vocabulary/common/environmentaldomain/air" />
+					<ef:responsibleParty>
+						<base2:RelatedParty>
+							<base2:individualName>
+								<gmd:LocalisedCharacterString>Pedro Jiménez Guerrero</gmd:LocalisedCharacterString>
+							</base2:individualName>
+							<base2:organisationName>
+								<gmd:LocalisedCharacterString>Grupo de Modelización atmosférica de Murcia (GMAR)</gmd:LocalisedCharacterString>
+							</base2:organisationName>
+							<base2:contact>
+								<base2:Contact>
+									<base2:address>
+										<ad:AddressRepresentation>
+											<ad:adminUnit>
+												<gn:GeographicalName>
+													<gn:language>spa</gn:language>
+													<gn:nativeness>endonym</gn:nativeness>
+													<gn:nameStatus xsi:nil="true" />
+													<gn:sourceOfName xsi:nil="true" />
+													<gn:pronunciation xsi:nil="true" />
+													<gn:spelling>
+														<gn:SpellingOfName>
+															<gn:text>Edificio CIOyN, Of. 1.21, Campus de Espinardo, Universidad de Murcia MU</gn:text>
+															<gn:script xsi:nil="true" />
+														</gn:SpellingOfName>
+													</gn:spelling>
+												</gn:GeographicalName>
+											</ad:adminUnit>
+											<ad:locatorDesignator>Spain</ad:locatorDesignator>
+										</ad:AddressRepresentation>
+									</base2:address>
+									<base2:electronicMailAddress>pedro.jimenezguerrero@um.es</base2:electronicMailAddress>
+									<base2:telephoneVoice>868 888 175</base2:telephoneVoice>
+									<base2:website>http://sinqlair.carm.es/CalidadAire/documentacion</base2:website>
+								</base2:Contact>
+							</base2:contact>
+						</base2:RelatedParty>
+					</ef:responsibleParty>
+					<ef:observingCapability>
+						<ef:ObservingCapability gml:id="ModelObservingCapability_6325d594-9029-4948-bc34-0c5470560270">
+							<ef:observingTime>
+								<gml:TimePeriod gml:id="TimePeriod_da12fb84-a381-4ea8-9b31-d1c8eea1bc9c">
+									<gml:beginPosition>2013-01-01T00:00:00+00:00</gml:beginPosition>
+									<gml:endPosition>2013-12-31T24:00:00+00:00</gml:endPosition>
+								</gml:TimePeriod>
+							</ef:observingTime>
+							<ef:processType xlink:href="http://inspire.ec.europa.eu/codeList/ProcessTypeValue/process" />
+							<ef:resultNature xlink:href="http://inspire.ec.europa.eu/codelist/ResultNatureValue/simulated" />
+							<ef:procedure xlink:href="ES.BDCA.AQD/MODP_ES_SINQLAIR_SO2_H_LV_daysAbove_2013" />
+							<ef:featureOfInterest xlink:href="ES.BDCA.AQD/MOA_ES14" />
+							<ef:observedProperty xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1" />
+						</ef:ObservingCapability>
+					</ef:observingCapability>
+					<ef:organisationLevel xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/organisationallevel/regional" />
+					<aqd:environmentalObjective>
+						<aqd:EnvironmentalObjective>
+							<aqd:objectiveType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV" />
+							<aqd:reportingMetric xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/daysAbove" />
+							<aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H" />
+						</aqd:EnvironmentalObjective>
+					</aqd:environmentalObjective>
+					<aqd:assessmentType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/model" />
+					<aqd:zone nilReason="inapplicable" />
+				</aqd:AQD_Model>
+			</aqd:content>
+			<aqd:content>
+				<aqd:AQD_Model gml:id="MOD_ES_SINQLAIR_SO2_H_LV_hrsAbove_2013_efa2a327-1203-4dba-a073-db2c77a921ad">
+					<ef:inspireId>
+						<base:Identifier>
+							<base:localId>MOD_ES_SINQLAIR_SO2_H_LV_hrsAbove_2013</base:localId>
+							<base:namespace>ES.BDCA.AQD</base:namespace>
+							<base:versionId>First version 2013</base:versionId>
+						</base:Identifier>
+					</ef:inspireId>
+					<ef:name>SINQLAIR</ef:name>
+					<ef:mediaMonitored xlink:href="http://dd.eionet.europa.eu/vocabulary/common/environmentaldomain/air" />
+					<ef:responsibleParty>
+						<base2:RelatedParty>
+							<base2:individualName>
+								<gmd:LocalisedCharacterString>Pedro Jiménez Guerrero</gmd:LocalisedCharacterString>
+							</base2:individualName>
+							<base2:organisationName>
+								<gmd:LocalisedCharacterString>Grupo de Modelización atmosférica de Murcia (GMAR)</gmd:LocalisedCharacterString>
+							</base2:organisationName>
+							<base2:contact>
+								<base2:Contact>
+									<base2:address>
+										<ad:AddressRepresentation>
+											<ad:adminUnit>
+												<gn:GeographicalName>
+													<gn:language>spa</gn:language>
+													<gn:nativeness>endonym</gn:nativeness>
+													<gn:nameStatus xsi:nil="true" />
+													<gn:sourceOfName xsi:nil="true" />
+													<gn:pronunciation xsi:nil="true" />
+													<gn:spelling>
+														<gn:SpellingOfName>
+															<gn:text>Edificio CIOyN, Of. 1.21, Campus de Espinardo, Universidad de Murcia MU</gn:text>
+															<gn:script xsi:nil="true" />
+														</gn:SpellingOfName>
+													</gn:spelling>
+												</gn:GeographicalName>
+											</ad:adminUnit>
+											<ad:locatorDesignator>Spain</ad:locatorDesignator>
+										</ad:AddressRepresentation>
+									</base2:address>
+									<base2:electronicMailAddress>pedro.jimenezguerrero@um.es</base2:electronicMailAddress>
+									<base2:telephoneVoice>868 888 175</base2:telephoneVoice>
+									<base2:website>http://sinqlair.carm.es/CalidadAire/documentacion</base2:website>
+								</base2:Contact>
+							</base2:contact>
+						</base2:RelatedParty>
+					</ef:responsibleParty>
+					<ef:observingCapability>
+						<ef:ObservingCapability gml:id="ModelObservingCapability_b381ba1a-08ee-4f88-9414-ff48d7356451">
+							<ef:observingTime>
+								<gml:TimePeriod gml:id="TimePeriod_c26ccbcf-569b-473d-8e89-223c84ee2aa6">
+									<gml:beginPosition>2013-01-01T00:00:00+00:00</gml:beginPosition>
+									<gml:endPosition>2013-12-31T24:00:00+00:00</gml:endPosition>
+								</gml:TimePeriod>
+							</ef:observingTime>
+							<ef:processType xlink:href="http://inspire.ec.europa.eu/codeList/ProcessTypeValue/process" />
+							<ef:resultNature xlink:href="http://inspire.ec.europa.eu/codelist/ResultNatureValue/simulated" />
+							<ef:procedure xlink:href="ES.BDCA.AQD/MODP_ES_SINQLAIR_SO2_H_LV_hrsAbove_2013" />
+							<ef:featureOfInterest xlink:href="ES.BDCA.AQD/MOA_ES14" />
+							<ef:observedProperty xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1" />
+						</ef:ObservingCapability>
+					</ef:observingCapability>
+					<ef:organisationLevel xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/organisationallevel/regional" />
+					<aqd:environmentalObjective>
+						<aqd:EnvironmentalObjective>
+							<aqd:objectiveType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV" />
+							<aqd:reportingMetric xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/hrsAbove" />
+							<aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H" />
+						</aqd:EnvironmentalObjective>
+					</aqd:environmentalObjective>
+					<aqd:assessmentType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/model" />
+					<aqd:zone nilReason="inapplicable" />
+				</aqd:AQD_Model>
+			</aqd:content>
+			<aqd:content>
+				<aqd:AQD_Model gml:id="MOD_ES_SINQLAIR_SO2_V_CL_aMean_2013_52ca28b9-8521-45e0-b109-563d9c258a5d">
+					<ef:inspireId>
+						<base:Identifier>
+							<base:localId>MOD_ES_SINQLAIR_SO2_V_CL_aMean_2013</base:localId>
+							<base:namespace>ES.BDCA.AQD</base:namespace>
+							<base:versionId>First version 2013</base:versionId>
+						</base:Identifier>
+					</ef:inspireId>
+					<ef:name>SINQLAIR</ef:name>
+					<ef:mediaMonitored xlink:href="http://dd.eionet.europa.eu/vocabulary/common/environmentaldomain/air" />
+					<ef:responsibleParty>
+						<base2:RelatedParty>
+							<base2:individualName>
+								<gmd:LocalisedCharacterString>Pedro Jiménez Guerrero</gmd:LocalisedCharacterString>
+							</base2:individualName>
+							<base2:organisationName>
+								<gmd:LocalisedCharacterString>Grupo de Modelización atmosférica de Murcia (GMAR)</gmd:LocalisedCharacterString>
+							</base2:organisationName>
+							<base2:contact>
+								<base2:Contact>
+									<base2:address>
+										<ad:AddressRepresentation>
+											<ad:adminUnit>
+												<gn:GeographicalName>
+													<gn:language>spa</gn:language>
+													<gn:nativeness>endonym</gn:nativeness>
+													<gn:nameStatus xsi:nil="true" />
+													<gn:sourceOfName xsi:nil="true" />
+													<gn:pronunciation xsi:nil="true" />
+													<gn:spelling>
+														<gn:SpellingOfName>
+															<gn:text>Edificio CIOyN, Of. 1.21, Campus de Espinardo, Universidad de Murcia MU</gn:text>
+															<gn:script xsi:nil="true" />
+														</gn:SpellingOfName>
+													</gn:spelling>
+												</gn:GeographicalName>
+											</ad:adminUnit>
+											<ad:locatorDesignator>Spain</ad:locatorDesignator>
+										</ad:AddressRepresentation>
+									</base2:address>
+									<base2:electronicMailAddress>pedro.jimenezguerrero@um.es</base2:electronicMailAddress>
+									<base2:telephoneVoice>868 888 175</base2:telephoneVoice>
+									<base2:website>http://sinqlair.carm.es/CalidadAire/documentacion</base2:website>
+								</base2:Contact>
+							</base2:contact>
+						</base2:RelatedParty>
+					</ef:responsibleParty>
+					<ef:observingCapability>
+						<ef:ObservingCapability gml:id="ModelObservingCapability_a9036533-e800-488c-9105-94967166c189">
+							<ef:observingTime>
+								<gml:TimePeriod gml:id="TimePeriod_8d4ba24e-2ae1-4177-a1a7-db07a107ed1e">
+									<gml:beginPosition>2013-01-01T00:00:00+00:00</gml:beginPosition>
+									<gml:endPosition>2013-12-31T24:00:00+00:00</gml:endPosition>
+								</gml:TimePeriod>
+							</ef:observingTime>
+							<ef:processType xlink:href="http://inspire.ec.europa.eu/codeList/ProcessTypeValue/process" />
+							<ef:resultNature xlink:href="http://inspire.ec.europa.eu/codelist/ResultNatureValue/simulated" />
+							<ef:procedure xlink:href="ES.BDCA.AQD/MODP_ES_SINQLAIR_SO2_V_CL_aMean_2013" />
+							<ef:featureOfInterest xlink:href="ES.BDCA.AQD/MOA_ES14" />
+							<ef:observedProperty xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1" />
+						</ef:ObservingCapability>
+					</ef:observingCapability>
+					<ef:organisationLevel xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/organisationallevel/regional" />
+					<aqd:environmentalObjective>
+						<aqd:EnvironmentalObjective>
+							<aqd:objectiveType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/CL" />
+							<aqd:reportingMetric xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean" />
+							<aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V" />
+						</aqd:EnvironmentalObjective>
+					</aqd:environmentalObjective>
+					<aqd:assessmentType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/model" />
+					<aqd:zone nilReason="inapplicable" />
+				</aqd:AQD_Model>
+			</aqd:content>
+			<aqd:content>
+				<aqd:AQD_Model gml:id="MOD_ES_SINQLAIR_SO2_V_CL_wMean_2013_cb758285-7f6d-4204-a7f5-8f061bc9d27d">
+					<ef:inspireId>
+						<base:Identifier>
+							<base:localId>MOD_ES_SINQLAIR_SO2_V_CL_wMean_2013</base:localId>
+							<base:namespace>ES.BDCA.AQD</base:namespace>
+							<base:versionId>First version 2013</base:versionId>
+						</base:Identifier>
+					</ef:inspireId>
+					<ef:name>SINQLAIR</ef:name>
+					<ef:mediaMonitored xlink:href="http://dd.eionet.europa.eu/vocabulary/common/environmentaldomain/air" />
+					<ef:responsibleParty>
+						<base2:RelatedParty>
+							<base2:individualName>
+								<gmd:LocalisedCharacterString>Pedro Jiménez Guerrero</gmd:LocalisedCharacterString>
+							</base2:individualName>
+							<base2:organisationName>
+								<gmd:LocalisedCharacterString>Grupo de Modelización atmosférica de Murcia (GMAR)</gmd:LocalisedCharacterString>
+							</base2:organisationName>
+							<base2:contact>
+								<base2:Contact>
+									<base2:address>
+										<ad:AddressRepresentation>
+											<ad:adminUnit>
+												<gn:GeographicalName>
+													<gn:language>spa</gn:language>
+													<gn:nativeness>endonym</gn:nativeness>
+													<gn:nameStatus xsi:nil="true" />
+													<gn:sourceOfName xsi:nil="true" />
+													<gn:pronunciation xsi:nil="true" />
+													<gn:spelling>
+														<gn:SpellingOfName>
+															<gn:text>Edificio CIOyN, Of. 1.21, Campus de Espinardo, Universidad de Murcia MU</gn:text>
+															<gn:script xsi:nil="true" />
+														</gn:SpellingOfName>
+													</gn:spelling>
+												</gn:GeographicalName>
+											</ad:adminUnit>
+											<ad:locatorDesignator>Spain</ad:locatorDesignator>
+										</ad:AddressRepresentation>
+									</base2:address>
+									<base2:electronicMailAddress>pedro.jimenezguerrero@um.es</base2:electronicMailAddress>
+									<base2:telephoneVoice>868 888 175</base2:telephoneVoice>
+									<base2:website>http://sinqlair.carm.es/CalidadAire/documentacion</base2:website>
+								</base2:Contact>
+							</base2:contact>
+						</base2:RelatedParty>
+					</ef:responsibleParty>
+					<ef:observingCapability>
+						<ef:ObservingCapability gml:id="ModelObservingCapability_635e42e6-262c-4d2f-931e-201ea3fca812">
+							<ef:observingTime>
+								<gml:TimePeriod gml:id="TimePeriod_0bac6c3d-e077-4751-8305-fe2f2f27d023">
+									<gml:beginPosition>2013-01-01T00:00:00+00:00</gml:beginPosition>
+									<gml:endPosition>2013-12-31T24:00:00+00:00</gml:endPosition>
+								</gml:TimePeriod>
+							</ef:observingTime>
+							<ef:processType xlink:href="http://inspire.ec.europa.eu/codeList/ProcessTypeValue/process" />
+							<ef:resultNature xlink:href="http://inspire.ec.europa.eu/codelist/ResultNatureValue/simulated" />
+							<ef:procedure xlink:href="ES.BDCA.AQD/MODP_ES_SINQLAIR_SO2_V_CL_wMean_2013" />
+							<ef:featureOfInterest xlink:href="ES.BDCA.AQD/MOA_ES14" />
+							<ef:observedProperty xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1" />
+						</ef:ObservingCapability>
+					</ef:observingCapability>
+					<ef:organisationLevel xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/organisationallevel/regional" />
+					<aqd:environmentalObjective>
+						<aqd:EnvironmentalObjective>
+							<aqd:objectiveType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/CL" />
+							<aqd:reportingMetric xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/wMean" />
+							<aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V" />
+						</aqd:EnvironmentalObjective>
+					</aqd:environmentalObjective>
+					<aqd:assessmentType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/model" />
+					<aqd:zone nilReason="inapplicable" />
+				</aqd:AQD_Model>
+			</aqd:content>
+			<aqd:content>
+				<aqd:AQD_Model gml:id="MOD_ES_SINQLAIR_CO_H_LV_daysAbove_2013_cceda516-2982-4142-b51a-87b756289183">
+					<ef:inspireId>
+						<base:Identifier>
+							<base:localId>MOD_ES_SINQLAIR_CO_H_LV_daysAbove_2013</base:localId>
+							<base:namespace>ES.BDCA.AQD</base:namespace>
+							<base:versionId>First version 2013</base:versionId>
+						</base:Identifier>
+					</ef:inspireId>
+					<ef:name>SINQLAIR</ef:name>
+					<ef:mediaMonitored xlink:href="http://dd.eionet.europa.eu/vocabulary/common/environmentaldomain/air" />
+					<ef:responsibleParty>
+						<base2:RelatedParty>
+							<base2:individualName>
+								<gmd:LocalisedCharacterString>Pedro Jiménez Guerrero</gmd:LocalisedCharacterString>
+							</base2:individualName>
+							<base2:organisationName>
+								<gmd:LocalisedCharacterString>Grupo de Modelización atmosférica de Murcia (GMAR)</gmd:LocalisedCharacterString>
+							</base2:organisationName>
+							<base2:contact>
+								<base2:Contact>
+									<base2:address>
+										<ad:AddressRepresentation>
+											<ad:adminUnit>
+												<gn:GeographicalName>
+													<gn:language>spa</gn:language>
+													<gn:nativeness>endonym</gn:nativeness>
+													<gn:nameStatus xsi:nil="true" />
+													<gn:sourceOfName xsi:nil="true" />
+													<gn:pronunciation xsi:nil="true" />
+													<gn:spelling>
+														<gn:SpellingOfName>
+															<gn:text>Edificio CIOyN, Of. 1.21, Campus de Espinardo, Universidad de Murcia MU</gn:text>
+															<gn:script xsi:nil="true" />
+														</gn:SpellingOfName>
+													</gn:spelling>
+												</gn:GeographicalName>
+											</ad:adminUnit>
+											<ad:locatorDesignator>Spain</ad:locatorDesignator>
+										</ad:AddressRepresentation>
+									</base2:address>
+									<base2:electronicMailAddress>pedro.jimenezguerrero@um.es</base2:electronicMailAddress>
+									<base2:telephoneVoice>868 888 175</base2:telephoneVoice>
+									<base2:website>http://sinqlair.carm.es/CalidadAire/documentacion</base2:website>
+								</base2:Contact>
+							</base2:contact>
+						</base2:RelatedParty>
+					</ef:responsibleParty>
+					<ef:observingCapability>
+						<ef:ObservingCapability gml:id="ModelObservingCapability_715bb861-1e5c-4a0e-92b0-4ed89ec07668">
+							<ef:observingTime>
+								<gml:TimePeriod gml:id="TimePeriod_120b60a2-acbb-41cd-a411-a5e1573b7346">
+									<gml:beginPosition>2013-01-01T00:00:00+00:00</gml:beginPosition>
+									<gml:endPosition>2013-12-31T24:00:00+00:00</gml:endPosition>
+								</gml:TimePeriod>
+							</ef:observingTime>
+							<ef:processType xlink:href="http://inspire.ec.europa.eu/codeList/ProcessTypeValue/process" />
+							<ef:resultNature xlink:href="http://inspire.ec.europa.eu/codelist/ResultNatureValue/simulated" />
+							<ef:procedure xlink:href="ES.BDCA.AQD/MODP_ES_SINQLAIR_CO_H_LV_daysAbove_2013" />
+							<ef:featureOfInterest xlink:href="ES.BDCA.AQD/MOA_ES14" />
+							<ef:observedProperty xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/10" />
+						</ef:ObservingCapability>
+					</ef:observingCapability>
+					<ef:organisationLevel xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/organisationallevel/regional" />
+					<aqd:environmentalObjective>
+						<aqd:EnvironmentalObjective>
+							<aqd:objectiveType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV" />
+							<aqd:reportingMetric xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/daysAbove" />
+							<aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H" />
+						</aqd:EnvironmentalObjective>
+					</aqd:environmentalObjective>
+					<aqd:assessmentType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/model" />
+					<aqd:zone nilReason="inapplicable" />
+				</aqd:AQD_Model>
+			</aqd:content>
+			<aqd:content>
+				<aqd:AQD_Model gml:id="MOD_ES_SINQLAIR_PM2.5_H_TV_aMean_2013_695b3a53-b4bc-42f4-b768-48bc6180fabd">
+					<ef:inspireId>
+						<base:Identifier>
+							<base:localId>MOD_ES_SINQLAIR_PM2.5_H_TV_aMean_2013</base:localId>
+							<base:namespace>ES.BDCA.AQD</base:namespace>
+							<base:versionId>First version 2013</base:versionId>
+						</base:Identifier>
+					</ef:inspireId>
+					<ef:name>SINQLAIR</ef:name>
+					<ef:mediaMonitored xlink:href="http://dd.eionet.europa.eu/vocabulary/common/environmentaldomain/air" />
+					<ef:responsibleParty>
+						<base2:RelatedParty>
+							<base2:individualName>
+								<gmd:LocalisedCharacterString>Pedro Jiménez Guerrero</gmd:LocalisedCharacterString>
+							</base2:individualName>
+							<base2:organisationName>
+								<gmd:LocalisedCharacterString>Grupo de Modelización atmosférica de Murcia (GMAR)</gmd:LocalisedCharacterString>
+							</base2:organisationName>
+							<base2:contact>
+								<base2:Contact>
+									<base2:address>
+										<ad:AddressRepresentation>
+											<ad:adminUnit>
+												<gn:GeographicalName>
+													<gn:language>spa</gn:language>
+													<gn:nativeness>endonym</gn:nativeness>
+													<gn:nameStatus xsi:nil="true" />
+													<gn:sourceOfName xsi:nil="true" />
+													<gn:pronunciation xsi:nil="true" />
+													<gn:spelling>
+														<gn:SpellingOfName>
+															<gn:text>Edificio CIOyN, Of. 1.21, Campus de Espinardo, Universidad de Murcia MU</gn:text>
+															<gn:script xsi:nil="true" />
+														</gn:SpellingOfName>
+													</gn:spelling>
+												</gn:GeographicalName>
+											</ad:adminUnit>
+											<ad:locatorDesignator>Spain</ad:locatorDesignator>
+										</ad:AddressRepresentation>
+									</base2:address>
+									<base2:electronicMailAddress>pedro.jimenezguerrero@um.es</base2:electronicMailAddress>
+									<base2:telephoneVoice>868 888 175</base2:telephoneVoice>
+									<base2:website>http://sinqlair.carm.es/CalidadAire/documentacion</base2:website>
+								</base2:Contact>
+							</base2:contact>
+						</base2:RelatedParty>
+					</ef:responsibleParty>
+					<ef:observingCapability>
+						<ef:ObservingCapability gml:id="ModelObservingCapability_10a79d32-a312-404e-ad4b-43bb9f04e58d">
+							<ef:observingTime>
+								<gml:TimePeriod gml:id="TimePeriod_56c99aaa-7e49-48fe-8587-6f6d4f1603cf">
+									<gml:beginPosition>2013-01-01T00:00:00+00:00</gml:beginPosition>
+									<gml:endPosition>2013-12-31T24:00:00+00:00</gml:endPosition>
+								</gml:TimePeriod>
+							</ef:observingTime>
+							<ef:processType xlink:href="http://inspire.ec.europa.eu/codeList/ProcessTypeValue/process" />
+							<ef:resultNature xlink:href="http://inspire.ec.europa.eu/codelist/ResultNatureValue/simulated" />
+							<ef:procedure xlink:href="ES.BDCA.AQD/MODP_ES_SINQLAIR_PM2.5_H_TV_aMean_2013" />
+							<ef:featureOfInterest xlink:href="ES.BDCA.AQD/MOA_ES14" />
+							<ef:observedProperty xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/6001" />
+						</ef:ObservingCapability>
+					</ef:observingCapability>
+					<ef:organisationLevel xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/organisationallevel/regional" />
+					<aqd:environmentalObjective>
+						<aqd:EnvironmentalObjective>
+							<aqd:objectiveType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/TV" />
+							<aqd:reportingMetric xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean" />
+							<aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H" />
+						</aqd:EnvironmentalObjective>
+					</aqd:environmentalObjective>
+					<aqd:assessmentType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/model" />
+					<aqd:zone nilReason="inapplicable" />
+				</aqd:AQD_Model>
+			</aqd:content>
+			<aqd:content>
+				<aqd:AQD_Model gml:id="MOD_ES_SINQLAIR_PM2.5_H_LV_aMean_2013_2fc22f39-9b70-41ca-be59-16a1e8884c4c">
+					<ef:inspireId>
+						<base:Identifier>
+							<base:localId>MOD_ES_SINQLAIR_PM2.5_H_LV_aMean_2013</base:localId>
+							<base:namespace>ES.BDCA.AQD</base:namespace>
+							<base:versionId>First version 2013</base:versionId>
+						</base:Identifier>
+					</ef:inspireId>
+					<ef:name>SINQLAIR</ef:name>
+					<ef:mediaMonitored xlink:href="http://dd.eionet.europa.eu/vocabulary/common/environmentaldomain/air" />
+					<ef:responsibleParty>
+						<base2:RelatedParty>
+							<base2:individualName>
+								<gmd:LocalisedCharacterString>Pedro Jiménez Guerrero</gmd:LocalisedCharacterString>
+							</base2:individualName>
+							<base2:organisationName>
+								<gmd:LocalisedCharacterString>Grupo de Modelización atmosférica de Murcia (GMAR)</gmd:LocalisedCharacterString>
+							</base2:organisationName>
+							<base2:contact>
+								<base2:Contact>
+									<base2:address>
+										<ad:AddressRepresentation>
+											<ad:adminUnit>
+												<gn:GeographicalName>
+													<gn:language>spa</gn:language>
+													<gn:nativeness>endonym</gn:nativeness>
+													<gn:nameStatus xsi:nil="true" />
+													<gn:sourceOfName xsi:nil="true" />
+													<gn:pronunciation xsi:nil="true" />
+													<gn:spelling>
+														<gn:SpellingOfName>
+															<gn:text>Edificio CIOyN, Of. 1.21, Campus de Espinardo, Universidad de Murcia MU</gn:text>
+															<gn:script xsi:nil="true" />
+														</gn:SpellingOfName>
+													</gn:spelling>
+												</gn:GeographicalName>
+											</ad:adminUnit>
+											<ad:locatorDesignator>Spain</ad:locatorDesignator>
+										</ad:AddressRepresentation>
+									</base2:address>
+									<base2:electronicMailAddress>pedro.jimenezguerrero@um.es</base2:electronicMailAddress>
+									<base2:telephoneVoice>868 888 175</base2:telephoneVoice>
+									<base2:website>http://sinqlair.carm.es/CalidadAire/documentacion</base2:website>
+								</base2:Contact>
+							</base2:contact>
+						</base2:RelatedParty>
+					</ef:responsibleParty>
+					<ef:observingCapability>
+						<ef:ObservingCapability gml:id="ModelObservingCapability_c4238180-76f1-4202-ad8f-6f883e6f03b6">
+							<ef:observingTime>
+								<gml:TimePeriod gml:id="TimePeriod_53eb4c2a-ba96-437a-a726-52620b80813a">
+									<gml:beginPosition>2013-01-01T00:00:00+00:00</gml:beginPosition>
+									<gml:endPosition>2013-12-31T24:00:00+00:00</gml:endPosition>
+								</gml:TimePeriod>
+							</ef:observingTime>
+							<ef:processType xlink:href="http://inspire.ec.europa.eu/codeList/ProcessTypeValue/process" />
+							<ef:resultNature xlink:href="http://inspire.ec.europa.eu/codelist/ResultNatureValue/simulated" />
+							<ef:procedure xlink:href="ES.BDCA.AQD/MODP_ES_SINQLAIR_PM2.5_H_LV_aMean_2013" />
+							<ef:featureOfInterest xlink:href="ES.BDCA.AQD/MOA_ES14" />
+							<ef:observedProperty xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/6001" />
+						</ef:ObservingCapability>
+					</ef:observingCapability>
+					<ef:organisationLevel xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/organisationallevel/regional" />
+					<aqd:environmentalObjective>
+						<aqd:EnvironmentalObjective>
+							<aqd:objectiveType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV" />
+							<aqd:reportingMetric xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean" />
+							<aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H" />
+						</aqd:EnvironmentalObjective>
+					</aqd:environmentalObjective>
+					<aqd:assessmentType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/model" />
+					<aqd:zone nilReason="inapplicable" />
+				</aqd:AQD_Model>
+			</aqd:content>
+		</aqd:AQD_ReportingHeader>
+	</gml:featureMember>
+</gml:FeatureCollection>

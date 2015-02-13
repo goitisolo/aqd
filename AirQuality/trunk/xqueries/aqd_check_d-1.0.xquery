@@ -137,12 +137,16 @@ as element(td)
  :              SPARQL HELPER methods
  : ======================================================================
  :)
+
+
+
+ (:---------------------------------Old xmlconv:executeSparqlQuery function----------------------------------------------------------------------:)
 (:~ Function executes given SPARQL query and returns result elements in SPARQL result format.
  : URL parameters will be correctly encoded.
  : @param $sparql SPARQL query.
  : @return sparql:results element containing zero or more sparql:result subelements in SPARQL result format.
  :)
-declare function xmlconv:executeSparqlQuery($sparql as xs:string)
+declare function xmlconv:executeSparqlEndpoint($sparql as xs:string)
 as element(sparql:results)
 {
     let $uri := xmlconv:getSparqlEndpointUrl($sparql, "xml")
@@ -154,6 +158,58 @@ as element(sparql:results)
             <sparql:results/>
 
 };
+
+(:----------------------------------------------------------------------------------------------------------------------------------------------:)
+declare function xmlconv:setLimitAndOffset($sparql as xs:string, $limit as xs:string, $offset as xs:string)
+as xs:string
+{
+    concat($sparql," offset ",$offset," limit ",$limit)
+};
+
+declare function xmlconv:toCountSparql($sparql as xs:string)
+as xs:string
+{       let $s :=if (fn:contains($sparql,"order")) then tokenize($sparql, "order") else tokenize($sparql, "ORDER")
+        let $firstPart := tokenize($s[1], "SELECT")
+        let $secondPart := tokenize($s[1], "WHERE")
+    return concat($firstPart[1], " SELECT count(*) WHERE ", $secondPart[2])
+};
+
+declare function xmlconv:countsSparqlResults($sparql as xs:string)
+as xs:integer
+{    let $countingSparql := xmlconv:toCountSparql($sparql)
+    let $endpoint :=  xmlconv:executeSparqlEndpoint($countingSparql)
+
+
+
+    (: Counting all results:)
+    let $count :=  $countingSparql
+    let $isCountAvailable := string-length($count) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($count, "xml"))
+    let $countResult := if($isCountAvailable) then (data($endpoint//sparql:binding[@name='callret-0']/sparql:literal)) else ""
+    return $countResult[1]
+};
+
+declare function xmlconv:executeSparqlQuery($sparql as xs:string)
+as element(sparql:result)*
+{
+    let $limit := number(2000)
+    let $countResult := xmlconv:countsSparqlResults($sparql)
+
+    (:integer - how many times must sparql function repeat :)
+    let $divCountResult := if($countResult>0) then ceiling(number($countResult) div number($limit)) else number("1")
+
+    (:Collects all sparql results:)
+    let $allResults :=
+        for $r in (1 to  xs:integer(number($divCountResult)))
+            let $offset := if ($r > 1) then string(((number($r)-1) * $limit)+1) else "1"
+            let $resultXml := xmlconv:setLimitAndOffset($sparql,xs:string($limit), $offset)
+            let $isResultsAvailable := string-length($resultXml) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($resultXml, "xml"))
+        let $result := if($isResultsAvailable) then xmlconv:executeSparqlEndpoint($resultXml)//sparql:result else ()
+    return $result
+
+    return  $allResults
+};
+
+(:----------------------------------------------------------------------------------------------------------------------------------------------:)
 
 
 (:~
@@ -351,7 +407,7 @@ as xs:string
                         aqr:inspireNamespace ?namespace;
                          aqr:inspireId ?inspireid .
             filter (?namespace in (", $nameSpacesStr,  "))
-    }"
+    } order by ?zoneuri"
     )
 };
 
