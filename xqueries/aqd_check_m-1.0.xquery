@@ -134,9 +134,9 @@ as element(td)
  :              SPARQL HELPER methods
  : ======================================================================
  :)
- 
+
  (:---------------------------------Old xmlconv:executeSparqlQuery function----------------------------------------------------------------------:)
- 
+
 (:~ Function executes given SPARQL query and returns result elements in SPARQL result format.
  : URL parameters will be correctly encoded.
  : @param $sparql SPARQL query.
@@ -387,7 +387,7 @@ as xs:string
                         aqr:inspireNamespace ?namespace;
                          aqr:inspireId ?inspireid .
             filter (?namespace in (", $nameSpacesStr,  "))
-    }"
+    } order by ?inspireid"
     )
 };
 
