@@ -310,7 +310,7 @@ aqd:inspireId ?inspireId .
 ?inspireId rdfs:label ?inspireLabel .
 ?zone aqd:usedAQD ?usedAQD .
 FILTER (STRSTARTS(str(?zone), 'http://cdr.eionet.europa.eu/",$countryCode,"/eu/aqd/d/')and xsd:boolean(?usedAQD))
-}")
+} order by ?zone")
 };
 
 declare function xmlconv:getProtectionTarget($countryCode as xs:string)
@@ -326,7 +326,7 @@ as xs:string
                ?pollutants aqd:pollutantCode ?pollutantCode .
                ?pollutants aqd:protectionTarget ?protectionTarget .
          FILTER (STRSTARTS(str(?zone), 'http://cdr.eionet.europa.eu/",$countryCode,"/eu/aqd/b/'))
-} ")
+} order by ?zone ")
 };
 
 declare function xmlconv:getSamplingPointInspireLabel($countryCode as xs:string)
@@ -344,7 +344,7 @@ SELECT ?zone ?inspireId ?inspireLabel ?relevantEmissions ?stationClassification
          ?zone aqd:relevantEmissions ?relevantEmissions .
          ?relevantEmissions aqd:stationClassification ?stationClassification
   FILTER (STRSTARTS(str(?zone), 'http://cdr.eionet.europa.eu/", $countryCode,"/eu/aqd/d/') and str(?stationClassification)='http://dd.eionet.europa.eu/vocabulary/aq/stationclassification/background')
-  }")
+  } order by ?zone")
 };
 
 declare function xmlconv:getPollutantCode($countryCode as xs:string)
@@ -360,7 +360,7 @@ as xs:string
                ?pollutants aqd:pollutantCode ?pollutantCode .
                ?pollutants aqd:protectionTarget ?protectionTarget .
          FILTER (STRSTARTS(str(?zone), 'http://cdr.eionet.europa.eu/",$countryCode,"/eu/aqd/b/'))
-} ")
+} order by ?zone")
 };
 
 declare function xmlconv:getAqdModelID($countryCode as xs:string)
@@ -376,7 +376,7 @@ as xs:string
               aqd:inspireId ?inspireId .
               ?inspireId rdfs:label ?inspireLabel .
          FILTER (STRSTARTS(str(?zone), 'http://cdr.eionet.europa.eu/",$countryCode,"/eu/aqd/d/'))
-}")
+} order by ?zone")
 };
 
 declare function xmlconv:getModelEndPosition ($countryCode as xs:string)
@@ -395,7 +395,7 @@ concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
         ?observingCapability aqd:observingTime ?observingTime .
         ?observingTime aqd:beginPosition ?endPosition
     FILTER (STRSTARTS(str(?zone), 'http://cdr.eionet.europa.eu/",$countryCode,"/eu/aqd/d/'))
-}")
+} order by ?zone")
 };
 
 declare function xmlconv:getSamplingPointEndPosition ($countryCode as xs:string)
@@ -414,7 +414,7 @@ concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
         ?observingCapability aqd:observingTime ?observingTime .
         ?observingTime aqd:beginPosition ?endPosition
     FILTER (STRSTARTS(str(?zone), 'http://cdr.eionet.europa.eu/",$countryCode,"/eu/aqd/d/'))
-}")
+} order by ?zone")
 };
 
 declare function xmlconv:getAssessmentTypeModel($countryCode as xs:string)
@@ -430,7 +430,7 @@ as xs:string
          ?inspireId rdfs:label ?inspireLabel .
          ?zone aqd:assessmentType ?assessmentType
        FILTER (STRSTARTS(str(?zone), 'http://cdr.eionet.europa.eu/",$countryCode,"/eu/aqd/d/'))
-   }")
+   } order by ?zone")
 };
 
 declare function xmlconv:getAssessmentType($countryCode as xs:string)
@@ -446,7 +446,7 @@ as xs:string
          ?inspireId rdfs:label ?inspireLabel .
          ?zone aqd:assessmentType ?assessmentType
        FILTER (STRSTARTS(str(?zone), 'http://cdr.eionet.europa.eu/",$countryCode,"/eu/aqd/d/'))
-   }")
+   } order by ?zone")
 };
 
 declare function xmlconv:getInspireLabelD($countryCode as xs:string)
@@ -462,7 +462,7 @@ concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
           aqd:inspireId ?inspireId .
           ?inspireId rdfs:label ?inspireLabel .
       FILTER (STRSTARTS(str(?zone), 'http://cdr.eionet.europa.eu/", $countryCode, "/eu/aqd/d/'))
-}")
+} order by ?zone")
 };
 
 declare function xmlconv:getInspireId($countryCode as xs:string)
@@ -478,7 +478,7 @@ PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
         aqd:inspireId ?inspireId .
         ?inspireId rdfs:label ?inspireLabel .
    FILTER (STRSTARTS(str(?zone), 'http://cdr.eionet.europa.eu/", $countryCode, "/eu/aqd/b/'))
-  }")
+  } order by ?zone")
 };
 
 declare function xmlconv:getPollutantCodeAndProtectionTarge($countryCode as xs:string)
@@ -497,7 +497,7 @@ as xs:string
               ?pollutants aqd:pollutantCode ?pollutantCode .
               ?pollutants aqd:protectionTarget ?protectionTarget .
       FILTER (STRSTARTS(str(?zone), 'http://cdr.eionet.europa.eu/", $countryCode, "/eu/aqd/b/'))
-    }")
+    } order by ?zone")
 };
 
 
