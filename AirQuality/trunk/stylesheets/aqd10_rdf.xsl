@@ -63,14 +63,48 @@
 
 <!-- For literal decimal elements (properties) -->
   <xsl:template match="aqd:altitude|aqd:area|aqd:residentPopulation|
-   aqd:inletHeight|aqd:buildingDistance|aqd:kerbDistance|
-   aqd:detectionLimit|aqd:numUnits" mode="property">
+   aqd:inletHeight|aqd:buildingDistance|aqd:kerbDistance|aqd:distanceJunction|
+   aqd:distanceSource|aqd:heatingEmissions|aqd:heightFacades|aqd:industrialEmissions|aqd:kerbDistance|
+   aqd:detectionLimit|aqd:numUnits|aqd:streetWidth|aqd:trafficEmissions|aqd:trafficSpeed" mode="property">
     <xsl:variable name="value" select="normalize-space(text())"/>
     <xsl:if test="$value != ''">
       <xsl:element name="{local-name()}" namespace="&ont;">
             <xsl:attribute name="rdf:datatype">&xsd;decimal</xsl:attribute>
         <xsl:value-of select="$value"/>
       </xsl:element>
+      <!-- UOM attribute - We'll assume there is only one value for a given context -->
+      <xsl:if test="@uom != ''">
+        <xsl:element name="{concat(local-name(),'UOM')}" namespace="&ont;">
+          <xsl:choose>
+            <xsl:when test="contains(@uom, 'http:')">
+              <xsl:attribute name="rdf:resource">
+                <xsl:value-of select="@uom"/>
+              </xsl:attribute>
+            </xsl:when>
+            <xsl:when test="@uom = 'm' or @uom = 'km'">
+              <xsl:attribute name="rdf:resource">http://dd.eionet.europa.eu/vocabulary/uom/length/<xsl:value-of select="@uom"/></xsl:attribute>
+            </xsl:when>
+            <xsl:when test="@uom = 'km2'">
+              <xsl:attribute name="rdf:resource">http://dd.eionet.europa.eu/vocabulary/uom/area/km2</xsl:attribute>
+            </xsl:when>
+            <xsl:when test="@uom = 'km/h'">
+              <xsl:attribute name="rdf:resource">http://dd.eionet.europa.eu/vocabulary/uom/velocity/km.h-1</xsl:attribute>
+            </xsl:when>
+            <xsl:when test="@uom = 'mg.m-3' or @uom = 'ng.m-3' or @uom = 'ug.m-3' or @uom = 'ug.m-2.day-1'">
+              <xsl:attribute name="rdf:resource">http://dd.eionet.europa.eu/vocabulary/uom/concentration/<xsl:value-of select="@uom"/></xsl:attribute>
+            </xsl:when>
+            <xsl:when test="@uom = 't/km2/year'">
+              <xsl:attribute name="rdf:resource">http://dd.eionet.europa.eu/vocabulary/uom/emission/t.km-2.year-1</xsl:attribute>
+            </xsl:when>
+            <xsl:when test="@uom = 't/km/year' or @uom = 't/km.year'">
+              <xsl:attribute name="rdf:resource">http://dd.eionet.europa.eu/vocabulary/uom/emission/t.km-1.year-1</xsl:attribute>
+            </xsl:when>
+            <xsl:when test="@uom = 't/year'">
+              <xsl:attribute name="rdf:resource">http://dd.eionet.europa.eu/vocabulary/uom/emission/t.year-1</xsl:attribute>
+            </xsl:when>
+          </xsl:choose>
+        </xsl:element>
+      </xsl:if>
     </xsl:if>
   </xsl:template>
 
@@ -155,14 +189,7 @@
           </xsl:otherwise>
         </xsl:choose>
       </xsl:element>
-      <!-- UOM attribute - We'll assume there is only one value for a given context -->
-      <!--
-      <xsl:if test="@uom != ''">
-        <xsl:element name="{concat(local-name(),'UOM')}" namespace="&ont;">
-          <xsl:value-of select="@uom"/>
-        </xsl:element>
-      </xsl:if>
-      -->
+
     </xsl:if>
   </xsl:template>
 
