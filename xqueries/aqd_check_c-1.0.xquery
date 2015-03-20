@@ -1398,7 +1398,6 @@ let $result := if ($countZones > 0) then xmlconv:checkReport($source_url, $count
 
 return
     <div>
-(:{xmlconv:javaScript()} :)
         <h2>Check air quality assessment regimes - Dataflow C</h2>
         {
         if ( $countZones = 0) then
