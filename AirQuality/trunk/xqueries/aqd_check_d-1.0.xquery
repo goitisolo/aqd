@@ -1702,10 +1702,10 @@ as xs:string
     }")
 };
 
-declare function xmlconv:isMatchingVocabCode($crConcepts as element(sparql:results)*, $concept as xs:string)
+declare function xmlconv:isMatchingVocabCode($crConcepts as element(sparql:result)*, $concept as xs:string)
 as xs:boolean
 {
-    count($crConcepts//sparql:result/sparql:binding[@name="concepturl" and sparql:uri=$concept]) > 0
+    count($crConcepts/sparql:binding[@name="concepturl" and sparql:uri=$concept]) > 0
 };
 
 (:
