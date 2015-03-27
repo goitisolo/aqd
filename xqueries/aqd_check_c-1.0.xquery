@@ -140,20 +140,25 @@ declare variable $xmlconv:VALID_POLLUTANT_IDS_27 as xs:string* := ('1045','1046'
 '5759','5626','5655','5763','7029','611','618','760','627','656','7419','20','428','430','432','503','505','394','447','6005','6006','6007','24','486','316','6008','6009',
 '451','443','316','441','475','449','21','431','464','482','6011','6012','32','25','6001');
 
-declare variable $xmlconv:VALID_POLLUTANT_IDS_40 as xs:string* := ('1045','1046','1047','1771','1772','1629','1659','1657','1668','1631','2012','2014','2015','2018','7013','4013','4813','653','5013','5610','5617',
+declare variable $xmlconv:VALID_POLLUTANT_IDS_40 as xs:string* := ($xmlconv:MANDATORY_POLLUTANT_IDS_8, $xmlconv:MANDATORY_POLLUTANT_IDS_9);
+
+(:'1045','1046','1047','1771','1772','1629','1659','1657','1668','1631','2012','2014','2015','2018','7013','4013','4813','653','5013','5610','5617',
 '5759','5626','5655','5763','7029','611','618','760','627','656','7419','428','430','432','503','505','394','447','6005','6006','6007','24','486','316','6008','6009',
-'451','443','316','441','475','449','21','431','464','482','6011','6012','32','25');
+'451','443','316','441','475','449','21','431','464','482','6011','6012','32','25':)
 
 declare variable $xmlconv:VALID_POLLUTANT_IDS_21 as xs:string* := ("1","8","9","10","5","6001","5014","5018","5015","5029","5012","20");
 
 declare variable $xmlconv:POLLUTANT_VOCABULARY as xs:string := "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/";
 
 declare variable $xmlconv:TEST_ENVELOPE_URL as xs:string := "http://cdr.eionet.europa.eu/es/eu/aqd/b/envvhbw_q/xml";
+
 (:
+declare variable $country as xs:string := "uk";
+declare variable $source_url as xs:string := "../test/ES_C_AssessmentRegime.xml";
+declare variable $source_url as xs:string := "../test/C_GB.xml";
 declare variable $source_url as xs:string := "../test/C_GB.xml";
 declare variable $country as xs:string := "uk";
 declare variable $source_url as xs:string := "http://cdrtest.eionet.europa.eu/es/eu/aqd/c/envvosrqq/ES_C_AssessmentRegime.xml";
-declare variable $source_url as xs:string := "../test/C_GB_AssessmentRegime.xml";
 declare variable $source_url as xs:string external;
 :)
 (:
@@ -353,14 +358,18 @@ FILTER (STRSTARTS(str(?zone), 'http://cdr.eionet.europa.eu/",$countryCode,"/eu/a
 
 declare function xmlconv:getProtectionTarget($countryCode as xs:string)
 as xs:string
-{concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+{
+let $countryCode := xmlconv:reChangeCountrycode($countryCode)
+return
+concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
          PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
          PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
-
-               SELECT distinct ?zone ?pollutants ?pollutantCode ?protectionTarget
+         SELECT distinct  ?zoneId ?pollutantCode ?protectionTarget
          WHERE {
                ?zone a aqd:AQD_Zone;
-                aqd:pollutants ?pollutants .
+               aqd:pollutants ?pollutants .
+               ?zone aqd:inspireId ?ii .
+               ?ii rdfs:label ?zoneId .
                ?pollutants aqd:pollutantCode ?pollutantCode .
                ?pollutants aqd:protectionTarget ?protectionTarget .
          FILTER (STRSTARTS(str(?zone), 'http://cdr.eionet.europa.eu/",$countryCode,"/eu/aqd/b/'))
@@ -370,7 +379,10 @@ as xs:string
 declare function xmlconv:getSamplingPointInspireLabel($countryCode as xs:string)
 as xs:string
 
-{concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+{
+let $countryCode := xmlconv:reChangeCountrycode($countryCode)
+return
+concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
          PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
          PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
 
@@ -419,22 +431,27 @@ return
 } order by ?zone")
 };
 
-declare function xmlconv:getModelEndPosition ($countryCode as xs:string)
+declare function xmlconv:getModelEndPosition ($countryCode as xs:string, $startDate as xs:string, $endDate as xs:string)
 as xs:string
 {
+let $countryCode := xmlconv:reChangeCountrycode($countryCode)
+return
 concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
     PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
     PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
 
-    SELECT ?zone ?inspireId ?inspireLabel ?endPosition
+SELECT ?zone   ?inspireId ?inspireLabel ?beginPosition ?endPosition
     WHERE {
         ?zone a aqd:AQD_Model ;
         aqd:inspireId ?inspireId .
         ?inspireId rdfs:label ?inspireLabel .
         ?zone aqd:observingCapability ?observingCapability .
         ?observingCapability aqd:observingTime ?observingTime .
-        ?observingTime aqd:beginPosition ?endPosition
-    FILTER (STRSTARTS(str(?zone), 'http://cdr.eionet.europa.eu/",$countryCode,"/eu/aqd/d/'))
+        ?observingTime aqd:endPosition ?endPosition .
+        ?observingTime aqd:beginPosition ?beginPosition
+        FILTER(xsd:date(SUBSTR(xsd:string(?endPosition),1,10)) >= xsd:date('", $endDate, "')) .
+        FILTER(xsd:date(SUBSTR(xsd:string(?beginPosition),1,10)) <= xsd:date('", $startDate, "')) .
+        FILTER (STRSTARTS(str(?zone), 'http://cdr.eionet.europa.eu/",$countryCode,"/eu/aqd/d/'))
 } order by ?zone")
 };
 
@@ -510,6 +527,8 @@ concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 declare function xmlconv:getInspireId($countryCode as xs:string)
 as xs:string
 {
+let $countryCode := xmlconv:reChangeCountrycode($countryCode)
+return
 concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
 PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
@@ -526,6 +545,8 @@ PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
 declare function xmlconv:getPollutantCodeAndProtectionTarge($countryCode as xs:string)
 as xs:string
 {
+let $countryCode := xmlconv:reChangeCountrycode($countryCode)
+return
  concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
     PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
     PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
@@ -977,10 +998,31 @@ return    if (empty(index-of($inspireLebelD, $x))) then $x else ()
 
 (: 26 :)
 
-let $resultXml := if (fn:string-length($countryCode) = 2) then xmlconv:getModelEndPosition($countryCode) else ""
+let $startDate := substring(data($docRoot//aqd:reportingPeriod/gml:TimePeriod/gml:beginPosition),1,10)
+let $endDate := substring(data($docRoot//aqd:reportingPeriod/gml:TimePeriod/gml:endPosition),1,10)
+
+let $resultXml := if (fn:string-length($countryCode) = 2) then xmlconv:getModelEndPosition($countryCode, $startDate, $endDate) else ""
 let $isModelEndPositionCodesAvailable := string-length($resultXml) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($resultXml, "xml"))
-let $modelEndPosition := if($isInspireLebelCodesAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($resultXml)//sparql:binding[@name='endPosition']/sparql:literal)) else ""
-let $modelInspireLebelD := if($isInspireLebelCodesAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($resultXml)//sparql:binding[@name='inspireLabel']/sparql:literal)) else ""
+
+let $validMethods := if($isModelEndPositionCodesAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($resultXml)//sparql:binding[@name='inspireLabel']/sparql:literal)) else ""
+
+let $invalidSamplingPointAssessmentMetadata :=
+    for $meta1 in $docRoot//aqd:AQD_AssessmentRegime/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata
+    return
+    if (empty(index-of($validMethods, data($meta1/@xlink:href)))) then $meta1/../../../@gml:id else ""
+
+let $invalidModelAssessmentMetadata :=
+    for $meta1 in $docRoot//aqd:AQD_AssessmentRegime/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:modelAssessmentMetadata
+    return
+    if (empty(index-of($validMethods, data($meta1/@xlink:href)))) then $meta1/../../../@gml:id else ""
+
+let $invalidGmlEndPosition := ($invalidSamplingPointAssessmentMetadata, $invalidModelAssessmentMetadata)
+let $invalidGmlEndPosition := distinct-values($invalidGmlEndPosition)
+
+
+(:
+let $modelEndPosition := if($isModelEndPositionCodesAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($resultXml)//sparql:binding[@name='endPosition']/sparql:literal)) else ""
+let $modelInspireLebelD := if($isModelEndPositionCodesAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($resultXml)//sparql:binding[@name='inspireLabel']/sparql:literal)) else ""
 let $isModelEndPositionCodesAvailable := count($resultXml) > 0
 
 let $resultXml := if (fn:string-length($countryCode) = 2) then xmlconv:getSamplingPointEndPosition($countryCode) else ""
@@ -991,11 +1033,48 @@ let $isEndPositionCodesAvailable := count($resultXml) > 0
 
 let $invalidGmlEndPosition :=
     for $gmlEndPosition in $docRoot//aqd:AQD_AssessmentRegime/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata
-    where (empty(fn:index-of($samplingPointInspireLebelD,$gmlEndPosition/normalize-space(@xlink:href)))=false() or empty(fn:index-of($modelInspireLebelD,$gmlEndPosition/normalize-space(@xlink:href)))=false()) and empty($docRoot//aqd:AQD_ReportingHeader/aqd:reportingPeriod/gml:TimePeriod/gml:endPosition)=false()
-    return  if (empty(index-of($samplinPointEndPosition,$docRoot//aqd:AQD_ReportingHeader/aqd:reportingPeriod/gml:TimePeriod/gml:endPosition)) or empty(index-of($modelEndPosition,$docRoot//aqd:AQD_ReportingHeader/aqd:reportingPeriod/gml:TimePeriod/gml:endPosition)) ) then $docRoot//aqd:AQD_ReportingHeader/@gml:id else ()
+    where (
+    not(empty(fn:index-of($samplingPointInspireLebelD,$gmlEndPosition/normalize-space(@xlink:href))))
+       or
+    not(empty(fn:index-of($modelInspireLebelD,$gmlEndPosition/normalize-space(@xlink:href))))
+    )
+    and empty($docRoot//aqd:AQD_ReportingHeader/aqd:reportingPeriod/gml:TimePeriod/gml:endPosition)=false()
+        return  if
+        (empty(index-of($samplinPointEndPosition,$docRoot//aqd:AQD_ReportingHeader/aqd:reportingPeriod/gml:TimePeriod/gml:endPosition))
+        or
+        empty(index-of($modelEndPosition,$docRoot//aqd:AQD_ReportingHeader/aqd:reportingPeriod/gml:TimePeriod/gml:endPosition)) ) then
+        $gmlEndPosition/../../../@gml:id
+        else ()
+:)
 
 (: 27 :)
 
+let $resultXml := if (fn:string-length($countryCode) = 2) then xmlconv:getInspireId($countryCode) else ""
+let $isInspireIdCodesAvailable := string-length($resultXml) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($resultXml, "xml"))
+let $inspireId := if($isInspireIdCodesAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($resultXml)//sparql:binding[@name='inspireLabel']/sparql:literal)) else ""
+let $resultSparql := if (fn:string-length($countryCode) = 2) then xmlconv:getPollutantCodeAndProtectionTarge($countryCode) else ""
+let $isProtectionTargetAvailable := string-length($resultSparql) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($resultSparql, "xml"))
+
+let $validRows :=
+for $rec in xmlconv:executeSparqlQuery($resultSparql)
+return
+    distinct-values(concat(data($rec//sparql:binding[@name='inspireLabel']/sparql:literal), "#", data($rec//sparql:binding[@name='pollutantCode']/sparql:uri), "#",data($rec//sparql:binding[@name='protectionTarget']/sparql:uri)))
+
+
+let $exceptionPollutantIds := ($xmlconv:MANDATORY_POLLUTANT_IDS_9, "6001")
+
+let $invalid :=
+for $x in  $docRoot//aqd:AQD_AssessmentRegime
+let $pollutantCode := fn:substring-after(data($x//aqd:pollutant/@xlink:href),"pollutant/")
+let $key := if (not(empty(index-of($exceptionPollutantIds, $pollutantCode)))   and data($x//aqd:zone/@nilReason)="inapplicable") then
+"EXC" else
+concat(data($x//aqd:zone/@xlink:href), '#', data($x//aqd:pollutant/@xlink:href), '#', data($x//aqd:protectionTarget/@xlink:href))
+where empty(index-of($validRows, $key))
+return if ($key !="EXC") then $key else ()
+
+let $invalidAqdAssessmentRegimeZone := distinct-values($invalid)
+
+(:
 let $resultXml := if (fn:string-length($countryCode) = 2) then xmlconv:getInspireId($countryCode) else ""
 let $isInspireIdCodesAvailable := string-length($resultXml) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($resultXml, "xml"))
 let $inspireId := if($isInspireIdCodesAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($resultXml)//sparql:binding[@name='inspireLabel']/sparql:literal)) else ""
@@ -1020,11 +1099,13 @@ for $concatStr in $docRoot//aqd:AQD_AssessmentRegime
 where empty(index-of($inspireId,fn:substring-before($str,"|")))=false()
     return if ((empty(index-of($protectionTarget, $str))) or (empty(index-of($exceptionZone,fn:substring-after($str,"|"))))) then $str else ()
 
-let $invalidAqdAssessmentRegimeZone := $aqdAQD_AssessmentRegime (:)if ($isInspireIdCodesAvailable and $isPollutantCodesAvailable and $isProtectionTargetAvailable) then
+let $invalidAqdAssessmentRegimeZone := $aqdAQD_AssessmentRegime (if ($isInspireIdCodesAvailable and $isPollutantCodesAvailable and $isProtectionTargetAvailable) then
     distinct-values($docRoot//aqd:AQD_AssessmentRegime[string-length(normalize-space(aqd:zone/@xlink:href)) > 0 and
             empty(index-of($inspireId, normalize-space(aqd:zone/@xlink:href))) and empty(index-of($pollutansCode, aqd:pollutant/normalize-space(@xlink:href)))
             or empty(index-of($protectionTarget, aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/normalize-space(@xlink:href)))]/@gml:id)
-    ():)
+    ()
+
+    :)
 
 (: C28 If ./aqd:zone xlink:href shall be current, then ./AQD_zone/aqd:operationActivityPeriod/gml:endPosition shall be equal to “9999-12-31 23:59:59Z” or nulled (blank)  :)
 let $invalidZoneGmlEndPosition :=
@@ -1046,11 +1127,17 @@ let $invalidZoneGmlEndPosition :=
 
 let $resultXml := if (fn:string-length($countryCode) = 2) then xmlconv:getInspireId($countryCode) else ""
 let $isInspireIdCodesAvailable := string-length($resultXml) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($resultXml, "xml"))
-let $zoneId := if($isInspireIdCodesAvailable) then count(distinct-values(data(xmlconv:executeSparqlQuery($resultXml)//sparql:binding[@name='inspireLabel']/sparql:literal))) else 0
-let $isInspireIdCodesAvailable := count($resultXml) > 0
+let $zoneIdCount := if($isInspireIdCodesAvailable) then count(distinct-values(data(xmlconv:executeSparqlQuery($resultXml)//sparql:binding[@name='inspireLabel']/sparql:literal))) else 0
 
 let $aqdAssessmentRegimeZone := count($docRoot//aqd:AQD_AssessmentRegime/aqd:zone)
-let $invalidEqual := if ($aqdAssessmentRegimeZone != $zoneId) then concat("aqd:AQD_AssessmentRegime ",$aqdAssessmentRegimeZone," aqd:AQD_Zone ",$zoneId) else ()
+
+let $uniqueZones := distinct-values(data($docRoot//aqd:AQD_AssessmentRegime/aqd:zone/@xlink:href))
+let $countUniqueZones := count($uniqueZones)
+
+(: return all zones listed in the doc :)
+let $invalidEqual :=
+    if ($countUniqueZones != $zoneIdCount) then  $uniqueZones   else ()
+
 
 (: 30 :)
 
@@ -1058,26 +1145,18 @@ let $invalidEqual := if ($aqdAssessmentRegimeZone != $zoneId) then concat("aqd:A
 
 let $resultXml := if (fn:string-length($countryCode) = 2) then xmlconv:getProtectionTarget($countryCode) else ""
 let $isInspireIdCodesAvailable := string-length($resultXml) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($resultXml, "xml"))
-let $aqdProtectionTarget := if($isInspireIdCodesAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($resultXml)//sparql:binding[@name='protectionTarget']/sparql:uri)) else ()
-let $isProtectionTargetCodesAvailable := count($resultXml) > 0
 
-let $resultXml := if (fn:string-length($countryCode) = 2) then xmlconv:getPollutantCode($countryCode) else ""
-let $isInspireIdCodesAvailable := string-length($resultXml) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($resultXml, "xml"))
-let $aqdPollutantCode := if($isInspireIdCodesAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($resultXml)//sparql:binding[@name='pollutantCode']/sparql:uri)) else ()
-let $isPollutantCodesAvailable := count($resultXml) > 0
-
-let $resultXml := if (fn:string-length($countryCode) = 2) then xmlconv:getInspireId($countryCode) else ""
-let $isInspireIdCodesAvailable := string-length($resultXml) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($resultXml, "xml"))
-let $aqdZone := if($isInspireIdCodesAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($resultXml)//sparql:binding[@name='inspireLabel']/sparql:literal)) else ()
-let $isInspireIdCodesAvailable := count($resultXml) > 0
-
+let $allowedCombinations :=
+for $rec in xmlconv:executeSparqlQuery($resultXml)
+return
+    distinct-values(concat(data($rec//sparql:binding[@name='zoneId']/sparql:literal), "#", data($rec//sparql:binding[@name='pollutantCode']/sparql:uri), "#",data($rec//sparql:binding[@name='protectionTarget']/sparql:uri)))
 
 let $aqdEnvironmentalObjective :=
-for $x in  $docRoot//aqd:AQD_AssessmentRegime
-let $aqdProtectionTargetLink:= $x/aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/fn:normalize-space(@xlink:href)
-let $aqdPollutant := $x/aqd:pollutant/fn:normalize-space(@xlink:href)
-where empty(fn:index-of($aqdZone, $x/aqd:zone/fn:normalize-space(@xlink:href)))=false()
-return if(empty(fn:index-of($aqdProtectionTarget, $aqdProtectionTargetLink)) or empty(fn:index-of($aqdPollutantCode,$aqdPollutant))) then $x/@gml:id else ()
+    for $x in  $docRoot//aqd:AQD_AssessmentRegime
+    let $key := concat(data($x/aqd:zone/@xlink:href), "#", data($x/aqd:pollutant/@xlink:href), "#",data($x/aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/@xlink:href))
+        where empty(index-of($allowedCombinations, $key))
+    return $x/@gml:id
+
 
 (: C32 :)
 let $resultXml := if (fn:string-length($countryCode) = 2) then xmlconv:getAssessmentType($countryCode) else ""
@@ -1130,7 +1209,7 @@ let $invalidAssessmentGmlEndPosition :=
         </tr>
 
 (: 34 :)
-
+(:
 let $resultXml := if (fn:string-length($countryCode) = 2) then xmlconv:getInspireLabelD($countryCode) else ""
 let $isSamplingPointaqdZoneCodesAvailable := string-length($resultXml) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($resultXml, "xml"))
 let $aqdSamplingPointaqdZone  := if($isSamplingPointaqdZoneCodesAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($resultXml)//sparql:binding[@name='inspireLabel']/sparql:literal)) else ""
@@ -1145,7 +1224,7 @@ let $invalidSamplingPointAqdModelZone :=
     for $x in distinct-values($docRoot//aqd:AQD_AssessmentRegime/aqd:zone/fn:normalize-space(@xlink:href))
     where $isSamplingPointaqdZoneCodesAvailable and $isAqdModelCodesAvailable
     return    if ((empty(index-of($aqdSamplingPointaqdZone, $x))) and (empty(index-of($aqdAqdModelZone, $x)))) then $x else ()
-
+:)
 (: C35 /aqd:AQD_SamplingPoint/aqd:usedAQD or /aqd:AQD_ModelType/aqd:used shall EQUAL “true” for all ./aqd:assessmentMethods/aqd:AssessmentMethods/aqd:*AssessmentMetadata xlink:href citations :)
 let $invalidAssessmentUsed :=
     for $assessmentMetadata in $docRoot//aqd:assessmentMethods/aqd:AssessmentMethods/*[ends-with(local-name(), 'AssessmentMetadata') and @xlink:href='.']
@@ -1214,13 +1293,18 @@ return $x
 
 (: 40 :)
 
-let $invalidsamplingPointAssessmentMetadata :=
+let $invalidsamplingPointAssessmentMetadata40 :=
     for $aqdPollutantC40 in $docRoot//aqd:AQD_AssessmentRegime
+
     let $pollutantXlinkC40 := fn:substring-after(data($aqdPollutantC40/aqd:pollutant/@xlink:href),"pollutant/")
-    where empty(index-of(('1045','1046','1047','1771','1772','1629','1659','1657','1668','1631','2012','2014','2015','2018','7013','4013','4813','653','5013','5610','5617',
-    '5759','5626','5655','5763','7029','611','618','760','627','656','7419','428','430','432','503','505','394','447','6005','6006','6007','24','486','316','6008','6009',
-    '451','443','316','441','475','449','21','431','464','482','6011','6012','32','25'),$pollutantXlinkC40))
-   return if (count($aqdPollutantC40/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata)>=1) then () else $aqdPollutantC40/@gml:id
+    (:
+    let $pollutantXlinkC40 := data($aqdPollutantC40/aqd:pollutant/@xlink:href)
+    let $pollutantXlinkC40 := fn:substring-after(data($aqdPollutantC40/aqd:pollutant/@xlink:href),"pollutant/")
+    :)
+   where not(empty(index-of($xmlconv:VALID_POLLUTANT_IDS_40,$pollutantXlinkC40)))
+   return if (count($aqdPollutantC40/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata)>=1 and
+        count($aqdPollutantC40/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:modelAssessmentMetadata)>=1) then () else $aqdPollutantC40/@gml:id
+
 
 return
     <table style="border-collapse:collapse;display:inline">
@@ -1283,30 +1367,28 @@ return
         {xmlconv:buildResultRows("C25", "The assessment methods referenced by ./aqd:assessmentMethods/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata xlink:href attribute shall resolve to a traversable link to an assessment method /aqd:AQD_SamplingPoint reported under cdr.eionet.europa.eu/ZZ/eu/aqd/d/...",
                 $invalidSamplingPointAssessmentMetadata,(),  "aqd:samplingPointAssessmentMetadata", "All values are valid", " invalid value", "","warning", ())}
         {xmlconv:buildResultRows("C26", "The assessment methods referenced by ./aqd:assessmentMethods/aqd:AssessmentMethods/aqd:modelAssessmentMeta data or ./aqd:assessmentMethods/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata xlink:href attribute  shall  contain one  element /aqd:AQD_Model/ef:observingCapability/ef:ObservingCapability/ef:observingTime/gml:TimePeriod/gml:endPosition or /aqd:AQD_SamplingPoint/ef:observingCapability/ef:ObservingCapability/ef:observingTime/gml:TimePeriod/gml:endPosition that is operational within the aqd:reportingPeriod  included  in  the  ReportingHead",
-                $invalidGmlEndPosition,(),  "aqd:AQD_SamplingPoint", "All values are valid", " invalid value", "","warning", ())}
-        {xmlconv:buildResultRows("C27", "aqd:zone xlink:href attribute shall resolve to a traversable link to an AQ zone in /aqd:AQD_Zone reported under cdr.eionet.europa.eu/ZZ/eu/aqd/b/...  The ./aqd:pollutant and ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget within the Assessment Regime shall equal one combination /aqd:AQD_Zone/aqd:pollutants/aqd:Pollutant/aqd:pollutantCode and /aqd:AQD_Zone/aqd:pollutants/aqd:Pollutant/aqd:protectionTarget within  the  linked  zone  aqd:AQD_Zone/aqd:pollutants
-Exception : Where ./aqd:pollutant resolves to the list in  C9 and http://dd.eionet.europa.eu/vocabulary/aq/pollutant/6001 ./aqd:zone xlink:href attribute MAY resolve to <aqd:zone nilReason='inapplicable'/>",
+                $invalidGmlEndPosition,(),  "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","warning", ())}
+        {xmlconv:buildResultRows("C27", concat("aqd:zone xlink:href attribute shall resolve to a traversable link to an AQ zone in /aqd:AQD_Zone reported under cdr.eionet.europa.eu/ZZ/eu/aqd/b/...  The ./aqd:pollutant and ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget within the Assessment Regime shall equal one combination /aqd:AQD_Zone/aqd:pollutants/aqd:Pollutant/aqd:pollutantCode and /aqd:AQD_Zone/aqd:pollutants/aqd:Pollutant/aqd:protectionTarget within  the  linked  zone  aqd:AQD_Zone/aqd:pollutants",
+                "Exception : Where ./aqd:pollutant resolves to the list in  C9 and http://dd.eionet.europa.eu/vocabulary/aq/pollutant/6001 ./aqd:zone xlink:href attribute MAY resolve to <aqd:zone nilReason='inapplicable'/>"),
                 $invalidAqdAssessmentRegimeZone,(),  "aqd:AQD_Model or aqd:AQD_SamplingPoint", "All values are valid", " invalid value", "","warning", ())}
         {xmlconv:buildResultRows("C28", "The lifecycle information of ./aqd:zone xlink:href shall be current, /aqd:AQD_Zone/am:beginLifespanVersion AND /aqd:AQD_Zone/am:designationPeriod/gml:TimePeriod/gml:endPosition shall be operational within  the  aqd:reportingPeriod included in the ReportingHead",
                 $invalidZoneGmlEndPosition,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error", ())}
         {xmlconv:buildResultRows("C29", "The  number of unique zones cited by /aqd:AQD_AssessmentRegime shall be EQUAL to the number of unique zones in ./aqd:AQD_Zone",
-            $invalidEqual, (), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","warning", ())}
+            $invalidEqual, (), "aqd:AQD_zone", "All values are valid", " unique zone", "","warning", ())}
         {xmlconv:buildResultRows("C31", "./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget and ./aqd:pollutant combinations  shall  reconcile  to  corresponding  information  within /aqd:AQD_Zone/aqd:pollutants/aqd:Pollutant for  the  zone  cited  by ./aqd:zone",
                 $aqdEnvironmentalObjective, (), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","warning", ())}
         {xmlconv:buildResultRows("C32", "./aqd:assessmentMethods/aqd:AssessmentMethods/aqd:assessmentType shall be compared with the /aqd:AQD_SamplingPoint/aqd:assessmentType for assessment method cited by ./aqd:assessmentMethods/aqd:AssessmentMethods/aqd:samplingPoint Assessm entMetadata xlink:href attribute and/ or /aqd:AQD_Model /aqd:assessmentType for  assessment  method  cited  by ./aqd:assessmentMet hods/aqd:AssessmentMethods/aqd:samplingPoint Assessm entMetadata xlink:href attribute",
-                $invalidAssessmentType,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error", ())}
+                $invalidAssessmentType,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","warning", ())}
         {xmlconv:buildResultRows("C33", "If The lifecycle information of ./aqd:assessmentMethods/aqd:AssessmentMethods/aqd:*AssessmentMetadata xlink:href shall be current, then /AQD_SamplingPoint/aqd:operationActivityPeriod/gml:endPosition or /AQD_ModelType/aqd:operationActivityPeriod/gml:endPosition shall be equal to “9999-12-31 23:59:59Z” or nulled (blank)",
                 $invalidAssessmentGmlEndPosition,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error", ())}
-        {xmlconv:buildResultRows("C34", "./aqd:zone shall be found within /AQD_SamplingPoint/aqd:zone or /AQD_ModelType/aqd:zone",
-            $invalidSamplingPointAqdModelZone, (), "aqd:zone", "All values are valid", " invalid value", "","error", ())}
         {xmlconv:buildResultRows("C35", "/aqd:AQD_SamplingPoint/aqd:usedAQD or /aqd:AQD_ModelType/aqd:used shall EQUAL “true” for all ./aqd:assessmentMethods/aqd:AssessmentMethods/aqd:*AssessmentMetadata xlink:href citations",
                 $invalidAssessmentUsed,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error", ())}
         {xmlconv:buildResultRows("C37", "There shall be only 1 record per MS where ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmental Objective/aqd:EnvironmentalObjective/aqd:reportingMetric xlink:href attribute resolves to http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/AEI",
                 $invalidAqdReportingMetric,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","warning", ())}
         {xmlconv:buildResultRows("C38", "Where./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric xlink:href attribute resolves to http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/AEI the /aqd:AQD_SamplingPoint/aqd:relevantEmissions/aqd:RelevantEmissions/aqd:stationClassification xlink:href attribute shall resolve to http://dd.eionet.europa.eu/vocabulary/aq/stationclassification/background for all aqd:AQD_SamplingPoint linked via aqd:AQD_AssessmentRegime/aqd:assessmentMethods/aqd:AssessmentMethods /aqd:samplingPointAssessmentMetadata citations",
                 $invalidAqdReportingMetricTest,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error", ())}
-        {xmlconv:buildResultRows("C40", <span>The total number of /aqd:assessmentMethods/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata citations within a MS (delivery) shall be GREATER THAN OR EQUAL to 1 where ./aqd:pollutant xlink:href attribute resolves to{xmlconv:buildVocItemsList("C40", $xmlconv:POLLUTANT_VOCABULARY, $xmlconv:VALID_POLLUTANT_IDS_40)}</span>,
-                $invalidsamplingPointAssessmentMetadata,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","warning", ())}
+        {xmlconv:buildResultRows("C40", <span>The total number of /aqd:assessmentMethods/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata and /aqd:assessmentMethods/aqd:AssessmentMethods/aqd:modelAssessmentMetadata citations within a MS (delivery) shall be GREATER THAN OR EQUAL to 1 where ./aqd:pollutant xlink:href attribute resolves to{xmlconv:buildVocItemsList("C40", $xmlconv:POLLUTANT_VOCABULARY, $xmlconv:VALID_POLLUTANT_IDS_40)}</span>,
+                $invalidsamplingPointAssessmentMetadata40,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","warning", ())}
 
     </table>
 }
@@ -1431,7 +1513,104 @@ return
 };
 
 
-(: xmlconv:proceed($source_url,$country) :)
+declare function xmlconv:test() {
+let $countryCode := "es"
+
+let $source_url := "../test/ES_C_AssessmentRegime.xml"
+(:
+
+ES.BDCA.AQD/ZON_ES0104#http://dd.eionet.europa.eu/vocabulary/aq/pollutant/8#http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H
+ES.BDCA.AQD/ZON_ES1301#http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1#http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V
+ES.BDCA.AQD/ZON_ES1401#http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1#http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H
+ES.BDCA.AQD/ZON_ES9999#http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1#http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H
+ES.BDCA.AQD/ZON_ES1404#http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1#http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H
+
+let $source_url := "../test/C_short.xml"
+ :)
+
+let $docRoot := doc($source_url)
+
+let $resultXml := if (fn:string-length($countryCode) = 2) then xmlconv:getInspireId($countryCode) else ""
+let $isInspireIdCodesAvailable := string-length($resultXml) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($resultXml, "xml"))
+let $inspireId := if($isInspireIdCodesAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($resultXml)//sparql:binding[@name='inspireLabel']/sparql:literal)) else ""
+let $resultSparql := if (fn:string-length($countryCode) = 2) then xmlconv:getPollutantCodeAndProtectionTarge($countryCode) else ""
+let $isProtectionTargetAvailable := string-length($resultSparql) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($resultSparql, "xml"))
+
+let $validRows :=
+for $rec in xmlconv:executeSparqlQuery($resultSparql)
+return
+    distinct-values(concat(data($rec//sparql:binding[@name='inspireLabel']/sparql:literal), "#", data($rec//sparql:binding[@name='pollutantCode']/sparql:uri), "#",data($rec//sparql:binding[@name='protectionTarget']/sparql:uri)))
+
+
+let $exceptionPollutantIds := ($xmlconv:MANDATORY_POLLUTANT_IDS_9, "6001")
+
+let $invalid :=
+for $x in  $docRoot//aqd:AQD_AssessmentRegime
+let $pollutantCode := fn:substring-after(data($x//aqd:pollutant/@xlink:href),"pollutant/")
+let $key := if (not(empty(index-of($exceptionPollutantIds, $pollutantCode)))   and data($x//aqd:zone/@nilReason)="inapplicable") then
+"EXC" else
+concat(data($x//aqd:zone/@xlink:href), '#', data($x//aqd:pollutant/@xlink:href), '#', data($x//aqd:protectionTarget/@xlink:href))
+where empty(index-of($validRows, $key))
+return if ($key !="EXC") then $key else ()
+
+
+return distinct-values($invalid)
+
+(:
+let $validCombinations := if($isProtectionTargetAvailable) then   distinct-values(data(xmlconv:executeSparqlQuery($resultSparql)//sparql:result/concat(sparql:binding[@name='inspireLabel']/sparql:literal,"|",sparql:binding[@name='pollutantCode']/sparql:uri,"|",sparql:binding[@name='protectionTarget']/sparql:uri,"||"))) else ""
+let $exceptionZone :=
+
+for $x in  $docRoot//aqd:AQD_AssessmentRegime
+let $pollutantXlinkC27 := fn:substring-after(data($x/aqd:pollutant/@xlink:href),"pollutant/")
+let $str := concat($x/aqd:pollutant/normalize-space(@xlink:href),"|",$x/aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/normalize-space(@xlink:href),"||")
+where $x/aqd:zone/@nilReason="inapplicable"
+return if (empty(index-of($xmlconv:VALID_POLLUTANT_IDS_27,$pollutantXlinkC27))) then $str else ()
+
+let $isInspireIdCodesAvailable := count($resultXml) > 0
+
+let $protectionTarget:= if($isProtectionTargetAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($resultSparql)//sparql:result/concat(sparql:binding[@name='inspireLabel']/sparql:literal,"|",sparql:binding[@name='pollutantCode']/sparql:uri,"|",sparql:binding[@name='protectionTarget']/sparql:uri,"||"))) else ""
+let $isProtectionTargetAvailable := count($resultSparql) > 0
+
+let $exceptionZone :=
+for $x in  $docRoot//aqd:AQD_AssessmentRegime
+let $pollutantXlinkC27 := fn:substring-after(data($x/aqd:pollutant/@xlink:href),"pollutant/")
+let $str := concat($x/aqd:pollutant/normalize-space(@xlink:href),"|",$x/aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/normalize-space(@xlink:href),"||")
+where $x/aqd:zone/@nilReason="inapplicable"
+return if (empty(index-of($xmlconv:VALID_POLLUTANT_IDS_27,$pollutantXlinkC27))) then $str else ()
+
+
+let $aqdAQD_AssessmentRegime :=
+for $concatStr in $docRoot//aqd:AQD_AssessmentRegime
+    let $str := concat(normalize-space($concatStr/aqd:zone/@xlink:href),"|",$concatStr/aqd:pollutant/normalize-space(@xlink:href),"|",$concatStr/aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/normalize-space(@xlink:href),"||")
+where empty(index-of($inspireId,fn:substring-before($str,"|")))=false()
+    return if ((empty(index-of($protectionTarget, $str))) or (empty(index-of($exceptionZone,fn:substring-after($str,"|"))))) then $str else ()
+
+let $invalidAqdAssessmentRegimeZone := $aqdAQD_AssessmentRegime
+
+
+return $invalidAqdAssessmentRegimeZone
+:)
+};
+
+(:
+
+let $isInspireIdCodesAvailable := string-length($resultXml) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($resultXml, "xml"))
+let $zoneId := if($isInspireIdCodesAvailable) then count(distinct-values(data(xmlconv:executeSparqlQuery($resultXml)//sparql:binding[@name='inspireLabel']/sparql:literal))) else 0
+let $isInspireIdCodesAvailable := count($resultXml) > 0
+
+let $aqdAssessmentRegimeZone := count($docRoot//aqd:AQD_AssessmentRegime/aqd:zone)
+let $invalidEqual := if ($aqdAssessmentRegimeZone != $zoneId) then concat("aqd:AQD_AssessmentRegime ",$aqdAssessmentRegimeZone," aqd:AQD_Zone ",$zoneId) else ()
+
+ let $invalidGmlEndPosition :=
+    for $gmlEndPosition in $docRoot//aqd:AQD_AssessmentRegime/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata
+    where (empty(fn:index-of($samplingPointInspireLebelD,$gmlEndPosition/normalize-space(@xlink:href)))=false() or empty(fn:index-of($modelInspireLebelD,$gmlEndPosition/normalize-space(@xlink:href)))=false()) and empty($docRoot//aqd:AQD_ReportingHeader/aqd:reportingPeriod/gml:TimePeriod/gml:endPosition)=false()
+    return  if (empty(index-of($samplinPointEndPosition,$docRoot//aqd:AQD_ReportingHeader/aqd:reportingPeriod/gml:TimePeriod/gml:endPosition)) or empty(index-of($modelEndPosition,$docRoot//aqd:AQD_ReportingHeader/aqd:reportingPeriod/gml:TimePeriod/gml:endPosition)) ) then $docRoot//aqd:AQD_ReportingHeader/@gml:id else ()
+
+
+return $invalidGmlEndPosition
+xmlconv:test()
+xmlconv:proceed($source_url, $country)
+:)
 
 
 
