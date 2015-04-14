@@ -14,7 +14,7 @@ xquery version "1.0" encoding "UTF-8";
  :Quality Assurance and Control rules version: 3.9d
  :)
 
-module namespace xmlconv = "http://converters.eionet.europa.eu/dataflowD";
+declare namespace xmlconv = "http://converters.eionet.europa.eu/dataflowD";
 declare namespace aqd = "http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0";
 declare namespace gml = "http://www.opengis.net/gml/3.2";
 declare namespace am = "http://inspire.ec.europa.eu/schemas/am/3.0";
@@ -26,6 +26,16 @@ declare namespace sparql = "http://www.w3.org/2005/sparql-results#";
 declare namespace xlink = "http://www.w3.org/1999/xlink";
 declare namespace ompr="http://inspire.ec.europa.eu/schemas/ompr/2.0";
 declare namespace sams="http://www.opengis.net/samplingSpatial/2.0";
+
+(:
+declare variable $source_url := "../test/ES_D_SamplingPoint-1.xml";
+declare variable $country := "es";
+declare variable $source_url := "../test/DK_D_Sample.xml";
+declare variable $country := "dk";
+
+:)
+declare variable $source_url := "../test/D_GIB_Complete.xml";
+declare variable $country := "gi";
 
 (:~ declare Content Registry SPARQL endpoint:)
 declare variable $xmlconv:CR_SPARQL_URL := "http://cr.eionet.europa.eu/sparql";
@@ -191,6 +201,7 @@ as xs:integer
 declare function xmlconv:executeSparqlQuery($sparql as xs:string)
 as element(sparql:result)*
 {
+
     let $limit := number(2000)
     let $countResult := xmlconv:countsSparqlResults($sparql)
 
@@ -200,7 +211,7 @@ as element(sparql:result)*
     (:Collects all sparql results:)
     let $allResults :=
         for $r in (1 to  xs:integer(number($divCountResult)))
-            let $offset := if ($r > 1) then string(((number($r)-1) * $limit)+1) else "1"
+            let $offset := if ($r > 1) then string(((number($r)-1) * $limit)+1) else "0"
             let $resultXml := xmlconv:setLimitAndOffset($sparql,xs:string($limit), $offset)
             let $isResultsAvailable := string-length($resultXml) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($resultXml, "xml"))
         let $result := if($isResultsAvailable) then xmlconv:executeSparqlEndpoint($resultXml)//sparql:result else ()
@@ -275,12 +286,31 @@ as element(span)*{
 declare function xmlconv:buildResultRows($ruleCode as xs:string, $text, $invalidStrValues as xs:string*, $invalidValues as element()*,
     $valueHeading as xs:string, $validMsg as xs:string, $invalidMsg as xs:string, $skippedMsg, $errorLevel as xs:string, $recordDetails as element(tr)*)
 as element(tr)*{
+    xmlconv:buildResultRows($ruleCode, $text, $invalidStrValues, $invalidValues,
+        $valueHeading, $validMsg, $invalidMsg, $skippedMsg, $errorLevel, $recordDetails, fn:true())
+};
+
+
+declare function xmlconv:buildResultRows($ruleCode as xs:string, $text, $invalidStrValues as xs:string*, $invalidValues as element()*,
+    $valueHeading as xs:string, $validMsg as xs:string, $invalidMsg as xs:string, $skippedMsg, $errorLevel as xs:string, $recordDetails as element(tr)*,
+    $invalidValuesAreInvalid as xs:boolean)
+as element(tr)*{
 
     let $countInvalidValues := count($invalidStrValues) + count($invalidValues)
 
     let $recordDetails := if (count($invalidValues) > 0) then $invalidValues else $recordDetails
 
     let $bulletType := if (string-length($skippedMsg) > 0) then "skipped" else if ($countInvalidValues = 0) then "info" else $errorLevel
+
+
+(: sometimes warning is needed if count is 0 :)
+    let $bulletType :=
+    if (not($invalidValuesAreInvalid)) then
+        if (string-length($skippedMsg) > 0) then "skipped" else if ($countInvalidValues = 0) then $errorLevel else "info"
+    else
+        $bulletType
+
+
 let $result :=
     (
         <tr style="border-top:1px solid #666666;">
@@ -522,16 +552,16 @@ let $duplicateGmlIds := distinct-values(
         return
             $id
 )
-let $amInspireIds := for $id in $D5Combinations/am:inspireId
+let $efInspireIds := for $id in $D5Combinations/ef:inspireId
 return
     lower-case(concat("[", normalize-space($id/base:Identifier/base:localId), ", ", normalize-space($id/base:Identifier/base:namespace),
             ", ", normalize-space($id/base:Identifier/base:versionId), "]"))
-let $duplicateamInspireIds := distinct-values(
-        for $id in $D5Combinations/am:inspireId
+let $duplicateefInspireIds := distinct-values(
+        for $id in $D5Combinations/ef:inspireId
         let $key :=
             concat("[", normalize-space($id/base:Identifier/base:localId), ", ", normalize-space($id/base:Identifier/base:namespace),
                     ", ", normalize-space($id/base:Identifier/base:versionId), "]")
-        where string-length(normalize-space($id/base:Identifier/base:localId)) > 0 and count(index-of($amInspireIds, lower-case($key))) > 1
+        where string-length(normalize-space($id/base:Identifier/base:localId)) > 0 and count(index-of($efInspireIds, lower-case($key))) > 1
         return
             $key
 )
@@ -553,9 +583,9 @@ let $duplicateaqdInspireIds := distinct-values(
 
 
 let $countGmlIdDuplicates := count($duplicateGmlIds)
-let $countamInspireIdDuplicates := count($duplicateamInspireIds)
+let $countefInspireIdDuplicates := count($duplicateefInspireIds)
 let $countaqdInspireIdDuplicates := count($duplicateaqdInspireIds)
-let $countD5duplicates := $countGmlIdDuplicates + $countamInspireIdDuplicates + $countaqdInspireIdDuplicates
+let $countD5duplicates := $countGmlIdDuplicates + $countefInspireIdDuplicates + $countaqdInspireIdDuplicates
 
 (: D6 Done by Rait ./ef:inspireId/base:Identifier/base:localId shall be an unique code for AQD_network and unique within the namespace.:)
 let $amInspireIds := $docRoot//aqd:AQD_Network/ef:inspireId/base:Identifier/concat(lower-case(normalize-space(base:namespace)), '##',
@@ -584,18 +614,20 @@ let  $tblD7 :=
 (: D8 :)
 let $invalidNetworkMedia := xmlconv:checkVocabularyConceptValues($source_url, "aqd:AQD_Network", "ef:mediaMonitored", $xmlconv:MEDIA_VALUE_VOCABULARY_BASE_URI)
 (: D9 :)
-let $invalidOrganisationalLevel := xmlconv:checkVocabularyConceptValues($source_url, "aqd:AQD_Station", "ef:organisationLevel", $xmlconv:ORGANISATIONAL_LEVEL_VOCABULARY)
+let $invalidOrganisationalLevel := xmlconv:checkVocabularyConceptValues($source_url, "aqd:AQD_Network", "ef:organisationLevel", $xmlconv:ORGANISATIONAL_LEVEL_VOCABULARY)
+(: D10 :)
+let $invalidNetworkType := xmlconv:checkVocabularyConceptValues($source_url, "aqd:AQD_Network", "aqd:networkType", $xmlconv:NETWORK_TYPE_VOCABULARY)
+
 (: D11 :)
 let $invalidAQDNetworkBeginPosition := distinct-values($docRoot//aqd:AQD_Network/aqd:operationActivityPeriod/gml:TimePeriod[((gml:beginPosition>=gml:endPosition) and (gml:endPosition!=""))]/../../@gml:id)
-(: D13 :)
-let $invalidNetworkType := xmlconv:checkVocabularyConceptValues($source_url, "aqd:AQD_Station", "aqd:networkType", $xmlconv:NETWORK_TYPE_VOCABULARY)
 (: D14 Done by Rait  :)
 let $invalidTimeZone := xmlconv:checkVocabularyConceptValues($source_url, "aqd:AQD_Network", "aqd:aggregationTimeZone", $xmlconv:TIMEZONE_VOCABULARY)
 (: D15 Done by Rait :)
 let $amInspireIds := $docRoot//aqd:AQD_Station/ef:inspireId/base:Identifier/concat(lower-case(normalize-space(base:namespace)), '##',
         lower-case(normalize-space(base:localId)))
+
 let $duplicateEUStationCode := distinct-values(
-        for $identifier in $docRoot//aqd:AQD_Station/am:inspireId/base:Identifier
+        for $identifier in $docRoot//aqd:AQD_Station/ef:inspireId/base:Identifier
         where string-length(normalize-space($identifier/base:localId)) > 0 and count(index-of($amInspireIds,
                 concat(lower-case(normalize-space($identifier/base:namespace)), '##', lower-case(normalize-space($identifier/base:localId))))) > 1
         return
@@ -603,6 +635,21 @@ let $duplicateEUStationCode := distinct-values(
 )
 let $countAmInspireIdDuplicates := count($duplicateEUStationCode)
 let $countD15duplicates := $countAmInspireIdDuplicates
+
+
+(:
+let $localSamplingPointIds := $docRoot//gml:featureMember/aqd:AQD_SamplingPoint/ef:inspireId/base:Identifier/base:localId
+let $invalidDuplicateSamplingPointIds :=
+    for $idCode in $docRoot//gml:featureMember/aqd:AQD_SamplingPoint/ef:inspireId/base:Identifier/base:localId
+    where
+        count(index-of($localSamplingPointIds, normalize-space($idCode))) > 1
+    return
+        <tr>
+            <td title="aqd:AQD_SamplingPoint">{data($idCode/../../../@gml:id)}</td>
+            <td title="base:localId">{data($idCode)}</td>
+        </tr>
+:)
+
 
 (: D16 :)
 
@@ -618,14 +665,33 @@ let  $tblD16 :=
         </tr>
 
 (: D19 :)
-let $invalidStationMedia := xmlconv:checkVocabularyConceptValues($source_url, "aqd:AQD_Station", "ef:mediaMonitored", $xmlconv:MEDIA_VALUE_VOCABULARY_BASE_URI)
+
+let $sparqlD19 := xmlconv:getConceptUrlSparql($xmlconv:MEDIA_VALUE_VOCABULARY_BASE_URI)
+let $crConcepts := xmlconv:executeSparqlEndpoint($sparqlD19)//sparql:result
+
+let $invalidStationMedia :=
+for $rec in doc($source_url)//gml:featureMember/descendant::*[name()='aqd:AQD_Station']
+
+    for $conceptUrl in $rec/child::*[name() = 'ef:mediaMonitored']/@xlink:href
+        let $conceptUrl := normalize-space(data($conceptUrl))
+        where string-length($conceptUrl) > 0 and not(xmlconv:isMatchingVocabCode($crConcepts, $conceptUrl))
+
+                return
+                    <tr isvalid="{ xmlconv:isMatchingVocabCode($crConcepts, $conceptUrl) }">
+                        <td title="Feature type">aqd:AQD_Station</td>
+                        <td title="gml:id">{data($rec/@gml:id)}</td>
+                        <td title="ef:name">{data($rec/ef:name)}</td>
+                        <td title="ef:mediaMonitored" style="color:red">{$conceptUrl}</td>
+                    </tr>
+
 
 (: D20 Done by Rait:)
 let $invalidPoints := distinct-values($docRoot//aqd:AQD_Station[count(ef:geometry/gml:Point) >0 and ef:geometry/gml:Point/@srsName != "urn:ogc:def:crs:EPSG::4258" and ef:geometry/gml:Point/@srsName != "urn:ogc:def:crs:EPSG::4326"]/@gml:id)
 
 (: D21 Done by Rait :)
-let $invalidPos  := distinct-values($docRoot//aqd:AQD_Station/ef:geometry/gml:Point/gml:pos[@srsDimension != "2"]/
-concat(../../../../../@gml:id, ": srsDimension=", @srsDimension))
+let $invalidPosD21  := distinct-values($docRoot//aqd:AQD_Station/ef:geometry/gml:Point/gml:pos[@srsDimension != "2"]/
+concat(../../../@gml:id, ": srsDimension=", @srsDimension))
+
 
 
 (: D23 Done by Rait :)
@@ -649,7 +715,7 @@ concat(../../../../../@gml:id, ": srsDimension=", @srsDimension))
 
 
 (: D24 Done by Rait:)
-let $allUnknownEfOperationActivityPeriod :=
+let $allUnknownEfOperationActivityPeriodD24 :=
     for $operationActivityPeriod in $docRoot//gml:featureMember/aqd:AQD_Station/ef:operationalActivityPeriod
     where $operationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:endPosition[normalize-space(@indeterminatePosition)="unknown"]
             or fn:string-length($operationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:endPosition) = 0
@@ -667,7 +733,10 @@ let $invalidDuplicateLocalIds :=
     for $EUStationCode in $docRoot//gml:featureMember/aqd:AQD_Station/aqd:EUStationCode
     where
     count(index-of($localEUStationCode, upper-case(normalize-space($EUStationCode)))) > 1 or
-     count(index-of($xmlconv:ISO2_CODES , substring(upper-case(normalize-space($EUStationCode)), 5, 2))) = 0
+     (count(index-of($xmlconv:ISO2_CODES , substring(upper-case(normalize-space($EUStationCode)), 5, 2))) = 0 and starts-with($EUStationCode, 'STA_')
+     or
+     count(index-of($xmlconv:ISO2_CODES , substring(upper-case(normalize-space($EUStationCode)), 1, 2))) = 0 and not(starts-with($EUStationCode, 'STA_'))
+     )
     return
         <tr>
             <td title="aqd:AQD_Station">{data($EUStationCode/../@gml:id)}</td>
@@ -680,9 +749,20 @@ let $invalidMeteoParams :=xmlconv:checkVocabulariesConceptEquipmentValues($sourc
 (: D28 :)
 let $invalidAreaClassification := xmlconv:checkVocabularyConceptValues($source_url, "aqd:AQD_Station", "aqd:areaClassification", $xmlconv:AREA_CLASSIFICATION_VOCABULARY)
 (: D29 :)
-let $invalidDispersionLocal := xmlconv:checkVocabularyConceptValues($source_url, "aqd:AQD_Station", "aqd:dispersionLocal", $xmlconv:DISPERSION_LOCAL_VOCABULARY)
+
+let $allDispersionLocal :=
+for $rec in $docRoot//aqd:AQD_Station/aqd:dispersionSituation/aqd:DispersionSituation/aqd:dispersionLocal
+return
+<tr>{$rec}</tr>
+let $invalidDispersionLocal := xmlconv:checkVocabularyConceptValues4($source_url, "aqd:AQD_Station", "aqd:dispersionLocal", $xmlconv:DISPERSION_LOCAL_VOCABULARY)
+
 (: D30 :)
-let $invalidDispersionRegional := xmlconv:checkVocabularyConceptValues($source_url, "aqd:AQD_Station", "aqd:dispersionRegional", $xmlconv:DISPERSION_REGIONAL_VOCABULARY)
+let $invalidDispersionRegional := xmlconv:checkVocabularyConceptValues4($source_url, "aqd:AQD_Station", "aqd:dispersionRegional", $xmlconv:DISPERSION_REGIONAL_VOCABULARY)
+let $allDispersionRegional :=
+for $rec in $docRoot//aqd:AQD_Station/aqd:dispersionSituation/aqd:DispersionSituation/aqd:dispersionRegional
+return
+<tr>{$rec}</tr>
+
 (: D31 Done by Rait:)
 let $localSamplingPointIds := $docRoot//gml:featureMember/aqd:AQD_SamplingPoint/ef:inspireId/base:Identifier/base:localId
 let $invalidDuplicateSamplingPointIds :=
@@ -696,11 +776,12 @@ let $invalidDuplicateSamplingPointIds :=
         </tr>
 
 (: D32 :)
-let $allBaseNamespace := distinct-values($docRoot//aqd:AQD_SamplingPoint/base:Identifier/base:namespace)
+
+let $allBaseNamespace := distinct-values($docRoot//aqd:AQD_SamplingPoint//base:Identifier/base:namespace)
 
 let  $tblD32 :=
     for $id in $allBaseNamespace
-    let $localId := $docRoot//aqd:AQD_SamplingPoint/base:Identifier[base:namespace = $id]/base:localId
+    let $localId := $docRoot//aqd:AQD_SamplingPoint//base:Identifier[base:namespace = $id]/base:localId
     return
         <tr>
             <td title="base:namespace">{$id}</td>
@@ -711,24 +792,53 @@ let  $tblD32 :=
 let $invalidSamplingPointMedia := xmlconv:checkVocabularyConceptValues($source_url, "aqd:AQD_SamplingPoint", "ef:mediaMonitored", $xmlconv:MEDIA_VALUE_VOCABULARY_BASE_URI)
 
 (: D34 :)
+let $allGeometryPoint :=
+for $rec in $docRoot//aqd:AQD_SamplingPoint/ef:geometry/gml:Point
+return <tr>{$rec}</tr>
+
 let $invalidGeometryPoint := distinct-values($docRoot//aqd:AQD_SamplingPoint[count(ef:geometry/gml:Point) >0 and ef:geometry/gml:Point/@srsName != "urn:ogc:def:crs:EPSG::4258" and ef:geometry/gml:Point/@srsName != "urn:ogc:def:crs:EPSG::4326"]/@gml:id)
 
-(: D35 FIX ME :)
+(: D35 :)
 let $invalidPos  := distinct-values($docRoot/gml:featureMember//aqd:AQD_SamplingPoint/ef:geometry/gml:Point/gml:pos[@srsDimension != "2"]/
 concat(../../../../../@gml:id, ": srsDimension=", @srsDimension))
 
-(: D36 FIX ME ask  /aqd:AQD_SamplingPoint do not have ef:geometry :)
+(: D36 :)
 
+let $approximity := 0.01
+
+(: StationID|long#lat :)
 let $aqdStationPos :=
     for $allPos in $docRoot//aqd:AQD_Station
-    return concat($allPos/ef:inspireId/base:Identifier/base:namespace,"/",$allPos/ef:inspireId/base:Identifier/base:localId,"|",$allPos/ef:geometry/gml:Point/gml:pos)
+    where not(empty($allPos/ef:geometry/gml:Point/gml:pos))
+    return concat($allPos/ef:inspireId/base:Identifier/base:namespace,"/",$allPos/ef:inspireId/base:Identifier/base:localId,"|",
+        fn:substring-before(data($allPos/ef:geometry/gml:Point/gml:pos), " "), "#", fn:substring-after(data($allPos/ef:geometry/gml:Point/gml:pos), " "))
+
 
 let $invalidSamplingPointPos :=
-    for $x in $aqdStationPos
-    for $gmlPos in $docRoot//aqd:AQD_SamplingPoint/ef:broader
-     where empty(index-of(fn:substring-before($x,"|"),$gmlPos/@xlink:href))=false()
-    return  if ($gmlPos/../ef:geometry/gml:Point/gml:pos != fn:substring-after($x,"|")) then  $gmlPos/../@gml:id else ()
+    for $gmlPos in $docRoot//aqd:AQD_SamplingPoint
+        let $efBroader := $gmlPos/ef:broader/@xlink:href
+        let $samplingStationId := data($efBroader)
+        let $stationPos :=
+            for $station in $aqdStationPos
+              let $stationId := fn:substring-before($station, "|")
+              return if ($stationId = $samplingStationId) then $station else ()
 
+        let $stationLong := if (not(empty($stationPos))) then fn:substring-before(fn:substring-after($stationPos[1], "|"), "#") else ""
+        let $stationLat := if (not(empty($stationPos))) then fn:substring-after(fn:substring-after($stationPos[1], "|"), "#") else ""
+
+        let $samplingPos := data($gmlPos/ef:geometry/gml:Point/gml:pos)
+        let $samplingLong := if (not(empty($samplingPos))) then fn:substring-before($samplingPos, " ") else ""
+        let $samplingLat := if (not(empty($samplingPos))) then fn:substring-after($samplingPos, " ") else ""
+
+
+        let $stationLong := if ($stationLong castable as xs:decimal) then xs:decimal($stationLong) else 0.00
+        let $stationLat := if ($stationLat castable as xs:decimal) then xs:decimal($stationLat) else 0.00
+
+        let $samplingLong := if ($samplingLong castable as xs:decimal) then xs:decimal($samplingLong) else 0.00
+        let $samplingLat := if ($samplingLat castable as xs:decimal) then xs:decimal($samplingLat) else 0.00
+
+        return if (abs($samplingLong - $stationLong) > $approximity
+        or abs($samplingLat - $stationLat) > $approximity) then $gmlPos/@gml:id else ()
 (: D37 Done by Rait:)
 (: Find all period with out end period :)
 let $allNotNullEndPeriods :=
@@ -1240,7 +1350,7 @@ return
         <tr style="border-top:1px solid #666666">
             <tr>
                 <td style="vertical-align:top;">{ xmlconv:getBullet("D5", if ($countD5duplicates = 0) then "info" else "error") }</td>
-                <th style="vertical-align:top;">All gml:id attributes, am:inspireId and aqd:inspireId elements shall have unique content</th>
+                <th style="vertical-align:top;">All gml:id attributes, ef:inspireId and aqd:inspireId elements shall have unique content</th>
                 <td style="vertical-align:top;">{
                     if ($countD5duplicates = 0) then
                         "All Ids are unique"
@@ -1257,10 +1367,10 @@ return
                     ()
             }
             {
-                if ($countamInspireIdDuplicates > 0) then
+                if ($countefInspireIdDuplicates > 0) then
                     <tr style="font-size: 0.9em;color:grey;">
-                        <td colspan="2" style="text-align:right;vertical-align:top;">am:inspireId - </td>
-                        <td style="font-style:italic;vertical-align:top;">{ string-join($duplicateamInspireIds, ", ")}</td>
+                        <td colspan="2" style="text-align:right;vertical-align:top;">ef:inspireId - </td>
+                        <td style="font-style:italic;vertical-align:top;">{ string-join($duplicateefInspireIds, ", ")}</td>
                     </tr>
                 else
                     ()
@@ -1290,18 +1400,24 @@ return
             <a href="{ $xmlconv:MEDIA_VALUE_VOCABULARY }">{ $xmlconv:MEDIA_VALUE_VOCABULARY }</a></span>,
             (), (), "ef:mediaMonitored", "", "", "", "warning",$invalidNetworkMedia)}
 
-        {xmlconv:buildResultRowsWithTotalCount("D9", <span>The content of /aqd:AQD_Station/ef:organisationLevel shall resolve to any concept in
+        {xmlconv:buildResultRowsWithTotalCount("D9", <span>The content of /aqd:AQD_Network/ef:organisationLevel shall resolve to any concept in
             <a href="{ $xmlconv:ORGANISATIONAL_LEVEL_VOCABULARY }">{ $xmlconv:ORGANISATIONAL_LEVEL_VOCABULARY }</a></span>,
             (), (), "ef:organisationLevel", "", "", "","warning", $invalidOrganisationalLevel)}
-        {xmlconv:buildResultRows("D11", "/aqd:AQD_Network/aqd:operationActivityPeriod/gml:TimePeriod/gml:beginPosition shall be less than gml:endPosition",
-                $invalidAQDNetworkBeginPosition, () , "aqd:AQD_Network/@gml:id", "All attributes is invalid", " invalid attribute", "","error", ())}
-        {xmlconv:buildResultRowsWithTotalCount("D13", <span>The content of /aqd:AQD_Station/aqd:networkType shall resolve to any concept in
+
+        {xmlconv:buildResultRowsWithTotalCount("D10", <span>The content of /aqd:AQD_Network/aqd:networkType shall resolve to any concept in
             <a href="{ $xmlconv:NETWORK_TYPE_VOCABULARY }">{ $xmlconv:NETWORK_TYPE_VOCABULARY }</a></span>,
             (), (), "aqd:networkType", "", "", "","warning", $invalidNetworkType)}
+
+        {xmlconv:buildResultRows("D11", "/aqd:AQD_Network/aqd:operationActivityPeriod/gml:TimePeriod/gml:beginPosition shall be less than gml:endPosition",
+                $invalidAQDNetworkBeginPosition, () , "aqd:AQD_Network/@gml:id", "All attributes are valid", " invalid attribute ", "","error", ())}
+
 
         {xmlconv:buildResultRowsWithTotalCount("D14", <span>The content of ./aqd:aggregationTimeZone attribute shall resolve to a valid code in
             <a href="{ $xmlconv:TIMEZONE_VOCABULARY }">{ $xmlconv:TIMEZONE_VOCABULARY }</a></span>,
                 (), (), "aqd:aggregationTimeZone", "", "", "","error",$invalidTimeZone)}
+
+
+
         <tr style="border-top:1px solid #666666">
             <td style="vertical-align:top;">{ xmlconv:getBullet("D15", if ($countD15duplicates = 0) then "info" else "error") }</td>
             <th style="vertical-align:top;">./am:inspireId/base:Identifier/base:localId shall be an unique code within namespace</th>
@@ -1311,23 +1427,27 @@ return
                 else
                     concat($countD15duplicates, " error", substring("s ", number(not($countD15duplicates > 1)) * 2) ,"found") }</td>
         </tr>
+
+
+
         {xmlconv:buildResultRows("D16", "./ef:inspireId/base:Identifier/base:namespace List base:namespace and  count the number of base:localId assigned to each base:namespace. ",
                 (), (), "", string(count($tblD16)), "", "","error",$tblD16)}
         {xmlconv:buildResultRowsWithTotalCount("D19", <span>The content of /aqd:AQD_Station/ef:mediaMonitored shall resolve to any concept in
             <a href="{ $xmlconv:MEDIA_VALUE_VOCABULARY }">{ $xmlconv:MEDIA_VALUE_VOCABULARY }</a></span>,
             (), (), "ef:mediaMonitored", "", "", "","warning", $invalidStationMedia)}
         {xmlconv:buildResultRows("D20", "./ef:geometry/gml:Points the srsName attribute  shall  be  a  recognisable  URN .  The  following  2  srsNames  are  expected urn:ogc:def:crs:EPSG::4258 or urn:ogc:def:crs:EPSG::4326",
-                $invalidPoints,(), "aqd:AQD_Station/@gml:id","All smsName attributes are valid"," invalid attribute","", "error",())}
+                $invalidPoints,(), "aqd:AQD_Station/@gml:id","All smsName attributes are valid"," invalid attribute","", "warning",())}
         {xmlconv:buildResultRows("D21", "./ef:geometry/gml:Point/gml:pos the srsDimension attribute shall resolve to ""2"" to allow the coordinate of the station",
-                $invalidPos, () , "aqd:AQD_Zone/@gml:id", "All srsDimension attributes resolve to ""2""", " invalid attribute", "","error",())}
+                $invalidPosD21, () , "aqd:AQD_Zone/@gml:id", "All srsDimension attributes resolve to ""2""", " invalid attribute", "","error",())}
 
        {xmlconv:buildResultRows("D23", "Total number  aqd:AQD_Station invalid operational activity periods ",
             (), $allInvalidEfOperationActivityPeriod, "", fn:string(count($allInvalidEfOperationActivityPeriod)), "", "","error", ())}
 
-        {xmlconv:buildResultRows("D24", "Total number operational activity periods where ending period is unclosed (null) or have an indeterminatePosition='unknown' ",
-                (), $allUnknownEfOperationActivityPeriod, "", string(count($allUnknownEfOperationActivityPeriod)), "", "","warning",())}
+        {xmlconv:buildResultRows("D24", "Total number of AQD_Station which are operational ",
+                (), $allUnknownEfOperationActivityPeriodD24, "", string(count($allUnknownEfOperationActivityPeriod)), "", "","warning",(), fn:false())}
+
         {xmlconv:buildResultRows("D26", "./aqd:EUStationCode shall be an unique code for the station starting with ISO2-country code",
-                (), $invalidDuplicateLocalIds, "", string(count($invalidDuplicateLocalIds)), "", "","error", ())}
+                (), $invalidDuplicateLocalIds, "", "All station codes are valid", " invalid station codes", "","error", ())}
 
         {xmlconv:buildResultRowsWithTotalCount("D27", <span>The content of /aqd:AQD_Station/aqd:meteoParams shall resolve to any concept in
             <a href="{ $xmlconv:METEO_PARAMS_VOCABULARY[1] }">{ $xmlconv:METEO_PARAMS_VOCABULARY[1] }</a>,
@@ -1337,12 +1457,15 @@ return
         {xmlconv:buildResultRowsWithTotalCount("D28", <span>The content of /aqd:AQD_Station/aqd:areaClassification shall resolve to any concept in
             <a href="{ $xmlconv:AREA_CLASSIFICATION_VOCABULARY }">{ $xmlconv:AREA_CLASSIFICATION_VOCABULARY }</a></span>,
             (), (), "aqd:areaClassification", "", "", "","warning", $invalidAreaClassification)}
+
         {xmlconv:buildResultRowsWithTotalCount("D29", <span>The content of /aqd:AQD_Station/aqd:dispersionLocal shall resolve to any concept in
             <a href="{ $xmlconv:DISPERSION_LOCAL_VOCABULARY }">{ $xmlconv:DISPERSION_LOCAL_VOCABULARY }</a></span>,
-            (), (), "aqd:dispersionLocal", "", "", "","warning", $invalidDispersionLocal)}
+            $invalidDispersionLocal, (), "aqd:dispersionLocal", "", "", "","warning", $allDispersionLocal)}
+
         {xmlconv:buildResultRowsWithTotalCount("D30", <span>The content of /aqd:AQD_Station/aqd:dispersionRegional shall resolve to any concept in
             <a href="{ $xmlconv:DISPERSION_REGIONAL_VOCABULARY }">{ $xmlconv:DISPERSION_REGIONAL_VOCABULARY }</a></span>,
-            (), (), "aqd:dispersionRegional", "", "", "","warning", $invalidDispersionRegional)}
+            $invalidDispersionRegional, (), "aqd:dispersionRegional", "", "", "","warning", $allDispersionRegional)}
+
         {xmlconv:buildResultRows("D31", "./AQD_SamplingPoint/ef:inspireId/base:Identifier/base:localId not unique codes: ",
                 (), $invalidDuplicateSamplingPointIds, "", concat(string(count($invalidDuplicateSamplingPointIds))," errors found.") , "", "","error", ())}
         {xmlconv:buildResultRows("D32", "./base:Identifier/base:namespace List base:namespace and  count the number of base:localId assigned to each base:namespace. ",
@@ -1350,8 +1473,10 @@ return
         {xmlconv:buildResultRowsWithTotalCount("D33", <span>The content of /aqd:AQD_SamplingPoint/ef:mediaMonitored shall resolve to any concept in
             <a href="{ $xmlconv:MEDIA_VALUE_VOCABULARY }">{ $xmlconv:MEDIA_VALUE_VOCABULARY }</a></span>,
             (), (), "ef:mediaMonitored", "", "", "","warning", $invalidSamplingPointMedia)}
-        {xmlconv:buildResultRows("D34", "./am:geometry/gml:Point the srsName attribute  shall  be  a  recognisable  URN .  The  following  2  srsNames  are  expected urn:ogc:def:crs:EPSG::4258 or urn:ogc:def:crs:EPSG::4326",
-                $invalidGeometryPoint,(), "aqd:AQD_SamplingPoint/@gml:id","All smsName attributes are valid"," invalid attribute","","error", ())}
+
+        {xmlconv:buildResultRowsWithTotalCount("D34", <span>./am:geometry/gml:Point the srsName attribute  shall  be  a  recognisable  URN .  The  following  2  srsNames  are  expected urn:ogc:def:crs:EPSG::4258 or urn:ogc:def:crs:EPSG::4326</span>,
+            $invalidGeometryPoint, (), "gml:point", "", "", "","warning", $allGeometryPoint)}
+
         {xmlconv:buildResultRows("D35", "./ef:geometry/gml:Point/gml:pos the srsDimension attribute shall resolve to ""2"" to allow the coordinate of the station",
                 $invalidPos, () , "aqd:AQD_SamplingPoint/@gml:id", "All srsDimension attributes resolve to ""2""", " invalid attribute", "","error",())}
         {xmlconv:buildResultRows("D36", "./ef:geometry/gml:Point/gml:pos shall resolve to within the approximate geographic location of the AQD_Station cited by .aqd:AQD_SamplingPoint ef:broader",
@@ -1543,6 +1668,36 @@ declare function xmlconv:checkVocabularyConceptValues3($source_url as xs:string,
 };
 
 
+declare function xmlconv:checkVocabularyConceptValues4($source_url as xs:string, $featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string)
+as element(tr)*{
+
+    if(doc-available($source_url))
+    then
+
+        let $sparql := xmlconv:getConceptUrlSparql($vocabularyUrl)
+        let $crConcepts := xmlconv:executeSparqlQuery($sparql)
+
+        for $rec in doc($source_url)//gml:featureMember/descendant::*[name()=$featureType]
+
+        for $conceptUrl in $rec//child::*[name() = $element]/@xlink:href
+
+
+        let $conceptUrl := normalize-space($conceptUrl)
+
+        where string-length($conceptUrl) > 0 and not(xmlconv:isMatchingVocabCode($crConcepts, $conceptUrl))
+
+        return
+            <tr isvalid="{ xmlconv:isMatchingVocabCode($crConcepts, $conceptUrl) }">
+                <td title="Feature type">{ $featureType }</td>
+                <td title="gml:id">{data($rec/@gml:id)}</td>
+                <td title="ef:name">{data($rec/ef:name)}</td>
+                <td title="{ $element }" style="color:red">{$conceptUrl}</td>
+            </tr>
+    else
+        ()
+};
+
+
 declare function xmlconv:checkVocabularyaqdAnalyticalTechniqueValues($source_url as xs:string, $featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string, $vocabularyType as xs:string)
 as element(tr)*{
 
@@ -1722,6 +1877,7 @@ let $result := if ($countFeatures > 0) then xmlconv:checkReport($source_url, $co
 
 return
     <div>
+        {xmlconv:javaScript()}
         <h2>Check environmental monitoring feature types - Dataflow D</h2>
         {
 
@@ -1731,11 +1887,13 @@ return
         <div>
             {
                 if ($result//div/@class = 'error') then
-                    <p>This XML file did NOT pass the following crucial checks: {string-join($result//div[@class = 'error'], ',')}</p>
+                    <span>
+                        <p>This XML file did NOT pass the following crucial checks: {string-join($result//div[@class = 'error'], ',')}</p>
+                        <p>Please pay attention that QA rules D1-D4 concern all monitoring (measurement) feature types, QA rules D5 - D14 concern AQD_Networks, QA rules D15 - D30 concern AQD_Stations, QA rules D31 - D53 concern AQD_SamplingPoints, QA rules D54 - D70 concern AQD_SamplingPointProcesses, QA rules D71 - D77 concern AQD_Samples, QA rules D78 - D85 concern AQD_RepresentativeAreas.</p>
+                        <p>Please pay attention that QA rules M1 - M5 concern all monitoring (model) feature types, QA rules M6 - M26 concern AQD_Models, QA rules M27 - M39 concern AQD_ModelProcesses, QA rules M40 - M45 concern AQD_ModelAreas.</p>
+                    </span>
                 else
-                    <p>This XML file passed all crucial checks' which in this case are: D1, D2, D3, D4, D5, D6, D7, D11, D14, D15, D16,
-                        D20, D21, D22, D23, D26, D28, D31, D32, D34, D35, D36, D37, D40, D41, D42, D43, D44, D45, D46, D50, D51, D52,
-                        D53, D54, D55, D56, D57, D58, D57, D58, D59, D60, D63, D67, D68, D69, D70, D71, D72, D73, D74, D78</p>
+                    <p>All crucial checks passed</p>
             }
             <p>This feedback report provides a summary overview of feature types reported and some consistency checks defined in Dataflow D as specified in <a href="http://www.eionet.europa.eu/aqportal/qaqc/">e-reporting QA/QC rules documentation</a>.</p>
             <div><a id='legendLink' href="javascript: showLegend()" style="padding-left:10px;">How to read the test results?</a></div>
@@ -1757,6 +1915,69 @@ return
     </div>
 
 };
+
+declare function xmlconv:aproceed ($source_url, $country ) {
+
+let $docRoot := doc($source_url)
+
+
+
+let $approximity := 0.01
+
+(: StationID|long#lat :)
+let $aqdStationPos :=
+    for $allPos in $docRoot//aqd:AQD_Station
+    where not(empty($allPos/ef:geometry/gml:Point/gml:pos))
+    return concat($allPos/ef:inspireId/base:Identifier/base:namespace,"/",$allPos/ef:inspireId/base:Identifier/base:localId,"|",
+        fn:substring-before(data($allPos/ef:geometry/gml:Point/gml:pos), " "), "#", fn:substring-after(data($allPos/ef:geometry/gml:Point/gml:pos), " "))
+
+
+let $invalidSamplingPointPos :=
+    for $gmlPos in $docRoot//aqd:AQD_SamplingPoint
+        let $efBroader := $gmlPos/ef:broader/@xlink:href
+        let $samplingStationId := data($efBroader)
+        let $stationPos :=
+            for $station in $aqdStationPos
+              let $stationId := fn:substring-before($station, "|")
+              return if ($stationId = $samplingStationId) then $station else ()
+
+        let $stationLong := if (not(empty($stationPos))) then fn:substring-before(fn:substring-after($stationPos[1], "|"), "#") else ""
+        let $stationLat := if (not(empty($stationPos))) then fn:substring-after(fn:substring-after($stationPos[1], "|"), "#") else ""
+
+        let $samplingPos := data($gmlPos/ef:geometry/gml:Point/gml:pos)
+        let $samplingLong := if (not(empty($samplingPos))) then fn:substring-before($samplingPos, " ") else ""
+        let $samplingLat := if (not(empty($samplingPos))) then fn:substring-after($samplingPos, " ") else ""
+
+
+        let $stationLong := if ($stationLong castable as xs:decimal) then xs:decimal($stationLong) else 0.00
+        let $stationLat := if ($stationLat castable as xs:decimal) then xs:decimal($stationLat) else 0.00
+
+        let $samplingLong := if ($samplingLong castable as xs:decimal) then xs:decimal($samplingLong) else 0.00
+        let $samplingLat := if ($samplingLat castable as xs:decimal) then xs:decimal($samplingLat) else 0.00
+
+        return if (abs($samplingLong - $stationLong) > $approximity
+        or abs($samplingLat - $stationLat) > $approximity) then $gmlPos/@gml:id else ()
+(:
+        where not(empty($efBroader))
+
+
+
+
+
+
+:)
+
+
+
+
+   return  $invalidSamplingPointPos
+
+
+
+
+};
+
+xmlconv:proceed( $source_url, $country )
+
 (:)
-xmlconv:proceed( $source_url )
 :)
