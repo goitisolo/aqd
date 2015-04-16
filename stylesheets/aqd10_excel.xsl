@@ -10,6 +10,7 @@
                 xmlns:am-ru="http://inspire.jrc.ec.europa.eu/schemas/am-ru/2.0"
                 xmlns:aqd="http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0"
                 xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3"
+                xmlns:base2="http://inspire.ec.europa.eu/schemas/base2/1.0"
                 xmlns:ef="http://inspire.ec.europa.eu/schemas/ef/3.0"
                 xmlns:fn="http://www.w3.org/2005/xpath-functions"
                 xmlns:gco="http://www.isotc211.org/2005/gco"
@@ -109,6 +110,46 @@
       </office:automatic-styles>
 
       <office:body>
+        <!-- ZONE COMPETENT -->
+        <table:table>
+          <xsl:attribute name="table:name"><xsl:text>ZONE POLLUTANTS</xsl:text></xsl:attribute>
+          <xsl:call-template name="zoneCompetent_headers"/>
+          <table:table-rows>
+            <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader">
+              <xsl:call-template name="zoneCompetent_rows"/>
+            </xsl:for-each>
+          </table:table-rows>
+        </table:table>
+        <!-- ZONE POLLUTANTS -->
+        <table:table>
+          <xsl:attribute name="table:name"><xsl:text>ZONE POLLUTANTS</xsl:text></xsl:attribute>
+          <xsl:call-template name="zonePollutants_headers"/>
+          <table:table-rows>
+            <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader">
+              <xsl:call-template name="zonePollutants_rows"/>
+            </xsl:for-each>
+          </table:table-rows>
+        </table:table>
+        <!-- ZONE GENERAL -->
+        <table:table>
+          <xsl:attribute name="table:name"><xsl:text>ZONE GENERAL</xsl:text></xsl:attribute>
+          <xsl:call-template name="zoneGeneral_headers"/>
+          <table:table-rows>
+            <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader">
+              <xsl:call-template name="zoneGeneral_rows"/>
+            </xsl:for-each>
+          </table:table-rows>
+        </table:table>
+        <!-- SAMPLING POINT STATION -->
+        <table:table>
+          <xsl:attribute name="table:name"><xsl:text>SAMPLING POINT STATION</xsl:text></xsl:attribute>
+          <xsl:call-template name="sampointStation_headers"/>
+          <table:table-rows>
+            <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader">
+              <xsl:call-template name="sampointStation_rows"/>
+            </xsl:for-each>
+          </table:table-rows>
+        </table:table>
         <!-- SAMPLING POINT SAMPLE -->
         <table:table>
           <xsl:attribute name="table:name"><xsl:text>SAMPLING POINT SAMPLE</xsl:text></xsl:attribute>
@@ -279,32 +320,413 @@
             </xsl:for-each>
           </table:table-rows>
         </table:table>
-        <!-- ZONE POLLUTANTS -->
-        <table:table>
-          <xsl:attribute name="table:name"><xsl:text>ZONE POLLUTANTS</xsl:text></xsl:attribute>
-          <xsl:call-template name="pollutant_headers"/>
-          <table:table-rows>
-            <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader">
-              <xsl:call-template name="pollutant_rows"/>
-            </xsl:for-each>
-          </table:table-rows>
-        </table:table>
-        <!-- ZONE GENERAL -->
-        <table:table>
-          <xsl:attribute name="table:name"><xsl:text>ZONE GENERAL</xsl:text></xsl:attribute>
-          <xsl:call-template name="general_headers"/>
-          <table:table-rows>
-            <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader">
-              <xsl:call-template name="general_rows"/>
-            </xsl:for-each>
-          </table:table-rows>
-        </table:table>
       </office:body>
 
 
     </office:document-content>
   </xsl:template>
 
+  <xsl:template name="zoneCompetent_headers">
+    <table:table-columns>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+    </table:table-columns>
+    <table:table-header-rows>
+      <table:table-row table:default-cell-value-type="string">
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            GMLID
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            LocalId
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            Namespace
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            GeographicalName
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            ZoneCode
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            IndividualName
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            Organisation
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            Language
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            Nativeness
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            Address
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            Mail
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            Telephone
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            Website
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            Role
+          </text:p>
+        </table:table-cell>
+      </table:table-row>
+    </table:table-header-rows>
+  </xsl:template>
+
+  <xsl:template name="zoneCompetent_rows">
+    <xsl:for-each select="aqd:content/aqd:AQD_Zone">
+      <table:table-row table:default-cell-value-type="string">
+        <!-- 1 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="@gml:id"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 2 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="am:inspireId/base:Identifier/base:localId"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 3 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="am:inspireId/base:Identifier/base:namespace"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 3 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="am:name/descendant::gn:text"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 3 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:zoneCode"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 3 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="am:competentAuthority/base2:RelatedParty/base2:individualName/gmd:LocalisedCharacterString"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 3 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="am:competentAuthority/base2:RelatedParty/base2:organisationName/gmd:LocalisedCharacterString"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 3 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="am:competentAuthority/base2:RelatedParty/base2:contact/base2:Contact/base2:address/ad:AddressRepresentation/ad:adminUnit/gn:GeographicalName/gn:language"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 3 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="am:competentAuthority/base2:RelatedParty/base2:contact/base2:Contact/base2:address/ad:AddressRepresentation/ad:adminUnit/gn:GeographicalName/gn:nativeness"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 3 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="am:competentAuthority/base2:RelatedParty/base2:contact/base2:Contact/base2:address/ad:AddressRepresentation/ad:adminUnit/gn:GeographicalName/gn:spelling/gn:SpellingOfName/gn:text"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 3 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="am:competentAuthority/base2:RelatedParty/base2:contact/base2:Contact/base2:electronicMailAddress"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 3 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="am:competentAuthority/base2:RelatedParty/base2:contact/base2:Contact/base2:telephoneVoice"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 3 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="am:competentAuthority/base2:RelatedParty/base2:contact/base2:Contact/base2:website"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 3 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="am:competentAuthority/base2:RelatedParty/base2:contact/base2:Contact/base2:role"/>
+          </text:p>
+        </table:table-cell>
+      </table:table-row>
+    </xsl:for-each>
+  </xsl:template>
+
+  <xsl:template name="sampointStation_headers">
+    <table:table-columns>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+    </table:table-columns>
+    <table:table-header-rows>
+      <table:table-row table:default-cell-value-type="string">
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            GMLID
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            LocalId
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            Namespace
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            Version
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            NatlStationCode
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            Name
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            Municipality
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            EUStationCode
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            ActivityBegin
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            ActivityEnd
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            Pos
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            SRSName
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            Altitude
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            AltitudeUnit
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            AreaClassification
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            BelongsTo
+          </text:p>
+        </table:table-cell>
+      </table:table-row>
+    </table:table-header-rows>
+  </xsl:template>
+
+  <xsl:template name="sampointStation_rows">
+    <xsl:for-each select="aqd:content/aqd:AQD_Station">
+      <table:table-row table:default-cell-value-type="string">
+        <!-- 1 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="@gml:id"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 2 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="ef:inspireId/base:Identifier/base:localId"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 3 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="ef:inspireId/base:Identifier/base:namespace"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 4 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="ef:inspireId/base:Identifier/base:versionId"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 5 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:natlStationCode"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 6 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="ef:name"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 7 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:municipality"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 8 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:EUStationCode"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 9 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="ef:operationalActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:beginPosition"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 10 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="ef:operationalActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:endPosition"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 11 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="ef:geometry/gml:Point/gml:pos"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 12 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="ef:geometry/gml:Point/@srsName"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 13 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:altitude"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 14 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:altitude/@uom"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 15 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:areaClassification/@xlink:href"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 16 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="ef:belongsTo/@xlink:href"/>
+          </text:p>
+        </table:table-cell>
+      </table:table-row>
+    </xsl:for-each>
+  </xsl:template>
 
   <xsl:template name="sampointSample_headers">
     <table:table-columns>
@@ -2144,7 +2566,7 @@
         <!-- 3 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="aqd:assessment/@xlink:href""/>
+            <xsl:value-of select="aqd:assessment/@xlink:href"/>
           </text:p>
         </table:table-cell>
       </table:table-row>
@@ -3492,7 +3914,7 @@
     </xsl:for-each>
   </xsl:template>
 
-  <xsl:template name="general_headers">
+  <xsl:template name="zoneGeneral_headers">
   <table:table-columns>
     <table:table-column
             table:default-cell-value-type="string"
@@ -3604,7 +4026,7 @@
     </table:table-header-rows>
   </xsl:template>
 
-  <xsl:template name="general_rows">
+  <xsl:template name="zoneGeneral_rows">
     <xsl:for-each select="aqd:AQD_Zone">
       <!-- 1 -->
       <table:table-cell table:style-name="cell1">
@@ -3699,7 +4121,7 @@
     </xsl:for-each>
   </xsl:template>
 
-  <xsl:template name="pollutant_headers">
+  <xsl:template name="zonePollutants_headers">
     <table:table-columns>
       <table:table-column
               table:default-cell-value-type="string"
@@ -3770,7 +4192,7 @@
       </table:table-row>
     </table:table-header-rows>
   </xsl:template>
-  <xsl:template name="pollutant_rows">
+  <xsl:template name="zonePollutants_rows">
       <xsl:for-each select="aqd:AQD_ZONE/aqd:pollutants/aqd:Pollutant">
         <!-- 1 -->
         <table:table-cell table:style-name="cell1">
