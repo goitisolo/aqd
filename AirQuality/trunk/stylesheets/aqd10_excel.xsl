@@ -109,6 +109,86 @@
       </office:automatic-styles>
 
       <office:body>
+        <!-- SAMPLING POINT DISPERSION -->
+        <table:table>
+          <xsl:attribute name="table:name"><xsl:text>SAMPLING POINT DISPERSION</xsl:text></xsl:attribute>
+          <xsl:call-template name="sampointDispersion_headers"/>
+          <table:table-rows>
+            <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader">
+              <xsl:call-template name="sampointDispersion_rows"/>
+            </xsl:for-each>
+          </table:table-rows>
+        </table:table>
+        <!-- SAMPLING POINT MODEL PROCESS -->
+        <table:table>
+          <xsl:attribute name="table:name"><xsl:text>SAMPLING POINT MODEL PROCESS</xsl:text></xsl:attribute>
+          <xsl:call-template name="modelprocess_headers"/>
+          <table:table-rows>
+            <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader">
+              <xsl:call-template name="modelprocess_rows"/>
+            </xsl:for-each>
+          </table:table-rows>
+        </table:table>
+        <!-- SAMPLING POINT GENERAL -->
+        <table:table>
+          <xsl:attribute name="table:name"><xsl:text>Sampling Point General</xsl:text></xsl:attribute>
+          <xsl:call-template name="samplingpoint_headers"/>
+          <table:table-rows>
+            <xsl:for-each select="gml:featureMember/aqd:AQD_SamplingPoint">
+              <xsl:call-template name="samplingpoint_rows"/>
+            </xsl:for-each>
+          </table:table-rows>
+        </table:table>
+        <!-- ATTAINMENT PRELIM EXCEED-->
+        <table:table>
+          <xsl:attribute name="table:name"><xsl:text>ATTAINMENT PRELIM EXCEED</xsl:text></xsl:attribute>
+          <xsl:call-template name="attainmentPrelimExceed_headers"/>
+          <table:table-rows>
+            <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader">
+              <xsl:call-template name="attainmentPrelimExceed_rows"/>
+            </xsl:for-each>
+          </table:table-rows>
+        </table:table>
+        <!-- ATTAINMENT PRELIM DESC ADM-->
+        <table:table>
+          <xsl:attribute name="table:name"><xsl:text>ATTAINMENT PRELIM DESC ADM</xsl:text></xsl:attribute>
+          <xsl:call-template name="attainmentPrelimdescAdm_headers"/>
+          <table:table-rows>
+            <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader">
+              <xsl:call-template name="attainmentPrelimdescAdm_rows"/>
+            </xsl:for-each>
+          </table:table-rows>
+        </table:table>
+        <!-- ATTAINMENT PRELIM DESC-->
+        <table:table>
+          <xsl:attribute name="table:name"><xsl:text>ATTAINMENT PRELIM DESC</xsl:text></xsl:attribute>
+          <xsl:call-template name="attainmentPrelimdesc_headers"/>
+          <table:table-rows>
+            <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader">
+              <xsl:call-template name="attainmentPrelimdesc_rows"/>
+            </xsl:for-each>
+          </table:table-rows>
+        </table:table>
+        <!-- ATTAINMENT GENERAL-->
+        <table:table>
+          <xsl:attribute name="table:name"><xsl:text>ATTAINMENT GENERAL</xsl:text></xsl:attribute>
+          <xsl:call-template name="attainmentGeneral_headers"/>
+          <table:table-rows>
+            <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader">
+              <xsl:call-template name="attainmentGeneral_rows"/>
+            </xsl:for-each>
+          </table:table-rows>
+        </table:table>
+        <!-- ATTAINMENT FINAL EXCEED-->
+        <table:table>
+          <xsl:attribute name="table:name"><xsl:text>ATTAINMENT FINAL EXCEED</xsl:text></xsl:attribute>
+          <xsl:call-template name="attainmentFinalExceed_headers"/>
+          <table:table-rows>
+            <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader">
+              <xsl:call-template name="attainmentFinalExceed_rows"/>
+            </xsl:for-each>
+          </table:table-rows>
+        </table:table>
         <!-- ATTAINMENT FINAL DESC ADM-->
         <table:table>
           <xsl:attribute name="table:name"><xsl:text>ATTAINMENT FINAL DESC ADM</xsl:text></xsl:attribute>
@@ -149,26 +229,6 @@
             </xsl:for-each>
           </table:table-rows>
         </table:table>
-        <!-- SAMPLING POINT MODEL PROCESS -->
-        <table:table>
-          <xsl:attribute name="table:name"><xsl:text>SAMPLING POINT MODEL PROCESS</xsl:text></xsl:attribute>
-          <xsl:call-template name="modelprocess_headers"/>
-          <table:table-rows>
-            <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader">
-              <xsl:call-template name="modelprocess_rows"/>
-            </xsl:for-each>
-          </table:table-rows>
-        </table:table>
-        <!-- SAMPLING POINT GENERAL -->
-        <table:table>
-          <xsl:attribute name="table:name"><xsl:text>Sampling Point General</xsl:text></xsl:attribute>
-          <xsl:call-template name="samplingpoint_headers"/>
-          <table:table-rows>
-            <xsl:for-each select="gml:featureMember/aqd:AQD_SamplingPoint">
-              <xsl:call-template name="samplingpoint_rows"/>
-            </xsl:for-each>
-          </table:table-rows>
-        </table:table>
         <!-- ZONE POLLUTANTS -->
         <table:table>
           <xsl:attribute name="table:name"><xsl:text>ZONE POLLUTANTS</xsl:text></xsl:attribute>
@@ -193,6 +253,1014 @@
 
 
     </office:document-content>
+  </xsl:template>
+
+  <xsl:template name="sampointDispersion_headers">
+    <table:table-columns>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+    </table:table-columns>
+    <table:table-header-rows>
+      <table:table-row table:default-cell-value-type="string">
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            GMLID
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            LocalId
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            Namespace
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            Version
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            NatlStationCode
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            Name
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            EUStationCode
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            StationInfo
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            AreaClassification
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            DispersionLocal
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            DistanceJunction
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            DistanceJunctionUnit
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            TrafficVolume
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            Heavy-dutyFraction
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            TrafficSpeed
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            StreetWidth
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            HeightFacades
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            DispersionRegional
+          </text:p>
+        </table:table-cell>
+      </table:table-row>
+    </table:table-header-rows>
+  </xsl:template>
+
+  <xsl:template name="sampointDispersion_rows">
+    <xsl:for-each select="aqd:content/aqd:AQD_Station">
+      <table:table-row table:default-cell-value-type="string">
+        <!-- 1 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="@gml:id"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 2 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="ef:inspireId/base:Identifier/base:localId"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 3 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="ef:inspireId/base:Identifier/base:namespace"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 3 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="ef:inspireId/base:Identifier/base:versionId"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 3 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:natlStationCode"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 3 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="ef:name"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 3 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:EUStationCode"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 3 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:stationInfo"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 3 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:areaClassification/@xlink:href"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 3 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:dispersionSituation/aqd:DispersionSituation/aqd:dispersionLocal/@xlink:href"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 3 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:dispersionSituation/aqd:DispersionSituation/aqd:distanceJunction"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 3 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:dispersionSituation/aqd:DispersionSituation/aqd:distanceJunction/@uom"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 3 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:dispersionSituation/aqd:DispersionSituation/aqd:trafficVolume"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 3 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:dispersionSituation/aqd:DispersionSituation/aqd:heavy-dutyFraction"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 3 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:dispersionSituation/aqd:DispersionSituation/aqd:trafficSpeed"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 3 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:dispersionSituation/aqd:DispersionSituation/aqd:streetWidth"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 3 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:dispersionSituation/aqd:DispersionSituation/aqd:heightFacades"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 3 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:dispersionSituation/aqd:DispersionSituation/aqd:dispersionRegional/@xlink:href"/>
+          </text:p>
+        </table:table-cell>
+      </table:table-row>
+    </xsl:for-each>
+  </xsl:template>
+
+  <xsl:template name="attainmentPrelimExceed_headers">
+    <table:table-columns>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+    </table:table-columns>
+    <table:table-header-rows>
+      <table:table-row table:default-cell-value-type="string">
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            GMLID
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            LocalId
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            Namespace
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            Zone
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            Exceedance
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            NumericalExceedance
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            NumberExceedances
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            ObjectiveType
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            ReportingMetric
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            ProtectionTarget
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            Adjustments
+          </text:p>
+        </table:table-cell>
+      </table:table-row>
+    </table:table-header-rows>
+  </xsl:template>
+
+  <xsl:template name="attainmentPrelimExceed_rows">
+    <xsl:for-each select="aqd:content/aqd:AQD_Attainment">
+      <table:table-row table:default-cell-value-type="string">
+        <!-- 1 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="@gml:id"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 2 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:exceedanceDescriptionPreliminary/aqd:ExceedanceDescription/aqd:inspireId/base:Identifier/base:localId"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 3 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:exceedanceDescriptionPreliminary/aqd:ExceedanceDescription/aqd:inspireId/base:Identifier/base:namespace"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 4 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:zone/@xlink:href"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 5 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:exceedanceDescriptionPreliminary/aqd:ExceedanceDescription/aqd:exceedance"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 6 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:exceedanceDescriptionPreliminary/aqd:ExceedanceDescription/aqd:numericalExceedance"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 7 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:exceedanceDescriptionPreliminary/aqd:ExceedanceDescription/aqd:numberExceedances"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 8 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:exceedanceDescriptionPreliminary/aqd:ExceedanceDescription/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType/@xlink:href"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 9 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:exceedanceDescriptionPreliminary/aqd:ExceedanceDescription/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric/@xlink:href"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 10 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:exceedanceDescriptionPreliminary/aqd:ExceedanceDescription/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/@xlink:href"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 11 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:exceedanceDescriptionPreliminary/aqd:ExceedanceDescription/aqd:adjustments/@xlink:href"/>
+          </text:p>
+        </table:table-cell>
+      </table:table-row>
+    </xsl:for-each>
+  </xsl:template>
+
+  <xsl:template name="attainmentPrelimdescAdm_headers">
+    <table:table-columns>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+    </table:table-columns>
+    <table:table-header-rows>
+      <table:table-row table:default-cell-value-type="string">
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            GMLID
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            LocalId
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            Namespace
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            Exceedance
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            AdministrativeUnit
+          </text:p>
+        </table:table-cell>
+      </table:table-row>
+    </table:table-header-rows>
+  </xsl:template>
+
+  <xsl:template name="attainmentPrelimdescAdm_rows">
+    <xsl:for-each select="aqd:content/aqd:AQD_Attainment">
+      <table:table-row table:default-cell-value-type="string">
+        <!-- 1 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="@gml:id"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 2 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:exceedanceDescriptionPreliminary/aqd:ExceedanceDescription/aqd:inspireId/base:Identifier/base:localId"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 3 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:exceedanceDescriptionPreliminary/aqd:ExceedanceDescription/aqd:inspireId/base:Identifier/base:namespace"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 4 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:exceedanceDescriptionPreliminary/aqd:ExceedanceDescription/aqd:exceedance"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 5 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:exceedanceDescriptionPreliminary/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:administrativeUnit/@xlink:href"/>
+          </text:p>
+        </table:table-cell>
+      </table:table-row>
+    </xsl:for-each>
+  </xsl:template>
+
+  <xsl:template name="attainmentPrelimdesc_headers">
+    <table:table-columns>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+    </table:table-columns>
+    <table:table-header-rows>
+      <table:table-row table:default-cell-value-type="string">
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            GMLID
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            LocalId
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            Namespace
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            Zone
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            Exceedance
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            AreaClassification
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            SurfaceArea
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            RoadLength
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            StationUsed
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            ModelUsed
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            PopulationExposed
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            EcosystemAreaExposed
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            SensitivePopulation
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            InfrastructureServices
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            ReferenceYear
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            ExceedanceDurationBegin
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            ExceedanceDurationEnd
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            Comment
+          </text:p>
+        </table:table-cell>
+      </table:table-row>
+    </table:table-header-rows>
+  </xsl:template>
+
+  <xsl:template name="attainmentPrelimdesc_rows">
+    <xsl:for-each select="aqd:content/aqd:AQD_Attainment">
+      <table:table-row table:default-cell-value-type="string">
+        <!-- 1 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="@gml:id"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 2 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:exceedanceDescriptionPreliminary/aqd:ExceedanceDescription/aqd:inspireId/base:Identifier/base:localId"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 3 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:exceedanceDescriptionPreliminary/aqd:ExceedanceDescription/aqd:inspireId/base:Identifier/base:namespace"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 4 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:zone/@xlink:href"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 5 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:exceedanceDescriptionPreliminary/aqd:ExceedanceDescription/aqd:exceedance"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 6 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:exceedanceDescriptionPreliminary/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:areaClassification/@xlink:href"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 7 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:exceedanceDescriptionPreliminary/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:surfaceArea"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 8 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:exceedanceDescriptionPreliminary/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:roadLength"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 9 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:exceedanceDescriptionPreliminary/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:stationUsed/@xlink:href"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 10 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:exceedanceDescriptionPreliminary/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:modelUsed/@xlink:href"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 11 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:exceedanceDescriptionPreliminary/aqd:ExceedanceDescription/aqd:exceedanceExposure/aqd:ExceedanceExposure/aqd:populationExposed"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 12 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:exceedanceDescriptionPreliminary/aqd:ExceedanceDescription/aqd:exceedanceExposure/aqd:ExceedanceExposure/aqd:ecosystemAreaExposed"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 13 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:exceedanceDescriptionPreliminary/aqd:ExceedanceDescription/aqd:exceedanceExposure/aqd:ExceedanceExposure/aqd:sensitivePopulation"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 14 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:exceedanceDescriptionPreliminary/aqd:ExceedanceDescription/aqd:exceedanceExposure/aqd:ExceedanceExposure/aqd:infrastructureServices"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 15 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:exceedanceDescriptionPreliminary/aqd:ExceedanceDescription/aqd:exceedanceExposure/aqd:ExceedanceExposure/aqd:referenceYear/gml:TimeInstant/gml:timePosition"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 16 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:exceedanceDescriptionPreliminary/aqd:ExceedanceDescription/aqd:exceedanceDuration/gml:TimePeriod/gml:beginPosition"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 17 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:exceedanceDescriptionPreliminary/aqd:ExceedanceDescription/aqd:exceedanceDuration/gml:TimePeriod/gml:endPosition"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 18 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:exceedanceDescriptionPreliminary/aqd:ExceedanceDescription/aqd:comment"/>
+          </text:p>
+        </table:table-cell>
+      </table:table-row>
+    </xsl:for-each>
+  </xsl:template>
+
+  <xsl:template name="attainmentGeneral_headers">
+    <table:table-columns>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+    </table:table-columns>
+    <table:table-header-rows>
+      <table:table-row table:default-cell-value-type="string">
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            GMLID
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            LocalId
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            Namespace
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            Pollutant
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            ObjectiveType
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            ReportingMetric
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            ProtectionTarget
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            Zone
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            Assessment
+          </text:p>
+        </table:table-cell>
+      </table:table-row>
+    </table:table-header-rows>
+  </xsl:template>
+
+  <xsl:template name="attainmentGeneral_rows">
+    <xsl:for-each select="aqd:content/aqd:AQD_Attainment">
+      <table:table-row table:default-cell-value-type="string">
+        <!-- 1 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="@gml:id"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 2 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:inspireId/base:Identifier/base:localId"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 3 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:inspireId/base:Identifier/base:namespace"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 3 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:pollutant/@xlink:href"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 3 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType/@xlink:href"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 3 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric/@xlink:href"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 3 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/@xlink:href"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 3 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:zone/@xlink:href"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 3 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:assessment/@xlink:href""/>
+          </text:p>
+        </table:table-cell>
+      </table:table-row>
+    </xsl:for-each>
+  </xsl:template>
+
+  <xsl:template name="attainmentFinalExceed_headers">
+    <table:table-columns>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+    </table:table-columns>
+    <table:table-header-rows>
+      <table:table-row table:default-cell-value-type="string">
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            GMLID
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            LocalId
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            Namespace
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            Zone
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            Exceedance
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            NumericalExceedance
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            NumberExceedances
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            ObjectiveType
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            ReportingMetric
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            ProtectionTarget
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            Adjustments
+          </text:p>
+        </table:table-cell>
+      </table:table-row>
+    </table:table-header-rows>
+  </xsl:template>
+
+  <xsl:template name="attainmentFinalExceed_rows">
+    <xsl:for-each select="aqd:content/aqd:AQD_Attainment">
+      <table:table-row table:default-cell-value-type="string">
+        <!-- 1 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="@gml:id"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 2 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:inspireId/base:Identifier/base:localId"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 3 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:inspireId/base:Identifier/base:namespace"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 4 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:zone/@xlink:href"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 5 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedance"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 6 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:numericalExceedance"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 7 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:numberExceedances"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 8 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType/@xlink:href"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 9 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric/@xlink:href"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 10 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/@xlink:href"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 11 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:adjustments/@xlink:href"/>
+          </text:p>
+        </table:table-cell>
+      </table:table-row>
+    </xsl:for-each>
   </xsl:template>
 
   <xsl:template name="attainmentFinaldescAdm_headers">
