@@ -112,7 +112,7 @@
       <office:body>
         <!-- ZONE COMPETENT -->
         <table:table>
-          <xsl:attribute name="table:name"><xsl:text>ZONE POLLUTANTS</xsl:text></xsl:attribute>
+          <xsl:attribute name="table:name"><xsl:text>ZONE COMPETENT</xsl:text></xsl:attribute>
           <xsl:call-template name="zoneCompetent_headers"/>
           <table:table-rows>
             <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader">
@@ -225,7 +225,7 @@
           <xsl:attribute name="table:name"><xsl:text>Sampling Point General</xsl:text></xsl:attribute>
           <xsl:call-template name="sampointGeneral_headers"/>
           <table:table-rows>
-            <xsl:for-each select="gml:featureMember/aqd:AQD_SamplingPoint">
+            <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader">
               <xsl:call-template name="sampointGeneral_rows"/>
             </xsl:for-each>
           </table:table-rows>
@@ -328,6 +328,42 @@
 
   <xsl:template name="zoneCompetent_headers">
     <table:table-columns>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
       <table:table-column
               table:default-cell-value-type="string"
               table:default-cell-style-name="long-string-heading">
@@ -518,6 +554,50 @@
 
   <xsl:template name="sampointStation_headers">
     <table:table-columns>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
       <table:table-column
               table:default-cell-value-type="string"
               table:default-cell-style-name="long-string-heading">
@@ -750,6 +830,34 @@
               table:default-cell-value-type="string"
               table:default-cell-style-name="long-string-heading">
       </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
     </table:table-columns>
     <table:table-header-rows>
       <table:table-row table:default-cell-value-type="string">
@@ -818,7 +926,7 @@
   </xsl:template>
 
   <xsl:template name="sampointSample_rows">
-    <xsl:for-each select="aqd:content/aqd:AQD_SamplingPointProcess">
+    <xsl:for-each select="aqd:content/aqd:AQD_Sample">
       <table:table-row table:default-cell-value-type="string">
         <!-- 1 -->
         <table:table-cell table:style-name="cell1">
@@ -829,19 +937,19 @@
         <!-- 2 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="ef:inspireId/base:Identifier/base:localId"/>
+            <xsl:value-of select="aqd:inspireId/base:Identifier/base:localId"/>
           </text:p>
         </table:table-cell>
         <!-- 3 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="ef:inspireId/base:Identifier/base:namespace"/>
+            <xsl:value-of select="aqd:inspireId/base:Identifier/base:namespace"/>
           </text:p>
         </table:table-cell>
         <!-- 4 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="ef:inspireId/base:Identifier/base:versionId"/>
+            <xsl:value-of select="aqd:inspireId/base:Identifier/base:versionId"/>
           </text:p>
         </table:table-cell>
         <!-- 5 -->
@@ -859,13 +967,13 @@
         <!-- 7 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="aqd:builldingDistance"/>
+            <xsl:value-of select="aqd:buildingDistance"/>
           </text:p>
         </table:table-cell>
         <!-- 8 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="aqd:builldingDistance/@uom"/>
+            <xsl:value-of select="aqd:buildingDistance/@uom"/>
           </text:p>
         </table:table-cell>
         <!-- 9 -->
@@ -898,6 +1006,66 @@
 
   <xsl:template name="sampointProcess_headers">
     <table:table-columns>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
       <table:table-column
               table:default-cell-value-type="string"
               table:default-cell-style-name="long-string-heading">
@@ -1037,19 +1205,19 @@
         <!-- 2 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="ef:inspireId/base:Identifier/base:localId"/>
+            <xsl:value-of select="ompr:inspireId/base:Identifier/base:localId"/>
           </text:p>
         </table:table-cell>
         <!-- 3 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="ef:inspireId/base:Identifier/base:namespace"/>
+            <xsl:value-of select="ompr:inspireId/base:Identifier/base:namespace"/>
           </text:p>
         </table:table-cell>
         <!-- 4 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="ef:inspireId/base:Identifier/base:versionId"/>
+            <xsl:value-of select="ompr:inspireId/base:Identifier/base:versionId"/>
           </text:p>
         </table:table-cell>
         <!-- 4 -->
@@ -1154,6 +1322,26 @@
 
   <xsl:template name="sampointNetwork_headers">
     <table:table-columns>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
       <table:table-column
               table:default-cell-value-type="string"
               table:default-cell-style-name="long-string-heading">
@@ -1300,6 +1488,66 @@
 
   <xsl:template name="sampointModel_headers">
     <table:table-columns>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
       <table:table-column
               table:default-cell-value-type="string"
               table:default-cell-style-name="long-string-heading">
@@ -1576,6 +1824,34 @@
               table:default-cell-value-type="string"
               table:default-cell-style-name="long-string-heading">
       </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
     </table:table-columns>
     <table:table-header-rows>
       <table:table-row table:default-cell-value-type="string">
@@ -1644,7 +1920,7 @@
   </xsl:template>
 
   <xsl:template name="sampointEmissions_rows">
-    <xsl:for-each select="aqd:content/aqd:AQD_Station">
+    <xsl:for-each select="aqd:content/aqd:AQD_SamplingPoint">
       <table:table-row table:default-cell-value-type="string">
         <!-- 1 -->
         <table:table-cell table:style-name="cell1">
@@ -1724,6 +2000,58 @@
 
   <xsl:template name="sampointDispersion_headers">
     <table:table-columns>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
       <table:table-column
               table:default-cell-value-type="string"
               table:default-cell-style-name="long-string-heading">
@@ -1958,6 +2286,30 @@
 
   <xsl:template name="attainmentPrelimExceed_headers">
     <table:table-columns>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
       <table:table-column
               table:default-cell-value-type="string"
               table:default-cell-style-name="long-string-heading">
@@ -2226,6 +2578,58 @@
               table:default-cell-value-type="string"
               table:default-cell-style-name="long-string-heading">
       </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
     </table:table-columns>
     <table:table-header-rows>
       <table:table-row table:default-cell-value-type="string">
@@ -2460,6 +2864,22 @@
               table:default-cell-value-type="string"
               table:default-cell-style-name="long-string-heading">
       </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
     </table:table-columns>
     <table:table-header-rows>
       <table:table-row table:default-cell-value-type="string">
@@ -2575,6 +2995,30 @@
 
   <xsl:template name="attainmentFinalExceed_headers">
     <table:table-columns>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
       <table:table-column
               table:default-cell-value-type="string"
               table:default-cell-style-name="long-string-heading">
@@ -3627,6 +4071,78 @@
               table:default-cell-value-type="string"
               table:default-cell-style-name="long-string-heading">
       </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
     </table:table-columns>
     <table:table-header-rows>
     <table:table-row table:default-cell-value-type="string">
@@ -3760,162 +4276,196 @@
   </xsl:template>
 
   <xsl:template name="sampointGeneral_rows">
-    <xsl:for-each select=".">
-      <!-- 1 -->
-      <table:table-cell table:style-name="cell1">
-        <text:p>
-          <xsl:value-of select="@gml:id"/>
-        </text:p>
-      </table:table-cell>
-      <!-- 2 -->
-      <table:table-cell table:style-name="cell1">
-        <text:p>
-          <xsl:value-of select="ef:inspireId/base:Identifier/base:localId"/>
-        </text:p>
-      </table:table-cell>
-      <!-- 3 -->
-      <table:table-cell table:style-name="cell1">
-        <text:p>
-          <xsl:value-of select="ef:inspireId/base:Identifier/base:namespace"/>
-        </text:p>
-      </table:table-cell>
-      <!-- 4 -->
-      <table:table-cell table:style-name="cell1">
-        <text:p>
-          <xsl:value-of select="ef:inspireId/base:Identifier/base:versionid"/>
-        </text:p>
-      </table:table-cell>
-      <!-- 5 -->
-      <table:table-cell table:style-name="cell1">
-        <text:p>
-          <xsl:value-of select="ef:name"/>
-        </text:p>
-      </table:table-cell>
-      <!-- 6 -->
-      <table:table-cell table:style-name="cell1">
-        <text:p>
-          <xsl:value-of select="aqd:assessmentType"/>
-        </text:p>
-      </table:table-cell>
-      <!-- 7 -->
-      <table:table-cell table:style-name="cell1">
-        <text:p>
-          <xsl:value-of select="aqd:zone/@xlink:href"/>
-        </text:p>
-      </table:table-cell>
-      <!-- 8 -->
-      <table:table-cell table:style-name="cell1">
-        <text:p>
-          <xsl:value-of select="ef:broader/@xlink:href"/>
-        </text:p>
-      </table:table-cell>
-      <!-- 9 -->
-      <table:table-cell table:style-name="cell1">
-        <text:p>
-          <xsl:value-of select="ef:belongsTo/@xlink:href"/>
-        </text:p>
-      </table:table-cell>
-      <!-- 10 -->
-      <table:table-cell table:style-name="cell1">
-        <text:p>
-          <xsl:value-of select="ef:operationalActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:beginPosition"/>
-        </text:p>
-      </table:table-cell>
-      <!-- 11 -->
-      <table:table-cell table:style-name="cell1">
-        <text:p>
-          <xsl:value-of select="ef:operationalActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:endPosition"/>
-        </text:p>
-      </table:table-cell>
-      <!-- 12 -->
-      <table:table-cell table:style-name="cell1">
-        <text:p>
-          <xsl:value-of select="aqd:relevantEmissions/aqd:RelevantEmissions/aqd:stationClassification/@xlink:href"/>
-        </text:p>
-      </table:table-cell>
-      <!-- 13 -->
-      <table:table-cell table:style-name="cell1">
-        <text:p>
-          <xsl:value-of select="ef:observingCapability/ef:ObservingCapability/ef:featureOfInterest/@xlink:href"/>
-        </text:p>
-      </table:table-cell>
-      <!-- 14 -->
-      <table:table-cell table:style-name="cell1">
-        <text:p>
-          <xsl:value-of select="ef:observingCapability/ef:ObservingCapability/ef:observingTime/gml:TimePeriod/gml:beginPosition"/>
-        </text:p>
-      </table:table-cell>
-      <!-- 15 -->
-      <table:table-cell table:style-name="cell1">
-        <text:p>
-          <xsl:value-of select="ef:observingCapability/ef:ObservingCapability/ef:observingTime/gml:TimePeriod/gml:endPosition"/>
-        </text:p>
-      </table:table-cell>
-      <!-- 16 -->
-      <table:table-cell table:style-name="cell1">
-        <text:p>
-          <xsl:value-of select="ef:observingCapability/ef:ObservingCapability/ef:observedProperty/@xlink:href"/>
-        </text:p>
-      </table:table-cell>
-      <!-- 17 -->
-      <table:table-cell table:style-name="cell1">
-        <text:p>
-          <xsl:value-of select="aqd:usedAQD"/>
-        </text:p>
-      </table:table-cell>
-      <!-- 18 -->
-      <table:table-cell table:style-name="cell1">
-        <text:p>
-          <xsl:value-of select="aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType/@xlink:href"/>
-        </text:p>
-      </table:table-cell>
-      <!-- 19 -->
-      <table:table-cell table:style-name="cell1">
-        <text:p>
-          <xsl:value-of select="aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric/@xlink:href"/>
-        </text:p>
-      </table:table-cell>
-      <!-- 20 -->
-      <table:table-cell table:style-name="cell1">
-        <text:p>
-          <xsl:value-of select="aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/@xlink:href"/>
-        </text:p>
-      </table:table-cell>
-      <!-- 21 -->
-      <table:table-cell table:style-name="cell1">
-        <text:p>
-          <xsl:value-of select="aqd:reportingDB"/>
-        </text:p>
-      </table:table-cell>
-      <!-- 22 -->
-      <table:table-cell table:style-name="cell1">
-        <text:p>
-          <xsl:value-of select="aqd:reportingDBOther"/>
-        </text:p>
-      </table:table-cell>
-      <!-- 23 -->
-      <table:table-cell table:style-name="cell1">
-        <text:p>
-          <xsl:value-of select="ef:geometry/gml:Point/@srsName"/>
-        </text:p>
-      </table:table-cell>
-      <!-- 24 -->
-      <table:table-cell table:style-name="cell1">
-        <text:p>
-          <xsl:value-of select="ef:geometry/gml:Point/gml:pos"/>
-        </text:p>
-      </table:table-cell>
-      <!-- 25 -->
-      <table:table-cell table:style-name="cell1">
-        <text:p>
-          <xsl:value-of select="ef:involvedIn/@xlink:href"/>
-        </text:p>
-      </table:table-cell>
+    <xsl:for-each select="aqd:content/aqd:AQD_SamplingPoint">
+      <table:table-row table:default-cell-value-type="string">
+        <!-- 1 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="@gml:id"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 2 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="ef:inspireId/base:Identifier/base:localId"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 3 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="ef:inspireId/base:Identifier/base:namespace"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 4 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="ef:inspireId/base:Identifier/base:versionId"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 5 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="ef:name"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 6 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:assessmentType"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 7 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:zone/@xlink:href"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 8 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="ef:broader/@xlink:href"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 9 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="ef:belongsTo/@xlink:href"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 10 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="ef:operationalActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:beginPosition"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 11 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="ef:operationalActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:endPosition"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 12 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:relevantEmissions/aqd:RelevantEmissions/aqd:stationClassification/@xlink:href"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 13 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="ef:observingCapability/ef:ObservingCapability/ef:featureOfInterest/@xlink:href"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 14 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="ef:observingCapability/ef:ObservingCapability/ef:observingTime/gml:TimePeriod/gml:beginPosition"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 15 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="ef:observingCapability/ef:ObservingCapability/ef:observingTime/gml:TimePeriod/gml:endPosition"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 16 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="ef:observingCapability/ef:ObservingCapability/ef:observedProperty/@xlink:href"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 17 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:usedAQD"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 18 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType/@xlink:href"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 19 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric/@xlink:href"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 20 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/@xlink:href"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 21 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:reportingDB"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 22 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:reportingDBOther"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 23 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="ef:geometry/gml:Point/@srsName"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 24 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="ef:geometry/gml:Point/gml:pos"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 25 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="ef:involvedIn/@xlink:href"/>
+          </text:p>
+        </table:table-cell>
+      </table:table-row>
     </xsl:for-each>
   </xsl:template>
 
   <xsl:template name="zoneGeneral_headers">
   <table:table-columns>
+    <table:table-column
+            table:default-cell-value-type="string"
+            table:default-cell-style-name="long-string-heading">
+    </table:table-column>
+    <table:table-column
+            table:default-cell-value-type="string"
+            table:default-cell-style-name="long-string-heading">
+    </table:table-column>
+    <table:table-column
+            table:default-cell-value-type="string"
+            table:default-cell-style-name="long-string-heading">
+    </table:table-column>
+    <table:table-column
+            table:default-cell-value-type="string"
+            table:default-cell-style-name="long-string-heading">
+    </table:table-column>
+    <table:table-column
+            table:default-cell-value-type="string"
+            table:default-cell-style-name="long-string-heading">
+    </table:table-column>
+    <table:table-column
+            table:default-cell-value-type="string"
+            table:default-cell-style-name="long-string-heading">
+    </table:table-column>
+    <table:table-column
+            table:default-cell-value-type="string"
+            table:default-cell-style-name="long-string-heading">
+    </table:table-column>
+    <table:table-column
+            table:default-cell-value-type="string"
+            table:default-cell-style-name="long-string-heading">
+    </table:table-column>
     <table:table-column
             table:default-cell-value-type="string"
             table:default-cell-style-name="long-string-heading">
@@ -4028,96 +4578,98 @@
 
   <xsl:template name="zoneGeneral_rows">
     <xsl:for-each select="aqd:AQD_Zone">
-      <!-- 1 -->
-      <table:table-cell table:style-name="cell1">
-        <text:p>
-          <xsl:value-of select="@gml:id"/>
-        </text:p>
-      </table:table-cell>
-      <!-- 2 -->
-      <table:table-cell table:style-name="cell1">
-        <text:p>
-          <xsl:value-of select="am:inspireId/base:Identifier/base:localId"/>
-        </text:p>
-      </table:table-cell>
-      <!-- 3 -->
-      <table:table-cell table:style-name="cell1">
-        <text:p>
-          <xsl:value-of select="am:inspireId/base:Identifier/base:namespace"/>
-        </text:p>
-      </table:table-cell>
-      <!-- 4 -->
-      <table:table-cell table:style-name="cell1">
-        <text:p>
-          <xsl:value-of select="am:name/descendant::gn:text"/>
-        </text:p>
-      </table:table-cell>
-      <!-- 5 -->
-      <table:table-cell table:style-name="cell1">
-        <text:p>
-          <xsl:value-of select="aqd:zoneCode"/>
-        </text:p>
-      </table:table-cell>
-      <!-- 6 -->
-      <table:table-cell table:style-name="cell1">
-        <text:p>
-          <xsl:value-of select="am:zoneType/@xlink:href"/>
-        </text:p>
-      </table:table-cell>
-      <!-- 7 -->
-      <table:table-cell table:style-name="cell1">
-        <text:p>
-          <xsl:value-of select="am:designationPeriod/gml:TimePeriod/gml:beginPosition"/>
-        </text:p>
-      </table:table-cell>
-      <!-- 8 -->
-      <table:table-cell table:style-name="cell1">
-        <text:p>
-          <xsl:value-of select="am:designationPeriod/gml:TimePeriod/gml:endPosition"/>
-        </text:p>
-      </table:table-cell>
-      <!-- 9 -->
-      <table:table-cell table:style-name="cell1">
-        <text:p>
-          <xsl:value-of select="am:environmentalDomain/@xlink:href"/>
-        </text:p>
-      </table:table-cell>
-      <!-- 10 -->
-      <table:table-cell table:style-name="cell1">
-        <text:p>
-          <xsl:value-of select="aqd:aqdZoneType"/>
-        </text:p>
-      </table:table-cell>
-      <!-- 11 -->
-      <table:table-cell table:style-name="cell1">
-        <text:p>
-          <xsl:value-of select="aqd:residentPopulation"/>
-        </text:p>
-      </table:table-cell>
-      <!-- 12 -->
-      <table:table-cell table:style-name="cell1">
-        <text:p>
-          <xsl:value-of select="aqd:area"/>
-        </text:p>
-      </table:table-cell>
-      <!-- 13 -->
-      <table:table-cell table:style-name="cell1">
-        <text:p>
-          <xsl:value-of select="aqd:timeExtensionExemption/@xlink:href"/>
-        </text:p>
-      </table:table-cell>
-      <!-- 14 -->
-      <table:table-cell table:style-name="cell1">
-        <text:p>
-          <xsl:value-of select="aqd:residentPopulationYear/gml:TimeInstant/gml:timePosition"/>
-        </text:p>
-      </table:table-cell>
-      <!-- 15 -->
-      <table:table-cell table:style-name="cell1">
-        <text:p>
-          <xsl:value-of select="am:geometry/*/@srsName"/>
-        </text:p>
-      </table:table-cell>
+      <table:table-row table:default-cell-value-type="string">
+        <!-- 1 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="@gml:id"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 2 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="am:inspireId/base:Identifier/base:localId"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 3 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="am:inspireId/base:Identifier/base:namespace"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 4 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="am:name/descendant::gn:text"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 5 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:zoneCode"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 6 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="am:zoneType/@xlink:href"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 7 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="am:designationPeriod/gml:TimePeriod/gml:beginPosition"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 8 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="am:designationPeriod/gml:TimePeriod/gml:endPosition"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 9 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="am:environmentalDomain/@xlink:href"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 10 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:aqdZoneType"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 11 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:residentPopulation"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 12 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:area"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 13 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:timeExtensionExemption/@xlink:href"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 14 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:residentPopulationYear/gml:TimeInstant/gml:timePosition"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 15 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="am:geometry/*/@srsName"/>
+          </text:p>
+        </table:table-cell>
+      </table:table-row>
     </xsl:for-each>
   </xsl:template>
 
@@ -4194,48 +4746,50 @@
   </xsl:template>
   <xsl:template name="zonePollutants_rows">
       <xsl:for-each select="aqd:AQD_ZONE/aqd:pollutants/aqd:Pollutant">
-        <!-- 1 -->
-        <table:table-cell table:style-name="cell1">
-          <text:p>
-            <xsl:value-of select="../../@gml:id"/>
-          </text:p>
-        </table:table-cell>
-        <!-- 2 -->
-        <table:table-cell table:style-name="cell1">
-          <text:p>
-            <xsl:value-of select="../../am:inspireId/base:Identifier/base:localId"/>
-          </text:p>
-        </table:table-cell>
-        <!-- 3 -->
-        <table:table-cell table:style-name="cell1">
-          <text:p>
-            <xsl:value-of select="../../am:inspireId/base:Identifier/base:namespace"/>
-          </text:p>
-        </table:table-cell>
-        <!-- 4 -->
-        <table:table-cell table:style-name="cell1">
-          <text:p>
-            <xsl:value-of select="../../am:name/descendant::gn:text"/>
-          </text:p>
-        </table:table-cell>
-        <!-- 5 -->
-        <table:table-cell table:style-name="cell1">
-          <text:p>
-            <xsl:value-of select="../../aqd:zoneCode"/>
-          </text:p>
-        </table:table-cell>
-        <!-- 6 -->
-        <table:table-cell table:style-name="cell1">
-          <text:p>
-            <xsl:value-of select="aqd:pollutantCode/@xlink:href"/>
-          </text:p>
-        </table:table-cell>
-        <!-- 7 -->
-        <table:table-cell table:style-name="cell1">
-          <text:p>
-            <xsl:value-of select="aqd:protectionTarget/@xlink:href"/>
-          </text:p>
-        </table:table-cell>
+        <table:table-row table:default-cell-value-type="string">
+          <!-- 1 -->
+          <table:table-cell table:style-name="cell1">
+            <text:p>
+              <xsl:value-of select="../../@gml:id"/>
+            </text:p>
+          </table:table-cell>
+          <!-- 2 -->
+          <table:table-cell table:style-name="cell1">
+            <text:p>
+              <xsl:value-of select="../../am:inspireId/base:Identifier/base:localId"/>
+            </text:p>
+          </table:table-cell>
+          <!-- 3 -->
+          <table:table-cell table:style-name="cell1">
+            <text:p>
+              <xsl:value-of select="../../am:inspireId/base:Identifier/base:namespace"/>
+            </text:p>
+          </table:table-cell>
+          <!-- 4 -->
+          <table:table-cell table:style-name="cell1">
+            <text:p>
+              <xsl:value-of select="../../am:name/descendant::gn:text"/>
+            </text:p>
+          </table:table-cell>
+          <!-- 5 -->
+          <table:table-cell table:style-name="cell1">
+            <text:p>
+              <xsl:value-of select="../../aqd:zoneCode"/>
+            </text:p>
+          </table:table-cell>
+          <!-- 6 -->
+          <table:table-cell table:style-name="cell1">
+            <text:p>
+              <xsl:value-of select="aqd:pollutantCode/@xlink:href"/>
+            </text:p>
+          </table:table-cell>
+          <!-- 7 -->
+          <table:table-cell table:style-name="cell1">
+            <text:p>
+              <xsl:value-of select="aqd:protectionTarget/@xlink:href"/>
+            </text:p>
+          </table:table-cell>
+        </table:table-row>
       </xsl:for-each>
   </xsl:template>
 
