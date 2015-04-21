@@ -31,12 +31,14 @@ declare namespace sams="http://www.opengis.net/samplingSpatial/2.0";
 declare variable $source_url := "../test/ES_D_SamplingPoint-1.xml";
 declare variable $country := "es";
 declare variable $source_url := "../test/DK_D_Sample.xml";
-declare variable $country := "dk";
 declare variable $source_url := "../test/ES_D_Station.xml";
-
-declare variable $source_url := "../test/REP_D-DK_NERI.xml";
-declare variable $source_url := "../test/D_GIB_Complete_Corrupted.xml";
 declare variable $country := "gi";
+declare variable $source_url := "../test/D_GIB_Complete_Corrupted.xml";
+declare variable $country := "dk";
+declare variable $source_url := "../test/REP_D-DK_NERI.xml";
+
+declare variable $country := "es";
+declare variable $source_url := "../test/ES_D_Sample.xml";
 :)
 
 (:~ declare Content Registry SPARQL endpoint:)
@@ -327,7 +329,7 @@ let $result :=
                     if (contains($invalidMsg, " found")) then
                         concat($countInvalidValues, $invalidMsg)
                     else
-                        concat($countInvalidValues, $invalidMsg, substring(" ", number(not($countInvalidValues > 1)) * 2) ,"found")
+                        concat($countInvalidValues, $invalidMsg, substring(" ", number(not($countInvalidValues > 1)) * 2) ," found")
                 }
                 </span>{
                 if ($countInvalidValues > 0 or count($recordDetails)>0) then
@@ -1402,31 +1404,25 @@ let $elementsIncluded :=
             <td style="{$style3}" title="aqd:measurementMethod">{if(count($checkElements/../../aqd:measurementMethod) >= 1) then "Error, shall not be provided." else "Valid."}</td>
         </tr>
 
-(:D59 Done by Rait:)
+(: D59 Done by Rait:)
 let  $allInvalidAnalyticalTechnique
     := xmlconv:checkVocabularyaqdAnalyticalTechniqueValues($source_url, "aqd:AQD_SamplingPointProcess", "aqd:analyticalTechnique", $xmlconv:ANALYTICALTECHNIQUE_VOCABULARY, "")
 
-(:D60 Done by Rait:)
-let  $allInvalid60_1
+(: D61  :)
+let  $allInvalid61
     := xmlconv:checkVocabularyConceptEquipmentValues($source_url, "aqd:AQD_SamplingPointProcess", "aqd:measurementEquipment", $xmlconv:MEASUREMENTEQUIPMENT_VOCABULARY, "")
-let  $allInvalid60_2
-    := xmlconv:checkVocabularyConceptEquipmentValues($source_url, "aqd:AQD_SamplingPointProcess", "aqd:samplingEquipment", $xmlconv:SAMPLINGEQUIPMENT_VOCABULARY, "")
-(:D61  Done by Rait:)
-    (:let $allInvalid61
-    := for $allDetectionLimits in  doc($source_url)//gml:featureMember/aqd:AQD_SamplingPointProcess/aqd:dataQuality/aqd:DataQuality[name(./*)= 'aqd:detectionLimit']
-        where string(number($allDetectionLimits/aqd:detectionLimit)) = 'NaN'
-    return
-        <tr>
-            <td title="gml:id">{data($allDetectionLimits/../../@gml:id)}</td>
-            <td style="color:red;" title="aqd:detectionLimit">{if(string-length(data($allDetectionLimits/aqd:detectionLimit))> 0) then data($allDetectionLimits/aqd:detectionLimit) else "Error, element is empty! "}</td>
-        </tr>
-:)
 
-(:D63 Done by Rait:)
+(: D62 :)
+let  $allInvalid62
+    := xmlconv:checkVocabularyConceptEquipmentValues($source_url, "aqd:AQD_SamplingPointProcess", "aqd:samplingEquipment", $xmlconv:SAMPLINGEQUIPMENT_VOCABULARY, "")
+
+(: D63 :)
 let  $allInvalid63
-    := xmlconv:checkVocabularyConceptValues($source_url, "aqd:AQD_SamplingPointProcess", "aqd:detectionLimit", $xmlconv:UOM_CONCENTRATION_VOCABULARY)
+    := xmlconv:checkVocabularyConceptValuesUom($source_url, "aqd:AQD_SamplingPointProcess", "aqd:detectionLimit", $xmlconv:UOM_CONCENTRATION_VOCABULARY)
+
 
 (:D67 Done by Rait:)
+(:
 let  $invalid67
     :=
     for $usedAQDisTrue in doc($source_url)//gml:featureMember/aqd:AQD_SamplingPoint/aqd:usedAQD
@@ -1440,14 +1436,12 @@ let $allInvalid67 :=
             where data($invalid67/../ef:observingCapability/ef:ObservingCapability/ef:procedure/@xlink:href) = (concat(data($i67/../ompr:inspireId/base:Identifier/base:namespace),'/',data($i67/../ompr:inspireId/base:Identifier/base:localId)))
             return
                 <tr>
-                    <!--<td>{data($invalid67[../ef:observingCapability/ef:ObservingCapability/ef:procedure/@xlink:href = (concat(data($i67/../ompr:inspireId/base:Identifier/base:namespace),'/',data($i67/../ompr:inspireId/base:Identifier/base:localId)))]/../@gml:id)}</td>-->
                     <td title="AQD_SamplingPointProcess/gml:id">{data($i67/../@gml:id)}</td>
                     <td title="aqd:equivalenceDemonstrated" style="color:red;" >{data($i67/@xlink:href)}</td>
-                    <!--<td title="">{concat(data($i67/../ompr:inspireId/base:Identifier/base:namespace),'/',data($i67/../ompr:inspireId/base:Identifier/base:localId))}</td>-->
                 </tr>
-
+:)
 (: D68 :)
-
+(:
 let  $invalid68
     :=
     for $usedAQDisTrue in doc($source_url)//gml:featureMember/aqd:AQD_SamplingPoint/aqd:usedAQD
@@ -1466,9 +1460,9 @@ let  $invalid68
             <td title="aqd:demonstrationReport" style="color:red;" >{data($i68/@xlink:href)}</td>
             <!--<td title="">{concat(data($i67/../ompr:inspireId/base:Identifier/base:namespace),'/',data($i67/../ompr:inspireId/base:Identifier/base:localId))}</td>-->
         </tr>
-
+:)
 (: D69 :)
-
+(:
 let  $invalid69
     :=
     for $usedAQDisTrue in doc($source_url)//gml:featureMember/aqd:AQD_SamplingPoint/aqd:usedAQD
@@ -1487,9 +1481,9 @@ let $allInvalid69 :=
             <td title="aqd:documentation" style="color:red;" >{data($i69/@xlink:href)}</td>
             <!--<td title="">{concat(data($i67/../ompr:inspireId/base:Identifier/base:namespace),'/',data($i67/../ompr:inspireId/base:Identifier/base:localId))}</td>-->
         </tr>
-
+:)
 (: D70 :)
-
+(:
 let  $invalid70
     :=
     for $usedAQDisTrue in doc($source_url)//gml:featureMember/aqd:AQD_SamplingPoint/aqd:usedAQD
@@ -1508,7 +1502,7 @@ let $allInvalid70 :=
             <td title="aqd:qaReport" style="color:red;" >{data($i70/@xlink:href)}</td>
             <!--<td title="">{concat(data($i67/../ompr:inspireId/base:Identifier/base:namespace),'/',data($i67/../ompr:inspireId/base:Identifier/base:localId))}</td>-->
         </tr>
-
+:)
 (: D71 :)
 
 let $localSampleIds := $docRoot//gml:featureMember/aqd:AQD_Sample/aqd:inspireId/base:Identifier
@@ -1538,8 +1532,24 @@ let  $tblD72 :=
 
 (: D73 :)
 
+let $allGmlPoint := $docRoot//aqd:AQD_Sample/sams:shape/gml:Point
+let $tblD73 := if (count($allGmlPoint) > 0) then
+for $point in $docRoot//aqd:AQD_Sample/sams:shape/gml:Point[@srsName != "urn:ogc:def:crs:EPSG::4258" and @srsName != "urn:ogc:def:crs:EPSG::4326"]
+    return
+        <tr>
+            <td title="aqd:AQD_Sample">{data($point/../../@gml:id)}</td>
+            <td title="gml:Point">{data($point/@gml:id)}</td>
+            <td title="gml:Point/@srsName">{data($point/@srsName)}</td>
 
-let $invalidGmlPointName := distinct-values($docRoot//aqd:AQD_Sample[count(sams:shape/gml:Point) >0 and sams:shape/gml:Point/@srsName != "urn:ogc:def:crs:EPSG::4258" and sams:shape/gml:Point/@srsName != "urn:ogc:def:crs:EPSG::4326"]/@gml:id)
+        </tr>
+else
+()
+let $strErr73 := for $tr in $tblD73
+return data($tr/td[@title='aqd:AQD_Sample'])
+
+let $isInvalidInvalidD73 := if (count($allGmlPoint) > 0) then fn:true() else fn:false()
+let $errLevelD73 := if (count($allGmlPoint) > 0) then "error" else "warning"
+let $errMsg73  := if (count($allGmlPoint) > 0) then " errors found" else " gml:Point elements found"
 
 (: D74 :)
 
@@ -1549,7 +1559,7 @@ concat(../@gml:id, ": srsDimension=", @srsDimension))
 (: D78 :)
 let $invalidInletHeigh :=
 for $inletHeigh in  $docRoot//aqd:AQD_Sample/aqd:inletHeight
-    return if (($inletHeigh/@uom != "m") or (xmlconv:is-a-number(data($inletHeigh))=false())) then $inletHeigh/../@gml:id else ()
+    return if (($inletHeigh/@uom != "http://dd.eionet.europa.eu/vocabulary/uom/length/m") or (xmlconv:is-a-number(data($inletHeigh))=false())) then $inletHeigh/../@gml:id else ()
 
 
 
@@ -1760,22 +1770,22 @@ return
             to ./measurementtype/active or ./measurementtype/passive  shall be included ./aqd:samplingMethod and ./aqd:analyticalTechnique. ./aqd:measurementMethod shall not be provided.",
                 (), $elementsIncluded, "", concat(fn:string(count($elementsIncluded))," errors found"), "", "","error", ())}
 
-        {xmlconv:buildResultRowsWithTotalCount("D59", <span>The content of /aqd:AQD_SamplingPoint/aqd:analyticalTechnique shall resolve to any concept in
+        {xmlconv:buildResultRowsWithTotalCount("D59", <span>The content of /aqd:AQD_SamplingPointProcess/aqd:analyticalTechnique shall resolve to any concept in
             <a href="{ $xmlconv:ANALYTICALTECHNIQUE_VOCABULARY }">{ $xmlconv:ANALYTICALTECHNIQUE_VOCABULARY }</a></span>,
                 (), (), "aqd:analyticalTechnique", "", "", "","error",$allInvalidAnalyticalTechnique )}
 
-        {xmlconv:buildResultRowsWithTotalCount("D60_1", <span>The content of ./aqd:AQD_SamplingPoint/aqd:measurementType shall resolve to any concept in
+        {xmlconv:buildResultRowsWithTotalCount("D61", <span>The content of ./aqd:AQD_SamplingPointProcess/aqd:measurementType shall resolve to any concept in
             <a href="{ $xmlconv:MEASUREMENTEQUIPMENT_VOCABULARY }">{ $xmlconv:MEASUREMENTEQUIPMENT_VOCABULARY }</a></span>,
-                (), (), "aqd:measurementEquipment", "", "", "","error",$allInvalid60_1 )}
-        {xmlconv:buildResultRowsWithTotalCount("D60_2", <span>The content of ./aqd:AQD_SamplingPoint/aqd:samplingEquipment shall resolve to any concept in
+                (), (), "aqd:measurementEquipment", "", "", "","error",$allInvalid61 )}
+        {xmlconv:buildResultRowsWithTotalCount("D62", <span>The content of ./aqd:AQD_SamplingPointProcess/aqd:samplingEquipment shall resolve to any concept in
             <a href="{ $xmlconv:SAMPLINGEQUIPMENT_VOCABULARY }">{ $xmlconv:SAMPLINGEQUIPMENT_VOCABULARY }</a></span>,
-                (), (), "aqd:samplingEquipment", "", "", "","error",$allInvalid60_2 )}
+                (), (), "aqd:samplingEquipment", "", "", "","error",$allInvalid62 )}
         <!--{xmlconv:buildResultRows("D61", "Total number ./aqd:dataQuality/aqd:DataQuality/aqd:detectionLimit witch does not contain an integer, fixed point or floating point number ",
                 (), $allInvalid61, "", concat(fn:string(count($allInvalid61))," errors found"), "", "", ())}-->
-        {xmlconv:buildResultRowsWithTotalCount("D63", <span>The content of ./aqd:AQD_SamplingPoint/aqd:samplingEquipment shall resolve to any concept in
-            <a href="{ $xmlconv:UOM_CONCENTRATION_VOCABULARY }">{ $xmlconv:UOM_CONCENTRATION_VOCABULARY }</a></span>,
-                (), (), "aqd:samplingEquipment", "", "", "","error",$allInvalid63 )}
-        {xmlconv:buildResultRows("D67", <span>Where .AQD_SamplingPoint/aqd:usedAQD is 'true' the content of ./aqd:AQD_SamplingPointProcess/aqd:equivalenceDemonstrated shall resolve to any concept in
+        {xmlconv:buildResultRowsWithTotalCount("D63", <span>Where ./aqd:detectionLimit is resolved uom link resolving to any concept in <a href="{ $xmlconv:UOM_CONCENTRATION_VOCABULARY }">{ $xmlconv:UOM_CONCENTRATION_VOCABULARY }</a> shall be provided</span>,
+                (), (), "aqd:detectionLimit", "", "", "","error",$allInvalid63 )}
+
+        <!--{xmlconv:buildResultRows("D67", <span>Where .AQD_SamplingPoint/aqd:usedAQD is 'true' the content of ./aqd:AQD_SamplingPointProcess/aqd:equivalenceDemonstrated shall resolve to any concept in
             <a href="{ $xmlconv:EQUIVALENCEDEMONSTRATED_VOCABULARY }">{ $xmlconv:EQUIVALENCEDEMONSTRATED_VOCABULARY }</a></span>,
                 (),$allInvalid67, "", concat(string(count($allInvalid67))," errors found.") , "", "","error", ())}
         {xmlconv:buildResultRows("D68", <span>Where ./AQD_SamplingPoint/aqd:usedAQD is “true”, ./aqd:demonstrationReport shall be  populate</span>,
@@ -1783,14 +1793,18 @@ return
         {xmlconv:buildResultRows("D69", <span>Where ./AQD_SamplingPoint/aqd:usedAQD is “true”, ./aqd:documentation shall be populate</span>,
             (),$allInvalid69, "", concat(string(count($allInvalid69))," errors found.") , "", "","error", ())}
         {xmlconv:buildResultRows("D70", <span>Where ./AQD_SamplingPoint/aqd:usedAQD is “true”, ./aqd:qaReport shall be populated</span>,
-                (),$allInvalid70, "", concat(string(count($allInvalid70))," errors found.") , "", "","error", ())}
+                (),$allInvalid70, "", concat(string(count($allInvalid70))," errors found.") , "", "","error", ())}-->
         {xmlconv:buildResultRows("D71", "aqd:AQD_Sample/ompr:inspireId/base:Identifier/base:localId not unique codes: ",
                 (),$invalidDuplicateSampleIds, "", concat(string(count($invalidDuplicateSampleIds))," errors found.") , "", "","error", ())}
         {xmlconv:buildResultRows("D72", "./aqd:inspireId/base:Identifier/base:namespace List base:namespace and  count the number of base:localId assigned to each base:namespace. ",
                 (), (), "", string(count($tblD72)), "", "","error",$tblD72)}
+
+
         {xmlconv:buildResultRows("D73", "./sams:shape/gml:Point the srsName attribute  shall  be  a  recognisable  URN .  The  following  2  srsNames  are  expected urn:ogc:def:crs:EPSG::4258 or urn:ogc:def:crs:EPSG::4326",
-                $invalidGmlPointName,(), "aqd:AQD_Sample/@gml:id","All srsName attributes are valid"," invalid attribute","","error", ())}
-        {xmlconv:buildResultRows("D74", "./sams:shape/gml:Point, the srsDimension attribute shall resolve to “2” to allow the coordinate  of  the  feature  of  intere",
+                $strErr73 ,(), "", concat(string(count($tblD73)), $errMsg73), "", "",$errLevelD73, $tblD73, $isInvalidInvalidD73 )}
+
+
+        {xmlconv:buildResultRows("D74", "./sams:shape/gml:Point, the srsDimension attribute shall resolve to “2” to allow the coordinate  of  the  feature  of  interest",
                 $invalidPointDimension,(), "aqd:AQD_Sample/@gml:id","All srsDimension attributes are valid"," invalid attribute","","error", ())}
         {xmlconv:buildResultRows("D78", "./aqd:inletHeight shall contain a numerical value, uom within it shall resolve to http://dd.eionet.europa.eu/vocabulary/uom/length/m",
                 $invalidInletHeigh,(), "aqd:AQD_Sample/@gml:id","All values are valid"," invalid attribute","", "error",())}
@@ -1834,6 +1848,36 @@ as element(tr)*{
                 <td title="Feature type">{ $featureType }</td>
                 <td title="gml:id">{data($rec/@gml:id)}</td>
                 <td title="ef:name">{data($rec/ef:name)}</td>
+                <td title="{ $element }" style="color:red">{$conceptUrl}</td>
+            </tr>
+    else
+        ()
+};
+
+(: TODO add attribute as method param :)
+declare function xmlconv:checkVocabularyConceptValuesUom($source_url as xs:string, $featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string)
+as element(tr)*{
+
+    if(doc-available($source_url))
+    then
+
+        let $sparql := xmlconv:getConceptUrlSparql($vocabularyUrl)
+        let $crConcepts := xmlconv:executeSparqlQuery($sparql)
+
+        for $rec in doc($source_url)//gml:featureMember/descendant::*[name()=$featureType]
+
+        for $conceptUrl in $rec/child::*[name() = $element]/@uom
+
+
+
+        let $conceptUrl := normalize-space($conceptUrl)
+
+        where string-length($conceptUrl) > 0
+
+        return
+            <tr isvalid="{ xmlconv:isMatchingVocabCode($crConcepts, $conceptUrl) }">
+                <td title="Feature type">{ $featureType }</td>
+                <td title="gml:id">{data($rec/@gml:id)}</td>
                 <td title="{ $element }" style="color:red">{$conceptUrl}</td>
             </tr>
     else
@@ -2124,7 +2168,6 @@ let $result := if ($countFeatures > 0) then xmlconv:checkReport($source_url, $co
 
 return
     <div>
-        {xmlconv:javaScript()}
         <h2>Check environmental monitoring feature types - Dataflow D</h2>
         {
 
@@ -2166,32 +2209,16 @@ return
 declare function xmlconv:aproceed ($source_url, $country ) {
 
 let $docRoot := doc($source_url)
+let $featureType := 'aqd:AQD_SamplingPointProcess'
+let $element := 'aqd:detectionLimit'
 
-let $allConceptUrl57 :=
-for $process in doc($source_url)//aqd:AQD_SamplingPointProcess
-    let $measurementType := data($process/aqd:measurementType/@xlink:href)
-    let $measurementMethod := data($process/aqd:measurementMethod/aqd:MeasurementMethod/aqd:measurementMethod/@xlink:href)
-    let $samplingMethod := data($process/aqd:samplingMethod/aqd:SamplingMethod/aqd:samplingMethod/@xlink:href)
-    let $analyticalTechnique := data($process/aqd:analyticalTechnique/aqd:AnalyticalTechnique/aqd:analyticalTechnique/@xlink:href)
-    where ($measurementType  = 'http://dd.eionet.europa.eu/vocabulary/aq/measurementtype/automatic' or
-         $measurementType = 'http://dd.eionet.europa.eu/vocabulary/aq/measurementtype/remote')
-         and (
-            string-length($samplingMethod) > 0 or string-length($analyticalTechnique) > 0 or not(xmlconv:isValidConceptCode($measurementMethod,$xmlconv:MEASUREMENTMETHOD_VOCABULARY))
-            )
-
-    return
-        <tr>
-            <td title="aqd:AQD_SamplingPointProcess">{$process/@gml:id}</td>
-            <td title="aqd:measurementType">{$measurementType}</td>
-            <td title="aqd:measurementMethod">{$measurementMethod}</td>
-        </tr>
-
-return $allConceptUrl57
+let $invalidInletHeigh :=
+for $inletHeigh in  $docRoot//aqd:AQD_Sample/aqd:inletHeight
+    return if (($inletHeigh/@uom != "http://dd.eionet.europa.eu/vocabulary/uom/length/m") or (xmlconv:is-a-number(data($inletHeigh))=false())) then $inletHeigh/../@gml:id else ()
 
 
-
+return data($invalidInletHeigh)
 };
-
 
 (:)
 xmlconv:proceed( $source_url, $country )
