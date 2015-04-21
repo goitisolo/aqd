@@ -111,215 +111,339 @@
 
       <office:body>
         <!-- ZONE COMPETENT -->
-        <table:table>
-          <xsl:attribute name="table:name"><xsl:text>ZONE COMPETENT</xsl:text></xsl:attribute>
-          <xsl:call-template name="zoneCompetent_headers"/>
-          <table:table-rows>
-            <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader">
-              <xsl:call-template name="zoneCompetent_rows"/>
-            </xsl:for-each>
-          </table:table-rows>
-        </table:table>
+        <xsl:if test="count(gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_Zone) > 0 or
+        count(gml:featureMember/aqd:AQD_Zone) > 0">
+          <table:table>
+            <xsl:attribute name="table:name"><xsl:text>ZONE COMPETENT</xsl:text></xsl:attribute>
+            <xsl:call-template name="zoneCompetent_headers"/>
+            <table:table-rows>
+              <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_Zone">
+                <xsl:call-template name="zoneCompetent_rows"/>
+              </xsl:for-each>
+              <xsl:for-each select="gml:featureMember/aqd:AQD_Zone">
+                <xsl:call-template name="zoneCompetent_rows"/>
+              </xsl:for-each>
+            </table:table-rows>
+          </table:table>
+        </xsl:if>
         <!-- ZONE POLLUTANTS -->
-        <table:table>
-          <xsl:attribute name="table:name"><xsl:text>ZONE POLLUTANTS</xsl:text></xsl:attribute>
-          <xsl:call-template name="zonePollutants_headers"/>
-          <table:table-rows>
-            <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader">
-              <xsl:call-template name="zonePollutants_rows"/>
-            </xsl:for-each>
-          </table:table-rows>
-        </table:table>
+        <xsl:if test="count(gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_ZONE/aqd:pollutants/aqd:Pollutant) > 0 or
+        count(gml:featureMember/aqd:AQD_Zone/aqd:pollutants/aqd:Pollutant) > 0">
+          <table:table>
+            <xsl:attribute name="table:name"><xsl:text>ZONE POLLUTANTS</xsl:text></xsl:attribute>
+            <xsl:call-template name="zonePollutants_headers"/>
+            <table:table-rows>
+              <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_ZONE/aqd:pollutants/aqd:Pollutant">
+                <xsl:call-template name="zonePollutants_rows"/>
+              </xsl:for-each>
+              <xsl:for-each select="gml:featureMember/aqd:AQD_Zone/aqd:pollutants/aqd:Pollutant">
+                <xsl:call-template name="zonePollutants_rows"/>
+              </xsl:for-each>
+            </table:table-rows>
+          </table:table>
+        </xsl:if>
         <!-- ZONE GENERAL -->
-        <table:table>
-          <xsl:attribute name="table:name"><xsl:text>ZONE GENERAL</xsl:text></xsl:attribute>
-          <xsl:call-template name="zoneGeneral_headers"/>
-          <table:table-rows>
-            <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader">
-              <xsl:call-template name="zoneGeneral_rows"/>
-            </xsl:for-each>
-          </table:table-rows>
-        </table:table>
+        <xsl:if test="count(gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_Zone) > 0 or
+        count(gml:featureMember/aqd:AQD_Zone) > 0">
+          <table:table>
+            <xsl:attribute name="table:name"><xsl:text>ZONE GENERAL</xsl:text></xsl:attribute>
+            <xsl:call-template name="zoneGeneral_headers"/>
+            <table:table-rows>
+              <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_Zone">
+                <xsl:call-template name="zoneGeneral_rows"/>
+              </xsl:for-each>
+              <xsl:for-each select="gml:featureMember/aqd:AQD_Zone">
+                <xsl:call-template name="zoneGeneral_rows"/>
+              </xsl:for-each>
+            </table:table-rows>
+          </table:table>
+        </xsl:if>
         <!-- SAMPLING POINT STATION -->
-        <table:table>
-          <xsl:attribute name="table:name"><xsl:text>SAMPLING POINT STATION</xsl:text></xsl:attribute>
-          <xsl:call-template name="sampointStation_headers"/>
-          <table:table-rows>
-            <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader">
-              <xsl:call-template name="sampointStation_rows"/>
-            </xsl:for-each>
-          </table:table-rows>
-        </table:table>
+        <xsl:if test="count(gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_Station) > 0 or
+        count(gml:featureMember/aqd:AQD_Station) > 0">
+          <table:table>
+            <xsl:attribute name="table:name"><xsl:text>SAMPLING POINT STATION</xsl:text></xsl:attribute>
+            <xsl:call-template name="sampointStation_headers"/>
+            <table:table-rows>
+              <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_Station">
+                <xsl:call-template name="sampointStation_rows"/>
+              </xsl:for-each>
+              <xsl:for-each select="gml:featureMember/aqd:AQD_Station">
+                <xsl:call-template name="sampointStation_rows"/>
+              </xsl:for-each>
+            </table:table-rows>
+          </table:table>
+        </xsl:if>
         <!-- SAMPLING POINT SAMPLE -->
-        <table:table>
-          <xsl:attribute name="table:name"><xsl:text>SAMPLING POINT SAMPLE</xsl:text></xsl:attribute>
-          <xsl:call-template name="sampointSample_headers"/>
-          <table:table-rows>
-            <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader">
-              <xsl:call-template name="sampointSample_rows"/>
-            </xsl:for-each>
-          </table:table-rows>
-        </table:table>
+        <xsl:if test="count(gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_Sample) > 0 or
+        count(gml:featureMember/aqd:AQD_Sample) > 0">
+          <table:table>
+            <xsl:attribute name="table:name"><xsl:text>SAMPLING POINT SAMPLE</xsl:text></xsl:attribute>
+            <xsl:call-template name="sampointSample_headers"/>
+            <table:table-rows>
+              <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_Sample">
+                <xsl:call-template name="sampointSample_rows"/>
+              </xsl:for-each>
+              <xsl:for-each select="gml:featureMember/aqd:AQD_Sample">
+                <xsl:call-template name="sampointSample_rows"/>
+              </xsl:for-each>
+            </table:table-rows>
+          </table:table>
+        </xsl:if>
         <!-- SAMPLING POINT PROCESS -->
-        <table:table>
-          <xsl:attribute name="table:name"><xsl:text>SAMPLING POINT PROCESS</xsl:text></xsl:attribute>
-          <xsl:call-template name="sampointProcess_headers"/>
-          <table:table-rows>
-            <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader">
-              <xsl:call-template name="sampointProcess_rows"/>
-            </xsl:for-each>
-          </table:table-rows>
-        </table:table>
+        <xsl:if test="count(gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_SamplingPointProcess) > 0 or count(gml:featureMember/aqd:AQD_SamplingPointProcess) > 0">
+          <table:table>
+            <xsl:attribute name="table:name"><xsl:text>SAMPLING POINT PROCESS</xsl:text></xsl:attribute>
+            <xsl:call-template name="sampointProcess_headers"/>
+            <table:table-rows>
+              <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_SamplingPointProcess">
+                <xsl:call-template name="sampointProcess_rows"/>
+              </xsl:for-each>
+              <xsl:for-each select="gml:featureMember/aqd:AQD_SamplingPointProcess">
+                <xsl:call-template name="sampointProcess_rows"/>
+              </xsl:for-each>
+            </table:table-rows>
+          </table:table>
+        </xsl:if>
         <!-- SAMPLING POINT NETWORK -->
-        <table:table>
-          <xsl:attribute name="table:name"><xsl:text>SAMPLING POINT NETWORK</xsl:text></xsl:attribute>
-          <xsl:call-template name="sampointNetwork_headers"/>
-          <table:table-rows>
-            <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader">
-              <xsl:call-template name="sampointNetwork_rows"/>
-            </xsl:for-each>
-          </table:table-rows>
-        </table:table>
+        <xsl:if test="count(gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_Network) > 0 or
+        count(gml:featureMember/aqd:AQD_Network) > 0">
+          <table:table>
+            <xsl:attribute name="table:name"><xsl:text>SAMPLING POINT NETWORK</xsl:text></xsl:attribute>
+            <xsl:call-template name="sampointNetwork_headers"/>
+            <table:table-rows>
+              <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_Network">
+                <xsl:call-template name="sampointNetwork_rows"/>
+              </xsl:for-each>
+              <xsl:for-each select="gml:featureMember/aqd:AQD_Network">
+                <xsl:call-template name="sampointNetwork_rows"/>
+              </xsl:for-each>
+            </table:table-rows>
+          </table:table>
+        </xsl:if>
         <!-- SAMPLING POINT MODEL -->
-        <table:table>
-          <xsl:attribute name="table:name"><xsl:text>SAMPLING POINT MODEL</xsl:text></xsl:attribute>
-          <xsl:call-template name="sampointModel_headers"/>
-          <table:table-rows>
-            <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader">
-              <xsl:call-template name="sampointModel_rows"/>
-            </xsl:for-each>
-          </table:table-rows>
-        </table:table>
+        <xsl:if test="count(gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_Model) > 0 or
+        count(gml:featureMember/aqd:AQD_Model) > 0">
+          <table:table>
+            <xsl:attribute name="table:name"><xsl:text>SAMPLING POINT MODEL</xsl:text></xsl:attribute>
+            <xsl:call-template name="sampointModel_headers"/>
+            <table:table-rows>
+              <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_Model">
+                <xsl:call-template name="sampointModel_rows"/>
+              </xsl:for-each>
+              <xsl:for-each select="gml:featureMember/aqd:AQD_Model">
+                <xsl:call-template name="sampointModel_rows"/>
+              </xsl:for-each>
+            </table:table-rows>
+          </table:table>
+        </xsl:if>
         <!-- SAMPLING POINT EMISSIONS -->
-        <table:table>
-          <xsl:attribute name="table:name"><xsl:text>SAMPLING POINT EMISSIONS</xsl:text></xsl:attribute>
-          <xsl:call-template name="sampointEmissions_headers"/>
-          <table:table-rows>
-            <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader">
-              <xsl:call-template name="sampointEmissions_rows"/>
-            </xsl:for-each>
-          </table:table-rows>
-        </table:table>
+        <xsl:if test="count(gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_SamplingPoint) > 0 or
+        count(gml:featureMember/aqd:AQD_SamplingPoint) > 0">
+          <table:table>
+            <xsl:attribute name="table:name"><xsl:text>SAMPLING POINT EMISSIONS</xsl:text></xsl:attribute>
+            <xsl:call-template name="sampointEmissions_headers"/>
+            <table:table-rows>
+              <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_SamplingPoint">
+                <xsl:call-template name="sampointEmissions_rows"/>
+              </xsl:for-each>
+              <xsl:for-each select="gml:featureMember/aqd:AQD_SamplingPoint">
+                <xsl:call-template name="sampointEmissions_rows"/>
+              </xsl:for-each>
+            </table:table-rows>
+          </table:table>
+        </xsl:if>
         <!-- SAMPLING POINT DISPERSION -->
-        <table:table>
-          <xsl:attribute name="table:name"><xsl:text>SAMPLING POINT DISPERSION</xsl:text></xsl:attribute>
-          <xsl:call-template name="sampointDispersion_headers"/>
-          <table:table-rows>
-            <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader">
-              <xsl:call-template name="sampointDispersion_rows"/>
-            </xsl:for-each>
-          </table:table-rows>
-        </table:table>
+        <xsl:if test="count(gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_Station) > 0 or
+        count(gml:featureMember/aqd:AQD_Station) > 0">
+          <table:table>
+            <xsl:attribute name="table:name"><xsl:text>SAMPLING POINT DISPERSION</xsl:text></xsl:attribute>
+            <xsl:call-template name="sampointDispersion_headers"/>
+            <table:table-rows>
+              <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_Station">
+                <xsl:call-template name="sampointDispersion_rows"/>
+              </xsl:for-each>
+              <xsl:for-each select="gml:featureMember/aqd:AQD_Station">
+                <xsl:call-template name="sampointDispersion_rows"/>
+              </xsl:for-each>
+            </table:table-rows>
+          </table:table>
+        </xsl:if>
         <!-- SAMPLING POINT MODEL PROCESS -->
-        <table:table>
-          <xsl:attribute name="table:name"><xsl:text>SAMPLING POINT MODEL PROCESS</xsl:text></xsl:attribute>
-          <xsl:call-template name="sampointModelprocess_headers"/>
-          <table:table-rows>
-            <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader">
-              <xsl:call-template name="sampointModelprocess_rows"/>
-            </xsl:for-each>
-          </table:table-rows>
-        </table:table>
+        <xsl:if test="count(gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_ModelProcess) > 0 or
+        count(gml:featureMember/aqd:AQD_ModelProcess) > 0">
+          <table:table>
+            <xsl:attribute name="table:name"><xsl:text>SAMPLING POINT MODEL PROCESS</xsl:text></xsl:attribute>
+            <xsl:call-template name="sampointModelprocess_headers"/>
+            <table:table-rows>
+              <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_ModelProcess">
+                <xsl:call-template name="sampointModelprocess_rows"/>
+              </xsl:for-each>
+              <xsl:for-each select="gml:featureMember/aqd:AQD_ModelProcess">
+                <xsl:call-template name="sampointModelprocess_rows"/>
+              </xsl:for-each>
+            </table:table-rows>
+          </table:table>
+        </xsl:if>
         <!-- SAMPLING POINT GENERAL -->
-        <table:table>
-          <xsl:attribute name="table:name"><xsl:text>Sampling Point General</xsl:text></xsl:attribute>
-          <xsl:call-template name="sampointGeneral_headers"/>
-          <table:table-rows>
-            <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader">
-              <xsl:call-template name="sampointGeneral_rows"/>
-            </xsl:for-each>
-          </table:table-rows>
-        </table:table>
+        <xsl:if test="count(gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_SamplingPoint) > 0 or
+        count(gml:featureMember/aqd:AQD_SamplingPoint) > 0">
+          <table:table>
+            <xsl:attribute name="table:name"><xsl:text>Sampling Point General</xsl:text></xsl:attribute>
+            <xsl:call-template name="sampointGeneral_headers"/>
+            <table:table-rows>
+              <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_SamplingPoint">
+                <xsl:call-template name="sampointGeneral_rows"/>
+              </xsl:for-each>
+              <xsl:for-each select="gml:featureMember/aqd:AQD_SamplingPoint">
+                <xsl:call-template name="sampointGeneral_rows"/>
+              </xsl:for-each>
+            </table:table-rows>
+          </table:table>
+        </xsl:if>
         <!-- ATTAINMENT PRELIM EXCEED-->
-        <table:table>
-          <xsl:attribute name="table:name"><xsl:text>ATTAINMENT PRELIM EXCEED</xsl:text></xsl:attribute>
-          <xsl:call-template name="attainmentPrelimExceed_headers"/>
-          <table:table-rows>
-            <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader">
-              <xsl:call-template name="attainmentPrelimExceed_rows"/>
-            </xsl:for-each>
-          </table:table-rows>
-        </table:table>
+        <xsl:if test="count(gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_Attainment) > 0 or
+        count(gml:featureMember/aqd:AQD_Attainment) > 0">
+          <table:table>
+            <xsl:attribute name="table:name"><xsl:text>ATTAINMENT PRELIM EXCEED</xsl:text></xsl:attribute>
+            <xsl:call-template name="attainmentPrelimExceed_headers"/>
+            <table:table-rows>
+              <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_Attainment">
+                <xsl:call-template name="attainmentPrelimExceed_rows"/>
+              </xsl:for-each>
+              <xsl:for-each select="gml:featureMember/aqd:AQD_Attainment">
+                <xsl:call-template name="attainmentPrelimExceed_rows"/>
+              </xsl:for-each>
+            </table:table-rows>
+          </table:table>
+        </xsl:if>
         <!-- ATTAINMENT PRELIM DESC ADM-->
-        <table:table>
-          <xsl:attribute name="table:name"><xsl:text>ATTAINMENT PRELIM DESC ADM</xsl:text></xsl:attribute>
-          <xsl:call-template name="attainmentPrelimdescAdm_headers"/>
-          <table:table-rows>
-            <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader">
-              <xsl:call-template name="attainmentPrelimdescAdm_rows"/>
-            </xsl:for-each>
-          </table:table-rows>
-        </table:table>
+        <xsl:if test="count(gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_Attainment) > 0 or
+        count(gml:featureMember/aqd:AQD_Attainment) > 0">
+          <table:table>
+            <xsl:attribute name="table:name"><xsl:text>ATTAINMENT PRELIM DESC ADM</xsl:text></xsl:attribute>
+            <xsl:call-template name="attainmentPrelimdescAdm_headers"/>
+            <table:table-rows>
+              <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_Attainment">
+                <xsl:call-template name="attainmentPrelimdescAdm_rows"/>
+              </xsl:for-each>
+              <xsl:for-each select="gml:featureMember/aqd:AQD_Attainment">
+                <xsl:call-template name="attainmentPrelimdescAdm_rows"/>
+              </xsl:for-each>
+            </table:table-rows>
+          </table:table>
+        </xsl:if>
         <!-- ATTAINMENT PRELIM DESC-->
-        <table:table>
-          <xsl:attribute name="table:name"><xsl:text>ATTAINMENT PRELIM DESC</xsl:text></xsl:attribute>
-          <xsl:call-template name="attainmentPrelimdesc_headers"/>
-          <table:table-rows>
-            <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader">
-              <xsl:call-template name="attainmentPrelimdesc_rows"/>
-            </xsl:for-each>
-          </table:table-rows>
-        </table:table>
+        <xsl:if test="count(gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_Attainment) > 0 or
+        count(gml:featureMember/aqd:AQD_Attainment) > 0">
+          <table:table>
+            <xsl:attribute name="table:name"><xsl:text>ATTAINMENT PRELIM DESC</xsl:text></xsl:attribute>
+            <xsl:call-template name="attainmentPrelimdesc_headers"/>
+            <table:table-rows>
+              <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_Attainment">
+                <xsl:call-template name="attainmentPrelimdesc_rows"/>
+              </xsl:for-each>
+              <xsl:for-each select="gml:featureMember/aqd:AQD_Attainment">
+                <xsl:call-template name="attainmentPrelimdesc_rows"/>
+              </xsl:for-each>
+            </table:table-rows>
+          </table:table>
+        </xsl:if>
         <!-- ATTAINMENT GENERAL-->
-        <table:table>
-          <xsl:attribute name="table:name"><xsl:text>ATTAINMENT GENERAL</xsl:text></xsl:attribute>
-          <xsl:call-template name="attainmentGeneral_headers"/>
-          <table:table-rows>
-            <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader">
-              <xsl:call-template name="attainmentGeneral_rows"/>
-            </xsl:for-each>
-          </table:table-rows>
-        </table:table>
+        <xsl:if test="count(gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_Attainment) > 0 or
+        count(gml:featureMember/aqd:AQD_Attainment) > 0">
+          <table:table>
+            <xsl:attribute name="table:name"><xsl:text>ATTAINMENT GENERAL</xsl:text></xsl:attribute>
+            <xsl:call-template name="attainmentGeneral_headers"/>
+            <table:table-rows>
+              <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_Attainment">
+                <xsl:call-template name="attainmentGeneral_rows"/>
+              </xsl:for-each>
+              <xsl:for-each select="gml:featureMember/aqd:AQD_Attainment">
+                <xsl:call-template name="attainmentGeneral_rows"/>
+              </xsl:for-each>
+            </table:table-rows>
+          </table:table>
+        </xsl:if>
         <!-- ATTAINMENT FINAL EXCEED-->
-        <table:table>
-          <xsl:attribute name="table:name"><xsl:text>ATTAINMENT FINAL EXCEED</xsl:text></xsl:attribute>
-          <xsl:call-template name="attainmentFinalExceed_headers"/>
-          <table:table-rows>
-            <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader">
-              <xsl:call-template name="attainmentFinalExceed_rows"/>
-            </xsl:for-each>
-          </table:table-rows>
-        </table:table>
+        <xsl:if test="count(gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_Attainment) > 0 or
+        count(gml:featureMember/aqd:AQD_Attainment) > 0">
+          <table:table>
+            <xsl:attribute name="table:name"><xsl:text>ATTAINMENT FINAL EXCEED</xsl:text></xsl:attribute>
+            <xsl:call-template name="attainmentFinalExceed_headers"/>
+            <table:table-rows>
+              <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_Attainment">
+                <xsl:call-template name="attainmentFinalExceed_rows"/>
+              </xsl:for-each>
+              <xsl:for-each select="gml:featureMember/aqd:AQD_Attainment">
+                <xsl:call-template name="attainmentFinalExceed_rows"/>
+              </xsl:for-each>
+            </table:table-rows>
+          </table:table>
+        </xsl:if>
         <!-- ATTAINMENT FINAL DESC ADM-->
-        <table:table>
-          <xsl:attribute name="table:name"><xsl:text>ATTAINMENT FINAL DESC ADM</xsl:text></xsl:attribute>
-          <xsl:call-template name="attainmentFinaldescAdm_headers"/>
-          <table:table-rows>
-            <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader">
-              <xsl:call-template name="attainmentFinaldescAdm_rows"/>
-            </xsl:for-each>
-          </table:table-rows>
-        </table:table>
+        <xsl:if test="count(gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_Attainment) > 0 or
+        count(gml:featureMember/aqd:AQD_Attainment) > 0">
+          <table:table>
+            <xsl:attribute name="table:name"><xsl:text>ATTAINMENT FINAL DESC ADM</xsl:text></xsl:attribute>
+            <xsl:call-template name="attainmentFinaldescAdm_headers"/>
+            <table:table-rows>
+              <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_Attainment">
+                <xsl:call-template name="attainmentFinaldescAdm_rows"/>
+              </xsl:for-each>
+              <xsl:for-each select="gml:featureMember/aqd:AQD_Attainment">
+                <xsl:call-template name="attainmentFinaldescAdm_rows"/>
+              </xsl:for-each>
+            </table:table-rows>
+          </table:table>
+        </xsl:if>
         <!-- ATTAINMENT FINAL DESC -->
-        <table:table>
-          <xsl:attribute name="table:name"><xsl:text>ATTAINMENT FINAL DESC</xsl:text></xsl:attribute>
-          <xsl:call-template name="attainmentFinaldesc_headers"/>
-          <table:table-rows>
-            <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader">
-              <xsl:call-template name="attainmentFinaldesc_rows"/>
-            </xsl:for-each>
-          </table:table-rows>
-        </table:table>
+        <xsl:if test="count(gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_Attainment) > 0 or
+        count(gml:featureMember/aqd:AQD_Attainment) > 0">
+          <table:table>
+            <xsl:attribute name="table:name"><xsl:text>ATTAINMENT FINAL DESC</xsl:text></xsl:attribute>
+            <xsl:call-template name="attainmentFinaldesc_headers"/>
+            <table:table-rows>
+              <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_Attainment">
+                <xsl:call-template name="attainmentFinaldesc_rows"/>
+              </xsl:for-each>
+              <xsl:for-each select="gml:featureMember/aqd:AQD_Attainment">
+                <xsl:call-template name="attainmentFinaldesc_rows"/>
+              </xsl:for-each>
+            </table:table-rows>
+          </table:table>
+        </xsl:if>
         <!-- ASSESS REGIME METHODS -->
-        <table:table>
-          <xsl:attribute name="table:name"><xsl:text>ASSESS REGIME METHODS</xsl:text></xsl:attribute>
-          <xsl:call-template name="assessRegimeMethods_headers"/>
-          <table:table-rows>
-            <xsl:for-each select="gml:featureMember/aqd:AQD_AssessmentRegime">
-              <xsl:call-template name="assesRegimeMethods_rows"/>
-            </xsl:for-each>
-          </table:table-rows>
-        </table:table>
+        <xsl:if test="count(gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_AssessmentRegime/aqd:assessmentMethods/aqd:AssessmentMethods) > 0 or
+        count(gml:featureMember/aqd:AQD_AssessmentRegime/aqd:assessmentMethods/aqd:AssessmentMethods) > 0">
+          <table:table>
+            <xsl:attribute name="table:name"><xsl:text>ASSESS REGIME METHODS</xsl:text></xsl:attribute>
+            <xsl:call-template name="assessRegimeMethods_headers"/>
+            <table:table-rows>
+              <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_AssessmentRegime/aqd:assessmentMethods/aqd:AssessmentMethods">
+                <xsl:call-template name="assesRegimeMethods_rows"/>
+              </xsl:for-each>
+              <xsl:for-each select="gml:featureMember/aqd:AQD_AssessmentRegime/aqd:assessmentMethods/aqd:AssessmentMethods">
+                <xsl:call-template name="assesRegimeMethods_rows"/>
+              </xsl:for-each>
+            </table:table-rows>
+          </table:table>
+        </xsl:if>
         <!-- ASSESS REGIME GENERAL -->
-        <table:table>
-          <xsl:attribute name="table:name"><xsl:text>ASSESS REGIME GENERAL</xsl:text></xsl:attribute>
-          <xsl:call-template name="assessRegimeGeneral_headers"/>
-          <table:table-rows>
-            <xsl:for-each select="gml:featureMember/aqd:AQD_AssessmentRegime">
-              <xsl:call-template name="assesRegimeGeneral_rows"/>
-            </xsl:for-each>
-          </table:table-rows>
-        </table:table>
+        <xsl:if test="count(gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_AssessmentRegime) > 0 or count(gml:featureMember/aqd:AQD_AssessmentRegime) > 0">
+          <table:table>
+            <xsl:attribute name="table:name"><xsl:text>ASSESS REGIME GENERAL</xsl:text></xsl:attribute>
+            <xsl:call-template name="assessRegimeGeneral_headers"/>
+            <table:table-rows>
+              <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_AssessmentRegime">
+                <xsl:call-template name="assesRegimeGeneral_rows"/>
+              </xsl:for-each>
+              <xsl:for-each select="gml:featureMember/aqd:AQD_AssessmentRegime">
+                <xsl:call-template name="assesRegimeGeneral_rows"/>
+              </xsl:for-each>
+            </table:table-rows>
+          </table:table>
+        </xsl:if>
       </office:body>
 
 
@@ -462,7 +586,7 @@
   </xsl:template>
 
   <xsl:template name="zoneCompetent_rows">
-    <xsl:for-each select="aqd:content/aqd:AQD_Zone">
+    <xsl:for-each select=".">
       <table:table-row table:default-cell-value-type="string">
         <!-- 1 -->
         <table:table-cell table:style-name="cell1">
@@ -706,7 +830,7 @@
   </xsl:template>
 
   <xsl:template name="sampointStation_rows">
-    <xsl:for-each select="aqd:content/aqd:AQD_Station">
+    <xsl:for-each select=".">
       <table:table-row table:default-cell-value-type="string">
         <!-- 1 -->
         <table:table-cell table:style-name="cell1">
@@ -926,7 +1050,7 @@
   </xsl:template>
 
   <xsl:template name="sampointSample_rows">
-    <xsl:for-each select="aqd:content/aqd:AQD_Sample">
+    <xsl:for-each select=".">
       <table:table-row table:default-cell-value-type="string">
         <!-- 1 -->
         <table:table-cell table:style-name="cell1">
@@ -1194,7 +1318,7 @@
   </xsl:template>
 
   <xsl:template name="sampointProcess_rows">
-    <xsl:for-each select="aqd:content/aqd:AQD_SamplingPointProcess">
+    <xsl:for-each select=".">
       <table:table-row table:default-cell-value-type="string">
         <!-- 1 -->
         <table:table-cell table:style-name="cell1">
@@ -1420,7 +1544,7 @@
   </xsl:template>
 
   <xsl:template name="sampointNetwork_rows">
-    <xsl:for-each select="aqd:content/aqd:AQD_Network">
+    <xsl:for-each select=".">
       <table:table-row table:default-cell-value-type="string">
         <!-- 1 -->
         <table:table-cell table:style-name="cell1">
@@ -1676,7 +1800,7 @@
   </xsl:template>
 
   <xsl:template name="sampointModel_rows">
-    <xsl:for-each select="aqd:content/aqd:AQD_Model">
+    <xsl:for-each select=".">
       <table:table-row table:default-cell-value-type="string">
         <!-- 1 -->
         <table:table-cell table:style-name="cell1">
@@ -1920,7 +2044,7 @@
   </xsl:template>
 
   <xsl:template name="sampointEmissions_rows">
-    <xsl:for-each select="aqd:content/aqd:AQD_SamplingPoint">
+    <xsl:for-each select=".">
       <table:table-row table:default-cell-value-type="string">
         <!-- 1 -->
         <table:table-cell table:style-name="cell1">
@@ -2170,7 +2294,7 @@
   </xsl:template>
 
   <xsl:template name="sampointDispersion_rows">
-    <xsl:for-each select="aqd:content/aqd:AQD_Station">
+    <xsl:for-each select=".">
       <table:table-row table:default-cell-value-type="string">
         <!-- 1 -->
         <table:table-cell table:style-name="cell1">
@@ -2190,91 +2314,91 @@
             <xsl:value-of select="ef:inspireId/base:Identifier/base:namespace"/>
           </text:p>
         </table:table-cell>
-        <!-- 3 -->
+        <!-- 4 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
             <xsl:value-of select="ef:inspireId/base:Identifier/base:versionId"/>
           </text:p>
         </table:table-cell>
-        <!-- 3 -->
+        <!-- 5 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
             <xsl:value-of select="aqd:natlStationCode"/>
           </text:p>
         </table:table-cell>
-        <!-- 3 -->
+        <!-- 6 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
             <xsl:value-of select="ef:name"/>
           </text:p>
         </table:table-cell>
-        <!-- 3 -->
+        <!-- 7 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
             <xsl:value-of select="aqd:EUStationCode"/>
           </text:p>
         </table:table-cell>
-        <!-- 3 -->
+        <!-- 8 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
             <xsl:value-of select="aqd:stationInfo"/>
           </text:p>
         </table:table-cell>
-        <!-- 3 -->
+        <!-- 9 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
             <xsl:value-of select="aqd:areaClassification/@xlink:href"/>
           </text:p>
         </table:table-cell>
-        <!-- 3 -->
+        <!-- 10 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
             <xsl:value-of select="aqd:dispersionSituation/aqd:DispersionSituation/aqd:dispersionLocal/@xlink:href"/>
           </text:p>
         </table:table-cell>
-        <!-- 3 -->
+        <!-- 11 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
             <xsl:value-of select="aqd:dispersionSituation/aqd:DispersionSituation/aqd:distanceJunction"/>
           </text:p>
         </table:table-cell>
-        <!-- 3 -->
+        <!-- 12 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
             <xsl:value-of select="aqd:dispersionSituation/aqd:DispersionSituation/aqd:distanceJunction/@uom"/>
           </text:p>
         </table:table-cell>
-        <!-- 3 -->
+        <!-- 13 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
             <xsl:value-of select="aqd:dispersionSituation/aqd:DispersionSituation/aqd:trafficVolume"/>
           </text:p>
         </table:table-cell>
-        <!-- 3 -->
+        <!-- 14 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
             <xsl:value-of select="aqd:dispersionSituation/aqd:DispersionSituation/aqd:heavy-dutyFraction"/>
           </text:p>
         </table:table-cell>
-        <!-- 3 -->
+        <!-- 15 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
             <xsl:value-of select="aqd:dispersionSituation/aqd:DispersionSituation/aqd:trafficSpeed"/>
           </text:p>
         </table:table-cell>
-        <!-- 3 -->
+        <!-- 16 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
             <xsl:value-of select="aqd:dispersionSituation/aqd:DispersionSituation/aqd:streetWidth"/>
           </text:p>
         </table:table-cell>
-        <!-- 3 -->
+        <!-- 17 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
             <xsl:value-of select="aqd:dispersionSituation/aqd:DispersionSituation/aqd:heightFacades"/>
           </text:p>
         </table:table-cell>
-        <!-- 3 -->
+        <!-- 18 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
             <xsl:value-of select="aqd:dispersionSituation/aqd:DispersionSituation/aqd:dispersionRegional/@xlink:href"/>
@@ -2393,7 +2517,7 @@
   </xsl:template>
 
   <xsl:template name="attainmentPrelimExceed_rows">
-    <xsl:for-each select="aqd:content/aqd:AQD_Attainment">
+    <xsl:for-each select=".">
       <table:table-row table:default-cell-value-type="string">
         <!-- 1 -->
         <table:table-cell table:style-name="cell1">
@@ -2520,7 +2644,7 @@
   </xsl:template>
 
   <xsl:template name="attainmentPrelimdescAdm_rows">
-    <xsl:for-each select="aqd:content/aqd:AQD_Attainment">
+    <xsl:for-each select=".">
       <table:table-row table:default-cell-value-type="string">
         <!-- 1 -->
         <table:table-cell table:style-name="cell1">
@@ -2728,7 +2852,7 @@
   </xsl:template>
 
   <xsl:template name="attainmentPrelimdesc_rows">
-    <xsl:for-each select="aqd:content/aqd:AQD_Attainment">
+    <xsl:for-each select=".">
       <table:table-row table:default-cell-value-type="string">
         <!-- 1 -->
         <table:table-cell table:style-name="cell1">
@@ -2933,7 +3057,7 @@
   </xsl:template>
 
   <xsl:template name="attainmentGeneral_rows">
-    <xsl:for-each select="aqd:content/aqd:AQD_Attainment">
+    <xsl:for-each select=".">
       <table:table-row table:default-cell-value-type="string">
         <!-- 1 -->
         <table:table-cell table:style-name="cell1">
@@ -3102,7 +3226,7 @@
   </xsl:template>
 
   <xsl:template name="attainmentFinalExceed_rows">
-    <xsl:for-each select="aqd:content/aqd:AQD_Attainment">
+    <xsl:for-each select=".">
       <table:table-row table:default-cell-value-type="string">
         <!-- 1 -->
         <table:table-cell table:style-name="cell1">
@@ -3229,7 +3353,7 @@
   </xsl:template>
 
   <xsl:template name="attainmentFinaldescAdm_rows">
-    <xsl:for-each select="aqd:content/aqd:AQD_Attainment">
+    <xsl:for-each select=".">
       <table:table-row table:default-cell-value-type="string">
         <!-- 1 -->
         <table:table-cell table:style-name="cell1">
@@ -3429,7 +3553,7 @@
   </xsl:template>
 
   <xsl:template name="attainmentFinaldesc_rows">
-    <xsl:for-each select="aqd:content/aqd:AQD_Attainment">
+    <xsl:for-each select=".">
       <table:table-row table:default-cell-value-type="string">
         <!-- 1 -->
         <table:table-cell table:style-name="cell1">
@@ -3625,7 +3749,7 @@
   </xsl:template>
 
   <xsl:template name="assesRegimeMethods_rows">
-    <xsl:for-each select="aqd:content/aqd:AQD_AssessmentRegime">
+    <xsl:for-each select=".">
       <table:table-row table:default-cell-value-type="string">
         <!-- 1 -->
         <table:table-cell table:style-name="cell1">
@@ -3788,7 +3912,7 @@
   </xsl:template>
 
   <xsl:template name="assesRegimeGeneral_rows">
-    <xsl:for-each select="aqd:content/aqd:AQD_AssessmentRegime">
+    <xsl:for-each select=".">
       <table:table-row table:default-cell-value-type="string">
         <!-- 1 -->
         <table:table-cell table:style-name="cell1">
@@ -3969,7 +4093,7 @@
   </xsl:template>
 
   <xsl:template name="sampointModelprocess_rows">
-    <xsl:for-each select="aqd:content/aqd:AQD_ModelProcess">
+    <xsl:for-each select=".">
       <table:table-row table:default-cell-value-type="string">
       <!-- 1 -->
       <table:table-cell table:style-name="cell1">
@@ -4276,7 +4400,7 @@
   </xsl:template>
 
   <xsl:template name="sampointGeneral_rows">
-    <xsl:for-each select="aqd:content/aqd:AQD_SamplingPoint">
+    <xsl:for-each select=".">
       <table:table-row table:default-cell-value-type="string">
         <!-- 1 -->
         <table:table-cell table:style-name="cell1">
@@ -4577,7 +4701,7 @@
   </xsl:template>
 
   <xsl:template name="zoneGeneral_rows">
-    <xsl:for-each select="aqd:AQD_Zone">
+    <xsl:for-each select=".">
       <table:table-row table:default-cell-value-type="string">
         <!-- 1 -->
         <table:table-cell table:style-name="cell1">
@@ -4745,7 +4869,7 @@
     </table:table-header-rows>
   </xsl:template>
   <xsl:template name="zonePollutants_rows">
-      <xsl:for-each select="aqd:AQD_ZONE/aqd:pollutants/aqd:Pollutant">
+      <xsl:for-each select=".">
         <table:table-row table:default-cell-value-type="string">
           <!-- 1 -->
           <table:table-cell table:style-name="cell1">
