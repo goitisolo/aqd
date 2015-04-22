@@ -694,7 +694,7 @@ return $result
 };
 
 declare function xmlconv:buildResultTable($ruleCode as xs:string, $text,
-    $valueHeading as xs:string, $validMsg as xs:string, $invalidMsg as xs:string, $skippedMsg, $errorLevel as xs:string, $recordDetails as element(tr)*)
+    $valueHeading as xs:string*, $validMsg as xs:string, $invalidMsg as xs:string, $skippedMsg, $errorLevel as xs:string, $recordDetails as element(tr)*)
 as element(tr)*{
     let $countInvalidValues := count($recordDetails)
 
