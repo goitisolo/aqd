@@ -1401,7 +1401,7 @@
         <!-- 4 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="aqd:dataQuality/aqd:DataQuality/aqd:detectionLimit/@UoM"/>
+            <xsl:value-of select="aqd:dataQuality/aqd:DataQuality/aqd:detectionLimit/@uom"/>
           </text:p>
         </table:table-cell>
         <!-- 4 -->
@@ -1446,6 +1446,22 @@
 
   <xsl:template name="sampointNetwork_headers">
     <table:table-columns>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
       <table:table-column
               table:default-cell-value-type="string"
               table:default-cell-style-name="long-string-heading">
@@ -1536,7 +1552,27 @@
         </table:table-cell>
         <table:table-cell table:style-name="Heading2">
           <text:p>
-            ResponsibleParty
+            Individual Name
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            Organisation Name
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            e-mail Address
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            Telephone
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            Website
           </text:p>
         </table:table-cell>
       </table:table-row>
@@ -1576,34 +1612,58 @@
             <xsl:value-of select="ef:name"/>
           </text:p>
         </table:table-cell>
-        <!-- 5 -->
+        <!-- 6 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
             <xsl:value-of select="aqd:networkType/@xlink:href"/>
           </text:p>
         </table:table-cell>
-        <!-- 5 -->
+        <!-- 7 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
             <xsl:value-of select="aqd:operationActivityPeriod/gml:TimePeriod/gml:beginPosition"/>
           </text:p>
         </table:table-cell>
-        <!-- 5 -->
+        <!-- 8 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
             <xsl:value-of select="aqd:operationActivityPeriod/gml:TimePeriod/gml:endPosition"/>
           </text:p>
         </table:table-cell>
-        <!-- 5 -->
+        <!-- 9 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
             <xsl:value-of select="aqd:aggregationTimeZone/@xlink:href"/>
           </text:p>
         </table:table-cell>
-        <!-- 5 -->
+        <!-- 10 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="ef:responsibleParty"/>
+            <xsl:value-of select="ef:responsibleParty/base2:RelatedParty/base2:individualName/gmd:LocalisedCharacterString"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 11 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="ef:responsibleParty/base2:RelatedParty/base2:organisationName/gmd:LocalisedCharacterString"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 12 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="ef:responsibleParty/base2:RelatedParty/base2:contact/base2:Contact/base2:electronicMailAddress"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 13 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="ef:responsibleParty/base2:RelatedParty/base2:contact/base2:Contact/base2:telephoneVoice"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 14 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="ef:responsibleParty/base2:RelatedParty/base2:contact/base2:Contact/base2:website"/>
           </text:p>
         </table:table-cell>
       </table:table-row>
@@ -3600,7 +3660,7 @@
         <!-- 3 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="../aqd:ExceedanceDescription/aqd:inspireId/base:Identifier/base:namespace"/>
+            <xsl:value-of select="../aqd:inspireId/base:Identifier/base:namespace"/>
           </text:p>
         </table:table-cell>
         <!-- 4 -->
