@@ -329,7 +329,7 @@ as xs:string {
     let $countryCode := if ($countryCode = "uk") then "gb" else if ($countryCode = "el") then "gr" else $countryCode
     let $eu := if ($countryCode='gi') then 'eea' else 'eu'
 
-    return concat("http://cdr.eionet.europa.eu/",lower-case($country),"/", $eu, "/aqd/")
+    return concat("http://cdr.eionet.europa.eu/",lower-case($countryCode),"/", $eu, "/aqd/")
 
 };
 
