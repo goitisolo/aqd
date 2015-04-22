@@ -3375,7 +3375,7 @@
         <!-- 12 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="../aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:adjustmentType"/>
+            <xsl:value-of select="../aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:adjustmentType/@xlink:href"/>
           </text:p>
         </table:table-cell>
         <!-- 13 -->
