@@ -114,7 +114,7 @@
         <xsl:if test="count(gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_Zone) > 0 or
         count(gml:featureMember/aqd:AQD_Zone) > 0">
           <table:table>
-            <xsl:attribute name="table:name"><xsl:text>ZONE COMPETENT</xsl:text></xsl:attribute>
+            <xsl:attribute name="table:name"><xsl:text>CompetentAuthorities</xsl:text></xsl:attribute>
             <xsl:call-template name="zoneCompetent_headers"/>
             <table:table-rows>
               <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_Zone">
@@ -146,7 +146,7 @@
         <xsl:if test="count(gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_Zone) > 0 or
         count(gml:featureMember/aqd:AQD_Zone) > 0">
           <table:table>
-            <xsl:attribute name="table:name"><xsl:text>ZONE GENERAL</xsl:text></xsl:attribute>
+            <xsl:attribute name="table:name"><xsl:text>AirQualityZones</xsl:text></xsl:attribute>
             <xsl:call-template name="zoneGeneral_headers"/>
             <table:table-rows>
               <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_Zone">
@@ -162,7 +162,7 @@
         <xsl:if test="count(gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_Station) > 0 or
         count(gml:featureMember/aqd:AQD_Station) > 0">
           <table:table>
-            <xsl:attribute name="table:name"><xsl:text>SAMPLING POINT STATION</xsl:text></xsl:attribute>
+            <xsl:attribute name="table:name"><xsl:text>AirQualityStations</xsl:text></xsl:attribute>
             <xsl:call-template name="sampointStation_headers"/>
             <table:table-rows>
               <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_Station">
@@ -178,7 +178,7 @@
         <xsl:if test="count(gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_Sample) > 0 or
         count(gml:featureMember/aqd:AQD_Sample) > 0">
           <table:table>
-            <xsl:attribute name="table:name"><xsl:text>SAMPLING POINT SAMPLE</xsl:text></xsl:attribute>
+            <xsl:attribute name="table:name"><xsl:text>Sample</xsl:text></xsl:attribute>
             <xsl:call-template name="sampointSample_headers"/>
             <table:table-rows>
               <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_Sample">
@@ -193,7 +193,7 @@
         <!-- SAMPLING POINT PROCESS -->
         <xsl:if test="count(gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_SamplingPointProcess) > 0 or count(gml:featureMember/aqd:AQD_SamplingPointProcess) > 0">
           <table:table>
-            <xsl:attribute name="table:name"><xsl:text>SAMPLING POINT PROCESS</xsl:text></xsl:attribute>
+            <xsl:attribute name="table:name"><xsl:text>SamplingProcesses</xsl:text></xsl:attribute>
             <xsl:call-template name="sampointProcess_headers"/>
             <table:table-rows>
               <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_SamplingPointProcess">
@@ -209,7 +209,7 @@
         <xsl:if test="count(gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_Network) > 0 or
         count(gml:featureMember/aqd:AQD_Network) > 0">
           <table:table>
-            <xsl:attribute name="table:name"><xsl:text>SAMPLING POINT NETWORK</xsl:text></xsl:attribute>
+            <xsl:attribute name="table:name"><xsl:text>AirQualityNetworks</xsl:text></xsl:attribute>
             <xsl:call-template name="sampointNetwork_headers"/>
             <table:table-rows>
               <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_Network">
@@ -225,7 +225,7 @@
         <xsl:if test="count(gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_Model) > 0 or
         count(gml:featureMember/aqd:AQD_Model) > 0">
           <table:table>
-            <xsl:attribute name="table:name"><xsl:text>SAMPLING POINT MODEL</xsl:text></xsl:attribute>
+            <xsl:attribute name="table:name"><xsl:text>AirQualityModels</xsl:text></xsl:attribute>
             <xsl:call-template name="sampointModel_headers"/>
             <table:table-rows>
               <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_Model">
@@ -241,7 +241,7 @@
         <xsl:if test="count(gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_SamplingPoint) > 0 or
         count(gml:featureMember/aqd:AQD_SamplingPoint) > 0">
           <table:table>
-            <xsl:attribute name="table:name"><xsl:text>SAMPLING POINT EMISSIONS</xsl:text></xsl:attribute>
+            <xsl:attribute name="table:name"><xsl:text>EmissionConditions</xsl:text></xsl:attribute>
             <xsl:call-template name="sampointEmissions_headers"/>
             <table:table-rows>
               <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_SamplingPoint">
@@ -257,7 +257,7 @@
         <xsl:if test="count(gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_Station) > 0 or
         count(gml:featureMember/aqd:AQD_Station) > 0">
           <table:table>
-            <xsl:attribute name="table:name"><xsl:text>SAMPLING POINT DISPERSION</xsl:text></xsl:attribute>
+            <xsl:attribute name="table:name"><xsl:text>DispersionConditions</xsl:text></xsl:attribute>
             <xsl:call-template name="sampointDispersion_headers"/>
             <table:table-rows>
               <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_Station">
@@ -273,7 +273,7 @@
         <xsl:if test="count(gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_ModelProcess) > 0 or
         count(gml:featureMember/aqd:AQD_ModelProcess) > 0">
           <table:table>
-            <xsl:attribute name="table:name"><xsl:text>SAMPLING POINT MODEL PROCESS</xsl:text></xsl:attribute>
+            <xsl:attribute name="table:name"><xsl:text>ModelProcesses</xsl:text></xsl:attribute>
             <xsl:call-template name="sampointModelprocess_headers"/>
             <table:table-rows>
               <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_ModelProcess">
@@ -289,7 +289,7 @@
         <xsl:if test="count(gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_SamplingPoint) > 0 or
         count(gml:featureMember/aqd:AQD_SamplingPoint) > 0">
           <table:table>
-            <xsl:attribute name="table:name"><xsl:text>Sampling Point General</xsl:text></xsl:attribute>
+            <xsl:attribute name="table:name"><xsl:text>SamplingPoints</xsl:text></xsl:attribute>
             <xsl:call-template name="sampointGeneral_headers"/>
             <table:table-rows>
               <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_SamplingPoint">
@@ -302,22 +302,22 @@
           </table:table>
         </xsl:if>
         <!-- ATTAINMENT PRELIM EXCEED-->
-        <xsl:if test="count(gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_Attainment) > 0 or
-        count(gml:featureMember/aqd:AQD_Attainment) > 0">
+        <xsl:if test="count(gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_Attainment/aqd:exceedanceDescriptionBase) > 0 or
+        count(gml:featureMember/aqd:AQD_Attainment/aqd:exceedanceDescriptionBase) > 0">
           <table:table>
-            <xsl:attribute name="table:name"><xsl:text>ATTAINMENT PRELIM EXCEED</xsl:text></xsl:attribute>
+            <xsl:attribute name="table:name"><xsl:text>BaseExceedanceSituations</xsl:text></xsl:attribute>
             <xsl:call-template name="attainmentPrelimExceed_headers"/>
             <table:table-rows>
-              <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_Attainment">
+              <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_Attainment/aqd:exceedanceDescriptionBase">
                 <xsl:call-template name="attainmentPrelimExceed_rows"/>
               </xsl:for-each>
-              <xsl:for-each select="gml:featureMember/aqd:AQD_Attainment">
+              <xsl:for-each select="gml:featureMember/aqd:AQD_Attainment/aqd:exceedanceDescriptionBase">
                 <xsl:call-template name="attainmentPrelimExceed_rows"/>
               </xsl:for-each>
             </table:table-rows>
           </table:table>
         </xsl:if>
-        <!-- ATTAINMENT PRELIM DESC ADM-->
+        <!-- ATTAINMENT PRELIM DESC ADM
         <xsl:if test="count(gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_Attainment) > 0 or
         count(gml:featureMember/aqd:AQD_Attainment) > 0">
           <table:table>
@@ -332,18 +332,18 @@
               </xsl:for-each>
             </table:table-rows>
           </table:table>
-        </xsl:if>
+        </xsl:if>-->
         <!-- ATTAINMENT PRELIM DESC-->
-        <xsl:if test="count(gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_Attainment) > 0 or
-        count(gml:featureMember/aqd:AQD_Attainment) > 0">
+        <xsl:if test="count(gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_Attainment/aqd:exceedanceDescriptionBase) > 0 or
+        count(gml:featureMember/aqd:AQD_Attainment/aqd:exceedanceDescriptionBase) > 0">
           <table:table>
-            <xsl:attribute name="table:name"><xsl:text>ATTAINMENT PRELIM DESC</xsl:text></xsl:attribute>
+            <xsl:attribute name="table:name"><xsl:text>BaseExceedanceDescription</xsl:text></xsl:attribute>
             <xsl:call-template name="attainmentPrelimdesc_headers"/>
             <table:table-rows>
-              <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_Attainment">
+              <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_Attainment/aqd:exceedanceDescriptionBase">
                 <xsl:call-template name="attainmentPrelimdesc_rows"/>
               </xsl:for-each>
-              <xsl:for-each select="gml:featureMember/aqd:AQD_Attainment">
+              <xsl:for-each select="gml:featureMember/aqd:AQD_Attainment/aqd:exceedanceDescriptionBase">
                 <xsl:call-template name="attainmentPrelimdesc_rows"/>
               </xsl:for-each>
             </table:table-rows>
@@ -353,7 +353,7 @@
         <xsl:if test="count(gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_Attainment) > 0 or
         count(gml:featureMember/aqd:AQD_Attainment) > 0">
           <table:table>
-            <xsl:attribute name="table:name"><xsl:text>ATTAINMENT GENERAL</xsl:text></xsl:attribute>
+            <xsl:attribute name="table:name"><xsl:text>GeneralAttainmentInfo</xsl:text></xsl:attribute>
             <xsl:call-template name="attainmentGeneral_headers"/>
             <table:table-rows>
               <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_Attainment">
@@ -366,22 +366,22 @@
           </table:table>
         </xsl:if>
         <!-- ATTAINMENT FINAL EXCEED-->
-        <xsl:if test="count(gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_Attainment) > 0 or
-        count(gml:featureMember/aqd:AQD_Attainment) > 0">
+        <xsl:if test="count(gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_Attainment/aqd:exceedanceDescriptionFinal) > 0 or
+        count(gml:featureMember/aqd:AQD_Attainment/aqd:exceedanceDescriptionFinal) > 0">
           <table:table>
-            <xsl:attribute name="table:name"><xsl:text>ATTAINMENT FINAL EXCEED</xsl:text></xsl:attribute>
+            <xsl:attribute name="table:name"><xsl:text>FinalExceedanceSituations</xsl:text></xsl:attribute>
             <xsl:call-template name="attainmentFinalExceed_headers"/>
             <table:table-rows>
-              <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_Attainment">
+              <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_Attainment/aqd:exceedanceDescriptionFinal">
                 <xsl:call-template name="attainmentFinalExceed_rows"/>
               </xsl:for-each>
-              <xsl:for-each select="gml:featureMember/aqd:AQD_Attainment">
+              <xsl:for-each select="gml:featureMember/aqd:AQD_Attainment/aqd:exceedanceDescriptionFinal">
                 <xsl:call-template name="attainmentFinalExceed_rows"/>
               </xsl:for-each>
             </table:table-rows>
           </table:table>
         </xsl:if>
-        <!-- ATTAINMENT FINAL DESC ADM-->
+        <!-- ATTAINMENT FINAL DESC ADM
         <xsl:if test="count(gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_Attainment) > 0 or
         count(gml:featureMember/aqd:AQD_Attainment) > 0">
           <table:table>
@@ -396,18 +396,18 @@
               </xsl:for-each>
             </table:table-rows>
           </table:table>
-        </xsl:if>
+        </xsl:if>-->
         <!-- ATTAINMENT FINAL DESC -->
-        <xsl:if test="count(gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_Attainment) > 0 or
-        count(gml:featureMember/aqd:AQD_Attainment) > 0">
+        <xsl:if test="count(gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_Attainment/aqd:exceedanceDescriptionFinal) > 0 or
+        count(gml:featureMember/aqd:AQD_Attainment/aqd:exceedanceDescriptionFinal) > 0">
           <table:table>
-            <xsl:attribute name="table:name"><xsl:text>ATTAINMENT FINAL DESC</xsl:text></xsl:attribute>
+            <xsl:attribute name="table:name"><xsl:text>FinalExceedanceDescription</xsl:text></xsl:attribute>
             <xsl:call-template name="attainmentFinaldesc_headers"/>
             <table:table-rows>
-              <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_Attainment">
+              <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_Attainment/aqd:exceedanceDescriptionFinal">
                 <xsl:call-template name="attainmentFinaldesc_rows"/>
               </xsl:for-each>
-              <xsl:for-each select="gml:featureMember/aqd:AQD_Attainment">
+              <xsl:for-each select="gml:featureMember/aqd:AQD_Attainment/aqd:exceedanceDescriptionFinal">
                 <xsl:call-template name="attainmentFinaldesc_rows"/>
               </xsl:for-each>
             </table:table-rows>
@@ -417,7 +417,7 @@
         <xsl:if test="count(gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_AssessmentRegime/aqd:assessmentMethods/aqd:AssessmentMethods) > 0 or
         count(gml:featureMember/aqd:AQD_AssessmentRegime/aqd:assessmentMethods/aqd:AssessmentMethods) > 0">
           <table:table>
-            <xsl:attribute name="table:name"><xsl:text>ASSESS REGIME METHODS</xsl:text></xsl:attribute>
+            <xsl:attribute name="table:name"><xsl:text>AssessmentRegimeMethods</xsl:text></xsl:attribute>
             <xsl:call-template name="assessRegimeMethods_headers"/>
             <table:table-rows>
               <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_AssessmentRegime/aqd:assessmentMethods/aqd:AssessmentMethods">
@@ -432,7 +432,7 @@
         <!-- ASSESS REGIME GENERAL -->
         <xsl:if test="count(gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_AssessmentRegime) > 0 or count(gml:featureMember/aqd:AQD_AssessmentRegime) > 0">
           <table:table>
-            <xsl:attribute name="table:name"><xsl:text>ASSESS REGIME GENERAL</xsl:text></xsl:attribute>
+            <xsl:attribute name="table:name"><xsl:text>AssessmentRegimes</xsl:text></xsl:attribute>
             <xsl:call-template name="assessRegimeGeneral_headers"/>
             <table:table-rows>
               <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_AssessmentRegime">
@@ -2450,10 +2450,10 @@
               table:default-cell-value-type="string"
               table:default-cell-style-name="long-string-heading">
       </table:table-column>
-      <table:table-column
+      <!--<table:table-column
               table:default-cell-value-type="string"
               table:default-cell-style-name="long-string-heading">
-      </table:table-column>
+      </table:table-column> -->
     </table:table-columns>
     <table:table-header-rows>
       <table:table-row table:default-cell-value-type="string">
@@ -2507,11 +2507,11 @@
             ProtectionTarget
           </text:p>
         </table:table-cell>
-        <table:table-cell table:style-name="Heading2">
+        <!-- <table:table-cell table:style-name="Heading2">
           <text:p>
             Adjustments
           </text:p>
-        </table:table-cell>
+        </table:table-cell> -->
       </table:table-row>
     </table:table-header-rows>
   </xsl:template>
@@ -2522,69 +2522,69 @@
         <!-- 1 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="@gml:id"/>
+            <xsl:value-of select="../@gml:id"/>
           </text:p>
         </table:table-cell>
         <!-- 2 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="aqd:exceedanceDescriptionPreliminary/aqd:ExceedanceDescription/aqd:inspireId/base:Identifier/base:localId"/>
+            <xsl:value-of select="../aqd:inspireId/base:Identifier/base:localId"/>
           </text:p>
         </table:table-cell>
         <!-- 3 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="aqd:exceedanceDescriptionPreliminary/aqd:ExceedanceDescription/aqd:inspireId/base:Identifier/base:namespace"/>
+            <xsl:value-of select="../aqd:inspireId/base:Identifier/base:namespace"/>
           </text:p>
         </table:table-cell>
         <!-- 4 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="aqd:zone/@xlink:href"/>
+            <xsl:value-of select="../aqd:zone/@xlink:href"/>
           </text:p>
         </table:table-cell>
         <!-- 5 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="aqd:exceedanceDescriptionPreliminary/aqd:ExceedanceDescription/aqd:exceedance"/>
+            <xsl:value-of select="aqd:ExceedanceDescription/aqd:exceedance"/>
           </text:p>
         </table:table-cell>
         <!-- 6 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="aqd:exceedanceDescriptionPreliminary/aqd:ExceedanceDescription/aqd:numericalExceedance"/>
+            <xsl:value-of select="aqd:ExceedanceDescription/aqd:numericalExceedance"/>
           </text:p>
         </table:table-cell>
         <!-- 7 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="aqd:exceedanceDescriptionPreliminary/aqd:ExceedanceDescription/aqd:numberExceedances"/>
+            <xsl:value-of select="aqd:ExceedanceDescription/aqd:numberExceedances"/>
           </text:p>
         </table:table-cell>
         <!-- 8 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="aqd:exceedanceDescriptionPreliminary/aqd:ExceedanceDescription/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType/@xlink:href"/>
+            <xsl:value-of select="../aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType/@xlink:href"/>
           </text:p>
         </table:table-cell>
         <!-- 9 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="aqd:exceedanceDescriptionPreliminary/aqd:ExceedanceDescription/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric/@xlink:href"/>
+            <xsl:value-of select="../aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric/@xlink:href"/>
           </text:p>
         </table:table-cell>
         <!-- 10 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="aqd:exceedanceDescriptionPreliminary/aqd:ExceedanceDescription/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/@xlink:href"/>
+            <xsl:value-of select="../aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/@xlink:href"/>
           </text:p>
         </table:table-cell>
-        <!-- 11 -->
+        <!-- 11
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="aqd:exceedanceDescriptionPreliminary/aqd:ExceedanceDescription/aqd:adjustments/@xlink:href"/>
+            <xsl:value-of select="aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:adjustments/@xlink:href"/>
           </text:p>
-        </table:table-cell>
+        </table:table-cell> -->
       </table:table-row>
     </xsl:for-each>
   </xsl:template>
@@ -2857,109 +2857,109 @@
         <!-- 1 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="@gml:id"/>
+            <xsl:value-of select="../@gml:id"/>
           </text:p>
         </table:table-cell>
         <!-- 2 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="aqd:exceedanceDescriptionPreliminary/aqd:ExceedanceDescription/aqd:inspireId/base:Identifier/base:localId"/>
+            <xsl:value-of select="../aqd:inspireId/base:Identifier/base:localId"/>
           </text:p>
         </table:table-cell>
         <!-- 3 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="aqd:exceedanceDescriptionPreliminary/aqd:ExceedanceDescription/aqd:inspireId/base:Identifier/base:namespace"/>
+            <xsl:value-of select="../aqd:inspireId/base:Identifier/base:namespace"/>
           </text:p>
         </table:table-cell>
         <!-- 4 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="aqd:zone/@xlink:href"/>
+            <xsl:value-of select="../aqd:zone/@xlink:href"/>
           </text:p>
         </table:table-cell>
         <!-- 5 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="aqd:exceedanceDescriptionPreliminary/aqd:ExceedanceDescription/aqd:exceedance"/>
+            <xsl:value-of select="aqd:ExceedanceDescription/aqd:exceedance"/>
           </text:p>
         </table:table-cell>
         <!-- 6 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="aqd:exceedanceDescriptionPreliminary/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:areaClassification/@xlink:href"/>
+            <xsl:value-of select="aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:areaClassification/@xlink:href"/>
           </text:p>
         </table:table-cell>
         <!-- 7 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="aqd:exceedanceDescriptionPreliminary/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:surfaceArea"/>
+            <xsl:value-of select="aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:surfaceArea"/>
           </text:p>
         </table:table-cell>
         <!-- 8 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="aqd:exceedanceDescriptionPreliminary/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:roadLength"/>
+            <xsl:value-of select="aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:roadLength"/>
           </text:p>
         </table:table-cell>
         <!-- 9 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="aqd:exceedanceDescriptionPreliminary/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:stationUsed/@xlink:href"/>
+            <xsl:value-of select="aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:stationUsed/@xlink:href"/>
           </text:p>
         </table:table-cell>
         <!-- 10 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="aqd:exceedanceDescriptionPreliminary/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:modelUsed/@xlink:href"/>
+            <xsl:value-of select="aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:modelUsed/@xlink:href"/>
           </text:p>
         </table:table-cell>
         <!-- 11 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="aqd:exceedanceDescriptionPreliminary/aqd:ExceedanceDescription/aqd:exceedanceExposure/aqd:ExceedanceExposure/aqd:populationExposed"/>
+            <xsl:value-of select="aqd:ExceedanceDescription/aqd:exceedanceExposure/aqd:ExceedanceExposure/aqd:populationExposed"/>
           </text:p>
         </table:table-cell>
         <!-- 12 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="aqd:exceedanceDescriptionPreliminary/aqd:ExceedanceDescription/aqd:exceedanceExposure/aqd:ExceedanceExposure/aqd:ecosystemAreaExposed"/>
+            <xsl:value-of select="aqd:ExceedanceDescription/aqd:exceedanceExposure/aqd:ExceedanceExposure/aqd:ecosystemAreaExposed"/>
           </text:p>
         </table:table-cell>
         <!-- 13 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="aqd:exceedanceDescriptionPreliminary/aqd:ExceedanceDescription/aqd:exceedanceExposure/aqd:ExceedanceExposure/aqd:sensitivePopulation"/>
+            <xsl:value-of select="aqd:ExceedanceDescription/aqd:exceedanceExposure/aqd:ExceedanceExposure/aqd:sensitivePopulation"/>
           </text:p>
         </table:table-cell>
         <!-- 14 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="aqd:exceedanceDescriptionPreliminary/aqd:ExceedanceDescription/aqd:exceedanceExposure/aqd:ExceedanceExposure/aqd:infrastructureServices"/>
+            <xsl:value-of select="aqd:ExceedanceDescription/aqd:exceedanceExposure/aqd:ExceedanceExposure/aqd:infrastructureServices"/>
           </text:p>
         </table:table-cell>
         <!-- 15 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="aqd:exceedanceDescriptionPreliminary/aqd:ExceedanceDescription/aqd:exceedanceExposure/aqd:ExceedanceExposure/aqd:referenceYear/gml:TimeInstant/gml:timePosition"/>
+            <xsl:value-of select="aqd:ExceedanceDescription/aqd:exceedanceExposure/aqd:ExceedanceExposure/aqd:referenceYear/gml:TimeInstant/gml:timePosition"/>
           </text:p>
         </table:table-cell>
         <!-- 16 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="aqd:exceedanceDescriptionPreliminary/aqd:ExceedanceDescription/aqd:exceedanceDuration/gml:TimePeriod/gml:beginPosition"/>
+            <xsl:value-of select="aqd:ExceedanceDescription/aqd:exceedanceDuration/gml:TimePeriod/gml:beginPosition"/>
           </text:p>
         </table:table-cell>
         <!-- 17 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="aqd:exceedanceDescriptionPreliminary/aqd:ExceedanceDescription/aqd:exceedanceDuration/gml:TimePeriod/gml:endPosition"/>
+            <xsl:value-of select="aqd:ExceedanceDescription/aqd:exceedanceDuration/gml:TimePeriod/gml:endPosition"/>
           </text:p>
         </table:table-cell>
         <!-- 18 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="aqd:exceedanceDescriptionPreliminary/aqd:ExceedanceDescription/aqd:comment"/>
+            <xsl:value-of select="aqd:ExceedanceDescription/aqd:comment"/>
           </text:p>
         </table:table-cell>
       </table:table-row>
@@ -3163,6 +3163,14 @@
               table:default-cell-value-type="string"
               table:default-cell-style-name="long-string-heading">
       </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
     </table:table-columns>
     <table:table-header-rows>
       <table:table-row table:default-cell-value-type="string">
@@ -3218,7 +3226,17 @@
         </table:table-cell>
         <table:table-cell table:style-name="Heading2">
           <text:p>
-            Adjustments
+            ValueAfterAdjustment
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            AdjustmentType
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            AdjustmentDescription
           </text:p>
         </table:table-cell>
       </table:table-row>
@@ -3231,67 +3249,79 @@
         <!-- 1 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="@gml:id"/>
+            <xsl:value-of select="../@gml:id"/>
           </text:p>
         </table:table-cell>
         <!-- 2 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:inspireId/base:Identifier/base:localId"/>
+            <xsl:value-of select="../aqd:inspireId/base:Identifier/base:localId"/>
           </text:p>
         </table:table-cell>
         <!-- 3 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:inspireId/base:Identifier/base:namespace"/>
+            <xsl:value-of select="../aqd:inspireId/base:Identifier/base:namespace"/>
           </text:p>
         </table:table-cell>
         <!-- 4 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="aqd:zone/@xlink:href"/>
+            <xsl:value-of select="../aqd:zone/@xlink:href"/>
           </text:p>
         </table:table-cell>
         <!-- 5 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedance"/>
+            <xsl:value-of select="aqd:ExceedanceDescription/aqd:exceedance"/>
           </text:p>
         </table:table-cell>
         <!-- 6 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:numericalExceedance"/>
+            <xsl:value-of select="aqd:ExceedanceDescription/aqd:numericalExceedance"/>
           </text:p>
         </table:table-cell>
         <!-- 7 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:numberExceedances"/>
+            <xsl:value-of select="aqd:ExceedanceDescription/aqd:numberExceedances"/>
           </text:p>
         </table:table-cell>
         <!-- 8 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType/@xlink:href"/>
+            <xsl:value-of select="../aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType/@xlink:href"/>
           </text:p>
         </table:table-cell>
         <!-- 9 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric/@xlink:href"/>
+            <xsl:value-of select="../aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric/@xlink:href"/>
           </text:p>
         </table:table-cell>
         <!-- 10 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/@xlink:href"/>
+            <xsl:value-of select="../aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/@xlink:href"/>
           </text:p>
         </table:table-cell>
         <!-- 11 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:adjustments/@xlink:href"/>
+            <xsl:value-of select="../aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:exceedance"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 12 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="../aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:adjustmentType"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 13 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="../aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:assessmentMethod/aqd:AssessmentMethods/aqd:assessmentTypeDescription"/>
           </text:p>
         </table:table-cell>
       </table:table-row>
@@ -3558,109 +3588,109 @@
         <!-- 1 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="@gml:id"/>
+            <xsl:value-of select="../@gml:id"/>
           </text:p>
         </table:table-cell>
         <!-- 2 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:inspireId/base:Identifier/base:localId"/>
+            <xsl:value-of select="../aqd:inspireId/base:Identifier/base:localId"/>
           </text:p>
         </table:table-cell>
         <!-- 3 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:inspireId/base:Identifier/base:namespace"/>
+            <xsl:value-of select="../aqd:ExceedanceDescription/aqd:inspireId/base:Identifier/base:namespace"/>
           </text:p>
         </table:table-cell>
         <!-- 4 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="aqd:zone/@xlink:href"/>
+            <xsl:value-of select="../aqd:zone/@xlink:href"/>
           </text:p>
         </table:table-cell>
         <!-- 5 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedance"/>
+            <xsl:value-of select="aqd:ExceedanceDescription/aqd:exceedance"/>
           </text:p>
         </table:table-cell>
         <!-- 6 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:areaClassification/@xlink:href"/>
+            <xsl:value-of select="aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:areaClassification/@xlink:href"/>
           </text:p>
         </table:table-cell>
         <!-- 7 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:surfaceArea"/>
+            <xsl:value-of select="aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:surfaceArea"/>
           </text:p>
         </table:table-cell>
         <!-- 8 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:roadLength"/>
+            <xsl:value-of select="aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:roadLength"/>
           </text:p>
         </table:table-cell>
         <!-- 9 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:stationUsed/@xlink:href"/>
+            <xsl:value-of select="aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:stationUsed/@xlink:href"/>
           </text:p>
         </table:table-cell>
         <!-- 10 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:modelUsed/@xlink:href"/>
+            <xsl:value-of select="aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:modelUsed/@xlink:href"/>
           </text:p>
         </table:table-cell>
         <!-- 11 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedanceExposure/aqd:ExceedanceExposure/aqd:populationExposed"/>
+            <xsl:value-of select="aqd:ExceedanceDescription/aqd:exceedanceExposure/aqd:ExceedanceExposure/aqd:populationExposed"/>
           </text:p>
         </table:table-cell>
         <!-- 12 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedanceExposure/aqd:ExceedanceExposure/aqd:ecosystemAreaExposed"/>
+            <xsl:value-of select="aqd:ExceedanceDescription/aqd:exceedanceExposure/aqd:ExceedanceExposure/aqd:ecosystemAreaExposed"/>
           </text:p>
         </table:table-cell>
         <!-- 13 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedanceExposure/aqd:ExceedanceExposure/aqd:sensitivePopulation"/>
+            <xsl:value-of select="aqd:ExceedanceDescription/aqd:exceedanceExposure/aqd:ExceedanceExposure/aqd:sensitivePopulation"/>
           </text:p>
         </table:table-cell>
         <!-- 14 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedanceExposure/aqd:ExceedanceExposure/aqd:infrastructureServices"/>
+            <xsl:value-of select="aqd:ExceedanceDescription/aqd:exceedanceExposure/aqd:ExceedanceExposure/aqd:infrastructureServices"/>
           </text:p>
         </table:table-cell>
         <!-- 15 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedanceExposure/aqd:ExceedanceExposure/aqd:referenceYear/gml:TimeInstant/gml:timePosition"/>
+            <xsl:value-of select="aqd:ExceedanceDescription/aqd:exceedanceExposure/aqd:ExceedanceExposure/aqd:referenceYear/gml:TimeInstant/gml:timePosition"/>
           </text:p>
         </table:table-cell>
         <!-- 16 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedanceDuration/gml:TimePeriod/gml:beginPosition"/>
+            <xsl:value-of select="aqd:ExceedanceDescription/aqd:exceedanceDuration/gml:TimePeriod/gml:beginPosition"/>
           </text:p>
         </table:table-cell>
         <!-- 17 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedanceDuration/gml:TimePeriod/gml:endPosition"/>
+            <xsl:value-of select="aqd:ExceedanceDescription/aqd:exceedanceDuration/gml:TimePeriod/gml:endPosition"/>
           </text:p>
         </table:table-cell>
         <!-- 18 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:comment"/>
+            <xsl:value-of select="aqd:ExceedanceDescription/aqd:comment"/>
           </text:p>
         </table:table-cell>
       </table:table-row>
@@ -3754,31 +3784,31 @@
         <!-- 1 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="@gml:id"/>
+            <xsl:value-of select="../../@gml:id"/>
           </text:p>
         </table:table-cell>
         <!-- 2 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="aqd:inspireId/base:Identifier/base:localId"/>
+            <xsl:value-of select="../../aqd:inspireId/base:Identifier/base:localId"/>
           </text:p>
         </table:table-cell>
         <!-- 3 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="aqd:inspireId/base:Identifier/base:namespace"/>
+            <xsl:value-of select="../../aqd:inspireId/base:Identifier/base:namespace"/>
           </text:p>
         </table:table-cell>
         <!-- 4 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="aqd:pollutant/@xlink:href"/>
+            <xsl:value-of select="../../aqd:pollutant/@xlink:href"/>
           </text:p>
         </table:table-cell>
         <!-- 5 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="aqd:zone/@xlink:href"/>
+            <xsl:value-of select="../../aqd:zone/@xlink:href"/>
           </text:p>
         </table:table-cell>
         <!-- 6 -->
@@ -4435,7 +4465,7 @@
         <!-- 6 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="aqd:assessmentType"/>
+            <xsl:value-of select="aqd:assessmentType/@xlink:href"/>
           </text:p>
         </table:table-cell>
         <!-- 7 -->
