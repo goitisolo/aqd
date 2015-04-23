@@ -54,10 +54,12 @@ declare variable $xmlconv:ISO2_CODES as xs:string* := ("AL","AT","BA","BE","BG",
 declare variable $xmlconv:VALID_POLLUTANT_IDS as xs:string* := ("1", "7", "8", "9", "5", "6001", "10","20", "5012", "5014", "5015", "5018", "5029");
 declare variable $xmlconv:VALID_POLLUTANT_IDS_11 as xs:string* := ("1", "5", "6001", "10");
 declare variable $xmlconv:VALID_POLLUTANT_IDS_27 as xs:string* := ("5", "8", "6001", "10","20", "5012", "5014", "5015", "5018", "5029");
-declare variable $xmlconv:VALID_REPMETRIC_IDS_20 as xs:string* := ("aMean", "wMean", "hrsAbove", "daysAbove");
+declare variable $xmlconv:VALID_REPMETRIC_IDS_20 as xs:string* := ("aMean", "wMean", "hrsAbove", "daysAbove", "daysAbove-3yr", "maxd8hrMean","AOT40c", "AOT40c-5yr", "AEI");
+declare variable $xmlconv:VALID_REPMETRIC_IDS_23 as xs:string* := ("3hAbove", "aMean", "wMean", "hrsAbove", "daysAbove");
+
 declare variable $xmlconv:VALID_REPMETRIC_IDS_29 as xs:string* := ("aMean", "wMean", "hrsAbove", "daysAbove","daysAbove-3yr", "maxd8hrMean", "AOT40c", "AOT40c-5yr", "AEI");
 declare variable $xmlconv:VALID_REPMETRIC_IDS_24 as xs:string* := ("aMean", "daysAbove");
-declare variable $xmlconv:VALID_REPMETRIC_IDS_25 as xs:string* := ("aMean");
+declare variable $xmlconv:VALID_REPMETRIC_IDS_25 as xs:string* := ("aMean", "AEI");
 declare variable $xmlconv:VALID_REPMETRIC_IDS_26 as xs:string* := ("daysAbove");
 declare variable $xmlconv:VALID_REPMETRIC_IDS_31 as xs:string* := ("AOT40c", "AOT40c-5yr");
 declare variable $xmlconv:VALID_AREACLASSIFICATION_IDS as xs:string* := ("1", "2", "3", "4", "5", "6");
@@ -65,7 +67,7 @@ declare variable $xmlconv:VALID_AREACLASSIFICATION_IDS_52 as xs:string* := ("rur
 declare variable $xmlconv:VALID_OBJECTIVETYPE_IDS as xs:string* := ("TV", "LV", "CL","LTO","ECO","LVmaxMOT","INT","ALT");
 declare variable $xmlconv:VALID_OBJECTIVETYPE_IDS_19 as xs:string* := ("TV", "LV", "CL", "LVMOT","LVmaxMOT","INT","ALT", "LTO", "ECO");
 
-declare variable $xmlconv:VALID_OBJECTIVETYPE_IDS_28 as xs:string* := ("TV", "LV", "CL","LTO","ECO","LVmaxMOT", "LVMOT");
+declare variable $xmlconv:VALID_OBJECTIVETYPE_IDS_28 as xs:string* := ("TV", "LV", "CL","LTO","ECO","LVmaxMOT", "LVMOT", "INT", "ALT");
 declare variable $xmlconv:VALID_OBJECTIVETYPE_IDS_32 as xs:string* := ("TV", "LV","LVmaxMOT");
 declare variable $xmlconv:VALID_OBJECTIVETYPE_IDS_33 as xs:string* := ("LV");
 declare variable $xmlconv:VALID_ADJUSTMENTTYPE_IDS as xs:string* := ("nsCorrection","wssCorrection");
@@ -96,7 +98,14 @@ declare variable $source_url := "../test/G_GB_Attainment_2012_v1.4.xml";
 declare variable $source_url := "../test/HR_G_201407281307.xml";
 Change it for testing locally:
 declare variable $source_url := "http://cdr.eionet.europa.eu/gb/eu/aqd/e2a/colutn32a/envubnpvw/B_GB_Zones.xml";
+
+declare variable $source_url := "../test/G_GB_G_GB_Attainment.xml";
+declare variable $countryCode  := "gb";
+
+declare variable $countryCode as xs:string := "gi";
+declare variable $source_url as xs:string := "../test/G_GIB_Attainment_Corrupted2.xml";
 :)
+
 
 (: removes the file part from the end of URL and appends 'xml' for getting the envelope xml description :)
 declare function xmlconv:getEnvelopeXML($url as xs:string) as xs:string{
@@ -260,7 +269,7 @@ as element(sparql:result)*
     (:Collects all sparql results:)
     let $allResults :=
         for $r in (1 to  xs:integer(number($divCountResult)))
-            let $offset := if ($r > 1) then string(((number($r)-1) * $limit)+1) else "1"
+            let $offset := if ($r > 1) then string(((number($r)-1) * $limit)) else "0"
             let $resultXml := xmlconv:setLimitAndOffset($sparql,xs:string($limit), $offset)
             let $isResultsAvailable := string-length($resultXml) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($resultXml, "xml"))
         let $result := if($isResultsAvailable) then xmlconv:executeSparqlEndpoint($resultXml)//sparql:result else ()
@@ -856,13 +865,19 @@ let $tblDuplicateGmlIds :=
 
 (: G8 ./aqd:inspireId/base:Identifier/base:localId shall be an unique code for the attainment records starting with ISO2-country code :)
 
-let $localIds :=  $docRoot//aqd:inspireId/base:Identifier/lower-case(normalize-space(base:localId))
+let $localIds :=  $docRoot//aqd:AQD_Attainment/aqd:inspireId/base:Identifier/lower-case(normalize-space(base:localId))
 
 let $invalidDuplicateLocalIds :=
-    for $id in $docRoot//aqd:inspireId/base:Identifier/lower-case(normalize-space(base:localId))
+    for $rec in $docRoot//aqd:AQD_Attainment/aqd:inspireId/base:Identifier
+    let $id := $rec/lower-case(normalize-space(base:localId))
     where (count(index-of($localIds, lower-case(normalize-space($id)))) > 1 and not(empty($id)))
     return
-        $id
+        <tr>
+            <td title="gml:id">{data($rec/../../@gml:id)}</td>
+            <td title="base:localId">{data($rec/base:localId)}</td>
+            <td title="base:namespace">{data($rec/base:namespace)}</td>
+        </tr>
+
 
 (: G9 ./ef:inspireId/base:Identifier/base:namespace shall resolve to a unique namespace identifier for the data source (within an annual e-Reporting cycle). :)
 
@@ -937,7 +952,7 @@ let $isZoneLocallDCodesAvailable := count($resultXml) > 0
 
 let $invalidAssessmentZone :=
   for $x in $docRoot//aqd:AQD_Attainment/aqd:zone
-    where $isZoneLocallDCodesAvailable
+    where $isZoneLocallDCodesAvailable and not($x/@nilReason="inapplicable")
     return  if (empty(index-of($zoneLocallD, $x/fn:normalize-space(@xlink:href)))) then <tr>
         <td title="Feature type">{ "aqd:AQD_Attainment" }</td>
         <td title="gml:id">{data($x/../@gml:id)}</td>
@@ -1016,7 +1031,9 @@ let $invalidobjectiveTypesForVEG :=
 let $invalidobjectiveTypesForVEGG22 :=
     for $obj in $docRoot//aqd:environmentalObjective/aqd:EnvironmentalObjective
     let $isInvalid :=
-        $obj/aqd:protectionTarget/@xlink:href != 'http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H'
+        ($obj/aqd:protectionTarget/@xlink:href != 'http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H'
+        and $obj/aqd:protectionTarget/@xlink:href != 'http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H-S1'
+        and $obj/aqd:protectionTarget/@xlink:href != 'http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H-S2')
         and ($obj/aqd:objectiveType/@xlink:href = 'http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV')
     where $isInvalid
     return
@@ -1188,7 +1205,7 @@ let $invalidobjectiveTypesForLV :=
         $obj/aqd:objectiveType/@xlink:href = 'http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV'
         and $obj/../../aqd:pollutant/@xlink:href = 'http://dd.eionet.europa.eu/vocabulary/aq/pollutant/6001'
         and $obj/aqd:protectionTarget/@xlink:href != 'http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H-S1'
-        and $obj/aqd:protectionTarget/@xlink:href != 'http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H­S2'
+        and $obj/aqd:protectionTarget/@xlink:href != 'http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H-S2'
         and $obj/aqd:protectionTarget/@xlink:href != 'http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H'
     where $isInvalid
     return
@@ -1211,7 +1228,11 @@ let $invalidAreaClassificationCodes := xmlconv:isinvalidDDConceptLimited($source
     return  if (empty(index-of(('V'),$reportingXlink))) then $reportingXlink else ():)
 
 (: G39 :)
-let $resultXml := if (fn:string-length($countryCode) = 2) then xmlconv:getModel($cdrUrl) else ""
+
+(: used below as well :)
+let $modelCdrUrl := if ($countryCode = 'gi') then xmlconv:getCdrUrl('gb') else $cdrUrl
+
+let $resultXml := if (fn:string-length($countryCode) = 2) then xmlconv:getModel($modelCdrUrl) else ""
 let $isModelCodesAvailable := string-length($resultXml) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($resultXml, "xml"))
 (:let $modelLocallD := if($isModelCodesAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($resultXml)//sparql:binding[@name='inspireLabel']/sparql:literal)) else "":)
 let $modelLocallD := if($isModelCodesAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($resultXml)//concat(sparql:binding[@name='namespace']/sparql:literal,"/",sparql:binding[@name='localId']/sparql:literal))) else ""
@@ -1265,10 +1286,12 @@ let $isAssessmentMethodsAvailable := count($resultXml2) > 0
 
 
 (: G41 :)
-let $resultXml := if (fn:string-length($countryCode) = 2) then xmlconv:getSamplingPoint($cdrUrl) else ""
+let $resultXml := if (fn:string-length($countryCode) = 2) then xmlconv:getSamplingPoint($modelCdrUrl) else ""
 let $isSamplingPointAvailable := string-length($resultXml) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($resultXml, "xml"))
 let $samplingPointlD := if($isSamplingPointAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($resultXml)//concat(sparql:binding[@name='namespace']/sparql:literal,"/",sparql:binding[@name='localId']/sparql:literal))) else ""
-let $isSamplingPointAvailable := count($resultXml) > 0
+let $isSamplingPointAvailable := count($samplingPointlD) > 0
+
+
 let $invalidStationUsed  :=
     for $r in $docRoot//aqd:AQD_Attainment/aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:stationUsed
        where $isSamplingPointAvailable
@@ -1326,7 +1349,7 @@ let $invalidAreaClassificationAdjusmentCodes := xmlconv:isinvalidDDConceptLimite
 
 (: G53 :)
 
-let $resultXml := if (fn:string-length($countryCode) = 2) then xmlconv:getModel($cdrUrl) else ""
+let $resultXml := if (fn:string-length($countryCode) = 2) then xmlconv:getModel($modelCdrUrl) else ""
 let $isModelAvailable := string-length($resultXml) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($resultXml, "xml"))
 let $model := if($isModelCodesAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($resultXml)//concat(sparql:binding[@name='namespace']/sparql:literal,"/",sparql:binding[@name='localId']/sparql:literal))) else ""
 let $isModelAvailable := count($resultXml) > 0
@@ -1541,7 +1564,8 @@ return
         {xmlconv:buildResultRows("G7", "All gml:id attributes, ef:inspireId and aqd:inspireId elements shall have unique content",
             $invalidDuplicateGmlIds, (), "", "No duplicates found", " duplicate", "", "error",$tblDuplicateGmlIds)}
         {xmlconv:buildResultRows("G8", "./aqd:inspireId/base:Identifier/base:localId  must be unique code for the attainment records starting with ISO2-country code",
-            $invalidDuplicateLocalIds, (), "base:localId", "No duplicate values found", " duplicate value", "","error", ())}
+            $invalidDuplicateLocalIds, (), "base:localId", "No duplicate values found", " duplicate value", "","error", $invalidDuplicateLocalIds)}
+
         {xmlconv:buildResultRows("G9", "./aqd:inspireId/base:Identifier/base:namespace shall resolve to a unique namespace identifier for the data source (within an annual e-Reporting cycle). ",
             $tblG9, (), "base:namespace", "No duplicate values found", " duplicate value", "", "error",())}
         {xmlconv:buildResultRowsWithTotalCount("G10", <span>The content of /aqd:AQD_Attainment/aqd:pollutant xlink:xref shall resolve to a pollutant in
@@ -1584,7 +1608,7 @@ return
                 $invalidobjectiveTypesForVEGG22, (), "", "No invalid objective types for Health found", " invalid value", "","error", $invalidobjectiveTypesForVEGG22)}
         {xmlconv:buildResultRows("G23", <span>WHERE ./aqd:pollutant xlink:href attribute resolves to http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1 ./aqd:EnvironmentalObjective/aqd:reportingMetric shall resolve to a valid concept in
             <a href="{ $xmlconv:REPMETRIC_VOCABULARY }">{ $xmlconv:REPMETRIC_VOCABULARY }</a> that must be one of
-            {xmlconv:buildVocItemsList("G23", $xmlconv:REPMETRIC_VOCABULARY, $xmlconv:VALID_REPMETRIC_IDS_20)}</span>,
+            {xmlconv:buildVocItemsList("G23", $xmlconv:REPMETRIC_VOCABULARY, $xmlconv:VALID_REPMETRIC_IDS_23)}</span>,
                 $invalidAqdReportingMetric, (), "aqd:reportingMetric", "All values are valid", " invalid value", "","error",())}
         {xmlconv:buildResultRows("G24", <span>WHERE ./aqd:pollutant xlink:href attribute resolves to http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5 ./aqd:EnvironmentalObjective/aqd:reportingMetric shall resolve to a valid concept in
             <a href="{ $xmlconv:REPMETRIC_VOCABULARY }">{ $xmlconv:REPMETRIC_VOCABULARY }</a> that must be one ofS
@@ -1619,10 +1643,11 @@ return
             <a href="{ $xmlconv:REPMETRIC_VOCABULARY }">{ $xmlconv:REPMETRIC_VOCABULARY }</a> that must be one of
             {xmlconv:buildVocItemsList("G31", $xmlconv:REPMETRIC_VOCABULARY, $xmlconv:VALID_REPMETRIC_IDS_31)}</span>,
                 $invalidobjectiveTypesForAOT31, (), "aqd:reportingMetric", "", "", "","error",$invalidobjectiveTypesForAOT31)}
+
         {xmlconv:buildResultRows("G32", <span>The content of ./aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget xlink:href attribute shall EQUAL
             http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H AND /aqd:polluntant is NOT EQUAL to
             http://dd.eionet.europa.eu/vocabulary/aq/pollutant/6001 where ./aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType  xlink:href attribute on shall resolve to a valid concept in
-            <a href="{ $xmlconv:POLLUTANT_VOCABULARY }">{ $xmlconv:POLLUTANT_VOCABULARY }</a> that must be one of
+            <a href="{ $xmlconv:OBJECTIVETYPE_VOCABULARY }">{ $xmlconv:OBJECTIVETYPE_VOCABULARY }</a> that must be one of
             {xmlconv:buildVocItemsList("G32", $xmlconv:OBJECTIVETYPE_VOCABULARY, $xmlconv:VALID_OBJECTIVETYPE_IDS_32)}</span>,
                 $invalidobjectiveTypesForHealth, (), "aqd:reportingMetric",  "All values are valid", " invalid value", "","error", $invalidobjectiveTypesForHealth)}
 
@@ -1958,22 +1983,30 @@ declare function xmlconv:aproceed($source_url, $countryCode)
 {
 
 let $docRoot := doc($source_url)
+
 let $cdrUrl := xmlconv:getCdrUrl($countryCode)
+let $modelCdrUrl := if ($countryCode = 'gi') then xmlconv:getCdrUrl('gb') else $cdrUrl
+
+let $resultXml := if (fn:string-length($countryCode) = 2) then xmlconv:getModel($modelCdrUrl) else ""
+let $isModelCodesAvailable := string-length($resultXml) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($resultXml, "xml"))
+(:let $modelLocallD := if($isModelCodesAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($resultXml)//sparql:binding[@name='inspireLabel']/sparql:literal)) else "":)
+let $modelLocallD := if($isModelCodesAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($resultXml)//concat(sparql:binding[@name='namespace']/sparql:literal,"/",sparql:binding[@name='localId']/sparql:literal))) else ""
 
 
+let $invalidAssessmentModel :=
+  for $x in $docRoot//aqd:AQD_Attainment/aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:modelUsed
+    where $isModelCodesAvailable
+    return  if (empty(index-of($modelLocallD, $x/fn:normalize-space(@xlink:href)))) then <tr>
+        <td title="Feature type">{ "aqd:AQD_Attainment" }</td>
+        <td title="gml:id">{data($x/../../../../../@gml:id)}</td>
+        <td title="aqd:AQD_Model">{data($x/fn:normalize-space(@xlink:href))}</td>
+    </tr>
+    else ()
 
- let $all := $docRoot//aqd:AQD_Attainment/aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:surfaceArea
-
-let $aqdSurfaceArea :=
-for $area in $docRoot//aqd:AQD_Attainment/aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:surfaceArea
-where count($area/@uom)>0 and fn:normalize-space(data($area/@uom))!="http://dd.eionet.europa.eu/vocabulary/uom/area/km2"
-return fn:normalize-space(data($area/@uom))
-
-
-return $aqdSurfaceArea
+return $invalidAssessmentModel
 
 };
 
 (:
-xmlconv:proceed( $source_url, $country )
+xmlconv:proceed( $source_url, $countryCode )
 :)
