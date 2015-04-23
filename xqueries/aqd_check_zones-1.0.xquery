@@ -33,7 +33,12 @@ declare variable $source_url as xs:string := "../test/DE_B_Zones_2013.xml";
 declare variable $source_url as xs:string := "../test/ES_B_Zones.xml";
 declare variable $source_url as xs:string := "http://cdrtest.eionet.europa.eu/gi/eu/aqd/b/envvqvz3q/B_GIB_Zones_retro_Corrupted.xml";
 declare variable $source_url as xs:string := "../test/B_GIB_Zones_retro_Corrupted.xml";
+declare variable $source_url as xs:string := "../test/B_ES_B_Zones_corrupted.xml";
+declare variable $source_url as xs:string := "http://cdrtest.eionet.europa.eu/es/eu/aqd/b/envvs_qvq/B_ES_ES_B_Zones_corrupted.xml";
+declare variable $country as xs:string := "gi";
+declare variable $source_url as xs:string := "../test/B_GIB_Zones_retro_Corrupted2.xml";
 :)
+
 
 
 (:~ declare Content Registry SPARQL endpoint:)
@@ -290,6 +295,54 @@ let $result :=
 return $result
 
 };
+
+declare function xmlconv:buildResultTable($ruleCode as xs:string, $text,
+    $valueHeading as xs:string*, $validMsg as xs:string, $invalidMsg as xs:string, $skippedMsg, $errorLevel as xs:string, $recordDetails as element(tr)*)
+as element(tr)*{
+    let $countInvalidValues := count($recordDetails)
+
+    let $bulletType := if (string-length($skippedMsg) > 0) then "skipped" else if ($countInvalidValues = 0) then "info" else $errorLevel
+let $result :=
+    (
+        <tr style="border-top:1px solid #666666;">
+            <td style="padding-top:3px;vertical-align:top;">{ xmlconv:getBullet($ruleCode, $bulletType) }</td>
+            <th style="padding-top:3px;vertical-align:top;text-align:left;">{ $text }</th>
+            <td style="padding-top:3px;vertical-align:top;"><span style="font-size:1.3em;">{
+                if (string-length($skippedMsg) > 0) then
+                    $skippedMsg
+                else if ($countInvalidValues = 0) then
+                    $validMsg
+                else
+                    concat($countInvalidValues, $invalidMsg, substring("s ", number(not($countInvalidValues > 1)) * 2) ," found") }
+                </span>{
+                if ($countInvalidValues > 0 or count($recordDetails)>0) then
+                    <a id='feedbackLink-{$ruleCode}' href='javascript:toggle("feedbackRow","feedbackLink", "{$ruleCode}")' style="padding-left:10px;">Show records</a>
+                else
+                    ()
+                }
+             </td>
+             <td></td>
+        </tr>,
+            if (count($recordDetails)>0) then
+                <tr>
+                    <td></td>
+                    <td colspan="3">
+                        <table class="datatable" style="font-size: 0.9em;text-align:left;vertical-align:top;display:none;border:0px;" id="feedbackRow-{$ruleCode}">
+                            <tr>{
+                                for $th in $recordDetails[1]//td return <th>{ data($th/@title) }</th>
+                            }</tr>
+                            {$recordDetails}
+                        </table>
+                    </td>
+                </tr>
+            else
+                ()
+    )
+return $result
+
+};
+
+
 
 
 (:
@@ -669,14 +722,15 @@ let $invalidArea  := distinct-values($docRoot//aqd:AQD_Zone[not(count(aqd:area)>
 let $tempStr := xmlconv:checkVocabularyConceptValues($source_url, "", "aqd:AQD_Zone", "aqd:timeExtensionExemption", "http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/")
 let $invalidTimeExtensionExemption := $tempStr
 
-(: 41 :)
+(: B41 :)
 
 let $zoneIds :=
 for $x in $docRoot//aqd:AQD_Zone/aqd:pollutants
 where ($x/aqd:Pollutant/aqd:pollutantCode/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/8" and $x/aqd:Pollutant/aqd:protectionTarget/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H")
        and ($x/../aqd:timeExtensionExemption/fn:normalize-space(@xlink:href) = "http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/NO2-1h"
         or $x/../aqd:timeExtensionExemption/fn:normalize-space(@xlink:href) = "http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/NO2-annual")
-return $x/../@gml:id
+return
+    data($x/../@gml:id)
 
 
 let $invalidPollutansB41 :=
@@ -685,12 +739,12 @@ let $invalidPollutansB41 :=
     where empty(index-of($zoneIds,$y/@gml:id))
 return
         <tr>
-            <td title="base:namespace">{$y/@gml:id}</td>
+            <td title="gml:id">{data($y/@gml:id)}</td>
             <td title="aqd:pollutantCode">{xmlconv:checkLink("http://dd.eionet.europa.eu/vocabulary/aq/pollutant/8")}</td>
             <td title="aqd:protectionTarget">{xmlconv:checkLink("http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H")}</td>
         </tr>
 
-(: 42 :)
+(: B42 :)
 
 let $zoneIds :=
     for $x in $docRoot//aqd:AQD_Zone/aqd:pollutants
@@ -705,7 +759,7 @@ let $aqdInvalidPollutansB42 :=
     where empty(index-of($zoneIds,$y/@gml:id))
     return
         <tr>
-            <td title="base:namespace">{$y/@gml:id}</td>
+            <td title="gml:id">{data($y/@gml:id)}</td>
             <td title="aqd:pollutantCode">{xmlconv:checkLink("http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5")}</td>
             <td title="aqd:protectionTarget">{xmlconv:checkLink("http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H")}</td>
         </tr>
@@ -724,7 +778,7 @@ let $aqdInvalidPollutansBenzene :=
     where empty(index-of($zoneIds,$y/@gml:id))
     return
       <tr>
-            <td title="base:namespace">{$y/@gml:id}</td>
+            <td title="gml:id">{data($y/@gml:id)}</td>
             <td title="aqd:pollutantCode">{xmlconv:checkLink("http://dd.eionet.europa.eu/vocabulary/aq/pollutant/20")}</td>
             <td title="aqd:protectionTarget">{xmlconv:checkLink("http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H")}</td>
         </tr>
@@ -767,7 +821,7 @@ for $x in $amGeometry
     where (empty($amGeometry)=false())
 return $x
 
-(: 46 :)
+(: B46 :)
 
 (: TESTING on localhost :)
 (:let $envLink := "http://cdrtest.eionet.europa.eu/ee/eu/colujh9jw/envvdy3dq/xml" :)
@@ -776,11 +830,11 @@ let $aqdShapeFileLink := $docRoot//aqd:AQD_Zone/aqd:shapefileLink
 let $invalidLink :=
 for $link in $aqdShapeFileLink
     let $envLink := xmlconv:getEnvelopeXML($link)
+    let $envExists := doc-available($envLink)
     return
-    if (string-length($envLink)>0 and count(doc($envLink)/envelope/file[@link=$link]) = 0) then
+    if (not($envExists)  or ($envExists and count(doc($envLink)/envelope/file[@link=$link]) = 0)) then
         concat($link/../@gml:id, ' ', $link)
     else ()
-
 
 
 (: B47 :)
@@ -936,12 +990,13 @@ List base:namespace and  count the number of base:localId assigned to each base:
             $invalidArea, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "", "error")}
         {xmlconv:buildResultRowsWithTotalCount("B40", <span>./aqd:timeExtensionExemption attribute must resolve to one of concept within http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/
             </span>,(), (), "aqd:timeExtensionExemption", "", "", "", $invalidTimeExtensionExemption)}
-        {xmlconv:buildResultRows("B41", "Where ./aqd:timeExtensionExemption resolves  to http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/NO2 1h OR http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/NO2 annual at  least  one  combination  within ./aqd:pollutants which  includes ./aqd:pollutants/aqd:Pollutant/aqd:pollutantCode AND ./aqd:pollutants/aqd:Pollutant/aqd:protectionTarget shall  be  constrained  to Nitro gen  dioxide  Nitrogen  dioxide  (air)  +  health http://dd.eionet.europa.eu/vocabulary/aq/pollutant/8 http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H ",
-                $invalidPollutansB41, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "", "error")}
-        {xmlconv:buildResultRows("B42", "Where ./aqd:timeExtensionExemption resolves to http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/PM10-24h OR http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/PM10-annual at least one combination  within ./aqd:pollutants which  includes ./aqd:pollutants/aqd:Pollutant/aqd:pollutantCode AND ./aqd:pollutants/aqd:Pollutant/aqd:protectionTarget shall  be  constrained  to Particulate  matter  <  10  μm  (aerosol)  +  health http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5 http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H  ",
-                $aqdInvalidPollutansB42, "aqd:AQD_Zone/@gml:id", "All values are valid", " crucial invalid value", "", "error")}
-        {xmlconv:buildResultRows("B43", "Where ./aqd:timeExtensionExemption resolves to http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/C6H6-annual at least one combination  within ./aqd:pollutants which  includes ./aqd:pollutants/aqd:Pollutant/aqd:pollutantCode AND ./aqd:pollutants/aqd:Pollutant/aqd:protectionTarget shall  be  constrained  to Benzene  (air)  +  healt http://dd.eionet.europa.eu/vocabulary/aq/pollutant/20 http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H  ",
-                $aqdInvalidPollutansBenzene, "aqd:AQD_Zone/@gml:id", "All values are valid", " crucial invalid value", "", "error")}
+
+        {xmlconv:buildResultTable("B41", "Where ./aqd:timeExtensionExemption resolves  to http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/NO2 1h OR http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/NO2 annual at  least  one  combination  within ./aqd:pollutants which  includes ./aqd:pollutants/aqd:Pollutant/aqd:pollutantCode AND ./aqd:pollutants/aqd:Pollutant/aqd:protectionTarget shall  be  constrained  to Nitro gen  dioxide  Nitrogen  dioxide  (air)  +  health http://dd.eionet.europa.eu/vocabulary/aq/pollutant/8 http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H ",
+                (), "All values are valid", " invalid value", "", "error", $invalidPollutansB41)}
+        {xmlconv:buildResultTable("B42", "Where ./aqd:timeExtensionExemption resolves to http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/PM10-24h OR http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/PM10-annual at least one combination  within ./aqd:pollutants which  includes ./aqd:pollutants/aqd:Pollutant/aqd:pollutantCode AND ./aqd:pollutants/aqd:Pollutant/aqd:protectionTarget shall  be  constrained  to Particulate  matter  <  10  μm  (aerosol)  +  health http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5 http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H  ",
+                (), "All values are valid", " crucial invalid value", "", "error", $aqdInvalidPollutansB42)}
+        {xmlconv:buildResultTable("B43", "Where ./aqd:timeExtensionExemption resolves to http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/C6H6-annual at least one combination  within ./aqd:pollutants which  includes ./aqd:pollutants/aqd:Pollutant/aqd:pollutantCode AND ./aqd:pollutants/aqd:Pollutant/aqd:protectionTarget shall  be  constrained  to Benzene  (air)  +  healt http://dd.eionet.europa.eu/vocabulary/aq/pollutant/20 http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H  ",
+                (), "All values are valid", " crucial invalid value", "", "error", $aqdInvalidPollutansBenzene)}
         {xmlconv:buildResultRows("B45", "./am:geometry shall  not  be  a  href  xlink. If geometry is provided via shapefile, please use element aqd:shapefileLink",
                 $invalidGeometry, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "","warning")}
         {xmlconv:buildResultRows("B46", "Where ./aqd:shapefileLink has been used the is should return a link to a valid and existing link in cdr (e.g. http://cdr.eionet.europa.eu/es/eu/aqd/b/envurng9g/ES_Zones_2014.shp",
@@ -1154,6 +1209,7 @@ let $result := if ($countZones > 0) then xmlconv:checkReport($source_url, $count
 
 return
     <div>
+    {xmlconv:javaScript()}
         <h2>Check air quality zones - Dataflow B</h2>
         {
         if ( $countZones = 0) then
@@ -1186,34 +1242,24 @@ return
     </div>
 };
 
-declare function xmlconv:aproceed($s as xs:string, $s2 as xs:string) {
+declare function xmlconv:aproceed($source_url as xs:string, $country as xs:string) {
 
-
-let $source_url as xs:string := "../test/ES_B_Zones.xml"
-let $source_url := "http://cdrtest.eionet.europa.eu/es/eu/aqd/b/envvosh7w/B_ES_ES_B_Zones.xml"
-let $source_url := "../test/ES_B_Zones.xml"
 
 let $docRoot := doc($source_url)
 
 let $aqdShapeFileLink := $docRoot//aqd:AQD_Zone/aqd:shapefileLink
 
-(: KL 141009
-let $tmpStr := fn:substring-after($aqdShapeFileLink,"b/")
-let $tempEnv := fn:substring-before($tmpStr,"/")
-let $envLink := concat(substring-before($aqdShapeFileLink,"b/"),"b/",$tempEnv,"/xml")
-:)
-
 let $invalidLink :=
 for $link in $aqdShapeFileLink
     let $envLink := xmlconv:getEnvelopeXML($link)
+    let $envExists := doc-available($envLink)
     return
-    if (string-length($envLink)>0 and count(doc($envLink)/envelope/file[@link=$link]) = 0) then
+    if (not($envExists)  or ($envExists and count(doc($envLink)/envelope/file[@link=$link]) = 0)) then
         concat($link/../@gml:id, ' ', $link)
     else ()
 
-return data($invalidLink)
 
-
+return $invalidLink
 };
 
 (:
