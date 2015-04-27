@@ -415,7 +415,7 @@ let $tblB6 :=
     return
         <tr>
             <td title="gml:id">{data($rec/@gml:id)}</td>
-            <td title="namespace/localId)">{concat(data($rec/am:inspireId/base:Identifier/base:namespace),'/', data($rec/am:inspireId/base:Identifier/base:localId))}</td>
+            <td title="namespace/localId">{concat(data($rec/am:inspireId/base:Identifier/base:namespace),'/', data($rec/am:inspireId/base:Identifier/base:localId))}</td>
             <td title="zoneName">{data($rec/am:name/gn:GeographicalName/gn:spelling/gn:SpellingOfName/gn:text)}</td>
             <td title="zoneCode">{data($rec/aqd:zoneCode)}</td>
         </tr>
