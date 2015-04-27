@@ -415,8 +415,9 @@ let $tblB6 :=
     return
         <tr>
             <td title="gml:id">{data($rec/@gml:id)}</td>
-            <td title="am:inspireId/base:namespace.base:localId)">{concat(data($rec/am:inspireId/base:Identifier/base:namespace),'.', data($rec/am:inspireId/base:Identifier/base:localId))}</td>
-            <td title="am:name/gn:GeographicalName/gn:spelling/gn:text">{data($rec/am:name/gn:GeographicalName/gn:spelling/gn:SpellingOfName/gn:text)}</td>
+            <td title="namespace/localId)">{concat(data($rec/am:inspireId/base:Identifier/base:namespace),'/', data($rec/am:inspireId/base:Identifier/base:localId))}</td>
+            <td title="zoneName">{data($rec/am:name/gn:GeographicalName/gn:spelling/gn:SpellingOfName/gn:text)}</td>
+            <td title="zoneCode">{data($rec/aqd:zoneCode)}</td>
         </tr>
 
 (: B7 :)
@@ -521,7 +522,6 @@ let  $tblB10 :=
         </tr>
 
 (: B11 :)
-let $emptyNames := distinct-values($docRoot//aqd:AQD_Zone[normalize-space(am:name)=""]/@gml:id)
 
 
 (: B13 :)
@@ -930,8 +930,6 @@ return
         {xmlconv:buildResultRowsHTML("B10", "./am:inspireId/base:Identifier/base:namespace
 List base:namespace and  count the number of base:localId assigned to each base:namespace. ",
                 (), (), "", string(count($tblB10)), "", "",$tblB10)}
-        {xmlconv:buildResultRows("B11", "./am:name xsl:nil=""false""",
-            $emptyNames, "aqd:AQD_Zone/@gml:id", "No empty values found", " empty name", "","warning")}
 
         {xmlconv:buildResultRows("B13", <span>/aqd:AQD_Zone/am:name/gn:GeographicalName/gn:language value shall be the language of the name,
  given as a three letters code, in accordance with either <a href="http://dd.eionet.europa.eu/vocabulary/common/iso639-3/view">ISO 639-3</a> or
