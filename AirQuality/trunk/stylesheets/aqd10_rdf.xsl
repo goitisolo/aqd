@@ -203,7 +203,8 @@
   <xsl:template match="gml:Polygon|gml:Surface" mode="resourceorliteral"/>
 
   <xsl:template match="gml:Point" mode="resourceorliteral">
-    <xsl:if test="gml:pos/@srsDimension='2' and (@srsName='urn:ogc:def:crs:EPSG::6326' or @srsName='urn:ogc:def:crs:EPSG::4326')">
+    <xsl:if test="gml:pos/@srsDimension='2' and (@srsName='urn:ogc:def:crs:EPSG::6326'
+            or @srsName='urn:ogc:def:crs:EPSG::4326' or @srsName='urn:ogc:def:crs:EPSG:4258')">
       <geo:Point>
         <xsl:attribute name="rdf:ID">
           <xsl:value-of select="@gml:id"/>
