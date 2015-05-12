@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE xsl:stylesheet [
  <!ENTITY ref "http://reference.eionet.europa.eu/aq/">
+ <!ENTITY refont "http://reference.eionet.europa.eu/aq/ontology/">
  <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#">
  <!ENTITY ont "http://rdfdata.eionet.europa.eu/airquality/ontology/">
 ]>
@@ -147,22 +148,27 @@
   <xsl:template match="ef:inspireId|aqd:inspireId|am:inspireId|ompr:inspireId" mode="property">
     <!-- Create the declarationFor property -->
     <xsl:element name="declarationFor" namespace="&ont;">
-      <xsl:choose>
-        <xsl:when test="starts-with(base:Identifier/base:namespace, 'http:')">
-          <xsl:attribute name="rdf:resource">
-            <xsl:call-template name="fix-uri">
-              <xsl:with-param name="text" select="concat(base:Identifier/base:namespace,'/',base:Identifier/base:localId)"/>
-            </xsl:call-template>
-          </xsl:attribute>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:attribute name="rdf:resource">
-            <xsl:call-template name="fix-uri">
-              <xsl:with-param name="text" select="concat('&ref;',base:Identifier/base:namespace,'/',base:Identifier/base:localId)"/>
-            </xsl:call-template>
-          </xsl:attribute>
-        </xsl:otherwise>
-      </xsl:choose>
+      <rdf:Description>
+        <xsl:choose>
+          <xsl:when test="starts-with(base:Identifier/base:namespace, 'http:')">
+            <xsl:attribute name="rdf:about">
+              <xsl:call-template name="fix-uri">
+                <xsl:with-param name="text" select="concat(base:Identifier/base:namespace,'/',base:Identifier/base:localId)"/>
+              </xsl:call-template>
+            </xsl:attribute>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:attribute name="rdf:about">
+              <xsl:call-template name="fix-uri">
+                <xsl:with-param name="text" select="concat('&ref;',base:Identifier/base:namespace,'/',base:Identifier/base:localId)"/>
+              </xsl:call-template>
+            </xsl:attribute>
+          </xsl:otherwise>
+        </xsl:choose>
+        <xsl:element name="hasDeclaration" namespace="&refont;">
+            <xsl:attribute name="rdf:resource">#<xsl:value-of select="../@gml:id"/></xsl:attribute>
+        </xsl:element>
+      </rdf:Description>
     </xsl:element>
     <!-- Also add the original element -->
     <xsl:element name="{local-name()}" namespace="&ont;">
@@ -194,7 +200,7 @@
   </xsl:template>
 
   <!-- Ignore polygons -->
-  <xsl:template match="gml:Polygon" mode="resourceorliteral"/>
+  <xsl:template match="gml:Polygon|gml:Surface" mode="resourceorliteral"/>
 
   <xsl:template match="gml:Point" mode="resourceorliteral">
     <xsl:if test="gml:pos/@srsDimension='2' and (@srsName='urn:ogc:def:crs:EPSG::6326' or @srsName='urn:ogc:def:crs:EPSG::4326')">
