@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE xsl:stylesheet [
-        <!ENTITY sep ",">
+        <!ENTITY sep ";">
         <!ENTITY nl "&#xa;">
         <!ENTITY bom "&#xFEFF;">
         ]>
@@ -229,10 +229,24 @@
             <xsl:call-template name="sampointModel_headers"/>
             <table:table-rows>
               <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_Model">
-                <xsl:call-template name="sampointModel_rows"/>
+                <xsl:for-each select="ef:observingCapability">
+                  <xsl:call-template name="sampointModel_observing"/>
+                </xsl:for-each>
+                <xsl:if test="count(aqd:environmentalObjective) > 1">
+                  <xsl:for-each select="aqd:environmentalObjective">
+                    <xsl:call-template name="sampointModel_environment"/>
+                  </xsl:for-each>
+                </xsl:if>
               </xsl:for-each>
               <xsl:for-each select="gml:featureMember/aqd:AQD_Model">
-                <xsl:call-template name="sampointModel_rows"/>
+                <xsl:for-each select="ef:observingCapability">
+                  <xsl:call-template name="sampointModel_observing"/>
+                </xsl:for-each>
+                <xsl:if test="count(aqd:environmentalObjective) > 1">
+                  <xsl:for-each select="aqd:environmentalObjective">
+                    <xsl:call-template name="sampointModel_environment"/>
+                  </xsl:for-each>
+                </xsl:if>
               </xsl:for-each>
             </table:table-rows>
           </table:table>
@@ -293,10 +307,24 @@
             <xsl:call-template name="sampointGeneral_headers"/>
             <table:table-rows>
               <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_SamplingPoint">
-                <xsl:call-template name="sampointGeneral_rows"/>
+                <xsl:for-each select="ef:observingCapability">
+                  <xsl:call-template name="sampointGeneral_observing"/>
+                </xsl:for-each>
+                <xsl:if test="count(aqd:environmentalObjective) > 1">
+                  <xsl:for-each select="aqd:environmentalObjective">
+                    <xsl:call-template name="sampointGeneral_environment"/>
+                  </xsl:for-each>
+                </xsl:if>
               </xsl:for-each>
               <xsl:for-each select="gml:featureMember/aqd:AQD_SamplingPoint">
-                <xsl:call-template name="sampointGeneral_rows"/>
+                <xsl:for-each select="ef:observingCapability">
+                  <xsl:call-template name="sampointGeneral_observing"/>
+                </xsl:for-each>
+                <xsl:if test="count(aqd:environmentalObjective) > 1">
+                  <xsl:for-each select="aqd:environmentalObjective">
+                    <xsl:call-template name="sampointGeneral_environment"/>
+                  </xsl:for-each>
+                </xsl:if>
               </xsl:for-each>
             </table:table-rows>
           </table:table>
@@ -742,6 +770,10 @@
               table:default-cell-value-type="string"
               table:default-cell-style-name="long-string-heading">
       </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
     </table:table-columns>
     <table:table-header-rows>
       <table:table-row table:default-cell-value-type="string">
@@ -797,7 +829,12 @@
         </table:table-cell>
         <table:table-cell table:style-name="Heading2">
           <text:p>
-            Pos
+            Latitude
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            Longitude
           </text:p>
         </table:table-cell>
         <table:table-cell table:style-name="Heading2">
@@ -895,34 +932,40 @@
         <!-- 11 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="ef:geometry/gml:Point/gml:pos"/>
+            <xsl:value-of select="normalize-space(tokenize(ef:geometry/gml:Point/gml:pos, ' ')[1])"/>
           </text:p>
         </table:table-cell>
         <!-- 12 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="ef:geometry/gml:Point/@srsName"/>
+            <xsl:value-of select="normalize-space(tokenize(ef:geometry/gml:Point/gml:pos, ' ')[2])"/>
           </text:p>
         </table:table-cell>
         <!-- 13 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="aqd:altitude"/>
+            <xsl:value-of select="ef:geometry/gml:Point/@srsName"/>
           </text:p>
         </table:table-cell>
         <!-- 14 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="aqd:altitude/@uom"/>
+            <xsl:value-of select="aqd:altitude"/>
           </text:p>
         </table:table-cell>
         <!-- 15 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="aqd:areaClassification/@xlink:href"/>
+            <xsl:value-of select="aqd:altitude/@uom"/>
           </text:p>
         </table:table-cell>
         <!-- 16 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:areaClassification/@xlink:href"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 17 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
             <xsl:value-of select="ef:belongsTo/@xlink:href"/>
@@ -934,6 +977,10 @@
 
   <xsl:template name="sampointSample_headers">
     <table:table-columns>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
       <table:table-column
               table:default-cell-value-type="string"
               table:default-cell-style-name="long-string-heading">
@@ -1037,7 +1084,12 @@
         </table:table-cell>
         <table:table-cell table:style-name="Heading2">
           <text:p>
-            Pos
+            Latitude
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            Longitude
           </text:p>
         </table:table-cell>
         <table:table-cell table:style-name="Heading2">
@@ -1115,10 +1167,16 @@
         <!-- 11 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="sams:shape/gml:Point/gml:pos"/>
+            <xsl:value-of select="normalize-space(tokenize(sams:shape/gml:Point/gml:pos,' ')[1])" />
           </text:p>
         </table:table-cell>
         <!-- 12 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="normalize-space(tokenize(sams:shape/gml:Point/gml:pos,' ')[2])" />
+          </text:p>
+        </table:table-cell>
+        <!-- 13 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
             <xsl:value-of select="sams:shape/gml:Point/@srsName"/>
@@ -1344,97 +1402,97 @@
             <xsl:value-of select="ompr:inspireId/base:Identifier/base:versionId"/>
           </text:p>
         </table:table-cell>
-        <!-- 4 -->
+        <!-- 5 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
             <xsl:value-of select="ompr:type"/>
           </text:p>
         </table:table-cell>
-        <!-- 4 -->
+        <!-- 6 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
             <xsl:value-of select="aqd:measurementType/@xlink:href"/>
           </text:p>
         </table:table-cell>
-        <!-- 4 -->
+        <!-- 7 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
             <xsl:value-of select="aqd:measurementMethod/aqd:MeasurementMethod/aqd:measurementMethod/@xlink:href"/>
           </text:p>
         </table:table-cell>
-        <!-- 4 -->
+        <!-- 8 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
             <xsl:value-of select="aqd:measurementMethod/aqd:MeasurementMethod/aqd:otherMeasurementMethod"/>
           </text:p>
         </table:table-cell>
-        <!-- 4 -->
+        <!-- 9 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
             <xsl:value-of select="aqd:samplingMethod/aqd:SamplingMethod/aqd:samplingMethod/@xlink:href"/>
           </text:p>
         </table:table-cell>
-        <!-- 4 -->
+        <!-- 10 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
             <xsl:value-of select="aqd:samplingMethod/aqd:SamplingMethod/aqd:otherSamplingMethod"/>
           </text:p>
         </table:table-cell>
-        <!-- 4 -->
+        <!-- 11 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
             <xsl:value-of select="aqd:equivalenceDemonstration/aqd:EquivalenceDemonstration/aqd:equivalenceDemonstrated/@xlink:href"/>
           </text:p>
         </table:table-cell>
-        <!-- 4 -->
+        <!-- 12 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
             <xsl:value-of select="aqd:equivalenceDemonstration/aqd:EquivalenceDemonstration/aqd:demonstrationReport"/>
           </text:p>
         </table:table-cell>
-        <!-- 4 -->
+        <!-- 13 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
             <xsl:value-of select="aqd:dataQuality/aqd:DataQuality/aqd:detectionLimit"/>
           </text:p>
         </table:table-cell>
-        <!-- 4 -->
+        <!-- 14 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
             <xsl:value-of select="aqd:dataQuality/aqd:DataQuality/aqd:detectionLimit/@uom"/>
           </text:p>
         </table:table-cell>
-        <!-- 4 -->
+        <!-- 15 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
             <xsl:value-of select="aqd:dataQuality/aqd:DataQuality/aqd:documentation"/>
           </text:p>
         </table:table-cell>
-        <!-- 4 -->
+        <!-- 16 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
             <xsl:value-of select="aqd:dataQuality/aqd:DataQuality/aqd:qaReport"/>
           </text:p>
         </table:table-cell>
-        <!-- 4 -->
+        <!-- 17 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
             <xsl:value-of select="aqd:duration/aqd:TimeReferences/aqd:unit/@xlink:href"/>
           </text:p>
         </table:table-cell>
-        <!-- 4 -->
+        <!-- 18 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
             <xsl:value-of select="aqd:duration/aqd:TimeReferences/aqd:numUnits"/>
           </text:p>
         </table:table-cell>
-        <!-- 4 -->
+        <!-- 19 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
             <xsl:value-of select="aqd:cadence/aqd:TimeReferences/aqd:unit/@xlink:href"/>
           </text:p>
         </table:table-cell>
-        <!-- 4 -->
+        <!-- 20 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
             <xsl:value-of select="aqd:cadence/aqd:TimeReferences/aqd:numUnits"/>
@@ -1859,127 +1917,254 @@
     </table:table-header-rows>
   </xsl:template>
 
-  <xsl:template name="sampointModel_rows">
+  <xsl:template name="sampointModel_observing">
     <xsl:for-each select=".">
       <table:table-row table:default-cell-value-type="string">
         <!-- 1 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="@gml:id"/>
+            <xsl:value-of select="../@gml:id"/>
           </text:p>
         </table:table-cell>
         <!-- 2 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="ef:inspireId/base:Identifier/base:localId"/>
+            <xsl:value-of select="../ef:inspireId/base:Identifier/base:localId"/>
           </text:p>
         </table:table-cell>
         <!-- 3 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="ef:inspireId/base:Identifier/base:namespace"/>
+            <xsl:value-of select="../ef:inspireId/base:Identifier/base:namespace"/>
           </text:p>
         </table:table-cell>
         <!-- 4 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="ef:inspireId/base:Identifier/base:versionId"/>
+            <xsl:value-of select="../ef:inspireId/base:Identifier/base:versionId"/>
           </text:p>
         </table:table-cell>
         <!-- 5 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="ef:name"/>
+            <xsl:value-of select="../ef:name"/>
           </text:p>
         </table:table-cell>
         <!-- 6 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="ef:mediaMonitored/@xlink:href"/>
+            <xsl:value-of select="../ef:mediaMonitored/@xlink:href"/>
           </text:p>
         </table:table-cell>
         <!-- 7 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="ef:observingCapability/ef:ObservingCapability/ef:observingTime/gml:TimePeriod/gml:beginPosition"/>
+            <xsl:value-of select="ef:ObservingCapability/ef:observingTime/gml:TimePeriod/gml:beginPosition"/>
           </text:p>
         </table:table-cell>
         <!-- 8 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="ef:observingCapability/ef:ObservingCapability/ef:observingTime/gml:TimePeriod/gml:endPosition"/>
+            <xsl:value-of select="ef:ObservingCapability/ef:observingTime/gml:TimePeriod/gml:endPosition"/>
           </text:p>
         </table:table-cell>
         <!-- 9 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="ef:observingCapability/ef:ObservingCapability/ef:processType/@xlink:href"/>
+            <xsl:value-of select="ef:ObservingCapability/ef:processType/@xlink:href"/>
           </text:p>
         </table:table-cell>
         <!-- 10 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="ef:observingCapability/ef:ObservingCapability/ef:resultNature/@xlink:href"/>
+            <xsl:value-of select="ef:ObservingCapability/ef:resultNature/@xlink:href"/>
           </text:p>
         </table:table-cell>
         <!-- 11 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="ef:observingCapability/ef:ObservingCapability/ef:procedure/@xlink:href"/>
+            <xsl:value-of select="ef:ObservingCapability/ef:procedure/@xlink:href"/>
           </text:p>
         </table:table-cell>
         <!-- 12 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="ef:observingCapability/ef:ObservingCapability/ef:featureOfInterest/aqd:AQD_ModelArea/@gml:id"/>
+            <xsl:value-of select="ef:ObservingCapability/ef:featureOfInterest/aqd:AQD_ModelArea/@gml:id"/>
           </text:p>
         </table:table-cell>
         <!-- 13 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="ef:observingCapability/ef:ObservingCapability/ef:featureOfInterest/aqd:AQD_ModelArea/gml:name"/>
+            <xsl:value-of select="ef:ObservingCapability/ef:featureOfInterest/aqd:AQD_ModelArea/gml:name"/>
           </text:p>
         </table:table-cell>
         <!-- 14 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="ef:organisationLevel/@xlink:href"/>
+            <xsl:value-of select="../ef:organisationLevel/@xlink:href"/>
           </text:p>
         </table:table-cell>
         <!-- 15 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="ef:observingCapability/ef:ObservingCapability/ef:observedProperty/@xlink:href"/>
+            <xsl:value-of select="ef:ObservingCapability/ef:observedProperty/@xlink:href"/>
           </text:p>
         </table:table-cell>
         <!-- 16 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType/@xlink:href"/>
+            <xsl:value-of select="../aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType/@xlink:href"/>
           </text:p>
         </table:table-cell>
         <!-- 17 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric/@xlink:href"/>
+            <xsl:value-of select="../aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric/@xlink:href"/>
           </text:p>
         </table:table-cell>
         <!-- 18 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/@xlink:href"/>
+            <xsl:value-of select="../aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/@xlink:href"/>
           </text:p>
         </table:table-cell>
         <!-- 19 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="aqd:assessmentType/@xlink:href"/>
+            <xsl:value-of select="../aqd:assessmentType/@xlink:href"/>
           </text:p>
         </table:table-cell>
         <!-- 20 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="aqd:zone/@xlink:href"/>
+            <xsl:value-of select="../aqd:zone/@xlink:href"/>
+          </text:p>
+        </table:table-cell>
+      </table:table-row>
+    </xsl:for-each>
+  </xsl:template>
+
+  <xsl:template name="sampointModel_environment">
+    <xsl:for-each select=".">
+      <table:table-row table:default-cell-value-type="string">
+        <!-- 1 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="../@gml:id"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 2 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="../ef:inspireId/base:Identifier/base:localId"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 3 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="../ef:inspireId/base:Identifier/base:namespace"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 4 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="../ef:inspireId/base:Identifier/base:versionId"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 5 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="../ef:name"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 6 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="../ef:mediaMonitored/@xlink:href"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 7 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="../ef:observingCapability/ef:ObservingCapability/ef:observingTime/gml:TimePeriod/gml:beginPosition"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 8 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="../ef:observingCapability/ef:ObservingCapability/ef:observingTime/gml:TimePeriod/gml:endPosition"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 9 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="../ef:observingCapability/ef:ObservingCapability/ef:processType/@xlink:href"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 10 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="../ef:observingCapability/ef:ObservingCapability/ef:resultNature/@xlink:href"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 11 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="../ef:observingCapability/ef:ObservingCapability/ef:procedure/@xlink:href"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 12 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="../ef:observingCapability/ef:ObservingCapability/ef:featureOfInterest/aqd:AQD_ModelArea/@gml:id"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 13 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="../ef:observingCapability/ef:ObservingCapability/ef:featureOfInterest/aqd:AQD_ModelArea/gml:name"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 14 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="../ef:organisationLevel/@xlink:href"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 15 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="../ef:observingCapability/ef:ObservingCapability/ef:observedProperty/@xlink:href"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 16 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:EnvironmentalObjective/aqd:objectiveType/@xlink:href"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 17 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:EnvironmentalObjective/aqd:reportingMetric/@xlink:href"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 18 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:EnvironmentalObjective/aqd:protectionTarget/@xlink:href"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 19 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="../aqd:assessmentType/@xlink:href"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 20 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="../aqd:zone/@xlink:href"/>
           </text:p>
         </table:table-cell>
       </table:table-row>
@@ -3696,7 +3881,7 @@
         <!-- 9 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:stationUsed/@xlink:href"/>
+            <xsl:value-of select="aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:stationUsed/@xlink:href" separator="&sep;"/>
           </text:p>
         </table:table-cell>
         <!-- 10 -->
@@ -3791,6 +3976,10 @@
               table:default-cell-value-type="string"
               table:default-cell-style-name="long-string-heading">
       </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
     </table:table-columns>
     <table:table-header-rows>
       <table:table-row table:default-cell-value-type="string">
@@ -3827,6 +4016,11 @@
         <table:table-cell table:style-name="Heading2">
           <text:p>
             Description
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            SamplingPointAssessment
           </text:p>
         </table:table-cell>
         <table:table-cell table:style-name="Heading2">
@@ -3884,6 +4078,12 @@
           </text:p>
         </table:table-cell>
         <!-- 8 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:samplingPointAssessmentMetadata/@xlink:href" separator="&sep;"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 9 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
             <xsl:value-of select="aqd:modelAssessmentMetadata/@xlink:href"/>
@@ -4305,6 +4505,13 @@
               table:default-cell-value-type="string"
               table:default-cell-style-name="long-string-heading">
       </table:table-column>
+      <xsl:for-each select="max(//count(aqd:environmentalObjective))">
+
+      </xsl:for-each>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
       <table:table-column
               table:default-cell-value-type="string"
               table:default-cell-style-name="long-string-heading">
@@ -4477,7 +4684,12 @@
     </table:table-cell>
     <table:table-cell table:style-name="Heading2">
       <text:p>
-        Pos
+        Latitude
+      </text:p>
+    </table:table-cell>
+    <table:table-cell table:style-name="Heading2">
+      <text:p>
+        Longitude
       </text:p>
     </table:table-cell>
     <table:table-cell table:style-name="Heading2">
@@ -4489,157 +4701,326 @@
     </table:table-header-rows>
   </xsl:template>
 
-  <xsl:template name="sampointGeneral_rows">
+  <xsl:template name="sampointGeneral_observing">
     <xsl:for-each select=".">
       <table:table-row table:default-cell-value-type="string">
         <!-- 1 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="@gml:id"/>
+            <xsl:value-of select="../@gml:id"/>
           </text:p>
         </table:table-cell>
         <!-- 2 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="ef:inspireId/base:Identifier/base:localId"/>
+            <xsl:value-of select="../ef:inspireId/base:Identifier/base:localId"/>
           </text:p>
         </table:table-cell>
         <!-- 3 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="ef:inspireId/base:Identifier/base:namespace"/>
+            <xsl:value-of select="../ef:inspireId/base:Identifier/base:namespace"/>
           </text:p>
         </table:table-cell>
         <!-- 4 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="ef:inspireId/base:Identifier/base:versionId"/>
+            <xsl:value-of select="../ef:inspireId/base:Identifier/base:versionId"/>
           </text:p>
         </table:table-cell>
         <!-- 5 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="ef:name"/>
+            <xsl:value-of select="../ef:name"/>
           </text:p>
         </table:table-cell>
         <!-- 6 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="aqd:assessmentType/@xlink:href"/>
+            <xsl:value-of select="../aqd:assessmentType/@xlink:href"/>
           </text:p>
         </table:table-cell>
         <!-- 7 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="aqd:zone/@xlink:href"/>
+            <xsl:value-of select="../aqd:zone/@xlink:href"/>
           </text:p>
         </table:table-cell>
         <!-- 8 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="ef:broader/@xlink:href"/>
+            <xsl:value-of select="../ef:broader/@xlink:href"/>
           </text:p>
         </table:table-cell>
         <!-- 9 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="ef:belongsTo/@xlink:href"/>
+            <xsl:value-of select="../ef:belongsTo/@xlink:href"/>
           </text:p>
         </table:table-cell>
         <!-- 10 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="ef:operationalActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:beginPosition"/>
+            <xsl:value-of select="../ef:operationalActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:beginPosition"/>
           </text:p>
         </table:table-cell>
         <!-- 11 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="ef:operationalActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:endPosition"/>
+            <xsl:value-of select="../ef:operationalActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:endPosition"/>
           </text:p>
         </table:table-cell>
         <!-- 12 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="aqd:relevantEmissions/aqd:RelevantEmissions/aqd:stationClassification/@xlink:href"/>
+            <xsl:value-of select="../aqd:relevantEmissions/aqd:RelevantEmissions/aqd:stationClassification/@xlink:href"/>
           </text:p>
         </table:table-cell>
         <!-- 13 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="ef:observingCapability/ef:ObservingCapability/ef:featureOfInterest/@xlink:href"/>
+            <xsl:value-of select="ef:ObservingCapability/ef:featureOfInterest/@xlink:href"/>
           </text:p>
         </table:table-cell>
         <!-- 14 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="ef:observingCapability/ef:ObservingCapability/ef:observingTime/gml:TimePeriod/gml:beginPosition"/>
+            <xsl:value-of select="ef:ObservingCapability/ef:observingTime/gml:TimePeriod/gml:beginPosition"/>
           </text:p>
         </table:table-cell>
         <!-- 15 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="ef:observingCapability/ef:ObservingCapability/ef:observingTime/gml:TimePeriod/gml:endPosition"/>
+            <xsl:value-of select="ef:ObservingCapability/ef:observingTime/gml:TimePeriod/gml:endPosition"/>
           </text:p>
         </table:table-cell>
         <!-- 16 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="ef:observingCapability/ef:ObservingCapability/ef:observedProperty/@xlink:href"/>
+            <xsl:value-of select="ef:ObservingCapability/ef:observedProperty/@xlink:href"/>
           </text:p>
         </table:table-cell>
         <!-- 17 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="aqd:usedAQD"/>
+            <xsl:value-of select="../aqd:usedAQD"/>
           </text:p>
         </table:table-cell>
         <!-- 18 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType/@xlink:href"/>
+            <xsl:value-of select="../aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType/@xlink:href"/>
           </text:p>
         </table:table-cell>
         <!-- 19 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric/@xlink:href"/>
+            <xsl:value-of select="../aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric/@xlink:href"/>
           </text:p>
         </table:table-cell>
         <!-- 20 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/@xlink:href"/>
+            <xsl:value-of select="../aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/@xlink:href"/>
           </text:p>
         </table:table-cell>
         <!-- 21 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="aqd:reportingDB"/>
+            <xsl:value-of select="../aqd:reportingDB"/>
           </text:p>
         </table:table-cell>
         <!-- 22 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="aqd:reportingDBOther"/>
+            <xsl:value-of select="../aqd:reportingDBOther"/>
           </text:p>
         </table:table-cell>
         <!-- 23 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="ef:geometry/gml:Point/@srsName"/>
+            <xsl:value-of select="../ef:geometry/gml:Point/@srsName"/>
           </text:p>
         </table:table-cell>
         <!-- 24 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="ef:geometry/gml:Point/gml:pos"/>
+            <xsl:value-of select="normalize-space(tokenize(../ef:geometry/gml:Point/gml:pos,' ')[1])" />
           </text:p>
         </table:table-cell>
         <!-- 25 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="ef:involvedIn/@xlink:href"/>
+            <xsl:value-of select="normalize-space(tokenize(../ef:geometry/gml:Point/gml:pos,' ')[2])" />
+          </text:p>
+        </table:table-cell>
+        <!-- 26 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="../ef:involvedIn/@xlink:href"/>
+          </text:p>
+        </table:table-cell>
+      </table:table-row>
+    </xsl:for-each>
+  </xsl:template>
+
+  <xsl:template name="sampointGeneral_environment">
+    <xsl:for-each select=".">
+      <table:table-row table:default-cell-value-type="string">
+        <!-- 1 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="../@gml:id"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 2 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="../ef:inspireId/base:Identifier/base:localId"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 3 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="../ef:inspireId/base:Identifier/base:namespace"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 4 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="../ef:inspireId/base:Identifier/base:versionId"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 5 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="../ef:name"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 6 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="../aqd:assessmentType/@xlink:href"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 7 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="../aqd:zone/@xlink:href"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 8 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="../ef:broader/@xlink:href"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 9 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="../ef:belongsTo/@xlink:href"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 10 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="../ef:operationalActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:beginPosition"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 11 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="../ef:operationalActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:endPosition"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 12 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="../aqd:relevantEmissions/aqd:RelevantEmissions/aqd:stationClassification/@xlink:href"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 13 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="../ef:observingCapability/ef:ObservingCapability/ef:featureOfInterest/@xlink:href"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 14 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="../ef:observingCapability/ef:ObservingCapability/ef:observingTime/gml:TimePeriod/gml:beginPosition"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 15 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="../ef:observingCapability/ef:ObservingCapability/ef:observingTime/gml:TimePeriod/gml:endPosition"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 16 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="../ef:observingCapability/ef:ObservingCapability/ef:observedProperty/@xlink:href"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 17 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="../aqd:usedAQD"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 18 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:EnvironmentalObjective/aqd:objectiveType/@xlink:href"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 19 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:EnvironmentalObjective/aqd:reportingMetric/@xlink:href"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 20 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:EnvironmentalObjective/aqd:protectionTarget/@xlink:href"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 21 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="../aqd:reportingDB"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 22 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="../aqd:reportingDBOther"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 23 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="../ef:geometry/gml:Point/@srsName"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 24 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="normalize-space(tokenize(../ef:geometry/gml:Point/gml:pos,' ')[1])" />
+          </text:p>
+        </table:table-cell>
+        <!-- 25 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="normalize-space(tokenize(../ef:geometry/gml:Point/gml:pos,' ')[2])" />
+          </text:p>
+        </table:table-cell>
+        <!-- 26 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="../ef:involvedIn/@xlink:href"/>
           </text:p>
         </table:table-cell>
       </table:table-row>
