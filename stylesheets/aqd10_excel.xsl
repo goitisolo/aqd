@@ -4840,7 +4840,7 @@
     <xsl:variable name="Parent" select="."/>
     <xsl:for-each select="ef:observingCapability">
       <xsl:variable name="observingCapability" select="."/>
-      <xsl:for-each select="$Parent/aqd:environmentalObjective">
+      <xsl:for-each-group select="$Parent/aqd:environmentalObjective/aqd:EnvironmentalObjective" group-by="concat(aqd:objectiveType/@xlink:href,aqd:reportingMetric/@xlink:href,aqd:protectionTarget/@xlink:href)">
         <table:table-row table:default-cell-value-type="string">
           <!-- 1 -->
           <table:table-cell table:style-name="cell1">
@@ -4947,19 +4947,19 @@
           <!-- 18 -->
           <table:table-cell table:style-name="cell1">
             <text:p>
-              <xsl:value-of select="aqd:EnvironmentalObjective/aqd:objectiveType/@xlink:href"/>
+              <xsl:value-of select="aqd:objectiveType/@xlink:href"/>
             </text:p>
           </table:table-cell>
           <!-- 19 -->
           <table:table-cell table:style-name="cell1">
             <text:p>
-              <xsl:value-of select="aqd:EnvironmentalObjective/aqd:reportingMetric/@xlink:href"/>
+              <xsl:value-of select="aqd:reportingMetric/@xlink:href"/>
             </text:p>
           </table:table-cell>
           <!-- 20 -->
           <table:table-cell table:style-name="cell1">
             <text:p>
-              <xsl:value-of select="aqd:EnvironmentalObjective/aqd:protectionTarget/@xlink:href"/>
+              <xsl:value-of select="aqd:protectionTarget/@xlink:href"/>
             </text:p>
           </table:table-cell>
           <!-- 21 -->
@@ -4983,13 +4983,13 @@
           <!-- 24 -->
           <table:table-cell table:style-name="cell1">
             <text:p>
-              <xsl:value-of select="normalize-space(tokenize(../ef:geometry/gml:Point/gml:pos,' ')[1])" />
+              <xsl:value-of select="normalize-space(tokenize($Parent/ef:geometry/gml:Point/gml:pos,' ')[1])" />
             </text:p>
           </table:table-cell>
           <!-- 25 -->
           <table:table-cell table:style-name="cell1">
             <text:p>
-              <xsl:value-of select="normalize-space(tokenize(../ef:geometry/gml:Point/gml:pos,' ')[2])" />
+              <xsl:value-of select="normalize-space(tokenize($Parent/ef:geometry/gml:Point/gml:pos,' ')[2])" />
             </text:p>
           </table:table-cell>
           <!-- 26 -->
@@ -4999,7 +4999,7 @@
             </text:p>
           </table:table-cell>
         </table:table-row>
-      </xsl:for-each>
+      </xsl:for-each-group>
     </xsl:for-each>
   </xsl:template>
 
