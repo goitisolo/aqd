@@ -298,6 +298,22 @@
             </table:table-rows>
           </table:table>
         </xsl:if>
+        <!-- SAMPLING POINT MODEL AREA -->
+        <xsl:if test="count(gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_ModelArea) > 0 or
+        count(gml:featureMember/aqd:AQD_ModelArea) > 0">
+          <table:table>
+            <xsl:attribute name="table:name"><xsl:text>AQModelArea</xsl:text></xsl:attribute>
+            <xsl:call-template name="sampointModelArea_headers"/>
+            <table:table-rows>
+              <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_ModelArea">
+                <xsl:call-template name="sampointModelArea_rows"/>
+              </xsl:for-each>
+              <xsl:for-each select="gml:featureMember/aqd:AQD_ModelArea">
+                <xsl:call-template name="sampointModelArea_rows"/>
+              </xsl:for-each>
+            </table:table-rows>
+          </table:table>
+        </xsl:if>
         <!-- SAMPLING POINT GENERAL -->
         <xsl:if test="count(gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_SamplingPoint) > 0 or
         count(gml:featureMember/aqd:AQD_SamplingPoint) > 0">
@@ -4587,6 +4603,82 @@
         <table:table-cell table:style-name="cell1">
           <text:p>
             <xsl:value-of select="aqd:dataQualityReport"/>
+          </text:p>
+        </table:table-cell>
+      </table:table-row>
+    </xsl:for-each>
+  </xsl:template>
+
+  <xsl:template name="sampointModelArea_headers">
+    <table:table-columns>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+    </table:table-columns>
+    <table:table-header-rows>
+      <table:table-row table:default-cell-value-type="string">
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            GMLID
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            LocalId
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            Namespace
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            Version
+          </text:p>
+        </table:table-cell>
+      </table:table-row>
+    </table:table-header-rows>
+  </xsl:template>
+
+  <xsl:template name="sampointModelArea_rows">
+    <xsl:for-each select=".">
+      <table:table-row table:default-cell-value-type="string">
+        <!-- 1 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="@gml:id"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 2 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:inspireId/base:Identifier/base:localId"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 3 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:inspireId/base:Identifier/base:namespace"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 4 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="aqd:inspireId/base:Identifier/base:versionId"/>
           </text:p>
         </table:table-cell>
       </table:table-row>
