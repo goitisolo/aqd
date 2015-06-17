@@ -102,6 +102,8 @@
         <unit><xsl:value-of select="@unit"/></unit>
       </xsl:if>
       <pollutant><xsl:attribute name="rdf:resource"><xsl:value-of select="@property_id"/></xsl:attribute></pollutant>
+      <timecoveragePct><xsl:value-of select="@timecoverage"/></timecoveragePct>
+      <datacoveragePct><xsl:value-of select="@datacoverage"/></datacoveragePct>
       </ValidatedExceedence>
     <!--
 network_namespace="ES.BDCA.AQD"
