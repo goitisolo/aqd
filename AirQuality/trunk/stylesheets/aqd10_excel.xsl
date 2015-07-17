@@ -3322,6 +3322,14 @@
               table:default-cell-value-type="string"
               table:default-cell-style-name="long-string-heading">
       </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
     </table:table-columns>
     <table:table-header-rows>
       <table:table-row table:default-cell-value-type="string">
@@ -3373,6 +3381,16 @@
         <table:table-cell table:style-name="Heading2">
           <text:p>
             Pollutant
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            ReportingBegin
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            ReportingEnd
           </text:p>
         </table:table-cell>
       </table:table-row>
@@ -3440,6 +3458,18 @@
         <table:table-cell table:style-name="cell1">
           <text:p>
             <xsl:value-of select="aqd:pollutant/@xlink:href"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 11 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="../../aqd:reportingPeriod/gml:TimePeriod/gml:beginPosition"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 12 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="../../aqd:reportingPeriod/gml:TimePeriod/gml:endPosition"/>
           </text:p>
         </table:table-cell>
       </table:table-row>
@@ -4293,6 +4323,14 @@
               table:default-cell-value-type="string"
               table:default-cell-style-name="long-string-heading">
       </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
     </table:table-columns>
     <table:table-header-rows>
       <table:table-row table:default-cell-value-type="string">
@@ -4349,6 +4387,16 @@
         <table:table-cell table:style-name="Heading2">
           <text:p>
             ClassificationReport
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            ReportingBegin
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            ReportingEnd
           </text:p>
         </table:table-cell>
       </table:table-row>
@@ -4422,6 +4470,18 @@
         <table:table-cell table:style-name="cell1">
           <text:p>
             <xsl:value-of select="aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:classificationReport"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 12 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="../../aqd:reportingPeriod/gml:TimePeriod/gml:beginPosition"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 13 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="../../aqd:reportingPeriod/gml:TimePeriod/gml:endPosition"/>
           </text:p>
         </table:table-cell>
       </table:table-row>
@@ -5321,6 +5381,14 @@
               table:default-cell-value-type="string"
               table:default-cell-style-name="long-string-heading">
       </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
     </table:table-columns>
     <table:table-header-rows>
       <table:table-row table:default-cell-value-type="string">
@@ -5397,6 +5465,16 @@
         <table:table-cell table:style-name="Heading2">
           <text:p>
             SRSName
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            ReportingBegin
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            ReportingEnd
           </text:p>
         </table:table-cell>
       </table:table-row>
@@ -5494,6 +5572,18 @@
         <table:table-cell table:style-name="cell1">
           <text:p>
             <xsl:value-of select="am:geometry/*/@srsName"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 16 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="../../aqd:reportingPeriod/gml:TimePeriod/gml:beginPosition"/>
+          </text:p>
+        </table:table-cell>
+        <!-- 17 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="../../aqd:reportingPeriod/gml:TimePeriod/gml:endPosition"/>
           </text:p>
         </table:table-cell>
       </table:table-row>
