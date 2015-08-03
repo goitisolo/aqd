@@ -472,6 +472,29 @@
             </table:table-rows>
           </table:table>
         </xsl:if>
+        <!-- ZoneMethodsRelation -->
+        <xsl:if test="count(gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_AssessmentRegime/aqd:assessmentMethods/aqd:AssessmentMethods) > 0 or
+        count(gml:featureMember/aqd:AQD_AssessmentRegime/aqd:assessmentMethods/aqd:AssessmentMethods) > 0">
+          <table:table>
+            <xsl:attribute name="table:name"><xsl:text>ZoneMethodsRelation</xsl:text></xsl:attribute>
+            <xsl:call-template name="zoneMethodsRelation_headers"/>
+            <table:table-rows>
+              <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_AssessmentRegime/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata">
+                <xsl:call-template name="zoneMethodsRelation_rows"/>
+              </xsl:for-each>
+              <xsl:for-each select="gml:featureMember/aqd:AQD_AssessmentRegime/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata">
+                <xsl:call-template name="zoneMethodsRelation_rows"/>
+              </xsl:for-each>
+
+              <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_AssessmentRegime/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:modelAssessmentMetadata">
+                <xsl:call-template name="zoneMethodsRelation_rows"/>
+              </xsl:for-each>
+              <xsl:for-each select="gml:featureMember/aqd:AQD_AssessmentRegime/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:modelAssessmentMetadata">
+                <xsl:call-template name="zoneMethodsRelation_rows"/>
+              </xsl:for-each>
+            </table:table-rows>
+          </table:table>
+        </xsl:if>
         <!-- ASSESS REGIME GENERAL -->
         <xsl:if test="count(gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/aqd:AQD_AssessmentRegime) > 0 or count(gml:featureMember/aqd:AQD_AssessmentRegime) > 0">
           <table:table>
@@ -4277,6 +4300,145 @@
     </xsl:for-each>
   </xsl:template>
 
+  <!-- Zone Methods Relation -->
+  <xsl:template name="zoneMethodsRelation_headers">
+    <table:table-columns>
+      <!-- 1 -->
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <!-- 2 -->
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <!-- 3 -->
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <!-- 4 -->
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <!-- 5 -->
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <!-- 6 -->
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+    </table:table-columns>
+    <table:table-header-rows>
+      <table:table-row table:default-cell-value-type="string">
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            GMLID
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            LocalId
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            Namespace
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            Zone
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            SamplingPointAssessment
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            ModelAssessmentMetadata
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            ReportingBegin
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            ReportingEnd
+          </text:p>
+        </table:table-cell>
+      </table:table-row>
+    </table:table-header-rows>
+  </xsl:template>
+
+  <xsl:template name="zoneMethodsRelation_rows">
+    <xsl:variable name="Parent" select="../."/>
+    <xsl:variable name="currentPath" select="."/>
+    <table:table-row table:default-cell-value-type="string">
+      <!-- 1 -->
+      <table:table-cell table:style-name="cell1">
+        <text:p>
+          <xsl:value-of select="$Parent/../../@gml:id"/>
+        </text:p>
+      </table:table-cell>
+      <!-- 2 -->
+      <table:table-cell table:style-name="cell1">
+        <text:p>
+          <xsl:value-of select="$Parent/../../aqd:inspireId/base:Identifier/base:localId"/>
+        </text:p>
+      </table:table-cell>
+      <!-- 3 -->
+      <table:table-cell table:style-name="cell1">
+        <text:p>
+          <xsl:value-of select="$Parent/../../aqd:inspireId/base:Identifier/base:namespace"/>
+        </text:p>
+      </table:table-cell>
+      <!-- 4 -->
+      <table:table-cell table:style-name="cell1">
+        <text:p>
+          <xsl:value-of select="$Parent/../../aqd:zone/@xlink:href"/>
+        </text:p>
+      </table:table-cell>
+      <!-- 5 -->
+      <table:table-cell table:style-name="cell1">
+        <text:p>
+          <xsl:if test="$currentPath/name() = 'aqd:samplingPointAssessmentMetadata'">
+            <xsl:value-of select="$currentPath/@xlink:href"/>
+          </xsl:if>
+        </text:p>
+      </table:table-cell>
+      <!-- 6 -->
+      <table:table-cell table:style-name="cell1">
+        <text:p>
+          <xsl:if test="$currentPath/name() = 'aqd:modelAssessmentMetadata'">
+            <xsl:value-of select="$currentPath/@xlink:href"/>
+          </xsl:if>
+        </text:p>
+      </table:table-cell>
+      <!-- 7 -->
+      <table:table-cell table:style-name="cell1">
+        <text:p>
+          <xsl:value-of select="$Parent/../../../../aqd:reportingPeriod/gml:TimePeriod/gml:beginPosition"/>
+        </text:p>
+      </table:table-cell>
+      <!-- 8 -->
+      <table:table-cell table:style-name="cell1">
+        <text:p>
+          <xsl:value-of select="$Parent/../../../../aqd:reportingPeriod/gml:TimePeriod/gml:endPosition"/>
+        </text:p>
+      </table:table-cell>
+    </table:table-row>
+  </xsl:template>
+
   <xsl:template name="assessRegimeGeneral_headers">
     <table:table-columns>
       <table:table-column
@@ -4988,6 +5150,9 @@
     </table:table-header-rows>
   </xsl:template>
 
+
+  <!-- In the next template we are using for-each-group. This has been used to help us with element grouping.
+   We create a separate row for each observingCapability and for each EnvironmentalObjective that uses 3 different elements as a key. -->
   <xsl:template name="sampointGeneral_environment">
     <xsl:variable name="Parent" select="."/>
     <xsl:for-each select="ef:observingCapability">
