@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<gml:FeatureCollection xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:om="http://www.opengis.net/om/2.0" xmlns:aqd="http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0" xmlns:am="http://inspire.ec.europa.eu/schemas/am/3.0" xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3" xmlns:gmd="http://www.isotc211.org/2005/gmd" xmlns:swe="http://www.opengis.net/swe/2.0" xmlns:sams="http://www.opengis.net/samplingSpatial/2.0" xmlns:ompr="http://inspire.ec.europa.eu/schemas/ompr/2.0" xmlns:ef="http://inspire.ec.europa.eu/schemas/ef/3.0" xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" xmlns:sam="http://www.opengis.net/sampling/2.0" xmlns:base2="http://inspire.ec.europa.eu/schemas/base2/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gco="http://www.isotc211.org/2005/gco" xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0" xmlns:gml="http://www.opengis.net/gml/3.2" xsi:schemaLocation="http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0 http://dd.eionet.europa.eu/schemas/id2011850eu-1.0/AirQualityReporting.xsd" gml:id="ReportingHeader">
+  <gml:featureMember>
+    <aqd:AQD_ReportingHeader gml:id="RH_ES_20150731">
+      <aqd:change>true</aqd:change>
+      <aqd:changeDescription>First version 2014</aqd:changeDescription>
+      <aqd:inspireId>
+        <base:Identifier>
+          <base:localId>RH_ES_D_SamplingPoint_20150731</base:localId>
+          <base:namespace>ES.BDCA.AQD</base:namespace>
+          <base:versionId/>
+        </base:Identifier>
+      </aqd:inspireId>
+      <aqd:reportingAuthority>
+        <base2:RelatedParty>
+          <base2:individualName>
+            <gmd:LocalisedCharacterString>MAJ BRITT LARKA ABELLÁN</gmd:LocalisedCharacterString>
+          </base2:individualName>
+          <base2:organisationName>
+            <gmd:LocalisedCharacterString>MINISTERIO DE AGRICULTURA, ALIMENTACIÓN Y MEDIO AMBIENTE</gmd:LocalisedCharacterString>
+          </base2:organisationName>
+          <base2:contact>
+            <base2:Contact>
+              <base2:address>
+                <ad:AddressRepresentation>
+                  <ad:adminUnit>
+                    <gn:GeographicalName>
+                      <gn:language>spa</gn:language>
+                      <gn:nativeness>endonym</gn:nativeness>
+                      <gn:nameStatus xsi:nil="true"/>
+                      <gn:sourceOfName xsi:nil="true"/>
+                      <gn:pronunciation xsi:nil="true"/>
+                      <gn:spelling>
+                        <gn:SpellingOfName>
+                          <gn:text>PLAZA SAN JUAN DE LA CRUZ, S/N   28071  MADRID, MADRID</gn:text>
+                          <gn:script xsi:nil="true"/>
+                        </gn:SpellingOfName>
+                      </gn:spelling>
+                    </gn:GeographicalName>
+                  </ad:adminUnit>
+                  <ad:locatorDesignator>Spain</ad:locatorDesignator>
+                </ad:AddressRepresentation>
+              </base2:address>
+              <base2:electronicMailAddress>mblarka@magrama.es</base2:electronicMailAddress>
+              <base2:telephoneVoice>915975428</base2:telephoneVoice>
+              <base2:website>http://www.magrama.gob.es/es/</base2:website>
+            </base2:Contact>
+          </base2:contact>
+        </base2:RelatedParty>
+      </aqd:reportingAuthority>
+      <aqd:reportingPeriod>
+        <gml:TimePeriod gml:id="ReportingPeriod_Timestamp">
+          <gml:beginPosition>2014-01-01T01:00:01</gml:beginPosition>
+          <gml:endPosition>2014-12-31T24:00:00</gml:endPosition>
+        </gml:TimePeriod>
+      </aqd:reportingPeriod>
+      <aqd:content xlink:href="ES.BDCA.AQD/SP_01022001_7_8"/>
+    </aqd:AQD_ReportingHeader>
+  </gml:featureMember>
+  <gml:featureMember>
+    <aqd:AQD_SamplingPoint gml:id="SP_01022001_7_8">
+      <ef:inspireId>
+        <base:Identifier>
+          <base:localId>SP_01022001_7_8</base:localId>
+          <base:namespace>ES.BDCA.AQD</base:namespace>
+          <base:versionId>First version 2014</base:versionId>
+        </base:Identifier>
+      </ef:inspireId>
+      <ef:name>ES1672A_NO_01022001_7_8</ef:name>
+      <ef:mediaMonitored xlink:href="http://inspire.ec.europa.eu/codeList/MediaValue/air"/>
+      <ef:geometry>
+        <gml:Point gml:id="Point_01022001_7_8ba9daa99-0bac-4433-9724-5385f0d8734e" srsName="urn:ogc:def:crs:EPSG::4258">
+          <gml:pos srsDimension="2">42.51833333 -2.61944444</gml:pos>
+        </gml:Point>
+      </ef:geometry>
+      <ef:observingCapability>
+        <ef:ObservingCapability gml:id="Capability_01022001_7_8.1">
+          <ef:observingTime>
+            <gml:TimePeriod gml:id="TimePeriod_01022001_7_8.1_4d2f55e9-0a20-416c-ba3e-0c4a7e74251e">
+              <gml:beginPosition>2004-05-10T00:00:00+00:00</gml:beginPosition>
+              <gml:endPosition indeterminatePosition="unknown"/>
+            </gml:TimePeriod>
+          </ef:observingTime>
+          <ef:processType xlink:href="http://inspire.ec.europa.eu/codeList/ProcessTypeValue/process"/>
+          <ef:resultNature xlink:href="http://inspire.ec.europa.eu/codeList/ResultNatureValue/primary"/>
+          <ef:procedure xlink:href="ES.BDCA.AQD/SPP_01022001_7_8.1"/>
+          <ef:featureOfInterest xlink:href="ES.BDCA.AQD/SAM_01022001_7_8"/>
+          <ef:observedProperty xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/38"/>
+        </ef:ObservingCapability>
+      </ef:observingCapability>
+      <ef:broader xlink:href="ES.BDCA.AQD/STA_ES1672A"/>
+      <ef:involvedIn/>
+      <ef:measurementRegime xlink:href="http://inspire.ec.europa.eu/codeList/MeasurementRegimeValue/continuousDataCollection"/>
+      <ef:mobile>false</ef:mobile>
+      <ef:operationalActivityPeriod>
+        <ef:OperationalActivityPeriod gml:id="SamplingPoint_ActivityPeriod_LOCAL_ID_01022001_7_8">
+          <ef:activityTime>
+            <gml:TimePeriod gml:id="SamplingPointTimePeriod_01022001_7_8_9dc43aba-fdca-4b12-a5ab-5bc5ed7d5c17">
+              <gml:beginPosition>2004-05-10T00:00:00+00:00</gml:beginPosition>
+              <gml:endPosition indeterminatePosition="unknown"/>
+            </gml:TimePeriod>
+          </ef:activityTime>
+        </ef:OperationalActivityPeriod>
+      </ef:operationalActivityPeriod>
+      <ef:belongsTo xlink:href="ES.BDCA.AQD/NET_ES216A"/>
+      <aqd:assessmentType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/fixed"/>
+      <aqd:relevantEmissions>
+        <aqd:RelevantEmissions>
+          <aqd:distanceSource uom="m">-999</aqd:distanceSource>
+          <aqd:heatingEmissions uom="t/km2/year">-999</aqd:heatingEmissions>
+          <aqd:industrialEmissions uom="t/year">-999</aqd:industrialEmissions>
+          <aqd:stationClassification xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/stationclassification/traffic"/>
+          <aqd:trafficEmissions uom="t/km/year">-999</aqd:trafficEmissions>
+        </aqd:RelevantEmissions>
+      </aqd:relevantEmissions>
+      <aqd:usedAQD>false</aqd:usedAQD>
+      <aqd:zone/>
+    </aqd:AQD_SamplingPoint>
+  </gml:featureMember>
+</gml:FeatureCollection>
