@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0" xmlns:am="http://inspire.ec.europa.eu/schemas/am/3.0" xmlns:am-ru="http://inspire.jrc.ec.europa.eu/schemas/am-ru/2.0" xmlns:aqd="http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0" xmlns:base2="http://inspire.ec.europa.eu/schemas/base2/1.0" xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3" xmlns:ef="http://inspire.ec.europa.eu/schemas/ef/3.0" xmlns:fn="http://www.w3.org/2005/xpath-functions" xmlns:gco="http://www.isotc211.org/2005/gco" xmlns:gmd="http://www.isotc211.org/2005/gmd" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" xmlns:gsr="http://www.isotc211.org/2005/gsr" xmlns:gss="http://www.isotc211.org/2005/gss" xmlns:gts="http://www.isotc211.org/2005/gts" xmlns:om="http://www.opengis.net/om/2.0" xmlns:ompr="http://inspire.ec.europa.eu/schemas/ompr/2.0" xmlns:sam="http://www.opengis.net/sampling/2.0" xmlns:sams="http://www.opengis.net/samplingSpatial/2.0" xmlns:swe="http://www.opengis.net/swe/2.0" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" xmlns:sparql="http://www.w3.org/2005/sparql-results#" xmlns:owl="http://www.w3.org/2002/07/owl#" xmlns:skos="http://www.w3.org/2008/05/skos#" xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#" xmlns="http://rdfdata.eionet.europa.eu/airquality/ontology/" xmlns:str="http://exslt.org/strings"><AQD_ReportingHeader rdf:ID="RH_ES_20150731">
+      <change rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</change>
+      <changeDescription>First version 2014</changeDescription>
+      <declarationFor><rdf:Description rdf:about="http://reference.eionet.europa.eu/aq/ES.BDCA.AQD/RH_ES_D_SamplingPoint_20150731"><hasDeclaration xmlns="http://reference.eionet.europa.eu/aq/ontology/" rdf:resource="#RH_ES_20150731"/></rdf:Description></declarationFor><inspireId><Identifier>
+          <localId>RH_ES_D_SamplingPoint_20150731</localId>
+          <namespace>ES.BDCA.AQD</namespace>
+          
+        </Identifier></inspireId>
+      <reportingAuthority><RelatedParty>
+          <individualName>MAJ BRITT LARKA ABELLÁN</individualName>
+          <organisationName>MINISTERIO DE AGRICULTURA, ALIMENTACIÓN Y MEDIO AMBIENTE</organisationName>
+          <contact><Contact>
+              <address><AddressRepresentation>
+                  <adminUnit>PLAZA SAN JUAN DE LA CRUZ, S/N   28071  MADRID, MADRID</adminUnit>
+                  <locatorDesignator>Spain</locatorDesignator>
+                </AddressRepresentation></address>
+              <electronicMailAddress>mblarka@magrama.es</electronicMailAddress>
+              <telephoneVoice>915975428</telephoneVoice>
+              <website>http://www.magrama.gob.es/es/</website>
+            </Contact></contact>
+        </RelatedParty></reportingAuthority>
+      <reportingPeriod><TimePeriod rdf:ID="ReportingPeriod_Timestamp">
+          <beginPosition rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2014-01-01T01:00:01</beginPosition>
+          <endPosition rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2014-12-31T24:00:00</endPosition>
+        </TimePeriod></reportingPeriod>
+      <content rdf:resource="http://reference.eionet.europa.eu/aq/ES.BDCA.AQD/SP_01022001_7_8"/>
+    </AQD_ReportingHeader><AQD_SamplingPoint rdf:ID="SP_01022001_7_8">
+      <declarationFor><rdf:Description rdf:about="http://reference.eionet.europa.eu/aq/ES.BDCA.AQD/SP_01022001_7_8"><hasDeclaration xmlns="http://reference.eionet.europa.eu/aq/ontology/" rdf:resource="#SP_01022001_7_8"/></rdf:Description></declarationFor><inspireId><Identifier>
+          <localId>SP_01022001_7_8</localId>
+          <namespace>ES.BDCA.AQD</namespace>
+          <versionId>First version 2014</versionId>
+        </Identifier></inspireId>
+      <name>ES1672A_NO_01022001_7_8</name>
+      <mediaMonitored rdf:resource="http://inspire.ec.europa.eu/codeList/MediaValue/air"/>
+      <geometry><geo:Point rdf:ID="Point_01022001_7_8ba9daa99-0bac-4433-9724-5385f0d8734e"><rdf:type rdf:resource="http://www.w3.org/2003/01/geo/wgs84_pos#SpatialThing"/><geo:lat rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">42.51833333</geo:lat><geo:long rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">-2.61944444</geo:long></geo:Point></geometry>
+      <observingCapability><ObservingCapability rdf:ID="Capability_01022001_7_8.1">
+          <observingTime><TimePeriod rdf:ID="TimePeriod_01022001_7_8.1_4d2f55e9-0a20-416c-ba3e-0c4a7e74251e">
+              <beginPosition rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2004-05-10T00:00:00+00:00</beginPosition>
+              
+            </TimePeriod></observingTime>
+          <processType rdf:resource="http://inspire.ec.europa.eu/codeList/ProcessTypeValue/process"/>
+          <resultNature rdf:resource="http://inspire.ec.europa.eu/codeList/ResultNatureValue/primary"/>
+          <procedure rdf:resource="http://reference.eionet.europa.eu/aq/ES.BDCA.AQD/SPP_01022001_7_8.1"/>
+          <featureOfInterest rdf:resource="http://reference.eionet.europa.eu/aq/ES.BDCA.AQD/SAM_01022001_7_8"/>
+          <observedProperty rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/38"/>
+        </ObservingCapability></observingCapability>
+      <broader rdf:resource="http://reference.eionet.europa.eu/aq/ES.BDCA.AQD/STA_ES1672A"/>
+      
+      <measurementRegime rdf:resource="http://inspire.ec.europa.eu/codeList/MeasurementRegimeValue/continuousDataCollection"/>
+      <mobile rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</mobile>
+      <operationalActivityPeriod><OperationalActivityPeriod rdf:ID="SamplingPoint_ActivityPeriod_LOCAL_ID_01022001_7_8">
+          <activityTime><TimePeriod rdf:ID="SamplingPointTimePeriod_01022001_7_8_9dc43aba-fdca-4b12-a5ab-5bc5ed7d5c17">
+              <beginPosition rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2004-05-10T00:00:00+00:00</beginPosition>
+              
+            </TimePeriod></activityTime>
+        </OperationalActivityPeriod></operationalActivityPeriod>
+      <belongsTo rdf:resource="http://reference.eionet.europa.eu/aq/ES.BDCA.AQD/NET_ES216A"/>
+      <assessmentType rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/fixed"/>
+      <relevantEmissions><RelevantEmissions>
+          <distanceSource rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">-999</distanceSource><distanceSourceUOM rdf:resource="http://dd.eionet.europa.eu/vocabulary/uom/length/m"/>
+          <heatingEmissions rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">-999</heatingEmissions><heatingEmissionsUOM rdf:resource="http://dd.eionet.europa.eu/vocabulary/uom/emission/t.km-2.year-1"/>
+          <industrialEmissions rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">-999</industrialEmissions><industrialEmissionsUOM rdf:resource="http://dd.eionet.europa.eu/vocabulary/uom/emission/t.year-1"/>
+          <stationClassification rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/stationclassification/traffic"/>
+          <trafficEmissions rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">-999</trafficEmissions><trafficEmissionsUOM rdf:resource="http://dd.eionet.europa.eu/vocabulary/uom/emission/t.km-1.year-1"/>
+        </RelevantEmissions></relevantEmissions>
+      <usedAQD rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</usedAQD>
+      
+    </AQD_SamplingPoint></rdf:RDF>
