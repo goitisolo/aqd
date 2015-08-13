@@ -60,7 +60,11 @@
   </xsl:template>
 
 <!-- Stop processing of properties -->
-  <xsl:template match="am:geometry|sams:shape|om:result|swe:encoding" mode="property"/>
+  <xsl:template match="sams:shape|om:result|swe:encoding" mode="property"/>
+
+  <xsl:template match="ef:geometry"  mode="property">
+    <xsl:apply-templates select="gml:Point" mode="resourceorliteral"/>
+  </xsl:template>
 
 <!-- For literal decimal elements (properties) -->
   <xsl:template match="aqd:altitude|aqd:area|aqd:residentPopulation|
@@ -205,20 +209,16 @@
   <xsl:template match="gml:Point" mode="resourceorliteral">
     <xsl:if test="gml:pos/@srsDimension='2' and (@srsName='urn:ogc:def:crs:EPSG::6326'
             or @srsName='urn:ogc:def:crs:EPSG::4326' or @srsName='urn:ogc:def:crs:EPSG::4258')">
-      <geo:Point>
-        <xsl:attribute name="rdf:ID">
-          <xsl:value-of select="@gml:id"/>
-        </xsl:attribute>
-        <rdf:type rdf:resource="http://www.w3.org/2003/01/geo/wgs84_pos#SpatialThing"/>
-        <geo:lat>
-          <xsl:attribute name="rdf:datatype">&xsd;decimal</xsl:attribute>
-          <xsl:value-of select="substring-before(gml:pos/text(),' ')"/>
-        </geo:lat>
-        <geo:long>
-          <xsl:attribute name="rdf:datatype">&xsd;decimal</xsl:attribute>
-          <xsl:value-of select="substring-after(gml:pos/text(),' ')"/>
-        </geo:long>
-      </geo:Point>
+      <rdf:type rdf:resource="http://www.w3.org/2003/01/geo/wgs84_pos#Point"/>
+      <rdf:type rdf:resource="http://www.w3.org/2003/01/geo/wgs84_pos#SpatialThing"/>
+      <geo:lat>
+        <xsl:attribute name="rdf:datatype">&xsd;decimal</xsl:attribute>
+        <xsl:value-of select="substring-before(gml:pos/text(),' ')"/>
+      </geo:lat>
+      <geo:long>
+        <xsl:attribute name="rdf:datatype">&xsd;decimal</xsl:attribute>
+        <xsl:value-of select="substring-after(gml:pos/text(),' ')"/>
+      </geo:long>
     </xsl:if>
   </xsl:template>
 

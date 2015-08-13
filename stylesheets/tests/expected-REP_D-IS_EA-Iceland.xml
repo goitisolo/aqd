@@ -1,0 +1,398 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0" xmlns:am="http://inspire.ec.europa.eu/schemas/am/3.0" xmlns:am-ru="http://inspire.jrc.ec.europa.eu/schemas/am-ru/2.0" xmlns:aqd="http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0" xmlns:base2="http://inspire.ec.europa.eu/schemas/base2/1.0" xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3" xmlns:ef="http://inspire.ec.europa.eu/schemas/ef/3.0" xmlns:fn="http://www.w3.org/2005/xpath-functions" xmlns:gco="http://www.isotc211.org/2005/gco" xmlns:gmd="http://www.isotc211.org/2005/gmd" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" xmlns:gsr="http://www.isotc211.org/2005/gsr" xmlns:gss="http://www.isotc211.org/2005/gss" xmlns:gts="http://www.isotc211.org/2005/gts" xmlns:om="http://www.opengis.net/om/2.0" xmlns:ompr="http://inspire.ec.europa.eu/schemas/ompr/2.0" xmlns:sam="http://www.opengis.net/sampling/2.0" xmlns:sams="http://www.opengis.net/samplingSpatial/2.0" xmlns:swe="http://www.opengis.net/swe/2.0" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" xmlns:sparql="http://www.w3.org/2005/sparql-results#" xmlns:owl="http://www.w3.org/2002/07/owl#" xmlns:skos="http://www.w3.org/2008/05/skos#" xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#" xmlns="http://rdfdata.eionet.europa.eu/airquality/ontology/" xmlns:str="http://exslt.org/strings">
+  <AQD_ReportingHeader rdf:ID="REP_D-IS_EA-Iceland_20150127_B">
+    <change rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</change>
+    <changeDescription>Zones Iceland 2013</changeDescription>
+    <declarationFor>
+      <rdf:Description rdf:about="http://reference.eionet.europa.eu/aq/IS.EA-Iceland.AQ/IS_EA-Iceland_20150127">
+        <hasDeclaration xmlns="http://reference.eionet.europa.eu/aq/ontology/" rdf:resource="#REP_D-IS_EA-Iceland_20150127_B"/>
+      </rdf:Description>
+    </declarationFor>
+    <inspireId>
+      <Identifier>
+        <localId>IS_EA-Iceland_20150127</localId>
+        <namespace>IS.EA-Iceland.AQ</namespace>
+        <versionId>AQUI 2.5</versionId>
+      </Identifier>
+    </inspireId>
+    <reportingAuthority>
+      <RelatedParty>
+        <individualName>JóhannssonÞorsteinn</individualName>
+        <organisationName>Environmental Agency of Iceland</organisationName>
+        <contact>
+          <Contact>
+            <address>
+              <AddressRepresentation>
+                <adminUnit>Suðurlandsbraut 24,  101</adminUnit>
+                <locatorDesignator>Reykjavik</locatorDesignator>
+              </AddressRepresentation>
+            </address>
+            <electronicMailAddress>thorsteinnj@Umhverfisstofnun.is</electronicMailAddress>
+            <telephoneVoice>+354 591 2000</telephoneVoice>
+            <website>http://www.ust.is</website>
+          </Contact>
+        </contact>
+      </RelatedParty>
+    </reportingAuthority>
+    <reportingPeriod>
+      <TimePeriod rdf:ID="REP_P-IS_EA-Iceland_20150127_B">
+        <beginPosition rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2013-01-01T01:00:01</beginPosition>
+        <endPosition rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2013-12-31T24:00:00</endPosition>
+      </TimePeriod>
+    </reportingPeriod>
+    <content rdf:resource="http://reference.eionet.europa.eu/aq/IS.EA-Iceland.AQ/ZON-IS1002"/>
+    <content rdf:resource="http://reference.eionet.europa.eu/aq/IS.EA-Iceland.AQ/ZON-IS0001"/>
+    <content rdf:resource="http://reference.eionet.europa.eu/aq/IS.EA-Iceland.AQ/ZON-IS0002"/>
+    <content rdf:resource="http://reference.eionet.europa.eu/aq/IS.EA-Iceland.AQ/ZON-IS0003"/>
+    <content rdf:resource="http://reference.eionet.europa.eu/aq/IS.EA-Iceland.AQ/ZON-IS1001"/>
+    <content rdf:resource="http://reference.eionet.europa.eu/aq/IS.EA-Iceland.AQ/ZON-IS0004"/>
+  </AQD_ReportingHeader>
+  <AQD_Zone rdf:ID="ZON-IS1002">
+    <declarationFor>
+      <rdf:Description rdf:about="http://reference.eionet.europa.eu/aq/IS.EA-Iceland.AQ/ZON-IS1002">
+        <hasDeclaration xmlns="http://reference.eionet.europa.eu/aq/ontology/" rdf:resource="#ZON-IS1002"/>
+      </rdf:Description>
+    </declarationFor>
+    <inspireId>
+      <Identifier>
+        <localId>ZON-IS1002</localId>
+        <namespace>IS.EA-Iceland.AQ</namespace>
+        <versionId>AQUI 2.5</versionId>
+      </Identifier>
+    </inspireId>
+    <name>Akureyri</name>
+    <zoneType rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/zonetype/agg"/>
+    <designationPeriod>
+      <TimePeriod rdf:ID="IS1002_DESIGNATION_PERIOD">
+        <beginPosition rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2005-01-01T00:00:00</beginPosition>
+      </TimePeriod>
+    </designationPeriod>
+    <environmentalDomain rdf:resource="http://dd.eionet.europa.eu/vocabulary/common/environmentaldomain/air"/>
+    <beginLifespanVersion rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2015-01-27T10:05:00</beginLifespanVersion>
+    <legalBasis rdf:resource="http://rod.eionet.europa.eu/instruments/650"/>
+    <zoneCode>IS1002</zoneCode>
+    <aqdZoneType rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/zonetype/agg"/>
+    <residentPopulation rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">18103</residentPopulation>
+    <area rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">26</area>
+    <areaUOM rdf:resource="http://dd.eionet.europa.eu/vocabulary/uom/area/km2"/>
+    <pollutants>
+      <Pollutant>
+        <pollutantCode rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5"/>
+        <protectionTarget rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"/>
+      </Pollutant>
+    </pollutants>
+    <pollutants>
+      <Pollutant>
+        <pollutantCode rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/8"/>
+        <protectionTarget rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"/>
+      </Pollutant>
+    </pollutants>
+    <pollutants>
+      <Pollutant>
+        <pollutantCode rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/9"/>
+        <protectionTarget rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V"/>
+      </Pollutant>
+    </pollutants>
+    <pollutants>
+      <Pollutant>
+        <pollutantCode rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/6001"/>
+        <protectionTarget rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"/>
+      </Pollutant>
+    </pollutants>
+    <timeExtensionExemption rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/none"/>
+  </AQD_Zone>
+  <AQD_Zone rdf:ID="ZON-IS0001">
+    <declarationFor>
+      <rdf:Description rdf:about="http://reference.eionet.europa.eu/aq/IS.EA-Iceland.AQ/ZON-IS0001">
+        <hasDeclaration xmlns="http://reference.eionet.europa.eu/aq/ontology/" rdf:resource="#ZON-IS0001"/>
+      </rdf:Description>
+    </declarationFor>
+    <inspireId>
+      <Identifier>
+        <localId>ZON-IS0001</localId>
+        <namespace>IS.EA-Iceland.AQ</namespace>
+        <versionId>AQUI 2.5</versionId>
+      </Identifier>
+    </inspireId>
+    <name>Dreifbyli</name>
+    <zoneType rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/zonetype/noagg"/>
+    <designationPeriod>
+      <TimePeriod rdf:ID="IS0001_DESIGNATION_PERIOD">
+        <beginPosition rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2010-01-01T00:00:00</beginPosition>
+      </TimePeriod>
+    </designationPeriod>
+    <environmentalDomain rdf:resource="http://dd.eionet.europa.eu/vocabulary/common/environmentaldomain/air"/>
+    <beginLifespanVersion rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2015-01-27T10:05:00</beginLifespanVersion>
+    <legalBasis rdf:resource="http://rod.eionet.europa.eu/instruments/650"/>
+    <zoneCode>IS0001</zoneCode>
+    <aqdZoneType rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/zonetype/noagg"/>
+    <residentPopulation rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">99045</residentPopulation>
+    <area rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">103267</area>
+    <areaUOM rdf:resource="http://dd.eionet.europa.eu/vocabulary/uom/area/km2"/>
+    <pollutants>
+      <Pollutant>
+        <pollutantCode rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/7"/>
+        <protectionTarget rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"/>
+      </Pollutant>
+    </pollutants>
+    <pollutants>
+      <Pollutant>
+        <pollutantCode rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/7"/>
+        <protectionTarget rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V"/>
+      </Pollutant>
+    </pollutants>
+    <pollutants>
+      <Pollutant>
+        <pollutantCode rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/8"/>
+        <protectionTarget rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"/>
+      </Pollutant>
+    </pollutants>
+    <pollutants>
+      <Pollutant>
+        <pollutantCode rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/9"/>
+        <protectionTarget rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V"/>
+      </Pollutant>
+    </pollutants>
+    <pollutants>
+      <Pollutant>
+        <pollutantCode rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/10"/>
+        <protectionTarget rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"/>
+      </Pollutant>
+    </pollutants>
+    <timeExtensionExemption rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/none"/>
+  </AQD_Zone>
+  <AQD_Zone rdf:ID="ZON-IS0002">
+    <declarationFor>
+      <rdf:Description rdf:about="http://reference.eionet.europa.eu/aq/IS.EA-Iceland.AQ/ZON-IS0002">
+        <hasDeclaration xmlns="http://reference.eionet.europa.eu/aq/ontology/" rdf:resource="#ZON-IS0002"/>
+      </rdf:Description>
+    </declarationFor>
+    <inspireId>
+      <Identifier>
+        <localId>ZON-IS0002</localId>
+        <namespace>IS.EA-Iceland.AQ</namespace>
+        <versionId>AQUI 2.5</versionId>
+      </Identifier>
+    </inspireId>
+    <name>Grundartangi</name>
+    <zoneType rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/zonetype/noagg"/>
+    <designationPeriod>
+      <TimePeriod rdf:ID="IS0002_DESIGNATION_PERIOD">
+        <beginPosition rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2010-01-01T00:00:00</beginPosition>
+      </TimePeriod>
+    </designationPeriod>
+    <environmentalDomain rdf:resource="http://dd.eionet.europa.eu/vocabulary/common/environmentaldomain/air"/>
+    <beginLifespanVersion rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2015-01-27T10:05:00</beginLifespanVersion>
+    <legalBasis rdf:resource="http://rod.eionet.europa.eu/instruments/650"/>
+    <zoneCode>IS0002</zoneCode>
+    <aqdZoneType rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/zonetype/noagg"/>
+    <residentPopulation rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">11</residentPopulation>
+    <area rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">11</area>
+    <areaUOM rdf:resource="http://dd.eionet.europa.eu/vocabulary/uom/area/km2"/>
+    <pollutants>
+      <Pollutant>
+        <pollutantCode rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1"/>
+        <protectionTarget rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"/>
+      </Pollutant>
+    </pollutants>
+    <pollutants>
+      <Pollutant>
+        <pollutantCode rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1"/>
+        <protectionTarget rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V"/>
+      </Pollutant>
+    </pollutants>
+    <pollutants>
+      <Pollutant>
+        <pollutantCode rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5"/>
+        <protectionTarget rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"/>
+      </Pollutant>
+    </pollutants>
+    <pollutants>
+      <Pollutant>
+        <pollutantCode rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/8"/>
+        <protectionTarget rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"/>
+      </Pollutant>
+    </pollutants>
+    <pollutants>
+      <Pollutant>
+        <pollutantCode rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/9"/>
+        <protectionTarget rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V"/>
+      </Pollutant>
+    </pollutants>
+    <pollutants>
+      <Pollutant>
+        <pollutantCode rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/6001"/>
+        <protectionTarget rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"/>
+      </Pollutant>
+    </pollutants>
+    <timeExtensionExemption rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/none"/>
+  </AQD_Zone>
+  <AQD_Zone rdf:ID="ZON-IS0003">
+    <declarationFor>
+      <rdf:Description rdf:about="http://reference.eionet.europa.eu/aq/IS.EA-Iceland.AQ/ZON-IS0003">
+        <hasDeclaration xmlns="http://reference.eionet.europa.eu/aq/ontology/" rdf:resource="#ZON-IS0003"/>
+      </rdf:Description>
+    </declarationFor>
+    <inspireId>
+      <Identifier>
+        <localId>ZON-IS0003</localId>
+        <namespace>IS.EA-Iceland.AQ</namespace>
+        <versionId>AQUI 2.5</versionId>
+      </Identifier>
+    </inspireId>
+    <name>Reydarfjordur</name>
+    <zoneType rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/zonetype/noagg"/>
+    <designationPeriod>
+      <TimePeriod rdf:ID="IS0003_DESIGNATION_PERIOD">
+        <beginPosition rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2007-01-01T00:00:00</beginPosition>
+      </TimePeriod>
+    </designationPeriod>
+    <environmentalDomain rdf:resource="http://dd.eionet.europa.eu/vocabulary/common/environmentaldomain/air"/>
+    <beginLifespanVersion rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2015-01-27T10:05:00</beginLifespanVersion>
+    <legalBasis rdf:resource="http://rod.eionet.europa.eu/instruments/650"/>
+    <zoneCode>IS0003</zoneCode>
+    <aqdZoneType rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/zonetype/noagg"/>
+    <residentPopulation rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">1144</residentPopulation>
+    <area rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">47</area>
+    <areaUOM rdf:resource="http://dd.eionet.europa.eu/vocabulary/uom/area/km2"/>
+    <pollutants>
+      <Pollutant>
+        <pollutantCode rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1"/>
+        <protectionTarget rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"/>
+      </Pollutant>
+    </pollutants>
+    <timeExtensionExemption rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/none"/>
+  </AQD_Zone>
+  <AQD_Zone rdf:ID="ZON-IS1001">
+    <declarationFor>
+      <rdf:Description rdf:about="http://reference.eionet.europa.eu/aq/IS.EA-Iceland.AQ/ZON-IS1001">
+        <hasDeclaration xmlns="http://reference.eionet.europa.eu/aq/ontology/" rdf:resource="#ZON-IS1001"/>
+      </rdf:Description>
+    </declarationFor>
+    <inspireId>
+      <Identifier>
+        <localId>ZON-IS1001</localId>
+        <namespace>IS.EA-Iceland.AQ</namespace>
+        <versionId>AQUI 2.5</versionId>
+      </Identifier>
+    </inspireId>
+    <name>Reykjavik</name>
+    <zoneType rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/zonetype/agg"/>
+    <designationPeriod>
+      <TimePeriod rdf:ID="IS1001_DESIGNATION_PERIOD">
+        <beginPosition rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2003-01-01T00:00:00</beginPosition>
+      </TimePeriod>
+    </designationPeriod>
+    <environmentalDomain rdf:resource="http://dd.eionet.europa.eu/vocabulary/common/environmentaldomain/air"/>
+    <beginLifespanVersion rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2015-01-27T10:05:00</beginLifespanVersion>
+    <legalBasis rdf:resource="http://rod.eionet.europa.eu/instruments/650"/>
+    <zoneCode>IS1001</zoneCode>
+    <aqdZoneType rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/zonetype/agg"/>
+    <residentPopulation rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">208531</residentPopulation>
+    <area rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">133</area>
+    <areaUOM rdf:resource="http://dd.eionet.europa.eu/vocabulary/uom/area/km2"/>
+    <pollutants>
+      <Pollutant>
+        <pollutantCode rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1"/>
+        <protectionTarget rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"/>
+      </Pollutant>
+    </pollutants>
+    <pollutants>
+      <Pollutant>
+        <pollutantCode rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1"/>
+        <protectionTarget rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V"/>
+      </Pollutant>
+    </pollutants>
+    <pollutants>
+      <Pollutant>
+        <pollutantCode rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5"/>
+        <protectionTarget rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"/>
+      </Pollutant>
+    </pollutants>
+    <pollutants>
+      <Pollutant>
+        <pollutantCode rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/7"/>
+        <protectionTarget rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"/>
+      </Pollutant>
+    </pollutants>
+    <pollutants>
+      <Pollutant>
+        <pollutantCode rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/8"/>
+        <protectionTarget rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"/>
+      </Pollutant>
+    </pollutants>
+    <pollutants>
+      <Pollutant>
+        <pollutantCode rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/9"/>
+        <protectionTarget rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V"/>
+      </Pollutant>
+    </pollutants>
+    <pollutants>
+      <Pollutant>
+        <pollutantCode rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/10"/>
+        <protectionTarget rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"/>
+      </Pollutant>
+    </pollutants>
+    <pollutants>
+      <Pollutant>
+        <pollutantCode rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/6001"/>
+        <protectionTarget rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"/>
+      </Pollutant>
+    </pollutants>
+    <timeExtensionExemption rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/none"/>
+  </AQD_Zone>
+  <AQD_Zone rdf:ID="ZON-IS0004">
+    <declarationFor>
+      <rdf:Description rdf:about="http://reference.eionet.europa.eu/aq/IS.EA-Iceland.AQ/ZON-IS0004">
+        <hasDeclaration xmlns="http://reference.eionet.europa.eu/aq/ontology/" rdf:resource="#ZON-IS0004"/>
+      </rdf:Description>
+    </declarationFor>
+    <inspireId>
+      <Identifier>
+        <localId>ZON-IS0004</localId>
+        <namespace>IS.EA-Iceland.AQ</namespace>
+        <versionId>AQUI 2.5</versionId>
+      </Identifier>
+    </inspireId>
+    <name>Sudurland</name>
+    <zoneType rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/zonetype/noagg"/>
+    <designationPeriod>
+      <TimePeriod rdf:ID="IS0004_DESIGNATION_PERIOD">
+        <beginPosition rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2010-01-01T00:00:00</beginPosition>
+      </TimePeriod>
+    </designationPeriod>
+    <environmentalDomain rdf:resource="http://dd.eionet.europa.eu/vocabulary/common/environmentaldomain/air"/>
+    <beginLifespanVersion rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2015-01-27T10:05:00</beginLifespanVersion>
+    <legalBasis rdf:resource="http://rod.eionet.europa.eu/instruments/650"/>
+    <zoneCode>IS0004</zoneCode>
+    <aqdZoneType rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/zonetype/noagg"/>
+    <residentPopulation rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">1805</residentPopulation>
+    <area rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">6410</area>
+    <areaUOM rdf:resource="http://dd.eionet.europa.eu/vocabulary/uom/area/km2"/>
+    <pollutants>
+      <Pollutant>
+        <pollutantCode rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5"/>
+        <protectionTarget rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"/>
+      </Pollutant>
+    </pollutants>
+    <pollutants>
+      <Pollutant>
+        <pollutantCode rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/8"/>
+        <protectionTarget rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"/>
+      </Pollutant>
+    </pollutants>
+    <pollutants>
+      <Pollutant>
+        <pollutantCode rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/9"/>
+        <protectionTarget rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V"/>
+      </Pollutant>
+    </pollutants>
+    <pollutants>
+      <Pollutant>
+        <pollutantCode rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/6001"/>
+        <protectionTarget rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"/>
+      </Pollutant>
+    </pollutants>
+    <timeExtensionExemption rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/none"/>
+  </AQD_Zone>
+</rdf:RDF>

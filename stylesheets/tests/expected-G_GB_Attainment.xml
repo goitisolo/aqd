@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0" xmlns:am="http://inspire.ec.europa.eu/schemas/am/3.0" xmlns:am-ru="http://inspire.jrc.ec.europa.eu/schemas/am-ru/2.0" xmlns:aqd="http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0" xmlns:base2="http://inspire.ec.europa.eu/schemas/base2/1.0" xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3" xmlns:ef="http://inspire.ec.europa.eu/schemas/ef/3.0" xmlns:fn="http://www.w3.org/2005/xpath-functions" xmlns:gco="http://www.isotc211.org/2005/gco" xmlns:gmd="http://www.isotc211.org/2005/gmd" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" xmlns:gsr="http://www.isotc211.org/2005/gsr" xmlns:gss="http://www.isotc211.org/2005/gss" xmlns:gts="http://www.isotc211.org/2005/gts" xmlns:om="http://www.opengis.net/om/2.0" xmlns:ompr="http://inspire.ec.europa.eu/schemas/ompr/2.0" xmlns:sam="http://www.opengis.net/sampling/2.0" xmlns:sams="http://www.opengis.net/samplingSpatial/2.0" xmlns:swe="http://www.opengis.net/swe/2.0" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" xmlns:sparql="http://www.w3.org/2005/sparql-results#" xmlns:owl="http://www.w3.org/2002/07/owl#" xmlns:skos="http://www.w3.org/2008/05/skos#" xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#" xmlns="http://rdfdata.eionet.europa.eu/airquality/ontology/" xmlns:str="http://exslt.org/strings">
+  <AQD_ReportingHeader rdf:ID="AQ_ReportHeader_GB_Attainment">
+    <change rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</change>
+    <changeDescription>Retrospective delivery for UK 2013 environmental objectives Attainment statement (Df-G), includes bug fix for ozone ratification for Port Talbot Margam (UKA00501) and some syntax changes for declaration of adjustments. No additional exceedances observed relative to http://cdr.eionet.europa.eu/gb/eu/aqd/g/envvcusog/</changeDescription>
+    <declarationFor>
+      <rdf:Description rdf:about="http://environment.data.gov.uk/air-quality/so/AQ_ReportHeader_6">
+        <hasDeclaration xmlns="http://reference.eionet.europa.eu/aq/ontology/" rdf:resource="#AQ_ReportHeader_GB_Attainment"/>
+      </rdf:Description>
+    </declarationFor>
+    <inspireId>
+      <Identifier>
+        <localId>AQ_ReportHeader_6</localId>
+        <namespace>http://environment.data.gov.uk/air-quality/so</namespace>
+        <versionId>18-11-2014-v0</versionId>
+      </Identifier>
+    </inspireId>
+    <reportingAuthority>
+      <RelatedParty>
+        <individualName>John Newington</individualName>
+        <organisationName>The Department for Environment, Food and Rural Affairs, The Scottish Government, The Welsh Government and The Department of Environment - Northern Ireland</organisationName>
+        <contact>
+          <Contact>
+            <address>
+              <AddressRepresentation>
+                <adminUnit>Resource, Atmosphere and Sustainability, Area 2C Nobel House, 17 Smith Square, London, SW1P 2AL</adminUnit>
+                <locatorDesignator>London</locatorDesignator>
+                <postCode>SW1P 2AL</postCode>
+              </AddressRepresentation>
+            </address>
+            <electronicMailAddress>aqevidence@defra.gsi.gov.uk</electronicMailAddress>
+            <website>https://www.gov.uk/defra</website>
+          </Contact>
+        </contact>
+      </RelatedParty>
+    </reportingAuthority>
+    <reportingPeriod>
+      <TimePeriod rdf:ID="HeaderTimePeriod_6">
+        <beginPosition rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2013-01-01T00:00:00Z</beginPosition>
+        <endPosition rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2013-12-31T23:59:59Z</endPosition>
+      </TimePeriod>
+    </reportingPeriod>
+    <content rdf:resource="http://environment.data.gov.uk/air-quality/so/GB_Attainment_5466"/>
+  </AQD_ReportingHeader>
+  <AQD_Attainment rdf:ID="AQD_GB_Attainment_5466">
+    <declarationFor>
+      <rdf:Description rdf:about="http://environment.data.gov.uk/air-quality/so/GB_Attainment_5466">
+        <hasDeclaration xmlns="http://reference.eionet.europa.eu/aq/ontology/" rdf:resource="#AQD_GB_Attainment_5466"/>
+      </rdf:Description>
+    </declarationFor>
+    <inspireId>
+      <Identifier>
+        <localId>GB_Attainment_5466</localId>
+        <namespace>http://environment.data.gov.uk/air-quality/so</namespace>
+        <versionId>18-11-2014-v0</versionId>
+      </Identifier>
+    </inspireId>
+    <pollutant rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5018"/>
+    <environmentalObjective>
+      <EnvironmentalObjective>
+        <objectiveType rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/TV"/>
+        <reportingMetric rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean"/>
+        <protectionTarget rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"/>
+      </EnvironmentalObjective>
+    </environmentalObjective>
+    <exceedanceDescriptionFinal>
+      <ExceedanceDescription>
+        <exceedance rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</exceedance>
+        <deductionAssessmentMethod>
+          <AdjustmentMethod>
+            <adjustmentType rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/noneApplicable"/>
+          </AdjustmentMethod>
+        </deductionAssessmentMethod>
+      </ExceedanceDescription>
+    </exceedanceDescriptionFinal>
+    <zone rdf:resource="http://environment.data.gov.uk/air-quality/so/Zone_UK0001"/>
+    <assessment rdf:resource="http://environment.data.gov.uk/air-quality/so/GB_AssessmentRegime_1877"/>
+  </AQD_Attainment>
+  <AQD_Attainment rdf:ID="AQD_GB_Attainment_5467">
+    <declarationFor>
+      <rdf:Description rdf:about="http://environment.data.gov.uk/air-quality/so/GB_Attainment_5467">
+        <hasDeclaration xmlns="http://reference.eionet.europa.eu/aq/ontology/" rdf:resource="#AQD_GB_Attainment_5467"/>
+      </rdf:Description>
+    </declarationFor>
+    <inspireId>
+      <Identifier>
+        <localId>GB_Attainment_5467</localId>
+        <namespace>http://environment.data.gov.uk/air-quality/so</namespace>
+        <versionId>18-11-2014-v0</versionId>
+      </Identifier>
+    </inspireId>
+    <pollutant rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5018"/>
+    <environmentalObjective>
+      <EnvironmentalObjective>
+        <objectiveType rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/TV"/>
+        <reportingMetric rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean"/>
+        <protectionTarget rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"/>
+      </EnvironmentalObjective>
+    </environmentalObjective>
+    <exceedanceDescriptionFinal>
+      <ExceedanceDescription>
+        <exceedance rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</exceedance>
+        <deductionAssessmentMethod>
+          <AdjustmentMethod>
+            <adjustmentType rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/noneApplicable"/>
+          </AdjustmentMethod>
+        </deductionAssessmentMethod>
+      </ExceedanceDescription>
+    </exceedanceDescriptionFinal>
+    <zone rdf:resource="http://environment.data.gov.uk/air-quality/so/Zone_UK0002"/>
+    <assessment rdf:resource="http://environment.data.gov.uk/air-quality/so/GB_AssessmentRegime_1878"/>
+  </AQD_Attainment>
+</rdf:RDF>

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gml:FeatureCollection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aqd="http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0" xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3" xmlns:base2="http://inspire.ec.europa.eu/schemas/base2/1.0" xmlns:ef="http://inspire.ec.europa.eu/schemas/ef/3.0" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:ompr="http://inspire.ec.europa.eu/schemas/ompr/2.0" xmlns:sam="http://www.opengis.net/sampling/2.0" xmlns:sams="http://www.opengis.net/samplingSpatial/2.0" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:gmd="http://www.isotc211.org/2005/gmd" xmlns:gco="http://www.isotc211.org/2005/gco" xmlns:om="http://www.opengis.net/om/2.0" xmlns:swe="http://www.opengis.net/swe/2.0" xmlns:am="http://inspire.ec.europa.eu/schemas/am/3.0" xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0" xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" xsi:schemaLocation="http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0 http://dd.eionet.europa.eu/schemas/id2011850eu-1.0/AirQualityReporting.xsd" gml:id="GB_AssessmentRegime">
+  <gml:featureMember>
+    <aqd:AQD_ReportingHeader gml:id="AQ_ReportHeader_GB_AssessmentRegime">
+      <aqd:change>true</aqd:change>
+      <aqd:changeDescription>Changes of sampling point used for assessment&#13;
+</aqd:changeDescription>
+      <aqd:inspireId>
+        <base:Identifier>
+          <base:localId>AQ_ReportHeader_4</base:localId>
+          <base:namespace>http://environment.data.gov.uk/air-quality/so</base:namespace>
+          <base:versionId>prelim-23-12-2014</base:versionId>
+        </base:Identifier>
+      </aqd:inspireId>
+      <aqd:reportingAuthority>
+        <base2:RelatedParty>
+          <base2:individualName>
+            <gco:CharacterString>John Newington</gco:CharacterString>
+          </base2:individualName>
+          <base2:organisationName>
+            <gco:CharacterString>The Department for Environment, Food and Rural Affairs, The Scottish Government, The Welsh Government and The Department of Environment - Northern Ireland</gco:CharacterString>
+          </base2:organisationName>
+          <base2:contact>
+            <base2:Contact>
+              <base2:address>
+                <ad:AddressRepresentation>
+                  <ad:adminUnit>
+                    <gn:GeographicalName>
+                      <gn:language>eng</gn:language>
+                      <gn:nativeness xsi:nil="true" nilReason="missing"/>
+                      <gn:nameStatus xsi:nil="true" nilReason="missing"/>
+                      <gn:sourceOfName xsi:nil="true" nilReason="missing"/>
+                      <gn:pronunciation xsi:nil="true" nilReason="missing"/>
+                      <gn:spelling>
+                        <gn:SpellingOfName>
+                          <gn:text>Resource, Atmosphere and Sustainability, Area 2C Nobel House, 17 Smith Square, London, SW1P 2AL</gn:text>
+                          <gn:script xsi:nil="true" nilReason="missing"/>
+                        </gn:SpellingOfName>
+                      </gn:spelling>
+                    </gn:GeographicalName>
+                  </ad:adminUnit>
+                  <ad:locatorDesignator>London</ad:locatorDesignator>
+                  <ad:postCode xsi:nil="false">SW1P 2AL</ad:postCode>
+                </ad:AddressRepresentation>
+              </base2:address>
+              <base2:electronicMailAddress>aqevidence@defra.gsi.gov.uk</base2:electronicMailAddress>
+              <base2:telephoneVoice/>
+              <base2:website>https://www.gov.uk/defra</base2:website>
+            </base2:Contact>
+          </base2:contact>
+        </base2:RelatedParty>
+      </aqd:reportingAuthority>
+      <aqd:reportingPeriod>
+        <gml:TimePeriod gml:id="HeaderTimePeriod_4">
+          <gml:beginPosition>2015-01-01T00:00:00Z</gml:beginPosition>
+          <gml:endPosition>2015-12-31T23:59:59Z</gml:endPosition>
+        </gml:TimePeriod>
+      </aqd:reportingPeriod>
+      <aqd:content xlink:href="http://environment.data.gov.uk/air-quality/so/GB_AssessmentRegime_9386"/>
+    </aqd:AQD_ReportingHeader>
+  </gml:featureMember>
+  <gml:featureMember>
+    <aqd:CompetentAuthorities gml:id="CompetentAuthorities_1">
+      <aqd:assessmentAirQuality>
+			<base2:RelatedParty><base2:individualName><gco:CharacterString>John Newington</gco:CharacterString></base2:individualName><base2:organisationName><gco:CharacterString>The Department for Environment, Food and Rural Affairs, The Scottish Government, The Welsh Government and The Department of Environment - Northern Ireland</gco:CharacterString></base2:organisationName><base2:contact><base2:Contact><base2:address><ad:AddressRepresentation><ad:adminUnit><gn:GeographicalName><gn:language>eng</gn:language><gn:nativeness xsi:nil="true" nilReason="missing"/><gn:nameStatus xsi:nil="true" nilReason="missing"/><gn:sourceOfName xsi:nil="true" nilReason="missing"/><gn:pronunciation xsi:nil="true" nilReason="missing"/><gn:spelling><gn:SpellingOfName><gn:text>Resource, Atmosphere and Sustainability, Area 2C Nobel House, 17 Smith Square, London, SW1P 2AL</gn:text><gn:script xsi:nil="true" nilReason="missing"/></gn:SpellingOfName></gn:spelling></gn:GeographicalName></ad:adminUnit><ad:locatorDesignator>London</ad:locatorDesignator><ad:postCode xsi:nil="false">SW1P 2AL</ad:postCode></ad:AddressRepresentation></base2:address><base2:electronicMailAddress>aqevidence@defra.gsi.gov.uk</base2:electronicMailAddress><base2:telephoneVoice/><base2:website>https://www.gov.uk/defra</base2:website></base2:Contact></base2:contact></base2:RelatedParty></aqd:assessmentAirQuality>
+      <aqd:approvalMeasurementSystems>
+			<base2:RelatedParty><base2:individualName><gco:CharacterString>John Newington</gco:CharacterString></base2:individualName><base2:organisationName><gco:CharacterString>The Department for Environment, Food and Rural Affairs, The Scottish Government, The Welsh Government and The Department of Environment - Northern Ireland</gco:CharacterString></base2:organisationName><base2:contact><base2:Contact><base2:address><ad:AddressRepresentation><ad:adminUnit><gn:GeographicalName><gn:language>eng</gn:language><gn:nativeness xsi:nil="true" nilReason="missing"/><gn:nameStatus xsi:nil="true" nilReason="missing"/><gn:sourceOfName xsi:nil="true" nilReason="missing"/><gn:pronunciation xsi:nil="true" nilReason="missing"/><gn:spelling><gn:SpellingOfName><gn:text>Resource, Atmosphere and Sustainability, Area 2C Nobel House, 17 Smith Square, London, SW1P 2AL</gn:text><gn:script xsi:nil="true" nilReason="missing"/></gn:SpellingOfName></gn:spelling></gn:GeographicalName></ad:adminUnit><ad:locatorDesignator>London</ad:locatorDesignator><ad:postCode xsi:nil="false">SW1P 2AL</ad:postCode></ad:AddressRepresentation></base2:address><base2:electronicMailAddress>aqevidence@defra.gsi.gov.uk</base2:electronicMailAddress><base2:telephoneVoice/><base2:website>https://www.gov.uk/defra</base2:website></base2:Contact></base2:contact></base2:RelatedParty></aqd:approvalMeasurementSystems>
+      <aqd:accuracyMeasurements>
+			<base2:RelatedParty><base2:individualName><gco:CharacterString>John Newington</gco:CharacterString></base2:individualName><base2:organisationName><gco:CharacterString>The Department for Environment, Food and Rural Affairs, The Scottish Government, The Welsh Government and The Department of Environment - Northern Ireland</gco:CharacterString></base2:organisationName><base2:contact><base2:Contact><base2:address><ad:AddressRepresentation><ad:adminUnit><gn:GeographicalName><gn:language>eng</gn:language><gn:nativeness xsi:nil="true" nilReason="missing"/><gn:nameStatus xsi:nil="true" nilReason="missing"/><gn:sourceOfName xsi:nil="true" nilReason="missing"/><gn:pronunciation xsi:nil="true" nilReason="missing"/><gn:spelling><gn:SpellingOfName><gn:text>Resource, Atmosphere and Sustainability, Area 2C Nobel House, 17 Smith Square, London, SW1P 2AL</gn:text><gn:script xsi:nil="true" nilReason="missing"/></gn:SpellingOfName></gn:spelling></gn:GeographicalName></ad:adminUnit><ad:locatorDesignator>London</ad:locatorDesignator><ad:postCode xsi:nil="false">SW1P 2AL</ad:postCode></ad:AddressRepresentation></base2:address><base2:electronicMailAddress>aqevidence@defra.gsi.gov.uk</base2:electronicMailAddress><base2:telephoneVoice/><base2:website>https://www.gov.uk/defra</base2:website></base2:Contact></base2:contact></base2:RelatedParty></aqd:accuracyMeasurements>
+      <aqd:analysisAssessmentMethod>
+			<base2:RelatedParty><base2:individualName><gco:CharacterString>John Newington</gco:CharacterString></base2:individualName><base2:organisationName><gco:CharacterString>The Department for Environment, Food and Rural Affairs, The Scottish Government, The Welsh Government and The Department of Environment - Northern Ireland</gco:CharacterString></base2:organisationName><base2:contact><base2:Contact><base2:address><ad:AddressRepresentation><ad:adminUnit><gn:GeographicalName><gn:language>eng</gn:language><gn:nativeness xsi:nil="true" nilReason="missing"/><gn:nameStatus xsi:nil="true" nilReason="missing"/><gn:sourceOfName xsi:nil="true" nilReason="missing"/><gn:pronunciation xsi:nil="true" nilReason="missing"/><gn:spelling><gn:SpellingOfName><gn:text>Resource, Atmosphere and Sustainability, Area 2C Nobel House, 17 Smith Square, London, SW1P 2AL</gn:text><gn:script xsi:nil="true" nilReason="missing"/></gn:SpellingOfName></gn:spelling></gn:GeographicalName></ad:adminUnit><ad:locatorDesignator>London</ad:locatorDesignator><ad:postCode xsi:nil="false">SW1P 2AL</ad:postCode></ad:AddressRepresentation></base2:address><base2:electronicMailAddress>aqevidence@defra.gsi.gov.uk</base2:electronicMailAddress><base2:telephoneVoice/><base2:website>https://www.gov.uk/defra</base2:website></base2:Contact></base2:contact></base2:RelatedParty></aqd:analysisAssessmentMethod>
+      <aqd:nationWideQualityAssurance>
+			<base2:RelatedParty><base2:individualName><gco:CharacterString>John Newington</gco:CharacterString></base2:individualName><base2:organisationName><gco:CharacterString>The Department for Environment, Food and Rural Affairs, The Scottish Government, The Welsh Government and The Department of Environment - Northern Ireland</gco:CharacterString></base2:organisationName><base2:contact><base2:Contact><base2:address><ad:AddressRepresentation><ad:adminUnit><gn:GeographicalName><gn:language>eng</gn:language><gn:nativeness xsi:nil="true" nilReason="missing"/><gn:nameStatus xsi:nil="true" nilReason="missing"/><gn:sourceOfName xsi:nil="true" nilReason="missing"/><gn:pronunciation xsi:nil="true" nilReason="missing"/><gn:spelling><gn:SpellingOfName><gn:text>Resource, Atmosphere and Sustainability, Area 2C Nobel House, 17 Smith Square, London, SW1P 2AL</gn:text><gn:script xsi:nil="true" nilReason="missing"/></gn:SpellingOfName></gn:spelling></gn:GeographicalName></ad:adminUnit><ad:locatorDesignator>London</ad:locatorDesignator><ad:postCode xsi:nil="false">SW1P 2AL</ad:postCode></ad:AddressRepresentation></base2:address><base2:electronicMailAddress>aqevidence@defra.gsi.gov.uk</base2:electronicMailAddress><base2:telephoneVoice/><base2:website>https://www.gov.uk/defra</base2:website></base2:Contact></base2:contact></base2:RelatedParty></aqd:nationWideQualityAssurance>
+      <aqd:cooperationMSCommission>
+			<base2:RelatedParty><base2:individualName><gco:CharacterString>John Newington</gco:CharacterString></base2:individualName><base2:organisationName><gco:CharacterString>The Department for Environment, Food and Rural Affairs, The Scottish Government, The Welsh Government and The Department of Environment - Northern Ireland</gco:CharacterString></base2:organisationName><base2:contact><base2:Contact><base2:address><ad:AddressRepresentation><ad:adminUnit><gn:GeographicalName><gn:language>eng</gn:language><gn:nativeness xsi:nil="true" nilReason="missing"/><gn:nameStatus xsi:nil="true" nilReason="missing"/><gn:sourceOfName xsi:nil="true" nilReason="missing"/><gn:pronunciation xsi:nil="true" nilReason="missing"/><gn:spelling><gn:SpellingOfName><gn:text>Resource, Atmosphere and Sustainability, Area 2C Nobel House, 17 Smith Square, London, SW1P 2AL</gn:text><gn:script xsi:nil="true" nilReason="missing"/></gn:SpellingOfName></gn:spelling></gn:GeographicalName></ad:adminUnit><ad:locatorDesignator>London</ad:locatorDesignator><ad:postCode xsi:nil="false">SW1P 2AL</ad:postCode></ad:AddressRepresentation></base2:address><base2:electronicMailAddress>aqevidence@defra.gsi.gov.uk</base2:electronicMailAddress><base2:telephoneVoice/><base2:website>https://www.gov.uk/defra</base2:website></base2:Contact></base2:contact></base2:RelatedParty></aqd:cooperationMSCommission>
+    </aqd:CompetentAuthorities>
+  </gml:featureMember>
+  <gml:featureMember>
+    <aqd:AQD_AssessmentRegime gml:id="GB_AssessmentRegime_9386">
+      <aqd:inspireId>
+        <base:Identifier>
+          <base:localId>GB_AssessmentRegime_9386</base:localId>
+          <base:namespace>http://environment.data.gov.uk/air-quality/so</base:namespace>
+          <base:versionId>23-12-2014</base:versionId>
+        </base:Identifier>
+      </aqd:inspireId>
+      <aqd:pollutant xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/6012"/>
+      <aqd:assessmentThreshold>
+        <aqd:AssessmentThreshold>
+          <aqd:environmentalObjective>
+            <aqd:EnvironmentalObjective>
+              <aqd:objectiveType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/MO"/>
+              <aqd:reportingMetric xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/NA"/>
+              <aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/NA"/>
+            </aqd:EnvironmentalObjective>
+          </aqd:environmentalObjective>
+          <aqd:exceedanceAttainment xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/assessmentthresholdexceedance/NA"/>
+          <aqd:classificationDate>
+            <gml:TimeInstant gml:id="TimeInstant_1">
+              <gml:timePosition>2013-01-01</gml:timePosition>
+            </gml:TimeInstant>
+          </aqd:classificationDate>
+          <aqd:classificationReport>http://uk-air.defra.gov.uk/library/reports.php?report_id=772</aqd:classificationReport>
+        </aqd:AssessmentThreshold>
+      </aqd:assessmentThreshold>
+      <aqd:assessmentMethods>
+        <aqd:AssessmentMethods>
+          <aqd:assessmentType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/fixed"/>
+          <aqd:assessmentTypeDescription>Automatic &amp; sampler based fixed measurements of ambient air pollution</aqd:assessmentTypeDescription>
+          <aqd:samplingPointAssessmentMetadata xlink:href="http://environment.data.gov.uk/air-quality/so/GB_SamplingPoint_61940"/>
+          <aqd:samplingPointAssessmentMetadata xlink:href="http://environment.data.gov.uk/air-quality/so/GB_SamplingPoint_61944"/>
+        </aqd:AssessmentMethods>
+      </aqd:assessmentMethods>
+      <aqd:zone xlink:href="http://environment.data.gov.uk/air-quality/so/Zone_UK0001"/>
+    </aqd:AQD_AssessmentRegime>
+  </gml:featureMember>
+</gml:FeatureCollection>
+

@@ -1,88 +1,121 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0" xmlns:am="http://inspire.ec.europa.eu/schemas/am/3.0" xmlns:am-ru="http://inspire.jrc.ec.europa.eu/schemas/am-ru/2.0" xmlns:aqd="http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0" xmlns:base2="http://inspire.ec.europa.eu/schemas/base2/1.0" xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3" xmlns:ef="http://inspire.ec.europa.eu/schemas/ef/3.0" xmlns:fn="http://www.w3.org/2005/xpath-functions" xmlns:gco="http://www.isotc211.org/2005/gco" xmlns:gmd="http://www.isotc211.org/2005/gmd" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" xmlns:gsr="http://www.isotc211.org/2005/gsr" xmlns:gss="http://www.isotc211.org/2005/gss" xmlns:gts="http://www.isotc211.org/2005/gts" xmlns:om="http://www.opengis.net/om/2.0" xmlns:ompr="http://inspire.ec.europa.eu/schemas/ompr/2.0" xmlns:sam="http://www.opengis.net/sampling/2.0" xmlns:sams="http://www.opengis.net/samplingSpatial/2.0" xmlns:swe="http://www.opengis.net/swe/2.0" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" xmlns:sparql="http://www.w3.org/2005/sparql-results#" xmlns:owl="http://www.w3.org/2002/07/owl#" xmlns:skos="http://www.w3.org/2008/05/skos#" xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#" xmlns="http://rdfdata.eionet.europa.eu/airquality/ontology/" xmlns:str="http://exslt.org/strings"><AQD_ReportingHeader rdf:ID="ReportingHeader">
-        <change rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</change>
-        <changeDescription>Change Description</changeDescription>
-        <declarationFor><rdf:Description rdf:about="http://reference.eionet.europa.eu/aq/PT.APA.AQD/Zones"><hasDeclaration xmlns="http://reference.eionet.europa.eu/aq/ontology/" rdf:resource="#ReportingHeader"/></rdf:Description></declarationFor><inspireId><Identifier>
-            <localId>Zones</localId>
-            <namespace>PT.APA.AQD</namespace>
-            </Identifier></inspireId>
-        <reportingAuthority><RelatedParty>
-                <individualName>Dilia Jardim</individualName>
-                <organisationName>Agencia Portuguesa do Ambiente</organisationName>
-                <contact><Contact>
-                        <address><AddressRepresentation>
-                                <adminUnit>Rua da Murgueira, 9/9A - Zambujal Ap. 7585</adminUnit>
-                                <locatorDesignator>Amadora</locatorDesignator>
-                                <postCode>2611-865</postCode>
-                            </AddressRepresentation></address>
-                        <electronicMailAddress>dilia.jardim@apambiente.pt</electronicMailAddress>
-                        <telephoneVoice>+351214728200</telephoneVoice>
-                        <website>http://www.apambiente.pt</website>
-                    </Contact></contact>
-                
-            </RelatedParty></reportingAuthority>
-        <reportingPeriod><TimePeriod rdf:ID="ReportingPeriod">
-                <beginPosition rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2014-01-01T00:00:00Z</beginPosition>
-                <endPosition rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2014-12-31T00:00:00Z</endPosition>
-            </TimePeriod></reportingPeriod>
-        <content rdf:resource="http://reference.eionet.europa.eu/aq/PT.APA.AQD/ZON.PT3001"/>
-    </AQD_ReportingHeader><AQD_Zone rdf:ID="ZON.PT3001">
-    <declarationFor><rdf:Description rdf:about="http://reference.eionet.europa.eu/aq/PT.APA.AQD/ZON.PT3001"><hasDeclaration xmlns="http://reference.eionet.europa.eu/aq/ontology/" rdf:resource="#ZON.PT3001"/></rdf:Description></declarationFor><inspireId><Identifier>
-            <localId>ZON.PT3001</localId>
-            <namespace>PT.APA.AQD</namespace>
-        </Identifier></inspireId>
-    <name>AML Norte</name>        
-    
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0" xmlns:am="http://inspire.ec.europa.eu/schemas/am/3.0" xmlns:am-ru="http://inspire.jrc.ec.europa.eu/schemas/am-ru/2.0" xmlns:aqd="http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0" xmlns:base2="http://inspire.ec.europa.eu/schemas/base2/1.0" xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3" xmlns:ef="http://inspire.ec.europa.eu/schemas/ef/3.0" xmlns:fn="http://www.w3.org/2005/xpath-functions" xmlns:gco="http://www.isotc211.org/2005/gco" xmlns:gmd="http://www.isotc211.org/2005/gmd" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" xmlns:gsr="http://www.isotc211.org/2005/gsr" xmlns:gss="http://www.isotc211.org/2005/gss" xmlns:gts="http://www.isotc211.org/2005/gts" xmlns:om="http://www.opengis.net/om/2.0" xmlns:ompr="http://inspire.ec.europa.eu/schemas/ompr/2.0" xmlns:sam="http://www.opengis.net/sampling/2.0" xmlns:sams="http://www.opengis.net/samplingSpatial/2.0" xmlns:swe="http://www.opengis.net/swe/2.0" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" xmlns:sparql="http://www.w3.org/2005/sparql-results#" xmlns:owl="http://www.w3.org/2002/07/owl#" xmlns:skos="http://www.w3.org/2008/05/skos#" xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#" xmlns="http://rdfdata.eionet.europa.eu/airquality/ontology/" xmlns:str="http://exslt.org/strings">
+  <AQD_ReportingHeader rdf:ID="ReportingHeader">
+    <change rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</change>
+    <changeDescription>Change Description</changeDescription>
+    <declarationFor>
+      <rdf:Description rdf:about="http://reference.eionet.europa.eu/aq/PT.APA.AQD/Zones">
+        <hasDeclaration xmlns="http://reference.eionet.europa.eu/aq/ontology/" rdf:resource="#ReportingHeader"/>
+      </rdf:Description>
+    </declarationFor>
+    <inspireId>
+      <Identifier>
+        <localId>Zones</localId>
+        <namespace>PT.APA.AQD</namespace>
+      </Identifier>
+    </inspireId>
+    <reportingAuthority>
+      <RelatedParty>
+        <individualName>Dilia Jardim</individualName>
+        <organisationName>Agencia Portuguesa do Ambiente</organisationName>
+        <contact>
+          <Contact>
+            <address>
+              <AddressRepresentation>
+                <adminUnit>Rua da Murgueira, 9/9A - Zambujal Ap. 7585</adminUnit>
+                <locatorDesignator>Amadora</locatorDesignator>
+                <postCode>2611-865</postCode>
+              </AddressRepresentation>
+            </address>
+            <electronicMailAddress>dilia.jardim@apambiente.pt</electronicMailAddress>
+            <telephoneVoice>+351214728200</telephoneVoice>
+            <website>http://www.apambiente.pt</website>
+          </Contact>
+        </contact>
+      </RelatedParty>
+    </reportingAuthority>
+    <reportingPeriod>
+      <TimePeriod rdf:ID="ReportingPeriod">
+        <beginPosition rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2014-01-01T00:00:00Z</beginPosition>
+        <endPosition rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2014-12-31T00:00:00Z</endPosition>
+      </TimePeriod>
+    </reportingPeriod>
+    <content rdf:resource="http://reference.eionet.europa.eu/aq/PT.APA.AQD/ZON.PT3001"/>
+  </AQD_ReportingHeader>
+  <AQD_Zone rdf:ID="ZON.PT3001">
+    <declarationFor>
+      <rdf:Description rdf:about="http://reference.eionet.europa.eu/aq/PT.APA.AQD/ZON.PT3001">
+        <hasDeclaration xmlns="http://reference.eionet.europa.eu/aq/ontology/" rdf:resource="#ZON.PT3001"/>
+      </rdf:Description>
+    </declarationFor>
+    <inspireId>
+      <Identifier>
+        <localId>ZON.PT3001</localId>
+        <namespace>PT.APA.AQD</namespace>
+      </Identifier>
+    </inspireId>
+    <name>AML Norte</name>
     <zoneType rdf:resource="http://inspire.ec.europa.eu/codeList/ZoneTypeCode/airQualityManagementZone"/>
-    <designationPeriod><TimePeriod rdf:ID="ZON.PT3001.DesignationPeriod">
-            <beginPosition rdf:datatype="http://www.w3.org/2001/XMLSchema#date">1997-01-01</beginPosition>
-            
-        </TimePeriod></designationPeriod>
+    <designationPeriod>
+      <TimePeriod rdf:ID="ZON.PT3001.DesignationPeriod">
+        <beginPosition rdf:datatype="http://www.w3.org/2001/XMLSchema#date">1997-01-01</beginPosition>
+      </TimePeriod>
+    </designationPeriod>
     <environmentalDomain rdf:resource="http://dd.eionet.europa.eu/vocabulary/common/environmentaldomain/air"/>
-    <competentAuthority><RelatedParty>
-            <individualName>Dilia Jardim</individualName>
-            <organisationName>Agencia Portuguesa do Ambiente</organisationName>
-            <contact><Contact>
-                    <address><AddressRepresentation>
-                            <adminUnit>Rua da Murgueira, 9/9A - Zambujal Ap. 7585</adminUnit>
-                            <locatorDesignator>Amadora</locatorDesignator>
-                            <postCode>2611-865</postCode>
-                        </AddressRepresentation></address>
-                    <electronicMailAddress>dilia.jardim@apambiente.pt</electronicMailAddress>
-                    <telephoneVoice>+351214728200</telephoneVoice>
-                    <website>http://www.apambiente.pt</website>
-                </Contact></contact>
-        </RelatedParty></competentAuthority>
+    <competentAuthority>
+      <RelatedParty>
+        <individualName>Dilia Jardim</individualName>
+        <organisationName>Agencia Portuguesa do Ambiente</organisationName>
+        <contact>
+          <Contact>
+            <address>
+              <AddressRepresentation>
+                <adminUnit>Rua da Murgueira, 9/9A - Zambujal Ap. 7585</adminUnit>
+                <locatorDesignator>Amadora</locatorDesignator>
+                <postCode>2611-865</postCode>
+              </AddressRepresentation>
+            </address>
+            <electronicMailAddress>dilia.jardim@apambiente.pt</electronicMailAddress>
+            <telephoneVoice>+351214728200</telephoneVoice>
+            <website>http://www.apambiente.pt</website>
+          </Contact>
+        </contact>
+      </RelatedParty>
+    </competentAuthority>
     <beginLifespanVersion rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2014-07-11T10:01:43</beginLifespanVersion>
-    <legalBasis><LegislationCitation rdf:ID="ZON.PT3001.LegislationCitation">
-            <name>2011/850/EC</name>
-            <shortName>AQ IPR for e-Reporting</shortName>
-            
-            <link>http://rod.eionet.europa.eu/instruments/650</link>
-            <identificationNumber>2011/850/EC</identificationNumber>
-            <officialDocumentNumber>OJ L 335, 17.12.2011, p. 86–106</officialDocumentNumber>
-            <dateEnteredIntoForce rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2014-01-01</dateEnteredIntoForce>
-            <level rdf:resource="http://inspire.ec.europa.eu/codeList/LegislationLevelValue/european"/>
-        </LegislationCitation></legalBasis>
-        
+    <legalBasis>
+      <LegislationCitation rdf:ID="ZON.PT3001.LegislationCitation">
+        <name>2011/850/EC</name>
+        <shortName>AQ IPR for e-Reporting</shortName>
+        <link>http://rod.eionet.europa.eu/instruments/650</link>
+        <identificationNumber>2011/850/EC</identificationNumber>
+        <officialDocumentNumber>OJ L 335, 17.12.2011, p. 86–106</officialDocumentNumber>
+        <dateEnteredIntoForce rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2014-01-01</dateEnteredIntoForce>
+        <level rdf:resource="http://inspire.ec.europa.eu/codeList/LegislationLevelValue/european"/>
+      </LegislationCitation>
+    </legalBasis>
     <zoneCode>PT3001</zoneCode>
-    <aqdZoneType rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/zonetype/agg"/> 
+    <aqdZoneType rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/zonetype/agg"/>
     <residentPopulation rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">1000000</residentPopulation>
-    <residentPopulationYear><TimeInstant rdf:ID="ZON.PT3001.ResidentPopulationTime">
-            <timePosition rdf:datatype="http://www.w3.org/2001/XMLSchema#int">2010</timePosition>
-	</TimeInstant></residentPopulationYear>
-    <area rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">1</area><areaUOM rdf:resource="http://dd.eionet.europa.eu/vocabulary/uom/area/km2"/>
-
-    
-    <pollutants><Pollutant>
-<pollutantCode rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5"/>
-<protectionTarget rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"/>
-</Pollutant></pollutants>
-<pollutants><Pollutant>
-<pollutantCode rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/8"/>
-<protectionTarget rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"/>
-</Pollutant></pollutants>
-
-    <timeExtensionExemption rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/none"/>    
-        
-</AQD_Zone></rdf:RDF>
+    <residentPopulationYear>
+      <TimeInstant rdf:ID="ZON.PT3001.ResidentPopulationTime">
+        <timePosition rdf:datatype="http://www.w3.org/2001/XMLSchema#int">2010</timePosition>
+      </TimeInstant>
+    </residentPopulationYear>
+    <area rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">1</area>
+    <areaUOM rdf:resource="http://dd.eionet.europa.eu/vocabulary/uom/area/km2"/>
+    <pollutants>
+      <Pollutant>
+        <pollutantCode rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5"/>
+        <protectionTarget rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"/>
+      </Pollutant>
+    </pollutants>
+    <pollutants>
+      <Pollutant>
+        <pollutantCode rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/8"/>
+        <protectionTarget rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"/>
+      </Pollutant>
+    </pollutants>
+    <timeExtensionExemption rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/none"/>
+  </AQD_Zone>
+</rdf:RDF>

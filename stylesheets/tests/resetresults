@@ -1,8 +1,13 @@
 #!/bin/sh
 
-for file in test-*
+if [ $# = 0 ]; then
+   testfiles=`echo test-*`
+else
+   testfiles=$@
+fi
+for file in $testfiles
 do
     echo $file ...
     expected=`echo "$file" | sed 's/^test-/expected-/'`
-    xsltproc ../aqd10_rdf.xsl "$file" > "$expected"
+    xsltproc ../aqd10_rdf.xsl "$file" | xmllint --format - > "$expected"
 done

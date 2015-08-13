@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gml:FeatureCollection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aqd="http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0" xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3" xmlns:base2="http://inspire.ec.europa.eu/schemas/base2/1.0" xmlns:ef="http://inspire.ec.europa.eu/schemas/ef/3.0" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:ompr="http://inspire.ec.europa.eu/schemas/ompr/2.0" xmlns:sam="http://www.opengis.net/sampling/2.0" xmlns:sams="http://www.opengis.net/samplingSpatial/2.0" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:gmd="http://www.isotc211.org/2005/gmd"
+xmlns:gco="http://www.isotc211.org/2005/gco" xmlns:om="http://www.opengis.net/om/2.0" xmlns:swe="http://www.opengis.net/swe/2.0" xmlns:am="http://inspire.ec.europa.eu/schemas/am/3.0" xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0" xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+xsi:schemaLocation = "http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0 http://dd.eionet.europa.eu/schemas/id2011850eu-1.0/AirQualityReporting.xsd" gml:id="REP-HU_OMSZ_20140926_G">
+    <gml:featureMember>
+        <aqd:AQD_ReportingHeader gml:id="REP_D-HU_OMSZ_20140926_G">
+                <aqd:change>true</aqd:change>
+                <aqd:changeDescription>HU_2013_G</aqd:changeDescription>
+                <aqd:inspireId>
+                    <base:Identifier>
+                        <base:localId>HU_OMSZ_20140926</base:localId>
+                        <base:namespace>HU.OMSZ.AQ</base:namespace>
+                    </base:Identifier>
+                </aqd:inspireId>
+                <aqd:reportingAuthority>
+                    <base2:RelatedParty>
+                        <base2:individualName>
+                            <gmd:LocalisedCharacterString>PuskasMonika</gmd:LocalisedCharacterString>
+                        </base2:individualName>
+                        <base2:organisationName>
+                            <gmd:LocalisedCharacterString>OMSZ - Hungarian Meteorological Service</gmd:LocalisedCharacterString>
+                        </base2:organisationName>
+                        <base2:contact>
+                            <base2:Contact>
+                                <base2:address>
+                                    <ad:AddressRepresentation>
+                                        <ad:adminUnit>
+                                            <gn:GeographicalName>
+                                                <gn:language nilReason="missing" xsi:nil="true"/>
+                                                <gn:nativeness nilReason="missing" xsi:nil="true"/>
+                                                <gn:nameStatus nilReason="missing" xsi:nil="true"/>
+                                                <gn:sourceOfName nilReason="missing" xsi:nil="true"/>
+                                                <gn:pronunciation nilReason="missing" xsi:nil="true"/>
+                                                <gn:spelling>
+                                                    <gn:SpellingOfName>
+                                                        <gn:text>H-1181 Budapest Gilice t&#233;r 39.</gn:text>
+                                                        <gn:script nilReason="missing" xsi:nil="true"/>
+                                                    </gn:SpellingOfName>
+                                                </gn:spelling>
+                                            </gn:GeographicalName>
+                                        </ad:adminUnit>
+                                        <ad:locatorDesignator>Budapest</ad:locatorDesignator>
+                                    </ad:AddressRepresentation>
+                                </base2:address>
+                                <base2:electronicMailAddress>puskas.monika@met.hu</base2:electronicMailAddress>
+                                <base2:telephoneVoice>+36 1 346 4800</base2:telephoneVoice>
+                                <base2:website>http://www.met.hu</base2:website>
+                            </base2:Contact>
+                        </base2:contact>
+                        <base2:role/>
+                    </base2:RelatedParty>
+                </aqd:reportingAuthority>
+ 		<aqd:reportingPeriod>
+                    <gml:TimePeriod gml:id="REP_P-HU_OMSZ_20140926_G">
+                        <gml:beginPosition>2013-01-01T01:00:01</gml:beginPosition>
+                        <gml:endPosition>2013-12-31T24:00:00</gml:endPosition>
+                    </gml:TimePeriod>
+                </aqd:reportingPeriod>
+                <aqd:content xlink:href="HU.OMSZ.AQ/ATT-HU0001_05018_TV_aMean_2013"/>
+        </aqd:AQD_ReportingHeader>
+    </gml:featureMember>
+    <gml:featureMember>
+        <aqd:AQD_Attainment gml:id="ATT-HU0001_05018_TV_aMean_2013">
+                <aqd:inspireId>
+                    <base:Identifier>
+                        <base:localId>ATT-HU0001_05018_TV_aMean_2013</base:localId>
+                        <base:namespace>HU.OMSZ.AQ</base:namespace>
+                    </base:Identifier>
+                 </aqd:inspireId>
+                 <aqd:pollutant xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5018"/>
+                 <aqd:environmentalObjective>
+                    <aqd:EnvironmentalObjective>
+                        <aqd:objectiveType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/TV"/>
+                        <aqd:reportingMetric xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean"/>
+                        <aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"/>
+                    </aqd:EnvironmentalObjective>
+                 </aqd:environmentalObjective>
+                <aqd:exceedanceDescriptionFinal>
+                    <aqd:ExceedanceDescription>
+                        <aqd:exceedance>false</aqd:exceedance>
+                   </aqd:ExceedanceDescription>
+                </aqd:exceedanceDescriptionFinal>
+            <aqd:zone xlink:href="HU.OMSZ.AQ/ZON-HU0001"/>
+            <aqd:assessment xlink:href="HU.OMSZ.AQ/ARE-HU0001_05018_TV_aMean_2013"/>
+        </aqd:AQD_Attainment>
+    </gml:featureMember>
+</gml:FeatureCollection>
