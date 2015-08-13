@@ -55,6 +55,7 @@
       </Identifier>
     </inspireId>
     <name>AML Norte</name>
+    <geometry rdf:resource="http://reference.eionet.europa.eu/aq/PT3001.gml"/>
     <zoneType rdf:resource="http://inspire.ec.europa.eu/codeList/ZoneTypeCode/airQualityManagementZone"/>
     <designationPeriod>
       <TimePeriod rdf:ID="ZON.PT3001.DesignationPeriod">

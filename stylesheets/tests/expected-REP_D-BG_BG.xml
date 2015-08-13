@@ -55,6 +55,7 @@
       </Identifier>
     </inspireId>
     <name>North</name>
+    <geometry rdf:resource="http://cdr.eionet.europa.eu/bg/eu/aqd/b/envvigypa/"/>
     <zoneType rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/zonetype/agg"/>
     <designationPeriod>
       <TimePeriod rdf:ID="BG0004_DESIGNATION_PERIOD">
