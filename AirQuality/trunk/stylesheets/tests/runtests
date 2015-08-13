@@ -4,7 +4,7 @@ for file in test-*
 do
     echo $file ...
     expected=`echo "$file" | sed 's/^test-/expected-/'`
-    xsltproc ../aqd10_rdf.xsl "$file" >result.xml
+    xsltproc ../aqd10_rdf.xsl "$file" | xmllint --format - >result.xml
     diff "$expected" result.xml
     rm result.xml
 done

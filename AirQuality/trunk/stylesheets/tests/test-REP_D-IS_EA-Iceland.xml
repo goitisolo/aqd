@@ -1,0 +1,500 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gml:FeatureCollection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aqd="http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0" xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3" xmlns:base2="http://inspire.ec.europa.eu/schemas/base2/1.0" xmlns:ef="http://inspire.ec.europa.eu/schemas/ef/3.0" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:ompr="http://inspire.ec.europa.eu/schemas/ompr/2.0" xmlns:sam="http://www.opengis.net/sampling/2.0" xmlns:sams="http://www.opengis.net/samplingSpatial/2.0" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:gmd="http://www.isotc211.org/2005/gmd"
+xmlns:gco="http://www.isotc211.org/2005/gco" xmlns:om="http://www.opengis.net/om/2.0" xmlns:swe="http://www.opengis.net/swe/2.0" xmlns:am="http://inspire.ec.europa.eu/schemas/am/3.0" xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0" xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+xsi:schemaLocation = "http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0 http://dd.eionet.europa.eu/schemas/id2011850eu-1.0/AirQualityReporting.xsd" gml:id="REP-IS_EA-Iceland_20150127_B">
+    <gml:featureMember>
+        <aqd:AQD_ReportingHeader gml:id="REP_D-IS_EA-Iceland_20150127_B">
+                <aqd:change>true</aqd:change>
+                <aqd:changeDescription>Zones Iceland 2013</aqd:changeDescription>
+                <aqd:inspireId>
+                    <base:Identifier>
+                        <base:localId>IS_EA-Iceland_20150127</base:localId>
+                        <base:namespace>IS.EA-Iceland.AQ</base:namespace>
+                        <base:versionId>AQUI 2.5</base:versionId>
+                    </base:Identifier>
+                </aqd:inspireId>
+                <aqd:reportingAuthority>
+                    <base2:RelatedParty>
+                        <base2:individualName>
+                            <gmd:LocalisedCharacterString>J&#243;hannsson&#222;orsteinn</gmd:LocalisedCharacterString>
+                        </base2:individualName>
+                        <base2:organisationName>
+                            <gmd:LocalisedCharacterString>Environmental Agency of Iceland</gmd:LocalisedCharacterString>
+                        </base2:organisationName>
+                        <base2:contact>
+                            <base2:Contact>
+                                <base2:address>
+                                    <ad:AddressRepresentation>
+                                        <ad:adminUnit>
+                                            <gn:GeographicalName>
+                                                <gn:language nilReason="missing" xsi:nil="true"/>
+                                                <gn:nativeness nilReason="missing" xsi:nil="true"/>
+                                                <gn:nameStatus nilReason="missing" xsi:nil="true"/>
+                                                <gn:sourceOfName nilReason="missing" xsi:nil="true"/>
+                                                <gn:pronunciation nilReason="missing" xsi:nil="true"/>
+                                                <gn:spelling>
+                                                    <gn:SpellingOfName>
+                                                        <gn:text>Su&#240;urlandsbraut 24,  101</gn:text>
+                                                        <gn:script nilReason="missing" xsi:nil="true"/>
+                                                    </gn:SpellingOfName>
+                                                </gn:spelling>
+                                            </gn:GeographicalName>
+                                        </ad:adminUnit>
+                                        <ad:locatorDesignator>Reykjavik</ad:locatorDesignator>
+                                    </ad:AddressRepresentation>
+                                </base2:address>
+                                <base2:electronicMailAddress>thorsteinnj@Umhverfisstofnun.is</base2:electronicMailAddress>
+                                <base2:telephoneVoice>+354 591 2000</base2:telephoneVoice>
+                                <base2:website>http://www.ust.is</base2:website>
+                            </base2:Contact>
+                        </base2:contact>
+                        <base2:role/>
+                    </base2:RelatedParty>
+                </aqd:reportingAuthority>
+                <aqd:reportingPeriod>
+                    <gml:TimePeriod gml:id="REP_P-IS_EA-Iceland_20150127_B">
+                        <gml:beginPosition>2013-01-01T01:00:01</gml:beginPosition>
+                        <gml:endPosition>2013-12-31T24:00:00</gml:endPosition>
+                    </gml:TimePeriod>
+                </aqd:reportingPeriod>
+                <aqd:content xlink:href="IS.EA-Iceland.AQ/ZON-IS1002"/>
+                <aqd:content xlink:href="IS.EA-Iceland.AQ/ZON-IS0001"/>
+                <aqd:content xlink:href="IS.EA-Iceland.AQ/ZON-IS0002"/>
+                <aqd:content xlink:href="IS.EA-Iceland.AQ/ZON-IS0003"/>
+                <aqd:content xlink:href="IS.EA-Iceland.AQ/ZON-IS1001"/>
+                <aqd:content xlink:href="IS.EA-Iceland.AQ/ZON-IS0004"/>
+        </aqd:AQD_ReportingHeader>
+    </gml:featureMember>
+                <gml:featureMember>
+                    <aqd:AQD_Zone gml:id="ZON-IS1002">
+                        <am:inspireId>
+                            <base:Identifier>
+                                <base:localId>ZON-IS1002</base:localId>
+                                <base:namespace>IS.EA-Iceland.AQ</base:namespace>
+                                <base:versionId>AQUI 2.5</base:versionId>
+                            </base:Identifier>
+                        </am:inspireId>
+                        <am:name>
+                            <gn:GeographicalName>
+                                <gn:language nilReason="missing" xsi:nil="true"/>
+                                <gn:nativeness nilReason="missing" xsi:nil="true"/>
+                                <gn:nameStatus nilReason="missing" xsi:nil="true"/>
+                                <gn:sourceOfName nilReason="missing" xsi:nil="true"/>
+                                <gn:pronunciation nilReason="missing" xsi:nil="true"/>
+                                <gn:spelling>
+                                    <gn:SpellingOfName>
+                                        <gn:text>Akureyri</gn:text>
+                                        <gn:script nilReason="missing" xsi:nil="true"/>
+                                    </gn:SpellingOfName>
+                                </gn:spelling>
+                            </gn:GeographicalName>
+                        </am:name>
+                        <am:geometry xlink:href="http://cdr.eionet.europa.eu/is/eu/aqd/b/Data flow B - Reporting 2014 v2/Akureyri"/>
+                        <am:zoneType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/zonetype/agg"/>
+                        <am:designationPeriod>
+                            <gml:TimePeriod gml:id="IS1002_DESIGNATION_PERIOD">
+                                <gml:beginPosition>2005-01-01T00:00:00</gml:beginPosition>
+                                <gml:endPosition indeterminatePosition="unknown"/> 
+                            </gml:TimePeriod>
+                        </am:designationPeriod>
+                        <am:environmentalDomain xlink:href="http://dd.eionet.europa.eu/vocabulary/common/environmentaldomain/air"/>
+                    <am:competentAuthority nilReason="Reported in Header" xsi:nil="true"/>
+                        <am:beginLifespanVersion>2015-01-27T10:05:00</am:beginLifespanVersion>
+                        <am:legalBasis xlink:href="http://rod.eionet.europa.eu/instruments/650"/>
+                        <aqd:zoneCode>IS1002</aqd:zoneCode>
+                        <aqd:aqdZoneType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/zonetype/agg"/>
+                        <aqd:changeDocumentation></aqd:changeDocumentation>
+                        <aqd:residentPopulation>18103</aqd:residentPopulation>
+                        <aqd:area uom="km2">26</aqd:area>
+                        <aqd:pollutants>
+                            <aqd:Pollutant>
+                                <aqd:pollutantCode xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5"/>
+                                <aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"/>
+                            </aqd:Pollutant>
+                        </aqd:pollutants>
+                        <aqd:pollutants>
+                            <aqd:Pollutant>
+                                <aqd:pollutantCode xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/8"/>
+                                <aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"/>
+                            </aqd:Pollutant>
+                        </aqd:pollutants>
+                        <aqd:pollutants>
+                            <aqd:Pollutant>
+                                <aqd:pollutantCode xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/9"/>
+                                <aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V"/>
+                            </aqd:Pollutant>
+                        </aqd:pollutants>
+                        <aqd:pollutants>
+                            <aqd:Pollutant>
+                                <aqd:pollutantCode xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/6001"/>
+                                <aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"/>
+                            </aqd:Pollutant>
+                        </aqd:pollutants>
+                        <aqd:timeExtensionExemption xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/none                "/>
+                    </aqd:AQD_Zone>
+                </gml:featureMember>
+                <gml:featureMember>
+                    <aqd:AQD_Zone gml:id="ZON-IS0001">
+                        <am:inspireId>
+                            <base:Identifier>
+                                <base:localId>ZON-IS0001</base:localId>
+                                <base:namespace>IS.EA-Iceland.AQ</base:namespace>
+                                <base:versionId>AQUI 2.5</base:versionId>
+                            </base:Identifier>
+                        </am:inspireId>
+                        <am:name>
+                            <gn:GeographicalName>
+                                <gn:language nilReason="missing" xsi:nil="true"/>
+                                <gn:nativeness nilReason="missing" xsi:nil="true"/>
+                                <gn:nameStatus nilReason="missing" xsi:nil="true"/>
+                                <gn:sourceOfName nilReason="missing" xsi:nil="true"/>
+                                <gn:pronunciation nilReason="missing" xsi:nil="true"/>
+                                <gn:spelling>
+                                    <gn:SpellingOfName>
+                                        <gn:text>Dreifbyli</gn:text>
+                                        <gn:script nilReason="missing" xsi:nil="true"/>
+                                    </gn:SpellingOfName>
+                                </gn:spelling>
+                            </gn:GeographicalName>
+                        </am:name>
+                        <am:geometry xlink:href="http://cdr.eionet.europa.eu/is/eu/aqd/b/Data flow B - Reporting 2014 v2/Dreifbyl"/>
+                        <am:zoneType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/zonetype/noagg"/>
+                        <am:designationPeriod>
+                            <gml:TimePeriod gml:id="IS0001_DESIGNATION_PERIOD">
+                                <gml:beginPosition>2010-01-01T00:00:00</gml:beginPosition>
+                                <gml:endPosition indeterminatePosition="unknown"/> 
+                            </gml:TimePeriod>
+                        </am:designationPeriod>
+                        <am:environmentalDomain xlink:href="http://dd.eionet.europa.eu/vocabulary/common/environmentaldomain/air"/>
+                    <am:competentAuthority nilReason="Reported in Header" xsi:nil="true"/>
+                        <am:beginLifespanVersion>2015-01-27T10:05:00</am:beginLifespanVersion>
+                        <am:legalBasis xlink:href="http://rod.eionet.europa.eu/instruments/650"/>
+                        <aqd:zoneCode>IS0001</aqd:zoneCode>
+                        <aqd:aqdZoneType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/zonetype/noagg"/>
+                        <aqd:changeDocumentation></aqd:changeDocumentation>
+                        <aqd:residentPopulation>99045</aqd:residentPopulation>
+                        <aqd:area uom="km2">103267</aqd:area>
+                        <aqd:pollutants>
+                            <aqd:Pollutant>
+                                <aqd:pollutantCode xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/7"/>
+                                <aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"/>
+                            </aqd:Pollutant>
+                        </aqd:pollutants>
+                        <aqd:pollutants>
+                            <aqd:Pollutant>
+                                <aqd:pollutantCode xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/7"/>
+                                <aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V"/>
+                            </aqd:Pollutant>
+                        </aqd:pollutants>
+                        <aqd:pollutants>
+                            <aqd:Pollutant>
+                                <aqd:pollutantCode xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/8"/>
+                                <aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"/>
+                            </aqd:Pollutant>
+                        </aqd:pollutants>
+                        <aqd:pollutants>
+                            <aqd:Pollutant>
+                                <aqd:pollutantCode xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/9"/>
+                                <aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V"/>
+                            </aqd:Pollutant>
+                        </aqd:pollutants>
+                        <aqd:pollutants>
+                            <aqd:Pollutant>
+                                <aqd:pollutantCode xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/10"/>
+                                <aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"/>
+                            </aqd:Pollutant>
+                        </aqd:pollutants>
+                        <aqd:timeExtensionExemption xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/none                "/>
+                    </aqd:AQD_Zone>
+                </gml:featureMember>
+                <gml:featureMember>
+                    <aqd:AQD_Zone gml:id="ZON-IS0002">
+                        <am:inspireId>
+                            <base:Identifier>
+                                <base:localId>ZON-IS0002</base:localId>
+                                <base:namespace>IS.EA-Iceland.AQ</base:namespace>
+                                <base:versionId>AQUI 2.5</base:versionId>
+                            </base:Identifier>
+                        </am:inspireId>
+                        <am:name>
+                            <gn:GeographicalName>
+                                <gn:language nilReason="missing" xsi:nil="true"/>
+                                <gn:nativeness nilReason="missing" xsi:nil="true"/>
+                                <gn:nameStatus nilReason="missing" xsi:nil="true"/>
+                                <gn:sourceOfName nilReason="missing" xsi:nil="true"/>
+                                <gn:pronunciation nilReason="missing" xsi:nil="true"/>
+                                <gn:spelling>
+                                    <gn:SpellingOfName>
+                                        <gn:text>Grundartangi</gn:text>
+                                        <gn:script nilReason="missing" xsi:nil="true"/>
+                                    </gn:SpellingOfName>
+                                </gn:spelling>
+                            </gn:GeographicalName>
+                        </am:name>
+                        <am:geometry xlink:href="http://cdr.eionet.europa.eu/is/eu/aqd/b/Data flow B - Reporting 2014 v2/Grundart"/>
+                        <am:zoneType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/zonetype/noagg"/>
+                        <am:designationPeriod>
+                            <gml:TimePeriod gml:id="IS0002_DESIGNATION_PERIOD">
+                                <gml:beginPosition>2010-01-01T00:00:00</gml:beginPosition>
+                                <gml:endPosition indeterminatePosition="unknown"/> 
+                            </gml:TimePeriod>
+                        </am:designationPeriod>
+                        <am:environmentalDomain xlink:href="http://dd.eionet.europa.eu/vocabulary/common/environmentaldomain/air"/>
+                    <am:competentAuthority nilReason="Reported in Header" xsi:nil="true"/>
+                        <am:beginLifespanVersion>2015-01-27T10:05:00</am:beginLifespanVersion>
+                        <am:legalBasis xlink:href="http://rod.eionet.europa.eu/instruments/650"/>
+                        <aqd:zoneCode>IS0002</aqd:zoneCode>
+                        <aqd:aqdZoneType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/zonetype/noagg"/>
+                        <aqd:changeDocumentation></aqd:changeDocumentation>
+                        <aqd:residentPopulation>11</aqd:residentPopulation>
+                        <aqd:area uom="km2">11</aqd:area>
+                        <aqd:pollutants>
+                            <aqd:Pollutant>
+                                <aqd:pollutantCode xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1"/>
+                                <aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"/>
+                            </aqd:Pollutant>
+                        </aqd:pollutants>
+                        <aqd:pollutants>
+                            <aqd:Pollutant>
+                                <aqd:pollutantCode xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1"/>
+                                <aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V"/>
+                            </aqd:Pollutant>
+                        </aqd:pollutants>
+                        <aqd:pollutants>
+                            <aqd:Pollutant>
+                                <aqd:pollutantCode xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5"/>
+                                <aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"/>
+                            </aqd:Pollutant>
+                        </aqd:pollutants>
+                        <aqd:pollutants>
+                            <aqd:Pollutant>
+                                <aqd:pollutantCode xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/8"/>
+                                <aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"/>
+                            </aqd:Pollutant>
+                        </aqd:pollutants>
+                        <aqd:pollutants>
+                            <aqd:Pollutant>
+                                <aqd:pollutantCode xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/9"/>
+                                <aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V"/>
+                            </aqd:Pollutant>
+                        </aqd:pollutants>
+                        <aqd:pollutants>
+                            <aqd:Pollutant>
+                                <aqd:pollutantCode xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/6001"/>
+                                <aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"/>
+                            </aqd:Pollutant>
+                        </aqd:pollutants>
+                        <aqd:timeExtensionExemption xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/none                "/>
+                    </aqd:AQD_Zone>
+                </gml:featureMember>
+                <gml:featureMember>
+                    <aqd:AQD_Zone gml:id="ZON-IS0003">
+                        <am:inspireId>
+                            <base:Identifier>
+                                <base:localId>ZON-IS0003</base:localId>
+                                <base:namespace>IS.EA-Iceland.AQ</base:namespace>
+                                <base:versionId>AQUI 2.5</base:versionId>
+                            </base:Identifier>
+                        </am:inspireId>
+                        <am:name>
+                            <gn:GeographicalName>
+                                <gn:language nilReason="missing" xsi:nil="true"/>
+                                <gn:nativeness nilReason="missing" xsi:nil="true"/>
+                                <gn:nameStatus nilReason="missing" xsi:nil="true"/>
+                                <gn:sourceOfName nilReason="missing" xsi:nil="true"/>
+                                <gn:pronunciation nilReason="missing" xsi:nil="true"/>
+                                <gn:spelling>
+                                    <gn:SpellingOfName>
+                                        <gn:text>Reydarfjordur</gn:text>
+                                        <gn:script nilReason="missing" xsi:nil="true"/>
+                                    </gn:SpellingOfName>
+                                </gn:spelling>
+                            </gn:GeographicalName>
+                        </am:name>
+                        <am:geometry xlink:href="http://cdr.eionet.europa.eu/is/eu/aqd/b/Data flow B - Reporting 2014 v2/Reydarfj"/>
+                        <am:zoneType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/zonetype/noagg"/>
+                        <am:designationPeriod>
+                            <gml:TimePeriod gml:id="IS0003_DESIGNATION_PERIOD">
+                                <gml:beginPosition>2007-01-01T00:00:00</gml:beginPosition>
+                                <gml:endPosition indeterminatePosition="unknown"/> 
+                            </gml:TimePeriod>
+                        </am:designationPeriod>
+                        <am:environmentalDomain xlink:href="http://dd.eionet.europa.eu/vocabulary/common/environmentaldomain/air"/>
+                    <am:competentAuthority nilReason="Reported in Header" xsi:nil="true"/>
+                        <am:beginLifespanVersion>2015-01-27T10:05:00</am:beginLifespanVersion>
+                        <am:legalBasis xlink:href="http://rod.eionet.europa.eu/instruments/650"/>
+                        <aqd:zoneCode>IS0003</aqd:zoneCode>
+                        <aqd:aqdZoneType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/zonetype/noagg"/>
+                        <aqd:changeDocumentation></aqd:changeDocumentation>
+                        <aqd:residentPopulation>1144</aqd:residentPopulation>
+                        <aqd:area uom="km2">47</aqd:area>
+                        <aqd:pollutants>
+                            <aqd:Pollutant>
+                                <aqd:pollutantCode xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1"/>
+                                <aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"/>
+                            </aqd:Pollutant>
+                        </aqd:pollutants>
+                        <aqd:timeExtensionExemption xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/none                "/>
+                    </aqd:AQD_Zone>
+                </gml:featureMember>
+                <gml:featureMember>
+                    <aqd:AQD_Zone gml:id="ZON-IS1001">
+                        <am:inspireId>
+                            <base:Identifier>
+                                <base:localId>ZON-IS1001</base:localId>
+                                <base:namespace>IS.EA-Iceland.AQ</base:namespace>
+                                <base:versionId>AQUI 2.5</base:versionId>
+                            </base:Identifier>
+                        </am:inspireId>
+                        <am:name>
+                            <gn:GeographicalName>
+                                <gn:language nilReason="missing" xsi:nil="true"/>
+                                <gn:nativeness nilReason="missing" xsi:nil="true"/>
+                                <gn:nameStatus nilReason="missing" xsi:nil="true"/>
+                                <gn:sourceOfName nilReason="missing" xsi:nil="true"/>
+                                <gn:pronunciation nilReason="missing" xsi:nil="true"/>
+                                <gn:spelling>
+                                    <gn:SpellingOfName>
+                                        <gn:text>Reykjavik</gn:text>
+                                        <gn:script nilReason="missing" xsi:nil="true"/>
+                                    </gn:SpellingOfName>
+                                </gn:spelling>
+                            </gn:GeographicalName>
+                        </am:name>
+                        <am:geometry xlink:href="http://cdr.eionet.europa.eu/is/eu/aqd/b/Data flow B - Reporting 2014 v2/Reykjavi"/>
+                        <am:zoneType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/zonetype/agg"/>
+                        <am:designationPeriod>
+                            <gml:TimePeriod gml:id="IS1001_DESIGNATION_PERIOD">
+                                <gml:beginPosition>2003-01-01T00:00:00</gml:beginPosition>
+                                <gml:endPosition indeterminatePosition="unknown"/> 
+                            </gml:TimePeriod>
+                        </am:designationPeriod>
+                        <am:environmentalDomain xlink:href="http://dd.eionet.europa.eu/vocabulary/common/environmentaldomain/air"/>
+                    <am:competentAuthority nilReason="Reported in Header" xsi:nil="true"/>
+                        <am:beginLifespanVersion>2015-01-27T10:05:00</am:beginLifespanVersion>
+                        <am:legalBasis xlink:href="http://rod.eionet.europa.eu/instruments/650"/>
+                        <aqd:zoneCode>IS1001</aqd:zoneCode>
+                        <aqd:aqdZoneType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/zonetype/agg"/>
+                        <aqd:changeDocumentation></aqd:changeDocumentation>
+                        <aqd:residentPopulation>208531</aqd:residentPopulation>
+                        <aqd:area uom="km2">133</aqd:area>
+                        <aqd:pollutants>
+                            <aqd:Pollutant>
+                                <aqd:pollutantCode xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1"/>
+                                <aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"/>
+                            </aqd:Pollutant>
+                        </aqd:pollutants>
+                        <aqd:pollutants>
+                            <aqd:Pollutant>
+                                <aqd:pollutantCode xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1"/>
+                                <aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V"/>
+                            </aqd:Pollutant>
+                        </aqd:pollutants>
+                        <aqd:pollutants>
+                            <aqd:Pollutant>
+                                <aqd:pollutantCode xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5"/>
+                                <aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"/>
+                            </aqd:Pollutant>
+                        </aqd:pollutants>
+                        <aqd:pollutants>
+                            <aqd:Pollutant>
+                                <aqd:pollutantCode xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/7"/>
+                                <aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"/>
+                            </aqd:Pollutant>
+                        </aqd:pollutants>
+                        <aqd:pollutants>
+                            <aqd:Pollutant>
+                                <aqd:pollutantCode xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/8"/>
+                                <aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"/>
+                            </aqd:Pollutant>
+                        </aqd:pollutants>
+                        <aqd:pollutants>
+                            <aqd:Pollutant>
+                                <aqd:pollutantCode xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/9"/>
+                                <aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V"/>
+                            </aqd:Pollutant>
+                        </aqd:pollutants>
+                        <aqd:pollutants>
+                            <aqd:Pollutant>
+                                <aqd:pollutantCode xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/10"/>
+                                <aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"/>
+                            </aqd:Pollutant>
+                        </aqd:pollutants>
+                        <aqd:pollutants>
+                            <aqd:Pollutant>
+                                <aqd:pollutantCode xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/6001"/>
+                                <aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"/>
+                            </aqd:Pollutant>
+                        </aqd:pollutants>
+                        <aqd:timeExtensionExemption xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/none                "/>
+                    </aqd:AQD_Zone>
+                </gml:featureMember>
+                <gml:featureMember>
+                    <aqd:AQD_Zone gml:id="ZON-IS0004">
+                        <am:inspireId>
+                            <base:Identifier>
+                                <base:localId>ZON-IS0004</base:localId>
+                                <base:namespace>IS.EA-Iceland.AQ</base:namespace>
+                                <base:versionId>AQUI 2.5</base:versionId>
+                            </base:Identifier>
+                        </am:inspireId>
+                        <am:name>
+                            <gn:GeographicalName>
+                                <gn:language nilReason="missing" xsi:nil="true"/>
+                                <gn:nativeness nilReason="missing" xsi:nil="true"/>
+                                <gn:nameStatus nilReason="missing" xsi:nil="true"/>
+                                <gn:sourceOfName nilReason="missing" xsi:nil="true"/>
+                                <gn:pronunciation nilReason="missing" xsi:nil="true"/>
+                                <gn:spelling>
+                                    <gn:SpellingOfName>
+                                        <gn:text>Sudurland</gn:text>
+                                        <gn:script nilReason="missing" xsi:nil="true"/>
+                                    </gn:SpellingOfName>
+                                </gn:spelling>
+                            </gn:GeographicalName>
+                        </am:name>
+                        <am:geometry xlink:href="http://cdr.eionet.europa.eu/is/eu/aqd/b/Data flow B - Reporting 2014 v2/Sudurlan"/>
+                        <am:zoneType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/zonetype/noagg"/>
+                        <am:designationPeriod>
+                            <gml:TimePeriod gml:id="IS0004_DESIGNATION_PERIOD">
+                                <gml:beginPosition>2010-01-01T00:00:00</gml:beginPosition>
+                                <gml:endPosition indeterminatePosition="unknown"/> 
+                            </gml:TimePeriod>
+                        </am:designationPeriod>
+                        <am:environmentalDomain xlink:href="http://dd.eionet.europa.eu/vocabulary/common/environmentaldomain/air"/>
+                    <am:competentAuthority nilReason="Reported in Header" xsi:nil="true"/>
+                        <am:beginLifespanVersion>2015-01-27T10:05:00</am:beginLifespanVersion>
+                        <am:legalBasis xlink:href="http://rod.eionet.europa.eu/instruments/650"/>
+                        <aqd:zoneCode>IS0004</aqd:zoneCode>
+                        <aqd:aqdZoneType xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/zonetype/noagg"/>
+                        <aqd:changeDocumentation></aqd:changeDocumentation>
+                        <aqd:residentPopulation>1805</aqd:residentPopulation>
+                        <aqd:area uom="km2">6410</aqd:area>
+                        <aqd:pollutants>
+                            <aqd:Pollutant>
+                                <aqd:pollutantCode xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5"/>
+                                <aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"/>
+                            </aqd:Pollutant>
+                        </aqd:pollutants>
+                        <aqd:pollutants>
+                            <aqd:Pollutant>
+                                <aqd:pollutantCode xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/8"/>
+                                <aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"/>
+                            </aqd:Pollutant>
+                        </aqd:pollutants>
+                        <aqd:pollutants>
+                            <aqd:Pollutant>
+                                <aqd:pollutantCode xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/9"/>
+                                <aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V"/>
+                            </aqd:Pollutant>
+                        </aqd:pollutants>
+                        <aqd:pollutants>
+                            <aqd:Pollutant>
+                                <aqd:pollutantCode xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/6001"/>
+                                <aqd:protectionTarget xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"/>
+                            </aqd:Pollutant>
+                        </aqd:pollutants>
+                        <aqd:timeExtensionExemption xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/none                "/>
+                    </aqd:AQD_Zone>
+                </gml:featureMember>
+</gml:FeatureCollection>

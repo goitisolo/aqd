@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0" xmlns:am="http://inspire.ec.europa.eu/schemas/am/3.0" xmlns:am-ru="http://inspire.jrc.ec.europa.eu/schemas/am-ru/2.0" xmlns:aqd="http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0" xmlns:base2="http://inspire.ec.europa.eu/schemas/base2/1.0" xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3" xmlns:ef="http://inspire.ec.europa.eu/schemas/ef/3.0" xmlns:fn="http://www.w3.org/2005/xpath-functions" xmlns:gco="http://www.isotc211.org/2005/gco" xmlns:gmd="http://www.isotc211.org/2005/gmd" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" xmlns:gsr="http://www.isotc211.org/2005/gsr" xmlns:gss="http://www.isotc211.org/2005/gss" xmlns:gts="http://www.isotc211.org/2005/gts" xmlns:om="http://www.opengis.net/om/2.0" xmlns:ompr="http://inspire.ec.europa.eu/schemas/ompr/2.0" xmlns:sam="http://www.opengis.net/sampling/2.0" xmlns:sams="http://www.opengis.net/samplingSpatial/2.0" xmlns:swe="http://www.opengis.net/swe/2.0" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" xmlns:sparql="http://www.w3.org/2005/sparql-results#" xmlns:owl="http://www.w3.org/2002/07/owl#" xmlns:skos="http://www.w3.org/2008/05/skos#" xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#" xmlns="http://rdfdata.eionet.europa.eu/airquality/ontology/" xmlns:str="http://exslt.org/strings">
+  <AQD_ReportingHeader rdf:ID="REP_D-HU_OMSZ_20140926_G">
+    <change rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</change>
+    <changeDescription>HU_2013_G</changeDescription>
+    <declarationFor>
+      <rdf:Description rdf:about="http://reference.eionet.europa.eu/aq/HU.OMSZ.AQ/HU_OMSZ_20140926">
+        <hasDeclaration xmlns="http://reference.eionet.europa.eu/aq/ontology/" rdf:resource="#REP_D-HU_OMSZ_20140926_G"/>
+      </rdf:Description>
+    </declarationFor>
+    <inspireId>
+      <Identifier>
+        <localId>HU_OMSZ_20140926</localId>
+        <namespace>HU.OMSZ.AQ</namespace>
+      </Identifier>
+    </inspireId>
+    <reportingAuthority>
+      <RelatedParty>
+        <individualName>PuskasMonika</individualName>
+        <organisationName>OMSZ - Hungarian Meteorological Service</organisationName>
+        <contact>
+          <Contact>
+            <address>
+              <AddressRepresentation>
+                <adminUnit>H-1181 Budapest Gilice tér 39.</adminUnit>
+                <locatorDesignator>Budapest</locatorDesignator>
+              </AddressRepresentation>
+            </address>
+            <electronicMailAddress>puskas.monika@met.hu</electronicMailAddress>
+            <telephoneVoice>+36 1 346 4800</telephoneVoice>
+            <website>http://www.met.hu</website>
+          </Contact>
+        </contact>
+      </RelatedParty>
+    </reportingAuthority>
+    <reportingPeriod>
+      <TimePeriod rdf:ID="REP_P-HU_OMSZ_20140926_G">
+        <beginPosition rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2013-01-01T01:00:01</beginPosition>
+        <endPosition rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2013-12-31T24:00:00</endPosition>
+      </TimePeriod>
+    </reportingPeriod>
+    <content rdf:resource="http://reference.eionet.europa.eu/aq/HU.OMSZ.AQ/ATT-HU0001_05018_TV_aMean_2013"/>
+  </AQD_ReportingHeader>
+  <AQD_Attainment rdf:ID="ATT-HU0001_05018_TV_aMean_2013">
+    <declarationFor>
+      <rdf:Description rdf:about="http://reference.eionet.europa.eu/aq/HU.OMSZ.AQ/ATT-HU0001_05018_TV_aMean_2013">
+        <hasDeclaration xmlns="http://reference.eionet.europa.eu/aq/ontology/" rdf:resource="#ATT-HU0001_05018_TV_aMean_2013"/>
+      </rdf:Description>
+    </declarationFor>
+    <inspireId>
+      <Identifier>
+        <localId>ATT-HU0001_05018_TV_aMean_2013</localId>
+        <namespace>HU.OMSZ.AQ</namespace>
+      </Identifier>
+    </inspireId>
+    <pollutant rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5018"/>
+    <environmentalObjective>
+      <EnvironmentalObjective>
+        <objectiveType rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/TV"/>
+        <reportingMetric rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean"/>
+        <protectionTarget rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"/>
+      </EnvironmentalObjective>
+    </environmentalObjective>
+    <exceedanceDescriptionFinal>
+      <ExceedanceDescription>
+        <exceedance rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</exceedance>
+      </ExceedanceDescription>
+    </exceedanceDescriptionFinal>
+    <zone rdf:resource="http://reference.eionet.europa.eu/aq/HU.OMSZ.AQ/ZON-HU0001"/>
+    <assessment rdf:resource="http://reference.eionet.europa.eu/aq/HU.OMSZ.AQ/ARE-HU0001_05018_TV_aMean_2013"/>
+  </AQD_Attainment>
+</rdf:RDF>
