@@ -56,13 +56,10 @@
     </inspireId>
     <name>ES1672A_NO_01022001_7_8</name>
     <mediaMonitored rdf:resource="http://inspire.ec.europa.eu/codeList/MediaValue/air"/>
-    <geometry>
-      <geo:Point rdf:ID="Point_01022001_7_8ba9daa99-0bac-4433-9724-5385f0d8734e">
-        <rdf:type rdf:resource="http://www.w3.org/2003/01/geo/wgs84_pos#SpatialThing"/>
-        <geo:lat rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">42.51833333</geo:lat>
-        <geo:long rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">-2.61944444</geo:long>
-      </geo:Point>
-    </geometry>
+    <rdf:type rdf:resource="http://www.w3.org/2003/01/geo/wgs84_pos#Point"/>
+    <rdf:type rdf:resource="http://www.w3.org/2003/01/geo/wgs84_pos#SpatialThing"/>
+    <geo:lat rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">42.51833333</geo:lat>
+    <geo:long rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">-2.61944444</geo:long>
     <observingCapability>
       <ObservingCapability rdf:ID="Capability_01022001_7_8.1">
         <observingTime>

@@ -61,6 +61,7 @@
       </Identifier>
     </inspireId>
     <name>Akureyri</name>
+    <geometry rdf:resource="http://cdr.eionet.europa.eu/is/eu/aqd/b/Data%20flow%20B%20-%20Reporting%202014%20v2/Akureyri"/>
     <zoneType rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/zonetype/agg"/>
     <designationPeriod>
       <TimePeriod rdf:ID="IS1002_DESIGNATION_PERIOD">
@@ -115,6 +116,7 @@
       </Identifier>
     </inspireId>
     <name>Dreifbyli</name>
+    <geometry rdf:resource="http://cdr.eionet.europa.eu/is/eu/aqd/b/Data%20flow%20B%20-%20Reporting%202014%20v2/Dreifbyl"/>
     <zoneType rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/zonetype/noagg"/>
     <designationPeriod>
       <TimePeriod rdf:ID="IS0001_DESIGNATION_PERIOD">
@@ -175,6 +177,7 @@
       </Identifier>
     </inspireId>
     <name>Grundartangi</name>
+    <geometry rdf:resource="http://cdr.eionet.europa.eu/is/eu/aqd/b/Data%20flow%20B%20-%20Reporting%202014%20v2/Grundart"/>
     <zoneType rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/zonetype/noagg"/>
     <designationPeriod>
       <TimePeriod rdf:ID="IS0002_DESIGNATION_PERIOD">
@@ -241,6 +244,7 @@
       </Identifier>
     </inspireId>
     <name>Reydarfjordur</name>
+    <geometry rdf:resource="http://cdr.eionet.europa.eu/is/eu/aqd/b/Data%20flow%20B%20-%20Reporting%202014%20v2/Reydarfj"/>
     <zoneType rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/zonetype/noagg"/>
     <designationPeriod>
       <TimePeriod rdf:ID="IS0003_DESIGNATION_PERIOD">
@@ -277,6 +281,7 @@
       </Identifier>
     </inspireId>
     <name>Reykjavik</name>
+    <geometry rdf:resource="http://cdr.eionet.europa.eu/is/eu/aqd/b/Data%20flow%20B%20-%20Reporting%202014%20v2/Reykjavi"/>
     <zoneType rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/zonetype/agg"/>
     <designationPeriod>
       <TimePeriod rdf:ID="IS1001_DESIGNATION_PERIOD">
@@ -355,6 +360,7 @@
       </Identifier>
     </inspireId>
     <name>Sudurland</name>
+    <geometry rdf:resource="http://cdr.eionet.europa.eu/is/eu/aqd/b/Data%20flow%20B%20-%20Reporting%202014%20v2/Sudurlan"/>
     <zoneType rdf:resource="http://dd.eionet.europa.eu/vocabulary/aq/zonetype/noagg"/>
     <designationPeriod>
       <TimePeriod rdf:ID="IS0004_DESIGNATION_PERIOD">

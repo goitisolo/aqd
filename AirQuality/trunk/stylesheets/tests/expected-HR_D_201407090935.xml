@@ -204,7 +204,6 @@
     </inspireId>
     <name>ZAGREB-1</name>
     <mediaMonitored rdf:resource="http://inspire.ec.europa.eu/codeList/MediaValue/air"/>
-    <geometry/>
     <measurementRegime rdf:resource="http://reference.eionet.europa.eu/aq/continuous%20data%20collection"/>
     <mobile rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</mobile>
     <operationalActivityPeriod>
