@@ -10,6 +10,7 @@ xquery version "1.0" encoding "UTF-8";
  : XQuery script implements dataflow G tier-1 checks as documented in http://taskman.eionet.europa.eu/documents/3 .
  :
  : @author Enriko Käsper
+ : small modification added by Jaume Targa (ETC/ACM) to align with QA document
  :)
 
 module namespace xmlconv = "http://converters.eionet.europa.eu/dataflowG";
@@ -1566,9 +1567,9 @@ return
         {xmlconv:buildResultRows("G8", "./aqd:inspireId/base:Identifier/base:localId  must be unique code for the attainment records starting with ISO2-country code",
             $invalidDuplicateLocalIds, (), "base:localId", "No duplicate values found", " duplicate value", "","error", $invalidDuplicateLocalIds)}
 
-        {xmlconv:buildResultRows("G9", "./aqd:inspireId/base:Identifier/base:namespace shall resolve to a unique namespace identifier for the data source (within an annual e-Reporting cycle). ",
-            $tblG9, (), "base:namespace", "No duplicate values found", " duplicate value", "", "error",())}
-        {xmlconv:buildResultRowsWithTotalCount("G10", <span>The content of /aqd:AQD_Attainment/aqd:pollutant xlink:xref shall resolve to a pollutant in
+        {xmlconv:buildResultRows("G9", "./aqd:inspireId/base:Identifier/base:namespace List base:namespace and  count the number of base:localId assigned to each base:namespace.",
+            (), (), "", string(count($tblG9)), "", "","info",$tblG9)}
+         {xmlconv:buildResultRowsWithTotalCount("G10", <span>The content of /aqd:AQD_Attainment/aqd:pollutant xlink:xref shall resolve to a pollutant in
             <a href="{ $xmlconv:POLLUTANT_VOCABULARY }">{ $xmlconv:POLLUTANT_VOCABULARY }</a> that must be one of
             {xmlconv:buildVocItemsList("G10", $xmlconv:POLLUTANT_VOCABULARY, $xmlconv:VALID_POLLUTANT_IDS)}
             </span>,
@@ -1581,8 +1582,10 @@ return
                 $invalidExceedanceDescriptionAdjustment, (), "base:namespace", "All values are valid", " invalid value", "","error", $invalidExceedanceDescriptionAdjustment)}
         {xmlconv:buildResultRows("G13", "./aqd:assessment xlink:href attribute shall resolve to a valid assessment regime with in /aqd:AQD_AssessmentRegime",
                 $invalidAssessment, (), "base:namespace", "All values are valid", " invalid value", "","error", $invalidAssessment)}
-        {xmlconv:buildResultRows("G15", "The subject of ./aqd:zone xlink:href attribute shall resolve to a valid AQ zone with /aqd:AQD_Zone",
+      
+  {xmlconv:buildResultRows("G15", "The subject of ./aqd:zone xlink:href attribute shall resolve to a valid AQ zone with /aqd:AQD_Zone",
                 $invalidAssessmentZone, (), "base:namespace", "All values are valid", " invalid value", "","error", $invalidAssessmentZone)}
+
         {xmlconv:buildResultRows("G17", "The subject of the ./aqd: zone xlink:href attribute shall contain a /aqd:AQD_Zone/aqd:pollutant EQUAL  to ./aqd:pollutan",
             $invalidPollutant, (), "base:namespace", "All values are valid", " invalid value", "","error", ())}
         {xmlconv:buildResultRows("G18", "The  subject  of  the ./aqd: zone xlink:href attribute shall contain a /aqd:AQD_Zone/aqd:timeExtensionExemption shall NOT EQUAL http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/none WHERE ./aqd:exceedanceDescription_Final/aqd:ExceedanceDescription/aqd:environmentalObj ective/aqd:EnvironmentalObjective/aqd:objectiveType xlink:href attribute EQUALs http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LVmaxMOT",
@@ -1735,9 +1738,9 @@ return
 
 
         {xmlconv:buildResultRows("G70", "/aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:surfaceArea uom attribute shall resolve to http://dd.eionet.europa.eu/vocabulary/uom/area/km2",
-                $aqdSurfaceArea, (), "base:namespace", "All values are valid", " invalid value", "", "error",())}
+                $aqdSurfaceArea, (), "base:namespace", "All values are valid", " invalid value", "", "warning",())}
         {xmlconv:buildResultRows("G71", "/aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:roadLength uom attribute shall be http://dd.eionet.europa.eu/vocabulary/uom/length/km",
-                $aqdroadLength, (), "base:namespace", "All values are valid", " invalid value", "","error", ())}
+                $aqdroadLength, (), "base:namespace", "All values are valid", " invalid value", "","warning", ())}
 
 
         {xmlconv:buildResultRowsWithTotalCount("G72", <span>The content of /aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:areaClassification  xlink:xref shall resolve to a areaClassification in
@@ -1953,10 +1956,10 @@ return
         <div>
             {
                 if ($result//div/@class = 'error') then
-                    <p>This XML file did NOT pass the following crucial checks: {string-join($result//div[@class='error'], ',')}</p>
+                    <p class="crucialError" style="color:red"><strong>This XML file did NOT pass the following crucial check(s): {string-join($result//div[@class='error'], ',')}</strong></p>
                 else
                     <p>This XML file passed all crucial checks which in this case are: G1,G4,G5,G6,G7,G8,G9,G10,G11,G12,G13,G15,G17,G18,G19,G20,G21,
-                        G22,G23,G24,G25,G26,G27,G28,G29,G30,G31,G32,G33,G38,G47,G52,G61,G62,G63,G70,G71,G72,G81</p>
+                        G22,G23,G24,G25,G26,G27,G28,G29,G30,G31,G32,G33,G38,G39,G40,G41,G42,G47,G53,G54,G55,G56,G57,G61,G62,G63,G64,G65,G66,G67,G72,G73,G74,G75,G76,G81</p>
             }
             <p>This check evaluated the delivery by executing the tier-1 tests on air quality assessment regimes data in Dataflow G as specified in <a href="http://www.eionet.europa.eu/aqportal/qaqc/">e-reporting QA/QC rules documentation</a>.</p>
             <div><a id='legendLink' href="javascript: showLegend()" style="padding-left:10px;">How to read the test results?</a></div>

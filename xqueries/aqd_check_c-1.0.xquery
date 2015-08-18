@@ -10,6 +10,7 @@ xquery version "1.0" encoding "UTF-8";
  : XQuery script implements dataflow C tier-1 checks as documented in http://taskman.eionet.europa.eu/documents/3 .
  :
  : @author Enriko Käsper
+ : small modification added by Jaume Targa (ETC/ACM) to align with QA document & polish some checks
  :)
 
 module namespace xmlconv = "http://converters.eionet.europa.eu/dataflowC";
@@ -903,7 +904,7 @@ let $invalidAqdAssessmentRegimeAqdPollutantC12 :=
                     or ($aqdPollutantC12/aqd:protectionTarget/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"))
        and
             (($aqdPollutantC12/aqd:objectiveType/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LVMOT")
-                    or ($aqdPollutantC12/aqd:reportingMetric/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/hoursAbove")
+                    or ($aqdPollutantC12/aqd:reportingMetric/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/hrsAbove")
                     or ($aqdPollutantC12/aqd:protectionTarget/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"))
        and
             (($aqdPollutantC12/aqd:objectiveType/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/ALT")
@@ -926,9 +927,14 @@ let $invalidAqdAssessmentRegimeAqdPollutantC12 :=
 
 let $invalidAqdAssessmentRegimeAqdPollutantC13 :=
     for $aqdPollutantC13 in  $docRoot//aqd:AQD_AssessmentRegime[count(aqd:pollutant)>0 and aqd:pollutant/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/9"]/aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective
-    where ($aqdPollutantC13/aqd:objectiveType/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/CL")
+    where (($aqdPollutantC13/aqd:objectiveType/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/CL")
             or ($aqdPollutantC13/aqd:reportingMetric/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean")
-            or ($aqdPollutantC13/aqd:protectionTarget/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V")
+            or ($aqdPollutantC13/aqd:protectionTarget/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V"))
+	and 
+            (($aqdPollutantC13/aqd:objectiveType/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/MO")
+            or ($aqdPollutantC13/aqd:reportingMetric/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/NA")
+            or ($aqdPollutantC13/aqd:protectionTarget/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/NA"))
+
     return $aqdPollutantC13/../../../../@gml:id
 
 (: C14 :)
@@ -974,6 +980,12 @@ let $invalidAqdAssessmentRegimeAqdPollutantC15 :=
             (($aqdPollutantC15/aqd:objectiveType/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV")
             or ($aqdPollutantC15/aqd:reportingMetric/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean")
             or ($aqdPollutantC15/aqd:protectionTarget/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H-S2"))
+(: another addition by JT :)
+    and 
+            (($aqdPollutantC15/aqd:objectiveType/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/MO")
+            or ($aqdPollutantC15/aqd:reportingMetric/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/NA")
+            or ($aqdPollutantC15/aqd:protectionTarget/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/NA"))
+
 
 
     return $aqdPollutantC15/../../../../@gml:id
@@ -1427,7 +1439,7 @@ let $invalidAqdUsedAQD :=
 let $reportingMetric := $docRoot//aqd:AQD_AssessmentRegime[aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric/normalize-space(@xlink:href) = "http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/AEI"]/@gml:id
 let $invalidAqdReportingMetric := if (count($reportingMetric)>1) then $reportingMetric else ()
 
-(: 38 :)
+(: C38 :)
 
 let $resultXml := if (fn:string-length($countryCode) = 2) then xmlconv:getSamplingPointInspireLabel($cdrUrl) else ""
 let $isInspireLebelCodesAvailable := string-length($resultXml) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($resultXml, "xml"))
@@ -1473,7 +1485,7 @@ return
             $invalidDuplicateLocalIds, (), "base:localId", "No duplicates found", " duplicate", "","error", ())}
         {xmlconv:buildResultRows("C6", "./aqd:inspireId/base:Identifier/base:namespace List base:namespace and  count the number of base:localId assigned to each base:namespace. ",
             (), (), "", string(count($tblC6)), "", "","info",$tblC6)}
-        {xmlconv:buildResultRows("C7", "Each of the number of /aqd:AQD_AssessmentRegime records shall contain a maximum of 1 ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmental Objective records per /aqd:AQD_AssessmentRegime element",
+        {xmlconv:buildResultRows("C7", "Each of the number of /aqd:AQD_AssessmentRegime records shall contain 1 ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmental Objective records per /aqd:AQD_AssessmentRegime element",
                 $invalidAssessmentRegim,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error", ())}
         {xmlconv:buildPollutantResultRows("C8",
                 $missingPollutantC8, " missing pollutant", "warning", xmlconv:buildVocItemRows($xmlconv:POLLUTANT_VOCABULARY, $missingPollutantC8))}
@@ -1544,7 +1556,7 @@ return
         {xmlconv:buildResultRows("C37", "There shall be only 1 record per MS where ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmental Objective/aqd:EnvironmentalObjective/aqd:reportingMetric xlink:href attribute resolves to http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/AEI",
                 $invalidAqdReportingMetric,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","warning", ())}
         {xmlconv:buildResultRows("C38", "Where./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric xlink:href attribute resolves to http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/AEI the /aqd:AQD_SamplingPoint/aqd:relevantEmissions/aqd:RelevantEmissions/aqd:stationClassification xlink:href attribute shall resolve to http://dd.eionet.europa.eu/vocabulary/aq/stationclassification/background for all aqd:AQD_SamplingPoint linked via aqd:AQD_AssessmentRegime/aqd:assessmentMethods/aqd:AssessmentMethods /aqd:samplingPointAssessmentMetadata citations",
-                $invalidAqdReportingMetricTest,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error", ())}
+                $invalidAqdReportingMetricTest,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","warning", ())}
         {xmlconv:buildResultRows("C40", <span>The total number of /aqd:assessmentMethods/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata and /aqd:assessmentMethods/aqd:AssessmentMethods/aqd:modelAssessmentMetadata citations within a MS (delivery) shall be GREATER THAN OR EQUAL to 1 where ./aqd:pollutant xlink:href attribute resolves to{xmlconv:buildVocItemsList("C40", $xmlconv:POLLUTANT_VOCABULARY, $xmlconv:VALID_POLLUTANT_IDS_40)}</span>,
                 $invalidsamplingPointAssessmentMetadata40,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","warning", ())}
 
@@ -1595,9 +1607,9 @@ as element(tr)*{
 
     let $msg :=
     if (count($invalidStrValues) > 0) then
-        "Assessment regime(s) missing for the following mandatory pollutant(s):"
+        "Assessment regime(s) not found for the following pollutant(s):"
     else
-        "Assessment regimes reported for all mandatory pollutants"
+        "Assessment regimes reported for all expected pollutants"
 
 
 
@@ -1646,9 +1658,9 @@ return
         <div>
             {
                 if ($result//div/@class = 'error') then
-                    <p>This XML file did NOT pass the following crucial checks: {string-join($result//div[@class = 'error'], ',')}</p>
+                    <p class="crucialError" style="color:red"><strong>This XML file did NOT pass the following crucial check(s): {string-join($result//div[@class = 'error'], ',')}</strong></p>
                 else
-                    <p>This XML file passed all crucial checks which in this case are: C4,C5,C6,C7,C8,C9,C10,C11,C12,C13,C14,C16,C17,C18,C20,C21,C23,C28,C32,C33,C34,C35,C38 as well as cross-checks: C24,C25,C26,C27,C31</p>
+                    <p>This XML file passed all crucial checks which in this case are: C4,C5,C7,C10,C11,C12,C13,C14,C16,C17,C18,C20,C23,C28,C33,C35 </p>
             }
             <p>This check evaluated the delivery by executing tier-1 tests on air quality assessment regimes data in Dataflow C as specified in <a href="http://www.eionet.europa.eu/aqportal/qaqc/">e-reporting QA/QC rules documentation</a>.</p>
             <div><a id='legendLink' href="javascript: showLegend()" style="padding-left:10px;">How to read the test results?</a></div>

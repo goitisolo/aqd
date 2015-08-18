@@ -10,8 +10,9 @@ xquery version "1.0" encoding "UTF-8";
  : XQuery script implements dataflow C tier-1 checks as documented in http://taskman.eionet.europa.eu/documents/3 .
  :
  : @author Rait Väli and Enriko Käsper
+ : small modification added by Jaume Targa (ETC/ACM) to align with QA document
  :
- :Quality Assurance and Control rules version: 3.9d
+ :Quality Assurance and Control rules version: 4.0
  :)
 
 module namespace xmlconv = "http://converters.eionet.europa.eu/dataflowD";
@@ -519,7 +520,7 @@ let $D4Combinations :=
 
 let $allD4Combinations :=
     for $aqdModel in $D4Combinations
-    return concat(data($aqdModel/@gml:id), "#", $aqdModel/am:inspireId, "#", $aqdModel/aqd:inspireId, "#", $aqdModel/ef:name, "#", $aqdModel/ompr:name )
+    return concat(data($aqdModel/@gml:id), "#", $aqdModel/ef:inspireId/base:Identifier/base:localId, "#", $aqdModel/ompr:inspireId/base:Identifier/base:localId, "#", $aqdModel/ef:name, "#", $aqdModel/ompr:name )
 
 let $allD4Combinations := fn:distinct-values($allD4Combinations)
 let $tblD4 :=
@@ -535,9 +536,9 @@ let $tblD4 :=
     return
         <tr>
 
-            <td title="agml:id">{xmlconv:checkLink($modelType)}</td>
-            <td title="am:inspireId">{xmlconv:checkLink($inspireId)}</td>
-            <td title="aqd:inspireId">{xmlconv:checkLink($aqdInspireId)}</td>
+            <td title="gml:id">{xmlconv:checkLink($modelType)}</td>
+            <td title="ef:inspireId/localId">{xmlconv:checkLink($inspireId)}</td>
+            <td title="ompr:inspireId/localId">{xmlconv:checkLink($aqdInspireId)}</td>
             <td title="ef:name">{xmlconv:checkLink($efName)}</td>
             <td title="ompr:name">{xmlconv:checkLink($omprName)}</td>
         </tr>
@@ -611,6 +612,7 @@ let  $tblD7 :=
     let $localId := $docRoot//aqd:AQD_Network/ef:inspireId/base:Identifier[base:namespace = $id]/base:localId
     return
         <tr>
+	    <td title="feature">Network(s)</td>
             <td title="base:namespace">{$id}</td>
             <td title="base:localId">{count($localId)}</td>
         </tr>
@@ -664,6 +666,7 @@ let  $tblD16 :=
     let $localId := $docRoot//aqd:AQD_Station/ef:inspireId/base:Identifier[base:namespace = $id]/base:localId
     return
         <tr>
+	    <td title="feature">Station(s)</td>
             <td title="base:namespace">{$id}</td>
             <td title="base:localId">{count($localId)}</td>
         </tr>
@@ -812,7 +815,8 @@ let  $tblD32 :=
     let $localId := $docRoot//aqd:AQD_SamplingPoint//base:Identifier[base:namespace = $id]/base:localId
     return
         <tr>
-            <td title="base:namespace">{$id}</td>
+	    <td title="feature">SamplingPoint(s)</td>
+	    <td title="base:namespace">{$id}</td>
             <td title="base:localId">{count($localId)}</td>
         </tr>
 
@@ -928,7 +932,7 @@ let $allObservingCapabilityPeriod := (($invalidPosition), ($overlappingPeriods))
 
 let $invalidObservedProperty := xmlconv:checkVocabularyConceptValues($source_url, "ef:ObservingCapability", "ef:observedProperty", $xmlconv:POLLUTANT_VOCABULARY)
 
-(: D41 :)
+(: D41 
 let $aqdSampleLocal :=
     for $allSampleLocal in $docRoot//aqd:AQD_Sample
     return $allSampleLocal/@gml:id
@@ -941,6 +945,24 @@ let $invalideFeatureOfInterest :=
         <td title="aqd:AQD_SamplingPoint">{data($x/../../../@gml:id)}</td>
         <td title="ef:featureOfInterest">{data(fn:normalize-space(fn:substring-after($x/@xlink:href,"/")))}</td>
     </tr>
+:)
+
+(: D41 Updated by Jaume Targa following working logic of D44 :)
+let $aqdSampleLocal :=
+    for $z in $docRoot//aqd:AQD_Sample
+    let $id := concat(data($z/aqd:inspireId/base:Identifier/base:namespace), '/',
+        data($z/aqd:inspireId/base:Identifier/base:localId))
+    return $id
+
+let $invalideFeatureOfInterest :=
+    for $x in $docRoot//aqd:AQD_SamplingPoint/ef:observingCapability/ef:ObservingCapability/ef:featureOfInterest
+    where empty(index-of($aqdSampleLocal,fn:normalize-space($x/@xlink:href)))
+    return
+    <tr>
+      <td title="aqd:AQD_SamplingPoint">{data($x/../@gml:id)}</td>
+      <td title="ef:featureOfInterest">{data(fn:normalize-space($x/@xlink:href))}</td>
+    </tr>
+
 
 (: D42 :)
 
@@ -959,18 +981,21 @@ let $invalidEfprocedure :=
       <td title="ef:procedure">{data(fn:normalize-space($x/@xlink:href))}</td>
     </tr>
 
-(: D43 :)
+(: D43 Updated by Jaume Targa following working logic of D44 :)
+
 let $aqdStationLocal :=
-    for $allStationLocal in $docRoot//aqd:AQD_Station/ef:inspireId/base:Identifier/base:localId
-    return $allStationLocal
+    for $z in $docRoot//aqd:AQD_Station
+    let $id := concat(data($z/ef:inspireId/base:Identifier/base:namespace), '/',
+        data($z/ef:inspireId/base:Identifier/base:localId))
+    return $id
 
 let $invalidEfbroader :=
     for $x in $docRoot//aqd:AQD_SamplingPoint/ef:broader
-    where empty(index-of($aqdStationLocal,fn:normalize-space(fn:substring-after($x/@xlink:href,"/"))))
-return
+    where empty(index-of($aqdStationLocal,fn:normalize-space($x/@xlink:href)))
+    return
     <tr>
-        <td title="aqd:AQD_SamplingPoint">{data($x/../@gml:id)}</td>
-        <td title="ef:broader">{data(fn:normalize-space(fn:substring-after($x/@xlink:href,"/")))}</td>
+      <td title="aqd:AQD_SamplingPoint">{data($x/../@gml:id)}</td>
+      <td title="ef:broader">{data(fn:normalize-space($x/@xlink:href))}</td>
     </tr>
 
 (: D44 :)
@@ -1044,7 +1069,7 @@ let $invalidObservedPropertyCombinations :=
     where
        (($oPC/../../ef:observingCapability/ef:ObservingCapability/ef:observedProperty/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1" and
                     not(
-                        (($oPC/aqd:objectiveType/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV" and
+                        ($oPC/aqd:objectiveType/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV" and
                          $oPC/aqd:reportingMetric/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/hrsAbove" and
                          $oPC/aqd:protectionTarget/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H")
                     or
@@ -1059,7 +1084,12 @@ let $invalidObservedPropertyCombinations :=
                         ($oPC/aqd:objectiveType/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/CL" and
                         $oPC/aqd:reportingMetric/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/wMean" and
                         $oPC/aqd:protectionTarget/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V")
-                        )
+                    or
+                        ($oPC/aqd:objectiveType/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/ALT" and
+                        $oPC/aqd:reportingMetric/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/3hAbove" and
+                        $oPC/aqd:protectionTarget/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H")
+
+                       
                     )
               )
               or
@@ -1080,6 +1110,14 @@ let $invalidObservedPropertyCombinations :=
                                 ($oPC/aqd:objectiveType/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LTO" and
                                  $oPC/aqd:reportingMetric/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/AOT40c" and
                                  $oPC/aqd:protectionTarget/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V")
+		       or
+                                ($oPC/aqd:objectiveType/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/INT" and
+                                 $oPC/aqd:reportingMetric/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/hrsAbove" and
+                                 $oPC/aqd:protectionTarget/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H")
+ or
+                                ($oPC/aqd:objectiveType/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/ALT" and
+                                 $oPC/aqd:reportingMetric/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/hrsAbove" and
+                                 $oPC/aqd:protectionTarget/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H")
                       )
               )
               or
@@ -1093,6 +1131,29 @@ let $invalidObservedPropertyCombinations :=
                         ($oPC/aqd:objectiveType/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV" and
                         $oPC/aqd:reportingMetric/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean" and
                         $oPC/aqd:protectionTarget/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H")
+                        or
+                        ($oPC/aqd:objectiveType/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LVMOT" and
+                        $oPC/aqd:reportingMetric/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean" and
+                        $oPC/aqd:protectionTarget/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H")
+                        or
+                        ($oPC/aqd:objectiveType/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LVMOT" and
+                        $oPC/aqd:reportingMetric/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/hrsAbove" and
+                        $oPC/aqd:protectionTarget/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H")
+			or
+                        ($oPC/aqd:objectiveType/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/ALT" and
+                        $oPC/aqd:reportingMetric/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/3hAbove" and
+                        $oPC/aqd:protectionTarget/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H")
+
+                         or
+                        ($oPC/aqd:objectiveType/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LVmaxMOT" and
+                        $oPC/aqd:reportingMetric/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean" and
+                        $oPC/aqd:protectionTarget/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H")
+                        or
+                        ($oPC/aqd:objectiveType/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LVmaxMOT" and
+                        $oPC/aqd:reportingMetric/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/hrsAbove" and
+                        $oPC/aqd:protectionTarget/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H")
+
+
                      ))
               or
                    ($oPC/../../ef:observingCapability/ef:ObservingCapability/ef:observedProperty/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/9" and
@@ -1129,6 +1190,10 @@ let $invalidObservedPropertyCombinations :=
                         $oPC/aqd:reportingMetric/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean" and
                         $oPC/aqd:protectionTarget/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H")
                         or
+                        ($oPC/aqd:objectiveType/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/TV" and
+                        $oPC/aqd:reportingMetric/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean" and
+                        $oPC/aqd:protectionTarget/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H")
+                        or
                         ($oPC/aqd:objectiveType/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV" and
                         $oPC/aqd:reportingMetric/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean" and
                         $oPC/aqd:protectionTarget/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H-S1")
@@ -1137,9 +1202,13 @@ let $invalidObservedPropertyCombinations :=
                         $oPC/aqd:reportingMetric/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean" and
                         $oPC/aqd:protectionTarget/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H-S2")
                         or
-                        ($oPC/aqd:objectiveType/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/TV" and
+                        ($oPC/aqd:objectiveType/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LVMOT" and
                         $oPC/aqd:reportingMetric/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean" and
                         $oPC/aqd:protectionTarget/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H")
+                        or
+                        ($oPC/aqd:objectiveType/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/MO" and
+                        $oPC/aqd:reportingMetric/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/NA" and
+                        $oPC/aqd:protectionTarget/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/NA")
                         )
                    )
                or
@@ -1150,22 +1219,47 @@ let $invalidObservedPropertyCombinations :=
                         $oPC/aqd:protectionTarget/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H")
                         ))
               or
-                      (($oPC/../../ef:observingCapability/ef:ObservingCapability/ef:observedProperty/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5012" or
-                              ($oPC/../../ef:observingCapability/ef:ObservingCapability/ef:observedProperty/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/20")) and
+                      ($oPC/../../ef:observingCapability/ef:ObservingCapability/ef:observedProperty/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/20" and
                         not(
                         ($oPC/aqd:objectiveType/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV" and
                         $oPC/aqd:reportingMetric/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean" and
                         $oPC/aqd:protectionTarget/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H")
+                        or
+			($oPC/aqd:objectiveType/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LVMOT" and
+                        $oPC/aqd:reportingMetric/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean" and
+                        $oPC/aqd:protectionTarget/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H")
+                        or
+
+                        ($oPC/aqd:objectiveType/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/MO" and
+                        $oPC/aqd:reportingMetric/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/NA" and
+                        $oPC/aqd:protectionTarget/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/NA")
+
+                        ))
+or
+                      ($oPC/../../ef:observingCapability/ef:ObservingCapability/ef:observedProperty/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5012" and
+                        not(
+                        ($oPC/aqd:objectiveType/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV" and
+                        $oPC/aqd:reportingMetric/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean" and
+                        $oPC/aqd:protectionTarget/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H")
+                        or
+                        ($oPC/aqd:objectiveType/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/MO" and
+                        $oPC/aqd:reportingMetric/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/NA" and
+                        $oPC/aqd:protectionTarget/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/NA")
+
                         ))
                or
                       (($oPC/../../ef:observingCapability/ef:ObservingCapability/ef:observedProperty/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5014" or
                           $oPC/../../ef:observingCapability/ef:ObservingCapability/ef:observedProperty/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5018" or
-                                  $oPC/../../ef:observingCapability/ef:ObservingCapability/ef:observedProperty/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5015" or
-                                  $oPC/../../ef:observingCapability/ef:ObservingCapability/ef:observedProperty/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5029") and
+                          $oPC/../../ef:observingCapability/ef:ObservingCapability/ef:observedProperty/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5015" or
+                          $oPC/../../ef:observingCapability/ef:ObservingCapability/ef:observedProperty/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5029") and
                         not(
                         ($oPC/aqd:objectiveType/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/TV" and
                         $oPC/aqd:reportingMetric/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean" and
                         $oPC/aqd:protectionTarget/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H")
+                        or
+                        ($oPC/aqd:objectiveType/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/MO" and
+                        $oPC/aqd:reportingMetric/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/NA" and
+                        $oPC/aqd:protectionTarget/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/NA")
                         )
                         )
         )
@@ -1181,7 +1275,8 @@ let $invalidObservedPropertyCombinations :=
 
         </tr>
 
-(: D52 :)
+(: D52 moved to D67 - 70:)
+(:
 let $allProcNotMatchingCondition :=
 for $proc in $docRoot//aqd:AQD_SamplingPointProcess
 let $demonstrated := data($proc/aqd:equivalenceDemonstration/aqd:EquivalenceDemonstration/aqd:equivalenceDemonstrated/@xlink:href)
@@ -1212,11 +1307,40 @@ let $allInvalidTrueUsedAQD :=
 
         </tr>
         else ()
+:)
 
+(:D52 Done by Jaume Targa :)
+(: let $allInvalidZoneXlinks :=
+    for $invalidZoneXlinks in $docRoot//aqd:AQD_SamplingPoint/aqd:zone
+     where
+        count(xmlconv:executeSparqlQuery(xmlconv:getSamplingPointZone($invalidZoneXlinks/@xlink:href))/*) = 0
+    return
+        <tr>
+            <td title="gml:id">{data($invalidZoneXlinks/../@gml:id)}</td>
+            <td title="aqd:zone">{data($invalidZoneXlinks/@xlink:href)}</td>
+        </tr>
+:)
 
+(: D52 Done by Jaume Targa; re-using M25 :)
+(:    let $allTrueUsedAQD :=
+        for $trueUsedAQD in $docRoot//aqd:AQD_SamplingPoint
+        where $trueUsedAQD/aqd:usedAQD = true()
+        return $trueUsedAQD
+
+    let $allInvalidTrueUsedAQD :=
+        for $invalidTrueUsedAQD in $allTrueUsedAQD
+        where
+            count(xmlconv:executeSparqlQuery(xmlconv:getSamplingPointAssessment($invalidTrueUsedAQD/ef:inspireId/base:Identifier/base:localId ,$invalidTrueUsedAQD/ef:inspireId/base:Identifier/base:namespace))/*) = 0
+        return
+            <tr>
+                <td title="gml:id">{data($invalidTrueUsedAQD/@gml:id)}</td>
+                <td title="base:localId">{data($invalidTrueUsedAQD/ef:inspireId/base:Identifier/base:localId)}</td>
+                <td title="base:namespace">{data($invalidTrueUsedAQD/ef:inspireId/base:Identifier/base:namespace)}</td>
+            </tr>
+:)
 (:D53 Done by Rait :)
 let $allInvalidZoneXlinks :=
-    for $invalidZoneXlinks in $docRoot//gml:featureMember/aqd:AQD_SamplingPoint/aqd:zone
+    for $invalidZoneXlinks in $docRoot//aqd:AQD_SamplingPoint/aqd:zone
      where
         count(xmlconv:executeSparqlQuery(xmlconv:getSamplingPointZone($invalidZoneXlinks/@xlink:href))/*) = 0
     return
@@ -1248,9 +1372,11 @@ let  $tblD55 :=
     let $localId := $docRoot//aqd:AQD_SamplingPointProcess/ompr:inspireId/base:Identifier[base:namespace = $id]/base:localId
     return
         <tr>
-            <td title="base:namespace">{$id}</td>
-            <td title="base:localId">{count($localId)}</td>
+  	    <td title="feature">SamplingPointProcess(es)</td>
+	    <td title="base:namespace">{$id}</td>
+            <td title="unique localId">{count($localId)}</td>
         </tr>
+
 
 (:D56 Done by Rait:)
 let  $allInvalidMeasurementType
@@ -1305,102 +1431,179 @@ let $elementsIncluded :=
 let  $allInvalidAnalyticalTechnique
     := xmlconv:checkVocabularyaqdAnalyticalTechniqueValues($source_url, "aqd:AQD_SamplingPointProcess", "aqd:analyticalTechnique", $xmlconv:ANALYTICALTECHNIQUE_VOCABULARY, "")
 
-(: D61  :)
-let  $allInvalid61
+(: D60a  :)
+let  $allInvalid60a
     := xmlconv:checkVocabularyConceptEquipmentValues($source_url, "aqd:AQD_SamplingPointProcess", "aqd:measurementEquipment", $xmlconv:MEASUREMENTEQUIPMENT_VOCABULARY, "")
 
-(: D62 :)
-let  $allInvalid62
+(: D60b :)
+let  $allInvalid60b
     := xmlconv:checkVocabularyConceptEquipmentValues($source_url, "aqd:AQD_SamplingPointProcess", "aqd:samplingEquipment", $xmlconv:SAMPLINGEQUIPMENT_VOCABULARY, "")
 
 (: D63 :)
 let  $allInvalid63
     := xmlconv:checkVocabularyConceptValuesUom($source_url, "aqd:DataQuality", "aqd:detectionLimit", $xmlconv:UOM_CONCENTRATION_VOCABULARY)
 
+(: Block for D67 to D70 Jaume Targa:) 
+
+(: Original from D52 
+
+let $allProcNotMatchingCondition70 :=
+for $proc in $docRoot//aqd:AQD_SamplingPointProcess
+let $demonstrated := data($proc/aqd:equivalenceDemonstration/aqd:EquivalenceDemonstration/aqd:equivalenceDemonstrated/@xlink:href)
+let $demonstrationReport := data($proc/aqd:equivalenceDemonstration/aqd:EquivalenceDemonstration/aqd:demonstrationReport)
+let $documentation := data($proc/aqd:dataQuality/aqd:DataQuality/aqd:documentation)
+let $qaReport := data($proc/aqd:dataQuality/aqd:DataQuality/aqd:qaReport)
+
+    where fn:string-length($qaReport) = 0 or fn:string-length($documentation) = 0 or fn:string-length($demonstrationReport) = 0
+        or not(xmlconv:isValidConceptCode($demonstrated, $xmlconv:EQUIVALENCEDEMONSTRATED_VOCABULARY))
+
+return concat(data($proc/ompr:inspireId/base:Identifier/base:namespace), '/' , data($proc/ompr:inspireId/base:Identifier/base:localId))
 
 
-(:D67 Done by Rait:)
-(:
-let  $invalid67
-    :=
-    for $usedAQDisTrue in doc($source_url)//gml:featureMember/aqd:AQD_SamplingPoint/aqd:usedAQD
-    where data($usedAQDisTrue) = "true"
+let $allInvalidTrueUsedAQD70 :=
+    for $invalidTrueUsedAQD70 in $docRoot//aqd:AQD_SamplingPoint
+        let $procIds70 := data($invalidTrueUsedAQD70/ef:observingCapability/ef:ObservingCapability/ef:procedure/@xlink:href)
+        let $aqdUsed70 := $invalidTrueUsedAQD70/aqd:usedAQD = true()
+
+    for $procId70 in $procIds70
     return
-        $usedAQDisTrue
-
-
-let $allInvalid67 :=
-            for $i67 in   xmlconv:checkVocabularyConceptValues3($source_url, "aqd:AQD_SamplingPointProcess","aqd:equivalenceDemonstrated", $xmlconv:EQUIVALENCEDEMONSTRATED_VOCABULARY,"")
-            where data($invalid67/../ef:observingCapability/ef:ObservingCapability/ef:procedure/@xlink:href) = (concat(data($i67/../ompr:inspireId/base:Identifier/base:namespace),'/',data($i67/../ompr:inspireId/base:Identifier/base:localId)))
-            return
-                <tr>
-                    <td title="AQD_SamplingPointProcess/gml:id">{data($i67/../@gml:id)}</td>
-                    <td title="aqd:equivalenceDemonstrated" style="color:red;" >{data($i67/@xlink:href)}</td>
-                </tr>
-:)
-(: D68 :)
-(:
-let  $invalid68
-    :=
-    for $usedAQDisTrue in doc($source_url)//gml:featureMember/aqd:AQD_SamplingPoint/aqd:usedAQD
-    where data($usedAQDisTrue) = "true"
-    return
-        $usedAQDisTrue
-
-
-    let $allInvalid68 :=
-    for $i68 in    doc($source_url)//gml:featureMember/aqd:AQD_SamplingPointProcess[aqd:demonstrationReport=0]
-    where data($invalid68/../ef:observingCapability/ef:ObservingCapability/ef:procedure/@xlink:href) = (concat(data($i68/../ompr:inspireId/base:Identifier/base:namespace),'/',data($i68/../ompr:inspireId/base:Identifier/base:localId)))
-    return
+        if ($aqdUsed70  and  not(empty(index-of($allProcNotMatchingCondition70, $procId70)))) then
         <tr>
-            <!--<td>{data($invalid67[../ef:observingCapability/ef:ObservingCapability/ef:procedure/@xlink:href = (concat(data($i67/../ompr:inspireId/base:Identifier/base:namespace),'/',data($i67/../ompr:inspireId/base:Identifier/base:localId)))]/../@gml:id)}</td>-->
-            <td title="AQD_SamplingPointProcess/gml:id">{data($i68/../@gml:id)}</td>
-            <td title="aqd:demonstrationReport" style="color:red;" >{data($i68/@xlink:href)}</td>
-            <!--<td title="">{concat(data($i67/../ompr:inspireId/base:Identifier/base:namespace),'/',data($i67/../ompr:inspireId/base:Identifier/base:localId))}</td>-->
+            <td title="gml:id">{data($invalidTrueUsedAQD70/@gml:id)}</td>
+            <td title="base:localId">{data($invalidTrueUsedAQD70/ef:inspireId/base:Identifier/base:localId)}</td>
+            <td title="base:namespace">{data($invalidTrueUsedAQD70/ef:inspireId/base:Identifier/base:namespace)}</td>
+            <td title="ef:procedure">{$procId70}</td>
+            <td title="ef:ObservingCapability">{data($invalidTrueUsedAQD70/ef:observingCapability/ef:ObservingCapability/@gml:id)}</td>
+
         </tr>
+        else ()
 :)
-(: D69 :)
-(:
-let  $invalid69
-    :=
-    for $usedAQDisTrue in doc($source_url)//gml:featureMember/aqd:AQD_SamplingPoint/aqd:usedAQD
-    where data($usedAQDisTrue) = "true"
-    return
-        $usedAQDisTrue
 
 
-let $allInvalid69 :=
-    for $i69 in    doc($source_url)//gml:featureMember/aqd:AQD_SamplingPointProcess[aqd:documentation=0]
-    where data($invalid69/../ef:observingCapability/ef:ObservingCapability/ef:procedure/@xlink:href) = (concat(data($i69/../ompr:inspireId/base:Identifier/base:namespace),'/',data($i69/../ompr:inspireId/base:Identifier/base:localId)))
+(: D67 Jaume Targa :)
+
+let $allProcNotMatchingCondition67 :=
+for $proc in $docRoot//aqd:AQD_SamplingPointProcess
+let $demonstrated := data($proc/aqd:equivalenceDemonstration/aqd:EquivalenceDemonstration/aqd:equivalenceDemonstrated/@xlink:href)
+let $demonstrationReport := data($proc/aqd:equivalenceDemonstration/aqd:EquivalenceDemonstration/aqd:demonstrationReport)
+
+where not(xmlconv:isValidConceptCode($demonstrated, $xmlconv:EQUIVALENCEDEMONSTRATED_VOCABULARY)) 
+
+return concat(data($proc/ompr:inspireId/base:Identifier/base:namespace), '/' , data($proc/ompr:inspireId/base:Identifier/base:localId))
+
+
+let $allInvalidTrueUsedAQD67 :=
+    for $invalidTrueUsedAQD67 in $docRoot//aqd:AQD_SamplingPoint
+        let $procIds67 := data($invalidTrueUsedAQD67/ef:observingCapability/ef:ObservingCapability/ef:procedure/@xlink:href)
+        let $aqdUsed67 := $invalidTrueUsedAQD67/aqd:usedAQD = true()
+
+    for $procId67 in $procIds67
     return
+        if ($aqdUsed67  and  not(empty(index-of($allProcNotMatchingCondition67, $procId67)))) then
         <tr>
-            <!--<td>{data($invalid67[../ef:observingCapability/ef:ObservingCapability/ef:procedure/@xlink:href = (concat(data($i67/../ompr:inspireId/base:Identifier/base:namespace),'/',data($i67/../ompr:inspireId/base:Identifier/base:localId)))]/../@gml:id)}</td>-->
-            <td title="AQD_SamplingPointProcess/gml:id">{data($i69/../@gml:id)}</td>
-            <td title="aqd:documentation" style="color:red;" >{data($i69/@xlink:href)}</td>
-            <!--<td title="">{concat(data($i67/../ompr:inspireId/base:Identifier/base:namespace),'/',data($i67/../ompr:inspireId/base:Identifier/base:localId))}</td>-->
+            <td title="gml:id">{data($invalidTrueUsedAQD67/@gml:id)}</td>
+            <td title="base:localId">{data($invalidTrueUsedAQD67/ef:inspireId/base:Identifier/base:localId)}</td>
+            <td title="base:namespace">{data($invalidTrueUsedAQD67/ef:inspireId/base:Identifier/base:namespace)}</td>
+            <td title="ef:procedure">{$procId67}</td>
+            <td title="ef:ObservingCapability">{data($invalidTrueUsedAQD67/ef:observingCapability/ef:ObservingCapability/@gml:id)}</td>
+
         </tr>
-:)
-(: D70 :)
-(:
-let  $invalid70
-    :=
-    for $usedAQDisTrue in doc($source_url)//gml:featureMember/aqd:AQD_SamplingPoint/aqd:usedAQD
-    where data($usedAQDisTrue) = "true"
-    return
-        $usedAQDisTrue
+        else ()
+
+(: D68 Jaume Targa :)
+
+let $allProcNotMatchingCondition68 :=
+for $proc in $docRoot//aqd:AQD_SamplingPointProcess
+let $demonstrated := data($proc/aqd:equivalenceDemonstration/aqd:EquivalenceDemonstration/aqd:equivalenceDemonstrated/@xlink:href)
+let $demonstrationReport := data($proc/aqd:equivalenceDemonstration/aqd:EquivalenceDemonstration/aqd:demonstrationReport)
+
+where ($demonstrated = 'http://dd.eionet.europa.eu/vocabulary/aq/equivalencedemonstrated/yes' and fn:string-length($demonstrationReport) = 0)
+
+return concat(data($proc/ompr:inspireId/base:Identifier/base:namespace), '/' , data($proc/ompr:inspireId/base:Identifier/base:localId))
 
 
-let $allInvalid70 :=
-    for $i70 in    doc($source_url)//gml:featureMember/aqd:AQD_SamplingPointProcess[aqd:qaReport=0]
-    where data($invalid70/../ef:observingCapability/ef:ObservingCapability/ef:procedure/@xlink:href) = (concat(data($i70/../ompr:inspireId/base:Identifier/base:namespace),'/',data($i70/../ompr:inspireId/base:Identifier/base:localId)))
+let $allInvalidTrueUsedAQD68 :=
+    for $invalidTrueUsedAQD68 in $docRoot//aqd:AQD_SamplingPoint
+        let $procIds68 := data($invalidTrueUsedAQD68/ef:observingCapability/ef:ObservingCapability/ef:procedure/@xlink:href)
+        let $aqdUsed68 := $invalidTrueUsedAQD68/aqd:usedAQD = true()
+
+    for $procId68 in $procIds68
     return
+        if ($aqdUsed68  and  not(empty(index-of($allProcNotMatchingCondition68, $procId68)))) then
         <tr>
-            <!--<td>{data($invalid67[../ef:observingCapability/ef:ObservingCapability/ef:procedure/@xlink:href = (concat(data($i67/../ompr:inspireId/base:Identifier/base:namespace),'/',data($i67/../ompr:inspireId/base:Identifier/base:localId)))]/../@gml:id)}</td>-->
-            <td title="AQD_SamplingPointProcess/gml:id">{data($i70/../@gml:id)}</td>
-            <td title="aqd:qaReport" style="color:red;" >{data($i70/@xlink:href)}</td>
-            <!--<td title="">{concat(data($i67/../ompr:inspireId/base:Identifier/base:namespace),'/',data($i67/../ompr:inspireId/base:Identifier/base:localId))}</td>-->
+            <td title="gml:id">{data($invalidTrueUsedAQD68/@gml:id)}</td>
+            <td title="base:localId">{data($invalidTrueUsedAQD68/ef:inspireId/base:Identifier/base:localId)}</td>
+            <td title="base:namespace">{data($invalidTrueUsedAQD68/ef:inspireId/base:Identifier/base:namespace)}</td>
+            <td title="ef:procedure">{$procId68}</td>
+            <td title="ef:ObservingCapability">{data($invalidTrueUsedAQD68/ef:observingCapability/ef:ObservingCapability/@gml:id)}</td>
+
         </tr>
-:)
+        else ()
+
+
+
+(: D69 Jaume Targa :)
+
+let $allProcNotMatchingCondition69 :=
+for $proc in $docRoot//aqd:AQD_SamplingPointProcess
+let $documentation := data($proc/aqd:dataQuality/aqd:DataQuality/aqd:documentation)
+let $qaReport := data($proc/aqd:dataQuality/aqd:DataQuality/aqd:qaReport)
+
+where fn:string-length($documentation) = 0
+
+return concat(data($proc/ompr:inspireId/base:Identifier/base:namespace), '/' , data($proc/ompr:inspireId/base:Identifier/base:localId))
+
+
+let $allInvalidTrueUsedAQD69 :=
+    for $invalidTrueUsedAQD69 in $docRoot//aqd:AQD_SamplingPoint
+        let $procIds69 := data($invalidTrueUsedAQD69/ef:observingCapability/ef:ObservingCapability/ef:procedure/@xlink:href)
+        let $aqdUsed69 := $invalidTrueUsedAQD69/aqd:usedAQD = true()
+
+    for $procId69 in $procIds69
+    return
+        if ($aqdUsed69  and  not(empty(index-of($allProcNotMatchingCondition69, $procId69)))) then
+        <tr>
+            <td title="gml:id">{data($invalidTrueUsedAQD69/@gml:id)}</td>
+            <td title="base:localId">{data($invalidTrueUsedAQD69/ef:inspireId/base:Identifier/base:localId)}</td>
+            <td title="base:namespace">{data($invalidTrueUsedAQD69/ef:inspireId/base:Identifier/base:namespace)}</td>
+            <td title="ef:procedure">{$procId69}</td>
+            <td title="ef:ObservingCapability">{data($invalidTrueUsedAQD69/ef:observingCapability/ef:ObservingCapability/@gml:id)}</td>
+
+        </tr>
+        else ()
+
+(: D70 Jaume Targa :)
+
+let $allProcNotMatchingCondition70 :=
+for $proc in $docRoot//aqd:AQD_SamplingPointProcess
+let $documentation := data($proc/aqd:dataQuality/aqd:DataQuality/aqd:documentation)
+let $qaReport := data($proc/aqd:dataQuality/aqd:DataQuality/aqd:qaReport)
+
+where fn:string-length($qaReport) = 0 
+
+
+return concat(data($proc/ompr:inspireId/base:Identifier/base:namespace), '/' , data($proc/ompr:inspireId/base:Identifier/base:localId))
+
+
+let $allInvalidTrueUsedAQD70 :=
+    for $invalidTrueUsedAQD70 in $docRoot//aqd:AQD_SamplingPoint
+        let $procIds70 := data($invalidTrueUsedAQD70/ef:observingCapability/ef:ObservingCapability/ef:procedure/@xlink:href)
+        let $aqdUsed70 := $invalidTrueUsedAQD70/aqd:usedAQD = true()
+
+    for $procId70 in $procIds70
+    return
+        if ($aqdUsed70  and  not(empty(index-of($allProcNotMatchingCondition70, $procId70)))) then
+        <tr>
+            <td title="gml:id">{data($invalidTrueUsedAQD70/@gml:id)}</td>
+            <td title="base:localId">{data($invalidTrueUsedAQD70/ef:inspireId/base:Identifier/base:localId)}</td>
+            <td title="base:namespace">{data($invalidTrueUsedAQD70/ef:inspireId/base:Identifier/base:namespace)}</td>
+            <td title="ef:procedure">{$procId70}</td>
+            <td title="ef:ObservingCapability">{data($invalidTrueUsedAQD70/ef:observingCapability/ef:ObservingCapability/@gml:id)}</td>
+
+        </tr>
+        else ()
+
+
 (: D71 :)
 
 let $localSampleIds := $docRoot//gml:featureMember/aqd:AQD_Sample/aqd:inspireId/base:Identifier
@@ -1469,18 +1672,18 @@ return
             <col width="350px" style="text-align:left"/>
             <col width="*"/>
         </colgroup>
-        {xmlconv:buildResultRows("D1", "Total number of each environmental monitoring feature types",
-            (), (), "", string(sum($countFeatureTypes)), "", "","warring", $tblAllFeatureTypes)}
+        {xmlconv:buildResultRows("D1", "Total number of environmental monitoring feature types provided within this XML",
+            (), (), "", string(sum($countFeatureTypes)), "", "","error", $tblAllFeatureTypes)}
         {xmlconv:buildResultRows("D2", "Compile and feedback upon the total number of new records for each environmental monitoring feature types included in the delivery",
                 (), (), "", string(count($tblD2)), "", "","error",())}
         {xmlconv:buildResultRows("D3", "Compile and feedback upon the total number of modification to existing for each environmental monitoring feature types included in the delivery",
                 (), (), "", string(count($tblD3)), "", "","error",())}
-        {xmlconv:buildResultRows("D4", "Total number  aqd:aqdModelType, aqd:inspireId, ef:name, ompr:nam  combinations ",
+        {xmlconv:buildResultRows("D4", "Full list of reported Environmental Monitoring Feature within this XML",
                 (), (), "", string(count($tblD4)), "", "","error",$tblD4)}
-        <tr style="border-top:1px solid #666666">
-            <tr>
+        <tr>
+            <tr style="border-top:1px solid #666666">
                 <td style="vertical-align:top;">{ xmlconv:getBullet("D5", if ($countD5duplicates = 0) then "info" else "error") }</td>
-                <th style="vertical-align:top;">All gml:id attributes, ef:inspireId and aqd:inspireId elements shall have unique content</th>
+                <th style="vertical-align:top;text-align:left">All gml:id attributes, ef:inspireId and aqd:inspireId elements shall have unique content</th>
                 <td style="vertical-align:top;">{
                     if ($countD5duplicates = 0) then
                         "All Ids are unique"
@@ -1515,42 +1718,61 @@ return
                     ()
             }
         </tr>
+	<tr style="border-top:2px solid #666666">
+            <td style="vertical-align:top;"></td>
+            <td style="vertical-align:top;"></td>
+            <td style="vertical-align:top;"></td>
+	</tr>
+	<tr style="border-top:0px solid #666666">
+            <th colspan="2" style="vertical-align:top;text-align:left">Specific checks on AQD_Network feature(s) within this XML</th>
+            <td style="vertical-align:top;"></td>
+	</tr>
+
         <tr style="border-top:1px solid #666666">
             <td style="vertical-align:top;">{ xmlconv:getBullet("D6", if ($countD6duplicates = 0) then "info" else "error") }</td>
-            <th style="vertical-align:top;">./ef:inspireId/base:Identifier/base:localId shall be an unique code for AQD_network and unique within the namespace.</th>
+            <th style="vertical-align:top;text-align:left">aqd:AQD_Network/ef:inspireId/base:Identifier/base:localId shall be an unique code for AQD_network and unique within the namespace.</th>
             <td style="vertical-align:top;">{
                 if ($countD6duplicates = 0) then
                     <span style="font-size:1.3em;">All Ids are unique</span>
                 else
                     concat($countD6duplicates, " error", substring("s ", number(not($countD6duplicates > 1)) * 2) ,"found") }</td>
         </tr>
-        {xmlconv:buildResultRows("D7", "./ef:inspireId/base:Identifier/base:namespace List base:namespace and  count the number of base:localId assigned to each base:namespace. ",
+        {xmlconv:buildResultRows("D7", "Count the number of unique AQD_Network (via localId) submitted within base:namespace. ",
                 (), (), "", string(count($tblD7)), "", "","error",$tblD7)}
-        {xmlconv:buildResultRowsWithTotalCount("D8", <span>The content of /aqd:AQD_Network/ef:mediaMonitored shall resolve to any concept in
+        {xmlconv:buildResultRowsWithTotalCount("D8", <span>The content of aqd:AQD_Network/ef:mediaMonitored shall resolve to any concept in
             <a href="{ $xmlconv:MEDIA_VALUE_VOCABULARY_BASE_URI }">{ $xmlconv:MEDIA_VALUE_VOCABULARY_BASE_URI }</a></span>,
             (), (), "ef:mediaMonitored", "", "", "", "warning",$invalidNetworkMedia)}
 
-        {xmlconv:buildResultRowsWithTotalCount("D9", <span>The content of /aqd:AQD_Network/ef:organisationLevel shall resolve to any concept in
+        {xmlconv:buildResultRowsWithTotalCount("D9", <span>The content of aqd:AQD_Network/ef:organisationLevel shall resolve to any concept in
             <a href="{ $xmlconv:ORGANISATIONAL_LEVEL_VOCABULARY }">{ $xmlconv:ORGANISATIONAL_LEVEL_VOCABULARY }</a></span>,
             (), (), "ef:organisationLevel", "", "", "","warning", $invalidOrganisationalLevel)}
 
-        {xmlconv:buildResultRowsWithTotalCount("D10", <span>The content of /aqd:AQD_Network/aqd:networkType shall resolve to any concept in
+        {xmlconv:buildResultRowsWithTotalCount("D10", <span>The content of aqd:AQD_Network/aqd:networkType shall resolve to any concept in
             <a href="{ $xmlconv:NETWORK_TYPE_VOCABULARY }">{ $xmlconv:NETWORK_TYPE_VOCABULARY }</a></span>,
             (), (), "aqd:networkType", "", "", "","warning", $invalidNetworkType)}
 
-        {xmlconv:buildResultRows("D11", "/aqd:AQD_Network/aqd:operationActivityPeriod/gml:TimePeriod/gml:beginPosition shall be less than gml:endPosition",
+        {xmlconv:buildResultRows("D11", "aqd:AQD_Network/aqd:operationActivityPeriod/gml:TimePeriod/gml:beginPosition shall be less than gml:endPosition",
                 $invalidAQDNetworkBeginPosition, () , "aqd:AQD_Network/@gml:id", "All attributes are valid", " invalid attribute ", "","error", ())}
 
 
-        {xmlconv:buildResultRowsWithTotalCount("D14", <span>The content of ./aqd:aggregationTimeZone attribute shall resolve to a valid code in
+        {xmlconv:buildResultRowsWithTotalCount("D14", <span>The content of /aqd:AQD_Network/aqd:aggregationTimeZone attribute shall resolve to a valid code in
             <a href="{ $xmlconv:TIMEZONE_VOCABULARY }">{ $xmlconv:TIMEZONE_VOCABULARY }</a></span>,
                 (), (), "aqd:aggregationTimeZone", "", "", "","error",$invalidTimeZone)}
 
+	<tr style="border-top:2px solid #666666">
+            <td style="vertical-align:top;"></td>
+            <td style="vertical-align:top;"></td>
+            <td style="vertical-align:top;"></td>
+	</tr>
+	<tr style="border-top:0px solid #666666">
+            <th colspan="2" style="vertical-align:top;text-align:left">Specific checks on AQD_Station feature(s) within this XML</th>
+            <td style="vertical-align:top;"></td>
+	</tr>
 
 
         <tr style="border-top:1px solid #666666">
             <td style="vertical-align:top;">{ xmlconv:getBullet("D15", if ($countD15duplicates = 0) then "info" else "error") }</td>
-            <th style="vertical-align:top;">./am:inspireId/base:Identifier/base:localId shall be an unique code within namespace</th>
+            <th style="vertical-align:top;text-align:left">aqd:AQD_Station/ef:inspireId/base:Identifier/base:localId shall be an unique code within namespace</th>
             <td style="vertical-align:top;">{
                 if ($countD15duplicates = 0) then
                     <span style="font-size:1.3em;">All Ids are unique</span>
@@ -1560,7 +1782,7 @@ return
 
 
 
-        {xmlconv:buildResultRows("D16", "./ef:inspireId/base:Identifier/base:namespace List base:namespace and  count the number of base:localId assigned to each base:namespace. ",
+        {xmlconv:buildResultRows("D16", "Count the number of unique AQD_Station (via localId) submitted within base:namespace. ", 
                 (), (), "", string(count($tblD16)), "", "","error",$tblD16)}
 
 
@@ -1578,38 +1800,48 @@ return
        {xmlconv:buildResultRows("D23", "Total number  aqd:AQD_Station invalid operational activity periods ",
             (), $allInvalidEfOperationActivityPeriod, "", fn:string(count($allInvalidEfOperationActivityPeriod)), "", "","error", ())}
 
-        {xmlconv:buildResultRows("D24", "Total number of AQD_Station which are operational ",
+        {xmlconv:buildResultRows("D24", "Total number of aqd:AQD_Station which are operational ",
                 (), $allUnknownEfOperationActivityPeriodD24, "", string(count($allUnknownEfOperationActivityPeriodD24)), "", "","warning",(), fn:false())}
 
-        {xmlconv:buildResultRows("D26", "./aqd:EUStationCode shall be an unique code for the station starting with ISO2-country code",
+        {xmlconv:buildResultRows("D26", "AQD_Station/aqd:EUStationCode shall be an unique code for the station starting with ISO2-country code",
                 (), $invalidDuplicateLocalIds, "", "All station codes are valid", " invalid station codes", "","error", ())}
 
-        {xmlconv:buildResultRowsWithTotalCount("D27", <span>The content of /aqd:AQD_Station/aqd:meteoParams shall resolve to any concept in
+        {xmlconv:buildResultRowsWithTotalCount("D27", <span>The content of aqd:AQD_Station/aqd:meteoParams shall resolve to any concept in
             <a href="{ $xmlconv:METEO_PARAMS_VOCABULARY[1] }">{ $xmlconv:METEO_PARAMS_VOCABULARY[1] }</a>,
             <a href="{ $xmlconv:METEO_PARAMS_VOCABULARY[2] }">{ $xmlconv:METEO_PARAMS_VOCABULARY[2] }</a>,
             <a href="{ $xmlconv:METEO_PARAMS_VOCABULARY[3] }">{ $xmlconv:METEO_PARAMS_VOCABULARY[3] }</a></span>,
                 (), (), "aqd:meteoParams", "", "", "","warning",$invalidMeteoParams)}
-        {xmlconv:buildResultRowsWithTotalCount("D28", <span>The content of /aqd:AQD_Station/aqd:areaClassification shall resolve to any concept in
+        {xmlconv:buildResultRowsWithTotalCount("D28", <span>The content of aqd:AQD_Station/aqd:areaClassification shall resolve to any concept in
             <a href="{ $xmlconv:AREA_CLASSIFICATION_VOCABULARY }">{ $xmlconv:AREA_CLASSIFICATION_VOCABULARY }</a></span>,
-            (), (), "aqd:areaClassification", "", "", "","warning", $invalidAreaClassification)}
+            (), (), "aqd:areaClassification", "", "", "","error", $invalidAreaClassification)}
 
-        {xmlconv:buildResultRowsWithTotalCount("D29", <span>The content of /aqd:AQD_Station/aqd:dispersionLocal shall resolve to any concept in
+        {xmlconv:buildResultRowsWithTotalCount("D29", <span>The content of aqd:AQD_Station/aqd:dispersionLocal shall resolve to any concept in
             <a href="{ $xmlconv:DISPERSION_LOCAL_VOCABULARY }">{ $xmlconv:DISPERSION_LOCAL_VOCABULARY }</a></span>,
             $invalidDispersionLocal, (), "aqd:dispersionLocal", "", "", "","warning", $allDispersionLocal)}
 
-        {xmlconv:buildResultRowsWithTotalCount("D30", <span>The content of /aqd:AQD_Station/aqd:dispersionRegional shall resolve to any concept in
+        {xmlconv:buildResultRowsWithTotalCount("D30", <span>The content of aqd:AQD_Station/aqd:dispersionRegional shall resolve to any concept in
             <a href="{ $xmlconv:DISPERSION_REGIONAL_VOCABULARY }">{ $xmlconv:DISPERSION_REGIONAL_VOCABULARY }</a></span>,
             $invalidDispersionRegional, (), "aqd:dispersionRegional", "", "", "","warning", $allDispersionRegional)}
 
-        {xmlconv:buildResultRows("D31", "./AQD_SamplingPoint/ef:inspireId/base:Identifier/base:localId not unique codes: ",
+	<tr style="border-top:2px solid #666666">
+            <td style="vertical-align:top;"></td>
+            <td style="vertical-align:top;"></td>
+            <td style="vertical-align:top;"></td>
+	</tr>
+	<tr style="border-top:0px solid #666666">
+            <th colspan="2" style="vertical-align:top;text-align:left">Specific checks on AQD_SamplingPoint feature(s) within this XML</th>
+            <td style="vertical-align:top;"></td>
+	</tr>
+
+        {xmlconv:buildResultRows("D31", "AQD_SamplingPoint/ef:inspireId/base:Identifier/base:localId not unique codes: ",
                 (), $invalidDuplicateSamplingPointIds, "", concat(string(count($invalidDuplicateSamplingPointIds))," errors found.") , "", "","error", ())}
-        {xmlconv:buildResultRows("D32", "./base:Identifier/base:namespace List base:namespace and  count the number of base:localId assigned to each base:namespace. ",
+        {xmlconv:buildResultRows("D32", "Count the number of unique AQD_SamplingPoint (via localId) submitted within base:namespace ",
                 (), (), "", string(count($tblD32)), "", "","error",$tblD32)}
-        {xmlconv:buildResultRowsWithTotalCount("D33", <span>The content of /aqd:AQD_SamplingPoint/ef:mediaMonitored shall resolve to any concept in
+        {xmlconv:buildResultRowsWithTotalCount("D33", <span>The content of aqd:AQD_SamplingPoint/ef:mediaMonitored shall resolve to any concept in
             <a href="{ $xmlconv:MEDIA_VALUE_VOCABULARY }">{ $xmlconv:MEDIA_VALUE_VOCABULARY }</a></span>,
             (), (), "ef:mediaMonitored", "", "", "","warning", $invalidSamplingPointMedia)}
 
-        {xmlconv:buildResultRowsWithTotalCount("D34", <span>./am:geometry/gml:Point the srsName attribute  shall  be  a  recognisable  URN .  The  following  2  srsNames  are  expected urn:ogc:def:crs:EPSG::4258 or urn:ogc:def:crs:EPSG::4326</span>,
+        {xmlconv:buildResultRowsWithTotalCount("D34", <span>aqd:AQD_SamplingPoint/am:geometry/gml:Point the srsName attribute  shall  be  a  recognisable  URN .  The  following  2  srsNames  are  expected urn:ogc:def:crs:EPSG::4258 or urn:ogc:def:crs:EPSG::4326</span>,
             $invalidGeometryPoint, (), "gml:point", "", "", "","warning", $allGeometryPoint)}
 
         {xmlconv:buildResultRows("D35", "./ef:geometry/gml:Point/gml:pos the srsDimension attribute shall resolve to ""2"" to allow the coordinate of the station",
@@ -1619,44 +1851,60 @@ return
         {xmlconv:buildResultRows("D37", "Total number aqd:AQD_SamplingPoint/ef:observingCapability/ef:ObservingCapability/ef:observingTime/gml:TimePeriod/ invalid or overlapping operational activity periods ",
                 (), $allObservingCapabilityPeriod, "", concat(fn:string(count($allObservingCapabilityPeriod))," errors found"), "", "","error", ())}
 
-        {xmlconv:buildResultRowsWithTotalCount("D40", <span>The content of ./ef:observedProperty shall resolve to a valid code within
+        {xmlconv:buildResultRowsWithTotalCount("D40", <span>The content of ../ef:observedProperty shall resolve to a valid code within
             <a href="{ $xmlconv:POLLUTANT_VOCABULARY }">{ $xmlconv:POLLUTANT_VOCABULARY }</a></span>,
                 (), (), "ef:observedProperty", "", "", "","error", $invalidObservedProperty)}
 
+        <tr style="border-top:2px solid #666666">
+            <th colspan="3" style="vertical-align:top;text-align:left">Internal XML cross-checks between AQD_SamplingPoint and AQD_Sample;AQD_SamplingPointProcess;AQD_Station;AQD_Network</th>
+            </tr>
+	    <tr style="border-top:0px solid #666666">
+            <td colspan="3" style="vertical-align:top;text-align:left">Please note that the qa might give you warning if different features have been submitted in separate XMLs</td>
+            </tr>
 
-        {xmlconv:buildResultRows("D41", "./ef:observingCapability/ef:ObservingCapability/ef:featureOfInterest shall resolve to a traversable local of global URI to an ../AQD_Sample",
-                (),$invalideFeatureOfInterest,"aqd:AQD_SamplingPoint/@gml:id", "All attributes are valid", " invalid attribute", "","error", ())}
-        {xmlconv:buildResultRows("D42", "./ef:observingCapability/ef:ObservingCapability/ef:procedure shall resolve to a traversable local of global URI to  ../AQD_Process",
-                (),$invalidEfprocedure, "aqd:AQD_SamplingPoint/@gml:id", "All attributes are valid", " invalid attribute", "","error", ())}
-        {xmlconv:buildResultRows("D43", "./ef:broader shall resolve to a traversable local of global URI to ../AQD_Station",
-                (),$invalidEfbroader, "aqd:AQD_SamplingPoint/@gml:id", "All attributes are valid", " invalid attribute", "","error", ())}
-        {xmlconv:buildResultRows("D44", "./ef:belongsTo shall resolve to a traversable local of global URI to ../AQD_Network",
-                (),$invalidEfbelongsTo, "aqd:AQD_SamplingPoint/@gml:id", "All attributes are valid", " invalid attribute", "","error", ())}
-        {xmlconv:buildResultRows("D45", "Total number aqd:AQD_SamplingPoint/ef:operationActivityPeriod/ef:OperationActivityPeriod/ef:activityTime/gml:TimePeriod/ invalid operational activity periods ",
+
+        {xmlconv:buildResultRows("D41", "Cross-check with AQD_Sample (./ef:observingCapability/ef:ObservingCapability/ef:featureOfInterest/@xlink shall resolve to a traversable local of global URI to an ../AQD_Sample)",
+                (),$invalideFeatureOfInterest,"aqd:AQD_SamplingPoint/@gml:id", "All attributes are valid", " invalid attribute", "","warning", ())}
+        {xmlconv:buildResultRows("D42", "Cross-check with AQD_SamplingPointProcess (./ef:observingCapability/ef:ObservingCapability/ef:procedure/@xlink shall resolve to a traversable local of global URI to  ../AQD_SamplingPointProcess)",
+                (),$invalidEfprocedure, "aqd:AQD_SamplingPoint/@gml:id", "All attributes are valid", " invalid attribute", "","warning", ())}
+        {xmlconv:buildResultRows("D43", "Cross-check with AQD_Station (../ef:broader/@xlink shall resolve to a traversable local of global URI to ../AQD_Station)",
+                (),$invalidEfbroader, "aqd:AQD_SamplingPoint/@gml:id", "All attributes are valid", " invalid attribute", "","warning", ())}
+        {xmlconv:buildResultRows("D44", "Cross-check with AQD_Network (../ef:belongsTo shall resolve to a traversable local of global URI to ../AQD_Network)",
+                (),$invalidEfbelongsTo, "aqd:AQD_SamplingPoint/@gml:id", "All attributes are valid", " invalid attribute", "","warning", ())}
+	    <tr style="border-top:2px solid #666666">
+            <th colspan="3" style="vertical-align:top;text-align:left"></th>
+            </tr>
+        
+{xmlconv:buildResultRows("D45", "Total number aqd:AQD_SamplingPoint/ef:operationActivityPeriod/ef:OperationActivityPeriod/ef:activityTime/gml:TimePeriod/ invalid operational activity periods ",
                 (), $allOperationActivitPeriod, "", concat(fn:string(count($allOperationActivitPeriod))," errors found"), "", "", "error",())}
 
         {xmlconv:buildResultRows("D46", "Total number of AQD_SamplingPoints which are operational ",
-                (), $allUnknownEfOperationActivityPeriod, "", "", "", "","warning", ())}
+                (), $allUnknownEfOperationActivityPeriod, "", "", "", "","info", ())}
 
         {xmlconv:buildResultRows("D50", "Total number/aqd:stationClassification which resolve to http://dd.eionet.europa.eu/vocabulary/aq/stationclassification/ via xlink:href ",
                 (), $invalidStationClassificationLink, "", concat(fn:string(count($invalidStationClassificationLink))," errors found"), "", "","error", ())}
-        {xmlconv:buildResultRows("D51", "Number of invalid 3 elements /aqd:AQD_SamplingPoint/aqd:environmentalObjective/aqd:EnvironmentalObjective/ combinations: ",
-                (), $invalidObservedPropertyCombinations, "", concat(fn:string(count($invalidObservedPropertyCombinations))," errors found"), "", "", "error",())}
-
-        {xmlconv:buildResultRows("D52", concat(' If ./aqd:usedAQD equals "true", /aqd:AQD_SamplingPointProcess(es) which is (are) xlinked via ./ef:observingCapability/ef:ObservingCapability/ef:procedure. ',
-                ' The linked ./aqd:SamplingProcedure shall have: aqd:AQD_SamplingPointProcess/aqd:equivalenceDemonstration/aqd:EquivalenceDemonstration/aqd:equivalenceDemonstrated shall resolve to ',
-                        'http://dd.eione.europa.eu/vocabulary/aq/equivalencedemonstrated/ ', 'aqd:AQD_SamplingPointProcess/aqd:equivalenceDemonstration/aqd:EquivalenceDemonstration/aqd:demonstrationReport shall be populated. ',
-                         'aqd:AQD_SamplingPointProcess/aqd:dataQuality/aqd:DataQuality/aqd:documentation shall be populated ',
-                         'aqd:AQD_SamplingPointProcess./aqd:dataQuality/aqd:DataQuality/aqd:qaReport shall be populated '),
-                (), $allInvalidTrueUsedAQD, "", concat(fn:string(count($allInvalidTrueUsedAQD))," errors found"), "", "", "error",())}
+        {xmlconv:buildResultRows("D51", "Number of invalid 3 elements aqd:AQD_SamplingPoint/aqd:environmentalObjective/aqd:EnvironmentalObjective/ combinations: ",
+                (), $invalidObservedPropertyCombinations, "", concat(fn:string(count($invalidObservedPropertyCombinations))," errors found"), " invalid attribute", "", "warning",())}
+<!--	{xmlconv:buildResultRows("D52", "Number of SamplingPoint(s) declared as usedAQD = TRUE which are not used in any Assessment Regime stored in Content Registry",  
+                (), $allInvalidTrueUsedAQD, "", concat(fn:string(count($allInvalidTrueUsedAQD))," errors found"), "", "", "warning",())}-->
         {xmlconv:buildResultRows("D53", " Number of invalid aqd:AQD_SamplingPoint/aqd:zone xlinks: ",
-                (),  $allInvalidZoneXlinks, "", concat(fn:string(count( $allInvalidZoneXlinks))," errors found"), "", "", "error",())}
+                (),  $allInvalidZoneXlinks, "", concat(fn:string(count( $allInvalidZoneXlinks))," errors found"), " invalid attribute", "", "error",())}
         {xmlconv:buildResultRows("D54", "aqd:AQD_SamplingPointProcess/ompr:inspireId/base:Identifier/base:localId not unique codes: ",
-                (),$invalidDuplicateSamplingPointProcessIds, "", concat(string(count($invalidDuplicateSamplingPointProcessIds))," errors found.") , "", "","error", ())}
+                (),$invalidDuplicateSamplingPointProcessIds, "", concat(string(count($invalidDuplicateSamplingPointProcessIds))," errors found.") , " invalid attribute", "","error", ())}
 
-        {xmlconv:buildResultRows("D55", "./ompr:inspireId/base:Identifier/base:namespace List base:namespace and  count the number of base:localId assigned to each base:namespace. ",
-                (), $tblD55, "", concat(string(count($tblD55)), " errors found"), "", "","error",())}
+	<tr style="border-top:2px solid #666666">
+            <td style="vertical-align:top;"></td>
+            <td style="vertical-align:top;"></td>
+            <td style="vertical-align:top;"></td>
+	</tr>
+	<tr style="border-top:0px solid #666666">
+            <th colspan="2" style="vertical-align:top;text-align:left">Specific checks on AQD_SamplingPointProcess feature(s) within this XML</th>
+            <td style="vertical-align:top;"></td>
+	</tr>
 
+
+        {xmlconv:buildResultRows("D55", "Count the number of unique AQD_SamplingPointProcess (via localId) submitted within base:namespace ",
+            (), (), "", string(count($tblD55)), "", "","info",$tblD55)}
 
         {xmlconv:buildResultRowsWithTotalCount("D56", <span>./aqd:measurementType shall resolve to
             <a href="{ $xmlconv:MEASUREMENTTYPE_VOCABULARY }">{ $xmlconv:MEASUREMENTTYPE_VOCABULARY }</a>/[concept]</span>,
@@ -1671,22 +1919,45 @@ return
 
         {xmlconv:buildResultRows("D58", " aqd:measurementType  which resolves
             to ./measurementtype/active or ./measurementtype/passive  shall be included ./aqd:samplingMethod and ./aqd:analyticalTechnique. ./aqd:measurementMethod shall not be provided.",
-                (), $elementsIncluded, "", concat(fn:string(count($elementsIncluded))," errors found"), "", "","error", ())}
+                (), $elementsIncluded, "", concat(fn:string(count($elementsIncluded))," errors found"), " invalid attribute", "","warning", ())}
 
         {xmlconv:buildResultRowsWithTotalCount("D59", <span>The content of /aqd:AQD_SamplingPointProcess/aqd:analyticalTechnique shall resolve to any concept in
             <a href="{ $xmlconv:ANALYTICALTECHNIQUE_VOCABULARY }">{ $xmlconv:ANALYTICALTECHNIQUE_VOCABULARY }</a></span>,
                 (), (), "aqd:analyticalTechnique", "", "", "","error",$allInvalidAnalyticalTechnique )}
 
-        {xmlconv:buildResultRowsWithTotalCount("D61", <span>The content of ./aqd:AQD_SamplingPointProcess/aqd:measurementType shall resolve to any concept in
+        {xmlconv:buildResultRowsWithTotalCount("D60a", <span>The content of ./aqd:AQD_SamplingPointProcess/aqd:measurementType shall resolve to any concept in
             <a href="{ $xmlconv:MEASUREMENTEQUIPMENT_VOCABULARY }">{ $xmlconv:MEASUREMENTEQUIPMENT_VOCABULARY }</a></span>,
-                (), (), "aqd:measurementEquipment", "", "", "","error",$allInvalid61 )}
-        {xmlconv:buildResultRowsWithTotalCount("D62", <span>The content of ./aqd:AQD_SamplingPointProcess/aqd:samplingEquipment shall resolve to any concept in
+                (), (), "aqd:measurementEquipment", "", "", "","error",$allInvalid60a )}
+        {xmlconv:buildResultRowsWithTotalCount("D60b", <span>The content of ./aqd:AQD_SamplingPointProcess/aqd:samplingEquipment shall resolve to any concept in
             <a href="{ $xmlconv:SAMPLINGEQUIPMENT_VOCABULARY }">{ $xmlconv:SAMPLINGEQUIPMENT_VOCABULARY }</a></span>,
-                (), (), "aqd:samplingEquipment", "", "", "","error",$allInvalid62 )}
+                (), (), "aqd:samplingEquipment", "", "", "","error",$allInvalid60b )}
         <!--{xmlconv:buildResultRows("D61", "Total number ./aqd:dataQuality/aqd:DataQuality/aqd:detectionLimit witch does not contain an integer, fixed point or floating point number ",
                 (), $allInvalid61, "", concat(fn:string(count($allInvalid61))," errors found"), "", "", ())}-->
+
         {xmlconv:buildResultRowsWithTotalCount("D63", <span>Where ./aqd:detectionLimit is resolved uom link resolving to any concept in <a href="{ $xmlconv:UOM_CONCENTRATION_VOCABULARY }">{ $xmlconv:UOM_CONCENTRATION_VOCABULARY }</a> shall be provided</span>,
                 (), (), "aqd:detectionLimit", "", "", "","error",$allInvalid63 )}
+
+	<tr style="border-top:1px solid #666666">
+            <th colspan="3" style="vertical-align:top;text-align:left">Checks on SamplingPointProcess(es) where the xlinked SamplingPoint has aqd:AQD_SamplingPoint/aqd:usedAQD equals TRUE (D67 to D70): </th>
+            </tr>
+
+{xmlconv:buildResultRows("D67", concat('SamplingPointProcess(es) with incorrect code for Equivalence demonstration',
+		' (http://dd.eionet.europa.eu/vocabulary/aq/equivalencedemonstrated/) ',''),
+                (), $allInvalidTrueUsedAQD67, "", concat(fn:string(count($allInvalidTrueUsedAQD67))," errors found"), "", "", "warning",())}	
+
+{xmlconv:buildResultRows("D68", concat('SamplingPointProcess(es) declared as an equivalent method” ', 
+		'i.e. http://dd.eionet.europa.eu/vocabulary/aq/equivalencedemonstrated/yes ',
+		'but /aqd:demonstrationReport not provided. '),
+                (), $allInvalidTrueUsedAQD68, "", concat(fn:string(count($allInvalidTrueUsedAQD68))," errors found"), "", "", "warning",())}	
+
+{xmlconv:buildResultRows("D69", concat('SamplingPointProcess(es) is missing mandatory document on Traceability and Uncertainty Estimation ',
+                ' via aqd:AQD_SamplingPointProcess/aqd:dataQuality/aqd:DataQuality/aqd:documentation. ',''),
+                (), $allInvalidTrueUsedAQD69, "", concat(fn:string(count($allInvalidTrueUsedAQD69))," errors found"), "", "", "warning",())}	
+
+{xmlconv:buildResultRows("D70", concat('SamplingPointProcess(es) is missing mandatory document on QA/QC ',
+                ' via aqd:AQD_SamplingPointProcess/aqd:dataQuality/aqd:DataQuality/aqd:qaReport. ',''),
+                (), $allInvalidTrueUsedAQD70, "", concat(fn:string(count($allInvalidTrueUsedAQD70))," errors found"), "", "", "warning",())}	
+
 
         <!--{xmlconv:buildResultRows("D67", <span>Where .AQD_SamplingPoint/aqd:usedAQD is 'true' the content of ./aqd:AQD_SamplingPointProcess/aqd:equivalenceDemonstrated shall resolve to any concept in
             <a href="{ $xmlconv:EQUIVALENCEDEMONSTRATED_VOCABULARY }">{ $xmlconv:EQUIVALENCEDEMONSTRATED_VOCABULARY }</a></span>,
@@ -1697,9 +1968,21 @@ return
             (),$allInvalid69, "", concat(string(count($allInvalid69))," errors found.") , "", "","error", ())}
         {xmlconv:buildResultRows("D70", <span>Where ./AQD_SamplingPoint/aqd:usedAQD is “true”, ./aqd:qaReport shall be populated</span>,
                 (),$allInvalid70, "", concat(string(count($allInvalid70))," errors found.") , "", "","error", ())}-->
+
+	<tr style="border-top:2px solid #666666">
+            <td style="vertical-align:top;"></td>
+            <td style="vertical-align:top;"></td>
+            <td style="vertical-align:top;"></td>
+	</tr>
+	<tr style="border-top:0px solid #666666">
+            <th colspan="2" style="vertical-align:top;text-align:left">Specific checks on AQD_Sample feature(s) within this XML</th>
+            <td style="vertical-align:top;"></td>
+	</tr>
+
+
         {xmlconv:buildResultRows("D71", "aqd:AQD_Sample/ompr:inspireId/base:Identifier/base:localId not unique codes: ",
                 (),$invalidDuplicateSampleIds, "", concat(string(count($invalidDuplicateSampleIds))," errors found.") , "", "","error", ())}
-        {xmlconv:buildResultRows("D72", "./aqd:inspireId/base:Identifier/base:namespace List base:namespace and  count the number of base:localId assigned to each base:namespace. ",
+        {xmlconv:buildResultRows("D72", "Count the number of unique AQD_Sample (via localId) submitted within base:namespace ",
                 (), (), "", string(count($tblD72)), "", "","error",$tblD72)}
 
 
@@ -1710,7 +1993,14 @@ return
         {xmlconv:buildResultRows("D74", "./sams:shape/gml:Point, the srsDimension attribute shall resolve to “2” to allow the coordinate  of  the  feature  of  interest",
                 $invalidPointDimension,(), "aqd:AQD_Sample/@gml:id","All srsDimension attributes are valid"," invalid attribute","","error", ())}
         {xmlconv:buildResultRows("D78", "./aqd:inletHeight shall contain a numerical value, uom within it shall resolve to http://dd.eionet.europa.eu/vocabulary/uom/length/m",
-                $invalidInletHeigh,(), "aqd:AQD_Sample/@gml:id","All values are valid"," invalid attribute","", "error",())}
+                $invalidInletHeigh,(), "aqd:AQD_Sample/@gml:id","All values are valid"," invalid attribute","", "warning",())}
+
+ 	<tr style="border-top:3px solid #666666">
+            <td style="vertical-align:top;"></td>
+            <td style="vertical-align:top;"></td>
+            <td style="vertical-align:top;"></td>
+	</tr>
+
         <!--{xmlconv:buildResultRowsWithTotalCount("D67", <span>The content of ./aqd:AQD_SamplingPoint/aqd:samplingEquipment shall resolve to any concept in
             <a href="{ $xmlconv:UOM_CONCENTRATION_VOCABULARY }">{ $xmlconv:UOM_CONCENTRATION_VOCABULARY }</a></span>,
                 (), (), "aqd:samplingEquipment", "", "", "",$allInvalid67 )}
@@ -2081,12 +2371,22 @@ return
             {
                 if ($result//div/@class = 'error') then
                     <span>
-                        <p>This XML file did NOT pass the following crucial checks: {string-join($result//div[@class = 'error'], ',')}</p>
-                        <p>Please pay attention that QA rules D1-D4 concern all monitoring (measurement) feature types, QA rules D5 - D14 concern AQD_Networks, QA rules D15 - D30 concern AQD_Stations, QA rules D31 - D53 concern AQD_SamplingPoints, QA rules D54 - D70 concern AQD_SamplingPointProcesses, QA rules D71 - D77 concern AQD_Samples, QA rules D78 - D85 concern AQD_RepresentativeAreas.</p>
-                        <p>Please pay attention that QA rules M1 - M5 concern all monitoring (model) feature types, QA rules M6 - M26 concern AQD_Models, QA rules M27 - M39 concern AQD_ModelProcesses, QA rules M40 - M45 concern AQD_ModelAreas.</p>
+                        <p class="crucialError" style="color:red"><strong>This XML file did NOT pass the following crucial check(s): {string-join($result//div[@class = 'error'], ',')}</strong></p>
+			<p style="color:orange"><strong>This XML file did NOT pass the following check(s): {string-join($result//div[@class = 'warning'], ',')}</strong></p>
+
+                        <p style="color:red">Please pay attention that QA rules D1-D4 concern all monitoring (measurement) feature types, QA rules D5 - D14 concern AQD_Networks, QA rules D15 - D30 concern AQD_Stations, QA rules D31 - D53 concern AQD_SamplingPoints, QA rules D54 - D70 concern AQD_SamplingPointProcesses, QA rules D71 - D77 concern AQD_Samples, QA rules D78 - D85 concern AQD_RepresentativeAreas.</p>
+                        <p style="color:red">Please pay attention that QA rules M1 - M5 concern all monitoring (model) feature types, QA rules M6 - M26 concern AQD_Models, QA rules M27 - M39 concern AQD_ModelProcesses, QA rules M40 - M45 concern AQD_ModelAreas.</p>
                     </span>
                 else
+		<span>	
                     <p>All crucial checks passed</p>
+		    <p style="color:orange"><strong>This XML file did NOT pass the following check(s): {string-join($result//div[@class = 'warning'], ',')}</strong></p>
+ 			
+		 <p style="color:grey">Please pay attention that QA rules D1-D4 concern all monitoring (measurement) feature types, QA rules D5 - D14 concern AQD_Networks, QA rules D15 - D30 concern AQD_Stations, QA rules D31 - D53 concern AQD_SamplingPoints, QA rules D54 - D70 concern AQD_SamplingPointProcesses, QA rules D71 - D77 concern AQD_Samples, QA rules D78 - D85 concern AQD_RepresentativeAreas.</p>
+                 <p style="color:grey">Please pay attention that QA rules M1 - M5 concern all monitoring (model) feature types, QA rules M6 - M26 concern AQD_Models, QA rules M27 - M39 concern AQD_ModelProcesses, QA rules M40 - M45 concern AQD_ModelAreas.</p>
+                    </span>
+
+	
             }
             <p>This feedback report provides a summary overview of feature types reported and some consistency checks defined in Dataflow D as specified in <a href="http://www.eionet.europa.eu/aqportal/qaqc/">e-reporting QA/QC rules documentation</a>.</p>
             <div><a id='legendLink' href="javascript: showLegend()" style="padding-left:10px;">How to read the test results?</a></div>
