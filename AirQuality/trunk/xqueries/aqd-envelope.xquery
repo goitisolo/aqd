@@ -210,7 +210,7 @@ declare function xmlconv:buildDocNotAvailableError($url as xs:string)
 as element(div)
 {
     <div class="feedbacktext">
-    <span id="feedbackStatus" class="BLOCKER">Your delivery cannot be accepted: could not execute the script because the source XML is not available: { xmlconv:getCleanUrl($url) }</span>
+    <span id="feedbackStatus" class="INFO">Could not execute the script because the source XML is not available: { xmlconv:getCleanUrl($url) }</span>
     </div>
 
 };
