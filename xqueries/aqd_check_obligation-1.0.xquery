@@ -11,6 +11,7 @@ xquery version "1.0" encoding "UTF-8";
  : The original request: http://taskman.eionet.europa.eu/issues/21548
  :
  : @author Enriko Käsper
+ : BLOCKER logic added and other changes by Hermann Peifer, EEA, August 2015
  :)
 
 (: Dataflow B script - Zones :)
@@ -32,28 +33,6 @@ declare namespace xmlconv = "http://converters.eionet.europa.eu";
 
 declare variable $source_url as xs:string external;
 
-(:
-declare variable $source_url as xs:string external;
-declare variable $source_url as xs:string := "";
-declare variable $source_url as xs:string := "../test/HR_G_201407281307.xml";
-B
-http://cdrtest.eionet.europa.eu/es/eu/aqd/b/envveunkq/ES_B_Zones.xml
-C
-http://cdrtest.eionet.europa.eu/es/eu/aqd/c/envvfnnpg/ES_C_AssessmentRegime_period_chngd.xml
-declare variable $source_url as xs:string := "../test/ES_C_AssessmentRegime_period_chngd.xml";
-D
-http://cdrtest.eionet.europa.eu/es/eu/aqd/d/envvcqwog/ES_D_SamplingPoint.xml
-declare variable $source_url as xs:string := "../test/ES_D_SamplingPoint-1.xml";
-declare variable $source_url as xs:string := "../test/ES_D_SamplingPoint-2.xml";
-
-G
-declare variable $source_url as xs:string := "../test/ES_G_Attainment.xml";
-http://cdrtest.eionet.europa.eu/es/eu/aqd/g/envvbgwea/ES_G_Attainment.xml
-http://cdrtest.eionet.europa.eu/es/eu/aqd/g/envvbgwea/ES_G_Attainment.xml
-M
-http://cdrtest.eionet.europa.eu/es/eu/aqd/d/envvcqwog/ES_D_Model.xml
-declare variable $source_url as xs:string := "../test/ES_D_Model.xml";
-:)
 declare variable $xmlconv:ROD_PREFIX as xs:string := "http://rod.eionet.europa.eu/obligations/";
 declare variable $xmlconv:B_OBLIGATIONS as xs:string* := (concat($xmlconv:ROD_PREFIX, "670"), concat($xmlconv:ROD_PREFIX, "693"));
 declare variable $xmlconv:C_OBLIGATIONS as xs:string* := (concat($xmlconv:ROD_PREFIX, "671"), concat($xmlconv:ROD_PREFIX, "694"));
@@ -133,7 +112,6 @@ declare function xmlconv:getEnvelopeXML($url as xs:string) as xs:string{
             $ret
         else
             ""
-(:              "http://cdrtest.eionet.europa.eu/ee/eu/art17/envriytkg/xml" :)
 }
 ;
 (:~
@@ -227,13 +205,24 @@ declare function xmlconv:proceed($source_url as xs:string) {
         else
             ()
 
+	(: TODO: Catch fatal errors from obligation-dependent tests, handle them as BLOCKERs :)
+	let $messages := ($resultB, $resultC, $resultD, $resultG, $resultM)
+	
+	let $errorString := normalize-space(string-join($messages//p[@class='crucialError'], ' || '))
+	
+	let $errorLevel := 
+		if ($errorString) then "BLOCKER" else "INFO"
+
+	let $feedbackmessage :=
+		if ($errorLevel = 'BLOCKER') then $errorString else "No errors from crucial checks"
 
 return
         <div class="feedbacktext">
+			<span id="feedbackStatus" class="{$errorLevel}" style="display:none">{$feedbackmessage}</span>
             <p>Checked XML file: <a href="{xmlconv:getCleanUrl($source_url)}">{xmlconv:getCleanUrl($source_url)}</a></p>
             {
             if (empty($validObligations)) then
-                <p>Nothing to check - the envelope is not attached to any of the Air Quiality obligation where QA script is available.</p>
+                <p>Nothing to check - the envelope is not attached to any of the Air Quality obligation where QA script is available.</p>
             else
                 <div>
                     {xmlconv:javaScript()}
@@ -252,11 +241,7 @@ return
                             </ul>
                         </span>
                     }
-                    {$resultB}
-                    {$resultC}
-                    {$resultD}
-                    {$resultG}
-                    {$resultM}
+                    {$messages}
                 </div>
             }
         </div>

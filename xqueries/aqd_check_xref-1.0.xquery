@@ -11,6 +11,7 @@ xquery version "1.0" encoding "UTF-8";
  : The script uses CR SPARQL endpoint.
  :
  : @author Enriko Käsper
+ : BLOCKER logic added and other changes by Hermann Peifer, EEA, August 2015
  :)
 
 declare namespace xmlconv="http://converters.eionet.europa.eu";
@@ -18,6 +19,7 @@ declare namespace aqd = "http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0";
 declare namespace xlink = "http://www.w3.org/1999/xlink";
 declare namespace sparql = "http://www.w3.org/2005/sparql-results#";
 declare namespace om = "http://inspire.ec.europa.eu/schemas/ompr/2.0";
+
 (:~ declare Content Registry SPARQL endpoint:)
 declare variable $xmlconv:CR_SPARQL_URL := "http://cr.eionet.europa.eu/sparql";
 
@@ -27,25 +29,12 @@ declare variable $xmlconv:DATAFLOW_D_OBLIGATION := "http://rod.eionet.europa.eu/
 declare variable $xmlconv:SOURCE_URL_PARAM := "source_url=";
 
 (:declare option xqilla:psvi "false"; :)
+
 (:===================================================================:)
 (: Variable given as an external parameter by the QA service                                                 :)
 (:===================================================================:)
 
 declare variable $source_url as xs:string external;
-(:
-    Change it for testing locally:
-declare variable $source_url as xs:string external;
-declare variable $source_url as xs:untypedAtomic external;
-declare variable $source_url := "../test/DE_D_Station.xml";
-declare variable $source_url as xs:string external;
-declare variable $source_url as xs:string external;
-
-c: http://cdrtest.eionet.europa.eu/gb/eu/aqd/c/envu3n8zq/C_GB_AssessmentRegime_prelim.xml
-e:http://cdrtest.eionet.europa.eu/gb/eu/aqd/e1a/envut0aoa/E2a_GB2013123113version5.xml
-GB: http://cdr.eionet.europa.eu/gb/eu/aqd/c/envuqxsrq/C_GB_AssessmentRegime_prelim.xml
-NL: http://cdr.eionet.europa.eu/nl/eu/aqd/d/envurreqq/REP_D-NL_RIVM_20131220_D-001.xml
-:)
-
 
 (: removes the file part from the end of URL and appends 'xml' for getting the envelope xml description :)
 declare function xmlconv:getEnvelopeXML($url as xs:string){
@@ -59,7 +48,6 @@ declare function xmlconv:getEnvelopeXML($url as xs:string){
                 doc($ret)
             else
              ""
-(:              "http://cdrtest.eionet.europa.eu/ee/eu/art17/envriytkg/xml" :)
 }
 ;(:~
  : Get the cleaned URL without authorisation info
@@ -517,11 +505,11 @@ as element(div){
             <h2>Check references</h2>
             {
             if ($allRefsCount = 0) then
-                <div>No references found from this report.</div>
+                <span id="feedbackStatus" class="INFO">No references found from this report.</span>
             else if ($errorCount > 0) then
-                <div style="color:red">{ $errorCount } invalid reference{ substring("s ", number(not(sum($errorCount) > 1)) * 2)}found out of { $allRefsCount } checked from this report.</div>
+				<span id="feedbackStatus" class="BLOCKER" style="color:red">{ $errorCount } invalid reference{ substring("s ", number(not(sum($errorCount) > 1)) * 2)}found out of { $allRefsCount } checked from this report.</span>
             else
-                <div style="color:green">Found { $allRefsCount } reference{ substring("s ", number(not($allRefsCount > 1)) * 2)}from this report, all valid.</div>
+                <span id="feedbackStatus" class="INFO" style="color:green">Found { $allRefsCount } reference{ substring("s ", number(not($allRefsCount > 1)) * 2)}from this report, all valid.</span>
             }
         </div>{
         if ( count($vocabularyRefsResult )> 0 or count($crosslinkRefsResult )> 0) then
