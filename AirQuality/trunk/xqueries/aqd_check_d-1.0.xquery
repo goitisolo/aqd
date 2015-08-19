@@ -1322,7 +1322,7 @@ let $allInvalidTrueUsedAQD :=
 :)
 
 (: D52 Done by Jaume Targa; re-using M25 :)
-(:    let $allTrueUsedAQD :=
+    let $allTrueUsedAQD :=
         for $trueUsedAQD in $docRoot//aqd:AQD_SamplingPoint
         where $trueUsedAQD/aqd:usedAQD = true()
         return $trueUsedAQD
@@ -1337,12 +1337,11 @@ let $allInvalidTrueUsedAQD :=
                 <td title="base:localId">{data($invalidTrueUsedAQD/ef:inspireId/base:Identifier/base:localId)}</td>
                 <td title="base:namespace">{data($invalidTrueUsedAQD/ef:inspireId/base:Identifier/base:namespace)}</td>
             </tr>
-:)
 (:D53 Done by Rait :)
 let $allInvalidZoneXlinks :=
     for $invalidZoneXlinks in $docRoot//aqd:AQD_SamplingPoint/aqd:zone
      where
-        count(xmlconv:executeSparqlQuery(xmlconv:getSamplingPointZone($invalidZoneXlinks/@xlink:href))/*) = 0
+        count(xmlconv:executeSparqlQuery(xmlconv:getSamplingPointZone(string($invalidZoneXlinks/@xlink:href)))/*) = 0
     return
         <tr>
             <td title="gml:id">{data($invalidZoneXlinks/../@gml:id)}</td>
@@ -1885,8 +1884,8 @@ return
                 (), $invalidStationClassificationLink, "", concat(fn:string(count($invalidStationClassificationLink))," errors found"), "", "","error", ())}
         {xmlconv:buildResultRows("D51", "Number of invalid 3 elements aqd:AQD_SamplingPoint/aqd:environmentalObjective/aqd:EnvironmentalObjective/ combinations: ",
                 (), $invalidObservedPropertyCombinations, "", concat(fn:string(count($invalidObservedPropertyCombinations))," errors found"), " invalid attribute", "", "warning",())}
-<!--	{xmlconv:buildResultRows("D52", "Number of SamplingPoint(s) declared as usedAQD = TRUE which are not used in any Assessment Regime stored in Content Registry",  
-                (), $allInvalidTrueUsedAQD, "", concat(fn:string(count($allInvalidTrueUsedAQD))," errors found"), "", "", "warning",())}-->
+    	{xmlconv:buildResultRows("D52", "Number of SamplingPoint(s) declared as usedAQD = TRUE which are not used in any Assessment Regime stored in Content Registry",
+                (), $allInvalidTrueUsedAQD, "", concat(fn:string(count($allInvalidTrueUsedAQD))," errors found"), "", "", "warning",())}
         {xmlconv:buildResultRows("D53", " Number of invalid aqd:AQD_SamplingPoint/aqd:zone xlinks: ",
                 (),  $allInvalidZoneXlinks, "", concat(fn:string(count( $allInvalidZoneXlinks))," errors found"), " invalid attribute", "", "error",())}
         {xmlconv:buildResultRows("D54", "aqd:AQD_SamplingPointProcess/ompr:inspireId/base:Identifier/base:localId not unique codes: ",
@@ -2372,7 +2371,7 @@ return
                 if ($result//div/@class = 'error') then
                     <span>
                         <p class="crucialError" style="color:red"><strong>This XML file did NOT pass the following crucial check(s): {string-join($result//div[@class = 'error'], ',')}</strong></p>
-			<p style="color:orange"><strong>This XML file did NOT pass the following check(s): {string-join($result//div[@class = 'warning'], ',')}</strong></p>
+			            <!--<p style="color:orange"><strong>This XML file did NOT pass the following check(s): {string-join($result//div[@class = 'warning'], ',')}</strong></p>-->
 
                         <p style="color:red">Please pay attention that QA rules D1-D4 concern all monitoring (measurement) feature types, QA rules D5 - D14 concern AQD_Networks, QA rules D15 - D30 concern AQD_Stations, QA rules D31 - D53 concern AQD_SamplingPoints, QA rules D54 - D70 concern AQD_SamplingPointProcesses, QA rules D71 - D77 concern AQD_Samples, QA rules D78 - D85 concern AQD_RepresentativeAreas.</p>
                         <p style="color:red">Please pay attention that QA rules M1 - M5 concern all monitoring (model) feature types, QA rules M6 - M26 concern AQD_Models, QA rules M27 - M39 concern AQD_ModelProcesses, QA rules M40 - M45 concern AQD_ModelAreas.</p>
