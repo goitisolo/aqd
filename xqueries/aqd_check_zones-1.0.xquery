@@ -593,11 +593,9 @@ return if (not(empty($posList)) and $posListCount gt 0) then $posList/../../../@
 (: B23 :)
 
 let $invalidLatLong :=
-for $latLong  in $docRoot//aqd:AQD_Zone/am:geometry/gml:MultiSurface/gml:surfaceMember/gml:Polygon/gml:exterior/gml:LinearRing/gml:posList
+for $latLong at $pos in $docRoot//aqd:AQD_Zone/am:geometry/gml:MultiSurface/gml:surfaceMember/gml:Polygon/gml:exterior/gml:LinearRing/gml:posList
 let $latlongToken := fn:tokenize($latLong,'\s+')
-for $long at $pos in $latlongToken
-where $pos mod 2 = 0
-return if ($latlongToken[$pos -1] <= $long)  then concat($latLong/../../../@gml:id,": ",$long) else ()
+return if (count($latlongToken) mod 2 != 0) then concat($latLong/../../../@gml:id,": ",$latLong) else ()
 
 (: B24 :)
 (: ./am:zoneType value shall resolve to http://inspire.ec.europa.eu/codeList/ZoneTypeCode/airQualityManagementZone :)
@@ -948,7 +946,7 @@ List base:namespace and  count the number of base:localId assigned to each base:
         {xmlconv:buildResultRows("B22", "./am:geometry/gml:Polygon/gml:exterior/gml:LinearRing/gml:posList the count attribute shall resolve to the sum of y and x-coordinate  doublets. ",
                $invalidPosListCount, "gml:Polygon/@gml:id", "All values are valid", " invalid attribute", "","error")}
         {xmlconv:buildResultRows("B23", "Check that the coordinates lists in ./am:geometry/gml:Polygon/gml:exterior/gml:LinearRing/gml:posListar presented in lat/long(y - axis/x - axis)  notation.",
-                $invalidLatLong, "gml:Polygon", "All values are valid", " invalid attribute", "","warning")}
+                $invalidLatLong, "gml:Polygon", "All values are valid", " invalid attribute", "","error")}
         {xmlconv:buildResultRows("B24", "./am:zoneType shall resolve to http://inspire.ec.europa.eu/codeList/ZoneTypeCode/airQualityManagementZone",
             $invalidManagementZones, "aqd:AQD_Zone/@gml:id", "All zoneType attributes are valid", " invalid attribute", "","warning")}
         {xmlconv:buildResultRows("B25", "./am:designationPeriod/gml:TimePeriod/gml:beginPosition shall be less than ./am:designationPeri/gml:TimePeriod/gml:endPosition.",
