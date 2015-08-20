@@ -593,8 +593,8 @@ return if (not(empty($posList)) and $posListCount gt 0) then $posList/../../../@
 (: B23 :)
 
 let $invalidLatLong :=
-for $latLong at $pos in $docRoot//aqd:AQD_Zone/am:geometry/gml:MultiSurface/gml:surfaceMember/gml:Polygon/gml:exterior/gml:LinearRing/gml:posList
-let $latlongToken := fn:tokenize($latLong,'\s+')
+for $latLong in $docRoot//aqd:AQD_Zone/am:geometry/gml:MultiSurface/gml:surfaceMember/gml:Polygon/gml:exterior/gml:LinearRing/gml:posList
+let $latlongToken := fn:tokenize($latLong," ")
 return if (count($latlongToken) mod 2 != 0) then concat($latLong/../../../@gml:id,": ",$latLong) else ()
 
 (: B24 :)
