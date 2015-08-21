@@ -762,7 +762,7 @@ let $uniqueAttainment :=
 
 let $tblAllAttainmentsG4 :=
     for $rec in $uniqueAttainment
-    let $aqdinspireId := concat($rec/aqd:inspireId/base:Identifier/base:localId,"/",$rec/aqd:inspireId/base:Identifier/base:namespace)
+    let $aqdinspireId := concat($rec/aqd:inspireId/ns:Identifier/ns:localId,"/",$rec/aqd:inspireId/ns:Identifier/ns:namespace)
 return
         <tr>
             <td title="gml:id">{distinct-values($rec/@gml:id)}</td>
