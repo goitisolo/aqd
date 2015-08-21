@@ -20,12 +20,7 @@ declare namespace am = "http://inspire.ec.europa.eu/schemas/am/3.0";
 declare namespace ef = "http://inspire.ec.europa.eu/schemas/ef/3.0rc3";
 
 declare namespace gn = "urn:x-inspire:specification:gmlas:GeographicalNames:3.0";
-declare namespace ns = "http://inspire.ec.europa.eu/schemas/base/3.3";
-(:
-declare namespace  base = "http://inspire.ec.europa.eu/schemas/base/3.3rc3/";
-:)
-
-declare namespace  base = "http://inspire.ec.europa.eu/schemas/base/3.3";
+declare namespace base = "http://inspire.ec.europa.eu/schemas/base/3.3";
 
 
 declare namespace base2 = "http://inspire.ec.europa.eu/schemas/base2/1.0";
@@ -656,8 +651,8 @@ let $tblAllAttainments :=
     return
         <tr>
             <td title="gml:id">{data($rec/@gml:id)}</td>
-            <td title="ns:localId">{data($rec/aqd:inspireId/ns:Identifier/ns:localId)}</td>
-            <td title="ns:namespace">{data($rec/aqd:inspireId/ns:Identifier/ns:namespace)}</td>
+            <td title="base:localId">{data($rec/aqd:inspireId/base:Identifier/base:localId)}</td>
+            <td title="base:namespace">{data($rec/aqd:inspireId/base:Identifier/base:namespace)}</td>
             <td title="aqd:zone">{xmlconv:checkLink(data($rec/aqd:zone/@xlink:href))}</td>
             <td title="aqd:pollutant">{xmlconv:checkLink(data($rec/aqd:pollutant/@xlink:href))}</td>
             <td title="aqd:protectionTarget">{xmlconv:checkLink(data($rec/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/@xlink:href))}</td>
@@ -678,8 +673,8 @@ return
     if (empty(index-of($attainmentsInCR, $inspireId))) then
     <tr>
             <td title="gml:id">{data($attainment/@gml:id)}</td>
-            <td title="ns:localId">{data($attainment/aqd:inspireId/ns:Identifier/ns:localId)}</td>
-            <td title="ns:namespace">{data($attainment/aqd:inspireId/ns:Identifier/ns:namespace)}</td>
+            <td title="base:localId">{data($attainment/aqd:inspireId/base:Identifier/base:localId)}</td>
+            <td title="base:namespace">{data($attainment/aqd:inspireId/base:Identifier/base:namespace)}</td>
             <td title="aqd:zone">{xmlconv:checkLink(data($attainment/aqd:zone/@xlink:href))}</td>
             <td title="aqd:pollutant">{xmlconv:checkLink(data($attainment/aqd:pollutant/@xlink:href))}</td>
             <td title="aqd:protectionTarget">{xmlconv:checkLink(data($attainment/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/@xlink:href))}</td>
@@ -708,8 +703,8 @@ for $attainment in $attainmentsInDelivery
     if ($existingRec = true() and empty(index-of($attainmentsKeysInCR, $key))) then
     <tr>
             <td title="gml:id">{data($attainment/@gml:id)}</td>
-            <td title="ns:localId">{data($attainment/aqd:inspireId/ns:Identifier/ns:localId)}</td>
-            <td title="ns:namespace">{data($attainment/aqd:inspireId/ns:Identifier/ns:namespace)}</td>
+            <td title="base:localId">{data($attainment/aqd:inspireId/base:Identifier/base:localId)}</td>
+            <td title="base:namespace">{data($attainment/aqd:inspireId/base:Identifier/base:namespace)}</td>
             <td title="aqd:zone">{xmlconv:checkLink(data($attainment/aqd:zone/@xlink:href))}</td>
             <td title="aqd:pollutant">{xmlconv:checkLink(data($attainment/aqd:pollutant/@xlink:href))}</td>
             <td title="aqd:protectionTarget">{xmlconv:checkLink(data($attainment/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/@xlink:href))}</td>
@@ -762,7 +757,7 @@ let $uniqueAttainment :=
 
 let $tblAllAttainmentsG4 :=
     for $rec in $uniqueAttainment
-    let $aqdinspireId := concat($rec/aqd:inspireId/ns:Identifier/ns:localId,"/",$rec/aqd:inspireId/ns:Identifier/ns:namespace)
+    let $aqdinspireId := concat($rec/aqd:inspireId/base:Identifier/base:localId,"/",$rec/aqd:inspireId/base:Identifier/base:namespace)
 return
         <tr>
             <td title="gml:id">{distinct-values($rec/@gml:id)}</td>
@@ -825,7 +820,7 @@ let $tblG6 :=
     return
         <tr>
             <td title="aqd:zone">{xmlconv:checkLink(data($rec/aqd:zone/@xlink:href))}</td>
-            <td title="aqd:inspireId">{xmlconv:checkLink(data(concat($rec/aqd:inspireId/ns:Identifier/ns:localId,"/",$rec/aqd:inspireId/ns:Identifier/ns:namespace)))}</td>
+            <td title="aqd:inspireId">{xmlconv:checkLink(data(concat($rec/aqd:inspireId/base:Identifier/base:localId,"/",$rec/aqd:inspireId/base:Identifier/base:namespace)))}</td>
             <td title="aqd:pollutant">{xmlconv:checkLink(data($rec/aqd:pollutant/@xlink:href))}</td>
             <td title="aqd:objectiveType">{xmlconv:checkLink(data($rec/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType/@xlink:href))}</td>
             <td title="aqd:reportingMetric">{xmlconv:checkLink(data($rec/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric/@xlink:href))}</td>
@@ -857,9 +852,9 @@ let $tblDuplicateGmlIds :=
     return
         <tr>
             <td title="gml:id">{data($rec/@gml:id)}</td>
-            <td title="ns:localId">{data($rec/aqd:inspireId/ns:Identifier/ns:localId)}</td>
-            <td title="ns:namespace">{data($rec/aqd:inspireId/ns:Identifier/ns:namespace)}</td>
-            <td title="ns:versionId">{data($rec/aqd:inspireId/ns:Identifier/ns:versionId)}</td>
+            <td title="base:localId">{data($rec/aqd:inspireId/base:Identifier/base:localId)}</td>
+            <td title="base:namespace">{data($rec/aqd:inspireId/base:Identifier/base:namespace)}</td>
+            <td title="base:versionId">{data($rec/aqd:inspireId/base:Identifier/base:versionId)}</td>
             <td title="base:localId">{data($rec/ef:inspireId/base:Identifier/base:localId)}</td>
             <td title="base:namespace">{data($rec/ef:inspireId/base:Identifier/base:namespace)}</td>
         </tr>
