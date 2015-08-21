@@ -590,12 +590,19 @@ for $posList in  $docRoot//aqd:AQD_Zone/am:geometry/gml:MultiSurface/gml:surface
 let $posListCount := count(fn:tokenize(normalize-space($posList)," ")) mod 2
 return if (not(empty($posList)) and $posListCount gt 0) then $posList/../../../@gml:id else ()
 
-(: B23 :)
+(: B23
+ : In Europe, lat values tend to be bigger than lon values. We use this observation as a poor farmer's son test to check that in a coordinate value pair,
+ : the lat value comes first, as defined in the GML schema
+:)
 
 let $invalidLatLong :=
 for $latLong in $docRoot//aqd:AQD_Zone/am:geometry/gml:MultiSurface/gml:surfaceMember/gml:Polygon/gml:exterior/gml:LinearRing/gml:posList
-let $latlongToken := fn:tokenize($latLong," ")
-return if (count($latlongToken) mod 2 != 0) then concat($latLong/../../../@gml:id,": ",$latLong) else ()
+let $latlongToken := fn:tokenize(normalize-space($latLong),"\s+")
+for $pair at $pos in $latlongToken
+let $lat := abs(number($latlongToken[$pos - 1]))
+let $long := abs(number($latlongToken[$pos]))
+where $pos mod 2 = 0
+return if ($long > $lat) then concat($latLong/../../../@gml:id,": ",$lat, " " ,$long) else ()
 
 (: B24 :)
 (: ./am:zoneType value shall resolve to http://inspire.ec.europa.eu/codeList/ZoneTypeCode/airQualityManagementZone :)
@@ -945,7 +952,7 @@ List base:namespace and  count the number of base:localId assigned to each base:
             $invalidPosListDimension, "aqd:AQD_Zone/@gml:id", "All srsDimension attributes resolve to ""2""", " invalid attribute", "","warning")}
         {xmlconv:buildResultRows("B22", "./am:geometry/gml:Polygon/gml:exterior/gml:LinearRing/gml:posList the count attribute shall resolve to the sum of y and x-coordinate  doublets. ",
                $invalidPosListCount, "gml:Polygon/@gml:id", "All values are valid", " invalid attribute", "","error")}
-        {xmlconv:buildResultRows("B23", "Check that the coordinates lists in ./am:geometry/gml:Polygon/gml:exterior/gml:LinearRing/gml:posListar presented in lat/long(y - axis/x - axis)  notation.",
+        {xmlconv:buildResultRows("B23", "Check that the coordinates lists in ./am:geometry/gml:Polygon/gml:exterior/gml:LinearRing/gml:posList are presented in lat/long(y - axis/x - axis) notation.",
                 $invalidLatLong, "gml:Polygon", "All values are valid", " invalid attribute", "","error")}
         {xmlconv:buildResultRows("B24", "./am:zoneType shall resolve to http://inspire.ec.europa.eu/codeList/ZoneTypeCode/airQualityManagementZone",
             $invalidManagementZones, "aqd:AQD_Zone/@gml:id", "All zoneType attributes are valid", " invalid attribute", "","warning")}
