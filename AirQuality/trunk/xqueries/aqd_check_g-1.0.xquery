@@ -741,12 +741,12 @@ let $uniqueAttainment :=
     for $attainment in $docRoot//aqd:AQD_Attainment
     let $id := $attainment/@gml:id
     let $inspireId := $attainment/aqd:inspireId
-    let $pollutantId := $attainment/aqd:pollutant/@xlink:href
+    (:)let $pollutantId := $attainment/aqd:pollutant/@xlink:href
     let $objectiveTypeId := $attainment/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType/@xlink:href
     let $reportingMetricId := $attainment/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric/@xlink:href
     let $protectionTargetId := $attainment/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/@xlink:href
     let $zoneId := $attainment/aqd:zone/@xlink:href
-    let $assessmentId := $attainment/aqd:assessment/@xlink:href
+    let $assessmentId := $attainment/aqd:assessment/@xlink:href:)
 
     where count(index-of($gmlIds, lower-case(normalize-space($id)))) = 1
             and count(index-of($inspireIds, lower-case(normalize-space($inspireId)))) = 1
@@ -761,8 +761,8 @@ let $uniqueAttainment :=
         $attainment
 
 let $tblAllAttainmentsG4 :=
-    for $rec in $docRoot//$uniqueAttainment
-    let $aqdinspireId := concat($rec/aqd:inspireId/ns:Identifier/ns:localId,"/",$rec/aqd:inspireId/ns:Identifier/ns:namespace)
+    for $rec in $uniqueAttainment
+    let $aqdinspireId := concat($rec/aqd:inspireId/base:Identifier/base:localId,"/",$rec/aqd:inspireId/base:Identifier/base:namespace)
 return
         <tr>
             <td title="gml:id">{distinct-values($rec/@gml:id)}</td>
@@ -1557,7 +1557,7 @@ return
         {xmlconv:buildResultRows("G3", "Total number of changed attainment statements",
             (), (), "", string(count($changedAttainments)), "", "","error", $changedAttainments)}
         {xmlconv:buildResultRows("G4", " A list of the unique identifier information for all attainment records",
-                (), (), "", string(count($tblAllAttainmentsG4)), " ", "","error", $tblAllAttainmentsG4)}
+            (), (), "", string(count($tblAllAttainmentsG4)), " ", "","error", $tblAllAttainmentsG4)}
         {xmlconv:buildResultRows("G5", "Total number of exceedances",
             (), (), "", string(count($tblAllExceedances)), " exceedance", "", "error",$tblAllExceedances)}
         {xmlconv:buildResultRows("G6", "Total number of attainment records that have been assessed against the objectiveType for zones with time extens",
@@ -1582,7 +1582,7 @@ return
                 $invalidExceedanceDescriptionAdjustment, (), "base:namespace", "All values are valid", " invalid value", "","error", $invalidExceedanceDescriptionAdjustment)}
         {xmlconv:buildResultRows("G13", "./aqd:assessment xlink:href attribute shall resolve to a valid assessment regime with in /aqd:AQD_AssessmentRegime",
                 $invalidAssessment, (), "base:namespace", "All values are valid", " invalid value", "","error", $invalidAssessment)}
-      
+
   {xmlconv:buildResultRows("G15", "The subject of ./aqd:zone xlink:href attribute shall resolve to a valid AQ zone with /aqd:AQD_Zone",
                 $invalidAssessmentZone, (), "base:namespace", "All values are valid", " invalid value", "","error", $invalidAssessmentZone)}
 
