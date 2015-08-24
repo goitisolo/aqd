@@ -12,12 +12,14 @@ xquery version "1.0";
  :
  : Air Quality QA Rules implementation
  :
- : @author Enriko Käser
+ : @author Enriko Käsper
  : BLOCKER logic fixed and other changes by Hermann Peifer, EEA, August 2015
+ : @author George Sofianos
  :)
 
 declare namespace xmlconv="http://converters.eionet.europa.eu/aqd";
 declare namespace aqd = "http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0";
+declare namespace gml = "http://www.opengis.net/gml/3.2";
 
 (:===================================================================:)
 (: Variable given as an external parameter by the QA service:)
@@ -77,7 +79,7 @@ declare function xmlconv:getAQFiles($url as xs:string)   {
 ;
 
 (: QA doc 2.1.3 Check for Reporting Header within an envelope :)
-declare function xmlconv:checkFileReportingHeader($file as xs:string, $pos as xs:integer)
+declare function xmlconv:checkFileReportingHeader($envelope as node()*, $file as xs:string, $pos as xs:integer)
 {
 (:  If AQ e-Reporting XML files in the envelope, at least one must have an aqd:AQD_ReportingHeader element. :)
     let $containsAqdReportingHeader :=
@@ -86,8 +88,15 @@ declare function xmlconv:checkFileReportingHeader($file as xs:string, $pos as xs
                 , fn:true()
         )) > 0
 
-    (: The aqd:AQD_ReportingHeader must include aqd:inspireId, aqd:reportingAuthority, aqd:reportingPeriod and aqd:change elements, "aqd:reportingPeriod" :)
-    let $mandatoryReportingHeaderElements := ("aqd:inspireId", "aqd:reportingAuthority", "aqd:change")
+    (: The aqd:AQD_ReportingHeader must have the same value for year in aqd:reportingPeriod/beginPosition as in the envelope :)
+    let $falseBeginPosition :=
+        if (count(doc($file)//aqd:AQD_ReportingHeader) > 0 and doc($file)//aqd:AQD_ReportingHeader/aqd:reportingPeriod/gml:TimePeriod/gml:beginPosition/year-from-dateTime(text()) != $envelope/year/number()) then
+            true()
+        else
+            false()
+
+    (: The aqd:AQD_ReportingHeader must include aqd:inspireId, aqd:reportingAuthority, aqd:reportingPeriod and aqd:change elements :)
+    let $mandatoryReportingHeaderElements := ("aqd:inspireId", "aqd:reportingAuthority", "aqd:change", "aqd:reportingPeriod")
     let $missingAqdReportingHeaderSubElements :=
         distinct-values(
                     for $elem in $mandatoryReportingHeaderElements
@@ -120,12 +129,16 @@ declare function xmlconv:checkFileReportingHeader($file as xs:string, $pos as xs
         else
             ()
     let $description :=
+        if ($falseBeginPosition) then
+            ($description, <p class="error">The file cannot be accepted as you did not provide a valid <strong>gml:beginPosition</strong> element in aqd:AQD_ReportingHeader element.</p>)
+        else
+            $description
+    let $description :=
         if (count($missingAqdReportingHeaderSubElements) > 0) then
             ($description, <p class="error">The file cannot be accepted as you did not provide <strong>{string-join($missingAqdReportingHeaderSubElements, ',')}</strong>
                 element{substring("s ", number(not(count($missingAqdReportingHeaderSubElements) > 1)) * 2)} in aqd:AQD_ReportingHeader element.</p>)
         else
             $description
-
     let $description :=
         if (count($missingElementsIfAqdChangeIsTrue) > 0) then
             ($description, <p class="error">The file cannot be accepted as you did not provide <strong>{string-join($missingElementsIfAqdChangeIsTrue, ', ')}</strong>
@@ -152,6 +165,13 @@ declare function xmlconv:checkFileReportingHeader($file as xs:string, $pos as xs
 declare function xmlconv:validateEnvelope($url as xs:string)
 as element(div)
 {
+    (: set variable for envelope path :)
+    let $envelope := doc($url)/envelope
+
+    (: set variables for envelope year :)
+    let $minimumYear := 2012
+    let $maximumYear := year-from-date(current-date()) + 1
+
     (: Count of string values :)
     let $xmlFilesWithAQSchema := xmlconv:getAQFiles($url)
     let $filesCountAQSchema := count($xmlFilesWithAQSchema)
@@ -164,7 +184,7 @@ as element(div)
         for $file at $pos in $xmlFilesWithAQSchema
         return
             if (doc-available($file)) then
-                xmlconv:checkFileReportingHeader($file, $pos)
+                xmlconv:checkFileReportingHeader($envelope, $file, $pos)
             else
                 <p class="warning">{$pos}. File is not available for aqd:AQD_ReportingHeader check: { xmlconv:getCleanUrl($file) }</p>
 
@@ -179,7 +199,15 @@ as element(div)
         else
             (<p class="info">Your delivery contains {$filesCountCorrectSchema} AQ e-Reporting XML file{ substring("s ", number(not($filesCountCorrectSchema > 1)) * 2)}with correct XML Schema.</p>)
 
-    let $messages := ($correctFileCountMessage, $reportingHeaderCheck)
+    let $correctEnvelopeYear :=
+        if ($envelope/year[number() != number()] or $envelope/year/number() < $minimumYear or $envelope/year/number() > $maximumYear) then
+            <p class="error">Envelope has wrong year value, this has to be present, and value must be between {$minimumYear} and {$maximumYear}</p>
+        else if ($envelope/endyear[number() = number()] and $envelope/endyear/number() != $envelope/year/number()) then
+            <p class="error">Envelope has wrong end year value:{$envelope/endyear/number()}:. If this value is present, it needs to be the same as year value</p>
+        else
+            ()
+
+    let $messages := ($correctFileCountMessage, $reportingHeaderCheck, $correctEnvelopeYear)
 
 	let $errorCount := count($messages[@class = 'error'])
 
