@@ -203,7 +203,7 @@ as element(div)
         if ($envelope/year[number() != number()] or $envelope/year/number() < $minimumYear or $envelope/year/number() > $maximumYear) then
             <p class="error">Envelope has wrong year value, this has to be present, and value must be between {$minimumYear} and {$maximumYear}</p>
         else if ($envelope/endyear[number() = number()] and $envelope/endyear/number() != $envelope/year/number()) then
-            <p class="error">Envelope has wrong end year value:{$envelope/endyear/number()}:. If this value is present, it needs to be the same as year value</p>
+            <p class="error">Envelope has wrong end year value ({$envelope/endyear/number()}). If this value is present, it needs to be equal to the envelope year value</p>
         else
             ()
 
