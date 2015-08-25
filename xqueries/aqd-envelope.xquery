@@ -122,6 +122,9 @@ declare function xmlconv:checkFileReportingHeader($envelope as node()*, $file as
                 , true()
         )) > 0
 
+    (: set variables for envelope year :)
+    let $minimumYear := 2012
+    let $maximumYear := year-from-date(current-date()) + 1
 
     let $description :=
         if (not($containsAqdReportingHeader)) then
@@ -130,7 +133,8 @@ declare function xmlconv:checkFileReportingHeader($envelope as node()*, $file as
             ()
     let $description :=
         if ($falseBeginPosition) then
-            ($description, <p class="error">The file cannot be accepted as you did not provide a valid <strong>gml:beginPosition</strong> element in aqd:AQD_ReportingHeader element.</p>)
+            ($description, <p class="error">Envelope must have year value, the year value must be between {$minimumYear} - {$maximumYear} and it must be equal to the year in gml:beginPosition element (in aqd:AQD_ReportingHeader).
+                If you specified also the end year on the envelope - it must be equal to the (start) year.</p>)
         else
             $description
     let $description :=
@@ -201,7 +205,8 @@ as element(div)
 
     let $correctEnvelopeYear :=
         if ($envelope/year[number() != number()] or $envelope/year/number() < $minimumYear or $envelope/year/number() > $maximumYear) then
-            <p class="error">Envelope has wrong year value, this has to be present, and value must be between {$minimumYear} and {$maximumYear}</p>
+            <p class="error">Envelope must have year value, the year value must be between {$minimumYear} - {$maximumYear} and it must be equal to the year in gml:beginPosition element (in aqd:AQD_ReportingHeader).
+                If you specified also the end year on the envelope - it must be equal to the (start) year.</p>
         else if ($envelope/endyear[number() = number()] and $envelope/endyear/number() != $envelope/year/number()) then
             <p class="error">Envelope has wrong end year value ({$envelope/endyear/number()}). If this value is present, it needs to be equal to the envelope year value</p>
         else
