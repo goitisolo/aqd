@@ -1220,9 +1220,15 @@ return
             <div>
                 {
                     if ($result//div/@class = 'error') then
-                        <p class="crucialError" style="color:red"><strong>This XML file did NOT pass the following crucial check(s): {string-join($result//div[@class='error'], ',')}</strong></p>
+                        <p class="error" style="color:red"><strong>This XML file did NOT pass the following crucial check(s): {string-join($result//div[@class='error'], ',')}</strong></p>
                     else
-                        <p>This XML file passed all crucial checks which in this case are: B1,B2,B3,B4,B9,B18,B20,B22,B25,B28,B35,B36,B38,B40,B41,B42,B43,B46</p>
+                        <p>This XML file passed all crucial checks.</p>
+                }
+                {
+                    if ($result//div/@class = 'warning') then
+                        <p class="warning" style="color:orange"><strong>This XML file generated warnings during the following check(s): {string-join($result//div[@class = 'warning'], ',')}</strong></p>
+                    else
+                        ()
                 }
                 <p>This check evaluated the delivery by executing tier-1 tests on air quality zones data in Dataflow B as specified in <a href="http://www.eionet.europa.eu/aqportal/qaqc/">e-reporting QA/QC rules documentation</a>.</p>
                 <div><a id='legendLink' href="javascript: showLegend()" style="padding-left:10px;">How to read the test results?</a></div>

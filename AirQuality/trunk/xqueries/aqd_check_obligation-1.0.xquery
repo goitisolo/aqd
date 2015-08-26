@@ -111,7 +111,11 @@ declare function xmlconv:getEnvelopeXML($url as xs:string) as xs:string{
         if(fn:doc-available($ret)) then
             $ret
         else
-            ""
+            (:"http://cdr.eionet.europa.eu/lu/eu/aqd/c/envvbxvja/xml":)
+            (:"http://cdrtest.eionet.europa.eu/es/eu/aqd/b/envvz5q_q/xml" - B - Zones :)
+            "http://cdr.eionet.europa.eu/es/eu/aqd/g/envvboekg/xml" (:G - Attainment:)
+            (:"http://cdr.eionet.europa.eu/ie/eu/aqd/b/envvkhfaq/xml" - B - Zones :)
+            (:"http://cdrtest.eionet.europa.eu/gr/colvdwapa/envvdxwfg/xml"  B,C,D,G :)
 }
 ;
 (:~
@@ -207,14 +211,26 @@ declare function xmlconv:proceed($source_url as xs:string) {
 
 	(: TODO: Catch fatal errors from obligation-dependent tests, handle them as BLOCKERs :)
 	let $messages := ($resultB, $resultC, $resultD, $resultG, $resultM)
-	
-	let $errorString := normalize-space(string-join($messages//p[@class='crucialError'], ' || '))
-	
-	let $errorLevel := 
-		if ($errorString) then "BLOCKER" else "INFO"
+	let $errorString := normalize-space(string-join($messages//p[@class='error'], ' || '))
+    let $warningString := normalize-space(string-join($messages//p[@class='warning'], ' || '))
+
+	let $errorLevel :=
+		if ($errorString) then
+            "BLOCKER"
+        else if ($warningString) then
+            "WARNING"
+        else
+            "INFO"
 
 	let $feedbackmessage :=
-		if ($errorLevel = 'BLOCKER') then $errorString else "No errors from crucial checks"
+		if ($errorLevel = 'BLOCKER') then
+            $errorString
+        else if ($errorLevel = 'WARNING') then
+            $warningString
+        else if (empty($validObligations)) then
+            "Nothing to check"
+        else
+            "This XML file passed all checks without errors or warnings"
 
 return
         <div class="feedbacktext">
