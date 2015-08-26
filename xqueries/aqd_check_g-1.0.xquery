@@ -1951,10 +1951,15 @@ return
         <div>
             {
                 if ($result//div/@class = 'error') then
-                    <p class="crucialError" style="color:red"><strong>This XML file did NOT pass the following crucial check(s): {string-join($result//div[@class='error'], ',')}</strong></p>
+                    <p class="error" style="color:red"><strong>This XML file did NOT pass the following crucial check(s): {string-join($result//div[@class='error'], ',')}</strong></p>
                 else
-                    <p>This XML file passed all crucial checks which in this case are: G1,G4,G5,G6,G7,G8,G9,G10,G11,G12,G13,G15,G17,G18,G19,G20,G21,
-                        G22,G23,G24,G25,G26,G27,G28,G29,G30,G31,G32,G33,G38,G39,G40,G41,G42,G47,G53,G54,G55,G56,G57,G61,G62,G63,G64,G65,G66,G67,G72,G73,G74,G75,G76,G81</p>
+                    <p>This XML file passed all crucial checks.</p>
+            }
+            {
+                if ($result//div/@class = 'warning') then
+                    <p class="warning" style="color:orange"><strong>This XML file generated warnings during the following check(s): {string-join($result//div[@class = 'warning'], ',')}</strong></p>
+                else
+                    ()
             }
             <p>This check evaluated the delivery by executing the tier-1 tests on air quality assessment regimes data in Dataflow G as specified in <a href="http://www.eionet.europa.eu/aqportal/qaqc/">e-reporting QA/QC rules documentation</a>.</p>
             <div><a id='legendLink' href="javascript: showLegend()" style="padding-left:10px;">How to read the test results?</a></div>

@@ -932,7 +932,7 @@ let $allObservingCapabilityPeriod := (($invalidPosition), ($overlappingPeriods))
 
 let $invalidObservedProperty := xmlconv:checkVocabularyConceptValues($source_url, "ef:ObservingCapability", "ef:observedProperty", $xmlconv:POLLUTANT_VOCABULARY)
 
-(: D41 
+(: D41
 let $aqdSampleLocal :=
     for $allSampleLocal in $docRoot//aqd:AQD_Sample
     return $allSampleLocal/@gml:id
@@ -1089,7 +1089,7 @@ let $invalidObservedPropertyCombinations :=
                         $oPC/aqd:reportingMetric/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/3hAbove" and
                         $oPC/aqd:protectionTarget/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H")
 
-                       
+
                     )
               )
               or
@@ -1442,9 +1442,9 @@ let  $allInvalid60b
 let  $allInvalid63
     := xmlconv:checkVocabularyConceptValuesUom($source_url, "aqd:DataQuality", "aqd:detectionLimit", $xmlconv:UOM_CONCENTRATION_VOCABULARY)
 
-(: Block for D67 to D70 Jaume Targa:) 
+(: Block for D67 to D70 Jaume Targa:)
 
-(: Original from D52 
+(: Original from D52
 
 let $allProcNotMatchingCondition70 :=
 for $proc in $docRoot//aqd:AQD_SamplingPointProcess
@@ -1486,7 +1486,7 @@ for $proc in $docRoot//aqd:AQD_SamplingPointProcess
 let $demonstrated := data($proc/aqd:equivalenceDemonstration/aqd:EquivalenceDemonstration/aqd:equivalenceDemonstrated/@xlink:href)
 let $demonstrationReport := data($proc/aqd:equivalenceDemonstration/aqd:EquivalenceDemonstration/aqd:demonstrationReport)
 
-where not(xmlconv:isValidConceptCode($demonstrated, $xmlconv:EQUIVALENCEDEMONSTRATED_VOCABULARY)) 
+where not(xmlconv:isValidConceptCode($demonstrated, $xmlconv:EQUIVALENCEDEMONSTRATED_VOCABULARY))
 
 return concat(data($proc/ompr:inspireId/base:Identifier/base:namespace), '/' , data($proc/ompr:inspireId/base:Identifier/base:localId))
 
@@ -1578,7 +1578,7 @@ for $proc in $docRoot//aqd:AQD_SamplingPointProcess
 let $documentation := data($proc/aqd:dataQuality/aqd:DataQuality/aqd:documentation)
 let $qaReport := data($proc/aqd:dataQuality/aqd:DataQuality/aqd:qaReport)
 
-where fn:string-length($qaReport) = 0 
+where fn:string-length($qaReport) = 0
 
 
 return concat(data($proc/ompr:inspireId/base:Identifier/base:namespace), '/' , data($proc/ompr:inspireId/base:Identifier/base:localId))
@@ -1781,7 +1781,7 @@ return
 
 
 
-        {xmlconv:buildResultRows("D16", "Count the number of unique AQD_Station (via localId) submitted within base:namespace. ", 
+        {xmlconv:buildResultRows("D16", "Count the number of unique AQD_Station (via localId) submitted within base:namespace. ",
                 (), (), "", string(count($tblD16)), "", "","error",$tblD16)}
 
 
@@ -1873,7 +1873,7 @@ return
 	    <tr style="border-top:2px solid #666666">
             <th colspan="3" style="vertical-align:top;text-align:left"></th>
             </tr>
-        
+
 {xmlconv:buildResultRows("D45", "Total number aqd:AQD_SamplingPoint/ef:operationActivityPeriod/ef:OperationActivityPeriod/ef:activityTime/gml:TimePeriod/ invalid operational activity periods ",
                 (), $allOperationActivitPeriod, "", concat(fn:string(count($allOperationActivitPeriod))," errors found"), "", "", "error",())}
 
@@ -1942,20 +1942,20 @@ return
 
 {xmlconv:buildResultRows("D67", concat('SamplingPointProcess(es) with incorrect code for Equivalence demonstration',
 		' (http://dd.eionet.europa.eu/vocabulary/aq/equivalencedemonstrated/) ',''),
-                (), $allInvalidTrueUsedAQD67, "", concat(fn:string(count($allInvalidTrueUsedAQD67))," errors found"), "", "", "warning",())}	
+                (), $allInvalidTrueUsedAQD67, "", concat(fn:string(count($allInvalidTrueUsedAQD67))," errors found"), "", "", "warning",())}
 
-{xmlconv:buildResultRows("D68", concat('SamplingPointProcess(es) declared as an equivalent method” ', 
+{xmlconv:buildResultRows("D68", concat('SamplingPointProcess(es) declared as an equivalent method” ',
 		'i.e. http://dd.eionet.europa.eu/vocabulary/aq/equivalencedemonstrated/yes ',
 		'but /aqd:demonstrationReport not provided. '),
-                (), $allInvalidTrueUsedAQD68, "", concat(fn:string(count($allInvalidTrueUsedAQD68))," errors found"), "", "", "warning",())}	
+                (), $allInvalidTrueUsedAQD68, "", concat(fn:string(count($allInvalidTrueUsedAQD68))," errors found"), "", "", "warning",())}
 
 {xmlconv:buildResultRows("D69", concat('SamplingPointProcess(es) is missing mandatory document on Traceability and Uncertainty Estimation ',
                 ' via aqd:AQD_SamplingPointProcess/aqd:dataQuality/aqd:DataQuality/aqd:documentation. ',''),
-                (), $allInvalidTrueUsedAQD69, "", concat(fn:string(count($allInvalidTrueUsedAQD69))," errors found"), "", "", "warning",())}	
+                (), $allInvalidTrueUsedAQD69, "", concat(fn:string(count($allInvalidTrueUsedAQD69))," errors found"), "", "", "warning",())}
 
 {xmlconv:buildResultRows("D70", concat('SamplingPointProcess(es) is missing mandatory document on QA/QC ',
                 ' via aqd:AQD_SamplingPointProcess/aqd:dataQuality/aqd:DataQuality/aqd:qaReport. ',''),
-                (), $allInvalidTrueUsedAQD70, "", concat(fn:string(count($allInvalidTrueUsedAQD70))," errors found"), "", "", "warning",())}	
+                (), $allInvalidTrueUsedAQD70, "", concat(fn:string(count($allInvalidTrueUsedAQD70))," errors found"), "", "", "warning",())}
 
 
         <!--{xmlconv:buildResultRows("D67", <span>Where .AQD_SamplingPoint/aqd:usedAQD is 'true' the content of ./aqd:AQD_SamplingPointProcess/aqd:equivalenceDemonstrated shall resolve to any concept in
@@ -2369,23 +2369,24 @@ return
         <div>
             {
                 if ($result//div/@class = 'error') then
-                    <span>
-                        <p class="crucialError" style="color:red"><strong>This XML file did NOT pass the following crucial check(s): {string-join($result//div[@class = 'error'], ',')}</strong></p>
-			            <!--<p style="color:orange"><strong>This XML file did NOT pass the following check(s): {string-join($result//div[@class = 'warning'], ',')}</strong></p>-->
-
+                    <div>
+                        <p class="error" style="color:red"><strong>This XML file did NOT pass the following crucial check(s): {string-join($result//div[@class = 'error'], ',')}</strong></p>
                         <p style="color:red">Please pay attention that QA rules D1-D4 concern all monitoring (measurement) feature types, QA rules D5 - D14 concern AQD_Networks, QA rules D15 - D30 concern AQD_Stations, QA rules D31 - D53 concern AQD_SamplingPoints, QA rules D54 - D70 concern AQD_SamplingPointProcesses, QA rules D71 - D77 concern AQD_Samples, QA rules D78 - D85 concern AQD_RepresentativeAreas.</p>
                         <p style="color:red">Please pay attention that QA rules M1 - M5 concern all monitoring (model) feature types, QA rules M6 - M26 concern AQD_Models, QA rules M27 - M39 concern AQD_ModelProcesses, QA rules M40 - M45 concern AQD_ModelAreas.</p>
-                    </span>
+                    </div>
                 else
-		<span>	
-                    <p>All crucial checks passed</p>
-		    <p style="color:orange"><strong>This XML file did NOT pass the following check(s): {string-join($result//div[@class = 'warning'], ',')}</strong></p>
- 			
-		 <p style="color:grey">Please pay attention that QA rules D1-D4 concern all monitoring (measurement) feature types, QA rules D5 - D14 concern AQD_Networks, QA rules D15 - D30 concern AQD_Stations, QA rules D31 - D53 concern AQD_SamplingPoints, QA rules D54 - D70 concern AQD_SamplingPointProcesses, QA rules D71 - D77 concern AQD_Samples, QA rules D78 - D85 concern AQD_RepresentativeAreas.</p>
-                 <p style="color:grey">Please pay attention that QA rules M1 - M5 concern all monitoring (model) feature types, QA rules M6 - M26 concern AQD_Models, QA rules M27 - M39 concern AQD_ModelProcesses, QA rules M40 - M45 concern AQD_ModelAreas.</p>
-                    </span>
+                    <p>This XML file passed all crucial checks.</p>
+            }
 
-	
+            {
+                if ($result//div/@class = 'warning') then
+                    <div>
+                        <p style="color:orange"><strong>This XML file did NOT pass the following check(s): {string-join($result//div[@class = 'warning'], ',')}</strong></p>
+                        <p style="color:grey">Please pay attention that QA rules D1-D4 concern all monitoring (measurement) feature types, QA rules D5 - D14 concern AQD_Networks, QA rules D15 - D30 concern AQD_Stations, QA rules D31 - D53 concern AQD_SamplingPoints, QA rules D54 - D70 concern AQD_SamplingPointProcesses, QA rules D71 - D77 concern AQD_Samples, QA rules D78 - D85 concern AQD_RepresentativeAreas.</p>
+                        <p style="color:grey">Please pay attention that QA rules M1 - M5 concern all monitoring (model) feature types, QA rules M6 - M26 concern AQD_Models, QA rules M27 - M39 concern AQD_ModelProcesses, QA rules M40 - M45 concern AQD_ModelAreas.</p>
+                    </div>
+                else
+                    ()
             }
             <p>This feedback report provides a summary overview of feature types reported and some consistency checks defined in Dataflow D as specified in <a href="http://www.eionet.europa.eu/aqportal/qaqc/">e-reporting QA/QC rules documentation</a>.</p>
             <div><a id='legendLink' href="javascript: showLegend()" style="padding-left:10px;">How to read the test results?</a></div>

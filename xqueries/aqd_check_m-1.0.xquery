@@ -804,14 +804,14 @@ let $allInvalZoneXlinks :=
 (: M26 Amended by Jaume Targa to add nilReason; also updated line 978 to pick $allInvalZoneXlinks :)
 let $allInvalZoneXlinks :=
    for $invalidZoneXlinks in $docRoot//gml:featureMember/aqd:AQD_Model/aqd:zone
-       where count(xmlconv:executeSparqlQuery(xmlconv:getSamplingPointZone($invalidZoneXlinks/@xlink:href))/*) = 0 
+       where count(xmlconv:executeSparqlQuery(xmlconv:getSamplingPointZone($invalidZoneXlinks/@xlink:href))/*) = 0
 
-       return if (not($invalidZoneXlinks/@nilReason="inapplicable")) then	
+       return if (not($invalidZoneXlinks/@nilReason="inapplicable")) then
            (<tr>
                 <td title="gml:id">{data($invalidZoneXlinks/../@gml:id)}</td>
                 <td title="aqd:zone">{data($invalidZoneXlinks/@xlink:href)}</td>
             </tr>)
-    
+
 	else ()
 (: M27 :)
 
@@ -1246,7 +1246,13 @@ return
                 if ($result//div/@class = 'error') then
                     <p class="crucialError" style="color:red"><strong>This XML file did NOT pass the following crucial check(s): {string-join($result//div[@class = 'error'], ',')}</strong></p>
                 else
-                    <p>This XML file passed all crucial checks which in this case are: M1,M2,M3,M4,M5,M6,M7,M12,M15,M18,M23,M24,M26,M27,M28,M29,M39,M40,M41,M43</p>
+                    <p>This XML file passed all crucial checks.</p>
+            }
+            {
+                if ($result//div/@class = 'warning') then
+                    <p class="warning" style="color:orange"><strong>This XML file generated warnings during the following check(s): {string-join($result//div[@class = 'warning'], ',')}</strong></p>
+                else
+                    ()
             }
             <p>This feedback report provides a summary overview of feature types reported and some consistency checks defined in Dataflow D on Models and Objective Estimation as specified in <a href="http://www.eionet.europa.eu/aqportal/qaqc/">e-reporting QA/QC rules documentation</a>.</p>
             <div><a id='legendLink' href="javascript: showLegend()" style="padding-left:10px;">How to read the test results?</a></div>
