@@ -1244,7 +1244,7 @@ return
         <div>
             {
                 if ($result//div/@class = 'error') then
-                    <p class="crucialError" style="color:red"><strong>This XML file did NOT pass the following crucial check(s): {string-join($result//div[@class = 'error'], ',')}</strong></p>
+                    <p class="error" style="color:red"><strong>This XML file did NOT pass the following crucial check(s): {string-join($result//div[@class = 'error'], ',')}</strong></p>
                 else
                     <p>This XML file passed all crucial checks.</p>
             }
