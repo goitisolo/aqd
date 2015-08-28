@@ -131,10 +131,10 @@ declare function xmlconv:checkFileReportingHeader($envelope as node()*, $file as
             (<p class="error">The file cannot be accepted as you did not provide any <strong>aqd:AQD_ReportingHeader</strong> element.</p>)
         else
             ()
+    (: check for valid year value on XML file :)
     let $description :=
         if ($falseBeginPosition) then
-            ($description, <p class="error">Envelope must have year value, the year value must be between {$minimumYear} - {$maximumYear} and it must be equal to the year in gml:beginPosition element (in aqd:AQD_ReportingHeader).
-                If you specified also the end year on the envelope - it must be equal to the (start) year.</p>)
+            ($description, <p class="error">Issue with year value of the envelope discovered in relation to this file! The year value must be equal to the year in gml:beginPosition element (in aqd:AQD_ReportingHeader) specified in the XML file and it must be between {$minimumYear} - {$maximumYear}.</p>)
         else
             $description
     let $description :=
@@ -192,6 +192,8 @@ as element(div)
             else
                 <p class="warning">{$pos}. File is not available for aqd:AQD_ReportingHeader check: { xmlconv:getCleanUrl($file) }</p>
 
+    let $messageEnvelopeSeparator :=
+        <p>Checked contents of envelope:</p>
     let $correctFileCountMessage :=
         if ($filesCountCorrectSchema != $filesCountAQSchema) then
             (
@@ -203,16 +205,23 @@ as element(div)
         else
             (<p class="info">Your delivery contains {$filesCountCorrectSchema} AQ e-Reporting XML file{ substring("s ", number(not($filesCountCorrectSchema > 1)) * 2)}with correct XML Schema.</p>)
 
+
     let $correctEnvelopeYear :=
-        if ($envelope/year[number() != number()] or $envelope/year/number() < $minimumYear or $envelope/year/number() > $maximumYear) then
-            <p class="error">Envelope must have year value, the year value must be between {$minimumYear} - {$maximumYear} and it must be equal to the year in gml:beginPosition element (in aqd:AQD_ReportingHeader).
+        if ($envelope/year[number() != number()])  then
+            <p class="error">Year has not been specified in the envelope period! Keep in mind that the year value must be between {$minimumYear} - {$maximumYear} and it must be equal to the year in gml:beginPosition element (in aqd:AQD_ReportingHeader). If you specified also the end year on the envelope - it must be equal to the (start) year.
                 If you specified also the end year on the envelope - it must be equal to the (start) year.</p>
-        else if ($envelope/endyear[number() = number()] and $envelope/endyear/number() != $envelope/year/number()) then
-            <p class="error">Envelope has wrong end year value ({$envelope/endyear/number()}). If this value is present, it needs to be equal to the envelope year value</p>
+        else if ($envelope/year/number() < $minimumYear or $envelope/year/number() > $maximumYear) then
+            <p class="error">Year specified in the envelope period is outside the allowed range of {$minimumYear} - {$maximumYear}! Keep in mind that the year value must be between {$minimumYear} - {$maximumYear} and it must be equal to the year in gml:beginPosition element (in aqd:AQD_ReportingHeader).
+        If you specified also the end year on the envelope - it must be equal to the (start) year.</p>
+        else
+            ()
+    let $correctEnvelopeYear :=
+        if ($envelope/endyear[number() = number()] and $envelope/endyear/number() != $envelope/year/number()) then
+            ($correctEnvelopeYear, <p class="error">The end year on the envelope is different than the (start) year!</p>)
         else
             ()
 
-    let $messages := ($correctFileCountMessage, $reportingHeaderCheck, $correctEnvelopeYear)
+    let $messages := ($messageEnvelopeSeparator, $correctFileCountMessage, $correctEnvelopeYear, $reportingHeaderCheck)
 
 	let $errorCount := count($messages[@class = 'error'])
 
