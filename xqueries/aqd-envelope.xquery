@@ -219,7 +219,7 @@ as element(div)
         if ($envelope/endyear[number() = number()] and $envelope/endyear/number() != $envelope/year/number()) then
             ($correctEnvelopeYear, <p class="error">The end year on the envelope is different than the (start) year!</p>)
         else
-            ()
+            $correctEnvelopeYear
 
     let $messages := ($messageEnvelopeSeparator, $correctFileCountMessage, $correctEnvelopeYear, $reportingHeaderCheck)
 
