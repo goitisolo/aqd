@@ -12,6 +12,7 @@ xquery version "1.0" encoding "UTF-8";
  :
  : @author Enriko Käsper
  : BLOCKER logic added and other changes by Hermann Peifer, EEA, August 2015
+ : @author George Sofianos
  :)
 
 declare namespace xmlconv="http://converters.eionet.europa.eu";
@@ -318,15 +319,20 @@ declare function xmlconv:getCrosslinkRuleMapping(){
 declare function xmlconv:getReferencedEnvelope($obligation as xs:string, $locality as xs:string){
 
     let $sparql := concat(
-        "PREFIX rod: <http://rod.eionet.europa.eu/schema.rdf#>
+        "PREFIX dcterms: <http://purl.org/dc/terms/>
+        PREFIX rod: <http://rod.eionet.europa.eu/schema.rdf#>
 
-SELECT distinct ?envelope ?released
-WHERE {
-  ?envelope a rod:Delivery .
-  ?envelope rod:locality <", $locality, "> .
-  ?envelope rod:released ?released .
-  ?envelope rod:obligation <", $obligation , "> .
-} ORDER BY desc(?released)")
+        SELECT distinct ?envelope ?released
+        WHERE {
+         GRAPH <http://rdfdata.eionet.europa.eu/airquality/samplingpoints.ttl> {
+           ?record dcterms:source ?file
+         }
+         ?envelope rod:hasFile ?file .
+         ?envelope a rod:Delivery .
+         ?envelope rod:locality <", $locality, "> .
+         ?envelope rod:released ?released .
+        }
+        ORDER BY desc(?released)")
 
     let $envelopes := xmlconv:executeSparqlQuery($sparql)
 
