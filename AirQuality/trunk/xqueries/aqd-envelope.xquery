@@ -91,7 +91,7 @@ declare function xmlconv:checkFileReportingHeader($envelope as node()*, $file as
     (: The aqd:AQD_ReportingHeader must have the same value for year in aqd:reportingPeriod/beginPosition as in the envelope :)
     let $falseTimePeriod :=
         if (count(doc($file)//aqd:AQD_ReportingHeader) > 0 and (doc($file)//aqd:AQD_ReportingHeader/aqd:reportingPeriod/gml:TimePeriod/gml:beginPosition/year-from-dateTime(text()) != $envelope/year/number()
-                or doc($file)//aqd:AQD_ReportingHeader/aqd:reportingPeriod/gml:TimePeriod/gml:endPosition/year-from-dateTime(text()) != $envelope/endyear/number())) then
+                or ($envelope/endyear[number() = number()] and doc($file)//aqd:AQD_ReportingHeader/aqd:reportingPeriod/gml:TimePeriod/gml:endPosition/year-from-dateTime(text()) != $envelope/endyear/number()))) then
             true()
         else
             false()
