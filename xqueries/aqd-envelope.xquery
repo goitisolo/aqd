@@ -72,9 +72,9 @@ declare function xmlconv:replaceSourceUrl($url as xs:string, $url2 as xs:string)
 declare function xmlconv:getAQFiles($url as xs:string)   {
 
     for $pn in fn:doc($url)//file[contains(@schema,'AirQualityReporting.xsd') and string-length(@link)>0]
-        let $fileUrl := xmlconv:replaceSourceUrl($url, string($pn/@link))
-        return
-            $fileUrl
+    let $fileUrl := xmlconv:replaceSourceUrl($url, string($pn/@link))
+    return
+        $fileUrl
 }
 ;
 
@@ -84,14 +84,13 @@ declare function xmlconv:checkFileReportingHeader($envelope as node()*, $file as
 (:  If AQ e-Reporting XML files in the envelope, at least one must have an aqd:AQD_ReportingHeader element. :)
     let $containsAqdReportingHeader :=
         count(index-of(
-            count(doc($file)//aqd:AQD_ReportingHeader) > 0
+                count(doc($file)//aqd:AQD_ReportingHeader) > 0
                 , fn:true()
         )) > 0
 
     (: The aqd:AQD_ReportingHeader must have the same value for year in aqd:reportingPeriod/beginPosition as in the envelope :)
     let $falseTimePeriod :=
-        if (count(doc($file)//aqd:AQD_ReportingHeader) > 0 and (doc($file)//aqd:AQD_ReportingHeader/aqd:reportingPeriod/gml:TimePeriod/gml:beginPosition/year-from-dateTime(text()) != $envelope/year/number()
-                or ($envelope/endyear[number() = number()] and doc($file)//aqd:AQD_ReportingHeader/aqd:reportingPeriod/gml:TimePeriod/gml:endPosition/year-from-dateTime(text()) != $envelope/endyear/number()))) then
+        if (count(doc($file)//aqd:AQD_ReportingHeader) > 0 and doc($file)//aqd:AQD_ReportingHeader/aqd:reportingPeriod/gml:TimePeriod/gml:beginPosition/year-from-dateTime(text()) != $envelope/year/number()) then
             true()
         else
             false()
@@ -100,26 +99,26 @@ declare function xmlconv:checkFileReportingHeader($envelope as node()*, $file as
     let $mandatoryReportingHeaderElements := ("aqd:inspireId", "aqd:reportingAuthority", "aqd:change", "aqd:reportingPeriod")
     let $missingAqdReportingHeaderSubElements :=
         distinct-values(
-                    for $elem in $mandatoryReportingHeaderElements
-                    where count(doc($file)//aqd:AQD_ReportingHeader) > 0 and count(doc($file)//aqd:AQD_ReportingHeader/*[name()=$elem and string-length(normalize-space(.)) > 0]) = 0
-                    return
-                        $elem
+                for $elem in $mandatoryReportingHeaderElements
+                where count(doc($file)//aqd:AQD_ReportingHeader) > 0 and count(doc($file)//aqd:AQD_ReportingHeader/*[name()=$elem and string-length(normalize-space(.)) > 0]) = 0
+                return
+                    $elem
         )
 
     (: If aqd:change='true' the following information must also be provided :)
     let $mandatoryAqdChangeElements := ("aqd:changeDescription", "aqd:content")
     let $missingElementsIfAqdChangeIsTrue :=
         distinct-values(
-                    for $elem in $mandatoryAqdChangeElements
-                    where count(doc($file)//aqd:AQD_ReportingHeader[aqd:change=true()]) > 0 and count(doc($file)//aqd:AQD_ReportingHeader[
-                        (aqd:change=true() and count(child::*[name()=$elem]) = 0)]) > 0
-                    return
-                        $elem
+                for $elem in $mandatoryAqdChangeElements
+                where count(doc($file)//aqd:AQD_ReportingHeader[aqd:change=true()]) > 0 and count(doc($file)//aqd:AQD_ReportingHeader[
+                (aqd:change=true() and count(child::*[name()=$elem]) = 0)]) > 0
+                return
+                    $elem
         )
     (: If aqd:change='false', then aqd:content IS NOT expected. :)
     let $appearingElementsIfAqdChangeIsFalse :=
         count(index-of(
-                    count(doc($file)//aqd:AQD_ReportingHeader) > 0 and count(doc($file)//aqd:AQD_ReportingHeader/*[name()='aqd:content' and ../aqd:change=false()]) > 0
+                count(doc($file)//aqd:AQD_ReportingHeader) > 0 and count(doc($file)//aqd:AQD_ReportingHeader/*[name()='aqd:content' and ../aqd:change=false()]) > 0
                 , true()
         )) > 0
 
@@ -135,8 +134,7 @@ declare function xmlconv:checkFileReportingHeader($envelope as node()*, $file as
     (: check for valid year value on XML file :)
     let $description :=
         if ($falseTimePeriod) then
-            ($description, <p class="error">Issue with year value of the envelope discovered in relation to this file! The (start) year value must be equal to the year in gml:beginPosition element (in aqd:AQD_ReportingHeader) specified in the XML file and it must be between {$minimumYear} - {$maximumYear}.
-            If you specified also the end year on the envelope - it must be between {$minimumYear} - {$maximumYear} and it must be equal to the year given in gml:endPosition element (in aqd:AQD_ReportingHeader).</p>)
+            ($description, <p class="error">Issue with year value of the envelope discovered in relation to this file! The (start) year value must be equal to the year in gml:beginPosition element (in aqd:AQD_ReportingHeader) specified in the XML file and it must be between {$minimumYear} - {$maximumYear}.</p>)
         else
             $description
     let $description :=
@@ -171,7 +169,7 @@ declare function xmlconv:checkFileReportingHeader($envelope as node()*, $file as
 declare function xmlconv:validateEnvelope($url as xs:string)
 as element(div)
 {
-    (: set variable for envelope path :)
+(: set variable for envelope path :)
     let $envelope := doc($url)/envelope
 
     (: set variables for envelope year :)
@@ -200,7 +198,7 @@ as element(div)
         if ($filesCountCorrectSchema != $filesCountAQSchema) then
             (
                 <p class="error">1 or more AQ e-Reporting XML file(s) with incorrect XML Schema location<br />
-                Valid XML Schema location is: <strong>{$xmlconv:SCHEMA}</strong></p>
+                    Valid XML Schema location is: <strong>{$xmlconv:SCHEMA}</strong></p>
             )
         else if ($filesCountAQSchema = 0) then
             (<p class="info">Your delivery does not contain any AQ e-Reporting XML file</p>)
@@ -209,51 +207,52 @@ as element(div)
 
     let $correctEnvelopeYear :=
         if ($envelope/year[number() != number()])  then
-            <p class="error">Year has not been specified in the envelope period! Keep in mind that the year value must be between {$minimumYear} - {$maximumYear} and it must be equal to the year in gml:beginPosition element (in aqd:AQD_ReportingHeader). If you specified also the end year on the envelope - it must be equal to the (start) year.
-                If you specified also the end year on the envelope - it must be between {$minimumYear} - {$maximumYear} and it must be equal to the year given in gml:endPosition element (in aqd:AQD_ReportingHeader).</p>
+            <p class="error">Year has not been specified in the envelope period! Keep in mind that the year value must be between {$minimumYear} - {$maximumYear} and it must be equal to the year in gml:beginPosition element (in aqd:AQD_ReportingHeader).</p>
         else if ($envelope/year/number() < $minimumYear or $envelope/year/number() > $maximumYear) then
-            <p class="error">Year specified in the envelope period is outside the allowed range of {$minimumYear} - {$maximumYear}! Keep in mind that the year value must be between {$minimumYear} - {$maximumYear} and it must be equal to the year in gml:beginPosition element (in aqd:AQD_ReportingHeader).
-        If you specified also the end year on the envelope - it must be between {$minimumYear} - {$maximumYear} and it must be equal to the year given in gml:endPosition element (in aqd:AQD_ReportingHeader).</p>
+            <p class="error">Year specified in the envelope period is outside the allowed range of {$minimumYear} - {$maximumYear}! Keep in mind that the year value must be between {$minimumYear} - {$maximumYear} and it must be equal to the year in gml:beginPosition element (in aqd:AQD_ReportingHeader).</p>
         else
             ()
-    let $correctEnvelopeYear :=
+    (: Commented out check for the end year, we might need it in the future
+
+        let $correctEnvelopeYear :=
         if ($envelope/endyear[number() = number()] and ($envelope/endyear/number() < $minimumYear or $envelope/endyear/number() > $maximumYear)) then
             ($correctEnvelopeYear, <p class="error">The end year on the envelope is different than the year given in gml:endPosition element (in aqd:AQD_ReportingHeader) or/and outside the allowed range of {$minimumYear} - {$maximumYear}!</p>)
         else
             $correctEnvelopeYear
+        :)
 
     let $messages := ($messageEnvelopeSeparator, $correctFileCountMessage, $correctEnvelopeYear, $reportingHeaderCheck)
 
-	let $errorCount := count($messages[@class = 'error'])
+    let $errorCount := count($messages[@class = 'error'])
 
     let $errorLevel :=
         if ($errorCount = 0)
         then "INFO" else "BLOCKER"
 
     return
-    <div class="feedbacktext">
-        <style type="text/css">
-            <![CDATA[
+        <div class="feedbacktext">
+            <style type="text/css">
+                <![CDATA[
                 .info {color:blue; margin-left: 15px;}
                 .error {color:red; margin-left: 15px;}
                 .warning {color:orange; margin-left: 15px;}
                 .hidden {display:none}
                 .footnote {font-style:italic}
             ]]>
-        </style>
-        <h2>Check contents of delivery</h2>
-        <span id="feedbackStatus" class="{$errorLevel}" style="display:none">{$errorCount} envelope-level error{substring("s ", number(not($errorCount > 1)) * 2)}found</span>
-		{$messages}
-        <br/>
-        <div class="footnote"><sup>*</sup>Detailed information about the QA/QC rules checked in this routine can be found from the <a href="http://www.eionet.europa.eu/aqportal/qaqc/">e-reporting QA/QC rules documentation</a> in chapter "2.1.3 Check for Reporting Header within an envelope".</div>
-    </div>
+            </style>
+            <h2>Check contents of delivery</h2>
+            <span id="feedbackStatus" class="{$errorLevel}" style="display:none">{$errorCount} envelope-level error{substring("s ", number(not($errorCount > 1)) * 2)}found</span>
+            {$messages}
+            <br/>
+            <div class="footnote"><sup>*</sup>Detailed information about the QA/QC rules checked in this routine can be found from the <a href="http://www.eionet.europa.eu/aqportal/qaqc/">e-reporting QA/QC rules documentation</a> in chapter "2.1.3 Check for Reporting Header within an envelope".</div>
+        </div>
 
 };
 declare function xmlconv:buildDocNotAvailableError($url as xs:string)
 as element(div)
 {
     <div class="feedbacktext">
-    <span id="feedbackStatus" class="INFO">Could not execute the script because the source XML is not available: { xmlconv:getCleanUrl($url) }</span>
+        <span id="feedbackStatus" class="INFO">Could not execute the script because the source XML is not available: { xmlconv:getCleanUrl($url) }</span>
     </div>
 
 };
