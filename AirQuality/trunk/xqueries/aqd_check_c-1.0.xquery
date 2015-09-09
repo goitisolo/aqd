@@ -345,7 +345,7 @@ as xs:string {
     let $countryCode := if ($countryCode = "uk") then "gb" else if ($countryCode = "el") then "gr" else $countryCode
     let $eu := if ($countryCode='gi') then 'eea' else 'eu'
 
-    return concat("http://cdr.eionet.europa.eu/",lower-case($countryCode),"/", $eu, "/aqd/")
+    return concat("cdr.eionet.europa.eu/",lower-case($countryCode),"/", $eu, "/aqd/")
 
 };
 (:~
@@ -384,7 +384,7 @@ WHERE {
 aqd:inspireId ?inspireId .
 ?inspireId rdfs:label ?inspireLabel .
 ?zone aqd:usedAQD ?usedAQD .
-FILTER (STRSTARTS(str(?zone), '", $cdrUrl, "'d/')and xsd:boolean(?usedAQD))
+FILTER (CONTAINS(str(?zone), '", $cdrUrl, "'d/')and xsd:boolean(?usedAQD))
 } order by ?zone")
 };
 :)
@@ -403,7 +403,7 @@ concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
                ?ii rdfs:label ?zoneId .
                ?pollutants aqd:pollutantCode ?pollutantCode .
                ?pollutants aqd:protectionTarget ?protectionTarget .
-         FILTER (STRSTARTS(str(?zone), '", $cdrUrl,  "/b/'))
+         FILTER (CONTAINS(str(?zone), '", $cdrUrl,  "/b/'))
 } order by ?zone ")
 };
 
@@ -422,7 +422,7 @@ SELECT ?zone ?inspireId ?inspireLabel ?relevantEmissions ?stationClassification
          ?inspireId rdfs:label ?inspireLabel .
          ?zone aqd:relevantEmissions ?relevantEmissions .
          ?relevantEmissions aqd:stationClassification ?stationClassification
-  FILTER (STRSTARTS(str(?zone), '", $cdrUrl, "/d/') and str(?stationClassification)='http://dd.eionet.europa.eu/vocabulary/aq/stationclassification/background')
+  FILTER (CONTAINS(str(?zone), '", $cdrUrl, "/d/') and str(?stationClassification)='http://dd.eionet.europa.eu/vocabulary/aq/stationclassification/background')
   } order by ?zone")
 };
 
@@ -440,7 +440,7 @@ as xs:string
                 aqd:pollutants ?pollutants .
                ?pollutants aqd:pollutantCode ?pollutantCode .
                ?pollutants aqd:protectionTarget ?protectionTarget .
-         FILTER (STRSTARTS(str(?zone), 'http://cdr.eionet.europa.eu/",$countryCode,"/eu/aqd/b/'))
+         FILTER (CONTAINS(str(?zone), 'http://cdr.eionet.europa.eu/",$countryCode,"/eu/aqd/b/'))
 } order by ?zone")
 };
 
@@ -460,7 +460,7 @@ return
               ?zone a aqd:AQD_Model;
               aqd:inspireId ?inspireId .
               ?inspireId rdfs:label ?inspireLabel .
-         FILTER (STRSTARTS(str(?zone), 'http://cdr.eionet.europa.eu/",$countryCode,"/eu/aqd/d/'))
+         FILTER (CONTAINS(str(?zone), 'http://cdr.eionet.europa.eu/",$countryCode,"/eu/aqd/d/'))
 } order by ?zone")
 };
 :)
@@ -484,7 +484,7 @@ SELECT DISTINCT ?inspireLabel
         optional {?observingTime aqd:endPosition ?endPosition} .
             FILTER(xsd:date(SUBSTR(xsd:string(?beginPosition),1,10)) <= xsd:date('", $endDate, "')) .
             FILTER(!bound(?endPosition) or (xsd:date(SUBSTR(xsd:string(?endPosition),1,10)) >= xsd:date('", $startDate, "'))) .
-            FILTER (STRSTARTS(str(?zone), '",$cdrUrl,"d/'))
+            FILTER (CONTAINS(str(?zone), '",$cdrUrl,"d/'))
 }")
 };
 
@@ -506,7 +506,7 @@ concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
         optional {?observingTime aqd:endPosition ?endPosition }
             FILTER(xsd:date(SUBSTR(xsd:string(?beginPosition),1,10)) <= xsd:date('", $endDate, "')) .
             FILTER(!bound(?endPosition) or (xsd:date(SUBSTR(xsd:string(?endPosition),1,10)) >= xsd:date('", $startDate, "'))) .
-            FILTER (STRSTARTS(str(?zone), '",$cdrUrl,"d/'))
+            FILTER (CONTAINS(str(?zone), '",$cdrUrl,"d/'))
 }")
 };
 
@@ -522,7 +522,7 @@ as xs:string
          aqd:inspireId ?inspireId .
          ?inspireId rdfs:label ?inspireLabel .
          ?zone aqd:assessmentType ?assessmentType
-       FILTER (STRSTARTS(str(?zone), '",$cdrUrl,"d/'))
+       FILTER (CONTAINS(str(?zone), '",$cdrUrl,"d/'))
    } order by ?zone")
 };
 
@@ -538,7 +538,7 @@ as xs:string
          aqd:inspireId ?inspireId .
          ?inspireId rdfs:label ?inspireLabel .
          ?zone aqd:assessmentType ?assessmentType
-       FILTER (STRSTARTS(str(?zone), '", $cdrUrl,  "d/'))
+       FILTER (CONTAINS(str(?zone), '", $cdrUrl,  "d/'))
    } order by ?zone")
 };
 
@@ -557,7 +557,7 @@ concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
           ?zone a aqd:AQD_SamplingPoint ;
           aqd:inspireId ?inspireId .
           ?inspireId rdfs:label ?inspireLabel .
-      FILTER (STRSTARTS(str(?zone), 'http://cdr.eionet.europa.eu/", $countryCode, "/eu/aqd/d/'))
+      FILTER (CONTAINS(str(?zone), 'http://cdr.eionet.europa.eu/", $countryCode, "/eu/aqd/d/'))
 } order by ?zone")
 };
 :)
@@ -574,7 +574,7 @@ PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
         ?zone a aqd:AQD_Zone ;
         aqd:inspireId ?inspireId .
         ?inspireId rdfs:label ?inspireLabel .
-   FILTER (STRSTARTS(str(?zone), '", $cdrUrl, "b/'))
+   FILTER (CONTAINS(str(?zone), '", $cdrUrl, "b/'))
   } order by ?zone")
 };
 
@@ -593,7 +593,7 @@ as xs:string
               ?zone aqd:pollutants ?pollutants .
               ?pollutants aqd:pollutantCode ?pollutantCode .
               ?pollutants aqd:protectionTarget ?protectionTarget .
-      FILTER (STRSTARTS(str(?zone), '", $cdrUrl, "b/'))
+      FILTER (CONTAINS(str(?zone), '", $cdrUrl, "b/'))
     } order by ?zone")
 };
 
