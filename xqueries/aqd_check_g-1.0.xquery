@@ -334,7 +334,7 @@ as xs:string {
     let $countryCode := if ($countryCode = "uk") then "gb" else if ($countryCode = "el") then "gr" else $countryCode
     let $eu := if ($countryCode='gi') then 'eea' else 'eu'
 
-    return concat("http://cdr.eionet.europa.eu/",lower-case($countryCode),"/", $eu, "/aqd/")
+    return concat("cdr.eionet.europa.eu/",lower-case($countryCode),"/", $eu, "/aqd/")
 
 };
 
@@ -357,7 +357,7 @@ concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
                 aqd:timeExtensionExemption ?timeExtensionExemption .
                 ?zone aqd:inspireId ?inspireid .
                 ?inspireid aqd:localId ?localId
-        FILTER (STRSTARTS(str(?zone), '", $cdrUrl,  "'b/') and (?timeExtensionExemption != 'http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/none'))
+        FILTER (CONTAINS(str(?zone), '", $cdrUrl,  "'b/') and (?timeExtensionExemption != 'http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/none'))
       } order by  ?zone ")
 };
 
@@ -374,7 +374,7 @@ as xs:string
                 aqd:timeExtensionExemption ?timeExtensionExemption .
                 ?zone aqd:inspireId ?inspireid .
                 ?inspireid aqd:localId ?localId
-                FILTER (STRSTARTS(str(?zone), '", $cdrUrl, "b/') and (?timeExtensionExemption != ""))
+                FILTER (CONTAINS(str(?zone), '", $cdrUrl, "b/') and (?timeExtensionExemption != ""))
             } order by  ?zone ")
 
 };
@@ -400,7 +400,7 @@ WHERE {
 ?envObjective aqd:objectiveType ?objectiveType .
 ?envObjective aqd:reportingMetric  ?reportingMetric .
 ?envObjective aqd:protectionTarget  ?protectionTarget .
-FILTER (STRSTARTS(str(?attainment), '" , $cdrUrl,  "g/')) .
+FILTER (CONTAINS(str(?attainment), '" , $cdrUrl,  "g/')) .
 } order by ?key")
 };
 
@@ -417,7 +417,7 @@ SELECT distinct  ?inspireLabel
         ?attainment a aqd:AQD_Attainment;
         aqd:inspireId ?inspireId .
         ?inspireId rdfs:label ?inspireLabel .
-        FILTER (STRSTARTS(str(?attainment), '", $cdrUrl, "g/')) .
+        FILTER (CONTAINS(str(?attainment), '", $cdrUrl, "g/')) .
 } order by ?inspireLabel")
 
 };
@@ -435,7 +435,7 @@ as xs:string
                   aqd:inspireId ?inspireId .
                   ?inspireId rdfs:label ?inspireLabel .
                   ?inspireId aqd:localId ?localId .
-           FILTER (STRSTARTS(str(?zone), '",$cdrUrl, "c/'))
+           FILTER (CONTAINS(str(?zone), '",$cdrUrl, "c/'))
        }  order by  ?zone")
 };
 
@@ -501,7 +501,7 @@ as xs:string
               aqd:inspireId ?inspireId .
               ?inspireId rdfs:label ?inspireLabel .
               ?inspireId aqd:localId ?localId .
-       FILTER (STRSTARTS(str(?zone), '",  $cdrUrl, "b/'))
+       FILTER (CONTAINS(str(?zone), '",  $cdrUrl, "b/'))
    }  order by ?zone")
 };
 
@@ -520,7 +520,7 @@ as xs:string
                  ?inspireId rdfs:label ?inspireLabel .
                  ?zone aqd:pollutants ?pollutants .
                  ?pollutants aqd:pollutantCode ?pollutantCode .
-          FILTER (STRSTARTS(str(?zone), '", $cdrUrl, "b/'))
+          FILTER (CONTAINS(str(?zone), '", $cdrUrl, "b/'))
           }  order by ?key")
     };
 
@@ -538,7 +538,7 @@ concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
                  ?inspireId rdfs:label ?inspireLabel .
                  ?inspireId aqd:localId ?localId .
                  ?inspireId aqd:namespace ?namespace .
-        FILTER(STRSTARTS(str(?model), '", $cdrUrl , "d/'))
+        FILTER(CONTAINS(str(?model), '", $cdrUrl , "d/'))
       } order by ?model")
 };
 
@@ -559,7 +559,7 @@ concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
                  ?inspireId aqd:localId ?localId .
                  ?inspireId aqd:namespace ?namespace .
 
-        FILTER(STRSTARTS(str(?samplingPoint), '", $cdrUrl, "d/'))
+        FILTER(CONTAINS(str(?samplingPoint), '", $cdrUrl, "d/'))
       }  order by ?samplingPoint")
 };
 
