@@ -2221,28 +2221,19 @@ as element(tr)*{
     if(doc-available($source_url))
     then
       let $crConcepts :=
-        for  $vocabularyUrl in  $vocabularyUrls
-
-            let $sparql :=
-              if ($vocabularyType = "collection") then
-                xmlconv:getCollectionConceptUrlSparql($vocabularyUrl)
-            else
-                xmlconv:getConceptUrlSparql($vocabularyUrl)
-        return
-        xmlconv:executeSparqlQuery($sparql)
+        for $vocabularyUrl in  $vocabularyUrls
+            let $sparql := xmlconv:getConceptUrlSparql($vocabularyUrl)
+            return
+                xmlconv:executeSparqlQuery($sparql)
 
         for $rec in doc($source_url)//gml:featureMember/descendant::*[name()=$featureType]
 
         for $conceptUrl in $rec/child::*[name() = $element]/@xlink:href
-
-
-
-        let $conceptUrl := normalize-space($conceptUrl)
-
-       where string-length($conceptUrl) > 0
+            let $conceptUrl := normalize-space($conceptUrl)
+            where string-length($conceptUrl) > 0
 
         return
-               <tr isvalid="{ xmlconv:isMatchingVocabCode($crConcepts, $conceptUrl) }">
+            <tr isvalid="{ xmlconv:isMatchingVocabCode($crConcepts, $conceptUrl) }">
                 <td title="Feature type">{ $featureType }</td>
                 <td title="gml:id">{data($rec/@gml:id)}</td>
                 <td title="ef:name">{data($rec/ef:name)}</td>
