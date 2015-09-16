@@ -1339,7 +1339,7 @@ let $allInvalidTrueUsedAQD :=
             </tr>
 (:D53 Done by Rait :)
 let $allInvalidZoneXlinks :=
-    for $invalidZoneXlinks in $docRoot//aqd:AQD_SamplingPoint/aqd:zone
+    for $invalidZoneXlinks in $docRoot//aqd:AQD_SamplingPoint/aqd:zone[not(@nilReason='inapplicable')]
      where
         count(xmlconv:executeSparqlQuery(xmlconv:getSamplingPointZone(string($invalidZoneXlinks/@xlink:href)))/*) = 0
     return
