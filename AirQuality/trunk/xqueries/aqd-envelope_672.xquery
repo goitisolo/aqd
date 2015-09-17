@@ -134,7 +134,7 @@ declare function xmlconv:checkFileReportingHeader($envelope as node()*, $file as
     (: check for valid year value on XML file :)
     let $description :=
         if ($falseTimePeriod) then
-            ($description, <p class="error">Issue with year value of the envelope discovered in relation to this file! The (start) year value must be equal to the year in gml:beginPosition element (in aqd:AQD_ReportingHeader) specified in the XML file and it must be between {$minimumYear} - {$maximumYear}.</p>)
+            ($description, <p class="error">Issue with year value of the envelope discovered in relation to this file! The (start) year value must be equal to the year in gml:beginPosition element (in aqd:AQD_ReportingHeader) specified in the XML file and it must be equal to {$minimumYear}.</p>)
         else
             $description
     let $description :=
@@ -207,9 +207,9 @@ as element(div)
 
     let $correctEnvelopeYear :=
         if ($envelope/year[number() != number()])  then
-            <p class="error">Year has not been specified in the envelope period! Keep in mind that the year value must be between {$minimumYear} - {$maximumYear} and it must be equal to the year in gml:beginPosition element (in aqd:AQD_ReportingHeader).</p>
-        else if ($envelope/year/number() < $minimumYear or $envelope/year/number() > $maximumYear) then
-            <p class="error">Year specified in the envelope period is outside the allowed range of {$minimumYear} - {$maximumYear}! Keep in mind that the year value must be between {$minimumYear} - {$maximumYear} and it must be equal to the year in gml:beginPosition element (in aqd:AQD_ReportingHeader).</p>
+            <p class="error">Year has not been specified in the envelope period! Keep in mind that the year value must be {$minimumYear} and it must be equal to the year in gml:beginPosition element (in aqd:AQD_ReportingHeader).</p>
+        else if ($envelope/year/number() != $minimumYear) then
+            <p class="error">Year specified in the envelope period is wrong! Keep in mind that the year value must be {$minimumYear} and it must be equal to the year in gml:beginPosition element (in aqd:AQD_ReportingHeader).</p>
         else
             ()
     (: Commented out check for the end year, we might need it in the future
