@@ -19,7 +19,9 @@ declare namespace xmlconv="http://converters.eionet.europa.eu";
 declare namespace aqd = "http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0";
 declare namespace xlink = "http://www.w3.org/1999/xlink";
 declare namespace sparql = "http://www.w3.org/2005/sparql-results#";
-declare namespace om = "http://inspire.ec.europa.eu/schemas/ompr/2.0";
+declare namespace om1 = "http://inspire.ec.europa.eu/schemas/ompr/2.0";
+declare namespace om = "http://www.opengis.net/om/2.0";
+
 
 (:~ declare Content Registry SPARQL endpoint:)
 declare variable $xmlconv:CR_SPARQL_URL := "http://cr.eionet.europa.eu/sparql";
@@ -410,34 +412,34 @@ declare function xmlconv:checkCrosslinkReferences(){
         "/aqd:AQD_AssessmentRegime/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata")
 
     (: e5 :)
-    let $omProcedureLinks := doc($source_url)//aqd:OM_Observation/om:procedure/@xlink:href
+    let $omProcedureLinks := doc($source_url)//om:OM_Observation/om:procedure/@xlink:href
     let $omProcedureResult := xmlconv:checkDataflowDReferences(
         $dataflowDEnvelopeUrl,
         <span>E5/F5 - the observation procedures shall resolve to a traversable link to /aqd:AQD_ModelProcess OR /aqd:AQD_SamplingPointProcess reported under {
             if (count($omProcedureLinks)>0 ) then $dataflowDEnvelopeLink else "Dataflow D."}</span>,
         $omProcedureLinks,
         ("ModelProcess", "SamplingPointProcess"),
-        "/aqd:OM_Observation/om:procedure")
+        "/om:OM_Observation/om:procedure")
 
     (: e6 :)
-    let $omNameLinks := doc($source_url)//aqd:OM_Observation/om:parameter/om:NamedValue/om:name/@xlink:href
+    let $omNameLinks := doc($source_url)//om:OM_Observation/om:parameter/om:NamedValue/om:name/@xlink:href
     let $omNameResult := xmlconv:checkDataflowDReferences(
         $dataflowDEnvelopeUrl,
         <span>E6/F6 - the observation name shall resolve to a traversable link to /aqd:AQD_Model OR /aqd:AQD_SamplingPoint reported under {
             if (count($omNameLinks)>0 ) then $dataflowDEnvelopeLink else "Dataflow D."}</span>,
         $omNameLinks,
         ("Model", "SamplingPoint"),
-        "/aqd:OM_Observation/om:parameter/om:NamedValue/om:name")
+        "/om:OM_Observation/om:parameter/om:NamedValue/om:name")
 
     (: e8 :)
-    let $omFeatureOfInterestLinks := doc($source_url)//aqd:OM_Observation/om:featureOfInterest/@xlink:href
+    let $omFeatureOfInterestLinks := doc($source_url)//om:OM_Observation/om:featureOfInterest/@xlink:href
     let $omFeatureOfInterestResult := xmlconv:checkDataflowDReferences(
         $dataflowDEnvelopeUrl,
         <span>E8/F8 - the observation featureOfInterest shall resolve to a traversable link to /aqd:AQD_Model OR /aqd:AQD_Sample reported under {
             if (count($omFeatureOfInterestLinks)>0 ) then $dataflowDEnvelopeLink else "Dataflow D."}</span>,
         $omFeatureOfInterestLinks,
         ("Model", "Sample"),
-        "/aqd:OM_Observation/om:featureOfInterest")
+        "/om:OM_Observation/om:featureOfInterest")
 
     return
         ( $modelAssessmentMetadataResult,
