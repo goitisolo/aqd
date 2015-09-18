@@ -19,7 +19,7 @@ declare namespace xmlconv="http://converters.eionet.europa.eu";
 declare namespace aqd = "http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0";
 declare namespace xlink = "http://www.w3.org/1999/xlink";
 declare namespace sparql = "http://www.w3.org/2005/sparql-results#";
-declare namespace om1 = "http://inspire.ec.europa.eu/schemas/ompr/2.0";
+declare namespace ompr = "http://inspire.ec.europa.eu/schemas/ompr/2.0";
 declare namespace om = "http://www.opengis.net/om/2.0";
 
 
