@@ -847,7 +847,7 @@ let $aqdStationPos :=
 
 
 let $invalidSamplingPointPos :=
-    for $gmlPos in $docRoot//aqd:AQD_SamplingPoint
+    for $gmlPos in $docRoot//aqd:AQD_SamplingPoint[ef:geometry/gml:Point/gml:pos]
         let $efBroader := $gmlPos/ef:broader/@xlink:href
         let $samplingStationId := data($efBroader)
         let $stationPos :=
