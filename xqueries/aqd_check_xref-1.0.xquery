@@ -422,7 +422,7 @@ declare function xmlconv:checkCrosslinkReferences(){
         "/om:OM_Observation/om:procedure")
 
     (: e6 :)
-    let $omNameLinks := doc($source_url)//om:OM_Observation/om:parameter/om:NamedValue/om:name/@xlink:href
+    let $omNameLinks := (doc($source_url)//om:OM_Observation/om:parameter/om:NamedValue/om:value/@xlink:href, doc($source_url)//om:OM_Observation/om:parameter/om:NamedValue/om:value)
     let $omNameResult := xmlconv:checkDataflowDReferences(
         $dataflowDEnvelopeUrl,
         <span>E6/F6 - the observation name shall resolve to a traversable link to /aqd:AQD_Model OR /aqd:AQD_SamplingPoint reported under {
