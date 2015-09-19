@@ -381,7 +381,8 @@ WHERE {
 declare function xmlconv:checkCrosslinkReferences(){
 
 
-    let $envelopeXml := xmlconv:getEnvelopeXML($source_url)
+    (:let $envelopeXml := xmlconv:getEnvelopeXML($source_url):)
+    let $envelopeXml := doc("http://cdrtest.eionet.europa.eu/gb/eu/aqd/e1a/envvfzygq/xml")
 
     let $coverage := $envelopeXml/envelope/coverage
     let $dataflowDEnvelopeUrl := xmlconv:getReferencedEnvelope($xmlconv:DATAFLOW_D_OBLIGATION, $coverage)
@@ -422,15 +423,15 @@ declare function xmlconv:checkCrosslinkReferences(){
         "/om:OM_Observation/om:procedure")
 
     (: e6 :)
-    let $omNameLinks := (doc($source_url)//om:OM_Observation/om:parameter/om:NamedValue[om:name/@xlink:href = 'http://dd.eionet.europa.eu/vocabulary/aq/processparameter/SamplingPoint']/om:value/@xlink:href,
-        doc($source_url)//om:OM_Observation/om:parameter/om:NamedValue[om:name/@xlink:href = 'http://dd.eionet.europa.eu/vocabulary/aq/processparameter/SamplingPoint']/om:value)
+    let $omNameLinks := (doc($source_url)//om:OM_Observation/om:parameter/om:NamedValue[om:name/@xlink:href = 'http://dd.eionet.europa.eu/vocabulary/aq/processparameter/SamplingPoint']/om:value[normalize-space(.) != ""],
+        doc($source_url)//om:OM_Observation/om:parameter/om:NamedValue[om:name/@xlink:href = 'http://dd.eionet.europa.eu/vocabulary/aq/processparameter/SamplingPoint']/om:value/@xlink:href[normalize-space(.) != ""])
     let $omNameResult := xmlconv:checkDataflowDReferences(
         $dataflowDEnvelopeUrl,
         <span>E6/F6 - the observation name shall resolve to a traversable link to /aqd:AQD_Model OR /aqd:AQD_SamplingPoint reported under {
             if (count($omNameLinks)>0 ) then $dataflowDEnvelopeLink else "Dataflow D."}</span>,
         $omNameLinks,
         ("Model", "SamplingPoint"),
-        "/om:OM_Observation/om:parameter/om:NamedValue/om:name")
+        "/om:OM_Observation/om:parameter/om:NamedValue/om:value or /om:OM_Observation/om:parameter/om:NamedValue/om:value/@xlink:href when ../om:name equals .../SamplingPoint")
 
     (: e8 :)
     let $omFeatureOfInterestLinks := doc($source_url)//om:OM_Observation/om:featureOfInterest/@xlink:href
