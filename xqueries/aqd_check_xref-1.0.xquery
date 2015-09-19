@@ -381,8 +381,7 @@ WHERE {
 declare function xmlconv:checkCrosslinkReferences(){
 
 
-    (:let $envelopeXml := xmlconv:getEnvelopeXML($source_url):)
-    let $envelopeXml := doc("http://cdrtest.eionet.europa.eu/gb/eu/aqd/e1a/envvfzygq/xml")
+    let $envelopeXml := xmlconv:getEnvelopeXML($source_url)    
 
     let $coverage := $envelopeXml/envelope/coverage
     let $dataflowDEnvelopeUrl := xmlconv:getReferencedEnvelope($xmlconv:DATAFLOW_D_OBLIGATION, $coverage)
