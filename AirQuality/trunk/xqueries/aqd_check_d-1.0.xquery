@@ -2372,7 +2372,7 @@ return
             {
                 if ($result//div/@class = 'warning') then
                     <div>
-                        <p class="warning" style="color:orange"><strong>This XML file did NOT pass the following check(s): {string-join($result//div[@class = 'warning'], ',')}</strong></p>
+                        <p class="warning" style="color:orange"><strong>This XML file generated warnings during the following check(s): {string-join($result//div[@class = 'warning'], ',')}</strong></p>
                         <p style="color:grey">Please pay attention that QA rules D1-D4 concern all monitoring (measurement) feature types, QA rules D5 - D14 concern AQD_Networks, QA rules D15 - D30 concern AQD_Stations, QA rules D31 - D53 concern AQD_SamplingPoints, QA rules D54 - D70 concern AQD_SamplingPointProcesses, QA rules D71 - D77 concern AQD_Samples, QA rules D78 - D85 concern AQD_RepresentativeAreas.</p>
                         <p style="color:grey">Please pay attention that QA rules M1 - M5 concern all monitoring (model) feature types, QA rules M6 - M26 concern AQD_Models, QA rules M27 - M39 concern AQD_ModelProcesses, QA rules M40 - M45 concern AQD_ModelAreas.</p>
                     </div>
