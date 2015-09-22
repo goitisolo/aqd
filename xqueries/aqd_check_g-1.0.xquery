@@ -1288,7 +1288,8 @@ let $isAssessmentMethodsAvailable := count($resultXml2) > 0
 let $resultXml := if (fn:string-length($countryCode) = 2) then xmlconv:getSamplingPoint($modelCdrUrl) else ""
 let $isSamplingPointAvailable := string-length($resultXml) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($resultXml, "xml"))
 let $samplingPointlD := if($isSamplingPointAvailable) then
-    let $results := xmlconv:executeSparqlQuery($resultXml)//sparql:result
+    (: TODO this was probably a bad way to fix this, will need to find a proper fix:)
+    let $results := xmlconv:executeSparqlEndpoint($resultXml)//sparql:result
     let $values :=
         for $i in $results
             return concat($i/sparql:binding[@name='namespace']/sparql:literal, '/', $i/sparql:binding[@name = 'localId']/sparql:literal)
