@@ -111,9 +111,10 @@ declare function xmlconv:getEnvelopeXML($url as xs:string) as xs:string{
         if(fn:doc-available($ret)) then
             $ret
         else
+            ""
             (:"http://cdr.eionet.europa.eu/lu/eu/aqd/c/envvbxvja/xml":)
             (:"http://cdrtest.eionet.europa.eu/es/eu/aqd/b/envvz5q_q/xml" - B - Zones :)
-            "http://cdr.eionet.europa.eu/es/eu/aqd/g/envvboekg/xml" (:G - Attainment:)
+            (:"http://cdr.eionet.europa.eu/es/eu/aqd/g/envvboekg/xml" - G - Attainment:)
             (:"http://cdr.eionet.europa.eu/ie/eu/aqd/b/envvkhfaq/xml" - B - Zones :)
             (:"http://cdrtest.eionet.europa.eu/gr/colvdwapa/envvdxwfg/xml"  B,C,D,G :)
 }
