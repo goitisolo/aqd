@@ -11,6 +11,7 @@ xquery version "1.0" encoding "UTF-8";
  :
  : @author Enriko Käsper
  : small modification added by Jaume Targa (ETC/ACM) to align with QA document
+ : @author George Sofianos
  :)
 
 module namespace xmlconv = "http://converters.eionet.europa.eu/dataflowG";
@@ -1282,9 +1283,18 @@ let $isAssessmentMethodsAvailable := count($resultXml2) > 0
 
 
 (: G41 :)
+(: - CAUTION - Some of the following variables are being used in other rules :)
+
 let $resultXml := if (fn:string-length($countryCode) = 2) then xmlconv:getSamplingPoint($modelCdrUrl) else ""
 let $isSamplingPointAvailable := string-length($resultXml) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($resultXml, "xml"))
-let $samplingPointlD := if($isSamplingPointAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($resultXml)//concat(sparql:binding[@name='namespace']/sparql:literal,"/",sparql:binding[@name='localId']/sparql:literal))) else ""
+let $samplingPointlD := if($isSamplingPointAvailable) then
+    let $results := xmlconv:executeSparqlQuery($resultXml)//sparql:result
+    let $values :=
+        for $i in $results
+            return concat($i/sparql:binding[@name='namespace']/sparql:literal, '/', $i/sparql:binding[@name = 'localId']/sparql:literal)
+    let $values := distinct-values($values)
+    return if (not(empty($values))) then $values else ""
+    else ""
 let $isSamplingPointAvailable := count($samplingPointlD) > 0
 
 
