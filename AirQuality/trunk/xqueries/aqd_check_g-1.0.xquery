@@ -359,7 +359,7 @@ concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
                 ?zone aqd:inspireId ?inspireid .
                 ?inspireid aqd:localId ?localId
         FILTER (CONTAINS(str(?zone), '", $cdrUrl,  "'b/') and (?timeExtensionExemption != 'http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/none'))
-      } order by  ?zone ")
+      }")(: order by  ?zone "):)
 };
 
 (:
@@ -402,7 +402,7 @@ WHERE {
 ?envObjective aqd:reportingMetric  ?reportingMetric .
 ?envObjective aqd:protectionTarget  ?protectionTarget .
 FILTER (CONTAINS(str(?attainment), '" , $cdrUrl,  "g/')) .
-} order by ?key")
+}") (: order by ?key"):)
 };
 
 
@@ -419,7 +419,7 @@ SELECT distinct  ?inspireLabel
         aqd:inspireId ?inspireId .
         ?inspireId rdfs:label ?inspireLabel .
         FILTER (CONTAINS(str(?attainment), '", $cdrUrl, "g/')) .
-} order by ?inspireLabel")
+}")(: order by ?inspireLabel"):)
 
 };
 
@@ -437,7 +437,7 @@ as xs:string
                   ?inspireId rdfs:label ?inspireLabel .
                   ?inspireId aqd:localId ?localId .
            FILTER (CONTAINS(str(?zone), '",$cdrUrl, "c/'))
-       }  order by  ?zone")
+       }")(:  order by  ?zone"):)
 };
 
 declare function xmlconv:getAssessmentMethods()
@@ -461,7 +461,7 @@ as xs:string
               OPTIONAL { ?assessmentMethods aqd:samplingPointAssessmentMetadata ?samplingPointAssessmentMetadata. }
               OPTIONAL {?samplingPointAssessmentMetadata aq:inspireId ?metadataId. }
               OPTIONAL {?samplingPointAssessmentMetadata aq:inspireNamespace ?metadataNamespace . }
-             } order by DESC(?samplingPointAssessmentMetadata) ?assessmentRegime"
+             }"(: order by DESC(?samplingPointAssessmentMetadata) ?assessmentRegime":)
 };
 
 declare function xmlconv:getSamplingPointAssessmentMetadata()
@@ -482,7 +482,7 @@ as xs:string
               ?assessmentMethods aqd:samplingPointAssessmentMetadata ?samplingPointAssessmentMetadata.
               ?samplingPointAssessmentMetadata aq:inspireId ?metadataId.
               ?samplingPointAssessmentMetadata aq:inspireNamespace ?metadataNamespace.
-              } order by ?assessmentRegime"
+              }"(: order by ?assessmentRegime":)
 };
 
 
@@ -503,7 +503,7 @@ as xs:string
               ?inspireId rdfs:label ?inspireLabel .
               ?inspireId aqd:localId ?localId .
        FILTER (CONTAINS(str(?zone), '",  $cdrUrl, "b/'))
-   }  order by ?zone")
+   }")(:  order by ?zone"):)
 };
 
 
@@ -522,7 +522,7 @@ as xs:string
                  ?zone aqd:pollutants ?pollutants .
                  ?pollutants aqd:pollutantCode ?pollutantCode .
           FILTER (CONTAINS(str(?zone), '", $cdrUrl, "b/'))
-          }  order by ?key")
+          }")(:  order by ?key"):)
     };
 
 declare function xmlconv:getModel($cdrUrl as xs:string)
@@ -540,7 +540,7 @@ concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
                  ?inspireId aqd:localId ?localId .
                  ?inspireId aqd:namespace ?namespace .
         FILTER(CONTAINS(str(?model), '", $cdrUrl , "d/'))
-      } order by ?model")
+      }")(: order by ?model"):)
 };
 
 
@@ -561,7 +561,7 @@ concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
                  ?inspireId aqd:namespace ?namespace .
 
         FILTER(CONTAINS(str(?samplingPoint), '", $cdrUrl, "d/'))
-      }  order by ?samplingPoint")
+      }")(:  order by ?samplingPoint"):)
 };
 
 
@@ -1258,8 +1258,15 @@ let $isAssessmentMethodsAvailable := string-length($resultXml2) > 0 and doc-avai
 let $assessmentMetadataNamespace := if($isAssessmentMethodsAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($resultXml2)//sparql:binding[@name='assessmentMetadataNamespace']/sparql:literal)) else ""
 let $assessmentMetadataId := if($isAssessmentMethodsAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($resultXml2)//sparql:binding[@name='assessmentMetadataId']/sparql:literal)) else ""
 let $assessmentMetadata := if($isAssessmentMethodsAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($resultXml2)//concat(sparql:binding[@name='assessmentMetadataNamespace']/sparql:literal,"/",sparql:binding[@name='assessmentMetadataId']/sparql:literal))) else ""
-    (: for G42 :)
-    let $samplingPointAssessmentMetadata := if($isAssessmentMethodsAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($resultXml2)//concat(sparql:binding[@name='metadataNamespace']/sparql:literal,"/",sparql:binding[@name='metadataId']/sparql:literal))) else ""
+(: for G42, G67 :)
+let $samplingPointAssessmentMetadata := if($isAssessmentMethodsAvailable) then 
+    let $results := xmlconv:executeSparqlQuery($resultXml2)
+    let $values :=
+        for $i in $results
+            return concat($i/sparql:binding[@name='metadataNamespace']/sparql:literal,"/", $i/sparql:binding[@name='metadataId']/sparql:literal)
+    let $values := distinct-values($values)
+    return if (not(empty($values))) then $values else ()
+    else ()
 
 let $isAssessmentMethodsAvailable := count($resultXml2) > 0
 
@@ -1288,14 +1295,13 @@ let $isAssessmentMethodsAvailable := count($resultXml2) > 0
 let $resultXml := if (fn:string-length($countryCode) = 2) then xmlconv:getSamplingPoint($modelCdrUrl) else ""
 let $isSamplingPointAvailable := string-length($resultXml) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($resultXml, "xml"))
 let $samplingPointlD := if($isSamplingPointAvailable) then
-    (: TODO this was probably a bad way to fix this, will need to find a proper fix:)
-    let $results := xmlconv:executeSparqlEndpoint($resultXml)//sparql:result
+    let $results := xmlconv:executeSparqlQuery($resultXml)
     let $values :=
         for $i in $results
             return concat($i/sparql:binding[@name='namespace']/sparql:literal, '/', $i/sparql:binding[@name = 'localId']/sparql:literal)
     let $values := distinct-values($values)
-    return if (not(empty($values))) then $values else ""
-    else ""
+    return if (not(empty($values))) then $values else ()
+    else ()
 let $isSamplingPointAvailable := count($samplingPointlD) > 0
 
 
