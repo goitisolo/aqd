@@ -398,8 +398,8 @@ declare function xmlconv:checkCrosslinkReferences(){
         <span>C24 - the assessment methods shall resolve to a traversable link to an assessment method /aqd:AQD_Model reported under {
             if (count($modelAssessmentMetadataLinks)>0 ) then $dataflowDEnvelopeLink else "Dataflow D."}</span>,
         $modelAssessmentMetadataLinks,
-        ("Model"),
-        "/aqd:AQD_AssessmentRegime/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:modelAssessmentMetadata")
+        ("Model", "SamplingPoint"),
+        "/aqd:AQD_AssessmentRegime/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata")
 
     (: c25 :)
     let $samplingPointAssessmentMetadatLinks := doc($source_url)//aqd:AQD_AssessmentRegime/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata/@xlink:href
