@@ -9,6 +9,7 @@ xquery version "1.0" encoding "UTF-8";
 (:~
  : The script removes irrelevant GML XML Schema validation errors.
  : @author Enriko Käsper
+ : @author George Sofianos
  :)
 
 declare namespace xmlconv="http://converters.eionet.europa.eu";
@@ -16,7 +17,10 @@ declare namespace aqd = "http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0";
 
 declare variable $xmlconv:xmlValidatorUrl as xs:string := 'http://converters.eionet.europa.eu/api/runQAScript?script_id=-1&amp;url=';
 
-declare variable $ignoredMessages := ("cvc-elt.1: Cannot find the declaration of element 'gml:FeatureCollection'.");
+declare variable $ignoredMessages := ("cvc-elt.1: Cannot find the declaration of element 'gml:FeatureCollection'.",
+    "cvc-elt.4.2: Cannot resolve 'gco:RecordType_Type' to a type definition for element 'gco:Record'.",
+    "cvc-elt.4.2: Cannot resolve 'ns:DataArrayType' to a type definition for element 'om:result'.",
+    "cvc-elt.4.2: Cannot resolve 'ns:ReferenceType' to a type definition for element 'om:value'.");
 
 (:===================================================================:)
 (: Variable given as an external parameter by the QA service                                                 :)
@@ -77,7 +81,7 @@ declare function xmlconv:validateXmlSchema($source_url)
         if ($hasErrors and not($hasErrorsAfterFiltering)) then
             $successfulResult
         else
-            $validationResult
+            $filteredResult
 
 };
 
