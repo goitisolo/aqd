@@ -181,6 +181,9 @@ declare function xmlconv:getVocabularyMapping(){
         <vocabulary label="Environmental domains" url="http://dd.eionet.europa.eu/vocabulary/common/environmentaldomain/">
             <element>am:environmentalDomain</element>
         </vocabulary>
+        <vocabulary label="Environmental domains" url="http://inspire.ec.europa.eu/codeList/MediaValue/">
+            <element>am:environmentalDomain</element>
+        </vocabulary>
         <vocabulary label="Zone types" url="http://dd.eionet.europa.eu/vocabulary/aq/zonetype/">
             <element>aqd:aqdZoneType</element>
         </vocabulary>
@@ -399,7 +402,7 @@ declare function xmlconv:checkCrosslinkReferences(){
             if (count($modelAssessmentMetadataLinks)>0 ) then $dataflowDEnvelopeLink else "Dataflow D."}</span>,
         $modelAssessmentMetadataLinks,
         ("Model", "SamplingPoint"),
-        "/aqd:AQD_AssessmentRegime/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata")
+        "/aqd:AQD_AssessmentRegime/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:modelAssessmentMetadata")
 
     (: c25 :)
     let $samplingPointAssessmentMetadatLinks := doc($source_url)//aqd:AQD_AssessmentRegime/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata/@xlink:href
