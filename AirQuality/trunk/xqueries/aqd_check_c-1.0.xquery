@@ -423,7 +423,7 @@ SELECT ?zone ?inspireId ?inspireLabel ?relevantEmissions ?stationClassification
          ?zone aqd:relevantEmissions ?relevantEmissions .
          ?relevantEmissions aqd:stationClassification ?stationClassification
   FILTER (CONTAINS(str(?zone), '", $cdrUrl, "d/') and str(?stationClassification)='http://dd.eionet.europa.eu/vocabulary/aq/stationclassification/background')
-  } order by ?zone")
+  }")(: order by ?zone"):)
 };
 
 
@@ -1441,10 +1441,10 @@ let $invalidAqdReportingMetric := if (count($reportingMetric)>1) then $reporting
 
 (: C38 :)
 
-let $resultXml38 := if (fn:string-length($countryCode) = 2) then xmlconv:getSamplingPointInspireLabel($cdrUrl) else ""
-let $isInspireLebelCodesAvailable := string-length($resultXml38) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($resultXml38, "xml"))
-let $aqdSamplingPointID := if($isInspireLebelCodesAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($resultXml38)//sparql:binding[@name='inspireLabel']/sparql:literal)) else ""
-let $isInspireLebelCodesAvailable := count($resultXml38) > 0
+let $resultXml := if (fn:string-length($countryCode) = 2) then xmlconv:getSamplingPointInspireLabel($cdrUrl) else ""
+let $isInspireLebelCodesAvailable := string-length($resultXml) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($resultXml, "xml"))
+let $aqdSamplingPointID := if($isInspireLebelCodesAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($resultXml)//sparql:binding[@name='inspireLabel']/sparql:literal)) else ""
+let $isInspireLebelCodesAvailable := count($resultXml) > 0
 
 
 let $aqdSamplingPointAssessmentMetadata :=
@@ -1785,9 +1785,6 @@ let $countZoneIds2 := count(distinct-values(data($docRoot//aqd:AQD_AssessmentReg
 
 return $countZoneIds2
 };
-
-
 (:
 xmlconv:proceed($source_url, $country)
 :)
-
