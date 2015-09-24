@@ -179,9 +179,9 @@ declare function xmlconv:getVocabularyMapping(){
             <element>aqd:assessmentType</element>
         </vocabulary>
         <vocabulary label="Environmental domains" url="http://dd.eionet.europa.eu/vocabulary/common/environmentaldomain/">
-            <element>am:environmentalDomain</element>
+            <element checkConceptOnly="true">am:environmentalDomain</element>
         </vocabulary>
-        <vocabulary label="Environmental domains" url="http://inspire.ec.europa.eu/codeList/MediaValue/">
+        <vocabulary label="Environmental domains" url="http://inspire.ec.europa.eu/codeList/MediaValue/" ruleType="startsWith">
             <element>am:environmentalDomain</element>
         </vocabulary>
         <vocabulary label="Zone types" url="http://dd.eionet.europa.eu/vocabulary/aq/zonetype/">
