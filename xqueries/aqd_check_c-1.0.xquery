@@ -422,7 +422,7 @@ SELECT ?zone ?inspireId ?inspireLabel ?relevantEmissions ?stationClassification
          ?inspireId rdfs:label ?inspireLabel .
          ?zone aqd:relevantEmissions ?relevantEmissions .
          ?relevantEmissions aqd:stationClassification ?stationClassification
-  FILTER (CONTAINS(str(?zone), '", $cdrUrl, "/d/') and str(?stationClassification)='http://dd.eionet.europa.eu/vocabulary/aq/stationclassification/background')
+  FILTER (CONTAINS(str(?zone), '", $cdrUrl, "d/') and str(?stationClassification)='http://dd.eionet.europa.eu/vocabulary/aq/stationclassification/background')
   } order by ?zone")
 };
 
@@ -1456,7 +1456,6 @@ let $invalidAqdReportingMetricTest :=
 for $x in $aqdSamplingPointAssessmentMetadata
 where empty(index-of($aqdSamplingPointID, $x))
 return $x
-
 
 (: 40 :)
 
