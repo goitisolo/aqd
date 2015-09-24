@@ -1441,13 +1441,13 @@ let $invalidAqdReportingMetric := if (count($reportingMetric)>1) then $reporting
 
 (: C38 :)
 
-let $resultXml := if (fn:string-length($countryCode) = 2) then xmlconv:getSamplingPointInspireLabel($cdrUrl) else ""
-let $isInspireLebelCodesAvailable := string-length($resultXml) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($resultXml, "xml"))
-let $aqdSamplingPointID := if($isInspireLebelCodesAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($resultXml)//sparql:binding[@name='inspireLabel']/sparql:literal)) else ""
-let $isInspireLebelCodesAvailable := count($resultXml) > 0
+let $resultXml38 := if (fn:string-length($countryCode) = 2) then xmlconv:getSamplingPointInspireLabel($cdrUrl) else ""
+let $isInspireLebelCodesAvailable := string-length($resultXml38) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($resultXml38, "xml"))
+let $aqdSamplingPointID := if($isInspireLebelCodesAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($resultXml38)//sparql:binding[@name='inspireLabel']/sparql:literal)) else ""
+let $isInspireLebelCodesAvailable := count($resultXml38) > 0
 
 
-    let $aqdSamplingPointAssessmentMetadata :=
+let $aqdSamplingPointAssessmentMetadata :=
     for $aqdAssessmentRegime in $docRoot//aqd:AQD_AssessmentRegime/aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric
     where $aqdAssessmentRegime/fn:normalize-space(@xlink:href) = "http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/AEI"
 return  $aqdAssessmentRegime/../../../../../aqd:assessmentMethods/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata/fn:normalize-space(@xlink:href)
