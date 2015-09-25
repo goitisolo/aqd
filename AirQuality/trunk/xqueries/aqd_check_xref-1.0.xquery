@@ -439,10 +439,10 @@ declare function xmlconv:checkCrosslinkReferences(){
     let $omFeatureOfInterestLinks := doc($source_url)//om:OM_Observation/om:featureOfInterest/@xlink:href
     let $omFeatureOfInterestResult := xmlconv:checkDataflowDReferences(
         $dataflowDEnvelopeUrl,
-        <span>E8/F8 - the observation featureOfInterest shall resolve to a traversable link to /aqd:AQD_Model OR /aqd:AQD_Sample reported under {
+        <span>E8/F8 - the observation featureOfInterest shall resolve to a traversable link to /aqd:AQD_ModelArea OR /aqd:AQD_Sample reported under {
             if (count($omFeatureOfInterestLinks)>0 ) then $dataflowDEnvelopeLink else "Dataflow D."}</span>,
         $omFeatureOfInterestLinks,
-        ("Model", "Sample"),
+        ("ModelArea", "Sample"),
         "/om:OM_Observation/om:featureOfInterest")
 
     return
