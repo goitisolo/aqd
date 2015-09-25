@@ -229,6 +229,12 @@ as element(div)
         if ($errorCount = 0)
         then "INFO" else "BLOCKER"
 
+    let $feedbackMessage :=
+        if ($errorCount = 0) then
+            "No envelope-level errors found" 
+        else
+            concat($errorCount, ' envelope-level error', substring('s ', number(not($errorCount > 1)) * 2), 'found')
+
     return
         <div class="feedbacktext">
             <style type="text/css">
@@ -241,7 +247,7 @@ as element(div)
             ]]>
             </style>
             <h2>Check contents of delivery</h2>
-            <span id="feedbackStatus" class="{$errorLevel}" style="display:none">{$errorCount} envelope-level error{substring("s ", number(not($errorCount > 1)) * 2)}found</span>
+            <span id="feedbackStatus" class="{$errorLevel}" style="display:none">{$feedbackMessage}</span>
             {$messages}
             <br/>
             <div class="footnote"><sup>*</sup>Detailed information about the QA/QC rules checked in this routine can be found from the <a href="http://www.eionet.europa.eu/aqportal/qaqc/">e-reporting QA/QC rules documentation</a> in chapter "2.1.3 Check for Reporting Header within an envelope".</div>
