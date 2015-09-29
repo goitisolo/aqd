@@ -1292,7 +1292,8 @@ let $isAssessmentMethodsAvailable := count($resultXml2) > 0
 (: G41 :)
 (: - CAUTION - Some of the following variables are being used in other rules :)
 
-let $resultXml := if (fn:string-length($countryCode) = 2) then xmlconv:getSamplingPoint($modelCdrUrl) else ""
+let $modelCdrUrl_1 := $cdrUrl
+let $resultXml := if (fn:string-length($countryCode) = 2) then xmlconv:getSamplingPoint($modelCdrUrl_1) else ""
 let $isSamplingPointAvailable := string-length($resultXml) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($resultXml, "xml"))
 let $samplingPointlD := if($isSamplingPointAvailable) then
     let $results := xmlconv:executeSparqlQuery($resultXml)
