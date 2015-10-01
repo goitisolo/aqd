@@ -1015,6 +1015,16 @@ let $invalidEfbelongsTo :=
       <td title="ef:belongsTo">{data(fn:normalize-space($x/@xlink:href))}</td>
     </tr>
 
+(: D44b :)
+let $invalidStationEfbelongsTo :=
+    for $x in $docRoot//aqd:AQD_Station/ef:belongsTo
+    where empty(index-of($aqdNetworkLocal,fn:normalize-space($x/@xlink:href)))
+    return
+    <tr>
+      <td title="aqd:AQD_Station">{data($x/../@gml:id)}</td>
+      <td title="ef:belongsTo">{data(fn:normalize-space($x/@xlink:href))}</td>
+    </tr>
+
 (: D45 :)
 (: Find all period with out end period :)
 
@@ -1868,8 +1878,10 @@ return
                 (),$invalidEfprocedure, "aqd:AQD_SamplingPoint/@gml:id", "All attributes are valid", " invalid attribute", "","warning", ())}
         {xmlconv:buildResultRows("D43", "Cross-check with AQD_Station (../ef:broader/@xlink shall resolve to a traversable local of global URI to ../AQD_Station)",
                 (),$invalidEfbroader, "aqd:AQD_SamplingPoint/@gml:id", "All attributes are valid", " invalid attribute", "","warning", ())}
-        {xmlconv:buildResultRows("D44", "Cross-check with AQD_Network (../ef:belongsTo shall resolve to a traversable local of global URI to ../AQD_Network)",
+        {xmlconv:buildResultRows("D44", "Cross-check with AQD_Network (aqd:AQD_SamplingPoint/ef:belongsTo shall resolve to a traversable local of global URI to ../AQD_Network)",
                 (),$invalidEfbelongsTo, "aqd:AQD_SamplingPoint/@gml:id", "All attributes are valid", " invalid attribute", "","warning", ())}
+        {xmlconv:buildResultRows("D44b", "Cross-check with AQD_Network (aqd:AQD_Station/ef:belongsTo shall resolve to a traversable local of global URI to ../AQD_Network)",
+                (),$invalidStationEfbelongsTo, "aqd:AQD_Station/@gml:id", "All attributes are valid", " invalid attribute", "","warning", ())}
 	    <tr style="border-top:2px solid #666666">
             <th colspan="3" style="vertical-align:top;text-align:left"></th>
             </tr>
