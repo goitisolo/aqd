@@ -1259,8 +1259,10 @@ let $assessmentMetadataNamespace := if($isAssessmentMethodsAvailable) then disti
 let $assessmentMetadataId := if($isAssessmentMethodsAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($resultXml2)//sparql:binding[@name='assessmentMetadataId']/sparql:literal)) else ""
 let $assessmentMetadata := if($isAssessmentMethodsAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($resultXml2)//concat(sparql:binding[@name='assessmentMetadataNamespace']/sparql:literal,"/",sparql:binding[@name='assessmentMetadataId']/sparql:literal))) else ""
 (: for G42, G67 :)
+let $resultXml3 :=  xmlconv:getSamplingPointAssessmentMetadata()
+let $isAssessmentMethodsAvailable := string-length($resultXml3) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($resultXml3, "xml"))
 let $samplingPointAssessmentMetadata := if($isAssessmentMethodsAvailable) then 
-    let $results := xmlconv:executeSparqlQuery($resultXml2)
+    let $results := xmlconv:executeSparqlQuery($resultXml3)
     let $values :=
         for $i in $results
             return concat($i/sparql:binding[@name='metadataNamespace']/sparql:literal,"/", $i/sparql:binding[@name='metadataId']/sparql:literal)
