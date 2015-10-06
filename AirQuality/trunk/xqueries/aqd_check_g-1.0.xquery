@@ -777,10 +777,8 @@ return
 let $countExceedances := count($docRoot//aqd:AQD_Attainment[aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedance = "true"])
 :)
 let $allExceedances :=
-    for $attainment in $docRoot//aqd:AQD_Attainment
-    let $numExceedance := data($attainment/aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:numericalExceedance)
-    where $attainment/aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedance = "true" or
-        (if ($numExceedance castable as xs:decimal) then (xs:decimal($numExceedance) > 0) else false())
+    for $attainment in $docRoot//aqd:AQD_Attainment    
+    where (data($attainment/aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedance) = "true")        
     return
         $attainment
 
