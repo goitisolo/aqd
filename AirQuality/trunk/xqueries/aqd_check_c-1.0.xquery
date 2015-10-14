@@ -97,18 +97,38 @@ http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV
 aqd:reportingMetric xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean
 aqd:protectionTarget xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H");
 
-declare variable $xmlconv:VALID_ENVIRONMENTALOBJECTIVE_C15 as xs:string* := ("aqd:objectiveType xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/ECO
-aqd:reportingMetric xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/AEI
-aqd:protectionTarget xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H",
-"or"," http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV aqd:reportingMetric xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean aqd:protectionTarget xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H",
-"or", "aqd:objectiveType xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/TV aqd:reportingMetric xlink:href attribute shall resolve to one of
-http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean  aqd:protectionTarget xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H",
-"or", "aqd:objectiveType xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LVMOT aqd:reportingMetric xlink:href attribute shall resolve to one of
-http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean aqd:protectionTarget xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H",
-"or", "aqd:objectiveType xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LVT aqd:reportingMetric xlink:href attribute shall resolve to one of
-http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean aqd:protectionTarget xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H-S1",
-"or", "aqd:objectiveType xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LVT aqd:reportingMetric xlink:href attribute shall resolve to one of
-http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean aqd:protectionTarget xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H-S2");
+declare variable $xmlconv:VALID_ENVIRONMENTALOBJECTIVE_C15 as xs:string* := ("
+    aqd:objectiveType xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/ECO
+    aqd:reportingMetric xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/AEI
+    aqd:protectionTarget xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H","or","
+    
+    aqd:objectiveType xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV
+    aqd:reportingMetric xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean
+    aqd:protectionTarget xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H","or","
+    
+    aqd:objectiveType xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/TV
+    aqd:reportingMetric xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean
+    aqd:protectionTarget xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H","or","
+    
+    aqd:objectiveType xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LVMOT
+    aqd:reportingMetric xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean
+    aqd:protectionTarget xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H","or","
+    
+    aqd:objectiveType xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LVMOT
+    aqd:reportingMetric xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean
+    aqd:protectionTarget xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H-S1","or","
+    
+    aqd:objectiveType xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV
+    aqd:reportingMetric xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean
+    aqd:protectionTarget xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H-S1","or","
+    
+    aqd:objectiveType xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV
+    aqd:reportingMetric xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean
+    aqd:protectionTarget xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H-S2","or","
+    
+    aqd:objectiveType xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/MO
+    aqd:reportingMetric xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/NA
+    aqd:protectionTarget xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/NA");
 
 
 declare variable $xmlconv:VALID_ENVIRONMENTALOBJECTIVE_C16 as xs:string* := (
@@ -970,6 +990,11 @@ let $invalidAqdAssessmentRegimeAqdPollutantC15 :=
             (($aqdPollutantC15/aqd:objectiveType/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LVMOT")
             or ($aqdPollutantC15/aqd:reportingMetric/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean")
             or ($aqdPollutantC15/aqd:protectionTarget/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"))
+            
+    and
+            (($aqdPollutantC15/aqd:objectiveType/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LVMOT")
+            or ($aqdPollutantC15/aqd:reportingMetric/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean")
+            or ($aqdPollutantC15/aqd:protectionTarget/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H-S1"))            
 
     and
             (($aqdPollutantC15/aqd:objectiveType/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV")
