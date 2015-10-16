@@ -510,6 +510,21 @@
             </table:table-rows>
           </table:table>
         </xsl:if>
+
+        <!--XSLT for E1 ( E1a,E2a )-->
+        <xsl:if test="count(gml:featureMember/om:OM_Observation)">
+          <table:table>
+            <xsl:attribute name="table:name">
+              <xsl:text>OM_Observation</xsl:text>
+            </xsl:attribute>
+            <xsl:call-template name="omObservation_headers"/>
+            <table:table-rows>
+              <xsl:for-each select="gml:featureMember/om:OM_Observation">
+                <xsl:call-template name="omObservation_rows"/>
+              </xsl:for-each>
+            </table:table-rows>
+          </table:table>
+        </xsl:if>
       </office:body>
 
 
@@ -5874,5 +5889,408 @@
       </table:table-row>
     </xsl:for-each>
   </xsl:template>
+
+  <xsl:template name="omObservation_headers">
+    <table:table-columns>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+    </table:table-columns>
+    <table:table-header-rows>
+      <table:table-row table:default-cell-value-type="string">
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            gml_id
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            phenomenonTimeBegin
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            phenomenonTimeEnd
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            timeInstant
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            procedure
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            assessmentType
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            samplingPoint
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            station
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            observedProperty
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            featureOfInterest
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            swe:value
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            field1
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            field2
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            field3
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            field4
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            field5
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            field6
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            definition
+          </text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            uom
+          </text:p>
+        </table:table-cell>
+      </table:table-row>
+    </table:table-header-rows>
+  </xsl:template>
+
+  <xsl:template name="omObservation_rows">
+    <xsl:for-each select=".">
+      <table:table-row table:default-cell-value-type="string">
+
+        <!-- 1 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="@gml:id"/>
+          </text:p>
+        </table:table-cell>
+
+        <!-- 2 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="om:phenomenonTime/gml:TimePeriod/gml:beginPosition"/>
+          </text:p>
+        </table:table-cell>
+
+        <!-- 3 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="om:phenomenonTime/gml:TimePeriod/gml:endPosition"/>
+          </text:p>
+        </table:table-cell>
+
+        <!-- 4 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="om:resultTime/gml:TimeInstant"/>
+          </text:p>
+        </table:table-cell>
+
+        <!-- 5 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="om:procedure/@xlink:href"/>
+          </text:p>
+        </table:table-cell>
+
+        <!-- 6 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:choose>
+              <xsl:when test="om:parameter/om:NamedValue/om:name[@xlink:href = 'http://dd.eionet.europa.eu/vocabulary/aq/processparameter/AssessmentType']/../om:value != ''">
+                <xsl:value-of select="om:parameter/om:NamedValue/om:name[@xlink:href = 'http://dd.eionet.europa.eu/vocabulary/aq/processparameter/AssessmentType']/../om:value"/>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:value-of select="om:parameter/om:NamedValue/om:name[@xlink:href = 'http://dd.eionet.europa.eu/vocabulary/aq/processparameter/AssessmentType']/../om:value/@xlink:href"/>
+              </xsl:otherwise>
+            </xsl:choose>
+          </text:p>
+        </table:table-cell>
+
+        <!-- 7 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:choose>
+              <xsl:when test="om:parameter/om:NamedValue/om:name[@xlink:href = 'http://dd.eionet.europa.eu/vocabulary/aq/processparameter/SamplingPoint']/../om:value != ''">
+                <xsl:value-of select="om:parameter/om:NamedValue/om:name[@xlink:href = 'http://dd.eionet.europa.eu/vocabulary/aq/processparameter/SamplingPoint']/../om:value"/>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:value-of select="om:parameter/om:NamedValue/om:name[@xlink:href = 'http://dd.eionet.europa.eu/vocabulary/aq/processparameter/SamplingPoint']/../om:value/@xlink:href"/>
+              </xsl:otherwise>
+            </xsl:choose>
+          </text:p>
+        </table:table-cell>
+
+        <!-- 8 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:choose>
+              <xsl:when test="om:parameter/om:NamedValue/om:name[@xlink:href = 'http://dd.eionet.europa.eu/vocabulary/aq/processparameter/Station']/../om:value != ''">
+                <xsl:value-of select="om:parameter/om:NamedValue/om:name[@xlink:href = 'http://dd.eionet.europa.eu/vocabulary/aq/processparameter/Station']/../om:value"/>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:value-of select="om:parameter/om:NamedValue/om:name[@xlink:href = 'http://dd.eionet.europa.eu/vocabulary/aq/processparameter/Station']/../om:value/@xlink:href"/>
+              </xsl:otherwise>
+            </xsl:choose>
+          </text:p>
+        </table:table-cell>
+
+        <!-- 9 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="om:observedProperty/@xlink:href"/>
+          </text:p>
+        </table:table-cell>
+
+        <!-- 10 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:value-of select="om:featureOfInterest/@xlink:href"/>
+          </text:p>
+        </table:table-cell>
+
+        <!-- 11 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:choose>
+              <xsl:when test="om:result/swe:elementCount">
+                <xsl:value-of select="om:result/swe:elementCount/swe:Count/swe:value"/>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:value-of select="om:result/swe:DataArray/swe:elementCount/swe:Count/swe:value"/>
+              </xsl:otherwise>
+            </xsl:choose>
+          </text:p>
+        </table:table-cell>
+
+        <!-- 12 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:choose>
+              <xsl:when test="om:result/swe:elementType/swe:DataRecord/swe:field[1]">
+                <xsl:value-of select="om:result/swe:elementType/swe:DataRecord/swe:field[1]/@name"/>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:value-of select="om:result/swe:DataArray/swe:elementType/swe:DataRecord/swe:field[1]/@name"/>
+              </xsl:otherwise>
+            </xsl:choose>
+          </text:p>
+        </table:table-cell>
+
+        <!-- 13 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:choose>
+              <xsl:when test="om:result/swe:elementType/swe:DataRecord/swe:field[2]">
+                <xsl:value-of select="om:result/swe:elementType/swe:DataRecord/swe:field[2]/@name"/>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:value-of select="om:result/swe:DataArray/swe:elementType/swe:DataRecord/swe:field[2]/@name"/>
+              </xsl:otherwise>
+            </xsl:choose>
+          </text:p>
+        </table:table-cell>
+
+        <!-- 14 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:choose>
+              <xsl:when test="om:result/swe:elementType/swe:DataRecord/swe:field[3]">
+                <xsl:value-of select="om:result/swe:elementType/swe:DataRecord/swe:field[3]/@name"/>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:value-of select="om:result/swe:DataArray/swe:elementType/swe:DataRecord/swe:field[3]/@name"/>
+              </xsl:otherwise>
+            </xsl:choose>
+          </text:p>
+        </table:table-cell>
+
+        <!-- 15 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:choose>
+              <xsl:when test="om:result/swe:elementType/swe:DataRecord/swe:field[4]">
+                <xsl:value-of select="om:result/swe:elementType/swe:DataRecord/swe:field[4]/@name"/>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:value-of select="om:result/swe:DataArray/swe:elementType/swe:DataRecord/swe:field[4]/@name"/>
+              </xsl:otherwise>
+            </xsl:choose>
+          </text:p>
+        </table:table-cell>
+
+        <!-- 16 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:choose>
+              <xsl:when test="om:result/swe:elementType/swe:DataRecord/swe:field[5]">
+                <xsl:value-of select="om:result/swe:elementType/swe:DataRecord/swe:field[5]/@name"/>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:value-of select="om:result/swe:DataArray/swe:elementType/swe:DataRecord/swe:field[5]/@name"/>
+              </xsl:otherwise>
+            </xsl:choose>
+          </text:p>
+        </table:table-cell>
+
+        <!-- 17 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:choose>
+              <xsl:when test="om:result/swe:elementType/swe:DataRecord/swe:field[6]">
+                <xsl:value-of select="om:result/swe:elementType/swe:DataRecord/swe:field[6]/@name"/>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:value-of select="om:result/swe:DataArray/swe:elementType/swe:DataRecord/swe:field[6]/@name"/>
+              </xsl:otherwise>
+            </xsl:choose>
+          </text:p>
+        </table:table-cell>
+
+        <!-- 18 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:choose>
+              <xsl:when test="om:result/swe:elementType/swe:DataRecord/swe:field/swe:Quantity">
+                <xsl:value-of select="om:result/swe:elementType/swe:DataRecord/swe:field/swe:Quantity/@definition"/>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:value-of select="om:result/swe:DataArray/swe:elementType/swe:DataRecord/swe:field/swe:Quantity/@definition"/>
+              </xsl:otherwise>
+            </xsl:choose>
+          </text:p>
+        </table:table-cell>
+
+        <!-- 19 -->
+        <table:table-cell table:style-name="cell1">
+          <text:p>
+            <xsl:choose>
+              <xsl:when test="om:result/swe:elementType/swe:DataRecord/swe:field/swe:Quantity/swe:uom">
+                <xsl:value-of select="om:result/swe:elementType/swe:DataRecord/swe:field/swe:Quantity/swe:uom/@xlink:href"/>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:value-of select="om:result/swe:DataArray/swe:elementType/swe:DataRecord/swe:field/swe:Quantity/swe:uom/@xlink:href"/>
+              </xsl:otherwise>
+            </xsl:choose>
+          </text:p>
+        </table:table-cell>
+
+      </table:table-row>
+    </xsl:for-each>
+  </xsl:template>
+
+
 
 </xsl:stylesheet>
