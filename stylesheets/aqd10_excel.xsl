@@ -6024,32 +6024,32 @@
         </table:table-cell>
         <table:table-cell table:style-name="Heading2">
           <text:p>
-            field1
+            swe:field1
           </text:p>
         </table:table-cell>
         <table:table-cell table:style-name="Heading2">
           <text:p>
-            field2
+            swe:field2
           </text:p>
         </table:table-cell>
         <table:table-cell table:style-name="Heading2">
           <text:p>
-            field3
+            swe:field3
           </text:p>
         </table:table-cell>
         <table:table-cell table:style-name="Heading2">
           <text:p>
-            field4
+            swe:field4
           </text:p>
         </table:table-cell>
         <table:table-cell table:style-name="Heading2">
           <text:p>
-            field5
+            swe:field5
           </text:p>
         </table:table-cell>
         <table:table-cell table:style-name="Heading2">
           <text:p>
-            field6
+            swe:field6
           </text:p>
         </table:table-cell>
         <table:table-cell table:style-name="Heading2">
@@ -6112,8 +6112,21 @@
               <xsl:when test="om:parameter/om:NamedValue/om:name[@xlink:href = 'http://dd.eionet.europa.eu/vocabulary/aq/processparameter/AssessmentType']/../om:value != ''">
                 <xsl:value-of select="om:parameter/om:NamedValue/om:name[@xlink:href = 'http://dd.eionet.europa.eu/vocabulary/aq/processparameter/AssessmentType']/../om:value"/>
               </xsl:when>
-              <xsl:otherwise>
+
+              <xsl:when test="om:parameter/om:NamedValue/om:name[@xlink:href = 'http://dd.eionet.europa.eu/vocabulary/aq/processparameter/AssessmentType']/../om:value/@xlink:href != ''">
                 <xsl:value-of select="om:parameter/om:NamedValue/om:name[@xlink:href = 'http://dd.eionet.europa.eu/vocabulary/aq/processparameter/AssessmentType']/../om:value/@xlink:href"/>
+              </xsl:when>
+
+              <xsl:when test="om:parameter/om:NamedValue/om:name[@xlink:href,'http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype']/../om:value != ''">
+                <xsl:value-of select="om:parameter/om:NamedValue/om:name[@xlink:href = 'http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype']/../om:value"/>
+              </xsl:when>
+
+              <xsl:when test="om:parameter/om:NamedValue/om:name[@xlink:href = 'http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype']/../om:value/@xlink:href != ''">
+                <xsl:value-of select="om:parameter/om:NamedValue/om:name[@xlink:href = 'http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype']/../om:value/@xlink:href"/>
+              </xsl:when>
+
+              <xsl:otherwise>
+                <xsl:text></xsl:text>
               </xsl:otherwise>
             </xsl:choose>
           </text:p>
