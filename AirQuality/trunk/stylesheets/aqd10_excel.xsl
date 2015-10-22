@@ -5721,7 +5721,7 @@
         <!-- 10 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="aqd:aqdZoneType"/>
+            <xsl:value-of select="aqd:aqdZoneType/@xlink:href"/>
           </text:p>
         </table:table-cell>
         <!-- 11 -->
