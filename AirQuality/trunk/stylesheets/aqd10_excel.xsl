@@ -6696,7 +6696,7 @@
         <!-- 1.13 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="fn:substring-after(aqd:status/@xlink:href, 'http://dd.eionet.europa.eu/vocabulary/aq/statusaqplan/')"/>
+            <xsl:value-of select="aqd:status/@xlink:href"/>
           </text:p>
         </table:table-cell>
 
@@ -7009,7 +7009,7 @@
         <!-- 2.8 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="fn:substring-after($parent/aqd:status/@xlink:href, 'http://dd.eionet.europa.eu/vocabulary/aq/statusaqplan/')"/>
+            <xsl:value-of select="$parent/aqd:status/@xlink:href"/>
           </text:p>
         </table:table-cell>
 
@@ -7210,7 +7210,7 @@
         <!-- 3.8 -->
         <table:table-cell table:style-name="cell1">
           <text:p>
-            <xsl:value-of select="fn:substring-after($parent/aqd:status/@xlink:href, 'http://dd.eionet.europa.eu/vocabulary/aq/statusaqplan/')"/>
+            <xsl:value-of select="$parent/aqd:status/@xlink:href"/>
           </text:p>
         </table:table-cell>
 
