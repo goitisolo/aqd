@@ -1215,7 +1215,7 @@ let $pollutantCode := fn:substring-after(data($x//aqd:pollutant/@xlink:href),"po
 let $key := if (not(empty(index-of($exceptionPollutantIds, $pollutantCode)))
   and data($x//aqd:zone/@nilReason)="inapplicable") then
 "EXC" else
-concat(data($x/@gml:id), '#', data($x//aqd:zone/@xlink:href), '#', data($x//aqd:pollutant/@xlink:href), '#', data($x//aqd:protectionTarget/@xlink:href))
+concat(data($x//aqd:zone/@xlink:href), '#', data($x//aqd:pollutant/@xlink:href), '#', data($x//aqd:protectionTarget/@xlink:href))
 where empty(index-of($validRows, $key)) and not(empty(index-of($xmlconv:MANDATORY_POLLUTANT_IDS_8, $pollutantCode)))
 return if ($key !="EXC") then
 
