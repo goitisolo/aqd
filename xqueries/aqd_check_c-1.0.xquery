@@ -1188,7 +1188,54 @@ let $tblC26 :=
             (($invalidModel), ($invalidSampingPoint))
 
 
+(: 29 :)
 
+(: return all zones listed in the doc :)
+
+let $resultXml := if (fn:string-length($countryCode) = 2) then xmlconv:getInspireId($cdrUrl) else ""
+let $isInspireIdCodesAvailable := string-length($resultXml) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($resultXml, "xml"))
+let $zoneIds := if($isInspireIdCodesAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($resultXml)//sparql:binding[@name='inspireLabel']/sparql:literal)) else ()
+
+let $validZones := 
+    for $zoneId in $zoneIds
+    return
+        if ($zoneId != "" and count($docRoot//aqd:AQD_AssessmentRegime/aqd:zone[@xlink:href=$zoneId]) > 0) then
+            $zoneId
+        else
+            ()
+            
+(: return zones not listed in B :)
+let $invalidEqual :=
+    for $regime in $docRoot//aqd:AQD_AssessmentRegime
+    let $zoneId := data($regime/aqd:zone/@xlink:href)
+    let $zoneId := if (string-length($zoneId) = 0) then "" else $zoneId
+
+    return
+    if ($zoneId != "" and empty(index-of($zoneIds, $zoneId))) then
+        <tr>
+            <td title="AQD_AssessmentRegime">{data($regime/@gml:id)}</td>
+            <td title="aqd:zoneId">{$zoneId}</td>
+            <td title="AQD_Zone">Not existing</td>
+        </tr>
+    else ()
+
+let $invalidEqual2 :=
+    for $zoneId in $zoneIds
+    return
+    if ($zoneId != "" and count($docRoot//aqd:AQD_AssessmentRegime/aqd:zone[@xlink:href=$zoneId]) = 0) then
+        <tr>
+            <td title="AQD_AssessmentRegime">Not existing</td>
+            <td title="aqd:zoneId"></td>
+            <td title="AQD_Zone">{$zoneId}</td>
+        </tr>
+    else ()
+
+
+let $countZoneIds1 := count($zoneIds)
+let $countZoneIds2 := count(distinct-values($docRoot//aqd:AQD_AssessmentRegime/aqd:zone/@xlink:href))
+
+
+let $resultC29 := (($invalidEqual), ($invalidEqual2))
 
 (: 27 :)
 
@@ -1210,12 +1257,12 @@ return
 let $exceptionPollutantIds := ($xmlconv:MANDATORY_POLLUTANT_IDS_9, "6001")
 
 let $invalid :=
-for $x in  $docRoot//aqd:AQD_AssessmentRegime
-let $pollutantCode := fn:substring-after(data($x//aqd:pollutant/@xlink:href),"pollutant/")
-let $key := if (not(empty(index-of($exceptionPollutantIds, $pollutantCode)))
-  and data($x//aqd:zone/@nilReason)="inapplicable") then
-"EXC" else
-concat(data($x//aqd:zone/@xlink:href), '#', data($x//aqd:pollutant/@xlink:href), '#', data($x//aqd:protectionTarget/@xlink:href))
+for $x in  $docRoot//aqd:AQD_AssessmentRegime[aqd:zone/@xlink:href = $validZones]
+    let $pollutantCode := fn:substring-after(data($x//aqd:pollutant/@xlink:href),"pollutant/")
+    let $key := if (not(empty(index-of($exceptionPollutantIds, $pollutantCode)))
+      and data($x//aqd:zone/@nilReason)="inapplicable") then
+    "EXC" else
+    concat(data($x//aqd:zone/@xlink:href), '#', data($x//aqd:pollutant/@xlink:href), '#', data($x//aqd:protectionTarget/@xlink:href))
 where empty(index-of($validRows, $key)) and not(empty(index-of($xmlconv:MANDATORY_POLLUTANT_IDS_8, $pollutantCode)))
 return if ($key !="EXC") then
 
@@ -1277,53 +1324,6 @@ let $invalidZoneGmlEndPosition :=
             }
         </tr>
 
-
-
-
-(: 29 :)
-
-(: return all zones listed in the doc :)
-
-let $resultXml := if (fn:string-length($countryCode) = 2) then xmlconv:getInspireId($cdrUrl) else ""
-let $isInspireIdCodesAvailable := string-length($resultXml) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($resultXml, "xml"))
-let $zoneIds := if($isInspireIdCodesAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($resultXml)//sparql:binding[@name='inspireLabel']/sparql:literal)) else ()
-
-(: return zones not listed in B :)
-let $invalidEqual :=
-    for $regime in $docRoot//aqd:AQD_AssessmentRegime
-    let $zoneId := data($regime/aqd:zone/@xlink:href)
-    let $zoneId := if (string-length($zoneId) = 0) then "" else $zoneId
-
-    return
-    if ($zoneId != "" and empty(index-of($zoneIds, $zoneId))) then
-        <tr>
-            <td title="AQD_AssessmentRegime">{data($regime/@gml:id)}</td>
-            <td title="aqd:zoneId">{$zoneId}</td>
-            <td title="AQD_Zone">Not existing</td>
-        </tr>
-    else ()
-
-let $invalidEqual2 :=
-    for $zoneId in $zoneIds
-    return
-    if ($zoneId != "" and count($docRoot//aqd:AQD_AssessmentRegime/aqd:zone[@xlink:href=$zoneId]) = 0) then
-        <tr>
-            <td title="AQD_AssessmentRegime">Not existing</td>
-            <td title="aqd:zoneId"></td>
-            <td title="AQD_Zone">{$zoneId}</td>
-        </tr>
-    else ()
-
-
-let $countZoneIds1 := count($zoneIds)
-let $countZoneIds2 := count(distinct-values($docRoot//aqd:AQD_AssessmentRegime/aqd:zone/@xlink:href))
-
-
-let $resultC29 := (($invalidEqual), ($invalidEqual2))
-
-
-
-(: 30 :)
 
 (: 31 :)
 (:
