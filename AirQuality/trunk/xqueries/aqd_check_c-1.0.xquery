@@ -832,8 +832,6 @@ for $code in $xmlconv:MANDATORY_POLLUTANT_IDS_8
     where count($docRoot//aqd:AQD_AssessmentRegime/aqd:pollutant[@xlink:href=$pollutantLink]) < 1
     return $code
 
-
-
 (: C9 :)
 (: if a regime is missing for a pollutant in the list, warning should be thrown :)
 
@@ -1188,7 +1186,7 @@ let $tblC26 :=
             (($invalidModel), ($invalidSampingPoint))
 
 
-(: 29 :)
+(: 27 :)
 
 (: return all zones listed in the doc :)
 
@@ -1235,9 +1233,9 @@ let $countZoneIds1 := count($zoneIds)
 let $countZoneIds2 := count(distinct-values($docRoot//aqd:AQD_AssessmentRegime/aqd:zone/@xlink:href))
 
 
-let $resultC29 := (($invalidEqual), ($invalidEqual2))
+let $resultC27 := (($invalidEqual), ($invalidEqual2))
 
-(: 27 :)
+(: 29 :)
 
 (:
 let $resultXml := if (fn:string-length($countryCode) = 2) then xmlconv:getInspireId($cdrUrl) else ""
@@ -1253,8 +1251,7 @@ for $rec in xmlconv:executeSparqlQuery($resultSparql)
 return
     distinct-values(concat(data($rec//sparql:binding[@name='inspireLabel']/sparql:literal), "#", data($rec//sparql:binding[@name='pollutantCode']/sparql:uri), "#",data($rec//sparql:binding[@name='protectionTarget']/sparql:uri)))
 
-
-let $exceptionPollutantIds := ($xmlconv:MANDATORY_POLLUTANT_IDS_9, "6001")
+let $exceptionPollutantIds := ("6001")
 
 let $invalid :=
 for $x in  $docRoot//aqd:AQD_AssessmentRegime[aqd:zone/@xlink:href = $validZones]
@@ -1276,7 +1273,7 @@ return if ($key !="EXC") then
 
 else ()
 
-let $tblC27 := $invalid
+let $tblC29 := $invalid
 
 (:
 let $resultXml := if (fn:string-length($countryCode) = 2) then xmlconv:getInspireId($countryCode) else ""
@@ -1557,20 +1554,19 @@ return
         {xmlconv:buildResultTable("C26", "The assessment methods referenced by ./aqd:assessmentMethods/aqd:AssessmentMethods/aqd:modelAssessmentMeta data or ./aqd:assessmentMethods/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata xlink:href attribute  shall  contain one  element /aqd:AQD_Model/ef:observingCapability/ef:ObservingCapability/ef:observingTime/gml:TimePeriod/gml:endPosition or /aqd:AQD_SamplingPoint/ef:observingCapability/ef:ObservingCapability/ef:observingTime/gml:TimePeriod/gml:endPosition that is operational within the aqd:reportingPeriod  included  in  the  ReportingHead",
                 (), "All values are valid", " invalid value", "","warning", $tblC26)}
 
-        {xmlconv:buildResultTable("C27", concat("aqd:zone xlink:href attribute shall resolve to a traversable link to an AQ zone in /aqd:AQD_Zone reported under cdr.eionet.europa.eu/ZZ/eu/aqd/b/...  The ./aqd:pollutant and ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget within the Assessment Regime shall equal one combination /aqd:AQD_Zone/aqd:pollutants/aqd:Pollutant/aqd:pollutantCode and /aqd:AQD_Zone/aqd:pollutants/aqd:Pollutant/aqd:protectionTarget within  the  linked  zone  aqd:AQD_Zone/aqd:pollutants",
-                "Exception : Where ./aqd:pollutant resolves to the list in  C9 and http://dd.eionet.europa.eu/vocabulary/aq/pollutant/6001 ./aqd:zone xlink:href attribute MAY resolve to <aqd:zone nilReason='inapplicable'/>"),
-                (), "All values are valid", " invalid value", "","warning", $tblC27)}
+        {xmlconv:buildResultTable("C27", concat("The  number of unique zones cited by /aqd:AQD_AssessmentRegime (", $countZoneIds2 , ") shall be EQUAL to the number of unique zones in ./aqd:AQD_Zone (", $countZoneIds1, ")"),
+            (), "Count of unique zones matches", " not unique zone",  "", "warning", $resultC27)}
 
         <!--{xmlconv:buildResultRows("C27", concat("aqd:zone xlink:href attribute shall resolve to a traversable link to an AQ zone in /aqd:AQD_Zone reported under cdr.eionet.europa.eu/ZZ/eu/aqd/b/...  The ./aqd:pollutant and ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget within the Assessment Regime shall equal one combination /aqd:AQD_Zone/aqd:pollutants/aqd:Pollutant/aqd:pollutantCode and /aqd:AQD_Zone/aqd:pollutants/aqd:Pollutant/aqd:protectionTarget within  the  linked  zone  aqd:AQD_Zone/aqd:pollutants",
                 "Exception : Where ./aqd:pollutant resolves to the list in  C9 and http://dd.eionet.europa.eu/vocabulary/aq/pollutant/6001 ./aqd:zone xlink:href attribute MAY resolve to <aqd:zone nilReason='inapplicable'/>"),
                 $invalidAqdAssessmentRegimeZone,(),  "aqd:AQD_Model or aqd:AQD_SamplingPoint", "All values are valid", " invalid value", "","warning", ())}-->
 
-
         {xmlconv:buildResultRows("C28", "The lifecycle information of ./aqd:zone xlink:href shall be current, /aqd:AQD_Zone/am:beginLifespanVersion AND /aqd:AQD_Zone/am:designationPeriod/gml:TimePeriod/gml:endPosition shall be operational within  the  aqd:reportingPeriod included in the ReportingHead",
                 $invalidZoneGmlEndPosition,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error", ())}
-        {xmlconv:buildResultTable("C29", concat("The  number of unique zones cited by /aqd:AQD_AssessmentRegime (", $countZoneIds2 , ") shall be EQUAL to the number of unique zones in ./aqd:AQD_Zone (", $countZoneIds1, ")"),
-            (), "Count of unique zones matches", " not unique zone",  "", "warning", $resultC29)}
 
+        {xmlconv:buildResultTable("C29", concat("aqd:zone xlink:href attribute shall resolve to a traversable link to an AQ zone in /aqd:AQD_Zone reported under cdr.eionet.europa.eu/ZZ/eu/aqd/b/...  The ./aqd:pollutant and ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget within the Assessment Regime shall equal one combination /aqd:AQD_Zone/aqd:pollutants/aqd:Pollutant/aqd:pollutantCode and /aqd:AQD_Zone/aqd:pollutants/aqd:Pollutant/aqd:protectionTarget within  the  linked  zone  aqd:AQD_Zone/aqd:pollutants",
+                "Exception : Where ./aqd:pollutant resolves to http://dd.eionet.europa.eu/vocabulary/aq/pollutant/6001 ./aqd:zone xlink:href attribute MAY resolve to <aqd:zone nilReason='inapplicable'/>"),
+                (), "All values are valid", " invalid value", "","warning", $tblC29)}
         {xmlconv:buildResultTable("C32", "./aqd:assessmentMethods/aqd:AssessmentMethods/aqd:assessmentType shall be compared with the /aqd:AQD_SamplingPoint/aqd:assessmentType for assessment method cited by ./aqd:assessmentMethods/aqd:AssessmentMethods/aqd:samplingPoint Assessm entMetadata xlink:href attribute and/ or /aqd:AQD_Model /aqd:assessmentType for  assessment  method  cited  by ./aqd:assessmentMet hods/aqd:AssessmentMethods/aqd:samplingPoint Assessm entMetadata xlink:href attribute",
                 (),"All valid", " invalid value",  "","warning", $tblC32)}
         {xmlconv:buildResultRows("C33", "If The lifecycle information of ./aqd:assessmentMethods/aqd:AssessmentMethods/aqd:*AssessmentMetadata xlink:href shall be current, then /AQD_SamplingPoint/aqd:operationActivityPeriod/gml:endPosition or /AQD_ModelType/aqd:operationActivityPeriod/gml:endPosition shall be equal to “9999-12-31 23:59:59Z” or nulled (blank)",
