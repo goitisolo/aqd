@@ -229,7 +229,7 @@
   </xsl:template>
 
   <!-- Unneeded wrappers -->
-  <xsl:template match="gco:CharacterString|gmd:LocalisedCharacterString|gco:Record" mode="resourceorliteral">
+  <xsl:template match="gco:CharacterString|gmd:LocalisedCharacterString|gco:Record|gmd:CI_DateTypeCode" mode="resourceorliteral">
     <xsl:value-of select="text()"/>
   </xsl:template>
 
