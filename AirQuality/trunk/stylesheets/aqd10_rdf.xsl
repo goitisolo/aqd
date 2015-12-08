@@ -229,7 +229,18 @@
   </xsl:template>
 
   <!-- Unneeded wrappers -->
-  <xsl:template match="gco:CharacterString|gmd:LocalisedCharacterString" mode="resourceorliteral">
+  <xsl:template match="gco:CharacterString|gmd:LocalisedCharacterString|gco:Record" mode="resourceorliteral">
+    <xsl:value-of select="text()"/>
+  </xsl:template>
+
+  <!-- Data types -->
+  <xsl:template match="gco:Date" mode="resourceorliteral">
+    <xsl:attribute name="rdf:datatype">&xsd;date</xsl:attribute>
+    <xsl:value-of select="text()"/>
+  </xsl:template>
+
+  <xsl:template match="gco:Boolean" mode="resourceorliteral">
+    <xsl:attribute name="rdf:datatype">&xsd;boolean</xsl:attribute>
     <xsl:value-of select="text()"/>
   </xsl:template>
 
