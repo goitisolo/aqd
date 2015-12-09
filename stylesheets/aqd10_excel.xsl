@@ -512,13 +512,16 @@
         </xsl:if>
 
         <!--XSLT for E1 ( E1a,E2a )-->
-        <xsl:if test="count(gml:featureMember/om:OM_Observation)">
+        <xsl:if test="count(gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/om:OM_Observation) > 0 or count(gml:featureMember/om:OM_Observation) > 0">
           <table:table>
             <xsl:attribute name="table:name">
               <xsl:text>OM_Observation</xsl:text>
             </xsl:attribute>
             <xsl:call-template name="omObservation_headers"/>
             <table:table-rows>
+              <xsl:for-each select="gml:featureMember/aqd:AQD_ReportingHeader/aqd:content/om:OM_Observation">
+                <xsl:call-template name="omObservation_rows"/>
+              </xsl:for-each>
               <xsl:for-each select="gml:featureMember/om:OM_Observation">
                 <xsl:call-template name="omObservation_rows"/>
               </xsl:for-each>
