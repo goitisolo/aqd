@@ -124,7 +124,7 @@ declare function xmlconv:checkFileReportingHeader($envelope as node()*, $file as
 
     (: set variables for envelope year :)
     let $minimumYear := 2012
-    let $maximumYear := year-from-date(current-date()) + 1
+    let $maximumYear := 2016
 
     let $description :=
         if (not($containsAqdReportingHeader)) then
@@ -174,7 +174,7 @@ as element(div)
 
     (: set variables for envelope year :)
     let $minimumYear := 2012
-    let $maximumYear := year-from-date(current-date()) + 1
+    let $maximumYear := 2016
 
     (: Count of string values :)
     let $xmlFilesWithAQSchema := xmlconv:getAQFiles($url)
