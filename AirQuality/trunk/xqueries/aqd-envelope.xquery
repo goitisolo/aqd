@@ -195,13 +195,16 @@ as element(div)
     let $messageEnvelopeSeparator :=
         <p>Checked contents of envelope:</p>
     let $correctFileCountMessage :=
-        if ($filesCountCorrectSchema != $filesCountAQSchema) then
+        if ($filesCountCorrectSchema = 0) then
+            (
+                <p class="error">Your delivery cannot be accepted as you did not provide any XML file with correct XML Schema location.<br />
+                    Valid XML Schema location is: <strong>{$xmlconv:SCHEMA}</strong></p>
+            )
+        else if ($filesCountCorrectSchema != $filesCountAQSchema) then
             (
                 <p class="error">1 or more AQ e-Reporting XML file(s) with incorrect XML Schema location<br />
                     Valid XML Schema location is: <strong>{$xmlconv:SCHEMA}</strong></p>
             )
-        else if ($filesCountAQSchema = 0) then
-            (<p class="info">Your delivery does not contain any AQ e-Reporting XML file</p>)
         else
             (<p class="info">Your delivery contains {$filesCountCorrectSchema} AQ e-Reporting XML file{ substring("s ", number(not($filesCountCorrectSchema > 1)) * 2)}with correct XML Schema.</p>)
 
