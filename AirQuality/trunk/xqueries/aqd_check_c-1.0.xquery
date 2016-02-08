@@ -345,8 +345,8 @@ as element(sparql:result)*
             let $offset := if ($r > 1) then string(((number($r)-1) * $limit)) else "0"
             let $resultXml := xmlconv:setLimitAndOffset($sparql,xs:string($limit), $offset)
             let $isResultsAvailable := string-length($resultXml) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($resultXml, "xml"))
-        let $result := if($isResultsAvailable) then xmlconv:executeSparqlEndpoint($resultXml)//sparql:result else ()
-    return $result
+            let $result := if($isResultsAvailable) then xmlconv:executeSparqlEndpoint($resultXml)//sparql:result else ()
+        return $result
 
     return  $allResults
 };
@@ -1340,30 +1340,39 @@ let $aqdEnvironmentalObjective :=
 :)
 
 (: C32 :)
-let $samplingPointSparql := if (fn:string-length($countryCode) = 2) then xmlconv:getAssessmentType($cdrUrl) else ""
-let $aqdSamplingPointAssessMEntTypes  :=  distinct-values(data(xmlconv:executeSparqlQuery($samplingPointSparql)//concat(sparql:binding[@name='inspireLabel']/sparql:literal, "#",sparql:binding[@name='assessmentType']/sparql:uri)))
-(:
-:)
-let $modelSparql := if (fn:string-length($countryCode) = 2) then xmlconv:getAssessmentTypeModel($cdrUrl) else ""
-let $aqdModelAssessMentTypes  :=  distinct-values(data(xmlconv:executeSparqlQuery($modelSparql)//concat(sparql:binding[@name='inspireLabel']/sparql:literal, "#",sparql:binding[@name='assessmentType']/sparql:uri)))
+let $samplingPointSparqlC32 :=
+    if (fn:string-length($countryCode) = 2) then 
+        xmlconv:getAssessmentType($cdrUrl) 
+    else 
+        "" 
+let $aqdSamplingPointAssessMEntTypes := distinct-values(xmlconv:executeSparqlQuery($samplingPointSparqlC32)/concat(sparql:binding[@name='inspireLabel']/sparql:literal, "#",sparql:binding[@name='assessmentType']/sparql:uri))
 
-let $allAssessmentTypes := (($aqdSamplingPointAssessMEntTypes), ($aqdModelAssessMentTypes))
-
+let $modelSparql :=
+    if (fn:string-length($countryCode) = 2) then
+        xmlconv:getAssessmentTypeModel($cdrUrl) 
+    else
+        ""
+let $aqdModelAssessMentTypes :=
+    distinct-values(xmlconv:executeSparqlQuery($modelSparql)/concat(sparql:binding[@name='inspireLabel']/sparql:literal, "#",sparql:binding[@name='assessmentType']/sparql:uri))
+let $allAssessmentTypes := (($aqdSamplingPointAssessMEntTypes), ($aqdModelAssessMentTypes)) 
 (:
 :)
 let $tblC32 :=
-    for $x in $docRoot//aqd:AQD_AssessmentRegime/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata
-        let $id := data($x/@xlink:href)
-        let $assessmentTypeRegime := data($x/../aqd:assessmentType/@xlink:href)
-        let $assessmentTypeSamplingOrModel := xmlconv:getHashValue($allAssessmentTypes, $id)
-        return if (not(xmlconv:isValidAssessmentTypeCombination($assessmentTypeRegime,$assessmentTypeSamplingOrModel))) then
-         <tr>
-            <td title="AQD_AssessmentRegime">{data($x/../../../@gml:id)}</td>
-            <td title="aqd:samplingPointAssessmentMetadata">{$id}</td>
-            <td title="aqd:assessmentType">{substring-after($assessmentTypeRegime, $xmlconv:ASSESSMENTTYPE_VOCABULARY)}</td>
-            <td title="aqd:assessmentType in Model or SamplingPoint">{substring-after($assessmentTypeSamplingOrModel,$xmlconv:ASSESSMENTTYPE_VOCABULARY)}</td>
-        </tr>
-        else ()
+    for $x in $docRoot//aqd:AQD_AssessmentRegime/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata        
+        let $id := 
+            data($x/@xlink:href)
+        let $assessmentTypeRegime := 
+            data($x/../aqd:assessmentType/@xlink:href)
+        return 
+             if (not($allAssessmentTypes = concat($id, "#", $assessmentTypeRegime))) then
+                <tr>
+                   <td title="AQD_AssessmentRegime">{data($x/../../../@gml:id)}</td>
+                   <td title="aqd:samplingPointAssessmentMetadata">{$id}</td>
+                   <td title="aqd:assessmentType">{substring-after($assessmentTypeRegime, $xmlconv:ASSESSMENTTYPE_VOCABULARY)}</td>                   
+               </tr>
+            else
+                ()
+        
 
 (: C33 If The lifecycle information of ./aqd:assessmentMethods/aqd:AssessmentMethods/aqd:*AssessmentMetadata xlink:href shall be current,
     then /AQD_SamplingPoint/aqd:operationActivityPeriod/gml:endPosition or /AQD_ModelType/aqd:operationActivityPeriod/gml:endPosition shall be equal to “9999-12-31 23:59:59Z” or nulled (blank):)
