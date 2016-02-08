@@ -825,18 +825,17 @@ for $x in $amGeometry
     where (empty($amGeometry)=false())
 return $x
 
-(: B46 :)
+(: B46 - Where ./aqd:shapefileLink has been used the xlink should return a link to a valid and existing file located in the same cdr envelope as this XML :)
 
-(: TESTING on localhost :)
-(:let $envLink := "http://cdrtest.eionet.europa.eu/ee/eu/colujh9jw/envvdy3dq/xml" :)
 let $aqdShapeFileLink := $docRoot//aqd:AQD_Zone/aqd:shapefileLink
 
 let $invalidLink :=
 for $link in $aqdShapeFileLink
-    let $envLink := xmlconv:getEnvelopeXML($link)
-    let $envExists := doc-available($envLink)
+    let $shapeFileLink := xmlconv:getEnvelopeXML($link)
+    let $correctLink := xmlconv:getEnvelopeXML($source_url)
+    let $correctEnvelope := $shapeFileLink = $correctLink
     return
-    if (not($envExists)  or ($envExists and count(doc($envLink)/envelope/file[@link=$link]) = 0)) then
+    if (not($correctEnvelope) or ($correctEnvelope and count(doc($shapeFileLink)/envelope/file[@link=$link]) = 0)) then
         concat($link/../@gml:id, ' ', $link)
     else ()
 
@@ -1001,7 +1000,7 @@ List base:namespace and  count the number of base:localId assigned to each base:
                 (), "All values are valid", " crucial invalid value", "", "error", $aqdInvalidPollutansBenzene)}
         {xmlconv:buildResultRows("B45", "./am:geometry shall  not  be  a  href  xlink. If geometry is provided via shapefile, please use element aqd:shapefileLink",
                 $invalidGeometry, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "","warning")}
-        {xmlconv:buildResultRows("B46", "Where ./aqd:shapefileLink has been used the is should return a link to a valid and existing link in cdr (e.g. http://cdr.eionet.europa.eu/es/eu/aqd/b/envurng9g/ES_Zones_2014.shp",
+        {xmlconv:buildResultRows("B46", "Where ./aqd:shapefileLink has been used the xlink should return a link to a valid and existing file located in the same cdr envelope as this XML",
                 $invalidLink, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "", "error")}
         {xmlconv:buildResultRowsWithTotalCount("B47", <span>./aqd:aqdZoneType attribute must resolve to one of  concept within
             <a href="{ $xmlconv:ZONETYPE_VOCABULARY }">{ $xmlconv:ZONETYPE_VOCABULARY }</a></span>,
