@@ -699,7 +699,7 @@ let $countAmNamespaceAndaqdZoneCodeDuplicates := count($dublicateAmNamespaceAnda
 let $countB35duplicates := $countAmNamespaceAndaqdZoneCodeDuplicates
 
 (: B36 :)
-let $invalidResidentPopulation  := distinct-values($docRoot//aqd:AQD_Zone[not(count(aqd:residentPopulation)>0 and aqd:residentPopulation castable as xs:integer and number(aqd:residentPopulation) > 0)]/
+let $invalidResidentPopulation  := distinct-values($docRoot//aqd:AQD_Zone[not(count(aqd:residentPopulation)>0 and aqd:residentPopulation castable as xs:integer and number(aqd:residentPopulation) >= 0)]/
             concat(@gml:id, ": aqd:residentPopulation=", if (string-length(aqd:residentPopulation) = 0) then "missing" else aqd:residentPopulation))
 
 (: B37 :)
