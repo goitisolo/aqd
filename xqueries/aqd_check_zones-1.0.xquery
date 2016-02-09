@@ -935,9 +935,9 @@ List base:namespace and  count the number of base:localId assigned to each base:
             }
         {xmlconv:buildResultRows("B18", "./am:name/gn:GeographicalName/gn:spelling/gn:SpellingOfName/gn:text shall return a string",
                 $invalidgnSpellingOfName, "aqd:AQD_Zone/@gml:id","All text are valid"," invalid attribute","", "error")}
-        {xmlconv:buildResultRows("B20", concat("./am:geometry/gml:Polygon, ./am:geometry/gml:Point,./am:geometry/gml:MultiPoint, ./am:geometry/gml:MultiSurface, ",
-            " ./am:geometry/gml:Grid, ./am:geometry/gml:RectifiedGrid the srsName attribute  shall  be  a  recognisable  URN .",
-            " The  following  2  srsNames  are  expected urn:ogc:def:crs:EPSG::4258 or urn:ogc:def:crs:EPSG::4326"),
+        {xmlconv:buildResultRows("B20", concat("./am:geometry/gml:Polygon, ./am:geometry/gml:Point,./am:geometry/gml:MultiPoint, ./am:geometry/gml:MultiSurface, ./am:geometry/gml:Grid,",
+        "./am:geometry/gml:RectifiedGrid the srsName attribute shall be a recognisable URN . The following 3 srsNames are expected",
+        "urn:ogc:def:crs:EPSG::3035 or urn:ogc:def:crs:EPSG::4258 or urn:ogc:def:crs:EPSG::4326"),
                 $invalidGmlIdsB20, "aqd:AQD_Zone/@gml:id","All srsName attributes are valid"," invalid attribute","", "error")}
         {xmlconv:buildResultRows("B21", "./am:geometry/gml:Polygon/gml:exterior/gml:LinearRing/gml:posList the srsDimension attribute shall resolve to ""2"" to allow the x &amp; y-coordinate of the feature of interest",
             $invalidPosListDimension, "aqd:AQD_Zone/@gml:id", "All srsDimension attributes resolve to ""2""", " invalid attribute", "","warning")}
