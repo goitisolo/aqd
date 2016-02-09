@@ -564,19 +564,13 @@ let $invalidgnSpellingOfName := $docRoot//aqd:AQD_Zone[string-length(am:name/gn:
 
 (: B20 :)
 
-let $invalidPolygonName := distinct-values($docRoot//aqd:AQD_Zone[count(am:geometry/gml:Polygon) >0 and am:geometry/gml:Polygon/@srsName != "urn:ogc:def:crs:EPSG::4258" and am:geometry/gml:Polygon/@srsName != "urn:ogc:def:crs:EPSG::4326"]/@gml:id)
-
-let $invalidPointName := distinct-values($docRoot//aqd:AQD_Zone[count(am:geometry/gml:Point) >0 and am:geometry/gml:Point/@srsName != "urn:ogc:def:crs:EPSG::4258"
-    and am:geometry/gml:Point/@srsName != "urn:ogc:def:crs:EPSG::4326"]/@gml:id)
-let $invalidMultiPointName := distinct-values($docRoot//aqd:AQD_Zone[count(am:geometry/gml:MultiPoint) >0 and am:geometry/gml:MultiPoint/@srsName != "urn:ogc:def:crs:EPSG::4258"
-    and am:geometry/gml:MultiPoint/@srsName != "urn:ogc:def:crs:EPSG::4326"]/@gml:id)
-let $invalidMultiSurfaceName := distinct-values($docRoot//aqd:AQD_Zone[count(am:geometry/gml:MultiSurface) >0 and am:geometry/gml:MultiSurface/@srsName != "urn:ogc:def:crs:EPSG::4258"
-    and am:geometry/gml:MultiSurface/@srsName != "urn:ogc:def:crs:EPSG::4326"]/@gml:id)
-let $invalidGridName := distinct-values($docRoot//aqd:AQD_Zone[count(am:geometry/gml:Grid) >0 and am:geometry/gml:Grid/@srsName != "urn:ogc:def:crs:EPSG::4258"
-    and am:geometry/gml:Grid/@srsName != "urn:ogc:def:crs:EPSG::4326"]/@gml:id)
-let $invalidRectifiedGridName := distinct-values($docRoot//aqd:AQD_Zone[count(am:geometry/gml:RectifiedGrid) >0 and am:geometry/gml:RectifiedGrid/@srsName != "urn:ogc:def:crs:EPSG::4258"
-    and am:geometry/gml:RectifiedGrid/@srsName != "urn:ogc:def:crs:EPSG::4326"]/@gml:id)
-
+let $validSrsNames := ("urn:ogc:def:crs:EPSG::3035", "urn:ogc:def:crs:EPSG::4326", "urn:ogc:def:crs:EPSG::4258") 
+let $invalidPolygonName := distinct-values($docRoot//aqd:AQD_Zone[count(am:geometry/gml:Polygon) >0 and not(am:geometry/gml:Polygon/@srsName = $validSrsNames)]/@gml:id)
+let $invalidPointName := distinct-values($docRoot//aqd:AQD_Zone[count(am:geometry/gml:Point) >0 and not(am:geometry/gml:Point/@srsName = $validSrsNames)]/@gml:id)
+let $invalidMultiPointName := distinct-values($docRoot//aqd:AQD_Zone[count(am:geometry/gml:MultiPoint) >0 and not(am:geometry/gml:MultiPoint/@srsName = $validSrsNames)]/@gml:id)
+let $invalidMultiSurfaceName := distinct-values($docRoot//aqd:AQD_Zone[count(am:geometry/gml:MultiSurface) >0 and not(am:geometry/gml:MultiSurface/@srsName = $validSrsNames)]/@gml:id)
+let $invalidGridName := distinct-values($docRoot//aqd:AQD_Zone[count(am:geometry/gml:Grid) >0 and not(am:geometry/gml:Grid/@srsName = $validSrsNames)]/@gml:id)
+let $invalidRectifiedGridName := distinct-values($docRoot//aqd:AQD_Zone[count(am:geometry/gml:RectifiedGrid) >0 and not(am:geometry/gml:RectifiedGrid/@srsName = $validSrsNames)]/@gml:id)
 let $invalidGmlIdsB20 := distinct-values(($invalidPolygonName, $invalidMultiPointName, $invalidPointName, $invalidMultiSurfaceName, $invalidGridName, $invalidRectifiedGridName))
 
 (: B21 :)
