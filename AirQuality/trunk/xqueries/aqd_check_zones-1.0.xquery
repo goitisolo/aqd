@@ -821,7 +821,7 @@ return $x
 
 (: B46 - Where ./aqd:shapefileLink has been used the xlink should return a link to a valid and existing file located in the same cdr envelope as this XML :)
 
-let $aqdShapeFileLink := $docRoot//aqd:AQD_Zone/aqd:shapefileLink
+let $aqdShapeFileLink := $docRoot//aqd:AQD_Zone[not(normalize-space(aqd:shapefileLink) = '')]/aqd:shapefileLink
 
 let $invalidLink :=
 for $link in $aqdShapeFileLink
