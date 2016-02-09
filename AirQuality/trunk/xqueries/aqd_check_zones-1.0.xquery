@@ -977,7 +977,7 @@ List base:namespace and  count the number of base:localId assigned to each base:
         }
 
 
-        {xmlconv:buildResultRows("B36", "./aqd:residentPopulation shall be an integer value GREATER THAN 0 (zero)",
+        {xmlconv:buildResultRows("B36", "./aqd:residentPopulation shall be an integer value GREATER THAN OR EQUAL TO 0 (zero)",
             $invalidResidentPopulation, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "", "error")}
         {xmlconv:buildResultRows("B37", "./aqd:residentPopulationYear/gml:TimeInstant/gml:timePosition shall cite the year in which the resident population was estimated in yyyy format",
             $invalidPopulationYear, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "","warning")}
