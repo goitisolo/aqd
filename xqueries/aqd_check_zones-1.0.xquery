@@ -824,12 +824,10 @@ return $x
 let $aqdShapeFileLink := $docRoot//aqd:AQD_Zone[not(normalize-space(aqd:shapefileLink) = '')]/aqd:shapefileLink
 
 let $invalidLink :=
-for $link in $aqdShapeFileLink
-    let $shapeFileLink := xmlconv:getEnvelopeXML($link)
+for $link in $aqdShapeFileLink    
     let $correctLink := xmlconv:getEnvelopeXML($source_url)
-    let $correctEnvelope := $shapeFileLink = $correctLink
     return
-    if (not($correctEnvelope) or ($correctEnvelope and count(doc($shapeFileLink)/envelope/file[@link=$link]) = 0)) then
+    if (count(doc($correctLink)/envelope/file[replace(@link, "https://", "http://")=replace($link,"https://", "http://")]) = 0) then
         concat($link/../@gml:id, ' ', $link)
     else ()
 
