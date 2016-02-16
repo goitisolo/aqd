@@ -486,7 +486,7 @@ return
 :)
 
 
-declare function xmlconv:getModelEndPosition($cdrUrl as xs:string, $startDate as xs:string, $endDate as xs:string)
+declare function xmlconv:getModelEndPosition($latestDEnvelope as xs:string, $startDate as xs:string, $endDate as xs:string)
 as xs:string
 {
 concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -504,11 +504,11 @@ SELECT DISTINCT ?inspireLabel
         optional {?observingTime aqd:endPosition ?endPosition} .
             FILTER(xsd:date(SUBSTR(xsd:string(?beginPosition),1,10)) <= xsd:date('", $endDate, "')) .
             FILTER(!bound(?endPosition) or (xsd:date(SUBSTR(xsd:string(?endPosition),1,10)) >= xsd:date('", $startDate, "'))) .
-            FILTER (CONTAINS(str(?zone), '",$cdrUrl,"d/'))
+            FILTER(CONTAINS(str(?zone), '", $latestDEnvelope,"'))
 }")
 };
 
-declare function xmlconv:getSamplingPointEndPosition($cdrUrl as xs:string, $startDate as xs:string, $endDate as xs:string)
+declare function xmlconv:getSamplingPointEndPosition($latestDEnvelope as xs:string, $startDate as xs:string, $endDate as xs:string)
 as xs:string
 {
 concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -526,7 +526,22 @@ concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
         optional {?observingTime aqd:endPosition ?endPosition }
             FILTER(xsd:date(SUBSTR(xsd:string(?beginPosition),1,10)) <= xsd:date('", $endDate, "')) .
             FILTER(!bound(?endPosition) or (xsd:date(SUBSTR(xsd:string(?endPosition),1,10)) >= xsd:date('", $startDate, "'))) .
-            FILTER (CONTAINS(str(?zone), '",$cdrUrl,"d/'))
+            FILTER(CONTAINS(str(?zone), '",$latestDEnvelope,"'))
+}")
+};
+
+declare function xmlconv:getLatestDEnvelope($cdrUrl as xs:string) {
+concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
+PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+PREFIX ptype: <http://purl.org/dc/dcmitype/>
+PREFIX pterms: <http://purl.org/dc/terms/>
+SELECT ?dataset
+WHERE { 
+?dataset a ptype:Dataset .
+        optional {?dataset pterms:isReplacedBy ?replacedBy} .
+        FILTER(!bound(?replacedBy))
+        FILTER(CONTAINS(str(?dataset), '", $cdrUrl, "d/'))
 }")
 };
 
@@ -1140,10 +1155,11 @@ return    if (empty(index-of($inspireLebelD, $x))) then $x else ()
 let $startDate := substring(data($docRoot//aqd:reportingPeriod/gml:TimePeriod/gml:beginPosition),1,10)
 let $endDate := substring(data($docRoot//aqd:reportingPeriod/gml:TimePeriod/gml:endPosition),1,10)
 
-let $modelSparql := if (fn:string-length($countryCode) = 2) then xmlconv:getModelEndPosition($cdrUrl, $startDate, $endDate) else ""
+let $latestDEnvelope := distinct-values(data(xmlconv:executeSparqlQuery(xmlconv:getLatestDEnvelope($cdrUrl))//sparql:binding[@name='dataset']/sparql:uri))
+let $modelSparql := if (fn:string-length($countryCode) = 2) then xmlconv:getModelEndPosition($latestDEnvelope, $startDate, $endDate) else ""
 let $modelMethods := distinct-values(data(xmlconv:executeSparqlQuery($modelSparql)//sparql:binding[@name='inspireLabel']/sparql:literal))
 
-let $samplingPointSparql := if (fn:string-length($countryCode) = 2) then xmlconv:getSamplingPointEndPosition($cdrUrl,$startDate,$endDate) else ""
+let $samplingPointSparql := if (fn:string-length($countryCode) = 2) then xmlconv:getSamplingPointEndPosition($latestDEnvelope,$startDate,$endDate) else ""
 let $sampingPointMethods := distinct-values(data(xmlconv:executeSparqlQuery($samplingPointSparql)//sparql:binding[@name='inspireLabel']/sparql:literal))
 
 
