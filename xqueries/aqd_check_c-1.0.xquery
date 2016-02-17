@@ -503,7 +503,7 @@ SELECT DISTINCT ?inspireLabel
         ?observingTime aqd:beginPosition ?beginPosition .
         optional {?observingTime aqd:endPosition ?endPosition} .
         FILTER(xsd:date(SUBSTR(xsd:string(?beginPosition),1,10)) <= xsd:date('", $endDate, "')) .
-        FILTER(!bound(?endPosition) or (xsd:date(SUBSTR(xsd:string(?endPosition),1,10)) >= xsd:date('", $startDate, "'))) .
+        FILTER(!bound(?endPosition) or (xsd:date(SUBSTR(xsd:string(?endPosition),1,10)) > xsd:date('", $startDate, "'))) .
         FILTER(CONTAINS(str(?zone), '", $latestDEnvelope,"'))
 }")
 };
@@ -525,7 +525,7 @@ concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
         ?observingTime aqd:beginPosition ?beginPosition .
         optional {?observingTime aqd:endPosition ?endPosition }
         FILTER(xsd:date(SUBSTR(xsd:string(?beginPosition),1,10)) <= xsd:date('", $endDate, "')) .
-        FILTER(!bound(?endPosition) or (xsd:date(SUBSTR(xsd:string(?endPosition),1,10)) >= xsd:date('", $startDate, "'))) .
+        FILTER(!bound(?endPosition) or (xsd:date(SUBSTR(xsd:string(?endPosition),1,10)) > xsd:date('", $startDate, "'))) .
         FILTER(CONTAINS(str(?zone), '",$latestDEnvelope,"'))
 }")
 };
