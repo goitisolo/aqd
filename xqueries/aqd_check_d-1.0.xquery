@@ -872,19 +872,29 @@ let $invalidSamplingPointPos :=
         return if (abs($samplingLong - $stationLong) > $approximity
         or abs($samplingLat - $stationLat) > $approximity) then $gmlPos/@gml:id else ()
 (: D37 :)
-
-
-(: begin < end :)
+(: check for invalid data or if beginPosition > endPosition :)
 let $invalidPosition  :=
     for $timePeriod in $docRoot//aqd:AQD_SamplingPoint/ef:observingCapability/ef:ObservingCapability/ef:observingTime/gml:TimePeriod
-        (: XQ does not support 24h that is supported by xsml schema validation :)
+        (: XQ does not support 24h that is supported by xml schema validation :)
+        (: TODO: comment by sofiageo - the above statement is not true, fix this if necessary :)
         let $beginDate := substring(normalize-space($timePeriod/gml:beginPosition),1,10)
         let $endDate := substring(normalize-space($timePeriod/gml:endPosition),1,10)
-        let $beginPosition := if ($beginDate castable as xs:date) then xs:date($beginDate) else ()
-        let $endPosition := if ($endDate castable as xs:date) then xs:date($endDate) else ()
+        let $beginPosition := 
+            if ($beginDate castable as xs:date) then 
+                xs:date($beginDate)             
+            else
+                "error"
+        let $endPosition := 
+            if ($endDate castable as xs:date) then 
+                xs:date($endDate) 
+            else if ($endDate = "") then
+                "empty"
+            else
+                "error"
 
         return
-            if (not(empty($beginPosition)) and not(empty($endPosition)) and $beginPosition > $endPosition) then
+            if ((string($beginPosition) = "error" or string($endPosition) = "error") or 
+                ($beginPosition instance of xs:date and $endPosition instance of xs:date and $beginPosition > $endPosition)) then
              <tr>
                 <td title="aqd:AQD_Station">{data($timePeriod/../../../../@gml:id)}</td>
                 <td title="gml:TimePeriod">{data($timePeriod/@gml:id)}</td>
