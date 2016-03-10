@@ -7690,10 +7690,7 @@
         <table:table-cell table:style-name="cell1">
           <text:p>
             <xsl:for-each select="aqd:classification">
-              <xsl:value-of select="fn:substring-after(@xlink:href, 'http://dd.eionet.europa.eu/vocabulary/aq/measureclassification/')"/>
-              <xsl:if test="following-sibling::aqd:classification">
-                <xsl:text> || </xsl:text>
-              </xsl:if>
+              <xsl:value-of select="@xlink:href" />
             </xsl:for-each>
           </text:p>
         </table:table-cell>
@@ -7709,10 +7706,7 @@
         <table:table-cell table:style-name="cell1">
           <text:p>
             <xsl:for-each select="aqd:administrativeLevel">
-              <xsl:value-of select="fn:substring-after(@xlink:href, 'http://dd.eionet.europa.eu/vocabulary/aq/administrativelevel/')"/>
-              <xsl:if test="following-sibling::aqd:administrativeLevel">
-                <xsl:text> || </xsl:text>
-              </xsl:if>
+              <xsl:value-of select="@xlink:href"/>
             </xsl:for-each>
           </text:p>
         </table:table-cell>
@@ -8107,10 +8101,7 @@
         <table:table-cell table:style-name="cell1">
           <text:p>
             <xsl:for-each select="aqd:classification">
-              <xsl:value-of select="fn:substring-after(@xlink:href, 'http://dd.eionet.europa.eu/vocabulary/aq/measureclassification/')"/>
-              <xsl:if test="following-sibling::aqd:classification">
-                <xsl:text> || </xsl:text>
-              </xsl:if>
+              <xsl:value-of select="@xlink:href"/>
             </xsl:for-each>
           </text:p>
         </table:table-cell>
@@ -8126,10 +8117,7 @@
         <table:table-cell table:style-name="cell1">
           <text:p>
             <xsl:for-each select="aqd:administrativeLevel">
-              <xsl:value-of select="fn:substring-after(@xlink:href, 'http://dd.eionet.europa.eu/vocabulary/aq/administrativelevel/')"/>
-              <xsl:if test="following-sibling::aqd:administrativeLevel">
-                <xsl:text> || </xsl:text>
-              </xsl:if>
+              <xsl:value-of select="@xlink:href" />
             </xsl:for-each>
           </text:p>
         </table:table-cell>
