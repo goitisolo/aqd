@@ -7691,6 +7691,9 @@
           <text:p>
             <xsl:for-each select="aqd:classification">
               <xsl:value-of select="@xlink:href" />
+              <xsl:if test="following-sibling::aqd:classification">
+                <xsl:text> || </xsl:text>
+              </xsl:if>
             </xsl:for-each>
           </text:p>
         </table:table-cell>
@@ -7707,6 +7710,9 @@
           <text:p>
             <xsl:for-each select="aqd:administrativeLevel">
               <xsl:value-of select="@xlink:href"/>
+              <xsl:if test="following-sibling::aqd:administrativeLevel">
+                <xsl:text> || </xsl:text>
+              </xsl:if>
             </xsl:for-each>
           </text:p>
         </table:table-cell>
@@ -8102,6 +8108,9 @@
           <text:p>
             <xsl:for-each select="aqd:classification">
               <xsl:value-of select="@xlink:href"/>
+              <xsl:if test="following-sibling::aqd:classification">
+                <xsl:text> || </xsl:text>
+              </xsl:if>
             </xsl:for-each>
           </text:p>
         </table:table-cell>
@@ -8117,7 +8126,10 @@
         <table:table-cell table:style-name="cell1">
           <text:p>
             <xsl:for-each select="aqd:administrativeLevel">
-              <xsl:value-of select="@xlink:href" />
+              <xsl:value-of select="@xlink:href"/>
+              <xsl:if test="following-sibling::aqd:administrativeLevel">
+                <xsl:text> || </xsl:text>
+              </xsl:if>
             </xsl:for-each>
           </text:p>
         </table:table-cell>
