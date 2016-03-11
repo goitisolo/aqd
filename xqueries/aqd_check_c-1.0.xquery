@@ -579,7 +579,7 @@ as xs:string
          ?inspireId rdfs:label ?inspireLabel .
          ?zone aqd:assessmentType ?assessmentType
        FILTER (CONTAINS(str(?zone), '",$cdrUrl,"d/'))
-   } order by ?zone")
+   }")
 };
 
 declare function xmlconv:getAssessmentType($cdrUrl as xs:string)
@@ -595,7 +595,7 @@ as xs:string
          ?inspireId rdfs:label ?inspireLabel .
          ?zone aqd:assessmentType ?assessmentType
        FILTER (CONTAINS(str(?zone), '", $cdrUrl,  "d/'))
-   } order by ?zone")
+   }")
 };
 
 (:
@@ -1381,30 +1381,34 @@ let $samplingPointSparqlC32 :=
         xmlconv:getAssessmentType($cdrUrl) 
     else 
         "" 
-let $aqdSamplingPointAssessMEntTypes := distinct-values(xmlconv:executeSparqlQuery($samplingPointSparqlC32)/concat(sparql:binding[@name='inspireLabel']/sparql:literal, "#",sparql:binding[@name='assessmentType']/sparql:uri))
+let $aqdSamplingPointAssessMEntTypes := 
+    for $i in xmlconv:executeSparqlQuery($samplingPointSparqlC32)
+    let $ii := concat($i/sparql:binding[@name='inspireLabel']/sparql:literal, "#", $i/sparql:binding[@name='assessmentType']/sparql:uri)
+    return $ii
 
 let $modelSparql :=
     if (fn:string-length($countryCode) = 2) then
         xmlconv:getAssessmentTypeModel($cdrUrl) 
     else
         ""
-let $aqdModelAssessMentTypes :=
-    distinct-values(xmlconv:executeSparqlQuery($modelSparql)/concat(sparql:binding[@name='inspireLabel']/sparql:literal, "#",sparql:binding[@name='assessmentType']/sparql:uri))
-let $allAssessmentTypes := (($aqdSamplingPointAssessMEntTypes), ($aqdModelAssessMentTypes)) 
-(:
-:)
+let $aqdModelAssessMentTypes := 
+    for $i in xmlconv:executeSparqlQuery($modelSparql)
+    let $ii := concat($i/sparql:binding[@name='inspireLabel']/sparql:literal, "#", $i/sparql:binding[@name='assessmentType']/sparql:uri)
+    return $ii
+
+let $allAssessmentTypes := ($aqdSamplingPointAssessMEntTypes, $aqdModelAssessMentTypes)
+
 let $tblC32 :=
-    for $x in $docRoot//aqd:AQD_AssessmentRegime/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata        
-        let $id := 
-            data($x/@xlink:href)
-        let $assessmentTypeRegime := 
-            data($x/../aqd:assessmentType/@xlink:href)
+    for $sMetadata in $docRoot//aqd:AQD_AssessmentRegime/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata                
+        let $id := string($sMetadata/@xlink:href)        
+        let $docType := string($sMetadata/../aqd:assessmentType/@xlink:href)
+        let $regimeId := string($sMetadata/../../../@gml:id)
         return 
-             if (not($allAssessmentTypes = concat($id, "#", $assessmentTypeRegime))) then
+             if (not(xmlconv:isValidAssessmentTypeCombination($id, $docType, $allAssessmentTypes))) then
                 <tr>
-                   <td title="AQD_AssessmentRegime">{data($x/../../../@gml:id)}</td>
+                   <td title="AQD_AssessmentRegime">{$regimeId}</td>
                    <td title="aqd:samplingPointAssessmentMetadata">{$id}</td>
-                   <td title="aqd:assessmentType">{substring-after($assessmentTypeRegime, $xmlconv:ASSESSMENTTYPE_VOCABULARY)}</td>                   
+                   <td title="aqd:assessmentType">{substring-after($docType, $xmlconv:ASSESSMENTTYPE_VOCABULARY)}</td>                   
                </tr>
             else
                 ()
@@ -1776,37 +1780,32 @@ as xs:string {
 };
 
 
-declare function xmlconv:isValidAssessmentTypeCombination($typeInRegime as xs:string, $typePointOrModel as xs:string)
-as xs:boolean
-{
-    let $typeInDoc := lower-case(substring-after($typeInRegime, $xmlconv:ASSESSMENTTYPE_VOCABULARY))
-    let $typeOther := lower-case(substring-after($typePointOrModel, $xmlconv:ASSESSMENTTYPE_VOCABULARY))
-
-    let $combinationOk := if (
-    ($typeInDoc = "fixed" and $typeOther = "fixed") or
-    ($typeInDoc = "indicative" and $typeOther = "indicative") or
-    ($typeInDoc = "model" and $typeOther = "model") or
-    ($typeInDoc = "objective" and
-        ($typeOther = "objective" or $typeOther = "fixed" or $typeOther = "indicative" or $typeOther = "model")
-    )
-    ) then fn:true()
-
-    else
-    fn:false()
-
+declare function xmlconv:isValidAssessmentTypeCombination($id as xs:string, $type as xs:string, $allCombinations as xs:string*) as xs:boolean {
+    let $typeInDoc := lower-case(substring-after($type, $xmlconv:ASSESSMENTTYPE_VOCABULARY))
+    let $combination := concat($id, "#", $type)
+    let $combinationFixed := concat($id, "#", $xmlconv:ASSESSMENTTYPE_VOCABULARY, "/fixed")
+    let $combinationIndicative := concat($id, "#", $xmlconv:ASSESSMENTTYPE_VOCABULARY, "/indicative")
+    let $combinationModel := concat($id, "#", $xmlconv:ASSESSMENTTYPE_VOCABULARY, "/model")
+    let $combinationObjective := concat($id, "#", $xmlconv:ASSESSMENTTYPE_VOCABULARY, "/objective")
+    
+    let $combinationOk := 
+        if ($typeInDoc = ("fixed", "indicative", "model")) then
+            if ($combination = $allCombinations) then
+                true()
+            else
+                false()
+        else if ($typeInDoc = "objective") then
+            if ($allCombinations = ($combinationFixed, $combinationIndicative, $combinationModel, $combinationObjective)) then
+                true()
+            else
+                false()   
+        else
+            false()
     return $combinationOk
-
 };
 
 declare function xmlconv:aproceed($source_url, $countryCode) {
-(:
-
-
-
- :)
-
 let $docRoot := doc($source_url)
-
 let $cdrUrl := xmlconv:getCdrUrl($countryCode)
 
 (:
