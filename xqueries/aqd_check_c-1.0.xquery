@@ -10,6 +10,7 @@ xquery version "1.0" encoding "UTF-8";
  : XQuery script implements dataflow C tier-1 checks as documented in http://taskman.eionet.europa.eu/documents/3 .
  :
  : @author Enriko Käsper
+ : @author George Sofianos
  : small modification added by Jaume Targa (ETC/ACM) to align with QA document & polish some checks
  :)
 
@@ -486,9 +487,19 @@ return
 :)
 
 
-declare function xmlconv:getModelEndPosition($latestDEnvelope as xs:string, $startDate as xs:string, $endDate as xs:string)
+declare function xmlconv:getModelEndPosition($latestDEnvelopes as xs:string*, $startDate as xs:string, $endDate as xs:string)
 as xs:string
 {
+let $last := count($latestDEnvelopes)
+let $filters :=
+    for $x at $pos in $latestDEnvelopes
+    return 
+        if (not($pos = $last)) then
+            concat("CONTAINS(str(?zone), '", $x , "') || ")
+        else
+            concat("CONTAINS(str(?zone), '", $x , "')")
+let $filters := string-join($filters, "")
+return
 concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
     PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
     PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
@@ -504,13 +515,23 @@ SELECT DISTINCT ?inspireLabel
         optional {?observingTime aqd:endPosition ?endPosition} .
         FILTER(xsd:date(SUBSTR(xsd:string(?beginPosition),1,10)) <= xsd:date('", $endDate, "')) .
         FILTER(!bound(?endPosition) or (xsd:date(SUBSTR(xsd:string(?endPosition),1,10)) > xsd:date('", $startDate, "'))) .
-        FILTER(CONTAINS(str(?zone), '", $latestDEnvelope,"'))
+        FILTER(", $filters, ")
 }")
 };
 
-declare function xmlconv:getSamplingPointEndPosition($latestDEnvelope as xs:string, $startDate as xs:string, $endDate as xs:string)
+declare function xmlconv:getSamplingPointEndPosition($latestDEnvelopes as xs:string*, $startDate as xs:string, $endDate as xs:string)
 as xs:string
 {
+let $last := count($latestDEnvelopes)
+let $filters :=
+    for $x at $pos in $latestDEnvelopes
+    return 
+        if (not($pos = $last)) then
+            concat("CONTAINS(str(?zone), '", $x , "') || ")
+        else
+            concat("CONTAINS(str(?zone), '", $x , "')")
+let $filters := string-join($filters, "")
+return
 concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
     PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
     PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
@@ -526,7 +547,7 @@ concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
         optional {?observingTime aqd:endPosition ?endPosition }
         FILTER(xsd:date(SUBSTR(xsd:string(?beginPosition),1,10)) <= xsd:date('", $endDate, "')) .
         FILTER(!bound(?endPosition) or (xsd:date(SUBSTR(xsd:string(?endPosition),1,10)) > xsd:date('", $startDate, "'))) .
-        FILTER(CONTAINS(str(?zone), '",$latestDEnvelope,"'))
+        FILTER(", $filters, ")
 }")
 };
 
@@ -1155,11 +1176,11 @@ return    if (empty(index-of($inspireLebelD, $x))) then $x else ()
 let $startDate := substring(data($docRoot//aqd:reportingPeriod/gml:TimePeriod/gml:beginPosition),1,10)
 let $endDate := substring(data($docRoot//aqd:reportingPeriod/gml:TimePeriod/gml:endPosition),1,10)
 
-let $latestDEnvelope := distinct-values(data(xmlconv:executeSparqlQuery(xmlconv:getLatestDEnvelope($cdrUrl))//sparql:binding[@name='dataset']/sparql:uri))
-let $modelSparql := if (fn:string-length($countryCode) = 2) then xmlconv:getModelEndPosition($latestDEnvelope, $startDate, $endDate) else ""
+let $latestDEnvelopes := distinct-values(data(xmlconv:executeSparqlQuery(xmlconv:getLatestDEnvelope($cdrUrl))//sparql:binding[@name='dataset']/sparql:uri))
+let $modelSparql := if (fn:string-length($countryCode) = 2) then xmlconv:getModelEndPosition($latestDEnvelopes, $startDate, $endDate) else ""
 let $modelMethods := distinct-values(data(xmlconv:executeSparqlQuery($modelSparql)//sparql:binding[@name='inspireLabel']/sparql:literal))
 
-let $samplingPointSparql := if (fn:string-length($countryCode) = 2) then xmlconv:getSamplingPointEndPosition($latestDEnvelope,$startDate,$endDate) else ""
+let $samplingPointSparql := if (fn:string-length($countryCode) = 2) then xmlconv:getSamplingPointEndPosition($latestDEnvelopes,$startDate,$endDate) else ""
 let $sampingPointMethods := distinct-values(data(xmlconv:executeSparqlQuery($samplingPointSparql)//sparql:binding[@name='inspireLabel']/sparql:literal))
 
 
@@ -1265,7 +1286,8 @@ let $isProtectionTargetAvailable := string-length($resultSparql) > 0 and doc-ava
 let $validRows :=
 for $rec in xmlconv:executeSparqlQuery($resultSparql)
 return
-    distinct-values(concat(data($rec//sparql:binding[@name='inspireLabel']/sparql:literal), "#", data($rec//sparql:binding[@name='pollutantCode']/sparql:uri), "#",data($rec//sparql:binding[@name='protectionTarget']/sparql:uri)))
+    concat(data($rec//sparql:binding[@name='inspireLabel']/sparql:literal), "#", data($rec//sparql:binding[@name='pollutantCode']/sparql:uri), "#",data($rec//sparql:binding[@name='protectionTarget']/sparql:uri))
+let $validRows := distinct-values($validRows)
 
 let $exceptionPollutantIds := ("6001")
 
@@ -1285,8 +1307,6 @@ return if ($key !="EXC") then
                     <td title="aqd:pollutant">{data($x//aqd:pollutant/@xlink:href)}</td>
                     <td title="aqd:protectionTarget">{data($x//aqd:protectionTarget/@xlink:href)}</td>
                 </tr>
-
-
 else ()
 
 let $tblC29 := $invalid
