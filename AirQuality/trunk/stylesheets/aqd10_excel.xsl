@@ -566,6 +566,216 @@
           </table:table>
         </xsl:if>
 
+        <!-- XSLT excel output for I dataflow -->
+        <xsl:if test="count(gml:featureMember/aqd:AQD_SourceApportionment)">
+          <!-- I dataflow 1st tab (SourceApp) -->
+          <table:table>
+            <xsl:attribute name="table:name">
+              <xsl:text>SourceApp_allInfo</xsl:text>
+            </xsl:attribute>
+            <xsl:call-template name="SourceApp_allInfo_headers"/>
+            <table:table-rows>
+              <xsl:for-each select="gml:featureMember/aqd:AQD_SourceApportionment">
+                <xsl:call-template name="SourceApp_allInfo_rows"/>
+              </xsl:for-each>
+            </table:table-rows>
+          </table:table>
+          <!-- I dataflow 2nd tab (regionalBackground_) -->
+          <table:table>
+            <xsl:attribute name="table:name">
+              <xsl:text>regionalBackground</xsl:text>
+            </xsl:attribute>
+            <xsl:call-template name="regionalBackground_allInfo_headers"/>
+            <table:table-rows>
+              <xsl:for-each select="gml:featureMember/aqd:AQD_SourceApportionment">
+                <xsl:call-template name="regionalBackground_allInfo_rows"/>
+              </xsl:for-each>
+            </table:table-rows>
+          </table:table>
+
+          <!-- I dataflow 3rd tab (urbanBackground) -->
+          <table:table>
+            <xsl:attribute name="table:name">
+              <xsl:text>urbanBackground</xsl:text>
+            </xsl:attribute>
+            <xsl:call-template name="urbanBackground_allInfo_headers"/>
+            <table:table-rows>
+              <xsl:for-each select="gml:featureMember/aqd:AQD_SourceApportionment">
+                <xsl:call-template name="urbanBackground_allInfo_rows"/>
+              </xsl:for-each>
+            </table:table-rows>
+          </table:table>
+
+
+          <!-- I dataflow 4th tab (regionalBackground) -->
+          <table:table>
+            <xsl:attribute name="table:name">
+              <xsl:text>localIncrement</xsl:text>
+            </xsl:attribute>
+            <xsl:call-template name="localIncrement_allInfo_headers"/>
+            <table:table-rows>
+              <xsl:for-each select="gml:featureMember/aqd:AQD_SourceApportionment">
+                <xsl:call-template name="localIncrement_allInfo_rows"/>
+              </xsl:for-each>
+            </table:table-rows>
+          </table:table>
+
+
+          <!-- I dataflow 5th tab -->
+          <table:table>
+            <xsl:attribute name="table:name">
+              <xsl:text>Exceedance</xsl:text>
+            </xsl:attribute>
+            <xsl:call-template name="Exceedance_allInfo_headers"/>
+            <table:table-rows>
+              <xsl:for-each select="gml:featureMember/aqd:AQD_SourceApportionment">
+                <xsl:call-template name="Exceedance_allInfo_rows"/>
+              </xsl:for-each>
+            </table:table-rows>
+          </table:table>
+
+        </xsl:if>
+
+
+        <!-- XSLT excel output for J dataflow -->
+        <xsl:if test="count(gml:featureMember/aqd:AQD_EvaluationScenario)">
+
+          <table:table>
+            <xsl:attribute name="table:name">
+              <xsl:text>EvaluationScenarios_all_info</xsl:text>
+            </xsl:attribute>
+            <xsl:call-template name="EvaluationScenarios_allInfo_headers"/>
+            <table:table-rows>
+              <xsl:for-each select="gml:featureMember/aqd:AQD_EvaluationScenario">
+                <xsl:call-template name="EvaluationScenarios_allInfo_rows"/>
+              </xsl:for-each>
+            </table:table-rows>
+          </table:table>
+
+          <table:table>
+            <xsl:attribute name="table:name">
+              <xsl:text>BaselineScenario</xsl:text>
+            </xsl:attribute>
+            <xsl:call-template name="BaselineScenario_allInfo_headers"/>
+            <table:table-rows>
+              <xsl:for-each select="gml:featureMember/aqd:AQD_EvaluationScenario">
+                <xsl:call-template name="BaselineScenario_allInfo_rows"/>
+              </xsl:for-each>
+            </table:table-rows>
+          </table:table>
+
+          <table:table>
+            <xsl:attribute name="table:name">
+              <xsl:text>BaselineMeasures</xsl:text>
+            </xsl:attribute>
+            <xsl:call-template name="BaselineMeasures_allInfo_headers"/>
+            <table:table-rows>
+              <xsl:for-each select="gml:featureMember/aqd:AQD_EvaluationScenario">
+                <xsl:call-template name="BaselineMeasures_allInfo_rows"/>
+              </xsl:for-each>
+            </table:table-rows>
+          </table:table>
+
+          <table:table>
+            <xsl:attribute name="table:name">
+              <xsl:text>projectionScenario</xsl:text>
+            </xsl:attribute>
+            <xsl:call-template name="projectionScenario_allInfo_headers"/>
+            <table:table-rows>
+              <xsl:for-each select="gml:featureMember/aqd:AQD_EvaluationScenario">
+                <xsl:call-template name="projectionScenario_allInfo_rows"/>
+              </xsl:for-each>
+            </table:table-rows>
+          </table:table>
+
+          <table:table>
+            <xsl:attribute name="table:name">
+              <xsl:text>ProjectionMeasures</xsl:text>
+            </xsl:attribute>
+            <xsl:call-template name="ProjectionMeasures_allInfo_headers"/>
+            <table:table-rows>
+              <xsl:for-each select="gml:featureMember/aqd:AQD_EvaluationScenario">
+                <xsl:call-template name="ProjectionMeasures_allInfo_rows"/>
+              </xsl:for-each>
+            </table:table-rows>
+          </table:table>
+
+
+        </xsl:if>
+
+        <!-- XSLT excel output for I dataflow -->
+        <xsl:if test="count(gml:featureMember/aqd:AQD_Plan)">
+          <!-- I datafolow 1st tab (SourceApp) -->
+          <table:table>
+            <xsl:attribute name="table:name">
+              <xsl:text>SourceApp_allInfo</xsl:text>
+            </xsl:attribute>
+            <xsl:call-template name="SourceApp_allInfo_headers"/>
+            <table:table-rows>
+              <xsl:for-each select="gml:featureMember/aqd:AQD_Plan">
+                <xsl:call-template name="SourceApp_allInfo_rows"/>
+              </xsl:for-each>
+            </table:table-rows>
+          </table:table>
+          <!-- I dataflow 2nd tab (regionalBackground_) -->
+          <table:table>
+            <xsl:attribute name="table:name">
+              <xsl:text>regionalBackground_allInfo</xsl:text>
+            </xsl:attribute>
+            <xsl:call-template name="regionalBackground_allInfo_headers"/>
+            <table:table-rows>
+              <xsl:for-each select="gml:featureMember/aqd:AQD_Plan">
+                <xsl:call-template name="regionalBackground_allInfo_rows"/>
+              </xsl:for-each>
+            </table:table-rows>
+          </table:table>
+
+          <!-- I dataflow 3rd tab (urbanBackground) -->
+          <table:table>
+            <xsl:attribute name="table:name">
+              <xsl:text>urbanBackground_allInfo</xsl:text>
+            </xsl:attribute>
+            <xsl:call-template name="urbanBackground_allInfo_headers"/>
+            <table:table-rows>
+              <xsl:for-each select="gml:featureMember/aqd:AQD_Plan">
+                <xsl:call-template name="urbanBackground_allInfo_rows"/>
+              </xsl:for-each>
+            </table:table-rows>
+          </table:table>
+
+
+          <!-- I dataflow 4th tab (regionalBackground) -->
+          <table:table>
+            <xsl:attribute name="table:name">
+              <xsl:text>SourceApp_allInfo</xsl:text>
+            </xsl:attribute>
+            <xsl:call-template name="localIncrement_allInfo_headers"/>
+            <table:table-rows>
+              <xsl:for-each select="gml:featureMember/aqd:AQD_Plan">
+                <xsl:call-template name="localIncrement_allInfo_rows"/>
+              </xsl:for-each>
+            </table:table-rows>
+          </table:table>
+
+
+          <!-- I dataflow 5th tab -->
+          <table:table>
+            <xsl:attribute name="table:name">
+              <xsl:text>SourceApp_allInfo</xsl:text>
+            </xsl:attribute>
+            <xsl:call-template name="Exceedance_allInfo_headers"/>
+            <table:table-rows>
+              <xsl:for-each select="gml:featureMember/aqd:AQD_Plan">
+                <xsl:call-template name="Exceedance_allInfo_rows"/>
+              </xsl:for-each>
+            </table:table-rows>
+          </table:table>
+
+
+        </xsl:if>
+
+
+
         <!--(XSLT excel output for K dataflows) Measures -->
         <xsl:if test="count(gml:featureMember/aqd:AQD_Measures)">
           <!--(XSLT excel output for K dataflows) Measures - tab1 -->
@@ -5393,7 +5603,7 @@
             <text:p>
               <xsl:value-of select="$observingCapability/ef:ObservingCapability/ef:procedure/@xlink:href"/>
             </text:p>
-          </table:table-cell> 
+          </table:table-cell>
           <!-- 14 -->
           <table:table-cell table:style-name="cell1">
             <text:p>
@@ -7335,6 +7545,991 @@
     </xsl:for-each>
   </xsl:template>
 
+  <!-- I workflow start -->
+
+  <!-- SourceApp_allInfo_headers -->
+  <xsl:variable name="sourceAppColumnNames"
+                select='("gml:id", "namespace", "localId", "versionId", "referenceYear", "RB_total_quantity", "RB_total_quantityUOM", "RB_total_comment", "UB_total_quantity", "UB_total_quantityUOM", "UB_total_comment", "LI_total_quantity", "LI_total_quantityUOM", "LI_total_comment", "exceedance", "numericalExceedance", "reason", "areaClassification", "surfaceArea", "stationUsed", "modelUsed", "populationExposed",
+            "ecosystemAreaExposed", "comment", "parentExceedanceSituation", "usedInPlan")' />
+  <xsl:template name="SourceApp_allInfo_headers">
+    <table:table-columns>
+      <xsl:call-template name="CreateTemplateTableColumnHeader">
+        <xsl:with-param name="numberOfColumns" select="count($sourceAppColumnNames)" />
+      </xsl:call-template>
+    </table:table-columns>
+
+    <table:table-header-rows>
+      <table:table-row table:default-cell-value-type="string">
+        <xsl:call-template name="create-table-header-row">
+          <xsl:with-param name="columnNames" select="$sourceAppColumnNames" />
+        </xsl:call-template>
+      </table:table-row>
+    </table:table-header-rows>
+  </xsl:template>
+  <xsl:template name="SourceApp_allInfo_rows">
+    <xsl:for-each select=".">
+      <table:table-row table:default-cell-value-type="string">
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="@gml:id" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:inspireId/base:Identifier/base:namespace" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:inspireId/base:Identifier/base:localId" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:inspireId/base:Identifier/base:versionId" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:referenceYear/gml:TimeInstant/gml:timePosition" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:regionalBackground/aqd:RegionalBackground/aqd:total/aqd:QuantityCommented/aqd:quantity" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:regionalBackground/aqd:RegionalBackground/aqd:total/aqd:QuantityCommented/aqd:quantity/@uom" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:regionalBackground/aqd:RegionalBackground/aqd:total/aqd:QuantityCommented/aqd:comment" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:urbanBackground/aqd:UrbanBackground/aqd:total/aqd:QuantityCommented/aqd:quantity" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:urbanBackground/aqd:UrbanBackground/aqd:total/aqd:QuantityCommented/aqd:quantity/@uom" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:urbanBackground/aqd:UrbanBackground/aqd:total/aqd:QuantityCommented/aqd:comment" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:localIncrement/aqd:LocalIncrement/aqd:total/aqd:QuantityCommented/aqd:quantity" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:localIncrement/aqd:LocalIncrement/aqd:total/aqd:QuantityCommented/aqd:quantity/@uom" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:localIncrement/aqd:LocalIncrement/aqd:total/aqd:QuantityCommented/aqd:comment" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:macroExceedanceSituation/aqd:ExceedanceDescription/aqd:exceedance" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:macroExceedanceSituation/aqd:ExceedanceDescription/aqd:numericalExceedance" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:macroExceedanceSituation/aqd:ExceedanceDescription/aqd:numberExceedances" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:macroExceedanceSituation/aqd:ExceedanceDescription/aqd:reason" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateColumnHrefColumnMultipeValues">
+          <xsl:with-param name="elementValues" select="aqd:macroExceedanceSituation/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:areaClassification" />
+          <xsl:with-param name="sibling" select="'aqd:areaClassification'" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:macroExceedanceSituation/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:surfaceArea" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:macroExceedanceSituation/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:stationUsed" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:macroExceedanceSituation/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:modelUsed" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:macroExceedanceSituation/aqd:ExceedanceDescription/aqd:exceedanceExposure/aqd:ExceedanceExposure/aqd:populationExposed" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:macroExceedanceSituation/aqd:ExceedanceDescription/aqd:exceedanceExposure/aqd:ExceedanceExposure/aqd:ecosystemAreaExposed" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:comment" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:parentExceedanceSituation/@xlink:href" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:usedInPlan/@xlink:href" />
+        </xsl:call-template>
+
+      </table:table-row>
+    </xsl:for-each>
+  </xsl:template>
+
+  <!-- I workflow 2nd tab regionalBackground -->
+  <xsl:variable name="regionalBackgroundColumnNames"
+                select='( "namespace", "localId", "RB_total_quantity", "RB_total_quantityUOM", "RB_total_comment", "RB_fromWithinMS_quantity", "RB_fromWithinMS_quantityUOM", "RB_fromWithinMS_comment", "RB_transboundary_quantity", "RB_transboundary_quantityUOM", "RB_transboundary_comment", "RB_natural_quantity", "RB_natural_quantityUOM", "RB_natural_comment", "RB_other_quantity", "RB_other_quantityUOM" , "RB_other_comment" )'/>
+  <xsl:template name="regionalBackground_allInfo_headers">
+    <table:table-columns>
+      <xsl:call-template name="CreateTemplateTableColumnHeader">
+        <xsl:with-param name="numberOfColumns" select="count($regionalBackgroundColumnNames)" />
+      </xsl:call-template>
+    </table:table-columns>
+    <table:table-header-rows>
+      <table:table-row table:default-cell-value-type="string">
+        <xsl:call-template name="create-table-header-row">
+          <xsl:with-param name="columnNames" select="$regionalBackgroundColumnNames" />
+        </xsl:call-template>
+      </table:table-row>
+    </table:table-header-rows>
+  </xsl:template>
+  <xsl:template name="regionalBackground_allInfo_rows">
+    <xsl:for-each select=".">
+      <table:table-row table:default-cell-value-type="string">
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:inspireId/base:Identifier/base:namespace" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:inspireId/base:Identifier/base:localId" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:regionalBackground/aqd:RegionalBackground/aqd:total/aqd:QuantityCommented/aqd:quantity" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:regionalBackground/aqd:RegionalBackground/aqd:total/aqd:QuantityCommented/aqd:quantity/@uom" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:regionalBackground/aqd:RegionalBackground/aqd:total/aqd:QuantityCommented/aqd:comment" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:regionalBackground/aqd:RegionalBackground/aqd:fromWithinMS/aqd:QuantityCommented/aqd:quantity" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:regionalBackground/aqd:RegionalBackground/aqd:fromWithinMS/aqd:QuantityCommented/aqd:quantity/@uom" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:regionalBackground/aqd:RegionalBackground/aqd:fromWithinMS/aqd:QuantityCommented/aqd:comment" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:regionalBackground/aqd:RegionalBackground/aqd:transboundary/aqd:QuantityCommented/aqd:quantity" />
+        </xsl:call-template>
+
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:regionalBackground/aqd:RegionalBackground/aqd:transboundary/aqd:QuantityCommented/aqd:quantity/@uom" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:regionalBackground/aqd:RegionalBackground/aqd:transboundary/aqd:QuantityCommented/aqd:comment" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:regionalBackground/aqd:RegionalBackground/aqd:natural/aqd:QuantityCommented/aqd:quantity" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:regionalBackground/aqd:RegionalBackground/aqd:natural/aqd:QuantityCommented/aqd:quantity/@uom" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:regionalBackground/aqd:RegionalBackground/aqd:natural/aqd:QuantityCommented/aqd:comment" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:regionalBackground/aqd:RegionalBackground/aqd:other/aqd:QuantityCommented/aqd:quantity" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:regionalBackground/aqd:RegionalBackground/aqd:other/aqd:QuantityCommented/aqd:quantity/@uom" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:regionalBackground/aqd:RegionalBackground/aqd:other/aqd:QuantityCommented/aqd:comment" />
+        </xsl:call-template>
+      </table:table-row>
+    </xsl:for-each>
+  </xsl:template>
+
+  <!-- 3rd tab I report urbanBackground -->
+  <xsl:variable name="urbanBackgroundColumnNames" select='("namespace", "localId", "UB_total_quantity", "UB_total_quantityUOM", "UB_total_comment", "UB_traffic_quantity", "UB_traffic_quantityUOM", "UB_traffic_comment", "UB_headAndPower_quantity", "UB_headAndPower_quantityUOM", "UB_headAndPower_comment", "UB_agriculture_quantity", "UB_headAndPower_quantityUOM", "UB_headAndPower_comment", "UB_agriculture_quantity", "UB_headAndPower_quantityUOM", "UB_headAndPower_comment", "UB_agriculture_quantity", "UB_agriculture_quantityUOM", "UB_agriculture_comment", "UB_commercialAndResidential_quantity", "UB_commercialAndResidential_quantityUOM", "UB_commercialAndResidential_comment", "UB_shipping_quantity", "UB_shipping_quantityUOM", "UB_shipping_comment", "UB_offRoadMobileMachinery_quantity", "UB_offRoadMobileMachinery_quantityUOM", "UB_offRoadMobileMachinery_comment", "UB_natural_quantity", "UB_natural_quantityUOM", "UB_natural_comment", "UB_transboundary_quantity", "UB_transboundary_quantityUOM", "UB_transboundary_comment", "UB_other_quantity", "UB_other_quantityUOM", "UB_other_comment")' />
+  <xsl:template name="urbanBackground_allInfo_headers">
+    <table:table-columns>
+      <xsl:call-template name="CreateTemplateTableColumnHeader">
+        <xsl:with-param name="numberOfColumns" select="count($urbanBackgroundColumnNames)" />
+      </xsl:call-template>
+    </table:table-columns>
+    <table:table-header-rows>
+      <table:table-row table:default-cell-value-type="string">
+        <xsl:call-template name="create-table-header-row">
+          <xsl:with-param name="columnNames" select="$urbanBackgroundColumnNames" />
+        </xsl:call-template>
+      </table:table-row>
+    </table:table-header-rows>
+  </xsl:template>
+  <xsl:template name="urbanBackground_allInfo_rows">
+    <xsl:for-each select=".">
+      <table:table-row table:default-cell-value-type="string">
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:inspireId/base:Identifier/base:namespace" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:inspireId/base:Identifier/base:localId" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell"><!--  fixed to QuantityCommented -->
+          <xsl:with-param name="elementValue" select="aqd:urbanBackground/aqd:UrbanBackground/aqd:total/aqd:QuantityCommented/aqd:quantity" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:urbanBackground/aqd:UrbanBackground/aqd:total/aqd:QuantityCommented/aqd:quantity/@uom" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:urbanBackground/aqd:UrbanBackground/aqd:total/aqd:QuantityCommented/aqd:comment" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell"><!--  fixed to QuantityCommented -->
+          <xsl:with-param name="elementValue" select="aqd:urbanBackground/aqd:UrbanBackground/aqd:traffic/aqd:QuantityCommented/aqd:quantity" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:urbanBackground/aqd:UrbanBackground/aqd:traffic/aqd:QuantityCommented/aqd:quantity/@uom" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:urbanBackground/aqd:UrbanBackground/aqd:traffic/aqd:QuantityCommented/aqd:comment" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell"><!--  fixed to QuantityCommented -->
+          <xsl:with-param name="elementValue" select="aqd:urbanBackground/aqd:UrbanBackground/aqd:heatAndPowerProduction/aqd:QuantityCommented/aqd:quantity" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:urbanBackground/aqd:UrbanBackground/aqd:heatAndPowerProduction/aqd:QuantityCommented/aqd:quantity/@uom" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:urbanBackground/aqd:UrbanBackground/aqd:heatAndPowerProduction/aqd:QuantityCommented/aqd:comment" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell"><!--  fixed to QuantityCommented -->
+          <xsl:with-param name="elementValue" select="aqd:urbanBackground/aqd:UrbanBackground/aqd:agriculture/aqd:QuantityCommented/aqd:quantity" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:urbanBackground/aqd:UrbanBackground/aqd:agriculture/aqd:QuantityCommented/aqd:quantity/@uom" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:urbanBackground/aqd:UrbanBackground/aqd:agriculture/aqd:QuantityCommented/aqd:comment" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell"><!--  fixed to QuantityCommented -->
+          <xsl:with-param name="elementValue" select="aqd:urbanBackground/aqd:UrbanBackground/aqd:commercialAndResidential/aqd:QuantityCommented/aqd:quantity" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:urbanBackground/aqd:UrbanBackground/aqd:commercialAndResidential/aqd:QuantityCommented/aqd:quantity/@uom" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:urbanBackground/aqd:UrbanBackground/aqd:commercialAndResidential/aqd:QuantityCommented/aqd:comment" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell"><!--  fixed to QuantityCommented -->
+          <xsl:with-param name="elementValue" select="aqd:urbanBackground/aqd:UrbanBackground/aqd:shipping/aqd:QuantityCommented/aqd:quantity" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:urbanBackground/aqd:UrbanBackground/aqd:shipping/aqd:QuantityCommented/aqd:quantity/@uom" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:urbanBackground/aqd:UrbanBackground/aqd:shipping/aqd:QuantityCommented/aqd:quantity/aqd:comment" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell"><!--  fixed to QuantityCommented -->
+          <xsl:with-param name="elementValue" select="aqd:urbanBackground/aqd:UrbanBackground/aqd:offRoadMobileMachinery/aqd:QuantityCommented/aqd:quantity" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:urbanBackground/aqd:UrbanBackground/aqd:offRoadMobileMachinery/aqd:QuantityCommented/aqd:quantity/@uom" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:urbanBackground/aqd:UrbanBackground/aqd:offRoadMobileMachinery/aqd:QuantityCommented/aqd:comment" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell"><!--  fixed to QuantityCommented -->
+          <xsl:with-param name="elementValue" select="aqd:urbanBackground/aqd:UrbanBackground/aqd:natural/aqd:QuantityCommented/aqd:quantity" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:urbanBackground/aqd:UrbanBackground/aqd:natural/aqd:QuantityCommented/aqd:quantity/@uom" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:urbanBackground/aqd:UrbanBackground/aqd:natural/aqd:QuantityCommented/aqd:comment" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell"><!--  fixed to QuantityCommented -->
+          <xsl:with-param name="elementValue" select="aqd:urbanBackground/aqd:UrbanBackground/aqd:transboundary/aqd:QuantityCommented/aqd:quantity" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:urbanBackground/aqd:UrbanBackground/aqd:transboundary/aqd:QuantityCommented/aqd:quantity/@uom" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:urbanBackground/aqd:UrbanBackground/aqd:transboundary/aqd:QuantityCommented/aqd:comment" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell"><!--  fixed to QuantityCommented -->
+          <xsl:with-param name="elementValue" select="aqd:urbanBackground/aqd:UrbanBackground/aqd:other/aqd:QuantityCommented/aqd:quantity" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:urbanBackground/aqd:UrbanBackground/aqd:other/aqd:QuantityCommented/aqd:quantity/@uom" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:urbanBackground/aqd:UrbanBackground/aqd:other/aqd:QuantityCommented/aqd:comment" />
+        </xsl:call-template>
+
+      </table:table-row>
+    </xsl:for-each>
+  </xsl:template>
+
+  <!-- 4th tab I flow - localIncrement -->
+  
+  <xsl:variable name="localIncrementColumnNames" select='("namespace", "localId", "LI_total_quantity", "LI_total_quantityUOM", "LI_total_comment", "LI_traffic_quantity", "LI_traffic_quantityUOM", "LI_traffic_comment", "LI_headAndPower_quantity", "LI_headAndPower_quantityUOM", "LI_traffic_comment", "LI_agriculture_quantity", "LI_agriculture_quantityUOM", "LI_agriculture_comment", "LI_commercialAndResidential_quantity", "LI_commercialAndResidential_quantityUOM", "LI_commercialAndResidential_comment", "LI_shipping_quantity", "LI_shipping_quantityUOM", "LI_shipping_comment", "LI_offRoadMobileMachinery_quantity", "LI_offRoadMobileMachinery_quantityUOM", "LI_offRoadMobileMachinery_comment", "LI_natural_quantity", "LI_natural_quantityUOM", "LI_natural_comment", "LI_transboundary_quantity", "LI_transboundary_quantityUOM", "LI_transboundary_comment", "LI_other_quantity", "LI_other_quantityUOM", "LI_other_comment")' />
+  <xsl:template name="localIncrement_allInfo_headers">
+    <table:table-columns>
+      <xsl:call-template name="CreateTemplateTableColumnHeader">
+        <xsl:with-param name="numberOfColumns" select="count($localIncrementColumnNames)" />
+      </xsl:call-template>
+    </table:table-columns>
+    <table:table-header-rows>
+      <table:table-row table:default-cell-value-type="string">
+        <xsl:call-template name="create-table-header-row">
+          <xsl:with-param name="columnNames" select="$localIncrementColumnNames" />
+        </xsl:call-template>
+      </table:table-row>
+    </table:table-header-rows>
+  </xsl:template>
+  <xsl:template name="localIncrement_allInfo_rows">
+    <xsl:for-each select=".">
+      <table:table-row table:default-cell-value-type="string">
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:inspireId/base:Identifier/base:namespace" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:inspireId/base:Identifier/base:localId" />
+        </xsl:call-template>
+
+		<!--  fixed to QuantityCommented -->
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:localIncrement/aqd:LocalIncrement/aqd:total/aqd:QuantityCommented/aqd:quantity" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:localIncrement/aqd:LocalIncrement/aqd:total/aqd:QuantityCommented/aqd:quantity/@uom" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:localIncrement/aqd:LocalIncrement/aqd:total/aqd:QuantityCommented/aqd:comment" />
+        </xsl:call-template>
+
+		<!--  fixed to QuantityCommented -->
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:localIncrement/aqd:LocalIncrement/aqd:traffic/aqd:QuantityCommented/aqd:quantity" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:localIncrement/aqd:LocalIncrement/aqd:traffic/aqd:QuantityCommented/aqd:quantity/@uom" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:localIncrement/aqd:LocalIncrement/aqd:traffic/aqd:QuantityCommented/aqd:comment" />
+        </xsl:call-template>
+
+		<!--  fixed to QuantityCommented -->
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:localIncrement/aqd:LocalIncrement/aqd:heatAndPowerProduction/aqd:QuantityCommented/aqd:quantity" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:localIncrement/aqd:LocalIncrement/aqd:heatAndPowerProduction/aqd:QuantityCommented/aqd:quantity/@uom" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:localIncrement/aqd:LocalIncrement/aqd:heatAndPowerProduction/aqd:QuantityCommented/aqd:comment" />
+        </xsl:call-template>
+
+		<!--  fixed to QuantityCommented -->
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:localIncrement/aqd:LocalIncrement/aqd:agriculture/aqd:QuantityCommented/aqd:quantity" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:localIncrement/aqd:LocalIncrement/aqd:agriculture/aqd:QuantityCommented/aqd:quantity/@uom" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:localIncrement/aqd:LocalIncrement/aqd:agriculture/aqd:QuantityCommented/aqd:comment" />
+        </xsl:call-template>
+
+		<!--  fixed to QuantityCommented -->
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:localIncrement/aqd:LocalIncrement/aqd:commercialAndResidential/aqd:QuantityCommented/aqd:quantity" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:localIncrement/aqd:LocalIncrement/aqd:commercialAndResidential/aqd:QuantityCommented/aqd:quantity/@uom" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:localIncrement/aqd:LocalIncrement/aqd:commercialAndResidential/aqd:QuantityCommented/aqd:comment" />
+        </xsl:call-template>
+
+		<!--  fixed to QuantityCommented -->
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:localIncrement/aqd:LocalIncrement/aqd:shipping/aqd:QuantityCommented/aqd:quantity" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:localIncrement/aqd:LocalIncrement/aqd:shipping/aqd:QuantityCommented/aqd:quantity/@uom" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:localIncrement/aqd:LocalIncrement/aqd:shipping/aqd:QuantityCommented/aqd:comment" />
+        </xsl:call-template>
+
+		<!--  fixed to QuantityCommented -->
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:localIncrement/aqd:LocalIncrement/aqd:offRoadMobileMachinery/aqd:QuantityCommented/aqd:quantity" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:localIncrement/aqd:LocalIncrement/aqd:offRoadMobileMachinery/aqd:QuantityCommented/aqd:quantity/@uom" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:localIncrement/aqd:LocalIncrement/aqd:offRoadMobileMachinery/aqd:QuantityCommented/aqd:comment" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:localIncrement/aqd:LocalIncrement/aqd:natural/aqd:QuantityCommented/aqd:quantity" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:localIncrement/aqd:LocalIncrement/aqd:natural/aqd:QuantityCommented/aqd:quantity/@uom" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:localIncrement/aqd:LocalIncrement/aqd:natural/aqd:QuantityCommented/aqd:comment" />
+        </xsl:call-template>
+        
+		<!--  fixed to QuantityCommented -->
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:localIncrement/aqd:LocalIncrement/aqd:transboundary/aqd:QuantityCommented/aqd:quantity" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:localIncrement/aqd:LocalIncrement/aqd:transboundary/aqd:QuantityCommented/aqd:quantity/@uom" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:localIncrement/aqd:LocalIncrement/aqd:transboundary/aqd:QuantityCommented/aqd:comment" />
+        </xsl:call-template>
+
+		<!--  fixed to QuantityCommented -->
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:localIncrement/aqd:LocalIncrement/aqd:other/aqd:QuantityCommented/aqd:quantity" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:localIncrement/aqd:LocalIncrement/aqd:other/aqd:QuantityCommented/aqd:quantity/@uom" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:localIncrement/aqd:LocalIncrement/aqd:other/aqd:QuantityCommented/aqd:comment" />
+        </xsl:call-template>
+      </table:table-row>
+    </xsl:for-each>
+  </xsl:template>
+
+  <!-- 5th tab I workflow Exceedance -->
+  <xsl:variable name="exceedanceColumnNames" select='("namespace", "localId", "Exceedance", "numericalExc", "numberExc", "areaClass", "spatialExtent", "surfaceArea", "surfaceAreaUOM", "roadLength", "roadLengthUOM", "adminUnit", "stationUsed", "modelUsed", "populationExposed", "ecosystemExposed", "ecosystemExposedUOM", "sensitivePopulation", "infrastructure", "referenceYear", "reason", "reasonOther", "comment")' />
+  <xsl:template name="Exceedance_allInfo_headers">
+    <table:table-columns>
+      <xsl:call-template name="CreateTemplateTableColumnHeader">
+        <xsl:with-param name="numberOfColumns" select="count($exceedanceColumnNames)" />
+      </xsl:call-template>
+    </table:table-columns>
+    <table:table-header-rows>
+      <table:table-row table:default-cell-value-type="string">
+        <xsl:call-template name="create-table-header-row">
+          <xsl:with-param name="columnNames" select="$exceedanceColumnNames" />
+        </xsl:call-template>
+      </table:table-row>
+    </table:table-header-rows>
+  </xsl:template>
+  <xsl:template name="Exceedance_allInfo_rows">
+    <xsl:for-each select=".">
+      <table:table-row table:default-cell-value-type="string">
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:inspireId/base:Identifier/base:namespace" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:inspireId/base:Identifier/base:localId" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:macroExceedanceSituation/aqd:ExceedanceDescription/aqd:exceedance" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:macroExceedanceSituation/aqd:ExceedanceDescription/aqd:numberExceedancese" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:macroExceedanceSituation/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:areaClassification" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:macroExceedanceSituation/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:spatialExtent" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:macroExceedanceSituation/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:surfaceArea" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:macroExceedanceSituation/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:roadLength" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:macroExceedanceSituation/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:roadLength/@uom" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:macroExceedanceSituation/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:administrativeUnit/@xlink:href" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:macroExceedanceSituation/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:stationUsed/@xlink:href" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:macroExceedanceSituation/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:modelUsed/@xlink:href" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:macroExceedanceSituation/aqd:ExceedanceDescription/aqd:exceedanceExposure/aqd:ExceedanceExposure/aqd:populationExposed" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:macroExceedanceSituation/aqd:ExceedanceDescription/aqd:exceedanceExposure/aqd:ExceedanceExposure/aqd:ecosystemAreaExposed/@uom" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:macroExceedanceSituation/aqd:ExceedanceDescription/aqd:exceedanceExposure/aqd:ExceedanceExposure/aqd:sensitivePopulation" />
+        </xsl:call-template>
+        
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:macroExceedanceSituation/aqd:ExceedanceDescription/aqd:exceedanceExposure/aqd:ExceedanceExposure/aqd:sensitivePopulation" />
+        </xsl:call-template>
+
+
+
+      </table:table-row>
+    </xsl:for-each>
+  </xsl:template>
+  <!-- I workflow end -->
+
+
+  <!-- J workflow start -->
+
+  <!-- J workflow 1st tab: EvaluationScenarios_all_info -->
+  <xsl:variable name="evaluationScenariosColumnNames" select="('@gml:id', 'namespace', 'localId', 'versionId', 'codeOfScenario', 'publicationDescript', 'publicationTitle', 'publicationAuthor', 'publicationDate', 'publisher', 'weblink', 'AttainmentYear', 'StarYear', 'baseDescription', 'baseTotal', 'baseConcentration', 'baseComments', 'usedInPlan', 'sourceApportionment')" />
+  <xsl:template name="EvaluationScenarios_allInfo_headers">
+    <table:table-columns>
+      <xsl:call-template name="CreateTemplateTableColumnHeader">
+        <xsl:with-param name="numberOfColumns" select="count($evaluationScenariosColumnNames)" />
+      </xsl:call-template>
+    </table:table-columns>
+    <table:table-header-rows>
+      <table:table-row table:default-cell-value-type="string">
+        <xsl:call-template name="create-table-header-row">
+          <xsl:with-param name="columnNames" select="$evaluationScenariosColumnNames" />
+        </xsl:call-template>
+      </table:table-row>
+    </table:table-header-rows>
+  </xsl:template>
+  <xsl:template name="EvaluationScenarios_allInfo_rows">
+    <xsl:for-each select=".">
+      <table:table-row table:default-cell-value-type="string">
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="@gml:id" />
+        </xsl:call-template>
+
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:inspireId/base:Identifier/base:namespace" />
+        </xsl:call-template>
+
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:inspireId/base:Identifier/base:localId" />
+        </xsl:call-template>
+
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:inspireId/base:Identifier/base:versionId" />
+        </xsl:call-template>
+
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:codeOfScenario" />
+        </xsl:call-template>
+
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:publication/aqd:Publication/aqd:description" />
+        </xsl:call-template>
+
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:publication/aqd:Publication/aqd:title" />
+        </xsl:call-template>
+
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:publication/aqd:Publication/aqd:author" />
+        </xsl:call-template>
+
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:publication/aqd:Publication/aqd:publicationDate/gml:TimeInstant/gml:tunePosition" />
+        </xsl:call-template>
+
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:publication/aqd:Publication/aqd:publisher" />
+        </xsl:call-template>
+
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:publication/aqd:Publication/aqd:webLink" />
+        </xsl:call-template>
+
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:attainmentYear" />
+        </xsl:call-template>
+
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:startYear" />
+        </xsl:call-template>
+
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:baselineScenario/aqd:Scenario/aqd:description" />
+        </xsl:call-template>
+
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:baselineScenario/aqd:Scenario/aqd:totalEmissions" />
+        </xsl:call-template>
+
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:baselineScenario/aqd:Scenario/aqd:expectedConcentration" />
+        </xsl:call-template>
+
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:baselineScenario/aqd:Scenario/aqd:comments" />
+        </xsl:call-template>
+
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:usedInPlan/@xlink:href" />
+        </xsl:call-template>
+
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:sourceApportionment/@xlink:href" />
+        </xsl:call-template>
+
+      </table:table-row>
+    </xsl:for-each>
+  </xsl:template>
+
+  <!-- J workflow 2nd Tab: BaselineScenario -->
+  <xsl:variable name="BaselineScenarioColumnNames" select="('namespace', 'localId',  'codeOfScenario',  'description',  'totalEmissions',  'totalEmissionsUOM',  'expectedConc',  'expectedConcUOM',  'expectedExceedances',  'comment',  'measuredApplied')" />
+  <xsl:template name="BaselineScenario_allInfo_headers">
+    <table:table-columns>
+      <xsl:call-template name="CreateTemplateTableColumnHeader">
+        <xsl:with-param name="numberOfColumns" select="count($BaselineScenarioColumnNames)" />
+      </xsl:call-template>
+    </table:table-columns>
+    <table:table-header-rows>
+      <table:table-row table:default-cell-value-type="string">
+        <xsl:call-template name="create-table-header-row">
+          <xsl:with-param name="columnNames" select="$BaselineScenarioColumnNames" />
+        </xsl:call-template>
+      </table:table-row>
+    </table:table-header-rows>
+  </xsl:template>
+  <xsl:template name="BaselineScenario_allInfo_rows">
+    <xsl:for-each select=".">
+      <table:table-row table:default-cell-value-type="string">
+
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:inspireId/base:Identifier/base:namespace" />
+        </xsl:call-template>
+
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:inspireId/base:Identifier/base:localId" />
+        </xsl:call-template>
+
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:codeOfScenario" />
+        </xsl:call-template>
+
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:baselineScenario/aqd:Scenario/aqd:description" />
+        </xsl:call-template>
+
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:baselineScenario/aqd:Scenario/aqd:totalEmissions" />
+        </xsl:call-template>
+
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:baselineScenario/aqd:Scenario/aqd:totalEmissions/@uom" />
+        </xsl:call-template>
+
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:baselineScenario/aqd:Scenario/aqd:expectedConcentration" />
+        </xsl:call-template>
+
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:baselineScenario/aqd:Scenario/aqd:expectedConcentration/@uom" />
+        </xsl:call-template>
+
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:baselineScenario/aqd:Scenario/aqd:expectedExceedances" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:baselineScenario/aqd:Scenario/aqd:comments" />
+        </xsl:call-template>
+
+
+        <xsl:call-template name="CreateColumnHrefColumnMultipeValues">
+          <xsl:with-param name="elementValues" select="aqd:baselineScenario/aqd:Scenario/aqd:measuresApplied" />
+          <xsl:with-param name="sibling" select="'aqd:measuresApplied'" />
+        </xsl:call-template>
+
+      </table:table-row>
+    </xsl:for-each>
+  </xsl:template>
+  <!-- J workflow 3rd Tab: BaselineMeasures -->
+  <xsl:variable name="BaselineMeasuresColumnNames" select="('namespace', 'localId', 'codeOfScenario', 'measuredApplied')" />
+  <xsl:template name="BaselineMeasures_allInfo_headers">
+    <table:table-columns>
+      <xsl:call-template name="CreateTemplateTableColumnHeader">
+        <xsl:with-param name="numberOfColumns" select="count($BaselineMeasuresColumnNames)" />
+      </xsl:call-template>
+    </table:table-columns>
+    <table:table-header-rows>
+      <table:table-row table:default-cell-value-type="string">
+        <xsl:call-template name="create-table-header-row">
+          <xsl:with-param name="columnNames" select="$BaselineMeasuresColumnNames" />
+        </xsl:call-template>
+      </table:table-row>
+    </table:table-header-rows>
+  </xsl:template>
+  <xsl:template name="BaselineMeasures_allInfo_rows">
+    <xsl:for-each select=".">
+      <table:table-row table:default-cell-value-type="string">
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:inspireId/base:Identifier/base:namespace" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:inspireId/base:Identifier/base:localId" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:codeOfScenario" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateColumnHrefColumnMultipeValues">
+          <xsl:with-param name="elementValues" select="aqd:baselineScenario/aqd:Scenario/aqd:measuresApplied" />
+          <xsl:with-param name="sibling" select="'aqd:measuresApplied'" />
+        </xsl:call-template>
+
+      </table:table-row>
+    </xsl:for-each>
+  </xsl:template>
+  <!-- J workflow 4th tab: projectionScenario -->
+  <xsl:variable name="projectionScenarioColumnNames" select="('namespace', 'localId', 'codeOfScenario', 'description', 'totalEmissions', 'totalEmissionsUOM', 'expectedConc', 'expectedConcUOM', 'expectedExceedances', 'comment', 'measuredApplied' )" />
+  <xsl:template name="projectionScenario_allInfo_headers">
+    <table:table-columns>
+      <xsl:call-template name="CreateTemplateTableColumnHeader">
+        <xsl:with-param name="numberOfColumns" select="count($projectionScenarioColumnNames)" />
+      </xsl:call-template>
+    </table:table-columns>
+    <table:table-header-rows>
+      <table:table-row table:default-cell-value-type="string">
+        <xsl:call-template name="create-table-header-row">
+          <xsl:with-param name="columnNames" select="$projectionScenarioColumnNames" />
+        </xsl:call-template>
+      </table:table-row>
+    </table:table-header-rows>
+  </xsl:template>
+  <xsl:template name="projectionScenario_allInfo_rows">
+    <xsl:for-each select=".">
+      <table:table-row table:default-cell-value-type="string">
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:inspireId/base:Identifier/base:namespace" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:inspireId/base:Identifier/base:localId" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:codeOfScenario" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:projectionScenario/aqd:Scenario/aqd:description" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:projectionScenario/aqd:Scenario/aqd:totalEmissions" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:projectionScenario/aqd:Scenario/aqd:totalEmissions/@uom" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:projectionScenario/aqd:Scenario/aqd:expectedConcentration" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:projectionScenario/aqd:Scenario/aqd:expectedConcentration/@uom" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:projectionScenario/aqd:Scenario/aqd:expectedExceedances" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:projectionScenario/aqd:Scenario/aqd:comments" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateColumnHrefColumnMultipeValues">
+          <xsl:with-param name="elementValues" select="aqd:projectionScenario/aqd:Scenario/aqd:measuresApplied/@xlink:href" />
+          <xsl:with-param name="sibling" select="'aqd:measuresApplied'" />
+        </xsl:call-template>
+
+      </table:table-row>
+    </xsl:for-each>
+  </xsl:template>
+  <!-- J workflow 5th tab: ProjectionMeasures -->
+  <xsl:variable name="ProjectionMeasuresColumnNames" select="('namespace', 'localId', 'codeOfScenario', 'measuredApplied')" />
+  <xsl:template name="ProjectionMeasures_allInfo_headers">
+    <table:table-columns>
+      <xsl:call-template name="CreateTemplateTableColumnHeader">
+        <xsl:with-param name="numberOfColumns" select="count($ProjectionMeasuresColumnNames)" />
+      </xsl:call-template>
+    </table:table-columns>
+    <table:table-header-rows>
+      <table:table-row table:default-cell-value-type="string">
+        <xsl:call-template name="create-table-header-row">
+          <xsl:with-param name="columnNames" select="$ProjectionMeasuresColumnNames" />
+        </xsl:call-template>
+      </table:table-row>
+    </table:table-header-rows>
+  </xsl:template>
+  <xsl:template name="ProjectionMeasures_allInfo_rows">
+    <xsl:for-each select=".">
+      <table:table-row table:default-cell-value-type="string">
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:inspireId/base:Identifier/base:namespace" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:inspireId/base:Identifier/base:localId" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateTemplateTableColumnCell">
+          <xsl:with-param name="elementValue" select="aqd:codeOfScenario" />
+        </xsl:call-template>
+
+        <xsl:call-template name="CreateColumnHrefColumnMultipeValues">
+          <xsl:with-param name="elementValues" select="aqd:projectionScenario/aqd:Scenario/aqd:measuresApplied/@xlink:href" />
+          <xsl:with-param name="sibling" select="'aqd:measuresApplied'" />
+        </xsl:call-template>
+
+      </table:table-row>
+    </xsl:for-each>
+  </xsl:template>
+  <!-- J workflow end -->
+
+
   <!-- K (measures)-->
   <!-- K (Measures_allInfo) -->
   <xsl:template name="Measures_allInfo_headers">
@@ -9014,13 +10209,60 @@
     </xsl:for-each>
   </xsl:template>
 
+  <xsl:template name="CreateTemplateTableColumnHeader">
+    <xsl:param name="numberOfColumns" />
+    <xsl:for-each select="$numberOfColumns">
+      <table:table-column
+              table:default-cell-value-type="string"
+              table:default-cell-style-name="long-string-heading">
+      </table:table-column>
+    </xsl:for-each>
+  </xsl:template>
+
+  <xsl:template name="CreateTemplateTableColumnCell">
+      <xsl:param name="elementValue" />
+      
+          <table:table-cell table:style-name="cell1">
+          <text:p>
+                  <xsl:value-of select="$elementValue" />
+              </text:p>
+          </table:table-cell>
+      
+  </xsl:template>
+
+  <xsl:template name="create-table-header-row">
+    <xsl:param name="columnNames" />
+      <xsl:for-each select="$columnNames">
+        <table:table-cell table:style-name="Heading2">
+          <text:p>
+            <xsl:value-of select="." />
+          </text:p>
+        </table:table-cell>
+      </xsl:for-each>
+  </xsl:template>
+  
+  <xsl:template name="CreateColumnHrefColumnMultipeValues">
+    <xsl:param name="elementValues" />
+    <xsl:param name="sibling" />
+    <xsl:for-each select="$elementValues">
+      <table:table-cell table:style-name="cell1">
+          <text:p>
+          <xsl:value-of select="./@xlink:href" />
+          <xsl:if test="./following-sibling::*[name()=$sibling]">
+            <xsl:text> || </xsl:text>
+          </xsl:if>
+        </text:p>
+      </table:table-cell>
+    </xsl:for-each>
+  </xsl:template>
+
   <!-- -->
 
-<!-- REFERENCE 
+<!-- REFERENCE
     B: Zones
     C: AssessmentRegime
     D: Model
     G: Attainment
     K: Measures
-  -->  
+  -->
 </xsl:stylesheet>
