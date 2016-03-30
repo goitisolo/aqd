@@ -1783,10 +1783,10 @@ as xs:string {
 declare function xmlconv:isValidAssessmentTypeCombination($id as xs:string, $type as xs:string, $allCombinations as xs:string*) as xs:boolean {
     let $typeInDoc := lower-case(substring-after($type, $xmlconv:ASSESSMENTTYPE_VOCABULARY))
     let $combination := concat($id, "#", $type)
-    let $combinationFixed := concat($id, "#", $xmlconv:ASSESSMENTTYPE_VOCABULARY, "/fixed")
-    let $combinationIndicative := concat($id, "#", $xmlconv:ASSESSMENTTYPE_VOCABULARY, "/indicative")
-    let $combinationModel := concat($id, "#", $xmlconv:ASSESSMENTTYPE_VOCABULARY, "/model")
-    let $combinationObjective := concat($id, "#", $xmlconv:ASSESSMENTTYPE_VOCABULARY, "/objective")
+    let $combinationFixed := concat($id, "#", $xmlconv:ASSESSMENTTYPE_VOCABULARY, "fixed")
+    let $combinationIndicative := concat($id, "#", $xmlconv:ASSESSMENTTYPE_VOCABULARY, "indicative")
+    let $combinationModel := concat($id, "#", $xmlconv:ASSESSMENTTYPE_VOCABULARY, "model")
+    let $combinationObjective := concat($id, "#", $xmlconv:ASSESSMENTTYPE_VOCABULARY, "objective")
     
     let $combinationOk := 
         if ($typeInDoc = ("fixed", "indicative", "model")) then
