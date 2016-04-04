@@ -7571,6 +7571,7 @@
                 "reason", 
                 "areaClassification", 
                 "surfaceArea", 
+                "roadLength",
                 "stationUsed", 
                 "modelUsed",
                 "populationExposed", 
@@ -7677,8 +7678,12 @@
           <xsl:with-param name="sibling" select='"aqd:areaClassification"' />
         </xsl:call-template>
 
-        <xsl:call-template name="CreateTemplateTableColumnCell"><!-- areaClassification -->
+        <xsl:call-template name="CreateTemplateTableColumnCell"><!-- surfaceArea -->
           <xsl:with-param name="elementValue" select="aqd:macroExceedanceSituation/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:surfaceArea" />
+        </xsl:call-template>
+        
+        <xsl:call-template name="CreateTemplateTableColumnCell"><!-- roadLength -->
+          <xsl:with-param name="elementValue" select="aqd:macroExceedanceSituation/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:roadLength" />
         </xsl:call-template>
 
         <xsl:call-template name="CreateTemplateTableColumnCell"><!-- stationUsed -->
