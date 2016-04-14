@@ -15,6 +15,7 @@ xquery version "1.0" encoding "UTF-8";
  :)
 
 module namespace xmlconv = "http://converters.eionet.europa.eu/dataflowC";
+import module namespace common = "common" at "aqd_check_common.xquery";
 
 declare namespace aqd = "http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0";
 declare namespace gml = "http://www.opengis.net/gml/3.2";
@@ -823,6 +824,9 @@ let  $tblC6 :=
             <td title="base:namespace">{$id}</td>
             <td title="base:localId">{count($localId)}</td>
         </tr>
+        
+(: C6.1 :)
+let $invalidNamespaces := common:checkNamespaces($source_url) 
 (: C7 :)
 
 let $invalidAssessmentRegim :=
@@ -1526,6 +1530,8 @@ return
             $invalidDuplicateLocalIds, (), "base:localId", "No duplicates found", " duplicate", "","error", ())}
         {xmlconv:buildResultRows("C6", "./aqd:inspireId/base:Identifier/base:namespace List base:namespace and  count the number of base:localId assigned to each base:namespace. ",
             (), (), "", string(count($tblC6)), "", "","info",$tblC6)}
+        {xmlconv:buildResultRows("C6.1", "Check that namespace is registered in vocabulary", $invalidNamespaces, (), "base:Identifier/base:namespace", "All values are valid", " invalid namespaces", "", "error", ())}
+        
         {xmlconv:buildResultRows("C7", "Each of the number of /aqd:AQD_AssessmentRegime records shall contain 1 ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmental Objective records per /aqd:AQD_AssessmentRegime element",
                 $invalidAssessmentRegim,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error", ())}
         {xmlconv:buildPollutantResultRows("C8",

@@ -16,6 +16,8 @@ xquery version "1.0" encoding "UTF-8";
  :)
 
 module namespace xmlconv = "http://converters.eionet.europa.eu/dataflowD";
+import module namespace common = "common" at "aqd_check_common.xquery";
+
 declare namespace aqd = "http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0";
 declare namespace gml = "http://www.opengis.net/gml/3.2";
 declare namespace am = "http://inspire.ec.europa.eu/schemas/am/3.0";
@@ -617,6 +619,8 @@ let  $tblD7 :=
             <td title="base:localId">{count($localId)}</td>
         </tr>
 
+(: D7.1 :)
+let $invalidNamespaces := common:checkNamespaces($source_url)
 (: D8 :)
 let $invalidNetworkMedia := xmlconv:checkVocabularyConceptValues($source_url, "aqd:AQD_Network", "ef:mediaMonitored", $xmlconv:MEDIA_VALUE_VOCABULARY_BASE_URI)
 (: D9 :)
@@ -1758,6 +1762,8 @@ return
         </tr>
         {xmlconv:buildResultRows("D7", "Count the number of unique AQD_Network (via localId) submitted within base:namespace. ",
                 (), (), "", string(count($tblD7)), "", "","error",$tblD7)}
+        {xmlconv:buildResultRows("D7.1", "Check that namespace is registered in vocabulary", $invalidNamespaces, (), "base:Identifier/base:namespace", "All values are valid", " invalid namespaces", "", "error", ())}
+                
         {xmlconv:buildResultRowsWithTotalCount("D8", <span>The content of aqd:AQD_Network/ef:mediaMonitored shall resolve to any concept in
             <a href="{ $xmlconv:MEDIA_VALUE_VOCABULARY_BASE_URI }">{ $xmlconv:MEDIA_VALUE_VOCABULARY_BASE_URI }</a></span>,
             (), (), "ef:mediaMonitored", "", "", "", "warning",$invalidNetworkMedia)}
