@@ -184,26 +184,7 @@ declare variable $xmlconv:POLLUTANT_VOCABULARY as xs:string := "http://dd.eionet
 
 declare variable $xmlconv:ASSESSMENTTYPE_VOCABULARY as xs:string := "http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/";
 
-declare variable $xmlconv:TEST_ENVELOPE_URL as xs:string := "http://cdr.eionet.europa.eu/es/eu/aqd/b/envvhbw_q/xml";
-
-(:
-declare variable $source_url as xs:string := "../test/C_GB.xml";
-declare variable $source_url as xs:string := "http://cdrtest.eionet.europa.eu/es/eu/aqd/c/envvosrqq/ES_C_AssessmentRegime.xml";
-declare variable $source_url as xs:string external;
-:)
-(:
-declare variable $source_url as xs:untypedAtomic external;
-Change it for testing locally:
-declare variable $source_url as xs:string external;
-declare variable $source_url := "http://cdr.eionet.europa.eu/gb/eu/aqd/e2a/colutn32a/envubnpvw/B_GB_Zones.xml";
-
-declare variable $source_url as xs:string := "../test/C_short.xml";
-declare variable $source_url as xs:string := "../test/ES_C_AssessmentRegime.xml";
-declare variable $country as xs:string := "es";
-
-declare variable $source_url as xs:string := "../test/C_GB_C_GB_AssessmentRegime_retro_corrupted2.xml";
-declare variable $country as xs:string := "uk";
-:)
+(:declare variable $xmlconv:TEST_ENVELOPE_URL as xs:string := "http://cdr.eionet.europa.eu/es/eu/aqd/b/envvhbw_q/xml";:)
 
 (: removes the file part from the end of URL and appends 'xml' for getting the envelope xml description :)
 declare function xmlconv:getEnvelopeXML($url as xs:string) as xs:string{
@@ -215,11 +196,9 @@ declare function xmlconv:getEnvelopeXML($url as xs:string) as xs:string{
         return
             if(fn:doc-available($ret)) then
                 $ret
-            else
-                (:    "http://cdr.eionet.europa.eu/fr/eu/aqd/b/":)
-                        $xmlconv:TEST_ENVELOPE_URL
-}
-;
+            else                
+                ()
+};
 
 
 (:~
@@ -352,14 +331,6 @@ as element(sparql:result)*
     return  $allResults
 };
 
-
-
-
-(:----------------------------------------------------------------------------------------------------------------------------------------------:)
-
-
-
-
 declare function xmlconv:getCdrUrl($country as xs:string)
 as xs:string {
     let $countryCode := lower-case($country)
@@ -410,7 +381,7 @@ FILTER (CONTAINS(str(?zone), '", $cdrUrl, "'d/')and xsd:boolean(?usedAQD))
 };
 :)
 
-declare function xmlconv:getProtectionTarget($cdrUrl as xs:string)
+declare function xmlconv:getProtectionTarget($cdrUrl as xs:string, $bDir as xs:string)
 as xs:string
 {
 concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -424,7 +395,7 @@ concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
                ?ii rdfs:label ?zoneId .
                ?pollutants aqd:pollutantCode ?pollutantCode .
                ?pollutants aqd:protectionTarget ?protectionTarget .
-         FILTER (CONTAINS(str(?zone), '", $cdrUrl,  "/b/'))
+         FILTER (CONTAINS(str(?zone), '", $cdrUrl, $bDir, "'))
 } order by ?zone ")
 };
 
@@ -618,7 +589,7 @@ concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 };
 :)
 
-declare function xmlconv:getInspireId($cdrUrl as xs:string)
+declare function xmlconv:getInspireId($cdrUrl as xs:string, $bDir as xs:string)
 as xs:string
 {
 concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -630,11 +601,11 @@ PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
         ?zone a aqd:AQD_Zone ;
         aqd:inspireId ?inspireId .
         ?inspireId rdfs:label ?inspireLabel .
-   FILTER (CONTAINS(str(?zone), '", $cdrUrl, "b/'))
+   FILTER (CONTAINS(str(?zone), '", $cdrUrl, $bDir, "'))
   } order by ?zone")
 };
 
-declare function xmlconv:getPollutantCodeAndProtectionTarge($cdrUrl as xs:string)
+declare function xmlconv:getPollutantCodeAndProtectionTarge($cdrUrl as xs:string, $bDir as xs:string)
 as xs:string
 {
  concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -649,7 +620,7 @@ as xs:string
               ?zone aqd:pollutants ?pollutants .
               ?pollutants aqd:pollutantCode ?pollutantCode .
               ?pollutants aqd:protectionTarget ?protectionTarget .
-      FILTER (CONTAINS(str(?zone), '", $cdrUrl, "b/'))
+      FILTER (CONTAINS(str(?zone), '", $cdrUrl, $bDir, "'))
     } order by ?zone")
 };
 
@@ -802,7 +773,7 @@ return $result
 (:
     Rule implementations
 :)
-declare function xmlconv:checkReport($source_url as xs:string, $countryCode as xs:string)
+declare function xmlconv:checkReport($source_url as xs:string, $countryCode as xs:string, $bDir as xs:string)
 as element(table) {
 
 let $envelopeUrl := xmlconv:getEnvelopeXML($source_url)
@@ -1227,7 +1198,7 @@ let $tblC26 :=
 
 (: return all zones listed in the doc :)
 
-let $resultXml := if (fn:string-length($countryCode) = 2) then xmlconv:getInspireId($cdrUrl) else ""
+let $resultXml := if (fn:string-length($countryCode) = 2) then xmlconv:getInspireId($cdrUrl, $bDir) else ""
 let $isInspireIdCodesAvailable := string-length($resultXml) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($resultXml, "xml"))
 let $zoneIds := if($isInspireIdCodesAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($resultXml)//sparql:binding[@name='inspireLabel']/sparql:literal)) else ()
 
@@ -1280,7 +1251,7 @@ let $isInspireIdCodesAvailable := string-length($resultXml) > 0 and doc-availabl
 let $inspireId := if($isInspireIdCodesAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($resultXml)//sparql:binding[@name='inspireLabel']/sparql:literal)) else ""
 :)
 
-let $resultSparql := if (fn:string-length($countryCode) = 2) then xmlconv:getPollutantCodeAndProtectionTarge($cdrUrl) else ""
+let $resultSparql := if (fn:string-length($countryCode) = 2) then xmlconv:getPollutantCodeAndProtectionTarge($cdrUrl, $bDir) else ""
 let $isProtectionTargetAvailable := string-length($resultSparql) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($resultSparql, "xml"))
 
 let $validRows :=
@@ -1714,8 +1685,9 @@ as xs:string {
 declare function xmlconv:proceed($source_url as xs:string, $countryCode as xs:string) {
 
 let $doc := doc($source_url)
+let $bDir := if (contains($source_url, "c_preliminary")) then "b_preliminary/" else "b/"
 let $countZones := count($doc//aqd:AQD_AssessmentRegime)
-let $result := if ($countZones > 0) then xmlconv:checkReport($source_url, $countryCode) else ()
+let $result := if ($countZones > 0) then xmlconv:checkReport($source_url, $countryCode, $bDir) else ()
 
 return
     <div>
@@ -1804,7 +1776,7 @@ declare function xmlconv:isValidAssessmentTypeCombination($id as xs:string, $typ
     return $combinationOk
 };
 
-declare function xmlconv:aproceed($source_url, $countryCode) {
+(:declare function xmlconv:aproceed($source_url, $countryCode) {
 let $docRoot := doc($source_url)
 let $cdrUrl := xmlconv:getCdrUrl($countryCode)
 
@@ -1849,7 +1821,7 @@ let $countZoneIds1 := count($zoneIds)
 let $countZoneIds2 := count(distinct-values(data($docRoot//aqd:AQD_AssessmentRegime/aqd:zone/@xlink:href)))
 
 return $countZoneIds2
-};
+};:)
 (:
 xmlconv:proceed($source_url, $country)
 :)
