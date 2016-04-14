@@ -15,6 +15,8 @@ xquery version "1.0" encoding "UTF-8";
  :)
 
 module namespace xmlconv = "http://converters.eionet.europa.eu/dataflowM";
+import module namespace common = "common" at "aqd_check_common.xquery";
+
 declare namespace aqd = "http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0";
 declare namespace gml = "http://www.opengis.net/gml/3.2";
 declare namespace am = "http://inspire.ec.europa.eu/schemas/am/3.0";
@@ -579,6 +581,9 @@ let  $tblM7 :=
             <td title="base:localId">{count($localId)}</td>
         </tr>
 
+(: M7.1 :)
+let $invalidNamespaces := common:checkNamespaces($source_url) 
+
 (: M12 :)
 
 let $invalidGeometry := distinct-values($docRoot//aqd:AQD_Model[count(ef:geometry) >0 and ef:geometry/@srsName != "urn:ogc:def:crs:EPSG::4258" and ef:geometry/@srsName != "urn:ogc:def:crs:EPSG::4326"]/@gml:id)
@@ -958,7 +963,7 @@ let  $tblM41 :=
         </tr>
         {xmlconv:buildResultRows("M7", "./ef:inspireId/base:Identifier/base:namespace List base:namespace and  count the number of base:localId assigned to each base:namespace. ",
                 (), (), "", string(count($tblM7)), "", "","error",$tblM7)}
-
+        {xmlconv:buildResultRows("M7.1", "Check that namespace is registered in vocabulary", $invalidNamespaces, (), "base:Identifier/base:namespace", "All values are valid", " invalid namespaces", "", "error", ())}
         {xmlconv:buildResultRows("M12", "./ef:geometry the srsName attribute  shall  be  a  recognisable  URN .  The  following  2  srsNames  are  expected urn:ogc:def:crs:EPSG::4258 or urn:ogc:def:crs:EPSG::4326",
                 $invalidGeometry,(), "aqd:AQD_Model/@gml:id","All srsName attributes are valid"," invalid attribute","","error", ())}
         {xmlconv:buildResultRows("M15", "Total number aqd:AQD_Model/ef:observingCapability/ef:ObservingCapability/ef:observingTime/gml:TimePeriod/ invalid operational activity periods ",

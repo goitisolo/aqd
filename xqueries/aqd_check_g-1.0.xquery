@@ -15,6 +15,8 @@ xquery version "1.0" encoding "UTF-8";
  :)
 
 module namespace xmlconv = "http://converters.eionet.europa.eu/dataflowG";
+import module namespace common = "common" at "aqd_check_common.xquery";
+
 declare namespace aqd = "http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0";
 declare namespace gml = "http://www.opengis.net/gml/3.2";
 declare namespace am = "http://inspire.ec.europa.eu/schemas/am/3.0";
@@ -886,6 +888,8 @@ let  $tblG9 :=
             <td title="base:localId">{count($localId)}</td>
         </tr>
 
+(: G9.1 :)
+let $invalidNamespaces := common:checkNamespaces($source_url)
 
 (: G10 pollutant codes :)
 let $invalidPollutantCodes := xmlconv:isinvalidDDConceptLimited($source_url, "", "aqd:AQD_Attainment", "aqd:pollutant",  $xmlconv:POLLUTANT_VOCABULARY, $xmlconv:VALID_POLLUTANT_IDS)
@@ -1582,6 +1586,7 @@ return
 
         {xmlconv:buildResultRows("G9", "./aqd:inspireId/base:Identifier/base:namespace List base:namespace and  count the number of base:localId assigned to each base:namespace.",
             (), (), "", string(count($tblG9)), "", "","info",$tblG9)}
+        {xmlconv:buildResultRows("G9.1", "Check that namespace is registered in vocabulary", $invalidNamespaces, (), "base:Identifier/base:namespace", "All values are valid", " invalid namespaces", "", "error", ())}
          {xmlconv:buildResultRowsWithTotalCount("G10", <span>The content of /aqd:AQD_Attainment/aqd:pollutant xlink:xref shall resolve to a pollutant in
             <a href="{ $xmlconv:POLLUTANT_VOCABULARY }">{ $xmlconv:POLLUTANT_VOCABULARY }</a> that must be one of
             {xmlconv:buildVocItemsList("G10", $xmlconv:POLLUTANT_VOCABULARY, $xmlconv:VALID_POLLUTANT_IDS)}

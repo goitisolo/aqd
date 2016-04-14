@@ -14,6 +14,8 @@ xquery version "1.0" encoding "UTF-8";
  :)
 
 module namespace xmlconv = "http://converters.eionet.europa.eu/dataflowB";
+import module namespace common = "common" at "aqd_check_common.xquery";
+
 declare namespace aqd = "http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0";
 declare namespace gml = "http://www.opengis.net/gml/3.2";
 declare namespace am = "http://inspire.ec.europa.eu/schemas/am/3.0";
@@ -522,6 +524,9 @@ let  $tblB10 :=
             <td title="base:localId">{count($localId)}</td>
         </tr>
 
+(: B10.1 :)
+let $invalidNamespaces := common:checkNamespaces($source_url) 
+
 (: B11 :)
 
 
@@ -838,6 +843,7 @@ let $invalidZoneType := xmlconv:checkVocabularyConceptValues($source_url, "", "a
 (: TODO 48:)
 
 
+
 return
     <table style="text-align:left;vertical-align:top;">
         <tr>
@@ -925,6 +931,8 @@ return
         {xmlconv:buildResultRowsHTML("B10", "./am:inspireId/base:Identifier/base:namespace
 List base:namespace and  count the number of base:localId assigned to each base:namespace. ",
                 (), (), "", string(count($tblB10)), "", "",$tblB10)}
+                
+        {xmlconv:buildResultRows("B10.1", "Check that namespace is registered in vocabulary", $invalidNamespaces, "base:Identifier/base:namespace", "All values are valid", " invalid namespaces", "", "error")}
 
         {xmlconv:buildResultRows("B13", <span>/aqd:AQD_Zone/am:name/gn:GeographicalName/gn:language value shall be the language of the name,
  given as a three letters code, in accordance with either <a href="http://dd.eionet.europa.eu/vocabulary/common/iso639-3/view">ISO 639-3</a> or
