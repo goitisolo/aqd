@@ -30,20 +30,6 @@ declare namespace xlink = "http://www.w3.org/1999/xlink";
 declare namespace ompr="http://inspire.ec.europa.eu/schemas/ompr/2.0";
 declare namespace sams="http://www.opengis.net/samplingSpatial/2.0";
 
-(:
-declare variable $source_url := "../test/ES_D_SamplingPoint-1.xml";
-declare variable $country := "es";
-declare variable $source_url := "../test/DK_D_Sample.xml";
-declare variable $source_url := "../test/ES_D_Station.xml";
-declare variable $country := "dk";
-declare variable $source_url := "../test/REP_D-DK_NERI.xml";
-
-declare variable $country := "es";
-declare variable $source_url := "../test/ES_D_Sample.xml";
-declare variable $source_url := "../test/D_GIB_Complete_Corrupted.xml";
-declare variable $country := "gi";
-:)
-
 (:~ declare Content Registry SPARQL endpoint:)
 declare variable $xmlconv:CR_SPARQL_URL := "http://cr.eionet.europa.eu/sparql";
 
@@ -55,7 +41,7 @@ declare variable $xmlconv:FEATURE_TYPES := ("aqd:AQD_Network", "aqd:AQD_Station"
 "aqd:AQD_RepresentativeArea", "aqd:AQD_SamplingPoint");
 
 
-declare variable $xmlconv:MEDIA_VALUE_VOCABULARY_BASE_URI := "http://inspire.ec.europa.eu/codeList/MediaValue/";
+declare variable $xmlconv:MEDIA_VALUE_VOCABULARY_BASE_URI := "http://inspire.ec.europa.eu/codelist/MediaValue/";
 declare variable $xmlconv:MEDIA_VALUE_VOCABULARY := "http://dd.eionet.europa.eu/vocabulary/inspire/MediaValue/";
 declare variable $xmlconv:ORGANISATIONAL_LEVEL_VOCABULARY := "http://dd.eionet.europa.eu/vocabulary/aq/organisationallevel/";
 declare variable $xmlconv:NETWORK_TYPE_VOCABULARY := "http://dd.eionet.europa.eu/vocabulary/aq/networktype/";
@@ -2338,12 +2324,29 @@ as element(tr)*{
 declare function xmlconv:getConceptUrlSparql($scheme as xs:string)
 as xs:string
 {
-    concat("PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
-    SELECT ?concepturl ?label
-    WHERE {
-      ?concepturl skos:inScheme <", $scheme, ">;
-                  skos:prefLabel ?label
-    }")
+    (: Quick fix for #69944. :)
+    if ($scheme = "http://inspire.ec.europa.eu/codelist/MediaValue/") then
+        concat("PREFIX dcterms: <http://purl.org/dc/terms/>
+                PREFIX owl: <http://www.w3.org/2002/07/owl#>
+                PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+                    SELECT ?concepturl ?label
+                    WHERE {
+                    {
+                      ?concepturl skos:inScheme <", $scheme, ">;
+                                  skos:prefLabel ?label
+                    } UNION {
+                      ?other skos:inScheme <", $scheme, ">;
+                                  skos:prefLabel ?label;
+                                  dcterms:replaces ?concepturl
+                    }
+                }")
+    else                   
+        concat("PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+        SELECT ?concepturl ?label
+        WHERE {
+          ?concepturl skos:inScheme <", $scheme, ">;
+                      skos:prefLabel ?label
+        }")
 };
 
 declare function xmlconv:getCollectionConceptUrlSparql($collection as xs:string)
