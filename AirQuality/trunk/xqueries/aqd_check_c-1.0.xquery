@@ -161,9 +161,10 @@ declare variable $xmlconv:VALID_POLLUTANT_IDS_18 as xs:string* := ("5014", "5015
 
 declare variable $xmlconv:MANDATORY_POLLUTANT_IDS_8  as xs:string* := ("1","7","8","9","5","6001","10","20","5012","5014","5015","5018","5029");
 
-declare variable $xmlconv:MANDATORY_POLLUTANT_IDS_9  as xs:string* := ("1045","1046","1047","1771","1772","1629","1659","1657","1668","1631","2012","2014","2015","2018","7013","4013","4813","653","5013","5610","5617",
-"5759","5626","5655","5763","7029","611","618","760","627","656","7419","20","428","430","432","503","505","394","447","6005","6006","6007","24","486","316","6008","6009",
-"451","443","316","441","475","449","21","431","464","482","6011","6012","32","25");
+declare variable $xmlconv:UNIQUE_POLLUTANT_IDS_9  as xs:string* := ("1","7","8","9","5","6001","10","20","5012","5014","5015","5018","5029","1045",
+"1046","1047","1771","1772","1629","1659","1657","1668","1631","2012","2014","2015","2018","7013","4013","4813","653","5013","5610","5617","5759",
+"5626","5655","5763","7029","611","618","760","627","656","7419","20","428","430","432","503","505","394","447","6005","6006","6007","24","486",
+"316","6008","6009","451","443","316","441","475","449","21","431","464","482","6011","6012","32","25");
 
 declare variable $xmlconv:VALID_POLLUTANT_IDS_19  as xs:string* := ("1045","1046","1047","1771","1772","1629","1659","1657","1668","1631","2012","2014","2015","2018","7013","4013","4813","653","5013","5610","5617",
 "5759","5626","5655","5763","7029","611","618","760","627","656","7419","428","430","432","503","505","394","447","6005","6006","6007","24","486","316","6008","6009","451","443","441","475","449","21","431","464",
@@ -173,7 +174,7 @@ declare variable $xmlconv:VALID_POLLUTANT_IDS_27 as xs:string* := ('1045','1046'
 '5759','5626','5655','5763','7029','611','618','760','627','656','7419','20','428','430','432','503','505','394','447','6005','6006','6007','24','486','316','6008','6009',
 '451','443','316','441','475','449','21','431','464','482','6011','6012','32','25','6001');
 
-declare variable $xmlconv:VALID_POLLUTANT_IDS_40 as xs:string* := ($xmlconv:MANDATORY_POLLUTANT_IDS_8, $xmlconv:MANDATORY_POLLUTANT_IDS_9);
+declare variable $xmlconv:VALID_POLLUTANT_IDS_40 as xs:string* := ($xmlconv:MANDATORY_POLLUTANT_IDS_8, $xmlconv:UNIQUE_POLLUTANT_IDS_9);
 
 (:'1045','1046','1047','1771','1772','1629','1659','1657','1668','1631','2012','2014','2015','2018','7013','4013','4813','653','5013','5610','5617',
 '5759','5626','5655','5763','7029','611','618','760','627','656','7419','428','430','432','503','505','394','447','6005','6006','6007','24','486','316','6008','6009',
@@ -822,7 +823,7 @@ let $invalidDuplicateLocalIds :=
 
 (: C6 :)
 let $allBaseNamespace := distinct-values($docRoot//aqd:AQD_AssessmentRegime/aqd:inspireId/base:Identifier/base:namespace)
-let  $tblC6 :=
+let $tblC6 :=
     for $id in $allBaseNamespace
     let $localId := $docRoot//aqd:AQD_AssessmentRegime/aqd:inspireId/base:Identifier[base:namespace = $id]/base:localId
     return
@@ -849,13 +850,14 @@ for $code in $xmlconv:MANDATORY_POLLUTANT_IDS_8
     where count($docRoot//aqd:AQD_AssessmentRegime/aqd:pollutant[@xlink:href=$pollutantLink]) < 1
     return $code
 
-(: C9 :)
-(: if a regime is missing for a pollutant in the list, warning should be thrown :)
+(:~
+     C9 - Provides a count of unique pollutants and lists them
+ :)
 
-let $missingPollutantC9 :=
-for $code in $xmlconv:MANDATORY_POLLUTANT_IDS_9
+let $foundPollutantC9 :=
+for $code in $xmlconv:UNIQUE_POLLUTANT_IDS_9
     let $pollutantLink := fn:concat($xmlconv:POLLUTANT_VOCABULARY, $code)
-    where count($docRoot//aqd:AQD_AssessmentRegime/aqd:pollutant[@xlink:href=$pollutantLink]) < 1
+    where count($docRoot//aqd:AQD_AssessmentRegime/aqd:pollutant[@xlink:href=$pollutantLink and ..//aqd:objectiveType/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/MO"]) > 0
     return $code
 
 (: C10 :)
@@ -1542,8 +1544,7 @@ return
                 $invalidAssessmentRegim,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error", ())}
         {xmlconv:buildPollutantResultRows("C8",
                 $missingPollutantC8, " missing pollutant", "warning", xmlconv:buildVocItemRows($xmlconv:POLLUTANT_VOCABULARY, $missingPollutantC8))}
-        {xmlconv:buildPollutantResultRows("C9",
-                $missingPollutantC9, " missing pollutant", "warning", xmlconv:buildVocItemRows($xmlconv:POLLUTANT_VOCABULARY, $missingPollutantC9))}
+        {xmlconv:buildResultRows("C9", "Assessment regime(s) found for the following pollutant(s) with Monitoring Objective (MO)", (), (), "", string(count($foundPollutantC9)), "", "", "info", xmlconv:buildVocItemRows($xmlconv:POLLUTANT_VOCABULARY, $foundPollutantC9))}
         {xmlconv:buildResultRows("C10", <span>Where ./aqd:pollutant resolves to http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1 the 3 elements within ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/may only resolve to the following combinations {xmlconv:buildItemsList("C10","", $xmlconv:VALID_ENVIRONMENTALOBJECTIVE_C10)}</span>,
                 $invalidAqdAssessmentRegimeAqdPollutant,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error", ())}
         {xmlconv:buildResultRows("C11",  <span> Where ./aqd:pollutant resolves to http://dd.eionet.europa.eu/vocabulary/aq/pollutant/7 the 3 elements within ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/may only resolve to the following combinations {xmlconv:buildItemsList("C11","", $xmlconv:VALID_ENVIRONMENTALOBJECTIVE_C11)}</span>,
@@ -1662,8 +1663,6 @@ as element(tr)*{
         "Assessment regime(s) not found for the following pollutant(s):"
     else
         "Assessment regimes reported for all expected pollutants"
-
-
 
     return
         xmlconv:buildResultRows($ruleCode, <span>{$msg}</span>,
