@@ -1111,7 +1111,6 @@ let $invalidAqdAssessmentRegimeAqdPollutantC21 :=
 let $invalidAqdAssessmentRegimeAqdPollutantC22 :=
     for $x in $docRoot//aqd:AQD_AssessmentRegime[aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/MO"]
     let $exceedance :=  $x/aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:exceedanceAttainment/string(@xlink:href)
-    let $pollutantXlinkC22 := fn:substring-after($x/aqd:pollutant/string(@xlink:href),"pollutant/")
     where not($exceedance = "http://dd.eionet.europa.eu/vocabulary/aq/assessmentthresholdexceedance/NA")
     return $x/@gml:id
 
