@@ -1072,7 +1072,7 @@ let $invalidAqdAssessmentRegimeAqdPollutantC18 :=
 
     return $aqdPollutantC18/../../../../@gml:id
 
-(: 19 :)
+(: C19 :)
 
 let $invalidAqdAssessmentRegimeAqdPollutantC19 :=
     for $aqdPollutantC19 in $docRoot//aqd:AQD_AssessmentRegime/aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective
@@ -1085,7 +1085,7 @@ let $invalidAqdAssessmentRegimeAqdPollutantC19 :=
     or  ($aqdPollutantC19/aqd:protectionTarget/fn:normalize-space(@xlink:href) != "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/NA"))
     then $aqdPollutantC19/../../../../@gml:id else ()
 
-(: 20 :)
+(: C20 :)
 
 let $invalidAqdAssessmentRegimeAqdPollutantC20 :=
      for $aqdPollutantC20 in  $docRoot//aqd:AQD_AssessmentRegime[count(aqd:pollutant)>0 and aqd:pollutant/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/7"
@@ -1094,7 +1094,7 @@ let $invalidAqdAssessmentRegimeAqdPollutantC20 :=
             and ($aqdPollutantC20/../../aqd:exceedanceAttainment/fn:normalize-space(@xlink:href) != "http://dd.eionet.europa.eu/vocabulary/aq/assessmentthresholdexceedance/belowLTO"))
     return  $aqdPollutantC20/../../../../@gml:id
 
-(:21:)
+(: C21 :)
 
 let $invalidAqdAssessmentRegimeAqdPollutantC21 :=
     for $aqdPollutantC21 in $docRoot//aqd:AQD_AssessmentRegime/aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective
@@ -1109,13 +1109,11 @@ let $invalidAqdAssessmentRegimeAqdPollutantC21 :=
 
 (: C22 :)
 let $invalidAqdAssessmentRegimeAqdPollutantC22 :=
-    for $aqdPollutantC22 in $docRoot//aqd:AQD_AssessmentRegime/aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective
-    let $pollutantXlinkC22 := fn:substring-after(data($aqdPollutantC22/../../../../aqd:pollutant/@xlink:href),"pollutant/")
-    where empty(index-of(('1045','1046','1047','1771','1772','1629','1659','1657','1668','1631','2012','2014','2015','2018','7013','4013','4813','653','5013','5610','5617',
-    '5759','5626','5655','5763','7029','611','618','760','627','656','7419','428','430','432','503','505','394','447','6005','6006','6007','24','486','316','6008','6009',
-    '451','443','316','441','475','449','21','431','464','482','6011','6012','32','25'),$pollutantXlinkC22))=false()
-    return if ($aqdPollutantC22/../../aqd:exceedanceAttainment/fn:normalize-space(@xlink:href) != "http://dd.eionet.europa.eu/vocabulary/aq/assessmentthresholdexceedance/NA")
-    then $aqdPollutantC22/../../../../@gml:id else ()
+    for $x in $docRoot//aqd:AQD_AssessmentRegime[aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/MO"]
+    let $exceedance :=  $x/aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:exceedanceAttainment/string(@xlink:href)
+    let $pollutantXlinkC22 := fn:substring-after($x/aqd:pollutant/string(@xlink:href),"pollutant/")
+    where not($exceedance = "http://dd.eionet.europa.eu/vocabulary/aq/assessmentthresholdexceedance/NA")
+    return $x/@gml:id
 
 (: C23a :)
 let $invalidAqdAssessmentType :=
@@ -1577,7 +1575,7 @@ return
             <a href="{ $xmlconv:POLLUTANT_VOCABULARY }">{ $xmlconv:POLLUTANT_VOCABULARY }</a> that must be one of
             {xmlconv:buildVocItemsList("C21", $xmlconv:POLLUTANT_VOCABULARY, $xmlconv:VALID_POLLUTANT_IDS_21)}</span>,
                 $invalidAqdAssessmentRegimeAqdPollutantC21, (), "aqd:reportingMetric", "All values are valid", " invalid value", "","warning", ())}
-        {xmlconv:buildResultRows("C22", "Where ./aqd:pollutant resolves to the list in C9 ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:exceedanceAttainment xlink:href attribute shall resolve to http://dd.eionet.europa.eu/vocabulary/aq/assessmentthresholdexceedance/NA",
+        {xmlconv:buildResultRows("C22", "Where ./aqd:objectiveType resolves to http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/MO THEN ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:exceedanceAttainment xlink:href attribute shall resolve to http://dd.eionet.europa.eu/vocabulary/aq/assessmentthresholdexceedance/NA",
                 $invalidAqdAssessmentRegimeAqdPollutantC22,(), "aqd:AQD_AssesmentRegime", "All values are valid", " invalid value", "","warning", ())}
         {xmlconv:buildResultRows("C23a", "./aqd:assessmentMethods/aqd:AssessmentMethods/aqd:assessmentType xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/[concept]Current options in the codelist are:http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/fixed http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/model http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/indicative http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/objective",
                 $invalidAqdAssessmentType,(), "aqd:AQD_AssesmentRegime", "All values are valid", " invalid value", "","error", ())}
