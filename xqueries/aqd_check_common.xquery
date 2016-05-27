@@ -6,6 +6,8 @@ declare namespace skos = "http://www.w3.org/2004/02/skos/core#";
 declare namespace rdf = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
 declare namespace rdfs = "http://www.w3.org/2000/01/rdf-schema#";
 declare namespace adms = "http://www.w3.org/ns/adms#";
+declare namespace aqd = "http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0";
+declare namespace gml = "http://www.opengis.net/gml/3.2";
 
 
 declare function common:getEnvelopeXML($url as xs:string) as xs:string{
@@ -45,3 +47,7 @@ declare function common:checkNamespaces($source_url) {
     return distinct-values($invalidNamespaces)
 };
 
+declare function common:getReportingYear($xml as document-node()) {
+    let $year := year-from-dateTime($xml//aqd:reportingPeriod/gml:TimePeriod/gml:beginPosition)
+    return if (exists($year) and $year castable as xs:integer) then xs:integer($year) else ()
+};
