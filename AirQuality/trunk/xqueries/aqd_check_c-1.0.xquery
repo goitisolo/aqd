@@ -1126,7 +1126,7 @@ return  $aqdAssessment/../../../@gml:id
     C23B - Warning
 :)
 let $invalid23B :=
-    $docRoot//aqd:AQD_AssessmentRegime[count(aqd:assessmentMethods/aqd:AssessmentMethods/aqd:assessmentType/@xlink:href)>0]/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:assessmentTypeDescription[text() = ""]/../../../@gml:id
+    $docRoot//aqd:AQD_AssessmentRegime[count(aqd:assessmentMethods/aqd:AssessmentMethods/aqd:assessmentType/@xlink:href)>0]/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:assessmentTypeDescription[string() = ""]/../../../@gml:id
 
 (: 24 :)
 (:
