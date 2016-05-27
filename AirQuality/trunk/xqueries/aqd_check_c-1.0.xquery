@@ -591,7 +591,25 @@ concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 };
 :)
 
-declare function xmlconv:getInspireId($cdrUrl as xs:string, $bDir as xs:string, $reportingYear as xs:integer)
+
+(: Returns latest zones envelope for this country:)
+declare function xmlconv:getLatestZoneEnvelope($zonesUrl as xs:string, $reportingYear) as xs:string? {
+    let $query := concat("PREFIX aqd: <http://rod.eionet.europa.eu/schema.rdf#>
+  SELECT *
+   WHERE {
+        ?envelope a aqd:Delivery ;
+        aqd:released ?date ;
+        aqd:hasFile ?file ;
+        aqd:period ?period
+        FILTER(CONTAINS(str(?envelope), '", $zonesUrl, "'))
+        FILTER(STRSTARTS(str(?period), '", $reportingYear, "'))
+  } order by desc(?date)
+limit 1")
+    let $result := doc(xmlconv:getSparqlEndpointUrl($query, "xml"))//sparql:binding[@name='envelope']/sparql:uri
+    return $result
+};
+
+declare function xmlconv:getInspireId($latestZonesUrl as xs:string)
 as xs:string
 {
 concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -606,8 +624,7 @@ PREFIX aq: <http://reference.eionet.europa.eu/aq/ontology/>
         ?inspireId rdfs:label ?inspireLabel .
         ?zone aqd:residentPopulationYear ?yearElement .
         ?yearElement rdfs:label ?reportingYear
-   FILTER (CONTAINS(str(?zone), '", $cdrUrl, $bDir, "'))
-   FILTER (?reportingYear = '", $reportingYear, "')
+   FILTER (CONTAINS(str(?zone), '", $latestZonesUrl, "'))
   } order by ?zone")
 };
 
@@ -788,7 +805,12 @@ let $envelopeUrl := xmlconv:getEnvelopeXML($source_url)
 let $docRoot := doc($source_url)
 
 let $cdrUrl := xmlconv:getCdrUrl($countryCode)
+let $zonesUrl := concat($cdrUrl, $bDir)
 let $reportingYear := common:getReportingYear($docRoot)
+
+
+let $latestZonesUrl := xmlconv:getLatestZoneEnvelope($zonesUrl, $reportingYear)
+
 
 (: C1 :)
 let $countRegimes := count($docRoot//aqd:AQD_AssessmentRegime)
@@ -1209,7 +1231,7 @@ let $tblC26 :=
 
 (: return all zones listed in the doc :)
 
-let $resultXml := if (fn:string-length($countryCode) = 2) then xmlconv:getInspireId($cdrUrl, $bDir, $reportingYear) else ""
+let $resultXml := if (fn:string-length($countryCode) = 2) then xmlconv:getInspireId($latestZonesUrl) else ""
 let $isInspireIdCodesAvailable := string-length($resultXml) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($resultXml, "xml"))
 let $zoneIds := if($isInspireIdCodesAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($resultXml)//sparql:binding[@name='inspireLabel']/sparql:literal)) else ()
 
