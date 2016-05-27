@@ -590,19 +590,23 @@ concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 };
 :)
 
-declare function xmlconv:getInspireId($cdrUrl as xs:string, $bDir as xs:string)
+declare function xmlconv:getInspireId($cdrUrl as xs:string, $bDir as xs:string, $reportingYear as xs:integer)
 as xs:string
 {
 concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
 PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+PREFIX aq: <http://reference.eionet.europa.eu/aq/ontology/>
 
-  SELECT ?zone ?inspireId ?inspireLabel
+  SELECT ?zone ?inspireId ?inspireLabel ?reportingYear
    WHERE {
         ?zone a aqd:AQD_Zone ;
         aqd:inspireId ?inspireId .
         ?inspireId rdfs:label ?inspireLabel .
+        ?zone aqd:residentPopulationYear ?yearElement .
+        ?yearElement rdfs:label ?reportingYear
    FILTER (CONTAINS(str(?zone), '", $cdrUrl, $bDir, "'))
+   FILTER (?reportingYear = '", $reportingYear, "')
   } order by ?zone")
 };
 
@@ -777,11 +781,13 @@ return $result
 declare function xmlconv:checkReport($source_url as xs:string, $countryCode as xs:string, $bDir as xs:string)
 as element(table) {
 
+(: SETUP COMMON VARIABLES :)
 let $envelopeUrl := xmlconv:getEnvelopeXML($source_url)
 
 let $docRoot := doc($source_url)
 
 let $cdrUrl := xmlconv:getCdrUrl($countryCode)
+let $reportingYear := common:getReportingYear($docRoot)
 
 (: C1 :)
 let $countRegimes := count($docRoot//aqd:AQD_AssessmentRegime)
@@ -1202,7 +1208,7 @@ let $tblC26 :=
 
 (: return all zones listed in the doc :)
 
-let $resultXml := if (fn:string-length($countryCode) = 2) then xmlconv:getInspireId($cdrUrl, $bDir) else ""
+let $resultXml := if (fn:string-length($countryCode) = 2) then xmlconv:getInspireId($cdrUrl, $bDir, $reportingYear) else ""
 let $isInspireIdCodesAvailable := string-length($resultXml) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($resultXml, "xml"))
 let $zoneIds := if($isInspireIdCodesAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($resultXml)//sparql:binding[@name='inspireLabel']/sparql:literal)) else ()
 
