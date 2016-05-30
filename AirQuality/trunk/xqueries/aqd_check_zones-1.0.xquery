@@ -720,7 +720,135 @@ return
 let $invalidArea  := distinct-values($docRoot//aqd:AQD_Zone[not(count(aqd:area)>0 and number(aqd:area) and number(aqd:area) > 0)]/
             concat(@gml:id, ": aqd:area=", if (string-length(aqd:area) = 0) then "missing" else aqd:area))
 
-(: B40 :)
+(:~
+    B39a - Find invalid combinations
+ :)
+let $pollutantCombinations :=
+    <combinations>
+        <combination>
+            <code>1</code>
+            <target>H</target>
+        </combination>
+        <combination>
+            <code>1</code>
+            <target>V</target>
+        </combination>
+        <combination>
+            <code>7</code>
+            <target>H</target>
+        </combination>
+        <combination>
+            <code>7</code>
+            <target>V</target>
+        </combination>
+        <combination>
+            <code>8</code>
+            <target>H</target>
+        </combination>
+        <combination>
+            <code>9</code>
+            <target>V</target>
+        </combination>
+        <combination>
+            <code>5</code>
+            <target>H</target>
+        </combination>
+        <combination>
+            <code>6001</code>
+            <target>H</target>
+        </combination>
+        <combination>
+            <code>10</code>
+            <target>H</target>
+        </combination>
+        <combination>
+            <code>20</code>
+            <target>H</target>
+        </combination>
+        <combination>
+            <code>5012</code>
+            <target>H</target>
+        </combination>
+        <combination>
+            <code>5018</code>
+            <target>H</target>
+        </combination>
+        <combination>
+            <code>5014</code>
+            <target>H</target>
+        </combination>
+        <combination>
+            <code>5015</code>
+            <target>H</target>
+        </combination>
+        <combination>
+            <code>5029</code>
+            <target>H</target>
+        </combination>
+    </combinations>
+
+let $pollutantCodeVocabulary := "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/"
+let $pollutantTargetVocabulary := "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/"
+let $invalidPollutantCombinations :=
+    for $x in $docRoot//aqd:AQD_Zone/aqd:pollutants/aqd:Pollutant
+        let $code := string($x/aqd:pollutantCode/@xlink:href)
+        let $target := string($x/aqd:protectionTarget/@xlink:href)
+    where not($pollutantCombinations//combination[concat($pollutantCodeVocabulary, code) = $code and concat($pollutantTargetVocabulary, target) = $target])
+    return
+        <tr>
+            <td title="gml:id">{data($x/../../@gml:id)}</td>
+            <td title="code">{data($code)}</td>
+            <td title="target">{data($target)}</td>
+        </tr>
+(:~
+    B39b - Count combination occurrences
+ :)
+let $pollutantOccurrences := <results> {
+    for $x in $pollutantCombinations//combination
+    let $code := concat($pollutantCodeVocabulary, $x/code)
+    let $target := concat($pollutantTargetVocabulary, $x/target)
+    let $count := count($docRoot//aqd:AQD_Zone/aqd:pollutants/aqd:Pollutant[aqd:pollutantCode/@xlink:href = $code and aqd:protectionTarget/@xlink:href = $target])
+    let $warning :=
+        if ($count = 0) then
+            if ($countryCode = "gb") then 0 else 1
+        else 0
+    return
+        <result>
+            <code>{$code}</code>
+            <target>{$target}</target>
+            <warning>{$warning}</warning>
+        </result>
+    }</results>
+let $invalidPollutantOccurences :=
+    for $x in $pollutantOccurrences//result[warning = 1]
+    return
+        <tr>
+            <td title="code">{data($x/code)}</td>
+            <td title="target">{data($x/target)}</td>
+        </tr>
+
+(:~
+    B39c - Combination cannot be repeated in individual zone
+ :)
+let $invalidPollutantRepeated :=
+    for $x in $docRoot//aqd:AQD_Zone
+        let $codes :=
+            for $y in $pollutantCombinations//combination
+                let $code := concat($pollutantCodeVocabulary, $y/code)
+                let $target := concat($pollutantTargetVocabulary, $y/target)
+                let $count := count($x/aqd:pollutants/aqd:Pollutant[aqd:pollutantCode/@xlink:href = $code and aqd:protectionTarget/@xlink:href = $target])
+            where $count > 1
+            return $code
+        let $codes := distinct-values($codes)
+        where not(empty($codes))
+        return
+            <tr>
+                <td title="gml:id">{data($x/@gml:id)}</td>
+            </tr>
+
+(:~
+    B40 -
+ :)
 
 let $tempStr := xmlconv:checkVocabularyConceptValues($source_url, "", "aqd:AQD_Zone", "aqd:timeExtensionExemption", "http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/")
 let $invalidTimeExtensionExemption := $tempStr
@@ -989,6 +1117,14 @@ List base:namespace and  count the number of base:localId assigned to each base:
             $invalidPopulationYear, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "","warning")}
         {xmlconv:buildResultRows("B38", "./aqd:area the value will be a decimal number GREATER THAN 0 (zero)",
             $invalidArea, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "", "error")}
+
+        {xmlconv:buildResultTable("B39a", "The allowed content combination within ./aqd:pollutants/aqd:Pollutant/aqd:pollutantCode AND ./aqd:pollutants/aqd:Pollutant/aqd:protectionTarget
+        shall be constrained", "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "", "error", $invalidPollutantCombinations)}
+        {xmlconv:buildResultTable("B39b", "Count number of occurrences across XML and list it as below (it can not be 0)",
+                "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "", "error", $invalidPollutantOccurences)}
+        {xmlconv:buildResultTable("B39c", "Combination in B39a can not be repeated within individual AQD:Zone",
+                "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "", "error", $invalidPollutantRepeated)}
+
         {xmlconv:buildResultRowsWithTotalCount("B40", <span>./aqd:timeExtensionExemption attribute must resolve to one of concept within http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/
             </span>,(), (), "aqd:timeExtensionExemption", "", "", "", $invalidTimeExtensionExemption)}
 
@@ -1005,25 +1141,17 @@ List base:namespace and  count the number of base:localId assigned to each base:
         {xmlconv:buildResultRowsWithTotalCount("B47", <span>./aqd:aqdZoneType attribute must resolve to one of  concept within
             <a href="{ $xmlconv:ZONETYPE_VOCABULARY }">{ $xmlconv:ZONETYPE_VOCABULARY }</a></span>,
             (), (), "aqd:reportingMetric", "", "", "", $invalidZoneType)}
-
-
-
     </table>
-}
-;
+};
 
-
-declare function xmlconv:checkLink($text as xs:string*)
-as element(span)*{
+declare function xmlconv:checkLink($text as xs:string*) as element(span)*{
     for $c at $pos in $text
     return
         <span>{
             if (starts-with($c, "http://")) then <a href="{$c}">{$c}</a> else $c
         }{  if ($pos < count($text)) then ", " else ""
         }</span>
-
-}
-;
+};
 
 
 
@@ -1268,7 +1396,3 @@ for $link in $aqdShapeFileLink
 
 return $invalidLink
 };
-
-(:
-xmlconv:proceed( $source_url, $country )
-:)
