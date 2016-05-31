@@ -1,4 +1,4 @@
-module namespace common = "common";
+module namespace common = "aqd-common";
 
 
 declare namespace base = "http://inspire.ec.europa.eu/schemas/base/3.3";
@@ -9,6 +9,28 @@ declare namespace adms = "http://www.w3.org/ns/adms#";
 declare namespace aqd = "http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0";
 declare namespace gml = "http://www.opengis.net/gml/3.2";
 
+
+declare variable $common:SOURCE_URL_PARAM := "source_url=";
+(:~
+ : Get the cleaned URL without authorisation info
+ : @param $url URL of the source XML file
+ : @return String
+ :)
+declare function common:getCleanUrl($url) as xs:string {
+    if (contains($url, $common:SOURCE_URL_PARAM)) then
+        fn:substring-after($url, $common:SOURCE_URL_PARAM)
+    else
+        $url
+};
+
+(: XMLCONV QA sends the file URL to XQuery engine as source_file paramter value in URL which is able to retreive restricted content from CDR.
+   This method replaces the source file url value in source_url parameter with another URL. source_file url must be the last parameter :)
+declare function common:replaceSourceUrl($url as xs:string, $url2 as xs:string) as xs:string {
+    if (contains($url, $common:SOURCE_URL_PARAM)) then
+        fn:concat(fn:substring-before($url, $common:SOURCE_URL_PARAM), $common:SOURCE_URL_PARAM, $url2)
+    else
+        $url2
+};
 
 declare function common:getEnvelopeXML($url as xs:string) as xs:string{
     let $col := fn:tokenize($url,'/')
@@ -50,4 +72,40 @@ declare function common:checkNamespaces($source_url) {
 declare function common:getReportingYear($xml as document-node()) {
     let $year := year-from-dateTime($xml//aqd:reportingPeriod/gml:TimePeriod/gml:beginPosition)
     return if (exists($year) and $year castable as xs:integer) then xs:integer($year) else ()
+};
+
+declare function common:containsAny($seq1 as xs:string*, $seq2 as xs:string*) as xs:boolean {
+    not(empty(
+            for $str in $seq2
+            where not(empty(index-of($seq1, $str)))
+            return
+                true()
+    ))
+};
+
+declare function common:getSublist($seq1 as xs:string*, $seq2 as xs:string*)
+as xs:string* {
+
+    distinct-values(
+            for $str in $seq2
+            where not(empty(index-of($seq1, $str)))
+            return
+                $str
+    )
+};
+
+declare function common:checkLink($text as xs:string*) as element(span)*{
+    for $c at $pos in $text
+    return
+        <span>{
+            if (starts-with($c, "http://")) then
+                <a href="{$c}">{$c}</a>
+            else
+                $c
+            }{
+            if ($pos < count($text)) then
+                ", "
+            else
+                ""
+        }</span>
 };

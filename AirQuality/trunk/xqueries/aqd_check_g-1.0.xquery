@@ -15,7 +15,7 @@ xquery version "1.0" encoding "UTF-8";
  :)
 
 module namespace xmlconv = "http://converters.eionet.europa.eu/dataflowG";
-import module namespace common = "common" at "aqd_check_common.xquery";
+import module namespace common = "aqd-common" at "aqd_check_common.xquery";
 
 declare namespace aqd = "http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0";
 declare namespace gml = "http://www.opengis.net/gml/3.2";
