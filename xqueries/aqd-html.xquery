@@ -33,7 +33,7 @@ declare function html:getModalInfo($ruleCode, $longText) as element()* {
 : JavaScript
 :)
 
-declare function html:javaScript(){
+declare function html:javaScript_B(){
 
     let $js :=
         <script type="text/javascript">
@@ -122,6 +122,56 @@ declare function html:javaScriptRoot(){
         <script type="text/javascript">{normalize-space($js)}</script>
 };
 
+(:~
+: JavaScript
+:)
+declare function html:javaScript_C(){
+
+    let $js :=
+        <script type="text/javascript">
+            <![CDATA[
+    function toggle(divName, linkName, checkId) {{
+         toggleItem(divName, linkName, checkId, 'record');
+    }}
+
+   function toggleItem(divName, linkName, checkId, itemLabel) {{
+        divName = divName + "-" + checkId;
+        linkName = linkName + "-" + checkId;
+
+        var elem = document.getElementById(divName);
+        var text = document.getElementById(linkName);
+        if(elem.style.display == "inline") {{
+            elem.style.display = "none";
+            text.innerHTML = "Show " + itemLabel + "s";
+            }}
+            else {{
+              elem.style.display = "inline";
+              text.innerHTML = "Hide " + itemLabel + "s";
+            }}
+      }}
+
+      function toggleComb(divName, linkName, checkId, itemLabel) {{
+        divName = divName + "-" + checkId;
+        linkName = linkName + "-" + checkId;
+
+        var elem = document.getElementById(divName);
+        var text = document.getElementById(linkName);
+        if(elem.style.display == "inline") {{
+            elem.style.display = "none";
+            text.innerHTML = "Show " + itemLabel + "s";
+            }}
+            else {{
+              elem.style.display = "inline";
+              text.innerHTML = "Hide " + itemLabel + "s";
+            }}
+      }}
+
+                ]]>
+        </script>
+    return
+        <script type="text/javascript">{normalize-space($js)}</script>
+};
+
 declare function html:getBullet($text as xs:string, $level as xs:string) as element(div) {
     let $color :=
         if ($level = "error") then
@@ -137,7 +187,7 @@ declare function html:getBullet($text as xs:string, $level as xs:string) as elem
 };
 
 (: Builds HTML table rows for rules B13 - B17. :)
-declare function html:buildResultRows($ruleCode as xs:string, $longText, $text, $invalidValues as xs:string*,
+declare function html:buildResultRows_B($ruleCode as xs:string, $longText, $text, $invalidValues as xs:string*,
         $valueHeading as xs:string, $validMsg as xs:string, $invalidMsg as xs:string, $skippedMsg, $errorLevel as xs:string)
 as element(tr)*{
     let $countInvalidValues := count($invalidValues)
@@ -167,7 +217,7 @@ as element(tr)*{
 
 };
 
-declare function html:buildResultTable($ruleCode as xs:string, $longText, $text,
+declare function html:buildResultTable_B($ruleCode as xs:string, $longText, $text,
         $valueHeading as xs:string*, $validMsg as xs:string, $invalidMsg as xs:string, $skippedMsg, $errorLevel as xs:string, $recordDetails as element(tr)*)
 as element(tr)*{
     let $countInvalidValues := count($recordDetails)
@@ -213,7 +263,7 @@ as element(tr)*{
 
 };
 (: Builds HTML table rows for rules. :)
-declare function html:buildResultRowsHTML($ruleCode as xs:string, $longText, $text, $invalidStrValues as xs:string*, $invalidValues as element()*,
+declare function html:buildResultRowsHTML_B($ruleCode as xs:string, $longText, $text, $invalidStrValues as xs:string*, $invalidValues as element()*,
         $valueHeading as xs:string, $validMsg as xs:string, $invalidMsg as xs:string, $skippedMsg, $recordDetails as element(tr)*)
 as element(tr)*{
     let $countInvalidValues := count($invalidStrValues) + count($invalidValues)
@@ -282,4 +332,117 @@ declare function html:buildResultsSimpleRow($ruleCode as xs:string, $longText, $
         <th style="padding-top:3px;vertical-align:top;text-align:left;">{ $text } {html:getModalInfo($ruleCode, $longText)}</th>
         <td style="padding-top:3px;vertical-align:top;"><span style="font-size:1.3em;">{ $count } </span></td>
     </tr>
+};
+
+
+
+
+
+
+
+(: Builds HTML table rows for rules. :)
+declare function html:buildResultRows_C($ruleCode as xs:string, $longText, $text, $invalidStrValues as xs:string*, $invalidValues as element()*,
+        $valueHeading as xs:string, $validMsg as xs:string, $invalidMsg as xs:string, $skippedMsg, $errorLevel as xs:string, $recordDetails as element(tr)*)
+as element(tr)*{
+    let $countInvalidValues := count($invalidStrValues) + count($invalidValues)
+
+    let $recordDetails := if (count($invalidValues) > 0) then $invalidValues else $recordDetails
+
+    let $bulletType := if (string-length($skippedMsg) > 0) then "skipped" else if ($countInvalidValues = 0) then "info" else $errorLevel
+    let $result :=
+        (
+            <tr style="border-top:1px solid #666666;">
+                <td style="padding-top:3px;vertical-align:top;">{ html:getBullet($ruleCode, $bulletType) }</td>
+                <th style="padding-top:3px;vertical-align:top;text-align:left;">{ $text } {html:getModalInfo($ruleCode, $longText)}</th>
+                <td style="padding-top:3px;vertical-align:top;"><span style="font-size:1.3em;">{
+                    if (string-length($skippedMsg) > 0) then
+                        $skippedMsg
+                    else if ($countInvalidValues = 0) then
+                        $validMsg
+                    else
+                        concat($countInvalidValues, $invalidMsg, substring("s ", number(not($countInvalidValues > 1)) * 2) ,"found") }
+                </span>{
+                    if ($countInvalidValues > 0 or count($recordDetails)>0) then
+                        <a id='feedbackLink-{$ruleCode}' href='javascript:toggle("feedbackRow","feedbackLink", "{$ruleCode}")' style="padding-left:10px;">Show records</a>
+                    else
+                        ()
+                }
+                </td>
+                <td></td>
+            </tr>,
+            if (count($recordDetails)>0) then
+                <tr>
+                    <td></td>
+                    <td colspan="3">
+                        <table class="datatable" style="font-size: 0.9em;text-align:left;vertical-align:top;display:none;border:0px;" id="feedbackRow-{$ruleCode}">
+                            <tr>{
+                                for $th in $recordDetails[1]//td return <th>{ data($th/@title) }</th>
+                            }</tr>
+                            {$recordDetails}
+                        </table>
+                    </td>
+                </tr>
+            else if (count($invalidStrValues)  > 0) then
+                <tr>
+                    <td></td>
+                    <td colspan="3">
+                        <table style="display:none;margin-top:1em;" id="feedbackRow-{$ruleCode}">
+                            <tr style="font-size: 0.9em;color:#666666;">
+                                <td></td>
+                                <th colspan="3" style="text-align:right;vertical-align:top;background-color:#F6F6F6;font-weight: bold;">{ $valueHeading}</th>
+                                <td style="font-style:italic;vertical-align:top;">{ string-join($invalidStrValues, ", ")}</td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+
+            else
+                ()
+        )
+    return $result
+
+};
+
+declare function html:buildResultTable_C($ruleCode as xs:string, $longText, $text, $valueHeading as xs:string*, $validMsg as xs:string, $invalidMsg as xs:string, $skippedMsg, $errorLevel as xs:string, $recordDetails as element(tr)*) as element(tr)*{
+    let $countInvalidValues := count($recordDetails)
+
+    let $bulletType := if (string-length($skippedMsg) > 0) then "skipped" else if ($countInvalidValues = 0) then "info" else $errorLevel
+    let $result :=
+        (
+            <tr style="border-top:1px solid #666666;">
+                <td style="padding-top:3px;vertical-align:top;">{ html:getBullet($ruleCode, $bulletType) }</td>
+                <th style="padding-top:3px;vertical-align:top;text-align:left;">{ $text } {html:getModalInfo($ruleCode, $longText)}</th>
+                <td style="padding-top:3px;vertical-align:top;"><span style="font-size:1.3em;">{
+                    if (string-length($skippedMsg) > 0) then
+                        $skippedMsg
+                    else if ($countInvalidValues = 0) then
+                        $validMsg
+                    else
+                        concat($countInvalidValues, $invalidMsg, substring("s ", number(not($countInvalidValues > 1)) * 2) ," found") }
+                </span>{
+                    if ($countInvalidValues > 0 or count($recordDetails)>0) then
+                        <a id='feedbackLink-{$ruleCode}' href='javascript:toggle("feedbackRow","feedbackLink", "{$ruleCode}")' style="padding-left:10px;">Show records</a>
+                    else
+                        ()
+                }
+                </td>
+                <td></td>
+            </tr>,
+            if (count($recordDetails)>0) then
+                <tr>
+                    <td></td>
+                    <td colspan="3">
+                        <table class="datatable" style="font-size: 0.9em;text-align:left;vertical-align:top;display:none;border:0px;" id="feedbackRow-{$ruleCode}">
+                            <tr>{
+                                for $th in $recordDetails[1]//td return <th>{ data($th/@title) }</th>
+                            }</tr>
+                            {$recordDetails}
+                        </table>
+                    </td>
+                </tr>
+            else
+                ()
+        )
+    return $result
+
 };

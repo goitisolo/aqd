@@ -42,7 +42,13 @@ declare function common:getEnvelopeXML($url as xs:string) as xs:string{
             $ret
         else
             ""    
-};                
+};
+
+declare function common:getCdrUrl($countryCode as xs:string) as xs:string {
+    let $eu := if ($countryCode='gi') then 'eea' else 'eu'
+    return concat("cdr.eionet.europa.eu/",lower-case($countryCode),"/", $eu, "/aqd/")
+};
+
 declare function common:getCountryCode($url as xs:string) as xs:string {
     let $envelopeUrl := common:getEnvelopeXML($url)       
     let $countryCode := if(string-length($envelopeUrl)>0) then lower-case(fn:doc($envelopeUrl)/envelope/countrycode) else ""

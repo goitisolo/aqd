@@ -131,7 +131,7 @@ let $countZones := count($docRoot//aqd:AQD_Zone)
 let $nameSpaces := distinct-values($docRoot//base:namespace)
 let $zonesSparql := xmlconv:getZonesSparql($nameSpaces)
 let $isZonesAvailable := string-length($zonesSparql) > 0 and doc-available(sparqlx:getSparqlEndpointUrl($zonesSparql, "xml"))
-let $knownZones := if ($isZonesAvailable ) then distinct-values(data(sparqlx:executeSparqlQuery($zonesSparql)//sparql:binding[@name='inspireid']/sparql:literal)) else ()
+let $knownZones := if ($isZonesAvailable ) then distinct-values(data(sparqlx:executeSimpleSparqlQuery($zonesSparql)//sparql:binding[@name='inspireid']/sparql:literal)) else ()
 let $unknownZones :=
 for $zone in $docRoot//gml:featureMember/aqd:AQD_Zone
     let $id := if (empty($zone/@gml:id)) then "" else data($zone/@gml:id)
@@ -292,7 +292,7 @@ let $invalidNamespaces := common:checkNamespaces($source_url)
 (: B13 :)
 let $langCodeSparql := xmlconv:getLangCodesSparql()
 let $isLangCodesAvailable := string-length($langCodeSparql) > 0 and doc-available(sparqlx:getSparqlEndpointUrl($langCodeSparql, "xml"))
-let $langCodes := if ($isLangCodesAvailable) then distinct-values(data(sparqlx:executeSparqlQuery($langCodeSparql)//sparql:binding[@name='code']/sparql:literal)) else ()
+let $langCodes := if ($isLangCodesAvailable) then distinct-values(data(sparqlx:executeSimpleSparqlQuery($langCodeSparql)//sparql:binding[@name='code']/sparql:literal)) else ()
 let $isLangCodesAvailable := count($langCodes) > 0
 
 let $invalidLangCode := if ($isLangCodesAvailable) then
@@ -678,17 +678,17 @@ let $aqdInvalidPollutansBenzene :=
 (:
 let $lau2Sparql := if (fn:string-length($countryCode) = 2) then xmlconv:getLau2Sparql($countryCode) else ""
 let $isLau2CodesAvailable := string-length($lau2Sparql) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($lau2Sparql, "xml"))
-let $lau2Codes := if ($isLau2CodesAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($lau2Sparql)//sparql:binding[@name='concepturl']/sparql:uri)) else ()
+let $lau2Codes := if ($isLau2CodesAvailable) then distinct-values(data(sparqlx:executeSimpleSparqlQuery($lau2Sparql)//sparql:binding[@name='concepturl']/sparql:uri)) else ()
 let $isLau2CodesAvailable := count($lau2Codes) > 0
 
 let $lau1Sparql := if (fn:string-length($countryCode) = 2) then xmlconv:getLau1Sparql($countryCode) else ""
 let $isLau1CodesAvailable := string-length($lau1Sparql) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($lau1Sparql, "xml"))
-let $lau1Codes := if ($isLau1CodesAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($lau1Sparql)//sparql:binding[@name='concepturl']/sparql:uri)) else ()
+let $lau1Codes := if ($isLau1CodesAvailable) then distinct-values(data(sparqlx:executeSimpleSparqlQuery($lau1Sparql)//sparql:binding[@name='concepturl']/sparql:uri)) else ()
 let $isLau1CodesAvailable := count($lau1Codes) > 0
 
 let $nutsSparql := if (fn:string-length($countryCode) = 2) then xmlconv:getNutsSparql($countryCode) else ""
 let $isNutsCodesAvailable := doc-available(xmlconv:getSparqlEndpointUrl($nutsSparql, "xml"))
-let $nutsCodes := if ($isNutsCodesAvailable) then  distinct-values(data(xmlconv:executeSparqlQuery($nutsSparql)//sparql:binding[@name='concepturl']/sparql:uri)) else ()
+let $nutsCodes := if ($isNutsCodesAvailable) then  distinct-values(data(sparqlx:executeSimpleSparqlQuery($nutsSparql)//sparql:binding[@name='concepturl']/sparql:uri)) else ()
 let $isNutsAvailable := count($nutsSparql) > 0
 
 let $invalidLau := if ($isLau2CodesAvailable and $isNutsAvailable and $isLau1CodesAvailable) then
@@ -730,11 +730,11 @@ let $invalidZoneType := xmlconv:checkVocabularyConceptValues($source_url, "", "a
 return
     <table style="text-align:left;vertical-align:top;">
         {html:buildResultsSimpleRow("B1", $labels:B1, $labels:B1_SHORT, $countZones, "info")}
-        {html:buildResultRowsHTML("B2", $labels:B2, $labels:B2_SHORT, (), (), "", string(count($tblB2)), "", "", $tblB2)}
+        {html:buildResultRowsHTML_B("B2", $labels:B2, $labels:B2_SHORT, (), (), "", string(count($tblB2)), "", "", $tblB2)}
         {html:buildResultsSimpleRow("B3", $labels:B3, $labels:B3_SHORT, $countZonesWithAmGeometry, "info")}
         {html:buildResultsSimpleRow("B4", $labels:B4, $labels:B4_SHORT, $countZonesWithLAU, "info" )}
-        {html:buildResultRowsHTML("B6", $labels:B6, $labels:B6_SHORT, (), (), "", string(count($tblB6)), "", "", $tblB6)}
-        {html:buildResultRowsHTML("B7", $labels:B7, $labels:B7_SHORT, (), (), "", string(count($tblB7)), "", "", $tblB7)}
+        {html:buildResultRowsHTML_B("B6", $labels:B6, $labels:B6_SHORT, (), (), "", string(count($tblB6)), "", "", $tblB6)}
+        {html:buildResultRowsHTML_B("B7", $labels:B7, $labels:B7_SHORT, (), (), "", string(count($tblB7)), "", "", $tblB7)}
 
         <tr>
             <td style="vertical-align:top;">{ html:getBullet("B8", if ($countB8duplicates = 0) then "info" else "warning") }</td>
@@ -790,20 +790,20 @@ return
             else
                 ()
         }
-        {html:buildResultRowsHTML("B10", $labels:B10, $labels:B10_SHORT, (), (), "", string(count($tblB10)), "", "",$tblB10)}
-        {html:buildResultRows("B10.1", $labels:B10.1, $labels:B10.1_SHORT, $invalidNamespaces, "base:Identifier/base:namespace", "All values are valid", " invalid namespaces", "", "error")}
-        {html:buildResultRows("B13", $labels:B13, $labels:B13_SHORT, $invalidLangCode, "/aqd:AQD_Zone/am:name/gn:GeographicalName/gn:language", "All values are valid", " invalid value", $langSkippedMsg,"warning")}
-        {html:buildResultRows("B18", $labels:B18, $labels:B18_SHORT, $invalidgnSpellingOfName, "aqd:AQD_Zone/@gml:id","All text are valid"," invalid attribute","", "error")}
-        {html:buildResultRows("B20", $labels:B20, $labels:B20_SHORT, $invalidGmlIdsB20, "aqd:AQD_Zone/@gml:id","All srsName attributes are valid"," invalid attribute","", "error")}
-        {html:buildResultRows("B21", $labels:B21, $labels:B21_SHORT, $invalidPosListDimension, "aqd:AQD_Zone/@gml:id", "All srsDimension attributes resolve to ""2""", " invalid attribute", "","warning")}
-        {html:buildResultRows("B22", $labels:B22, $labels:B22_SHORT, $invalidPosListCount, "gml:Polygon/@gml:id", "All values are valid", " invalid attribute", "","error")}
-        {html:buildResultRows("B23", $labels:B23, $labels:B23_SHORT, $invalidLatLong, "gml:Polygon", "All values are valid", " invalid attribute", "","error")}
-        {html:buildResultRows("B24", $labels:B24, $labels:B24_SHORT, $invalidManagementZones, "aqd:AQD_Zone/@gml:id", "All zoneType attributes are valid", " invalid attribute", "","warning")}
-        {html:buildResultRows("B25", $labels:B25, $labels:B25_SHORT, $invalidPosition, "gml:TimePeriod gml:id", "All positions are valid", " invalid position", "","error")}
-        {html:buildResultRows("B28", $labels:B28, $labels:B28_SHORT, $invalidLifespanVer, "gml:id", "All LifespanVersion values are valid", " invalid value", "","error")}
-        {html:buildResultRows("B31", $labels:B31, $labels:B31_SHORT, $invalidLegalBasisName, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "","warning")}
-        {html:buildResultRows("B32", $labels:B32, $labels:B32_SHORT, $invalidLegalBasisDate, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "","warning")}
-        {html:buildResultRows("B33", $labels:B33, $labels:B33_SHORT, $invalidLegalBasisLink, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "","warning")}
+        {html:buildResultRowsHTML_B("B10", $labels:B10, $labels:B10_SHORT, (), (), "", string(count($tblB10)), "", "",$tblB10)}
+        {html:buildResultRows_B("B10.1", $labels:B10.1, $labels:B10.1_SHORT, $invalidNamespaces, "base:Identifier/base:namespace", "All values are valid", " invalid namespaces", "", "error")}
+        {html:buildResultRows_B("B13", $labels:B13, $labels:B13_SHORT, $invalidLangCode, "/aqd:AQD_Zone/am:name/gn:GeographicalName/gn:language", "All values are valid", " invalid value", $langSkippedMsg,"warning")}
+        {html:buildResultRows_B("B18", $labels:B18, $labels:B18_SHORT, $invalidgnSpellingOfName, "aqd:AQD_Zone/@gml:id","All text are valid"," invalid attribute","", "error")}
+        {html:buildResultRows_B("B20", $labels:B20, $labels:B20_SHORT, $invalidGmlIdsB20, "aqd:AQD_Zone/@gml:id","All srsName attributes are valid"," invalid attribute","", "error")}
+        {html:buildResultRows_B("B21", $labels:B21, $labels:B21_SHORT, $invalidPosListDimension, "aqd:AQD_Zone/@gml:id", "All srsDimension attributes resolve to ""2""", " invalid attribute", "","warning")}
+        {html:buildResultRows_B("B22", $labels:B22, $labels:B22_SHORT, $invalidPosListCount, "gml:Polygon/@gml:id", "All values are valid", " invalid attribute", "","error")}
+        {html:buildResultRows_B("B23", $labels:B23, $labels:B23_SHORT, $invalidLatLong, "gml:Polygon", "All values are valid", " invalid attribute", "","error")}
+        {html:buildResultRows_B("B24", $labels:B24, $labels:B24_SHORT, $invalidManagementZones, "aqd:AQD_Zone/@gml:id", "All zoneType attributes are valid", " invalid attribute", "","warning")}
+        {html:buildResultRows_B("B25", $labels:B25, $labels:B25_SHORT, $invalidPosition, "gml:TimePeriod gml:id", "All positions are valid", " invalid position", "","error")}
+        {html:buildResultRows_B("B28", $labels:B28, $labels:B28_SHORT, $invalidLifespanVer, "gml:id", "All LifespanVersion values are valid", " invalid value", "","error")}
+        {html:buildResultRows_B("B31", $labels:B31, $labels:B31_SHORT, $invalidLegalBasisName, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "","warning")}
+        {html:buildResultRows_B("B32", $labels:B32, $labels:B32_SHORT, $invalidLegalBasisDate, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "","warning")}
+        {html:buildResultRows_B("B33", $labels:B33, $labels:B33_SHORT, $invalidLegalBasisLink, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "","warning")}
         <tr>
             <td style="vertical-align:top;">{ html:getBullet("B35", if ($countB35duplicates = 0) then "info" else "error") }</td>
             <th style="vertical-align:top;">{ $labels:B35_SHORT }</th>
@@ -822,18 +822,18 @@ return
             else
                 ()
         }
-        {html:buildResultRows("B36", $labels:B36, $labels:B36_SHORT, $invalidResidentPopulation, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "", "error")}
-        {html:buildResultRows("B37", $labels:B37, $labels:B37_SHORT, $invalidPopulationYear, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "","warning")}
-        {html:buildResultRows("B38", $labels:B38, $labels:B38_SHORT, $invalidArea, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "", "error")}
-        {html:buildResultTable("B39a", $labels:B39a, $labels:B39a_SHORT, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "", "error", $invalidPollutantCombinations)}
-        {html:buildResultTable("B39b", $labels:B39b, $labels:B39b_SHORT, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "", "error", $invalidPollutantOccurences)}
-        {html:buildResultTable("B39c", $labels:B39c, $labels:B39c_SHORT, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "", "error", $invalidPollutantRepeated)}
+        {html:buildResultRows_B("B36", $labels:B36, $labels:B36_SHORT, $invalidResidentPopulation, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "", "error")}
+        {html:buildResultRows_B("B37", $labels:B37, $labels:B37_SHORT, $invalidPopulationYear, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "","warning")}
+        {html:buildResultRows_B("B38", $labels:B38, $labels:B38_SHORT, $invalidArea, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "", "error")}
+        {html:buildResultTable_B("B39a", $labels:B39a, $labels:B39a_SHORT, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "", "error", $invalidPollutantCombinations)}
+        {html:buildResultTable_B("B39b", $labels:B39b, $labels:B39b_SHORT, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "", "error", $invalidPollutantOccurences)}
+        {html:buildResultTable_B("B39c", $labels:B39c, $labels:B39c_SHORT, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "", "error", $invalidPollutantRepeated)}
         {xmlconv:buildResultRowsWithTotalCount("B40", $labels:B40, $labels:B40_SHORT ,(), (), "aqd:timeExtensionExemption", "", "", "", $invalidTimeExtensionExemption)}
-        {html:buildResultTable("B41", $labels:B41, $labels:B41_SHORT, (), "All values are valid", " invalid value", "", "error", $invalidPollutansB41)}
-        {html:buildResultTable("B42", $labels:B42, $labels:B42_SHORT, (), "All values are valid", " crucial invalid value", "", "error", $aqdInvalidPollutansB42)}
-        {html:buildResultTable("B43", $labels:B43, $labels:B43_SHORT, (), "All values are valid", " crucial invalid value", "", "error", $aqdInvalidPollutansBenzene)}
-        {html:buildResultRows("B45", $labels:B45, $labels:B45_SHORT, $invalidGeometry, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "","warning")}
-        {html:buildResultRows("B46", $labels:B46, $labels:B46_SHORT, $invalidLink, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "", "error")}
+        {html:buildResultTable_B("B41", $labels:B41, $labels:B41_SHORT, (), "All values are valid", " invalid value", "", "error", $invalidPollutansB41)}
+        {html:buildResultTable_B("B42", $labels:B42, $labels:B42_SHORT, (), "All values are valid", " crucial invalid value", "", "error", $aqdInvalidPollutansB42)}
+        {html:buildResultTable_B("B43", $labels:B43, $labels:B43_SHORT, (), "All values are valid", " crucial invalid value", "", "error", $aqdInvalidPollutansBenzene)}
+        {html:buildResultRows_B("B45", $labels:B45, $labels:B45_SHORT, $invalidGeometry, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "","warning")}
+        {html:buildResultRows_B("B46", $labels:B46, $labels:B46_SHORT, $invalidLink, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "", "error")}
         {xmlconv:buildResultRowsWithTotalCount("B47", $labels:B47, $labels:B47_SHORT, (), (), "aqd:reportingMetric", "", "", "", $invalidZoneType)}
     </table>
 };
@@ -850,7 +850,7 @@ as element(tr)*{
     let $validMsg := if (count($invalidValues) = 0) then concat("Checked ", $countCheckedRecords, " value", substring("s", number(not($countCheckedRecords > 1)) * 2), ", all valid") else ""
 
     return
-        html:buildResultRowsHTML($ruleCode, $longText, $text, $invalidStrValues, $invalidValues,
+        html:buildResultRowsHTML_B($ruleCode, $longText, $text, $invalidStrValues, $invalidValues,
             $valueHeading, $validMsg, $invalidMsg, $skippedMsg, ())
 };
 
@@ -871,7 +871,7 @@ as element(tr)*{
             xmlconv:getCollectionConceptUrlSparql($vocabularyUrl)
         else
             xmlconv:getConceptUrlSparql($vocabularyUrl)
-    let $crConcepts := sparqlx:executeSparqlQuery($sparql)
+    let $crConcepts := sparqlx:executeSimpleSparqlQuery($sparql)
 
     let $allRecords :=
     if ($parentObject != "") then
@@ -955,7 +955,7 @@ let $result := if ($countZones > 0) then xmlconv:checkReport($source_url, $count
 
 return
     <div>
-    {html:javaScript()}
+    {html:javaScript_B()}
         <h2>Check air quality zones - Dataflow B</h2>
         {
         if ( $countZones = 0) then
