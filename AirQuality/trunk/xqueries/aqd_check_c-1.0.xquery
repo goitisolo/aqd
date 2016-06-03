@@ -782,15 +782,15 @@ let $invalidAqdAssessmentRegimeAqdPollutantC20 :=
         let $objectiveType := string($x/aqd:objectiveType/@xlink:href)
         let $reportingMetric := string($x/aqd:reportingMetric/@xlink:href)
         let $protectionTarget := string($x/aqd:protectionTarget/@xlink:href)
+        let $exceedance := string($x/../../aqd:exceedanceAttainment/@xlink:href)
     return
         if (not($environmentalObjectiveCombinations//skos:Concept[prop:relatedPollutant/@rdf:resource = $pollutant and prop:hasProtectionTarget/@rdf:resource = $protectionTarget
-                and prop:hasObjectiveType/@rdf:resource = $objectiveType and prop:hasReportingMetric/@rdf:resource = $reportingMetric]))
+                and prop:hasObjectiveType/@rdf:resource = $objectiveType and prop:hasReportingMetric/@rdf:resource = $reportingMetric
+                and prop:assessmentThreshold/@rdf:resource = $exceedance]))
         then
             $x/../../../../@gml:id
         else
             ()
-
-
 
 (: C22
     TODO: Remove after testing
