@@ -90,3 +90,23 @@ declare function sparqlx:executeSparqlQuery($sparql as xs:string) as element(spa
 declare function sparqlx:setLimitAndOffset($sparql as xs:string, $limit as xs:string, $offset as xs:string) as xs:string {
     concat($sparql," offset ",$offset," limit ",$limit)
 };
+
+
+(:---------------------------------Old xmlconv:executeSparqlQuery function----------------------------------------------------------------------:)
+(:~ Function executes given SPARQL query and returns result elements in SPARQL result format.
+ : URL parameters will be correctly encoded.
+ : @param $sparql SPARQL query.
+ : @return sparql:results element containing zero or more sparql:result subelements in SPARQL result format.
+ :)
+declare function sparqlx:executeSparqlEndpoint_D($sparql as xs:string)
+as element(sparql:results)
+{
+    let $uri := sparqlx:getSparqlEndpointUrl($sparql, "xml")
+
+    return
+        if(doc-available($uri))then
+            fn:doc($uri)//sparql:results
+        else
+            <sparql:results/>
+
+};

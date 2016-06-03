@@ -115,3 +115,7 @@ declare function common:checkLink($text as xs:string*) as element(span)*{
                 ""
         }</span>
 };
+
+declare function common:is-a-number( $value as xs:anyAtomicType? ) as xs:boolean {
+    string(number($value)) != 'NaN'
+};
