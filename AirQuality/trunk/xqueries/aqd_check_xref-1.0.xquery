@@ -15,119 +15,26 @@ xquery version "1.0" encoding "UTF-8";
  : @author George Sofianos
  :)
 
-declare namespace xmlconv="http://converters.eionet.europa.eu";
+declare namespace xmlconv = "http://converters.eionet.europa.eu";
 declare namespace aqd = "http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0";
 declare namespace xlink = "http://www.w3.org/1999/xlink";
 declare namespace sparql = "http://www.w3.org/2005/sparql-results#";
 declare namespace ompr = "http://inspire.ec.europa.eu/schemas/ompr/2.0";
 declare namespace om = "http://www.opengis.net/om/2.0";
 
+import module namespace common = "aqd-common" at "aqd_check_common.xquery";
+import module namespace sparqlx = "aqd-sparql" at "aqd-sparql.xquery";
+import module namespace labels = "aqd-labels" at "aqd-labels.xquery";
+import module namespace html = "aqd-html" at "aqd-html.xquery";
+
 
 (:~ declare Content Registry SPARQL endpoint:)
 declare variable $xmlconv:CR_SPARQL_URL := "http://cr.eionet.europa.eu/sparql";
-
 declare variable $xmlconv:DATAFLOW_D_OBLIGATION := "http://rod.eionet.europa.eu/obligations/672";
-
 (:~ Source file URL parameter name :)
 declare variable $xmlconv:SOURCE_URL_PARAM := "source_url=";
-
-(:declare option xqilla:psvi "false"; :)
-
-(:===================================================================:)
-(: Variable given as an external parameter by the QA service                                                 :)
-(:===================================================================:)
-
 declare variable $source_url as xs:string external;
 
-(: removes the file part from the end of URL and appends 'xml' for getting the envelope xml description :)
-declare function xmlconv:getEnvelopeXML($url as xs:string){
-
-        let $col := fn:tokenize($url,'/')
-        let $col := fn:remove($col, fn:count($col))
-        let $ret := fn:string-join($col,'/')
-        let $ret := fn:concat($ret,'/xml')
-        return
-            if(fn:doc-available($ret)) then
-                doc($ret)
-            else
-             ""
-}
-;(:~
- : Get the cleaned URL without authorisation info
- : @param $url URL of the source XML file
- : @return String
- :)
-declare function xmlconv:getCleanUrl($url)
-as xs:string
-{
-    if ( contains($url, $xmlconv:SOURCE_URL_PARAM)) then
-        fn:substring-after($url, $xmlconv:SOURCE_URL_PARAM)
-    else
-        $url
-};
-
-(: XMLCONV QA sends the file URL to XQuery engine as source_file paramter value in URL which is able to retreive restricted content from CDR.
-   This method replaces the source file url value in source_url parameter with another URL. source_file url must be the last parameter :)
-declare function xmlconv:replaceSourceUrl($url as xs:string, $url2 as xs:string) as xs:string{
-
-    if (contains($url,$xmlconv:SOURCE_URL_PARAM)) then
-        fn:concat(fn:substring-before($url, $xmlconv:SOURCE_URL_PARAM), $xmlconv:SOURCE_URL_PARAM, $url2)
-    else
-        $url2
-}
-;
-
-
-(:
- : =====================================================================d=
- :              SPARQL HELPER methods
- : ======================================================================
- :)
-(:~ Function executes given SPARQL query and returns result elements in SPARQL result format.
- : URL parameters will be correctly encoded.
- : @param $sparql SPARQL query.
- : @return sparql:results element containing zero or more sparql:result subelements in SPARQL result format.
- :)
-declare function xmlconv:executeSparqlQuery($sparql as xs:string)
-as element(sparql:results)
-{
-    let $uri := xmlconv:getSparqlEndpointUrl($sparql, "xml")
-
-    return
-        fn:doc($uri)//sparql:results
-};
-
-
-(:~
- : Get the SPARQL endpoint URL.
- : @param $sparql SPARQL query.
- : @param $format xml or html.
- : @param $inference use inference when executing sparql query.
- : @return link to sparql endpoint
- :)
-declare function xmlconv:getSparqlEndpointUrl($sparql as xs:string, $format as xs:string)
-as xs:string
-{
-    let $sparql := fn:encode-for-uri(fn:normalize-space($sparql))
-    let $resultFormat :=
-        if ($format = "xml") then
-            "application/xml"
-        else if ($format = "html") then
-            "text/html"
-        else
-            $format
-    let $defaultGraph := ""
-    let $uriParams := concat("query=", $sparql, "&amp;format=", $resultFormat, $defaultGraph)
-    let $uri := concat($xmlconv:CR_SPARQL_URL, "?", $uriParams)
-    return $uri
-};
-
-
-(:
- : ======================================================================
- :     QA rules
- : ======================================================================
- :)
 declare function xmlconv:getConceptUrlSparql($scheme as xs:string)
 as xs:string
 {
@@ -139,12 +46,9 @@ as xs:string
     }")
 };
 
-
-declare function xmlconv:validateCode($elems, $scheme as xs:string)
-as element(div)*
-{
+declare function xmlconv:validateCode($elems, $scheme as xs:string) as element(div)* {
     let $sparql := xmlconv:getConceptUrlSparql($scheme)
-    let $crConcepts := xmlconv:executeSparqlQuery($sparql)
+    let $crConcepts := sparqlx:executeSparqlQuery($sparql)
 
     for $polCodeElem in $elems
     let $polCode := normalize-space($polCodeElem)
@@ -157,9 +61,7 @@ as element(div)*
 };
 
 
-declare function xmlconv:isMatchingVocabCode($crConcepts as element(sparql:results), $polCode as xs:string)
-as xs:boolean
-{
+declare function xmlconv:isMatchingVocabCode($crConcepts as element(sparql:results), $polCode as xs:string) as xs:boolean {
     count($crConcepts//sparql:result/sparql:binding[@name="concepturl" and sparql:uri=$polCode])>0
 };
 
@@ -242,7 +144,7 @@ declare function xmlconv:getVocabularyMapping(){
     </mapping>
 };
 
-declare function xmlconv:checkVocabularyReferences(){
+declare function xmlconv:checkVocabularyReferences() {
 
     let $vocabularies := xmlconv:getVocabularyMapping()//vocabulary
 
@@ -339,7 +241,7 @@ declare function xmlconv:getReferencedEnvelope($obligation as xs:string, $locali
         }
         ORDER BY desc(?released)")
 
-    let $envelopes := xmlconv:executeSparqlQuery($sparql)
+    let $envelopes := sparqlx:executeSparqlQuery($sparql)
 
     let $envelopeUrl :=
         if (count($envelopes//sparql:result) > 0 ) then
@@ -377,14 +279,14 @@ WHERE {
     ?type IN (", string-join($prefixedTypes, ','), "))
 }")
 
-    let $featureTypes := xmlconv:executeSparqlQuery($sparql)
+    let $featureTypes := sparqlx:executeSparqlQuery($sparql)
     return
         $featureTypes//sparql:result/sparql:binding[@name="id"]/sparql:literal
 };
 declare function xmlconv:checkCrosslinkReferences(){
 
 
-    let $envelopeXml := xmlconv:getEnvelopeXML($source_url)    
+    let $envelopeXml := common:getEnvelopeXML($source_url)
 
     let $coverage := $envelopeXml/envelope/coverage
     let $dataflowDEnvelopeUrl := xmlconv:getReferencedEnvelope($xmlconv:DATAFLOW_D_OBLIGATION, $coverage)

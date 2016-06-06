@@ -29,41 +29,22 @@ declare function html:getModalInfo($ruleCode, $longText) as element()* {
     </div>)
 };
 
-(:~
-: JavaScript
-:)
 
-declare function html:javaScript_B(){
-
-    let $js :=
-        <script type="text/javascript">
-            <![CDATA[
-    function toggle(divName, linkName, checkId) {{
-         toggleItem(divName, linkName, checkId, 'record');
-    }}
-
-
-    function toggleItem(divName, linkName, checkId, itemLabel) {{
-        divName = divName + "-" + checkId;
-        linkName = linkName + "-" + checkId;
-
-        var elem = document.getElementById(divName);
-        var text = document.getElementById(linkName);
-        if(elem.style.display == "inline") {{
-            elem.style.display = "none";
-            text.innerHTML = "Show " + itemLabel + "s";
-            }}
-            else {{
-              elem.style.display = "inline";
-              text.innerHTML = "Hide " + itemLabel + "s";
-            }}
-      }}
-
-                ]]>
-        </script>
+declare function html:getBullet($text as xs:string, $level as xs:string) as element(div) {
+    let $color :=
+        if ($level = "error") then
+            "red"
+        else if ($level = "warning") then
+            "orange"
+        else if ($level = "skipped") then
+                "gray"
+            else
+                "deepskyblue"
     return
-        <script type="text/javascript">{normalize-space($js)}</script>
+        <div class="{$level}" style="background-color: { $color }; font-size: 0.8em; color: white; padding-left:5px;padding-right:5px;margin-right:5px;margin-top:2px;text-align:center">{ $text }</div>
 };
+
+
 (:~
 : JavaScript
 :)
@@ -121,6 +102,43 @@ declare function html:javaScriptRoot(){
     return
         <script type="text/javascript">{normalize-space($js)}</script>
 };
+
+(:~
+: JavaScript
+:)
+
+declare function html:javaScript_B(){
+
+    let $js :=
+        <script type="text/javascript">
+            <![CDATA[
+    function toggle(divName, linkName, checkId) {{
+         toggleItem(divName, linkName, checkId, 'record');
+    }}
+
+
+    function toggleItem(divName, linkName, checkId, itemLabel) {{
+        divName = divName + "-" + checkId;
+        linkName = linkName + "-" + checkId;
+
+        var elem = document.getElementById(divName);
+        var text = document.getElementById(linkName);
+        if(elem.style.display == "inline") {{
+            elem.style.display = "none";
+            text.innerHTML = "Show " + itemLabel + "s";
+            }}
+            else {{
+              elem.style.display = "inline";
+              text.innerHTML = "Hide " + itemLabel + "s";
+            }}
+      }}
+
+                ]]>
+        </script>
+    return
+        <script type="text/javascript">{normalize-space($js)}</script>
+};
+
 
 (:~
 : JavaScript
@@ -264,21 +282,6 @@ declare function html:javaScript_M(){
         <script type="text/javascript">{normalize-space($js)}</script>
 };
 
-declare function html:getBullet($text as xs:string, $level as xs:string) as element(div) {
-    let $color :=
-        if ($level = "error") then
-            "red"
-        else if ($level = "warning") then
-            "orange"
-        else if ($level = "skipped") then
-                "gray"
-            else
-                "deepskyblue"
-    return
-        <div class="{$level}" style="background-color: { $color }; font-size: 0.8em; color: white; padding-left:5px;padding-right:5px;margin-right:5px;margin-top:2px;text-align:center">{ $text }</div>
-};
-
-(: Builds HTML table rows for rules B13 - B17. :)
 declare function html:buildResultRows_B($ruleCode as xs:string, $longText, $text, $invalidValues as xs:string*,
         $valueHeading as xs:string, $validMsg as xs:string, $invalidMsg as xs:string, $skippedMsg, $errorLevel as xs:string)
 as element(tr)*{
@@ -618,22 +621,6 @@ as element(tr)*{
     return $result
 
 };
-declare function html:buildResultRowsWithTotalCount_D($ruleCode as xs:string, $longText, $text, $invalidStrValues as xs:string*, $invalidValues as element()*,
-        $valueHeading as xs:string, $validMsg as xs:string, $invalidMsg as xs:string, $skippedMsg, $errorLevel as xs:string,$recordDetails as element(tr)*)
-as element(tr)*{
-
-    let $countCheckedRecords := count($recordDetails)
-    let $invalidValues := $recordDetails[./@isvalid = "false"]
-
-    let $skippedMsg := if ($countCheckedRecords = 0) then "No values found to check" else ""
-    let $invalidMsg := if (count($invalidValues) > 0) then concat(" invalid value", substring("s ", number(not(count($invalidValues) > 1)) * 2), " found out of ", $countCheckedRecords, " checked") else ""
-    let $validMsg := if (count($invalidValues) = 0) then concat("Checked ", $countCheckedRecords, " value", substring("s", number(not($countCheckedRecords > 1)) * 2), ", all valid") else ""
-
-    return
-        html:buildResultRows_D($ruleCode, $longText, $text, $invalidStrValues, $invalidValues,
-                $valueHeading, $validMsg, $invalidMsg, $skippedMsg,$errorLevel, ())
-};
-
 (: Builds HTML table rows for rules. :)
 declare function html:buildResultRows_G($ruleCode as xs:string, $longText, $text, $invalidStrValues as xs:string*, $invalidValues as element()*,
         $valueHeading as xs:string, $validMsg as xs:string, $invalidMsg as xs:string, $skippedMsg, $errorLevel as xs:string, $recordDetails as element(tr)*)
@@ -761,6 +748,22 @@ as element(tr)*{
         )
     return $result
 
+};
+
+declare function html:buildResultRowsWithTotalCount_D($ruleCode as xs:string, $longText, $text, $invalidStrValues as xs:string*, $invalidValues as element()*,
+        $valueHeading as xs:string, $validMsg as xs:string, $invalidMsg as xs:string, $skippedMsg, $errorLevel as xs:string,$recordDetails as element(tr)*)
+as element(tr)*{
+
+    let $countCheckedRecords := count($recordDetails)
+    let $invalidValues := $recordDetails[./@isvalid = "false"]
+
+    let $skippedMsg := if ($countCheckedRecords = 0) then "No values found to check" else ""
+    let $invalidMsg := if (count($invalidValues) > 0) then concat(" invalid value", substring("s ", number(not(count($invalidValues) > 1)) * 2), " found out of ", $countCheckedRecords, " checked") else ""
+    let $validMsg := if (count($invalidValues) = 0) then concat("Checked ", $countCheckedRecords, " value", substring("s", number(not($countCheckedRecords > 1)) * 2), ", all valid") else ""
+
+    return
+        html:buildResultRows_D($ruleCode, $longText, $text, $invalidStrValues, $invalidValues,
+                $valueHeading, $validMsg, $invalidMsg, $skippedMsg,$errorLevel, ())
 };
 
 declare function html:buildResultRowsWithTotalCount_G($ruleCode as xs:string, $longText, $text, $invalidStrValues as xs:string*, $invalidValues as element()*,

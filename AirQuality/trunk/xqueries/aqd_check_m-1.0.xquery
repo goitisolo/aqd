@@ -40,8 +40,6 @@ declare variable $xmlconv:ISO2_CODES as xs:string* := ("AL","AT","BA","BE","BG",
      "RO","RS","SE","SI","SK","TN","TR","XK","UK");
 
 declare variable $xmlconv:FEATURE_TYPES := ("aqd:AQD_Model", "aqd:AQD_ModelProcess", "aqd:AQD_ModelArea");
-
-
 declare variable $xmlconv:MEDIA_VALUE_VOCABULARY_BASE_URI := "http://inspire.ec.europa.eu/codeList/MediaValue/";
 declare variable $xmlconv:MEDIA_VALUE_VOCABULARY := "http://dd.eionet.europa.eu/vocabulary/inspire/MediaValue/";
 declare variable $xmlconv:ORGANISATIONAL_LEVEL_VOCABULARY := "http://dd.eionet.europa.eu/vocabulary/aq/organisationallevel/";
@@ -299,11 +297,9 @@ let  $tblM7 :=
 let $invalidNamespaces := common:checkNamespaces($source_url) 
 
 (: M12 :)
-
 let $invalidGeometry := distinct-values($docRoot//aqd:AQD_Model[count(ef:geometry) >0 and ef:geometry/@srsName != "urn:ogc:def:crs:EPSG::4258" and ef:geometry/@srsName != "urn:ogc:def:crs:EPSG::4326"]/@gml:id)
 
 (: M15 :)
-
 let $allNotNullEndPeriods :=
     for $allPeriod in $docRoot//aqd:AQD_Model/ef:observingCapability/ef:ObservingCapability/ef:observingTime/gml:TimePeriod
     where ($allPeriod/gml:endPosition[normalize-space(@indeterminatePosition)!="unknown"]
@@ -322,11 +318,9 @@ let $allObservingCapabilityPeriod :=
         </tr>
 
 (: M18 :)
-
 let $invalidObservedProperty := xmlconv:checkVocabularyConceptValues($source_url, "ef:ObservingCapability", "ef:observedProperty", $xmlconv:POLLUTANT_VOCABULARY)
 
 (: M19 :)
-
 let $aqdModelArea :=
     for $allModelArea in $docRoot//aqd:AQD_ModelArea
     return $allModelArea/@gml:id
@@ -556,7 +550,6 @@ let $allInvalZoneXlinks :=
             </tr>
 
 (: M29 :)
-
 let $invalidBase2link :=
     for $baseLink in  $docRoot//aqd:AQD_ModelProcess/ompr:documentation/base2:DocumentationCitation/base2:link
     let $invalidLink:= fn:substring-before($baseLink,":")
@@ -568,7 +561,6 @@ return
 </tr>
 
 (: M39 :)
-
 let $invalidDataQualityReport :=
     for $dataQualityReport in  $docRoot//aqd:AQD_ModelProcess/dataQualityReport
     let $invalidLink:= fn:substring-before($dataQualityReport,":")
@@ -579,7 +571,7 @@ return
     <td title="base2:link">{data($dataQualityReport)}</td>
 </tr>
 
-    (: M40 :)
+(: M40 :)
 let $localModelAreaIds := $docRoot//gml:featureMember/aqd:AQD_ModelArea/ompr:inspireId/base:Identifier
 let $invalidDuplicateModelAreaIds :=
     for $idModelAreaCode in $docRoot//gml:featureMember/aqd:AQD_ModelArea/ompr:inspireId/base:Identifier
@@ -605,8 +597,7 @@ let  $tblM41 :=
         </tr>
 
 (: M43 :)
-
-    let $invalidSrsName := distinct-values($docRoot//aqd:AQD_Sample[count(sams:shape) >0 and sams:shape/@srsName != "urn:ogc:def:crs:EPSG::4258" and sams:shape/@srsName != "urn:ogc:def:crs:EPSG::4326"]/@gml:id)
+let $invalidSrsName := distinct-values($docRoot//aqd:AQD_Sample[count(sams:shape) >0 and sams:shape/@srsName != "urn:ogc:def:crs:EPSG::4258" and sams:shape/@srsName != "urn:ogc:def:crs:EPSG::4326"]/@gml:id)
 
     return
     <table style="border-collapse:collapse;display:inline">
@@ -901,8 +892,6 @@ return
             <h3>Test results</h3>
             {$result}
         </div>
-
         }
     </div>
-
 };
