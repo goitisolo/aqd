@@ -183,6 +183,53 @@ declare variable $labels:C38_SHORT :=  labels:getLabel("C", "C38_SHORT");
 declare variable $labels:C40 := labels:getLabel("C", "C40");
 declare variable $labels:C40_SHORT :=  labels:getLabel("C", "C40_SHORT");
 
+
+declare variable $labels:M1 := labels:getLabel("M", "M1");
+declare variable $labels:M1_SHORT := labels:getLabel("M", "M1_SHORT");
+declare variable $labels:M2 := labels:getLabel("M", "M2");
+declare variable $labels:M2_SHORT := labels:getLabel("M", "M2_SHORT");
+declare variable $labels:M3 := labels:getLabel("M", "M3");
+declare variable $labels:M3_SHORT := labels:getLabel("M", "M3_SHORT");
+declare variable $labels:M4 := labels:getLabel("M", "M4");
+declare variable $labels:M4_SHORT := labels:getLabel("M", "M4_SHORT");
+declare variable $labels:M5 := labels:getLabel("M", "M5");
+declare variable $labels:M5_SHORT := labels:getLabel("M", "M5_SHORT");
+declare variable $labels:M6 := labels:getLabel("M", "M6");
+declare variable $labels:M6_SHORT := labels:getLabel("M", "M6_SHORT");
+declare variable $labels:M7 := labels:getLabel("M", "M7");
+declare variable $labels:M7_SHORT := labels:getLabel("M", "M7_SHORT");
+declare variable $labels:M7.1 := labels:getLabel("M", "M7.1");
+declare variable $labels:M7.1_SHORT := labels:getLabel("M", "M7.1_SHORT");
+declare variable $labels:M12 := labels:getLabel("M", "M12");
+declare variable $labels:M12_SHORT := labels:getLabel("M", "M12_SHORT");
+declare variable $labels:M15 := labels:getLabel("M", "M15");
+declare variable $labels:M15_SHORT := labels:getLabel("M", "M15_SHORT");
+declare variable $labels:M19 := labels:getLabel("M", "M19");
+declare variable $labels:M19_SHORT := labels:getLabel("M", "M19_SHORT");
+declare variable $labels:M23 := labels:getLabel("M", "M23");
+declare variable $labels:M23_SHORT := labels:getLabel("M", "M23_SHORT");
+declare variable $labels:M24 := labels:getLabel("M", "M24");
+declare variable $labels:M24_SHORT := labels:getLabel("M", "M24_SHORT");
+declare variable $labels:M25 := labels:getLabel("M", "M25");
+declare variable $labels:M25_SHORT := labels:getLabel("M", "M25_SHORT");
+declare variable $labels:M26 := labels:getLabel("M", "M26");
+declare variable $labels:M26_SHORT := labels:getLabel("M", "M26_SHORT");
+declare variable $labels:M27 := labels:getLabel("M", "M27");
+declare variable $labels:M27_SHORT := labels:getLabel("M", "M27_SHORT");
+declare variable $labels:M28 := labels:getLabel("M", "M28");
+declare variable $labels:M28_SHORT := labels:getLabel("M", "M28_SHORT");
+declare variable $labels:M29 := labels:getLabel("M", "M29");
+declare variable $labels:M29_SHORT := labels:getLabel("M", "M29_SHORT");
+declare variable $labels:M39 := labels:getLabel("M", "M39");
+declare variable $labels:M39_SHORT := labels:getLabel("M", "M39_SHORT");
+declare variable $labels:M40 := labels:getLabel("M", "M40");
+declare variable $labels:M40_SHORT := labels:getLabel("M", "M40_SHORT");
+declare variable $labels:M41 := labels:getLabel("M", "M41");
+declare variable $labels:M41_SHORT := labels:getLabel("M", "M41_SHORT");
+declare variable $labels:M43 := labels:getLabel("M", "M43");
+declare variable $labels:M43_SHORT := labels:getLabel("M", "M43_SHORT");
+
+
 declare variable $labels:C6.1 := "Check that namespace is registered in vocabulary";
 declare variable $labels:C6.1_SHORT := "Check that namespace is registered in vocabulary";
 
