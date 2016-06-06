@@ -1299,26 +1299,6 @@ return
     </div>
 };
 
-
-declare function xmlconv:getHashValue($hash as xs:string*, $key as xs:string) {
-    xmlconv:getHashValue($hash, $key, "#")
-};
-
-(: Hash is in format x#y by default :)
-declare function xmlconv:getHashValue($hash as xs:string*, $key as xs:string, $separator as xs:string) as xs:string {
-    let $result :=
-    for $hashKeyAndValue in $hash
-    let $hashKey := substring-before($hashKeyAndValue , $separator)
-    let $hashValue := substring-after($hashKeyAndValue , $separator)
-    return
-        if (lower-case($key) = lower-case($hashKey)) then $hashValue else ()
-
-    let $result := if (empty($result)) then "" else $result[1]
-
-    return $result
-};
-
-
 declare function xmlconv:isValidAssessmentTypeCombination($id as xs:string, $type as xs:string, $allCombinations as xs:string*) as xs:boolean {
     let $typeInDoc := lower-case(substring-after($type, $xmlconv:ASSESSMENTTYPE_VOCABULARY))
     let $combination := concat($id, "#", $type)

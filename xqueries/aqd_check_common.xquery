@@ -153,3 +153,19 @@ declare function common:isEmpty($value as xs:string) as xs:boolean {
     else
         fn:false()
 };
+
+declare function common:getHashValue($hash as xs:string*, $key as xs:string) {
+    common:getHashValue($hash, $key, "#")
+};
+
+(: Hash is in format x#y by default :)
+declare function common:getHashValue($hash as xs:string*, $key as xs:string, $separator as xs:string) as xs:string {
+    let $result :=
+        for $hashKeyAndValue in $hash
+        let $hashKey := substring-before($hashKeyAndValue , $separator)
+        let $hashValue := substring-after($hashKeyAndValue , $separator)
+        return
+            if (lower-case($key) = lower-case($hashKey)) then $hashValue else ()
+    let $result := if (empty($result)) then "" else $result[1]
+    return $result
+};

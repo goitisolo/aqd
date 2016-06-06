@@ -27,19 +27,9 @@ declare variable $ignoredMessages := ("cvc-elt.1: Cannot find the declaration of
 (:===================================================================:)
 
 declare variable $source_url as xs:string external;
-(:
-declare variable $source_url as xs:string external;
-Change it for testing locally:
-declare variable $source_url as xs:string external;
-declare variable $source_url as xs:untypedAtomic external;
-declare variable $source_url := "http://cdr.eionet.europa.eu/gb/eu/aqd/e2a/colutn32a/envuvlxkq/E2a_GB2013032713version4.xml";
-:)
 
-(:
-Remove the irrelevant GML XML Schema validation errors. It happens when the gml.xsd is not explicitly defined in schemaLocation attribute.
-:)
-declare function xmlconv:validateXmlSchema($source_url)
-{
+(: Remove the irrelevant GML XML Schema validation errors. It happens when the gml.xsd is not explicitly defined in schemaLocation attribute. :)
+declare function xmlconv:validateXmlSchema($source_url) {
     let $successfulResult := <div class="feedbacktext">
     <span id="feedbackStatus" class="INFO" style="display:none">XML Schema validation passed without errors.</span>
     <span style="display:none"><p>OK</p></span>
@@ -82,7 +72,6 @@ declare function xmlconv:validateXmlSchema($source_url)
             $successfulResult
         else
             $filteredResult
-
 };
 
 (:
@@ -90,9 +79,7 @@ declare function xmlconv:validateXmlSchema($source_url)
  : Main function
  : ======================================================================
  :)
-declare function xmlconv:proceed($source_url as xs:string)
-{
-
+declare function xmlconv:proceed($source_url as xs:string) {
     xmlconv:validateXmlSchema($source_url)
 };
 
