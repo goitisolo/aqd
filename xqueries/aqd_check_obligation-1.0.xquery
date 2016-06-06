@@ -16,7 +16,7 @@ xquery version "1.0" encoding "UTF-8";
  :)
 
 (: Dataflow B script - Zones :)
-import module namespace dfB = "http://converters.eionet.europa.eu/dataflowB" at "aqd_check_zones-1.0.xquery";
+import module namespace dfB = "http://converters.eionet.europa.eu/dataflowB" at "aqd_check_b-1.0.xquery";
 (: Dataflow C script - Assessment regimes :)
 import module namespace dfC = "http://converters.eionet.europa.eu/dataflowC" at "aqd_check_c-1.0.xquery";
 (: Dataflow D script -  :)
