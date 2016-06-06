@@ -19,6 +19,7 @@ import module namespace common = "aqd-common" at "aqd_check_common.xquery";
 import module namespace html = "aqd-html" at "aqd-html.xquery";
 import module namespace sparqlx = "aqd-sparql" at "aqd-sparql.xquery";
 import module namespace labels = "aqd-labels" at "aqd-labels.xquery";
+import module namespace vocabulary = "aqd-vocabulary" at "aqd-vocabulary.xquery";
 
 declare namespace aqd = "http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0";
 declare namespace gml = "http://www.opengis.net/gml/3.2";
@@ -32,7 +33,6 @@ declare namespace xlink = "http://www.w3.org/1999/xlink";
 declare namespace ompr = "http://inspire.ec.europa.eu/schemas/ompr/2.0";
 
 declare variable $xmlconv:AQ_MANAGEMENET_ZONE := "http://inspire.ec.europa.eu/codeList/ZoneTypeCode/airQualityManagementZone";
-declare variable $xmlconv:ZONETYPE_VOCABULARY as xs:string := "http://dd.eionet.europa.eu/vocabulary/aq/zonetype/";
 declare variable $xmlconv:invalidCount as xs:integer := 0;
 declare variable $xmlconv:ISO2_CODES as xs:string* := ("AL","AT","BA","BE","BG","CH","CY","CZ","DE","DK","DZ","EE","EG","ES","FI",
     "FR","GB","GR","HR","HU","IE","IL","IS","IT","JO","LB","LI","LT","LU","LV","MA","ME","MK","MT","NL","NO","PL","PS","PT",
@@ -50,10 +50,7 @@ as xs:string
                   FILTER regex(?code, '^", $countryCode, "', 'i')
     }")
 };
-declare function xmlconv:getLau2Sparql($countryCode as xs:string)
-as xs:string
-{
-
+declare function xmlconv:getLau2Sparql($countryCode as xs:string) as xs:string {
     concat("PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
     SELECT ?concepturl ?label ?code
     WHERE {
@@ -63,10 +60,7 @@ as xs:string
     }")
 };
 
-declare function xmlconv:getLau1Sparql($countryCode as xs:string)
-as xs:string
-{
-
+declare function xmlconv:getLau1Sparql($countryCode as xs:string) as xs:string {
     concat("PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
     SELECT ?concepturl ?label ?code
     WHERE {
@@ -76,10 +70,7 @@ as xs:string
     }")
 };
 
-
-declare function xmlconv:getLangCodesSparql()
-as xs:string
-{
+declare function xmlconv:getLangCodesSparql() as xs:string {
     "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
     SELECT distinct ?code ?label ?concepturl
     WHERE {
@@ -118,7 +109,6 @@ declare function xmlconv:getZonesSparql($nameSpaces as xs:string*) as xs:string 
 };
 
 (: Rule implementations :)
-
 declare function xmlconv:checkReport($source_url as xs:string, $countryCode as xs:string) as element(table) {
 
 let $envelopeUrl := common:getEnvelopeXML($source_url)
@@ -725,7 +715,7 @@ for $link in $aqdShapeFileLink
 
 
 (: B47 :)
-let $invalidZoneType := xmlconv:checkVocabularyConceptValues($source_url, "", "aqd:AQD_Zone", "aqd:aqdZoneType", $xmlconv:ZONETYPE_VOCABULARY)
+let $invalidZoneType := xmlconv:checkVocabularyConceptValues($source_url, "", "aqd:AQD_Zone", "aqd:aqdZoneType", $vocabulary:ZONETYPE_VOCABULARY)
 
 return
     <table style="text-align:left;vertical-align:top;">

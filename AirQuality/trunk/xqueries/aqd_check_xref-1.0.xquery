@@ -28,11 +28,7 @@ import module namespace labels = "aqd-labels" at "aqd-labels.xquery";
 import module namespace html = "aqd-html" at "aqd-html.xquery";
 
 
-(:~ declare Content Registry SPARQL endpoint:)
-declare variable $xmlconv:CR_SPARQL_URL := "http://cr.eionet.europa.eu/sparql";
 declare variable $xmlconv:DATAFLOW_D_OBLIGATION := "http://rod.eionet.europa.eu/obligations/672";
-(:~ Source file URL parameter name :)
-declare variable $xmlconv:SOURCE_URL_PARAM := "source_url=";
 declare variable $source_url as xs:string external;
 
 declare function xmlconv:getConceptUrlSparql($scheme as xs:string)
@@ -212,8 +208,8 @@ declare function xmlconv:checkVocabularyReferences() {
     return
         $result
 };
-declare function xmlconv:getCrosslinkRuleMapping(){
 
+declare function xmlconv:getCrosslinkRuleMapping() {
     <mapping>
         <rule id="dataflowD">
             <element>aqd:pollutantCode</element>
@@ -223,8 +219,8 @@ declare function xmlconv:getCrosslinkRuleMapping(){
         </rule>
     </mapping>
 };
-declare function xmlconv:getReferencedEnvelope($obligation as xs:string, $locality as xs:string){
 
+declare function xmlconv:getReferencedEnvelope($obligation as xs:string, $locality as xs:string){
     let $sparql := concat(
         "PREFIX dcterms: <http://purl.org/dc/terms/>
         PREFIX rod: <http://rod.eionet.europa.eu/schema.rdf#>
@@ -283,11 +279,8 @@ WHERE {
     return
         $featureTypes//sparql:result/sparql:binding[@name="id"]/sparql:literal
 };
-declare function xmlconv:checkCrosslinkReferences(){
-
-
+declare function xmlconv:checkCrosslinkReferences() {
     let $envelopeXml := common:getEnvelopeXML($source_url)
-
     let $coverage := $envelopeXml/envelope/coverage
     let $dataflowDEnvelopeUrl := xmlconv:getReferencedEnvelope($xmlconv:DATAFLOW_D_OBLIGATION, $coverage)
     let $dataflowDEnvelopeLink :=
@@ -399,17 +392,13 @@ declare function xmlconv:buildCodeCheckCount($ruleHeading, $allRefsCount as xs:i
  : Main function
  : ======================================================================
  :)
-declare function xmlconv:proceed($source_url as xs:string)
-as element(div){
-
+declare function xmlconv:proceed($source_url as xs:string) as element(div) {
     let $allRefElements :=
         for $elem in doc($source_url)//*[contains(@xlink:href, ':')]
         return
             $elem
     let $vocabularyRefsResult := xmlconv:checkVocabularyReferences()
     let $crosslinkRefsResult := xmlconv:checkCrosslinkReferences()
-
-
     let $allRefsCount := count($allRefElements)
     let $errorCount := sum($vocabularyRefsResult/@errorCount) + sum($crosslinkRefsResult/@errorCount)
 

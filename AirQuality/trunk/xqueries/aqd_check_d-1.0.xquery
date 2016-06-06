@@ -20,6 +20,7 @@ import module namespace common = "aqd-common" at "aqd_check_common.xquery";
 import module namespace sparqlx = "aqd-sparql" at "aqd-sparql.xquery";
 import module namespace labels = "aqd-labels" at "aqd-labels.xquery";
 import module namespace html = "aqd-html" at "aqd-html.xquery";
+import module namespace vocabulary = "aqd-vocabulary" at "aqd-vocabulary.xquery";
 
 declare namespace aqd = "http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0";
 declare namespace gml = "http://www.opengis.net/gml/3.2";
@@ -33,36 +34,12 @@ declare namespace xlink = "http://www.w3.org/1999/xlink";
 declare namespace ompr="http://inspire.ec.europa.eu/schemas/ompr/2.0";
 declare namespace sams="http://www.opengis.net/samplingSpatial/2.0";
 
-(:~ declare Content Registry SPARQL endpoint:)
-declare variable $xmlconv:CR_SPARQL_URL := "http://cr.eionet.europa.eu/sparql";
-
 declare variable $xmlconv:ISO2_CODES as xs:string* := ("AL", "AD", "AT","BA","BE","BG","CH","CY","CZ","DE","DK","DZ","EE","EG","ES","FI",
     "FR","GB","GR","HR","HU","IE","IL","IS","IT","JO","LB","LI","LT","LU","LV","MA","ME","MK","MT","NL","NO","PL","PS","PT",
      "RO","RS","SE","SI","SK","TN","TR","XK","UK");
 
 declare variable $xmlconv:FEATURE_TYPES := ("aqd:AQD_Network", "aqd:AQD_Station", "aqd:AQD_SamplingPointProcess", "aqd:AQD_Sample",
 "aqd:AQD_RepresentativeArea", "aqd:AQD_SamplingPoint");
-
-
-declare variable $xmlconv:MEDIA_VALUE_VOCABULARY_BASE_URI := "http://inspire.ec.europa.eu/codelist/MediaValue/";
-declare variable $xmlconv:MEDIA_VALUE_VOCABULARY := "http://dd.eionet.europa.eu/vocabulary/inspire/MediaValue/";
-declare variable $xmlconv:ORGANISATIONAL_LEVEL_VOCABULARY := "http://dd.eionet.europa.eu/vocabulary/aq/organisationallevel/";
-declare variable $xmlconv:NETWORK_TYPE_VOCABULARY := "http://dd.eionet.europa.eu/vocabulary/aq/networktype/";
-declare variable $xmlconv:METEO_PARAMS_VOCABULARY := ("http://vocab.nerc.ac.uk/collection/P07/current/","http://vocab.nerc.ac.uk/collection/I01/current/","http://dd.eionet.europa.eu/vocabulary/aq/meteoparameter/");
-declare variable $xmlconv:METEO_PARAMS_VOCABULARY_I01 := "http://vocab.nerc.ac.uk/collection/I01/current/";
-declare variable $xmlconv:METEO_PARAMS_VOCABULARY_aq := "http://dd.eionet.europa.eu/vocabulary/aq/meteoparameter/";
-declare variable $xmlconv:AREA_CLASSIFICATION_VOCABULARY := "http://dd.eionet.europa.eu/vocabulary/aq/areaclassification/";
-declare variable $xmlconv:DISPERSION_LOCAL_VOCABULARY := "http://dd.eionet.europa.eu/vocabulary/aq/dispersionlocal/";
-declare variable $xmlconv:DISPERSION_REGIONAL_VOCABULARY := "http://dd.eionet.europa.eu/vocabulary/aq/dispersionregional/";
-declare variable $xmlconv:TIMEZONE_VOCABULARY := "http://dd.eionet.europa.eu/vocabulary/aq/timezone/";
-declare variable $xmlconv:POLLUTANT_VOCABULARY := "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/";
-declare variable $xmlconv:MEASUREMENTTYPE_VOCABULARY := "http://dd.eionet.europa.eu/vocabulary/aq/measurementtype/";
-declare variable $xmlconv:MEASUREMENTMETHOD_VOCABULARY := "http://dd.eionet.europa.eu/vocabulary/aq/measurementmethod/";
-declare variable $xmlconv:ANALYTICALTECHNIQUE_VOCABULARY :=  "http://dd.eionet.europa.eu/vocabulary/aq/analyticaltechnique/";
-declare variable $xmlconv:SAMPLINGEQUIPMENT_VOCABULARY := "http://dd.eionet.europa.eu/vocabulary/aq/samplingequipment/";
-declare variable $xmlconv:MEASUREMENTEQUIPMENT_VOCABULARY :="http://dd.eionet.europa.eu/vocabulary/aq/measurementequipment/";
-declare variable $xmlconv:UOM_CONCENTRATION_VOCABULARY := "http://dd.eionet.europa.eu/vocabulary/uom/concentration/";
-declare variable $xmlconv:EQUIVALENCEDEMONSTRATED_VOCABULARY := "http://dd.eionet.europa.eu/vocabulary/aq/equivalencedemonstrated/";
 
 declare function xmlconv:getErrorTD($errValue,  $element as xs:string, $showMissing as xs:boolean)
 as element(td)
@@ -151,8 +128,7 @@ let $tblAllFeatureTypes :=
             <td title="Total number">{$countFeatureTypes[$pos]}</td>
         </tr>
 
-        (: D2 :)
-
+(: D2 :)
 let $D2Combinations :=
     for $featureType in $xmlconv:FEATURE_TYPES
     return
@@ -174,7 +150,6 @@ let $tblD2 :=
         $rec/@gml:id
 
 (: D3 :)
-
 let $D3Combinations :=
     for $featureType in $xmlconv:FEATURE_TYPES
     return
@@ -227,7 +202,6 @@ let $tblD4 :=
         </tr>
 
 (: D5 :)
-
 let $D5Combinations :=
     for $featureType in $xmlconv:FEATURE_TYPES
     return
@@ -303,16 +277,16 @@ let  $tblD7 :=
 (: D7.1 :)
 let $invalidNamespaces := common:checkNamespaces($source_url)
 (: D8 :)
-let $invalidNetworkMedia := xmlconv:checkVocabularyConceptValues($source_url, "aqd:AQD_Network", "ef:mediaMonitored", $xmlconv:MEDIA_VALUE_VOCABULARY_BASE_URI)
+let $invalidNetworkMedia := xmlconv:checkVocabularyConceptValues($source_url, "aqd:AQD_Network", "ef:mediaMonitored", $vocabulary:MEDIA_VALUE_VOCABULARY_BASE_URI)
 (: D9 :)
-let $invalidOrganisationalLevel := xmlconv:checkVocabularyConceptValues($source_url, "aqd:AQD_Network", "ef:organisationLevel", $xmlconv:ORGANISATIONAL_LEVEL_VOCABULARY)
+let $invalidOrganisationalLevel := xmlconv:checkVocabularyConceptValues($source_url, "aqd:AQD_Network", "ef:organisationLevel", $vocabulary:ORGANISATIONAL_LEVEL_VOCABULARY)
 (: D10 :)
-let $invalidNetworkType := xmlconv:checkVocabularyConceptValues($source_url, "aqd:AQD_Network", "aqd:networkType", $xmlconv:NETWORK_TYPE_VOCABULARY)
+let $invalidNetworkType := xmlconv:checkVocabularyConceptValues($source_url, "aqd:AQD_Network", "aqd:networkType", $vocabulary:NETWORK_TYPE_VOCABULARY)
 
 (: D11 :)
 let $invalidAQDNetworkBeginPosition := distinct-values($docRoot//aqd:AQD_Network/aqd:operationActivityPeriod/gml:TimePeriod[((gml:beginPosition>=gml:endPosition) and (gml:endPosition!=""))]/../../@gml:id)
 (: D14 Done by Rait  :)
-let $invalidTimeZone := xmlconv:checkVocabularyConceptValues($source_url, "aqd:AQD_Network", "aqd:aggregationTimeZone", $xmlconv:TIMEZONE_VOCABULARY)
+let $invalidTimeZone := xmlconv:checkVocabularyConceptValues($source_url, "aqd:AQD_Network", "aqd:aggregationTimeZone", $vocabulary:TIMEZONE_VOCABULARY)
 (: D15 Done by Rait :)
 let $amInspireIds := $docRoot//aqd:AQD_Station/ef:inspireId/base:Identifier/concat(lower-case(normalize-space(base:namespace)), '##',
         lower-case(normalize-space(base:localId)))
@@ -343,7 +317,6 @@ let $invalidDuplicateSamplingPointIds :=
 
 
 (: D16 :)
-
 let $allBaseNamespace := distinct-values($docRoot//aqd:AQD_Station/ef:inspireId/base:Identifier/base:namespace)
 
 let  $tblD16 :=
@@ -377,7 +350,7 @@ for $rec in doc($source_url)//gml:featureMember/descendant::*[name()='aqd:AQD_St
                     </tr>
 :)
 
-let $invalidStationMedia := xmlconv:checkVocabularyConceptValues($source_url, "aqd:AQD_Station", "ef:mediaMonitored", $xmlconv:MEDIA_VALUE_VOCABULARY_BASE_URI)
+let $invalidStationMedia := xmlconv:checkVocabularyConceptValues($source_url, "aqd:AQD_Station", "ef:mediaMonitored", $vocabulary:MEDIA_VALUE_VOCABULARY_BASE_URI)
 
 (: D20 Done by Rait:)
 let $invalidPoints := distinct-values($docRoot//aqd:AQD_Station[count(ef:geometry/gml:Point) >0 and ef:geometry/gml:Point/@srsName != "urn:ogc:def:crs:EPSG::4258" and ef:geometry/gml:Point/@srsName != "urn:ogc:def:crs:EPSG::4326"]/@gml:id)
@@ -460,20 +433,20 @@ let $invalidDuplicateLocalIds :=
         </tr>
 
 (: D27 :)
-let $invalidMeteoParams :=xmlconv:checkVocabulariesConceptEquipmentValues($source_url, "aqd:AQD_Station", "aqd:meteoParams", $xmlconv:METEO_PARAMS_VOCABULARY, "collection")
+let $invalidMeteoParams :=xmlconv:checkVocabulariesConceptEquipmentValues($source_url, "aqd:AQD_Station", "aqd:meteoParams", $vocabulary:METEO_PARAMS_VOCABULARY, "collection")
 
 (: D28 :)
-let $invalidAreaClassification := xmlconv:checkVocabularyConceptValues($source_url, "aqd:AQD_Station", "aqd:areaClassification", $xmlconv:AREA_CLASSIFICATION_VOCABULARY)
+let $invalidAreaClassification := xmlconv:checkVocabularyConceptValues($source_url, "aqd:AQD_Station", "aqd:areaClassification", $vocabulary:AREA_CLASSIFICATION_VOCABULARY)
 (: D29 :)
 
 let $allDispersionLocal :=
 for $rec in $docRoot//aqd:AQD_Station/aqd:dispersionSituation/aqd:DispersionSituation/aqd:dispersionLocal
 return
 <tr>{$rec}</tr>
-let $invalidDispersionLocal := xmlconv:checkVocabularyConceptValues4($source_url, "aqd:AQD_Station", "aqd:dispersionLocal", $xmlconv:DISPERSION_LOCAL_VOCABULARY)
+let $invalidDispersionLocal := xmlconv:checkVocabularyConceptValues4($source_url, "aqd:AQD_Station", "aqd:dispersionLocal", $vocabulary:DISPERSION_LOCAL_VOCABULARY)
 
 (: D30 :)
-let $invalidDispersionRegional := xmlconv:checkVocabularyConceptValues4($source_url, "aqd:AQD_Station", "aqd:dispersionRegional", $xmlconv:DISPERSION_REGIONAL_VOCABULARY)
+let $invalidDispersionRegional := xmlconv:checkVocabularyConceptValues4($source_url, "aqd:AQD_Station", "aqd:dispersionRegional", $vocabulary:DISPERSION_REGIONAL_VOCABULARY)
 let $allDispersionRegional :=
 for $rec in $docRoot//aqd:AQD_Station/aqd:dispersionSituation/aqd:DispersionSituation/aqd:dispersionRegional
 return
@@ -506,7 +479,7 @@ let  $tblD32 :=
         </tr>
 
 (: D33 :)
-let $invalidSamplingPointMedia := xmlconv:checkVocabularyConceptValues($source_url, "aqd:AQD_SamplingPoint", "ef:mediaMonitored", $xmlconv:MEDIA_VALUE_VOCABULARY_BASE_URI)
+let $invalidSamplingPointMedia := xmlconv:checkVocabularyConceptValues($source_url, "aqd:AQD_SamplingPoint", "ef:mediaMonitored", $vocabulary:MEDIA_VALUE_VOCABULARY_BASE_URI)
 
 (: D34 :)
 let $allGeometryPoint :=
@@ -624,8 +597,7 @@ let $allObservingCapabilityPeriod := (($invalidPosition), ($overlappingPeriods))
 
 
 (: D40 :)
-
-let $invalidObservedProperty := xmlconv:checkVocabularyConceptValues($source_url, "ef:ObservingCapability", "ef:observedProperty", $xmlconv:POLLUTANT_VOCABULARY)
+let $invalidObservedProperty := xmlconv:checkVocabularyConceptValues($source_url, "ef:ObservingCapability", "ef:observedProperty", $vocabulary:POLLUTANT_VOCABULARY)
 
 (: D41
 let $aqdSampleLocal :=
@@ -660,7 +632,6 @@ let $invalideFeatureOfInterest :=
 
 
 (: D42 :)
-
 let $aqdProcessLocal :=
     for $allProcessLocal in $docRoot//aqd:AQD_SamplingPointProcess
     let $id := concat(data($allProcessLocal/ompr:inspireId/base:Identifier/base:namespace),
@@ -677,7 +648,6 @@ let $invalidEfprocedure :=
     </tr>
 
 (: D43 Updated by Jaume Targa following working logic of D44 :)
-
 let $aqdStationLocal :=
     for $z in $docRoot//aqd:AQD_Station
     let $id := concat(data($z/ef:inspireId/base:Identifier/base:namespace), '/',
@@ -694,7 +664,6 @@ let $invalidEfbroader :=
     </tr>
 
 (: D44 :)
-
 let $aqdNetworkLocal :=
     for $z in $docRoot//aqd:AQD_Network
     let $id := concat(data($z/ef:inspireId/base:Identifier/base:namespace), '/',
@@ -722,15 +691,12 @@ let $invalidStationEfbelongsTo :=
 
 (: D45 :)
 (: Find all period with out end period :)
-
 let $allNotNullEndOperationActivityPeriods :=
     for $allOperationActivityPeriod in $docRoot//aqd:AQD_SamplingPoint/ef:operationalActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod
     where ($allOperationActivityPeriod/gml:endPosition[normalize-space(@indeterminatePosition)!="unknown"]
             or fn:string-length($allOperationActivityPeriod/gml:endPosition) > 0)
 
     return $allOperationActivityPeriod
-
-
 
 let $allOperationActivitPeriod :=
     for $operationActivitPeriod in $allNotNullEndOperationActivityPeriods
@@ -744,7 +710,6 @@ let $allOperationActivitPeriod :=
         </tr>
 
 (: D46 :)
-
 let $allUnknownEfOperationActivityPeriod :=
     for $operationActivityPeriod in $docRoot//gml:featureMember/aqd:AQD_SamplingPoint/ef:operationalActivityPeriod
     where $operationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:endPosition[normalize-space(@indeterminatePosition)="unknown"]
@@ -768,7 +733,7 @@ let $invalidStationClassificationLink :=
         </tr>
 
 
-(:D51 Done by Rait UPDATED by Jaume :)
+(: D51 Done by Rait UPDATED by Jaume :)
 let $invalidObservedPropertyCombinations :=
     for $oPC in $docRoot//gml:featureMember/aqd:AQD_SamplingPoint/aqd:environmentalObjective/aqd:EnvironmentalObjective
     where
@@ -1042,7 +1007,7 @@ let $allInvalidTrueUsedAQD :=
                 <td title="base:localId">{data($invalidTrueUsedAQD/ef:inspireId/base:Identifier/base:localId)}</td>
                 <td title="base:namespace">{data($invalidTrueUsedAQD/ef:inspireId/base:Identifier/base:namespace)}</td>
             </tr>
-(:D53 Done by Rait :)
+(: D53 Done by Rait :)
 let $allInvalidZoneXlinks :=
     for $invalidZoneXlinks in $docRoot//aqd:AQD_SamplingPoint/aqd:zone[not(@nilReason='inapplicable')]
      where
@@ -1053,7 +1018,7 @@ let $allInvalidZoneXlinks :=
             <td title="aqd:zone">{data($invalidZoneXlinks/@xlink:href)}</td>
         </tr>
 
-(: D54 Done by Rait:)
+(: D54 Done by Rait :)
 let $localSamplingPointProcessIds := $docRoot//gml:featureMember/aqd:AQD_SamplingPointProcess/ompr:inspireId/base:Identifier
 let $invalidDuplicateSamplingPointProcessIds :=
     for $idSamplingPointProcessCode in $docRoot//gml:featureMember/aqd:AQD_SamplingPointProcess/ompr:inspireId/base:Identifier
@@ -1068,10 +1033,8 @@ let $invalidDuplicateSamplingPointProcessIds :=
         </tr>
 
 (: D55 :)
-
 let $allBaseNamespace := distinct-values($docRoot//aqd:AQD_SamplingPointProcess/ompr:inspireId/base:Identifier/base:namespace)
-
-let  $tblD55 :=
+let $tblD55 :=
     for $id in $allBaseNamespace
     let $localId := $docRoot//aqd:AQD_SamplingPointProcess/ompr:inspireId/base:Identifier[base:namespace = $id]/base:localId
     return
@@ -1082,9 +1045,9 @@ let  $tblD55 :=
         </tr>
 
 
-(:D56 Done by Rait:)
-let  $allInvalidMeasurementType
-     := xmlconv:checkVocabularyConceptValues($source_url, "aqd:AQD_SamplingPointProcess", "aqd:measurementType", $xmlconv:MEASUREMENTTYPE_VOCABULARY)
+(: D56 Done by Rait :)
+let $allInvalidMeasurementType
+     := xmlconv:checkVocabularyConceptValues($source_url, "aqd:AQD_SamplingPointProcess", "aqd:measurementType", $vocabulary:MEASUREMENTTYPE_VOCABULARY)
 
 
 (: D57 :)
@@ -1097,7 +1060,7 @@ for $process in doc($source_url)//aqd:AQD_SamplingPointProcess
     where ($measurementType  = 'http://dd.eionet.europa.eu/vocabulary/aq/measurementtype/automatic' or
          $measurementType = 'http://dd.eionet.europa.eu/vocabulary/aq/measurementtype/remote')
          and (
-            string-length($samplingMethod) > 0 or string-length($analyticalTechnique) > 0 or not(xmlconv:isValidConceptCode($measurementMethod,$xmlconv:MEASUREMENTMETHOD_VOCABULARY))
+            string-length($samplingMethod) > 0 or string-length($analyticalTechnique) > 0 or not(xmlconv:isValidConceptCode($measurementMethod,$vocabulary:MEASUREMENTMETHOD_VOCABULARY))
             )
 
     return
@@ -1109,7 +1072,7 @@ for $process in doc($source_url)//aqd:AQD_SamplingPointProcess
             <td title="aqd:analyticalTechnique">{$analyticalTechnique}</td>
         </tr>
 
-(:D58 Done by Rait:)
+(: D58 Done by Rait :)
 let $allConceptUrl58 :=
     for $conceptUrl in doc($source_url)//gml:featureMember/aqd:AQD_SamplingPointProcess/aqd:measurementType/@xlink:href
     where $conceptUrl = 'http://dd.eionet.europa.eu/vocabulary/aq/measurementtype/active' or
@@ -1133,19 +1096,19 @@ let $elementsIncluded :=
 
 (: D59 Done by Rait:)
 let  $allInvalidAnalyticalTechnique
-    := xmlconv:checkVocabularyaqdAnalyticalTechniqueValues($source_url, "aqd:AQD_SamplingPointProcess", "aqd:analyticalTechnique", $xmlconv:ANALYTICALTECHNIQUE_VOCABULARY, "")
+    := xmlconv:checkVocabularyaqdAnalyticalTechniqueValues($source_url, "aqd:AQD_SamplingPointProcess", "aqd:analyticalTechnique", $vocabulary:ANALYTICALTECHNIQUE_VOCABULARY, "")
 
 (: D60a  :)
 let  $allInvalid60a
-    := xmlconv:checkVocabularyConceptEquipmentValues($source_url, "aqd:AQD_SamplingPointProcess", "aqd:measurementEquipment", $xmlconv:MEASUREMENTEQUIPMENT_VOCABULARY, "")
+    := xmlconv:checkVocabularyConceptEquipmentValues($source_url, "aqd:AQD_SamplingPointProcess", "aqd:measurementEquipment", $vocabulary:MEASUREMENTEQUIPMENT_VOCABULARY, "")
 
 (: D60b :)
 let  $allInvalid60b
-    := xmlconv:checkVocabularyConceptEquipmentValues($source_url, "aqd:AQD_SamplingPointProcess", "aqd:samplingEquipment", $xmlconv:SAMPLINGEQUIPMENT_VOCABULARY, "")
+    := xmlconv:checkVocabularyConceptEquipmentValues($source_url, "aqd:AQD_SamplingPointProcess", "aqd:samplingEquipment", $vocabulary:SAMPLINGEQUIPMENT_VOCABULARY, "")
 
 (: D63 :)
 let  $allInvalid63
-    := xmlconv:checkVocabularyConceptValuesUom($source_url, "aqd:DataQuality", "aqd:detectionLimit", $xmlconv:UOM_CONCENTRATION_VOCABULARY)
+    := xmlconv:checkVocabularyConceptValuesUom($source_url, "aqd:DataQuality", "aqd:detectionLimit", $vocabulary:UOM_CONCENTRATION_VOCABULARY)
 
 (: Block for D67 to D70 Jaume Targa:)
 
@@ -1191,7 +1154,7 @@ for $proc in $docRoot//aqd:AQD_SamplingPointProcess
 let $demonstrated := data($proc/aqd:equivalenceDemonstration/aqd:EquivalenceDemonstration/aqd:equivalenceDemonstrated/@xlink:href)
 let $demonstrationReport := data($proc/aqd:equivalenceDemonstration/aqd:EquivalenceDemonstration/aqd:demonstrationReport)
 
-where not(xmlconv:isValidConceptCode($demonstrated, $xmlconv:EQUIVALENCEDEMONSTRATED_VOCABULARY))
+where not(xmlconv:isValidConceptCode($demonstrated, $vocabulary:EQUIVALENCEDEMONSTRATED_VOCABULARY))
 
 return concat(data($proc/ompr:inspireId/base:Identifier/base:namespace), '/' , data($proc/ompr:inspireId/base:Identifier/base:localId))
 
@@ -1215,7 +1178,6 @@ let $allInvalidTrueUsedAQD67 :=
         else ()
 
 (: D68 Jaume Targa :)
-
 let $allProcNotMatchingCondition68 :=
 for $proc in $docRoot//aqd:AQD_SamplingPointProcess
 let $demonstrated := data($proc/aqd:equivalenceDemonstration/aqd:EquivalenceDemonstration/aqd:equivalenceDemonstrated/@xlink:href)
@@ -1247,7 +1209,6 @@ let $allInvalidTrueUsedAQD68 :=
 
 
 (: D69 Jaume Targa :)
-
 let $allProcNotMatchingCondition69 :=
 for $proc in $docRoot//aqd:AQD_SamplingPointProcess
 let $documentation := data($proc/aqd:dataQuality/aqd:DataQuality/aqd:documentation)
@@ -1277,17 +1238,13 @@ let $allInvalidTrueUsedAQD69 :=
         else ()
 
 (: D70 Jaume Targa :)
-
 let $allProcNotMatchingCondition70 :=
 for $proc in $docRoot//aqd:AQD_SamplingPointProcess
 let $documentation := data($proc/aqd:dataQuality/aqd:DataQuality/aqd:documentation)
 let $qaReport := data($proc/aqd:dataQuality/aqd:DataQuality/aqd:qaReport)
 
 where fn:string-length($qaReport) = 0
-
-
 return concat(data($proc/ompr:inspireId/base:Identifier/base:namespace), '/' , data($proc/ompr:inspireId/base:Identifier/base:localId))
-
 
 let $allInvalidTrueUsedAQD70 :=
     for $invalidTrueUsedAQD70 in $docRoot//aqd:AQD_SamplingPoint
@@ -1309,7 +1266,6 @@ let $allInvalidTrueUsedAQD70 :=
 
 
 (: D71 :)
-
 let $localSampleIds := $docRoot//gml:featureMember/aqd:AQD_Sample/aqd:inspireId/base:Identifier
 let $invalidDuplicateSampleIds :=
     for $idSampleCode in $docRoot//gml:featureMember/aqd:AQD_Sample/aqd:inspireId/base:Identifier
@@ -1326,7 +1282,7 @@ let $invalidDuplicateSampleIds :=
 (: D72 :)
 let $allBaseNamespace := distinct-values($docRoot//aqd:AQD_Sample/aqd:inspireId/base:Identifier/base:namespace)
 
-let  $tblD72 :=
+let $tblD72 :=
     for $id in $allBaseNamespace
     let $localId := $docRoot//aqd:AQD_Sample/aqd:inspireId/base:Identifier[base:namespace = $id]/base:localId
     return
@@ -1336,7 +1292,6 @@ let  $tblD72 :=
         </tr>
 
 (: D73 :)
-
 let $allGmlPoint := $docRoot//aqd:AQD_Sample/sams:shape/gml:Point
 let $tblD73 := if (count($allGmlPoint) > 0) then
 for $point in $docRoot//aqd:AQD_Sample/sams:shape/gml:Point[@srsName != "urn:ogc:def:crs:EPSG::4258" and @srsName != "urn:ogc:def:crs:EPSG::4326"]
@@ -1348,7 +1303,7 @@ for $point in $docRoot//aqd:AQD_Sample/sams:shape/gml:Point[@srsName != "urn:ogc
 
         </tr>
 else
-()
+    ()
 let $strErr73 := for $tr in $tblD73
 return data($tr/td[@title='aqd:AQD_Sample'])
 
@@ -1357,7 +1312,6 @@ let $errLevelD73 := if (count($allGmlPoint) > 0) then "error" else "warning"
 let $errMsg73  := if (count($allGmlPoint) > 0) then " errors found" else " gml:Point elements found"
 
 (: D74 :)
-
 let $invalidPointDimension  := distinct-values($docRoot//aqd:AQD_Sample/sams:shape/gml:Point[@srsDimension != "2"]/
 concat(../@gml:id, ": srsDimension=", @srsDimension))
 
@@ -1365,8 +1319,6 @@ concat(../@gml:id, ": srsDimension=", @srsDimension))
 let $invalidInletHeigh :=
 for $inletHeigh in  $docRoot//aqd:AQD_Sample/aqd:inletHeight
     return if (($inletHeigh/@uom != "http://dd.eionet.europa.eu/vocabulary/uom/length/m") or (common:is-a-number(data($inletHeigh))=false())) then $inletHeigh/../@gml:id else ()
-
-
 
 return
     <table style="border-collapse:collapse;display:inline">
@@ -1440,17 +1392,17 @@ return
         {html:buildResultRows_D("D7", $labels:D7, $labels:D7_SHORT, (), (), "", string(count($tblD7)), "", "","error",$tblD7)}
         {html:buildResultRows_D("D7.1", $labels:D7.1, $labels:D7.1_SHORT, $invalidNamespaces, (), "base:Identifier/base:namespace", "All values are valid", " invalid namespaces", "", "error", ())}
         {html:buildResultRowsWithTotalCount_D("D8", <span>The content of aqd:AQD_Network/ef:mediaMonitored shall resolve to any concept in
-            <a href="{ $xmlconv:MEDIA_VALUE_VOCABULARY_BASE_URI }">{ $xmlconv:MEDIA_VALUE_VOCABULARY_BASE_URI }</a></span>, $labels:PLACEHOLDER,
+            <a href="{ $vocabulary:MEDIA_VALUE_VOCABULARY_BASE_URI }">{ $vocabulary:MEDIA_VALUE_VOCABULARY_BASE_URI }</a></span>, $labels:PLACEHOLDER,
             (), (), "ef:mediaMonitored", "", "", "", "warning",$invalidNetworkMedia)}
         {html:buildResultRowsWithTotalCount_D("D9", <span>The content of aqd:AQD_Network/ef:organisationLevel shall resolve to any concept in
-            <a href="{ $xmlconv:ORGANISATIONAL_LEVEL_VOCABULARY }">{ $xmlconv:ORGANISATIONAL_LEVEL_VOCABULARY }</a></span>, $labels:PLACEHOLDER,
+            <a href="{ $vocabulary:ORGANISATIONAL_LEVEL_VOCABULARY }">{ $vocabulary:ORGANISATIONAL_LEVEL_VOCABULARY }</a></span>, $labels:PLACEHOLDER,
                 (), (), "ef:organisationLevel", "", "", "","warning", $invalidOrganisationalLevel)}
         {html:buildResultRowsWithTotalCount_D("D10", <span>The content of aqd:AQD_Network/aqd:networkType shall resolve to any concept in
-            <a href="{ $xmlconv:NETWORK_TYPE_VOCABULARY }">{ $xmlconv:NETWORK_TYPE_VOCABULARY }</a></span>, $labels:PLACEHOLDER,
+            <a href="{ $vocabulary:NETWORK_TYPE_VOCABULARY }">{ $vocabulary:NETWORK_TYPE_VOCABULARY }</a></span>, $labels:PLACEHOLDER,
                 (), (), "aqd:networkType", "", "", "","warning", $invalidNetworkType)}
         {html:buildResultRows_D("D11", $labels:D11, $labels:D11_SHORT, $invalidAQDNetworkBeginPosition, () , "aqd:AQD_Network/@gml:id", "All attributes are valid", " invalid attribute ", "","error", ())}
         {html:buildResultRowsWithTotalCount_D("D14", <span>The content of /aqd:AQD_Network/aqd:aggregationTimeZone attribute shall resolve to a valid code in
-            <a href="{ $xmlconv:TIMEZONE_VOCABULARY }">{ $xmlconv:TIMEZONE_VOCABULARY }</a></span>, $labels:PLACEHOLDER,
+            <a href="{ $vocabulary:TIMEZONE_VOCABULARY }">{ $vocabulary:TIMEZONE_VOCABULARY }</a></span>, $labels:PLACEHOLDER,
                 (), (), "aqd:aggregationTimeZone", "", "", "","error",$invalidTimeZone)}
         <tr style="border-top:2px solid #666666">
                 <td style="vertical-align:top;"></td>
@@ -1472,7 +1424,7 @@ return
         </tr>
         {html:buildResultRows_D("D16", $labels:D16, $labels:D16_SHORT, (), (), "", string(count($tblD16)), "", "","error",$tblD16)}
         {html:buildResultRowsWithTotalCount_D("D19", <span>The content of /aqd:AQD_Station/ef:mediaMonitored shall resolve to any concept in
-            <a href="{ $xmlconv:MEDIA_VALUE_VOCABULARY_BASE_URI }">{ $xmlconv:MEDIA_VALUE_VOCABULARY_BASE_URI }</a></span>, $labels:PLACEHOLDER,
+            <a href="{ $vocabulary:MEDIA_VALUE_VOCABULARY_BASE_URI }">{ $vocabulary:MEDIA_VALUE_VOCABULARY_BASE_URI }</a></span>, $labels:PLACEHOLDER,
             (), (), "ef:mediaMonitored", "", "", "","warning", $invalidStationMedia)}
         {html:buildResultRows_D("D20", $labels:D20, $labels:D20_SHORT, $invalidPoints,(), "aqd:AQD_Station/@gml:id","All smsName attributes are valid"," invalid attribute","", "warning",())}
         {html:buildResultRows_D("D21", $labels:D21, $labels:D21_SHORT, $invalidPosD21, () , "aqd:AQD_Zone/@gml:id", "All srsDimension attributes resolve to ""2""", " invalid attribute", "","error",())}
@@ -1480,18 +1432,18 @@ return
         {html:buildResultRows_D("D24", $labels:D24, $labels:D24_SHORT, (), $allUnknownEfOperationActivityPeriodD24, "", string(count($allUnknownEfOperationActivityPeriodD24)), "", "","warning",(), fn:false())}
         {html:buildResultRows_D("D26", $labels:D26, $labels:D26_SHORT, (), $invalidDuplicateLocalIds, "", "All station codes are valid", " invalid station codes", "","error", ())}
         {html:buildResultRowsWithTotalCount_D("D27", <span>The content of aqd:AQD_Station/aqd:meteoParams shall resolve to any concept in
-            <a href="{ $xmlconv:METEO_PARAMS_VOCABULARY[1] }">{ $xmlconv:METEO_PARAMS_VOCABULARY[1] }</a>,
-            <a href="{ $xmlconv:METEO_PARAMS_VOCABULARY[2] }">{ $xmlconv:METEO_PARAMS_VOCABULARY[2] }</a>,
-            <a href="{ $xmlconv:METEO_PARAMS_VOCABULARY[3] }">{ $xmlconv:METEO_PARAMS_VOCABULARY[3] }</a></span>, $labels:PLACEHOLDER,
+            <a href="{ $vocabulary:METEO_PARAMS_VOCABULARY[1] }">{ $vocabulary:METEO_PARAMS_VOCABULARY[1] }</a>,
+            <a href="{ $vocabulary:METEO_PARAMS_VOCABULARY[2] }">{ $vocabulary:METEO_PARAMS_VOCABULARY[2] }</a>,
+            <a href="{ $vocabulary:METEO_PARAMS_VOCABULARY[3] }">{ $vocabulary:METEO_PARAMS_VOCABULARY[3] }</a></span>, $labels:PLACEHOLDER,
                 (), (), "aqd:meteoParams", "", "", "","warning",$invalidMeteoParams)}
         {html:buildResultRowsWithTotalCount_D("D28", <span>The content of aqd:AQD_Station/aqd:areaClassification shall resolve to any concept in
-            <a href="{ $xmlconv:AREA_CLASSIFICATION_VOCABULARY }">{ $xmlconv:AREA_CLASSIFICATION_VOCABULARY }</a></span>, $labels:PLACEHOLDER,
+            <a href="{ $vocabulary:AREA_CLASSIFICATION_VOCABULARY }">{ $vocabulary:AREA_CLASSIFICATION_VOCABULARY }</a></span>, $labels:PLACEHOLDER,
             (), (), "aqd:areaClassification", "", "", "","error", $invalidAreaClassification)}
         {html:buildResultRowsWithTotalCount_D("D29", <span>The content of aqd:AQD_Station/aqd:dispersionLocal shall resolve to any concept in
-            <a href="{ $xmlconv:DISPERSION_LOCAL_VOCABULARY }">{ $xmlconv:DISPERSION_LOCAL_VOCABULARY }</a></span>, $labels:PLACEHOLDER,
+            <a href="{ $vocabulary:DISPERSION_LOCAL_VOCABULARY }">{ $vocabulary:DISPERSION_LOCAL_VOCABULARY }</a></span>, $labels:PLACEHOLDER,
             $invalidDispersionLocal, (), "aqd:dispersionLocal", "", "", "","warning", $allDispersionLocal)}
         {html:buildResultRowsWithTotalCount_D("D30", <span>The content of aqd:AQD_Station/aqd:dispersionRegional shall resolve to any concept in
-            <a href="{ $xmlconv:DISPERSION_REGIONAL_VOCABULARY }">{ $xmlconv:DISPERSION_REGIONAL_VOCABULARY }</a></span>, $labels:PLACEHOLDER,
+            <a href="{ $vocabulary:DISPERSION_REGIONAL_VOCABULARY }">{ $vocabulary:DISPERSION_REGIONAL_VOCABULARY }</a></span>, $labels:PLACEHOLDER,
             $invalidDispersionRegional, (), "aqd:dispersionRegional", "", "", "","warning", $allDispersionRegional)}
         <tr style="border-top:2px solid #666666">
                 <td style="vertical-align:top;"></td>
@@ -1505,7 +1457,7 @@ return
         {html:buildResultRows_D("D31", $labels:D31, $labels:D31_SHORT, (), $invalidDuplicateSamplingPointIds, "", concat(string(count($invalidDuplicateSamplingPointIds))," errors found.") , "", "","error", ())}
         {html:buildResultRows_D("D32", $labels:D32, $labels:D32_SHORT, (), (), "", string(count($tblD32)), "", "","error",$tblD32)}
         {html:buildResultRowsWithTotalCount_D("D33", <span>The content of aqd:AQD_SamplingPoint/ef:mediaMonitored shall resolve to any concept in
-            <a href="{ $xmlconv:MEDIA_VALUE_VOCABULARY }">{ $xmlconv:MEDIA_VALUE_VOCABULARY }</a></span>, $labels:PLACEHOLDER,
+            <a href="{ $vocabulary:MEDIA_VALUE_VOCABULARY }">{ $vocabulary:MEDIA_VALUE_VOCABULARY }</a></span>, $labels:PLACEHOLDER,
             (), (), "ef:mediaMonitored", "", "", "","warning", $invalidSamplingPointMedia)}
         {html:buildResultRowsWithTotalCount_D("D34", <span>aqd:AQD_SamplingPoint/am:geometry/gml:Point the srsName attribute  shall  be  a  recognisable  URN .  The  following  2  srsNames  are  expected urn:ogc:def:crs:EPSG::4258 or urn:ogc:def:crs:EPSG::4326</span>, $labels:PLACEHOLDER,
             $invalidGeometryPoint, (), "gml:point", "", "", "","warning", $allGeometryPoint)}
@@ -1513,7 +1465,7 @@ return
         {html:buildResultRows_D("D36", $labels:D36, $labels:D36_SHORT, $invalidSamplingPointPos, () , "aqd:AQD_SamplingPoint/@gml:id", "All attributes are valid", " invalid attribute", "","warning",())}
         {html:buildResultRows_D("D37", $labels:D37, $labels:D37_SHORT, (), $allObservingCapabilityPeriod, "", concat(fn:string(count($allObservingCapabilityPeriod))," errors found"), "", "","error", ())}
         {html:buildResultRowsWithTotalCount_D("D40", <span>The content of ../ef:observedProperty shall resolve to a valid code within
-            <a href="{ $xmlconv:POLLUTANT_VOCABULARY }">{ $xmlconv:POLLUTANT_VOCABULARY }</a></span>, $labels:PLACEHOLDER,
+            <a href="{ $vocabulary:POLLUTANT_VOCABULARY }">{ $vocabulary:POLLUTANT_VOCABULARY }</a></span>, $labels:PLACEHOLDER,
                 (), (), "ef:observedProperty", "", "", "","error", $invalidObservedProperty)}
         <tr style="border-top:2px solid #666666">
             <th colspan="3" style="vertical-align:top;text-align:left">Internal XML cross-checks between AQD_SamplingPoint and AQD_Sample;AQD_SamplingPointProcess;AQD_Station;AQD_Network</th>
@@ -1547,25 +1499,25 @@ return
         </tr>
         {html:buildResultRows_D("D55", $labels:D55, $labels:D55_SHORT, (), (), "", string(count($tblD55)), "", "","info",$tblD55)}
         {html:buildResultRowsWithTotalCount_D("D56", <span>./aqd:measurementType shall resolve to
-            <a href="{ $xmlconv:MEASUREMENTTYPE_VOCABULARY }">{ $xmlconv:MEASUREMENTTYPE_VOCABULARY }</a>/[concept]</span>, $labels:PLACEHOLDER,
+            <a href="{ $vocabulary:MEASUREMENTTYPE_VOCABULARY }">{ $vocabulary:MEASUREMENTTYPE_VOCABULARY }</a>/[concept]</span>, $labels:PLACEHOLDER,
                 (), (), "aqd:measurementType", "", "", "","error", $allInvalidMeasurementType)}
         {html:buildResultRows_D("D57", <span>If ./aqd:measurementType resolves to ./measurementtype/automatic or ./measurementtype/remote,
             aqd:measurementMethod shall be included and resolve to any concept in
-            <a href="{ $xmlconv:MEASUREMENTMETHOD_VOCABULARY }">{ $xmlconv:MEASUREMENTMETHOD_VOCABULARY }</a> AND /aqd:samplingMethod and ./aqd:analyticalTechnique SHALL NOT BE PROVIDED</span>, $labels:PLACEHOLDER,
+            <a href="{ $vocabulary:MEASUREMENTMETHOD_VOCABULARY }">{ $vocabulary:MEASUREMENTMETHOD_VOCABULARY }</a> AND /aqd:samplingMethod and ./aqd:analyticalTechnique SHALL NOT BE PROVIDED</span>, $labels:PLACEHOLDER,
                 (), $allConceptUrl57, "", concat(string(count($allConceptUrl57)), " errors found"), "", "", "error", ())}
         {html:buildResultRows_D("D58", $labels:D58, $labels:D58_SHORT, (), $elementsIncluded, "", concat(fn:string(count($elementsIncluded))," errors found"), " invalid attribute", "","warning", ())}
         {html:buildResultRowsWithTotalCount_D("D59", <span>The content of /aqd:AQD_SamplingPointProcess/aqd:analyticalTechnique shall resolve to any concept in
-            <a href="{ $xmlconv:ANALYTICALTECHNIQUE_VOCABULARY }">{ $xmlconv:ANALYTICALTECHNIQUE_VOCABULARY }</a></span>, $labels:PLACEHOLDER,
+            <a href="{ $vocabulary:ANALYTICALTECHNIQUE_VOCABULARY }">{ $vocabulary:ANALYTICALTECHNIQUE_VOCABULARY }</a></span>, $labels:PLACEHOLDER,
                 (), (), "aqd:analyticalTechnique", "", "", "","error",$allInvalidAnalyticalTechnique )}
         {html:buildResultRowsWithTotalCount_D("D60a", <span>The content of ./aqd:AQD_SamplingPointProcess/aqd:measurementType shall resolve to any concept in
-            <a href="{ $xmlconv:MEASUREMENTEQUIPMENT_VOCABULARY }">{ $xmlconv:MEASUREMENTEQUIPMENT_VOCABULARY }</a></span>, $labels:PLACEHOLDER,
+            <a href="{ $vocabulary:MEASUREMENTEQUIPMENT_VOCABULARY }">{ $vocabulary:MEASUREMENTEQUIPMENT_VOCABULARY }</a></span>, $labels:PLACEHOLDER,
                 (), (), "aqd:measurementEquipment", "", "", "","error",$allInvalid60a )}
         {html:buildResultRowsWithTotalCount_D("D60b", <span>The content of ./aqd:AQD_SamplingPointProcess/aqd:samplingEquipment shall resolve to any concept in
-            <a href="{ $xmlconv:SAMPLINGEQUIPMENT_VOCABULARY }">{ $xmlconv:SAMPLINGEQUIPMENT_VOCABULARY }</a></span>, $labels:PLACEHOLDER,
+            <a href="{ $vocabulary:SAMPLINGEQUIPMENT_VOCABULARY }">{ $vocabulary:SAMPLINGEQUIPMENT_VOCABULARY }</a></span>, $labels:PLACEHOLDER,
                 (), (), "aqd:samplingEquipment", "", "", "","error",$allInvalid60b )}
         <!--{xmlconv:buildResultRows("D61", "Total number ./aqd:dataQuality/aqd:DataQuality/aqd:detectionLimit witch does not contain an integer, fixed point or floating point number ",
                 (), $allInvalid61, "", concat(fn:string(count($allInvalid61))," errors found"), "", "", ())}-->
-        {html:buildResultRowsWithTotalCount_D("D63", <span>Where ./aqd:detectionLimit is resolved uom link resolving to any concept in <a href="{ $xmlconv:UOM_CONCENTRATION_VOCABULARY }">{ $xmlconv:UOM_CONCENTRATION_VOCABULARY }</a> shall be provided</span>, $labels:PLACEHOLDER,
+        {html:buildResultRowsWithTotalCount_D("D63", <span>Where ./aqd:detectionLimit is resolved uom link resolving to any concept in <a href="{ $vocabulary:UOM_CONCENTRATION_VOCABULARY }">{ $vocabulary:UOM_CONCENTRATION_VOCABULARY }</a> shall be provided</span>, $labels:PLACEHOLDER,
                 (), (), "aqd:detectionLimit", "", "", "","error",$allInvalid63 )}
 	    <tr style="border-top:1px solid #666666">
             <th colspan="3" style="vertical-align:top;text-align:left">Checks on SamplingPointProcess(es) where the xlinked SamplingPoint has aqd:AQD_SamplingPoint/aqd:usedAQD equals TRUE (D67 to D70): </th>
