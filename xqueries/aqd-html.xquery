@@ -238,7 +238,7 @@ declare function html:javaScript_G(){
 (:~
 : JavaScript
 :)
-declare function xmlconv:javaScript_M(){
+declare function html:javaScript_M(){
 
     let $js :=
         <script type="text/javascript">
@@ -533,10 +533,10 @@ declare function html:buildResultTable_C($ruleCode as xs:string, $longText, $tex
 
 };
 (: Builds HTML table rows for rules. :)
-declare function html:buildResultRows_D($ruleCode as xs:string, $text, $invalidStrValues as xs:string*, $invalidValues as element()*,
+declare function html:buildResultRows_D($ruleCode as xs:string, $longText, $text, $invalidStrValues as xs:string*, $invalidValues as element()*,
         $valueHeading as xs:string, $validMsg as xs:string, $invalidMsg as xs:string, $skippedMsg, $errorLevel as xs:string, $recordDetails as element(tr)*)
 as element(tr)*{
-    html:buildResultRows_D($ruleCode, $text, $invalidStrValues, $invalidValues,
+    html:buildResultRows_D($ruleCode, $longText, $text, $invalidStrValues, $invalidValues,
             $valueHeading, $validMsg, $invalidMsg, $skippedMsg, $errorLevel, $recordDetails, fn:true())
 };
 
@@ -618,7 +618,7 @@ as element(tr)*{
     return $result
 
 };
-declare function html:buildResultRowsWithTotalCount_D($ruleCode as xs:string, $text, $invalidStrValues as xs:string*, $invalidValues as element()*,
+declare function html:buildResultRowsWithTotalCount_D($ruleCode as xs:string, $longText, $text, $invalidStrValues as xs:string*, $invalidValues as element()*,
         $valueHeading as xs:string, $validMsg as xs:string, $invalidMsg as xs:string, $skippedMsg, $errorLevel as xs:string,$recordDetails as element(tr)*)
 as element(tr)*{
 
@@ -630,7 +630,7 @@ as element(tr)*{
     let $validMsg := if (count($invalidValues) = 0) then concat("Checked ", $countCheckedRecords, " value", substring("s", number(not($countCheckedRecords > 1)) * 2), ", all valid") else ""
 
     return
-        html:buildResultRows_D($ruleCode, $text, $invalidStrValues, $invalidValues,
+        html:buildResultRows_D($ruleCode, $longText, $text, $invalidStrValues, $invalidValues,
                 $valueHeading, $validMsg, $invalidMsg, $skippedMsg,$errorLevel, ())
 };
 
@@ -780,3 +780,18 @@ as element(tr)*{
 };
 
 
+declare function html:buildResultRowsWithTotalCount_M($ruleCode as xs:string, $longText, $text, $invalidStrValues as xs:string*, $invalidValues as element()*,
+        $valueHeading as xs:string, $validMsg as xs:string, $invalidMsg as xs:string, $skippedMsg, $errorLevel as xs:string,$recordDetails as element(tr)*)
+as element(tr)*{
+
+    let $countCheckedRecords := count($recordDetails)
+    let $invalidValues := $recordDetails[./@isvalid = "false"]
+
+    let $skippedMsg := if ($countCheckedRecords = 0) then "No values found to check" else ""
+    let $invalidMsg := if (count($invalidValues) > 0) then concat(" invalid value", substring("s ", number(not(count($invalidValues) > 1)) * 2), " found out of ", $countCheckedRecords, " checked") else ""
+    let $validMsg := if (count($invalidValues) = 0) then concat("Checked ", $countCheckedRecords, " value", substring("s", number(not($countCheckedRecords > 1)) * 2), ", all valid") else ""
+
+    return
+        html:buildResultRows_M($ruleCode, $longText, $text, $invalidStrValues, $invalidValues,
+                $valueHeading, $validMsg, $invalidMsg, $skippedMsg,$errorLevel, ())
+};

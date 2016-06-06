@@ -136,18 +136,18 @@ declare function common:isMissing($node as node()*) as xs:boolean {
  : @param $node XML element or value
  : return Boolean value.
  :)
-declare function xmlconv:isMissingOrEmpty($node as item()*) as xs:boolean {
+declare function common:isMissingOrEmpty($node as item()*) as xs:boolean {
     if (common:isMissing($node)) then
         fn:true()
     else
-        xmlconv:isEmpty(string-join($node, ""))
+        common:isEmpty(string-join($node, ""))
 };
 (:~
  : Checks if element value is empty or not.
  : @param $value Element value.
  : @return Boolean value.
  :)
-declare function xmlconv:isEmpty($value as xs:string) as xs:boolean {
+declare function common:isEmpty($value as xs:string) as xs:boolean {
     if (fn:empty($value) or fn:string(fn:normalize-space($value)) = "") then
         fn:true()
     else

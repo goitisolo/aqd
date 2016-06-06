@@ -1336,7 +1336,7 @@ return
         {html:buildResultRows_G("G67", $labels:G67, $labels:G67_SHORT, $samplingPointAssessmentMetadata_67, (), "base:namespace", "All values are valid", " invalid value", "","error", $samplingPointAssessmentMetadata_67)}
         {html:buildResultRows_G("G70", $labels:G70, $labels:G70_SHORT, $aqdSurfaceArea, (), "base:namespace", "All values are valid", " invalid value", "", "warning",())}
         {html:buildResultRows_G("G71", $labels:G71, $labels:G71_SHORT, $aqdroadLength, (), "base:namespace", "All values are valid", " invalid value", "","warning", ())}
-        {html:buildResultRowsWithTotalCount("G72", <span>The content of /aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:areaClassification  xlink:xref shall resolve to a areaClassification in
+        {html:buildResultRowsWithTotalCount_G("G72", <span>The content of /aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:areaClassification  xlink:xref shall resolve to a areaClassification in
             <a href="{ $xmlconv:AREACLASSIFICATION_VOCABULARY}">{ $xmlconv:AREACLASSIFICATION_VOCABULARY}</a> that must be one of
             {xmlconv:buildVocItemsList("G72", $xmlconv:AREACLASSIFICATION_VOCABULARY, $xmlconv:VALID_AREACLASSIFICATION_IDS_52)}
         </span>, $labels:PLACEHOLDER,

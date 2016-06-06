@@ -69,22 +69,6 @@ declare function xmlconv:getErrorTD($errValue,  $element as xs:string, $showMiss
         </td>
 };
 
-
-declare function xmlconv:buildResultRowsWithTotalCount($ruleCode as xs:string, $text, $invalidStrValues as xs:string*, $invalidValues as element()*,
-    $valueHeading as xs:string, $validMsg as xs:string, $invalidMsg as xs:string, $skippedMsg, $errorLevel as xs:string,$recordDetails as element(tr)*)
-as element(tr)*{
-
-    let $countCheckedRecords := count($recordDetails)
-    let $invalidValues := $recordDetails[./@isvalid = "false"]
-
-    let $skippedMsg := if ($countCheckedRecords = 0) then "No values found to check" else ""
-    let $invalidMsg := if (count($invalidValues) > 0) then concat(" invalid value", substring("s ", number(not(count($invalidValues) > 1)) * 2), " found out of ", $countCheckedRecords, " checked") else ""
-    let $validMsg := if (count($invalidValues) = 0) then concat("Checked ", $countCheckedRecords, " value", substring("s", number(not($countCheckedRecords > 1)) * 2), ", all valid") else ""
-
-    return
-        html:buildResultRows_M($ruleCode, $text, $invalidStrValues, $invalidValues,
-            $valueHeading, $validMsg, $invalidMsg, $skippedMsg,$errorLevel, ())
-};
 declare function xmlconv:getSamplingPointAssessment($inspireId as xs:string, $inspireNamespace as xs:string)
 as xs:string
 {
@@ -687,8 +671,8 @@ let  $tblM41 :=
         {html:buildResultRows_M("M7.1", $labels:M7.1, $labels:M7.1_SHORT, $invalidNamespaces, (), "base:Identifier/base:namespace", "All values are valid", " invalid namespaces", "", "error", ())}
         {html:buildResultRows_M("M12", $labels:M12, $labels:M12_SHORT, $invalidGeometry,(), "aqd:AQD_Model/@gml:id","All srsName attributes are valid"," invalid attribute","","error", ())}
         {html:buildResultRows_M("M15", $labels:M15, $labels:M15_SHORT, (), $allObservingCapabilityPeriod, "", concat(fn:string(count($allObservingCapabilityPeriod))," errors found"), "", "","error", ())}
-        {xmlconv:buildResultRowsWithTotalCount("M18", <span>The content of ./ef:observedProperty shall resolve to a valid code within
-            <a href="{ $xmlconv:POLLUTANT_VOCABULARY }">{ $xmlconv:POLLUTANT_VOCABULARY }</a></span>,
+        {html:buildResultRowsWithTotalCount_M("M18", <span>The content of ./ef:observedProperty shall resolve to a valid code within
+            <a href="{ $xmlconv:POLLUTANT_VOCABULARY }">{ $xmlconv:POLLUTANT_VOCABULARY }</a></span>, $labels:PLACEHOLDER,
                 (), (), "ef:observedProperty", "", "", "", "error", $invalidObservedProperty)}
         {html:buildResultRows_M("M19", $labels:M19, $labels:M19_SHORT, (),$invalideFeatureOfInterest,"aqd:AQD_Model/@gml:id", "All attributes is invalid", " invalid attribute", "","warning", ())}
         {html:buildResultRows_M("M23", $labels:M23, $labels:M23_SHORT, (), $invalidObservedPropertyCombinations, "", concat(fn:string(count($invalidObservedPropertyCombinations))," errors found"), "", "","error", ())}
