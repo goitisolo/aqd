@@ -119,3 +119,37 @@ declare function common:checkLink($text as xs:string*) as element(span)*{
 declare function common:is-a-number( $value as xs:anyAtomicType? ) as xs:boolean {
     string(number($value)) != 'NaN'
 };
+
+(:~
+ : Checks if XML element is missing or not.
+ : @param $node XML node
+ : return Boolean value.
+ :)
+declare function common:isMissing($node as node()*) as xs:boolean {
+    if (fn:count($node) = 0) then
+        fn:true()
+    else
+        fn:false()
+};
+(:~
+ : Checks if XML element is missing or value is empty.
+ : @param $node XML element or value
+ : return Boolean value.
+ :)
+declare function xmlconv:isMissingOrEmpty($node as item()*) as xs:boolean {
+    if (common:isMissing($node)) then
+        fn:true()
+    else
+        xmlconv:isEmpty(string-join($node, ""))
+};
+(:~
+ : Checks if element value is empty or not.
+ : @param $value Element value.
+ : @return Boolean value.
+ :)
+declare function xmlconv:isEmpty($value as xs:string) as xs:boolean {
+    if (fn:empty($value) or fn:string(fn:normalize-space($value)) = "") then
+        fn:true()
+    else
+        fn:false()
+};
