@@ -69,71 +69,7 @@ declare function xmlconv:getErrorTD($errValue,  $element as xs:string, $showMiss
         </td>
 };
 
-(: Builds HTML table rows for rules. :)
-declare function xmlconv:buildResultRows($ruleCode as xs:string, $text, $invalidStrValues as xs:string*, $invalidValues as element()*,
-    $valueHeading as xs:string, $validMsg as xs:string, $invalidMsg as xs:string, $skippedMsg, $errorLevel as xs:string, $recordDetails as element(tr)*)
-as element(tr)*{
 
-    let $countInvalidValues := count($invalidStrValues) + count($invalidValues)
-    let $recordDetails := if (count($invalidValues) > 0) then $invalidValues else $recordDetails
-    let $bulletType := if (string-length($skippedMsg) > 0) then "skipped" else if ($countInvalidValues = 0) then "info" else $errorLevel
-let $result :=
-    (
-        <tr style="border-top:1px solid #666666;">
-            <td style="padding-top:3px;vertical-align:top;">{ html:getBullet($ruleCode, $bulletType) }</td>
-            <th style="padding-top:3px;vertical-align:top;text-align:left;">{ $text }</th>
-            <td style="padding-top:3px;vertical-align:top;"><span style="font-size:1.3em;">{
-                if (string-length($skippedMsg) > 0) then
-                    $skippedMsg
-                else if ($countInvalidValues = 0) then
-                    $validMsg
-                else
-                    if (contains($invalidMsg, " found")) then
-                        concat($countInvalidValues, $invalidMsg)
-                    else
-                        concat($countInvalidValues, $invalidMsg, substring(" ", number(not($countInvalidValues > 1)) * 2) ,"found")
-                }
-                </span>{
-                if ($countInvalidValues > 0 or count($recordDetails)>0) then
-                    <a id='feedbackLink-{$ruleCode}' href='javascript:toggle("feedbackRow","feedbackLink", "{$ruleCode}")' style="padding-left:10px;">Show records</a>
-                else
-                    ()
-                }
-             </td>
-             <td></td>
-        </tr>,
-            if (count($recordDetails)>0) then
-                <tr>
-                    <td></td>
-                    <td colspan="3">
-                        <table class="datatable" style="font-size: 0.9em;text-align:left;vertical-align:top;display:none;border:0px;" id="feedbackRow-{$ruleCode}">
-                            <tr>{
-                                for $th in $recordDetails[1]//td return <th>{ data($th/@title) }</th>
-                            }</tr>
-                            {$recordDetails}
-                        </table>
-                    </td>
-                </tr>
-            else if (count($invalidStrValues)  > 0) then
-                <tr>
-                    <td></td>
-                    <td colspan="3">
-                        <table style="display:none;margin-top:1em;" id="feedbackRow-{$ruleCode}">
-                            <tr style="font-size: 0.9em;color:#666666;">
-                                <td></td>
-                                <th colspan="3" style="text-align:right;vertical-align:top;background-color:#F6F6F6;font-weight: bold;">{ $valueHeading}</th>
-                                <td style="font-style:italic;vertical-align:top;">{ string-join($invalidStrValues, ", ")}</td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-
-            else
-                ()
-    )
-return $result
-
-};
 declare function xmlconv:buildResultRowsWithTotalCount($ruleCode as xs:string, $text, $invalidStrValues as xs:string*, $invalidValues as element()*,
     $valueHeading as xs:string, $validMsg as xs:string, $invalidMsg as xs:string, $skippedMsg, $errorLevel as xs:string,$recordDetails as element(tr)*)
 as element(tr)*{
@@ -146,7 +82,7 @@ as element(tr)*{
     let $validMsg := if (count($invalidValues) = 0) then concat("Checked ", $countCheckedRecords, " value", substring("s", number(not($countCheckedRecords > 1)) * 2), ", all valid") else ""
 
     return
-        xmlconv:buildResultRows($ruleCode, $text, $invalidStrValues, $invalidValues,
+        html:buildResultRows_M($ruleCode, $text, $invalidStrValues, $invalidValues,
             $valueHeading, $validMsg, $invalidMsg, $skippedMsg,$errorLevel, ())
 };
 declare function xmlconv:getSamplingPointAssessment($inspireId as xs:string, $inspireNamespace as xs:string)
@@ -565,12 +501,10 @@ let $invalidObservedPropertyCombinations :=
 
         </tr>
 
-(: 24 :)
-
-let $invalidAssessmentType := $docRoot//aqd:AQD_Model/aqd:assessmentType[fn:normalize-space(@xlink:href) != "http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/model" and fn:normalize-space(@xlink:href) != "http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/objective" ]/../@gml:id
+(: M24 :)
+    let $invalidAssessmentType := $docRoot//aqd:AQD_Model/aqd:assessmentType[fn:normalize-space(@xlink:href) != "http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/model" and fn:normalize-space(@xlink:href) != "http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/objective" ]/../@gml:id
 
 (: M25 :)
-
     let $allTrueUsedAQD :=
         for $trueUsedAQD in $docRoot//gml:featureMember/aqd:AQD_Model
         where $trueUsedAQD/aqd:usedAQD = true()
@@ -612,8 +546,8 @@ let $allInvalZoneXlinks :=
             </tr>)
 
 	else ()
-(: M27 :)
 
+(: M27 :)
     let $localModelProcessIds := $docRoot//gml:featureMember/aqd:AQD_ModelProcess/ompr:inspireId/base:Identifier
     let $invalidDuplicateModelProcessIds :=
         for $idModelProcessCode in $docRoot//gml:featureMember/aqd:AQD_ModelProcess/ompr:inspireId/base:Identifier
@@ -627,9 +561,7 @@ let $allInvalZoneXlinks :=
                 <td title="base:namespace">{data($idModelProcessCode/base:namespace)}</td>
             </tr>
 (: M28 :)
-
     let $allBaseNamespace := distinct-values($docRoot//aqd:AQD_ModelProcess/ompr:inspireld/base:Identifier/base:namespace)
-
     let  $tblM28 :=
         for $id in $allBaseNamespace
         let $localId := $docRoot//aqd:AQD_ModelProcess/ompr:inspireld/base:Identifier[base:namespace = $id]/base:localId
@@ -700,18 +632,14 @@ let  $tblM41 :=
             <col width="350px" style="text-align:left"/>
             <col width="*"/>
         </colgroup>
-        {xmlconv:buildResultRows("M1", "Total number of each environmental monitoring feature types",
-            (), (), "", string(sum($countFeatureTypes)), "", "","error", $tblAllFeatureTypes)}
-        {xmlconv:buildResultRows("M2", "Compile and feedback upon the total number of new records for each environmental monitoring feature types included in the delivery",
-                (), (), "", string(count($tblM2)), "", "","error",())}
-        {xmlconv:buildResultRows("M3", "Compile and feedback upon the total number of modification to existing for each environmental monitoring feature types included in the delivery",
-        (), (), "", string(count($tblM3)), "", "","error",())}
-        {xmlconv:buildResultRows("M4", "Total number  aqd:aqdModelType, aqd:inspireId, ef:name, ompr:nam  combinations ",
-                (), (), "", string(count($tblM4)), "", "","error",$tblM4)}
+        {html:buildResultRows_M("M1", $labels:M1, $labels:M1_SHORT, (), (), "", string(sum($countFeatureTypes)), "", "","error", $tblAllFeatureTypes)}
+        {html:buildResultRows_M("M2", $labels:M2, $labels:M2_SHORT, (), (), "", string(count($tblM2)), "", "","error",())}
+        {html:buildResultRows_M("M3", $labels:M3, $labels:M3_SHORT, (), (), "", string(count($tblM3)), "", "","error",())}
+        {html:buildResultRows_M("M4", $labels:M4, $labels:M4_SHORT, (), (), "", string(count($tblM4)), "", "","error",$tblM4)}
         <tr style="border-top:1px solid #666666">
         <tr>
             <td style="vertical-align:top;">{ html:getBullet("M5", if ($countB8duplicates = 0) then "info" else "error") }</td>
-            <th style="vertical-align:top;">All gml:id attributes, am:inspireId and aqd:inspireId elements shall have unique content</th>
+            <th style="vertical-align:top;">{ $labels:M5 }</th>
             <td style="vertical-align:top;">{
                 if ($countB8duplicates = 0) then
                     "All Ids are unique"
@@ -748,55 +676,40 @@ let  $tblM41 :=
         </tr>
         <tr style="border-top:1px solid #666666">
             <td style="vertical-align:top;">{ html:getBullet("M6", if ($countM6duplicates = 0) then "info" else "error") }</td>
-            <th style="vertical-align:top;">./am:inspireId/base:Identifier/base:localId shall be an unique code within namespace</th>
+            <th style="vertical-align:top;">{ $labels:M6 }</th>
             <td style="vertical-align:top;">{
                 if ($countM6duplicates = 0) then
                     <span style="font-size:1.3em;">All Ids are unique</span>
                 else
                     concat($countM6duplicates, " error", substring("s ", number(not($countM6duplicates > 1)) * 2) ,"found") }</td>
         </tr>
-        {xmlconv:buildResultRows("M7", "./ef:inspireId/base:Identifier/base:namespace List base:namespace and  count the number of base:localId assigned to each base:namespace. ",
-                (), (), "", string(count($tblM7)), "", "","error",$tblM7)}
-        {xmlconv:buildResultRows("M7.1", "Check that namespace is registered in vocabulary", $invalidNamespaces, (), "base:Identifier/base:namespace", "All values are valid", " invalid namespaces", "", "error", ())}
-        {xmlconv:buildResultRows("M12", "./ef:geometry the srsName attribute  shall  be  a  recognisable  URN .  The  following  2  srsNames  are  expected urn:ogc:def:crs:EPSG::4258 or urn:ogc:def:crs:EPSG::4326",
-                $invalidGeometry,(), "aqd:AQD_Model/@gml:id","All srsName attributes are valid"," invalid attribute","","error", ())}
-        {xmlconv:buildResultRows("M15", "Total number aqd:AQD_Model/ef:observingCapability/ef:ObservingCapability/ef:observingTime/gml:TimePeriod/ invalid operational activity periods ",
-                (), $allObservingCapabilityPeriod, "", concat(fn:string(count($allObservingCapabilityPeriod))," errors found"), "", "","error", ())}
+        {html:buildResultRows_M("M7", $labels:M7, $labels:M7_SHORT, (), (), "", string(count($tblM7)), "", "","error",$tblM7)}
+        {html:buildResultRows_M("M7.1", $labels:M7.1, $labels:M7.1_SHORT, $invalidNamespaces, (), "base:Identifier/base:namespace", "All values are valid", " invalid namespaces", "", "error", ())}
+        {html:buildResultRows_M("M12", $labels:M12, $labels:M12_SHORT, $invalidGeometry,(), "aqd:AQD_Model/@gml:id","All srsName attributes are valid"," invalid attribute","","error", ())}
+        {html:buildResultRows_M("M15", $labels:M15, $labels:M15_SHORT, (), $allObservingCapabilityPeriod, "", concat(fn:string(count($allObservingCapabilityPeriod))," errors found"), "", "","error", ())}
         {xmlconv:buildResultRowsWithTotalCount("M18", <span>The content of ./ef:observedProperty shall resolve to a valid code within
             <a href="{ $xmlconv:POLLUTANT_VOCABULARY }">{ $xmlconv:POLLUTANT_VOCABULARY }</a></span>,
                 (), (), "ef:observedProperty", "", "", "", "error", $invalidObservedProperty)}
-        {xmlconv:buildResultRows("M19", "./ef:observingCapability/ef:ObservingCapability/ef:featureOfInterest shall resolve to a traversable local of global URI to an ../AQD_ModelArea",
-                (),$invalideFeatureOfInterest,"aqd:AQD_Model/@gml:id", "All attributes is invalid", " invalid attribute", "","warning", ())}
-        {xmlconv:buildResultRows("M23", "Number of invalid 3 elements /aqd:AQD_Model/aqd:environmentalObjective/aqd:EnvironmentalObjective/ combinations: ",
-                (), $invalidObservedPropertyCombinations, "", concat(fn:string(count($invalidObservedPropertyCombinations))," errors found"), "", "","error", ())}
-        {xmlconv:buildResultRows("M24", "/aqd:assessmentType shall resolve to http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/ via xlink:href to either http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/model or http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/objective",
-                $invalidAssessmentType, (), "", concat(fn:string(count($invalidAssessmentType))," errors found"), "", "","error", ())}
-        {xmlconv:buildResultRows("M25", " Number of AQD_Model(s) witch has ./aqd:usedAQD equals “true” but does not have at least at one /aqd:Model xlinked: ",
-                (), $allInvalidTrueUsedAQD, "", concat(fn:string(count($allInvalidTrueUsedAQD))," errors found"), "", "","warning", ())}
-               {xmlconv:buildResultRows("M26", " Number of invalid aqd:AQD_Model/aqd:zone xlinks: ",
-                (),  $allInvalZoneXlinks, "", concat(fn:string(count( $allInvalZoneXlinks))," errors found"), "", "","error", ())}
-        {xmlconv:buildResultRows("M27", "./aqd:inspireId/base:Identifier/base:localId shall be an unique code for AQD_ModelProgress and unique within the namespace",
-                (),$invalidDuplicateModelProcessIds, "", concat(string(count($invalidDuplicateModelProcessIds))," errors found.") , "", "","error", ())}
-        {xmlconv:buildResultRows("M28", "./ompr:inspireld/base:Identifier/base:namespace List base:namespace and  count the number of base:localId assigned to each base:namespace. ",
-                (), (), "", string(count($tblM28)), "", "","error",$tblM28)}
-        {xmlconv:buildResultRows("M29", "./ompr:documentation/base2:DocumentationCitation/base2:link shall resolve to a traversable URL to a documentation report",
-                (),$invalidBase2link, "aqd:AQD_ModelProcess/@gml:id","All attributes are valid"," invalid attribute","","error", ())}
-        {xmlconv:buildResultRows("M39", "./dataQualityReport shall provide a traversable URL to a report describing the data quality equaluati on proces",
-                (),$invalidDataQualityReport, "aqd:AQD_ModelProcess/@gml:id","All attributes are valid"," invalid attribute","","error", ())}
-        {xmlconv:buildResultRows("M40", "./aqd:inspireId/base:Identifier/base:localId shall be an unique code for AQD_ModelArea and unique within the namespace",
-                (),$invalidDuplicateModelAreaIds, "", concat(string(count($invalidDuplicateModelAreaIds))," errors found.") , "", "","error",())}
-        {xmlconv:buildResultRows("M41", "./aqd:inspireId/base:Identifier/base:namespace List base:namespace and  count the number of base:localId assigned to each base:namespace. ",
-                (), (), "", string(count($tblM41)), "", "","error",$tblM41)}
-        {xmlconv:buildResultRows("M43", "./sams:shape, the srsDimension attribute shall resolve to “2” to allow the coordinate  of  the  feature  of  intere",
-                $invalidSrsName,(), "aqd:AQD_ModelArea/@gml:id","All srsDimension attributes are valid"," invalid attribute","","error", ())}
+        {html:buildResultRows_M("M19", $labels:M19, $labels:M19_SHORT, (),$invalideFeatureOfInterest,"aqd:AQD_Model/@gml:id", "All attributes is invalid", " invalid attribute", "","warning", ())}
+        {html:buildResultRows_M("M23", $labels:M23, $labels:M23_SHORT, (), $invalidObservedPropertyCombinations, "", concat(fn:string(count($invalidObservedPropertyCombinations))," errors found"), "", "","error", ())}
+        {html:buildResultRows_M("M24", $labels:M24, $labels:M24_SHORT, $invalidAssessmentType, (), "", concat(fn:string(count($invalidAssessmentType))," errors found"), "", "","error", ())}
+        {html:buildResultRows_M("M25", $labels:M25, $labels:M25_SHORT, (), $allInvalidTrueUsedAQD, "", concat(fn:string(count($allInvalidTrueUsedAQD))," errors found"), "", "","warning", ())}
+        {html:buildResultRows_M("M26", $labels:M26, $labels:M26_SHORT, (),  $allInvalZoneXlinks, "", concat(fn:string(count( $allInvalZoneXlinks))," errors found"), "", "","error", ())}
+        {html:buildResultRows_M("M27", $labels:M27, $labels:M27_SHORT, (),$invalidDuplicateModelProcessIds, "", concat(string(count($invalidDuplicateModelProcessIds))," errors found.") , "", "","error", ())}
+        {html:buildResultRows_M("M28", $labels:M28, $labels:M28_SHORT, (), (), "", string(count($tblM28)), "", "","error",$tblM28)}
+        {html:buildResultRows_M("M29", $labels:M29, $labels:M29_SHORT, (),$invalidBase2link, "aqd:AQD_ModelProcess/@gml:id","All attributes are valid"," invalid attribute","","error", ())}
+        {html:buildResultRows_M("M39", $labels:M39, $labels:M39_SHORT, (),$invalidDataQualityReport, "aqd:AQD_ModelProcess/@gml:id","All attributes are valid"," invalid attribute","","error", ())}
+        {html:buildResultRows_M("M40", $labels:M40, $labels:M40_SHORT, (),$invalidDuplicateModelAreaIds, "", concat(string(count($invalidDuplicateModelAreaIds))," errors found.") , "", "","error",())}
+        {html:buildResultRows_M("M41", $labels:M41, $labels:M41_SHORT, (), (), "", string(count($tblM41)), "", "","error",$tblM41)}
+        {html:buildResultRows_M("M43", $labels:M43, $labels:M43_SHORT, $invalidSrsName,(), "aqd:AQD_ModelArea/@gml:id","All srsDimension attributes are valid"," invalid attribute","","error", ())}
 
     </table>
-}
-;
-declare function xmlconv:checkVocabularyConceptValues($source_url as xs:string, $featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string)
-as element(tr)*{
+};
+
+declare function xmlconv:checkVocabularyConceptValues($source_url as xs:string, $featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string) as element(tr)* {
     xmlconv:checkVocabularyConceptValues($source_url, $featureType, $element, $vocabularyUrl, "")
 };
+
 declare function xmlconv:checkVocabularyConceptValues($source_url as xs:string, $featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string, $vocabularyType as xs:string) as element(tr)* {
     if (doc-available($source_url)) then
         let $sparql :=
@@ -863,8 +776,7 @@ declare function xmlconv:checkVocabularyConceptValues3($source_url as xs:string,
 };
 
 
-declare function xmlconv:checkVocabularyaqdAnalyticalTechniqueValues($source_url as xs:string, $featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string, $vocabularyType as xs:string)
-as element(tr)*{
+declare function xmlconv:checkVocabularyaqdAnalyticalTechniqueValues($source_url as xs:string, $featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string, $vocabularyType as xs:string) as element(tr)* {
     if(doc-available($source_url)) then
         let $sparql :=
             if ($vocabularyType = "collection") then
@@ -888,9 +800,8 @@ as element(tr)*{
 };
 
 
-declare function xmlconv:checkVocabularyConceptEquipmentValues($source_url as xs:string,  $featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string, $vocabularyType as xs:string)
-as element(tr)*{
-    if(doc-available($source_url)) then
+declare function xmlconv:checkVocabularyConceptEquipmentValues($source_url as xs:string,  $featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string, $vocabularyType as xs:string) as element(tr)* {
+    if (doc-available($source_url)) then
         let $sparql :=
             if ($vocabularyType = "collection") then
                 xmlconv:getCollectionConceptUrlSparql($vocabularyUrl)
@@ -911,8 +822,7 @@ as element(tr)*{
     else
         ()
 };
-declare function xmlconv:checkMeasurementMethodLinkValues($source_url as xs:string,  $concept,$featureType as xs:string,  $vocabularyUrl as xs:string, $vocabularyType as xs:string)
-as element(tr)*{
+declare function xmlconv:checkMeasurementMethodLinkValues($source_url as xs:string,  $concept,$featureType as xs:string,  $vocabularyUrl as xs:string, $vocabularyType as xs:string) as element(tr)* {
     if (doc-available($source_url)) then
         let $sparql :=
             if ($vocabularyType = "collection") then
@@ -934,8 +844,6 @@ as element(tr)*{
     else
         ()
 };
-
-
 
 declare function xmlconv:getConceptUrlSparql($scheme as xs:string) as xs:string {
     concat("PREFIX skos: <http://www.w3.org/2004/02/skos/core#>

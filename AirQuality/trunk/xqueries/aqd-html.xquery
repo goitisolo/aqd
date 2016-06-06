@@ -541,7 +541,7 @@ as element(tr)*{
 };
 
 
-declare function html:buildResultRows_D($ruleCode as xs:string, $text, $invalidStrValues as xs:string*, $invalidValues as element()*,
+declare function html:buildResultRows_D($ruleCode as xs:string, $longText, $text, $invalidStrValues as xs:string*, $invalidValues as element()*,
         $valueHeading as xs:string, $validMsg as xs:string, $invalidMsg as xs:string, $skippedMsg, $errorLevel as xs:string, $recordDetails as element(tr)*,
         $invalidValuesAreInvalid as xs:boolean)
 as element(tr)*{
@@ -565,7 +565,7 @@ as element(tr)*{
         (
             <tr style="border-top:1px solid #666666;">
                 <td style="padding-top:3px;vertical-align:top;">{ html:getBullet($ruleCode, $bulletType) }</td>
-                <th style="padding-top:3px;vertical-align:top;text-align:left;">{ $text }</th>
+                <th style="padding-top:3px;vertical-align:top;text-align:left;">{ $text } {html:getModalInfo($ruleCode, $longText)}</th>
                 <td style="padding-top:3px;vertical-align:top;"><span style="font-size:1.3em;">{
                     if (string-length($skippedMsg) > 0) then
                         $skippedMsg
@@ -632,4 +632,133 @@ as element(tr)*{
     return
         html:buildResultRows_D($ruleCode, $text, $invalidStrValues, $invalidValues,
                 $valueHeading, $validMsg, $invalidMsg, $skippedMsg,$errorLevel, ())
+};
+
+(: Builds HTML table rows for rules. :)
+declare function html:buildResultRows_G($ruleCode as xs:string, $longText, $text, $invalidStrValues as xs:string*, $invalidValues as element()*,
+        $valueHeading as xs:string, $validMsg as xs:string, $invalidMsg as xs:string, $skippedMsg, $errorLevel as xs:string, $recordDetails as element(tr)*)
+as element(tr)*{
+    let $countInvalidValues := count($invalidStrValues) + count($invalidValues)
+
+    let $recordDetails := if (count($invalidValues) > 0) then $invalidValues else $recordDetails
+
+    let $bulletType := if (string-length($skippedMsg) > 0) then "skipped" else if ($countInvalidValues = 0) then "info" else $errorLevel
+    let $result :=
+        (
+            <tr style="border-top:1px solid #666666;">
+                <td style="padding-top:3px;vertical-align:top;">{ html:getBullet($ruleCode, $bulletType) }</td>
+                <th style="padding-top:3px;vertical-align:top;text-align:left;">{ $text } {html:getModalInfo($ruleCode, $longText)}</th>
+                <td style="padding-top:3px;vertical-align:top;"><span style="font-size:1.3em;">{
+                    if (string-length($skippedMsg) > 0) then
+                        $skippedMsg
+                    else if ($countInvalidValues = 0) then
+                        $validMsg
+                    else
+                        concat($countInvalidValues, $invalidMsg, substring("s ", number(not($countInvalidValues > 1)) * 2) ,"found") }
+                </span>{
+                    if ($countInvalidValues > 0 or count($recordDetails)>0) then
+                        <a id='feedbackLink-{$ruleCode}' href='javascript:toggle("feedbackRow","feedbackLink", "{$ruleCode}")' style="padding-left:10px;">Show records</a>
+                    else
+                        ()
+                }
+                </td>
+                <td></td>
+            </tr>,
+            if (count($recordDetails)>0) then
+                <tr>
+                    <td></td>
+                    <td colspan="3">
+                        <table class="datatable" style="font-size: 0.9em;text-align:left;vertical-align:top;display:none;border:0px;" id="feedbackRow-{$ruleCode}">
+                            <tr>{
+                                for $th in $recordDetails[1]//td return <th>{ data($th/@title) }</th>
+                            }</tr>
+                            {$recordDetails}
+                        </table>
+                    </td>
+                </tr>
+            else if (count($invalidStrValues)  > 0) then
+                <tr>
+                    <td></td>
+                    <td colspan="3">
+                        <table style="display:none;margin-top:1em;" id="feedbackRow-{$ruleCode}">
+                            <tr style="font-size: 0.9em;color:#666666;">
+                                <td></td>
+                                <th colspan="3" style="text-align:right;vertical-align:top;background-color:#F6F6F6;font-weight: bold;">{ $valueHeading}</th>
+                                <td style="font-style:italic;vertical-align:top;">{ string-join($invalidStrValues, ", ")}</td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+
+            else
+                ()
+        )
+    return $result
+
+};
+
+(: Builds HTML table rows for rules. :)
+declare function html:buildResultRows_M($ruleCode as xs:string, $longText, $text, $invalidStrValues as xs:string*, $invalidValues as element()*,
+        $valueHeading as xs:string, $validMsg as xs:string, $invalidMsg as xs:string, $skippedMsg, $errorLevel as xs:string, $recordDetails as element(tr)*)
+as element(tr)*{
+
+    let $countInvalidValues := count($invalidStrValues) + count($invalidValues)
+    let $recordDetails := if (count($invalidValues) > 0) then $invalidValues else $recordDetails
+    let $bulletType := if (string-length($skippedMsg) > 0) then "skipped" else if ($countInvalidValues = 0) then "info" else $errorLevel
+    let $result :=
+        (
+            <tr style="border-top:1px solid #666666;">
+                <td style="padding-top:3px;vertical-align:top;">{ html:getBullet($ruleCode, $bulletType) }</td>
+                <th style="padding-top:3px;vertical-align:top;text-align:left;">{ $text } {html:getModalInfo($ruleCode, $longText)}</th>
+                <td style="padding-top:3px;vertical-align:top;"><span style="font-size:1.3em;">{
+                    if (string-length($skippedMsg) > 0) then
+                        $skippedMsg
+                    else if ($countInvalidValues = 0) then
+                        $validMsg
+                    else
+                        if (contains($invalidMsg, " found")) then
+                            concat($countInvalidValues, $invalidMsg)
+                        else
+                            concat($countInvalidValues, $invalidMsg, substring(" ", number(not($countInvalidValues > 1)) * 2) ,"found")
+                }
+                </span>{
+                    if ($countInvalidValues > 0 or count($recordDetails)>0) then
+                        <a id='feedbackLink-{$ruleCode}' href='javascript:toggle("feedbackRow","feedbackLink", "{$ruleCode}")' style="padding-left:10px;">Show records</a>
+                    else
+                        ()
+                }
+                </td>
+                <td></td>
+            </tr>,
+            if (count($recordDetails)>0) then
+                <tr>
+                    <td></td>
+                    <td colspan="3">
+                        <table class="datatable" style="font-size: 0.9em;text-align:left;vertical-align:top;display:none;border:0px;" id="feedbackRow-{$ruleCode}">
+                            <tr>{
+                                for $th in $recordDetails[1]//td return <th>{ data($th/@title) }</th>
+                            }</tr>
+                            {$recordDetails}
+                        </table>
+                    </td>
+                </tr>
+            else if (count($invalidStrValues)  > 0) then
+                <tr>
+                    <td></td>
+                    <td colspan="3">
+                        <table style="display:none;margin-top:1em;" id="feedbackRow-{$ruleCode}">
+                            <tr style="font-size: 0.9em;color:#666666;">
+                                <td></td>
+                                <th colspan="3" style="text-align:right;vertical-align:top;background-color:#F6F6F6;font-weight: bold;">{ $valueHeading}</th>
+                                <td style="font-style:italic;vertical-align:top;">{ string-join($invalidStrValues, ", ")}</td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+
+            else
+                ()
+        )
+    return $result
+
 };
