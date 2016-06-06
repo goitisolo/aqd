@@ -2,7 +2,7 @@ xquery version "1.0" encoding "UTF-8";
 (:
  : Module Name: Implementing Decision 2011/850/EU: AQ info exchange & reporting (Main module)
  :
- : Version:     $Id$
+ : Version:     $Id: aqd.xquery 12274 2012-07-03 10:36:52Z kasperen $
  : Created:     3 July 2012
  : Copyright:   European Environment Agency
  :)

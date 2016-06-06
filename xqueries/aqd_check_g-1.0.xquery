@@ -16,6 +16,9 @@ xquery version "1.0" encoding "UTF-8";
 
 module namespace xmlconv = "http://converters.eionet.europa.eu/dataflowG";
 import module namespace common = "aqd-common" at "aqd_check_common.xquery";
+import module namespace sparqlx = "aqd-sparql" at "aqd-sparql.xquery";
+import module namespace labels = "aqd-labels" at "aqd-labels.xquery";
+import module namespace html = "aqd-html" at "aqd-html.xquery";
 
 declare namespace aqd = "http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0";
 declare namespace gml = "http://www.opengis.net/gml/3.2";
@@ -29,15 +32,6 @@ declare namespace base = "http://inspire.ec.europa.eu/schemas/base/3.3";
 declare namespace base2 = "http://inspire.ec.europa.eu/schemas/base2/1.0";
 declare namespace sparql = "http://www.w3.org/2005/sparql-results#";
 declare namespace xlink = "http://www.w3.org/1999/xlink";
-
-
-(:
-declare variable $country as xs:string := "es";
-declare variable $source_url as xs:string := "../test/ES_G_Attainment_short.xml";
-declare variable $source_url as xs:string := "../test/G_GIB_Attainment_Corrupted2.xml";
-declare variable $country as xs:string := "gi";
-:)
-
 
 (:~ declare Content Registry SPARQL endpoint:)
 declare variable $xmlconv:CR_SPARQL_URL := "http://cr.eionet.europa.eu/sparql";
@@ -84,266 +78,14 @@ declare variable $xmlconv:ADJUSTMENTTYPE_VOCABULARY as xs:string := "http://dd.e
 declare variable $xmlconv:ADJUSTMENTSOURCE_VOCABLUARY as xs:string := "http://dd.eionet.europa.eu/vocabulary/aq/adjustmentsourcetype/";
 declare variable $xmlconv:ASSESSMENTTYPE_VOCABLUARY as xs:string := "http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/";
 declare variable $xmlconv:PROTECTIONTARGET_VOCABLUARY as xs:string := "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/";
-(:)
-declare variable $source_url as xs:string external;
-:)
-(:
-declare variable $source_url as xs:string := "http://cdrtest.eionet.europa.eu/es/eu/aqd/g/envvbgwea/ES_G_Attainment.xml";
-declare variable $source_url := "http://cdrtest.eionet.europa.eu/hr/eu/aqd/g/envu_2xna/HR_G_201407281307.xml";
-declare variable $source_url := "http://cdrtest.eionet.europa.eu/hr/eu/aqd/g/envu_2xna/HR_G_201407281307.xml";
-declare variable $source_url := "../test/2_HR_G_201407281307.xml";
-declare variable $source_url := "../test/ES_G_Attainment.xml";
-declare variable $source_url := "../test/G_GB_Attainment_2012_v1.4.xml";
-declare variable $source_url := "../test/HR_G_201407281307.xml";
-Change it for testing locally:
-declare variable $source_url := "http://cdr.eionet.europa.eu/gb/eu/aqd/e2a/colutn32a/envubnpvw/B_GB_Zones.xml";
 
-declare variable $source_url := "../test/G_GB_G_GB_Attainment.xml";
-declare variable $countryCode  := "gb";
-
-declare variable $countryCode as xs:string := "gi";
-declare variable $source_url as xs:string := "../test/G_GIB_Attainment_Corrupted2.xml";
-:)
-
-
-(: removes the file part from the end of URL and appends 'xml' for getting the envelope xml description :)
-declare function xmlconv:getEnvelopeXML($url as xs:string) as xs:string{
-
-        let $col := fn:tokenize($url,'/')
-        let $col := fn:remove($col, fn:count($col))
-        let $ret := fn:string-join($col,'/')
-        let $ret := fn:concat($ret,'/xml')
-        return
-            if(fn:doc-available($ret)) then
-                $ret
-            else
-             ""
-(:              "http://cdrtest.eionet.europa.eu/ee/eu/art17/envriytkg/xml" :)
-};
-
-
-(:~
-: JavaScript
-:)
-declare function xmlconv:javaScript(){
-
-    let $js :=
-           <script type="text/javascript">
-               <![CDATA[
-    function toggle(divName, linkName, checkId) {{
-         toggleItem(divName, linkName, checkId, 'record');
-    }}
-
-
-    function toggleItem(divName, linkName, checkId, itemLabel) {{
-        divName = divName + "-" + checkId;
-        linkName = linkName + "-" + checkId;
-
-        var elem = document.getElementById(divName);
-        var text = document.getElementById(linkName);
-        if(elem.style.display == "inline") {{
-            elem.style.display = "none";
-            text.innerHTML = "Show " + itemLabel + "s";
-            }}
-            else {{
-              elem.style.display = "inline";
-              text.innerHTML = "Hide " + itemLabel + "s";
-            }}
-      }}
-
-                ]]>
-           </script>
-    return
-        <script type="text/javascript">{normalize-space($js)}</script>
-};
-
-declare function xmlconv:getErrorTD($errValue,  $element as xs:string, $showMissing as xs:boolean)
-as element(td)
-{
+declare function xmlconv:getErrorTD($errValue,  $element as xs:string, $showMissing as xs:boolean) as element(td) {
     let $val := if ($showMissing and string-length($errValue)=0) then "-blank-" else $errValue
     return
         <td title="{ $element }" style="color:red">{
             $val
         }
         </td>
-};
-(:~
- : Checks if XML element is missing or not.
- : @param $node XML node
- : return Boolean value.
- :)
-declare function xmlconv:isMissing($node as node()*)
-as xs:boolean
-{
-    if (fn:count($node) = 0) then
-        fn:true()
-    else
-        fn:false()
-};
-(:~
- : Checks if XML element is missing or value is empty.
- : @param $node XML element or value
- : return Boolean value.
- :)
-declare function xmlconv:isMissingOrEmpty($node as item()*)
-as xs:boolean
-{
-    if (xmlconv:isMissing($node)) then
-        fn:true()
-    else
-        xmlconv:isEmpty(string-join($node, ""))
-};
-(:~
- : Checks if element value is empty or not.
- : @param $value Element value.
- : @return Boolean value.
- :)
-declare function xmlconv:isEmpty($value as xs:string)
-as xs:boolean
-{
-    if (fn:empty($value) or fn:string(fn:normalize-space($value)) = "") then
-        fn:true()
-    else
-        fn:false()
-};
-(:
- : ======================================================================
- :              SPARQL HELPER methods
- : ======================================================================
- :)
-(:~ Function executes given SPARQL query and returns result elements in SPARQL result format.
- : URL parameters will be correctly encoded.
- : @param $sparql SPARQL query.
- : @return sparql:results element containing zero or more sparql:result subelements in SPARQL result format.
- :)
-
-
-(:---------------------------------Old xmlconv:executeSparqlQuery function----------------------------------------------------------------------:)
-declare function xmlconv:executeSparqlEndpoint($sparql as xs:string)
-as element(sparql:results)
-{
-    let $uri :=  xmlconv:getSparqlEndpointUrl($sparql, "xml")(:"E:/sparql-result-1.xml":)
-
-    return fn:doc($uri)//sparql:results
-};
-
-(:----------------------------------------------------------------------------------------------------------------------------------------------:)
-declare function xmlconv:setLimitAndOffset($sparql as xs:string, $limit as xs:string, $offset as xs:string)
-as xs:string
-{
-    concat($sparql," offset ",$offset," limit ",$limit)
-};
-
-declare function xmlconv:toCountSparql($sparql as xs:string)
-as xs:string
-{       let $s :=if (fn:contains($sparql,"order")) then tokenize($sparql, "order") else tokenize($sparql, "ORDER")
-        let $firstPart := tokenize($s[1], "SELECT")
-        let $secondPart := tokenize($s[1], "WHERE")
-    return concat($firstPart[1], " SELECT count(*) WHERE ", $secondPart[2])
-};
-
-declare function xmlconv:countsSparqlResults($sparql as xs:string)
-as xs:integer
-{    let $countingSparql := xmlconv:toCountSparql($sparql)
-    let $endpoint :=  xmlconv:executeSparqlEndpoint($countingSparql)
-
-
-
-    (: Counting all results:)
-    let $count :=  $countingSparql
-    let $isCountAvailable := string-length($count) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($count, "xml"))
-    let $countResult := if($isCountAvailable) then (data($endpoint//sparql:binding[@name='callret-0']/sparql:literal)) else 0
-    return $countResult[1]
-};
-
-declare function xmlconv:executeSparqlQuery($sparql as xs:string)
-as element(sparql:result)*
-{
-    let $limit := number(2000)
-    let $countResult := xmlconv:countsSparqlResults($sparql)
-
-    (:integer - how many times must sparql function repeat :)
-    let $divCountResult := if($countResult>0) then ceiling(number($countResult) div number($limit)) else number("1")
-
-    (:Collects all sparql results:)
-    let $allResults :=
-        for $r in (1 to  xs:integer(number($divCountResult)))
-            let $offset := if ($r > 1) then string(((number($r)-1) * $limit)) else "0"
-            let $resultXml := xmlconv:setLimitAndOffset($sparql,xs:string($limit), $offset)
-            let $isResultsAvailable := string-length($resultXml) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($resultXml, "xml"))
-        let $result := if($isResultsAvailable) then xmlconv:executeSparqlEndpoint($resultXml)//sparql:result else ()
-    return $result
-
-    return  $allResults
-};
-
-(:----------------------------------------------------------------------------------------------------------------------------------------------:)
-
-(:~
- : Get the SPARQL endpoint URL.
- : @param $sparql SPARQL query.
- : @param $format xml or html.
- : @param $inference use inference when executing sparql query.
- : @return link to sparql endpoint
- :)
-declare function xmlconv:getSparqlEndpointUrl($sparql as xs:string, $format as xs:string)
-as xs:string
-{
-    let $sparql := fn:encode-for-uri(fn:normalize-space($sparql))
-    let $resultFormat :=
-        if ($format = "xml") then
-            "application/xml"
-        else if ($format = "html") then
-            "text/html"
-        else
-            $format
-    let $defaultGraph := ""
-    let $uriParams := concat("query=", $sparql, "&amp;format=", $resultFormat, $defaultGraph)
-    let $uri := concat($xmlconv:CR_SPARQL_URL, "?", $uriParams)
-    return $uri
-};
-
-
-declare function xmlconv:getBullet($text as xs:string, $level as xs:string)
-as element(div) {
-
-    let $color :=
-        if ($level = "error") then
-            "red"
-        else if ($level = "warning") then
-            "orange"
-        else if ($level = "skipped") then
-            "gray"
-        else
-            "deepskyblue"
-return
-    <div class="{$level}" style="background-color: { $color }; font-size: 0.8em; color: white; padding-left:5px;padding-right:5px;margin-right:5px;margin-top:2px;text-align:center">{ $text }</div>
-};
-
-declare function xmlconv:checkLink($text as xs:string*)
-as element(span)*{
-    for $c at $pos in $text
-    return
-        <span>{
-            if (starts-with($c, "http://")) then <a href="{$c}">{$c}</a> else $c
-        }{  if ($pos < count($text)) then ", " else ""
-        }</span>
-
-};
-
-declare function xmlconv:getCdrUrl($country as xs:string)
-as xs:string {
-    let $countryCode := lower-case($country)
-    let $countryCode := if ($countryCode = "uk") then "gb" else if ($countryCode = "el") then "gr" else $countryCode
-    let $eu := if ($countryCode='gi') then 'eea' else 'eu'
-
-    return concat("cdr.eionet.europa.eu/",lower-case($countryCode),"/", $eu, "/aqd/")
-
-};
-
-declare function xmlconv:reChangeCountrycode($countryCode as xs:string)
-as xs:string {
-    if ($countryCode = "uk") then "gb" else if ($countryCode = "el") then "gr" else $countryCode
 };
 
 (: ---- SPARQL methods --- :)
@@ -566,12 +308,7 @@ concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
       }")(:  order by ?samplingPoint"):)
 };
 
-
-
-
-(:
-    Builds HTML table rows for rules.
-:)
+(: Builds HTML table rows for rules. :)
 declare function xmlconv:buildResultRows($ruleCode as xs:string, $text, $invalidStrValues as xs:string*, $invalidValues as element()*,
     $valueHeading as xs:string, $validMsg as xs:string, $invalidMsg as xs:string, $skippedMsg, $errorLevel as xs:string, $recordDetails as element(tr)*)
 as element(tr)*{
@@ -583,7 +320,7 @@ as element(tr)*{
 let $result :=
     (
         <tr style="border-top:1px solid #666666;">
-            <td style="padding-top:3px;vertical-align:top;">{ xmlconv:getBullet($ruleCode, $bulletType) }</td>
+            <td style="padding-top:3px;vertical-align:top;">{ html:getBullet($ruleCode, $bulletType) }</td>
             <th style="padding-top:3px;vertical-align:top;text-align:left;">{ $text }</th>
             <td style="padding-top:3px;vertical-align:top;"><span style="font-size:1.3em;">{
                 if (string-length($skippedMsg) > 0) then
@@ -635,17 +372,12 @@ return $result
 };
 
 
-(:
-    Rule implementations
-:)
-declare function xmlconv:checkReport($source_url as xs:string, $countryCode as xs:string)
-as element(table) {
+(: Rule implementations :)
+declare function xmlconv:checkReport($source_url as xs:string, $countryCode as xs:string) as element(table) {
 
-let $envelopeUrl := xmlconv:getEnvelopeXML($source_url)
-
+let $envelopeUrl := common:getEnvelopeXML($source_url)
 let $docRoot := doc($source_url)
-
-let $cdrUrl := xmlconv:getCdrUrl($countryCode)
+let $cdrUrl := common:getCdrUrl($countryCode)
 
 (: G1 :)
 let $countAttainments := count($docRoot//aqd:AQD_Attainment)
@@ -656,41 +388,41 @@ let $tblAllAttainments :=
             <td title="gml:id">{data($rec/@gml:id)}</td>
             <td title="base:localId">{data($rec/aqd:inspireId/base:Identifier/base:localId)}</td>
             <td title="base:namespace">{data($rec/aqd:inspireId/base:Identifier/base:namespace)}</td>
-            <td title="aqd:zone">{xmlconv:checkLink(data($rec/aqd:zone/@xlink:href))}</td>
-            <td title="aqd:pollutant">{xmlconv:checkLink(data($rec/aqd:pollutant/@xlink:href))}</td>
-            <td title="aqd:protectionTarget">{xmlconv:checkLink(data($rec/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/@xlink:href))}</td>
+            <td title="aqd:zone">{common:checkLink(data($rec/aqd:zone/@xlink:href))}</td>
+            <td title="aqd:pollutant">{common:checkLink(data($rec/aqd:pollutant/@xlink:href))}</td>
+            <td title="aqd:protectionTarget">{common:checkLink(data($rec/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/@xlink:href))}</td>
         </tr>
 
 (: G2 :)
 let $attainmentsInDelivery := $docRoot//aqd:AQD_Attainment
 let $inspireSparql := xmlconv:getInspireLabels($cdrUrl)
-let $isCRAvailable := string-length($inspireSparql) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($inspireSparql, "xml"))
+let $isCRAvailable := string-length($inspireSparql) > 0 and doc-available(sparqlx:getSparqlEndpointUrl($inspireSparql, "xml"))
 
-let $attainmentsInCR := if($isCRAvailable) then
-    distinct-values(data(xmlconv:executeSparqlQuery($inspireSparql)//sparql:binding[@name='inspireLabel']/sparql:literal))  else ()
+let $attainmentsInCR := if ($isCRAvailable) then
+    distinct-values(data(sparqlx:executeSparqlQuery($inspireSparql)//sparql:binding[@name='inspireLabel']/sparql:literal)) else ()
 
 let $newAttainments :=
 for $attainment in $attainmentsInDelivery
 let $inspireId := concat(data($attainment/aqd:inspireId/base:Identifier/base:namespace), "/", data($attainment/aqd:inspireId/base:Identifier/base:localId))
 return
     if (empty(index-of($attainmentsInCR, $inspireId))) then
-    <tr>
+        <tr>
             <td title="gml:id">{data($attainment/@gml:id)}</td>
             <td title="base:localId">{data($attainment/aqd:inspireId/base:Identifier/base:localId)}</td>
             <td title="base:namespace">{data($attainment/aqd:inspireId/base:Identifier/base:namespace)}</td>
-            <td title="aqd:zone">{xmlconv:checkLink(data($attainment/aqd:zone/@xlink:href))}</td>
-            <td title="aqd:pollutant">{xmlconv:checkLink(data($attainment/aqd:pollutant/@xlink:href))}</td>
-            <td title="aqd:protectionTarget">{xmlconv:checkLink(data($attainment/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/@xlink:href))}</td>
+            <td title="aqd:zone">{common:checkLink(data($attainment/aqd:zone/@xlink:href))}</td>
+            <td title="aqd:pollutant">{common:checkLink(data($attainment/aqd:pollutant/@xlink:href))}</td>
+            <td title="aqd:protectionTarget">{common:checkLink(data($attainment/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/@xlink:href))}</td>
         </tr>
     else ()
 
 
 (: G3 :)
 let $existingAttainmentSparql := xmlconv:getExistingAttainmentSqarql($cdrUrl)
-let $isCRAvailable := string-length($existingAttainmentSparql) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($existingAttainmentSparql, "xml"))
+let $isCRAvailable := string-length($existingAttainmentSparql) > 0 and doc-available(sparqlx:getSparqlEndpointUrl($existingAttainmentSparql, "xml"))
 
 let $attainmentsKeysInCR := if($isCRAvailable) then
-    distinct-values(data(xmlconv:executeSparqlQuery($existingAttainmentSparql)//sparql:binding[@name='key']/sparql:literal))  else ()
+    distinct-values(data(sparqlx:executeSparqlQuery($existingAttainmentSparql)//sparql:binding[@name='key']/sparql:literal))  else ()
 
 
 let $changedAttainments :=
@@ -708,20 +440,13 @@ for $attainment in $attainmentsInDelivery
             <td title="gml:id">{data($attainment/@gml:id)}</td>
             <td title="base:localId">{data($attainment/aqd:inspireId/base:Identifier/base:localId)}</td>
             <td title="base:namespace">{data($attainment/aqd:inspireId/base:Identifier/base:namespace)}</td>
-            <td title="aqd:zone">{xmlconv:checkLink(data($attainment/aqd:zone/@xlink:href))}</td>
-            <td title="aqd:pollutant">{xmlconv:checkLink(data($attainment/aqd:pollutant/@xlink:href))}</td>
-            <td title="aqd:protectionTarget">{xmlconv:checkLink(data($attainment/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/@xlink:href))}</td>
+            <td title="aqd:zone">{common:checkLink(data($attainment/aqd:zone/@xlink:href))}</td>
+            <td title="aqd:pollutant">{common:checkLink(data($attainment/aqd:pollutant/@xlink:href))}</td>
+            <td title="aqd:protectionTarget">{common:checkLink(data($attainment/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/@xlink:href))}</td>
         </tr>
 
     else
         ()
-
-
-
-
-
-
-(: G3 TODO: Can not be done because there is not indication for modification/updated attainment in xml file :)
 
 (: G4 :)
 
@@ -765,12 +490,12 @@ return
         <tr>
             <td title="gml:id">{distinct-values($rec/@gml:id)}</td>
             <td title="aqd:inspireId">{distinct-values($aqdinspireId)}</td>
-            <td title="aqd:pollutant">{xmlconv:checkLink(distinct-values(data($rec/aqd:pollutant/@xlink:href)))}</td>
-            <td title="aqd:objectiveType">{xmlconv:checkLink(distinct-values(data($rec/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType/@xlink:href)))}</td>
-            <td title="aqd:reportingMetric">{xmlconv:checkLink(distinct-values(data($rec/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric/@xlink:href)))}</td>
-            <td title="aqd:protectionTarget">{xmlconv:checkLink(distinct-values(data($rec/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/@xlink:href)))}</td>
-            <td title="aqd:zone">{xmlconv:checkLink(distinct-values(data($rec/aqd:zone/@xlink:href)))}</td>
-            <td title="aqd:assessment">{xmlconv:checkLink(distinct-values(data($rec/aqd:assessment/@xlink:href)))}</td>
+            <td title="aqd:pollutant">{common:checkLink(distinct-values(data($rec/aqd:pollutant/@xlink:href)))}</td>
+            <td title="aqd:objectiveType">{common:checkLink(distinct-values(data($rec/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType/@xlink:href)))}</td>
+            <td title="aqd:reportingMetric">{common:checkLink(distinct-values(data($rec/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric/@xlink:href)))}</td>
+            <td title="aqd:protectionTarget">{common:checkLink(distinct-values(data($rec/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/@xlink:href)))}</td>
+            <td title="aqd:zone">{common:checkLink(distinct-values(data($rec/aqd:zone/@xlink:href)))}</td>
+            <td title="aqd:assessment">{common:checkLink(distinct-values(data($rec/aqd:assessment/@xlink:href)))}</td>
         </tr>
 
 (: G5 Compile & feedback a list of the exceedances situations based on the content of
@@ -788,11 +513,11 @@ let $tblAllExceedances :=
     for $rec in $allExceedances
     return
         <tr>
-            <td title="aqd:zone">{xmlconv:checkLink(data($rec/aqd:zone/@xlink:href))}</td>
-            <td title="aqd:pollutant">{xmlconv:checkLink(data($rec/aqd:pollutant/@xlink:href))}</td>
-            <td title="aqd:objectiveType">{xmlconv:checkLink(data($rec/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType/@xlink:href))}</td>
-            <td title="aqd:reportingMetric">{xmlconv:checkLink(data($rec/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric/@xlink:href))}</td>
-            <td title="aqd:protectionTarget">{xmlconv:checkLink(data($rec/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/@xlink:href))}</td>
+            <td title="aqd:zone">{common:checkLink(data($rec/aqd:zone/@xlink:href))}</td>
+            <td title="aqd:pollutant">{common:checkLink(data($rec/aqd:pollutant/@xlink:href))}</td>
+            <td title="aqd:objectiveType">{common:checkLink(data($rec/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType/@xlink:href))}</td>
+            <td title="aqd:reportingMetric">{common:checkLink(data($rec/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric/@xlink:href))}</td>
+            <td title="aqd:protectionTarget">{common:checkLink(data($rec/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/@xlink:href))}</td>
             <td title="aqd:exceedance">{data($rec/aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedance)}</td>
             <td title="aqd:numberExceedances">{data($rec/aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:numberExceedances)}</td>
             <td title="aqd:numericalExceedance">{data($rec/aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:numericalExceedance)}</td>
@@ -820,12 +545,12 @@ let $tblG6 :=
     where normalize-space(data($rec/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType/@xlink:href)) = "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LVmaxMOT"
     return
         <tr>
-            <td title="aqd:zone">{xmlconv:checkLink(data($rec/aqd:zone/@xlink:href))}</td>
-            <td title="aqd:inspireId">{xmlconv:checkLink(data(concat($rec/aqd:inspireId/base:Identifier/base:localId,"/",$rec/aqd:inspireId/base:Identifier/base:namespace)))}</td>
-            <td title="aqd:pollutant">{xmlconv:checkLink(data($rec/aqd:pollutant/@xlink:href))}</td>
-            <td title="aqd:objectiveType">{xmlconv:checkLink(data($rec/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType/@xlink:href))}</td>
-            <td title="aqd:reportingMetric">{xmlconv:checkLink(data($rec/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric/@xlink:href))}</td>
-            <td title="aqd:protectionTarget">{xmlconv:checkLink(data($rec/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/@xlink:href))}</td>
+            <td title="aqd:zone">{common:checkLink(data($rec/aqd:zone/@xlink:href))}</td>
+            <td title="aqd:inspireId">{common:checkLink(data(concat($rec/aqd:inspireId/base:Identifier/base:localId,"/",$rec/aqd:inspireId/base:Identifier/base:namespace)))}</td>
+            <td title="aqd:pollutant">{common:checkLink(data($rec/aqd:pollutant/@xlink:href))}</td>
+            <td title="aqd:objectiveType">{common:checkLink(data($rec/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType/@xlink:href))}</td>
+            <td title="aqd:reportingMetric">{common:checkLink(data($rec/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric/@xlink:href))}</td>
+            <td title="aqd:protectionTarget">{common:checkLink(data($rec/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/@xlink:href))}</td>
 
         </tr>
 
@@ -925,8 +650,8 @@ let $invalidExceedanceDescriptionAdjustment:=
 (: G13 :)
 
 let $resultXml := if (fn:string-length($countryCode) = 2) then xmlconv:getLocallD($cdrUrl) else ""
-let $isLocallDCodesAvailable := string-length($resultXml) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($resultXml, "xml"))
-let $inspireLabel := if($isLocallDCodesAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($resultXml)//sparql:binding[@name='inspireLabel']/sparql:literal)) else "x"
+let $isLocallDCodesAvailable := string-length($resultXml) > 0 and doc-available(sparqlx:getSparqlEndpointUrl($resultXml, "xml"))
+let $inspireLabel := if($isLocallDCodesAvailable) then distinct-values(data(sparqlx:executeSparqlQuery($resultXml)//sparql:binding[@name='inspireLabel']/sparql:literal)) else "x"
 let $isLocallDCodesAvailable := count($resultXml) > 0
 
 let $invalidAssessment :=
@@ -945,8 +670,8 @@ let $invalidAssessment :=
 
 (: G15 :)
 let $resultXml := if (fn:string-length($countryCode) = 2) then xmlconv:getZoneLocallD($cdrUrl) else ""
-let $isZoneLocallDCodesAvailable := string-length($resultXml) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($resultXml, "xml"))
-let $zoneLocallD := if($isZoneLocallDCodesAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($resultXml)//sparql:binding[@name='inspireLabel']/sparql:literal)) else ""
+let $isZoneLocallDCodesAvailable := string-length($resultXml) > 0 and doc-available(sparqlx:getSparqlEndpointUrl($resultXml, "xml"))
+let $zoneLocallD := if($isZoneLocallDCodesAvailable) then distinct-values(data(sparqlx:executeSparqlQuery($resultXml)//sparql:binding[@name='inspireLabel']/sparql:literal)) else ""
 let $isZoneLocallDCodesAvailable := count($resultXml) > 0
 
 let $invalidAssessmentZone :=
@@ -965,13 +690,13 @@ let $invalidAssessmentZone :=
 (: G17 :)
 
 let $resultXml := if (fn:string-length($countryCode) = 2) then xmlconv:getZoneLocallD($cdrUrl) else ""
-let $isZoneLocallDCodesAvailable := string-length($resultXml) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($resultXml, "xml"))
-let $zoneLocallD := if($isZoneLocallDCodesAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($resultXml)//sparql:binding[@name='inspireLabel']/sparql:literal)) else ()
+let $isZoneLocallDCodesAvailable := string-length($resultXml) > 0 and doc-available(sparqlx:getSparqlEndpointUrl($resultXml, "xml"))
+let $zoneLocallD := if($isZoneLocallDCodesAvailable) then distinct-values(data(sparqlx:executeSparqlQuery($resultXml)//sparql:binding[@name='inspireLabel']/sparql:literal)) else ()
 let $isZoneLocallDCodesAvailable := count($zoneLocallD) > 0
 
 let $resultSparql := if (fn:string-length($countryCode) = 2) then xmlconv:getPollutantlD($cdrUrl) else ""
-let $isPollutantCodesAvailable := string-length($resultSparql) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($resultSparql, "xml"))
-let $pollutansCode:= if($isPollutantCodesAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($resultSparql)//sparql:binding[@name='key']/sparql:literal)) else ()
+let $isPollutantCodesAvailable := string-length($resultSparql) > 0 and doc-available(sparqlx:getSparqlEndpointUrl($resultSparql, "xml"))
+let $pollutansCode:= if($isPollutantCodesAvailable) then distinct-values(data(sparqlx:executeSparqlQuery($resultSparql)//sparql:binding[@name='key']/sparql:literal)) else ()
 let $isPollutantCodesAvailable := count($pollutansCode) > 0
 
 let $invalidPollutant :=
@@ -986,8 +711,8 @@ let $invalidPollutant :=
 (: G18 :)
 
 let $resultXml := if (fn:string-length($countryCode) = 2) then xmlconv:getTimeExtensionExemption($cdrUrl) else ""
-let $isLocalCodesAvailable := string-length($resultXml) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($resultXml, "xml"))
-let $localId := if($isLocalCodesAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($resultXml)//sparql:binding[@name='localId']/sparql:literal)) else ""
+let $isLocalCodesAvailable := string-length($resultXml) > 0 and doc-available(sparqlx:getSparqlEndpointUrl($resultXml, "xml"))
+let $localId := if($isLocalCodesAvailable) then distinct-values(data(sparqlx:executeSparqlQuery($resultXml)//sparql:binding[@name='localId']/sparql:literal)) else ""
 let $isLocalCodesAvailable := count($resultXml) > 0
 
 let $invalidObjectiveType :=
@@ -1216,7 +941,6 @@ let $invalidobjectiveTypesForLV :=
 
 
 (: G38 :)
-
 let $invalidAreaClassificationCodes := xmlconv:isinvalidDDConceptLimited($source_url, "aqd:exceedanceDescriptionBase", "aqd:ExceedanceArea", "aqd:areaClassification",  $xmlconv:AREACLASSIFICATION_VOCABULARY, $xmlconv:VALID_AREACLASSIFICATION_IDS_52)
         (:)let $invalidAqdReportingMetricG37 :=
     for $aqdReportingMetricG37 in $docRoot//aqd:AQD_Attainment
@@ -1229,12 +953,12 @@ let $invalidAreaClassificationCodes := xmlconv:isinvalidDDConceptLimited($source
 (: G39 :)
 
 (: used below as well :)
-let $modelCdrUrl := if ($countryCode = 'gi') then xmlconv:getCdrUrl('gb') else $cdrUrl
+let $modelCdrUrl := if ($countryCode = 'gi') then common:getCdrUrl('gb') else $cdrUrl
 
 let $resultXml := if (fn:string-length($countryCode) = 2) then xmlconv:getModel($modelCdrUrl) else ""
-let $isModelCodesAvailable := string-length($resultXml) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($resultXml, "xml"))
+let $isModelCodesAvailable := string-length($resultXml) > 0 and doc-available(sparqlx:getSparqlEndpointUrl($resultXml, "xml"))
 (:let $modelLocallD := if($isModelCodesAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($resultXml)//sparql:binding[@name='inspireLabel']/sparql:literal)) else "":)
-let $modelLocallD := if($isModelCodesAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($resultXml)//concat(sparql:binding[@name='namespace']/sparql:literal,"/",sparql:binding[@name='localId']/sparql:literal))) else ""
+let $modelLocallD := if($isModelCodesAvailable) then distinct-values(data(sparqlx:executeSparqlQuery($resultXml)//concat(sparql:binding[@name='namespace']/sparql:literal,"/",sparql:binding[@name='localId']/sparql:literal))) else ""
 
 
 let $invalidAssessmentModel :=
@@ -1251,20 +975,20 @@ let $invalidAssessmentModel :=
 (: G40   :)
 
 let $resultXml := if (fn:string-length($countryCode) = 2) then xmlconv:getLocallD($cdrUrl) else ""
-let $isLocallDCodesAvailable := string-length($resultXml) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($resultXml, "xml"))
-let $inspireLabel := if($isLocallDCodesAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($resultXml)//sparql:binding[@name='inspireLabel']/sparql:literal)) else ""
+let $isLocallDCodesAvailable := string-length($resultXml) > 0 and doc-available(sparqlx:getSparqlEndpointUrl($resultXml, "xml"))
+let $inspireLabel := if($isLocallDCodesAvailable) then distinct-values(data(sparqlx:executeSparqlQuery($resultXml)//sparql:binding[@name='inspireLabel']/sparql:literal)) else ""
 
 
 let $resultXml2 :=  xmlconv:getAssessmentMethods()
-let $isAssessmentMethodsAvailable := string-length($resultXml2) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($resultXml2, "xml"))
-let $assessmentMetadataNamespace := if($isAssessmentMethodsAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($resultXml2)//sparql:binding[@name='assessmentMetadataNamespace']/sparql:literal)) else ""
-let $assessmentMetadataId := if($isAssessmentMethodsAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($resultXml2)//sparql:binding[@name='assessmentMetadataId']/sparql:literal)) else ""
-let $assessmentMetadata := if($isAssessmentMethodsAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($resultXml2)//concat(sparql:binding[@name='assessmentMetadataNamespace']/sparql:literal,"/",sparql:binding[@name='assessmentMetadataId']/sparql:literal))) else ""
+let $isAssessmentMethodsAvailable := string-length($resultXml2) > 0 and doc-available(sparqlx:getSparqlEndpointUrl($resultXml2, "xml"))
+let $assessmentMetadataNamespace := if($isAssessmentMethodsAvailable) then distinct-values(data(sparqlx:executeSparqlQuery($resultXml2)//sparql:binding[@name='assessmentMetadataNamespace']/sparql:literal)) else ""
+let $assessmentMetadataId := if($isAssessmentMethodsAvailable) then distinct-values(data(sparqlx:executeSparqlQuery($resultXml2)//sparql:binding[@name='assessmentMetadataId']/sparql:literal)) else ""
+let $assessmentMetadata := if($isAssessmentMethodsAvailable) then distinct-values(data(sparqlx:executeSparqlQuery($resultXml2)//concat(sparql:binding[@name='assessmentMetadataNamespace']/sparql:literal,"/",sparql:binding[@name='assessmentMetadataId']/sparql:literal))) else ""
 (: for G42, G67 :)
 let $resultXml3 :=  xmlconv:getSamplingPointAssessmentMetadata()
-let $isAssessmentMethodsAvailable := string-length($resultXml3) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($resultXml3, "xml"))
+let $isAssessmentMethodsAvailable := string-length($resultXml3) > 0 and doc-available(sparqlx:getSparqlEndpointUrl($resultXml3, "xml"))
 let $samplingPointAssessmentMetadata := if($isAssessmentMethodsAvailable) then 
-    let $results := xmlconv:executeSparqlQuery($resultXml3)
+    let $results := sparqlx:executeSparqlQuery($resultXml3)
     let $values :=
         for $i in $results
             return concat($i/sparql:binding[@name='metadataNamespace']/sparql:literal,"/", $i/sparql:binding[@name='metadataId']/sparql:literal)
@@ -1298,9 +1022,9 @@ let $isAssessmentMethodsAvailable := count($resultXml2) > 0
 
 let $modelCdrUrl_1 := $cdrUrl
 let $resultXml := if (fn:string-length($countryCode) = 2) then xmlconv:getSamplingPoint($modelCdrUrl_1) else ""
-let $isSamplingPointAvailable := string-length($resultXml) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($resultXml, "xml"))
+let $isSamplingPointAvailable := string-length($resultXml) > 0 and doc-available(sparqlx:getSparqlEndpointUrl($resultXml, "xml"))
 let $samplingPointlD := if($isSamplingPointAvailable) then
-    let $results := xmlconv:executeSparqlQuery($resultXml)
+    let $results := sparqlx:executeSparqlQuery($resultXml)
     let $values :=
         for $i in $results
             return concat($i/sparql:binding[@name='namespace']/sparql:literal, '/', $i/sparql:binding[@name = 'localId']/sparql:literal)
@@ -1368,8 +1092,8 @@ let $invalidAreaClassificationAdjusmentCodes := xmlconv:isinvalidDDConceptLimite
 (: G53 :)
 
 let $resultXml := if (fn:string-length($countryCode) = 2) then xmlconv:getModel($modelCdrUrl) else ""
-let $isModelAvailable := string-length($resultXml) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($resultXml, "xml"))
-let $model := if($isModelCodesAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($resultXml)//concat(sparql:binding[@name='namespace']/sparql:literal,"/",sparql:binding[@name='localId']/sparql:literal))) else ""
+let $isModelAvailable := string-length($resultXml) > 0 and doc-available(sparqlx:getSparqlEndpointUrl($resultXml, "xml"))
+let $model := if($isModelCodesAvailable) then distinct-values(data(sparqlx:executeSparqlQuery($resultXml)//concat(sparql:binding[@name='namespace']/sparql:literal,"/",sparql:binding[@name='localId']/sparql:literal))) else ""
 let $isModelAvailable := count($resultXml) > 0
 let $invalidModel_53  :=
     for $r in $docRoot//aqd:AQD_Attainment/aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:modelUsed
@@ -1810,7 +1534,7 @@ as element(tr)*{
             xmlconv:getCollectionConceptUrlSparql($vocabularyUrl)
         else
             xmlconv:getConceptUrlSparql($vocabularyUrl)
-    let $crConcepts := xmlconv:executeSparqlEndpoint($sparql)
+    let $crConcepts := sparqlx:executeSimpleSparqlQuery($sparql)
 
     let $allRecords :=
     if ($parentObject != "") then
@@ -1849,7 +1573,7 @@ declare function xmlconv:getCheckedVocabularyConceptValues($source_url as xs:str
             xmlconv:getCollectionConceptUrlSparql($vocabularyUrl)
         else
             xmlconv:getConceptUrlSparql($vocabularyUrl)
-    let $crConcepts := xmlconv:executeSparqlEndpoint($sparql)
+    let $crConcepts := sparqlx:executeSimpleSparqlQuery($sparql)
 
     let $allRecords :=
     if ($parentObject != "") then
@@ -1990,10 +1714,10 @@ return
                 <legend>How to read the test results</legend>
                 All test results are labeled with coloured bullets. The number in the bullet reffers to the rule code. The background colour of the bullets means:
                 <ul style="list-style-type: none;">
-                    <li><div style="width:50px; display:inline-block;margin-left:10px">{xmlconv:getBullet('Blue', 'info')}</div> - the data confirms to the rule, but additional feedback could be provided in QA result.</li>
-                    <li><div style="width:50px; display:inline-block;margin-left:10px">{xmlconv:getBullet('Red', 'error')}</div> - the crucial check did NOT pass and errenous records found from the delivery.</li>
-                    <li><div style="width:50px; display:inline-block;margin-left:10px">{xmlconv:getBullet('Orange', 'warning')}</div> - the non-crucial check did NOT pass.</li>
-                    <li><div style="width:50px; display:inline-block;margin-left:10px">{xmlconv:getBullet('Grey', 'skipped')}</div> - the check was skipped due to no relevant values found to check.</li>
+                    <li><div style="width:50px; display:inline-block;margin-left:10px">{html:getBullet('Blue', 'info')}</div> - the data confirms to the rule, but additional feedback could be provided in QA result.</li>
+                    <li><div style="width:50px; display:inline-block;margin-left:10px">{html:getBullet('Red', 'error')}</div> - the crucial check did NOT pass and errenous records found from the delivery.</li>
+                    <li><div style="width:50px; display:inline-block;margin-left:10px">{html:getBullet('Orange', 'warning')}</div> - the non-crucial check did NOT pass.</li>
+                    <li><div style="width:50px; display:inline-block;margin-left:10px">{html:getBullet('Grey', 'skipped')}</div> - the check was skipped due to no relevant values found to check.</li>
                 </ul>
                 <p>Click on the "Show records" link to see more details about the test result.</p>
             </fieldset>
@@ -2010,29 +1734,28 @@ declare function xmlconv:aproceed($source_url, $countryCode)
 
 let $docRoot := doc($source_url)
 
-let $cdrUrl := xmlconv:getCdrUrl($countryCode)
-let $modelCdrUrl := if ($countryCode = 'gi') then xmlconv:getCdrUrl('gb') else $cdrUrl
+let $cdrUrl := common:getCdrUrl($countryCode)
+let $modelCdrUrl := if ($countryCode = 'gi') then common:getCdrUrl('gb') else $cdrUrl
 
 let $resultXml := if (fn:string-length($countryCode) = 2) then xmlconv:getModel($modelCdrUrl) else ""
-let $isModelCodesAvailable := string-length($resultXml) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($resultXml, "xml"))
+let $isModelCodesAvailable := string-length($resultXml) > 0 and doc-available(sparqlx:getSparqlEndpointUrl($resultXml, "xml"))
 (:let $modelLocallD := if($isModelCodesAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($resultXml)//sparql:binding[@name='inspireLabel']/sparql:literal)) else "":)
-let $modelLocallD := if($isModelCodesAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($resultXml)//concat(sparql:binding[@name='namespace']/sparql:literal,"/",sparql:binding[@name='localId']/sparql:literal))) else ""
+let $modelLocallD := if($isModelCodesAvailable) then distinct-values(data(sparqlx:executeSparqlQuery($resultXml)//concat(sparql:binding[@name='namespace']/sparql:literal,"/",sparql:binding[@name='localId']/sparql:literal))) else ""
 
 
 let $invalidAssessmentModel :=
   for $x in $docRoot//aqd:AQD_Attainment/aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:modelUsed
     where $isModelCodesAvailable
-    return  if (empty(index-of($modelLocallD, $x/fn:normalize-space(@xlink:href)))) then <tr>
-        <td title="Feature type">{ "aqd:AQD_Attainment" }</td>
-        <td title="gml:id">{data($x/../../../../../@gml:id)}</td>
-        <td title="aqd:AQD_Model">{data($x/fn:normalize-space(@xlink:href))}</td>
-    </tr>
-    else ()
+    return
+        if (empty(index-of($modelLocallD, $x/fn:normalize-space(@xlink:href)))) then
+            <tr>
+                <td title="Feature type">{ "aqd:AQD_Attainment" }</td>
+                <td title="gml:id">{data($x/../../../../../@gml:id)}</td>
+                <td title="aqd:AQD_Model">{data($x/fn:normalize-space(@xlink:href))}</td>
+            </tr>
+        else
+            ()
 
 return $invalidAssessmentModel
 
 };
-
-(:
-xmlconv:proceed( $source_url, $countryCode )
-:)

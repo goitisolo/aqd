@@ -1219,7 +1219,7 @@ as element(div) {
         </div>
 };
 
-declare function xmlconv:buildPollutantResultRows($ruleCode as xs:string,  $invalidStrValues as xs:string*, $invalidMsg as xs:string, $errorLevel as xs:string, $recordDetails as element(tr)*) as element(tr)*{
+declare function xmlconv:buildPollutantResultRows($ruleCode as xs:string,  $invalidStrValues as xs:string*, $invalidMsg as xs:string, $errorLevel as xs:string, $recordDetails as element(tr)*) as element(tr)* {
 
     let $msg :=
         if (count($invalidStrValues) > 0) then
@@ -1232,17 +1232,15 @@ declare function xmlconv:buildPollutantResultRows($ruleCode as xs:string,  $inva
                 "", "", " missing pollutant", "","warning", xmlconv:buildVocItemRows($xmlconv:POLLUTANT_VOCABULARY, $invalidStrValues))
 };
 
-
-
-declare function xmlconv:buildVocItemRows($vocabularyUrl as xs:string, $codes as xs:string*)
-as element(tr)* {
+declare function xmlconv:buildVocItemRows($vocabularyUrl as xs:string, $codes as xs:string*) as element(tr)* {
     for $code in $codes
-    let $vocLink :=concat($vocabularyUrl, $code)
+    let $vocLink := concat($vocabularyUrl, $code)
     return
         <tr>
             <td title="Pollutant"><a href="{$vocLink}">{$vocLink}</a></td>
         </tr>
 };
+
 declare function xmlconv:reChangeCountrycode($countryCode as xs:string)
 as xs:string {
     if ($countryCode = "uk") then "gb" else if ($countryCode = "el") then "gr" else $countryCode

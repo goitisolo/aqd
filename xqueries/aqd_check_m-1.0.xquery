@@ -16,6 +16,9 @@ xquery version "1.0" encoding "UTF-8";
 
 module namespace xmlconv = "http://converters.eionet.europa.eu/dataflowM";
 import module namespace common = "aqd-common" at "aqd_check_common.xquery";
+import module namespace sparqlx = "aqd-sparql" at "aqd-sparql.xquery";
+import module namespace labels = "aqd-labels" at "aqd-labels.xquery";
+import module namespace html = "aqd-html" at "aqd-html.xquery";
 
 declare namespace aqd = "http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0";
 declare namespace gml = "http://www.opengis.net/gml/3.2";
@@ -57,72 +60,7 @@ declare variable $xmlconv:MEASUREMENTEQUIPMENT_VOCABULARY :="http://dd.eionet.eu
 declare variable $xmlconv:UOM_CONCENTRATION_VOCABULARY := "http://dd.eionet.europa.eu/vocabulary/uom/concentration/";
 declare variable $xmlconv:EQUIVALENCEDEMONSTRATED_VOCABULARY := "http://dd.eionet.europa.eu/vocabulary/aq/equivalencedemonstrated/";
 
-
-(:===================================================================:)
-(: Variable given as an external parameter by the QA service :)
-(:===================================================================:)
-
-(:
-declare variable $source_url as xs:string external;
-
-declare variable $source_url := "../test/DE_D_Station.xml";
-declare variable $source_url as xs:untypedAtomic external;
-Change it for testing locally:
-declare variable $source_url as xs:string external;
-declare variable $source_url := "http://cdr.eionet.europa.eu/gb/eu/aqd/e2a/colutn32a/envubnpvw/B_GB_Zones.xml";
-:)
-
-
-
-(: removes the file part from the end of URL and appends 'xml' for getting the envelope xml description :)
-declare function xmlconv:getEnvelopeXML($url as xs:string) as xs:string{
-
-        let $col := fn:tokenize($url,'/')
-        let $col := fn:remove($col, fn:count($col))
-        let $ret := fn:string-join($col,'/')
-        let $ret := fn:concat($ret,'/xml')
-        return
-            if(fn:doc-available($ret)) then
-                $ret
-            else
-             ""
-(:              "http://cdrtest.eionet.europa.eu/ee/eu/art17/envriytkg/xml" :)
-}
-;
-
-
-(:~
-: JavaScript
-:)
-declare function xmlconv:javaScript(){
-
-    let $js :=
-           <script type="text/javascript">
-               <![CDATA[
-    function toggle(divName, linkName, checkId) {{
-        divName = divName + "-" + checkId;
-        linkName = linkName + "-" + checkId;
-
-        var elem = document.getElementById(divName);
-        var text = document.getElementById(linkName);
-        if(elem.style.display == "inline") {{
-            elem.style.display = "none";
-            text.innerHTML = "Show records";
-            }}
-            else {{
-              elem.style.display = "inline";
-              text.innerHTML = "Hide records";
-            }}
-      }}
-                ]]>
-           </script>
-    return
-        <script type="text/javascript">{normalize-space($js)}</script>
-};
-
-declare function xmlconv:getErrorTD($errValue,  $element as xs:string, $showMissing as xs:boolean)
-as element(td)
-{
+declare function xmlconv:getErrorTD($errValue,  $element as xs:string, $showMissing as xs:boolean) as element(td) {
     let $val := if ($showMissing and string-length($errValue)=0) then "-blank-" else $errValue
     return
         <td title="{ $element }" style="color:red">{
@@ -131,157 +69,18 @@ as element(td)
         </td>
 };
 
-(:
- : ======================================================================
- :              SPARQL HELPER methods
- : ======================================================================
- :)
-
- (:---------------------------------Old xmlconv:executeSparqlQuery function----------------------------------------------------------------------:)
-
-(:~ Function executes given SPARQL query and returns result elements in SPARQL result format.
- : URL parameters will be correctly encoded.
- : @param $sparql SPARQL query.
- : @return sparql:results element containing zero or more sparql:result subelements in SPARQL result format.
- :)
-declare function xmlconv:executeSparqlEndpoint($sparql as xs:string)
-as element(sparql:results)
-{
-    let $uri := xmlconv:getSparqlEndpointUrl($sparql, "xml")
-
-    return
-        if(doc-available($uri))then
-        fn:doc($uri)//sparql:results
-        else
-            <sparql:results/>
-
-};
-(:----------------------------------------------------------------------------------------------------------------------------------------------:)
-declare function xmlconv:setLimitAndOffset($sparql as xs:string, $limit as xs:string, $offset as xs:string)
-as xs:string
-{
-    concat($sparql," offset ",$offset," limit ",$limit)
-};
-
-declare function xmlconv:toCountSparql($sparql as xs:string)
-as xs:string
-{       let $s :=if (fn:contains($sparql,"order")) then tokenize($sparql, "order") else tokenize($sparql, "ORDER")
-        let $firstPart := tokenize($s[1], "SELECT")
-        let $secondPart := tokenize($s[1], "WHERE")
-    return concat($firstPart[1], " SELECT count(*) WHERE ", $secondPart[2])
-};
-
-declare function xmlconv:countsSparqlResults($sparql as xs:string)
-as xs:integer
-{    let $countingSparql := xmlconv:toCountSparql($sparql)
-    let $endpoint :=  xmlconv:executeSparqlEndpoint($countingSparql)
-
-
-
-    (: Counting all results:)
-    let $count :=  $countingSparql
-    let $isCountAvailable := string-length($count) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($count, "xml"))
-    let $countResult := if($isCountAvailable) then (data($endpoint//sparql:binding[@name='callret-0']/sparql:literal)) else ""
-    return $countResult[1]
-};
-
-declare function xmlconv:executeSparqlQuery($sparql as xs:string)
-as element(sparql:result)*
-{
-    let $limit := number(2000)
-    let $countResult := xmlconv:countsSparqlResults($sparql)
-
-    (:integer - how many times must sparql function repeat :)
-    let $divCountResult := if($countResult>0) then ceiling(number($countResult) div number($limit)) else number("1")
-
-    (:Collects all sparql results:)
-    let $allResults :=
-        for $r in (1 to  xs:integer(number($divCountResult)))
-            let $offset := if ($r > 1) then string(((number($r)-1) * $limit)) else "0"
-            let $resultXml := xmlconv:setLimitAndOffset($sparql,xs:string($limit), $offset)
-            let $isResultsAvailable := string-length($resultXml) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($resultXml, "xml"))
-        let $result := if($isResultsAvailable) then xmlconv:executeSparqlEndpoint($resultXml)//sparql:result else ()
-    return $result
-
-    return  $allResults
-};
-
-(:----------------------------------------------------------------------------------------------------------------------------------------------:)
-
-
-(:~
- : Get the SPARQL endpoint URL.
- : @param $sparql SPARQL query.
- : @param $format xml or html.
- : @param $inference use inference when executing sparql query.
- : @return link to sparql endpoint
- :)
-declare function xmlconv:getSparqlEndpointUrl($sparql as xs:string, $format as xs:string)
-as xs:string
-{
-    let $sparql := fn:encode-for-uri(fn:normalize-space($sparql))
-    let $resultFormat :=
-        if ($format = "xml") then
-            "application/xml"
-        else if ($format = "html") then
-            "text/html"
-        else
-            $format
-    let $defaultGraph := ""
-    let $uriParams := concat("query=", $sparql, "&amp;format=", $resultFormat, $defaultGraph)
-    let $uri := concat($xmlconv:CR_SPARQL_URL, "?", $uriParams)
-    return $uri
-};
-
-declare function xmlconv:is-a-number( $value as xs:anyAtomicType? )
-as xs:boolean {
-    string(number($value)) != 'NaN'
-} ;
-
-declare function xmlconv:getBullet($text as xs:string, $level as xs:string)
-as element(div) {
-
-    let $color :=
-        if ($level = "error") then
-            "red"
-        else if ($level = "warning") then
-            "orange"
-        else if ($level = "skipped") then
-            "gray"
-        else
-            "deepskyblue"
-return
-    <div class="{$level}" style="background-color: { $color }; font-size: 0.8em; color: white; padding-left:5px;padding-right:5px;margin-right:5px;margin-top:2px;text-align:center">{ $text }</div>
-};
-
-declare function xmlconv:checkLink($text as xs:string*)
-as element(span)*{
-    for $c at $pos in $text
-    return
-        <span>{
-            if (starts-with($c, "http://")) then <a href="{$c}">{$c}</a> else $c
-        }{  if ($pos < count($text)) then ", " else ""
-        }</span>
-
-}
-;
-
-(:
-    Builds HTML table rows for rules.
-:)
+(: Builds HTML table rows for rules. :)
 declare function xmlconv:buildResultRows($ruleCode as xs:string, $text, $invalidStrValues as xs:string*, $invalidValues as element()*,
     $valueHeading as xs:string, $validMsg as xs:string, $invalidMsg as xs:string, $skippedMsg, $errorLevel as xs:string, $recordDetails as element(tr)*)
 as element(tr)*{
 
     let $countInvalidValues := count($invalidStrValues) + count($invalidValues)
-
     let $recordDetails := if (count($invalidValues) > 0) then $invalidValues else $recordDetails
-
     let $bulletType := if (string-length($skippedMsg) > 0) then "skipped" else if ($countInvalidValues = 0) then "info" else $errorLevel
 let $result :=
     (
         <tr style="border-top:1px solid #666666;">
-            <td style="padding-top:3px;vertical-align:top;">{ xmlconv:getBullet($ruleCode, $bulletType) }</td>
+            <td style="padding-top:3px;vertical-align:top;">{ html:getBullet($ruleCode, $bulletType) }</td>
             <th style="padding-top:3px;vertical-align:top;text-align:left;">{ $text }</th>
             <td style="padding-top:3px;vertical-align:top;"><span style="font-size:1.3em;">{
                 if (string-length($skippedMsg) > 0) then
@@ -409,12 +208,8 @@ as xs:string
                   }")
 };
 
-(:
-    Rule implementations
-:)
-declare function xmlconv:checkReport($source_url as xs:string, $countryCode as xs:string)
-as element(table) {
-
+(: Rule implementations :)
+declare function xmlconv:checkReport($source_url as xs:string, $countryCode as xs:string) as element(table) {
 let $docRoot := doc($source_url)
 
 (: M1 :)
@@ -432,7 +227,6 @@ let $tblAllFeatureTypes :=
         </tr>
 
 (: M2 :)
-
 let $M2Combinations :=
     for $featureType in $xmlconv:FEATURE_TYPES
     return
@@ -440,8 +234,8 @@ let $M2Combinations :=
 
 let $nameSpaces := distinct-values($docRoot//base:namespace)
 let $zonesSparql := xmlconv:getZonesSparql($nameSpaces)
-let $isZonesAvailable := string-length($zonesSparql) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($zonesSparql, "xml"))
-let $knownZones := if ($isZonesAvailable ) then distinct-values(data(xmlconv:executeSparqlQuery($zonesSparql)//sparql:binding[@name='inspireid']/sparql:literal)) else ()
+let $isZonesAvailable := string-length($zonesSparql) > 0 and doc-available(sparqlx:getSparqlEndpointUrl($zonesSparql, "xml"))
+let $knownZones := if ($isZonesAvailable ) then distinct-values(data(sparqlx:executeSparqlQuery($zonesSparql)//sparql:binding[@name='inspireid']/sparql:literal)) else ()
 let $unknownZones :=
     for $zone in $M2Combinations
     let $id := if (empty($zone/@gml:id)) then "" else data($zone/@gml:id)
@@ -463,8 +257,8 @@ let $M3Combinations :=
 
 let $nameSpaces := distinct-values($docRoot//base:namespace)
 let $zonesSparql := xmlconv:getZonesSparql($nameSpaces)
-let $isZonesAvailable := string-length($zonesSparql) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($zonesSparql, "xml"))
-let $knownZones := if ($isZonesAvailable ) then distinct-values(data(xmlconv:executeSparqlQuery($zonesSparql)//sparql:binding[@name='inspireid']/sparql:literal)) else ()
+let $isZonesAvailable := string-length($zonesSparql) > 0 and doc-available(sparqlx:getSparqlEndpointUrl($zonesSparql, "xml"))
+let $knownZones := if ($isZonesAvailable ) then distinct-values(data(sparqlx:executeSparqlQuery($zonesSparql)//sparql:binding[@name='inspireid']/sparql:literal)) else ()
 let $unknownZones :=
     for $zone in $M3Combinations
     let $id := if (empty($zone/@gml:id)) then "" else data($zone/@gml:id)
@@ -502,11 +296,11 @@ let $tblM4 :=
     return
         <tr>
 
-            <td title="gml:id">{xmlconv:checkLink($modelType)}</td>
-            <td title="ef:inspireId">{xmlconv:checkLink($inspireId)}</td>
-            <td title="ompr:inspireId">{xmlconv:checkLink($aqdInspireId)}</td>
-            <td title="ef:name">{xmlconv:checkLink($efName)}</td>
-            <td title="ompr:name">{xmlconv:checkLink($omprName)}</td>
+            <td title="gml:id">{common:checkLink($modelType)}</td>
+            <td title="ef:inspireId">{common:checkLink($inspireId)}</td>
+            <td title="ompr:inspireId">{common:checkLink($aqdInspireId)}</td>
+            <td title="ef:name">{common:checkLink($efName)}</td>
+            <td title="ompr:name">{common:checkLink($omprName)}</td>
         </tr>
 
 (: M5 :)
@@ -785,7 +579,7 @@ let $invalidAssessmentType := $docRoot//aqd:AQD_Model/aqd:assessmentType[fn:norm
     let $allInvalidTrueUsedAQD :=
         for $invalidTrueUsedAQD in $allTrueUsedAQD
         where
-            count(xmlconv:executeSparqlQuery(xmlconv:getSamplingPointAssessment($invalidTrueUsedAQD/ef:inspireId/base:Identifier/base:localId ,$invalidTrueUsedAQD/ef:inspireId/base:Identifier/base:namespace))/*) = 0
+            count(sparqlx:executeSparqlQuery(xmlconv:getSamplingPointAssessment($invalidTrueUsedAQD/ef:inspireId/base:Identifier/base:localId ,$invalidTrueUsedAQD/ef:inspireId/base:Identifier/base:namespace))/*) = 0
         return
             <tr>
                 <td title="gml:id">{data($invalidTrueUsedAQD/@gml:id)}</td>
@@ -809,7 +603,7 @@ let $allInvalZoneXlinks :=
 (: M26 Amended by Jaume Targa to add nilReason; also updated line 978 to pick $allInvalZoneXlinks :)
 let $allInvalZoneXlinks :=
    for $invalidZoneXlinks in $docRoot//gml:featureMember/aqd:AQD_Model/aqd:zone
-       where count(xmlconv:executeSparqlQuery(xmlconv:getSamplingPointZone($invalidZoneXlinks/@xlink:href))/*) = 0
+       where count(sparqlx:executeSparqlQuery(xmlconv:getSamplingPointZone($invalidZoneXlinks/@xlink:href))/*) = 0
 
        return if (not($invalidZoneXlinks/@nilReason="inapplicable")) then
            (<tr>
@@ -916,7 +710,7 @@ let  $tblM41 :=
                 (), (), "", string(count($tblM4)), "", "","error",$tblM4)}
         <tr style="border-top:1px solid #666666">
         <tr>
-            <td style="vertical-align:top;">{ xmlconv:getBullet("M5", if ($countB8duplicates = 0) then "info" else "error") }</td>
+            <td style="vertical-align:top;">{ html:getBullet("M5", if ($countB8duplicates = 0) then "info" else "error") }</td>
             <th style="vertical-align:top;">All gml:id attributes, am:inspireId and aqd:inspireId elements shall have unique content</th>
             <td style="vertical-align:top;">{
                 if ($countB8duplicates = 0) then
@@ -953,7 +747,7 @@ let  $tblM41 :=
         }
         </tr>
         <tr style="border-top:1px solid #666666">
-            <td style="vertical-align:top;">{ xmlconv:getBullet("M6", if ($countM6duplicates = 0) then "info" else "error") }</td>
+            <td style="vertical-align:top;">{ html:getBullet("M6", if ($countM6duplicates = 0) then "info" else "error") }</td>
             <th style="vertical-align:top;">./am:inspireId/base:Identifier/base:localId shall be an unique code within namespace</th>
             <td style="vertical-align:top;">{
                 if ($countM6duplicates = 0) then
@@ -1003,27 +797,17 @@ declare function xmlconv:checkVocabularyConceptValues($source_url as xs:string, 
 as element(tr)*{
     xmlconv:checkVocabularyConceptValues($source_url, $featureType, $element, $vocabularyUrl, "")
 };
-declare function xmlconv:checkVocabularyConceptValues($source_url as xs:string, $featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string, $vocabularyType as xs:string)
-as element(tr)*{
-
-    if(doc-available($source_url))
-    then
-
+declare function xmlconv:checkVocabularyConceptValues($source_url as xs:string, $featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string, $vocabularyType as xs:string) as element(tr)* {
+    if (doc-available($source_url)) then
         let $sparql :=
             if ($vocabularyType = "collection") then
                 xmlconv:getCollectionConceptUrlSparql($vocabularyUrl)
             else
                 xmlconv:getConceptUrlSparql($vocabularyUrl)
-        let $crConcepts := xmlconv:executeSparqlQuery($sparql)
-
+        let $crConcepts := sparqlx:executeSparqlQuery($sparql)
         for $rec in doc($source_url)//gml:featureMember/descendant::*[name()=$featureType]
-
         for $conceptUrl in $rec/child::*[name() = $element]/@xlink:href
-
-
-
         let $conceptUrl := normalize-space($conceptUrl)
-
         where string-length($conceptUrl) > 0
 
         return
@@ -1033,31 +817,21 @@ as element(tr)*{
                 <td title="ef:name">{data($rec/ef:name)}</td>
                 <td title="{ $element }" style="color:red">{$conceptUrl}</td>
             </tr>
-    else
-        ()
+        else
+            ()
 };
 
-declare function xmlconv:checkVocabularyConceptValues2($source_url as xs:string, $concept , $featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string, $vocabularyType as xs:string)
-as element(tr)*{
-
-    if(doc-available($source_url))
-    then
-
+declare function xmlconv:checkVocabularyConceptValues2($source_url as xs:string, $concept , $featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string, $vocabularyType as xs:string) as element(tr)* {
+    if (doc-available($source_url)) then
         let $sparql :=
             if ($vocabularyType = "collection") then
                 xmlconv:getCollectionConceptUrlSparql($vocabularyUrl)
             else
                 xmlconv:getConceptUrlSparql($vocabularyUrl)
-        let $crConcepts := xmlconv:executeSparqlQuery($sparql)
-
+        let $crConcepts := sparqlx:executeSparqlQuery($sparql)
         for $rec in $concept/ancestor::*[name()=$featureType]
-
         for $conceptUrl in $concept
-
-
-
         let $conceptUrl := normalize-space($conceptUrl)
-
         where string-length($conceptUrl) > 0
 
         return
@@ -1067,62 +841,41 @@ as element(tr)*{
                 <td title="ef:name">{data($rec/ef:name)}</td>
                 <td title="{ $element }" style="color:red">{$conceptUrl}</td>
             </tr>
-    else
-        ()
+        else
+            ()
 };
 
-declare function xmlconv:checkVocabularyConceptValues3($source_url as xs:string, $featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string, $vocabularyType as xs:string){
-
-    if(doc-available($source_url))
-    then
-
+declare function xmlconv:checkVocabularyConceptValues3($source_url as xs:string, $featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string, $vocabularyType as xs:string) {
+    if (doc-available($source_url)) then
         let $sparql :=
             if ($vocabularyType = "collection") then
                 xmlconv:getCollectionConceptUrlSparql($vocabularyUrl)
             else
                 xmlconv:getConceptUrlSparql($vocabularyUrl)
-        let $crConcepts := xmlconv:executeSparqlQuery($sparql)
-
+        let $crConcepts := sparqlx:executeSparqlQuery($sparql)
         for $rec in doc($source_url)//gml:featureMember/descendant::*[name()=$featureType]
-
         for $conceptUrl in $rec/child::*[name() = $element]
-
-
-
-
-
         where  not(xmlconv:isMatchingVocabCode($crConcepts, normalize-space($conceptUrl/@xlink:href)))
-
         return
             $conceptUrl
-    else
-        ()
+        else
+            ()
 };
 
 
 declare function xmlconv:checkVocabularyaqdAnalyticalTechniqueValues($source_url as xs:string, $featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string, $vocabularyType as xs:string)
 as element(tr)*{
-
-    if(doc-available($source_url))
-    then
-
+    if(doc-available($source_url)) then
         let $sparql :=
             if ($vocabularyType = "collection") then
                 xmlconv:getCollectionConceptUrlSparql($vocabularyUrl)
             else
                 xmlconv:getConceptUrlSparql($vocabularyUrl)
-        let $crConcepts := xmlconv:executeSparqlQuery($sparql)
-
+        let $crConcepts := sparqlx:executeSparqlQuery($sparql)
         for $rec in doc($source_url)//gml:featureMember/descendant::*[name()=$featureType]
-
         for $conceptUrl in $rec/child::*[name() = $element]/aqd:AnalyticalTechnique/child::*[name() = $element]/@xlink:href
-
-
-
         let $conceptUrl := normalize-space($conceptUrl)
-
         where string-length($conceptUrl) > 0
-
         return
             <tr isvalid="{ xmlconv:isMatchingVocabCode($crConcepts, $conceptUrl) }">
                 <td title="Feature type">{ $featureType }</td>
@@ -1130,34 +883,24 @@ as element(tr)*{
                 <td title="ef:name">{data($rec/ef:name)}</td>
                 <td title="{ $element }" style="color:red">{$conceptUrl}</td>
             </tr>
-    else
-        ()
+        else
+            ()
 };
 
 
 declare function xmlconv:checkVocabularyConceptEquipmentValues($source_url as xs:string,  $featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string, $vocabularyType as xs:string)
 as element(tr)*{
-
-    if(doc-available($source_url))
-    then
-
+    if(doc-available($source_url)) then
         let $sparql :=
             if ($vocabularyType = "collection") then
                 xmlconv:getCollectionConceptUrlSparql($vocabularyUrl)
             else
                 xmlconv:getConceptUrlSparql($vocabularyUrl)
-        let $crConcepts := xmlconv:executeSparqlQuery($sparql)
-
+        let $crConcepts := sparqlx:executeSparqlQuery($sparql)
         for $rec in doc($source_url)//gml:featureMember/descendant::*[name()=$featureType]
-
         for $conceptUrl in $rec/child::*[name() = $element]/*/aqd:equipment/@xlink:href
-
-
-
         let $conceptUrl := normalize-space($conceptUrl)
-
         where string-length($conceptUrl) > 0
-
         return
             <tr isvalid="{ xmlconv:isMatchingVocabCode($crConcepts, $conceptUrl) }">
                 <td title="Feature type">{ $featureType }</td>
@@ -1170,20 +913,17 @@ as element(tr)*{
 };
 declare function xmlconv:checkMeasurementMethodLinkValues($source_url as xs:string,  $concept,$featureType as xs:string,  $vocabularyUrl as xs:string, $vocabularyType as xs:string)
 as element(tr)*{
-    if(doc-available($source_url))
-    then
-
+    if (doc-available($source_url)) then
         let $sparql :=
             if ($vocabularyType = "collection") then
                 xmlconv:getCollectionConceptUrlSparql($vocabularyUrl)
             else
                 xmlconv:getConceptUrlSparql($vocabularyUrl)
-        let $crConcepts := xmlconv:executeSparqlQuery($sparql)
+        let $crConcepts := sparqlx:executeSparqlQuery($sparql)
         for $conceptUrl in $concept/../../aqd:measurementMethod/aqd:MeasurementMethod/aqd:measurementMethod/@xlink:href
             let $measurementMethodStyle := if(xmlconv:isMatchingVocabCode($crConcepts, $conceptUrl))then "" else "color:red"
             let $analyticalTechniqueStyle := if(count($conceptUrl/../../../../*[name(.) = "aqd:analyticalTechnique"])=0)then "" else "color:red"
             let $samplingMethod := if(count($conceptUrl/../../../../*[name(.) = "aqd:samplingMethod"])=0)then "" else "color:red"
-
         return
             <tr isvalid="{ xmlconv:isMatchingVocabCode($crConcepts, $conceptUrl) and count($conceptUrl/../../../../*[name(.) = "aqd:analyticalTechnique"])=0  and count($conceptUrl/../../../../*[name(.) = "aqd:samplingMethod"])=0}">
                 <td title="gml:id">{data($conceptUrl/../../../../@gml:id)}</td>
@@ -1197,9 +937,7 @@ as element(tr)*{
 
 
 
-declare function xmlconv:getConceptUrlSparql($scheme as xs:string)
-as xs:string
-{
+declare function xmlconv:getConceptUrlSparql($scheme as xs:string) as xs:string {
     concat("PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
     SELECT ?concepturl ?label
     WHERE {
@@ -1208,9 +946,7 @@ as xs:string
     }")
 };
 
-declare function xmlconv:getCollectionConceptUrlSparql($collection as xs:string)
-as xs:string
-{
+declare function xmlconv:getCollectionConceptUrlSparql($collection as xs:string) as xs:string {
     concat("PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
     SELECT ?concepturl
     WHERE {
@@ -1221,9 +957,7 @@ as xs:string
     }")
 };
 
-declare function xmlconv:isMatchingVocabCode($crConcepts as element(sparql:result)*, $concept as xs:string)
-as xs:boolean
-{
+declare function xmlconv:isMatchingVocabCode($crConcepts as element(sparql:result)*, $concept as xs:string) as xs:boolean {
     count($crConcepts/sparql:binding[@name="concepturl" and sparql:uri=$concept]) > 0
 };
 
@@ -1265,10 +999,10 @@ return
                 <legend>How to read the test results</legend>
                 All test results are labeled with coloured bullets. The number in the bullet reffers to the rule code. The background colour of the bullets means:
                 <ul style="list-style-type: none;">
-                    <li><div style="width:50px; display:inline-block;margin-left:10px">{xmlconv:getBullet('Blue', 'info')}</div> - the data confirms to the rule, but additional feedback could be provided in QA result.</li>
-                    <li><div style="width:50px; display:inline-block;margin-left:10px">{xmlconv:getBullet('Red', 'error')}</div> - the crucial check did NOT pass and errenous records found from the delivery.</li>
-                    <li><div style="width:50px; display:inline-block;margin-left:10px">{xmlconv:getBullet('Orange', 'warning')}</div> - the non-crucial check did NOT pass.</li>
-                    <li><div style="width:50px; display:inline-block;margin-left:10px">{xmlconv:getBullet('Grey', 'skipped')}</div> - the check was skipped due to no relevant values found to check.</li>
+                    <li><div style="width:50px; display:inline-block;margin-left:10px">{html:getBullet('Blue', 'info')}</div> - the data confirms to the rule, but additional feedback could be provided in QA result.</li>
+                    <li><div style="width:50px; display:inline-block;margin-left:10px">{html:getBullet('Red', 'error')}</div> - the crucial check did NOT pass and errenous records found from the delivery.</li>
+                    <li><div style="width:50px; display:inline-block;margin-left:10px">{html:getBullet('Orange', 'warning')}</div> - the non-crucial check did NOT pass.</li>
+                    <li><div style="width:50px; display:inline-block;margin-left:10px">{html:getBullet('Grey', 'skipped')}</div> - the check was skipped due to no relevant values found to check.</li>
                 </ul>
                 <p>Click on the "Show records" link to see more details about the test result.</p>
             </fieldset>
@@ -1280,6 +1014,3 @@ return
     </div>
 
 };
-(:)
-xmlconv:proceed( $source_url )
-:)

@@ -200,6 +200,70 @@ declare function html:javaScript_D(){
         <script type="text/javascript">{normalize-space($js)}</script>
 };
 
+(:~
+: JavaScript
+:)
+declare function html:javaScript_G(){
+
+    let $js :=
+        <script type="text/javascript">
+            <![CDATA[
+    function toggle(divName, linkName, checkId) {{
+         toggleItem(divName, linkName, checkId, 'record');
+    }}
+
+
+    function toggleItem(divName, linkName, checkId, itemLabel) {{
+        divName = divName + "-" + checkId;
+        linkName = linkName + "-" + checkId;
+
+        var elem = document.getElementById(divName);
+        var text = document.getElementById(linkName);
+        if(elem.style.display == "inline") {{
+            elem.style.display = "none";
+            text.innerHTML = "Show " + itemLabel + "s";
+            }}
+            else {{
+              elem.style.display = "inline";
+              text.innerHTML = "Hide " + itemLabel + "s";
+            }}
+      }}
+
+                ]]>
+        </script>
+    return
+        <script type="text/javascript">{normalize-space($js)}</script>
+};
+
+(:~
+: JavaScript
+:)
+declare function xmlconv:javaScript_M(){
+
+    let $js :=
+        <script type="text/javascript">
+            <![CDATA[
+    function toggle(divName, linkName, checkId) {{
+        divName = divName + "-" + checkId;
+        linkName = linkName + "-" + checkId;
+
+        var elem = document.getElementById(divName);
+        var text = document.getElementById(linkName);
+        if(elem.style.display == "inline") {{
+            elem.style.display = "none";
+            text.innerHTML = "Show records";
+            }}
+            else {{
+              elem.style.display = "inline";
+              text.innerHTML = "Hide records";
+            }}
+      }}
+                ]]>
+        </script>
+    return
+        <script type="text/javascript">{normalize-space($js)}</script>
+};
+
 declare function html:getBullet($text as xs:string, $level as xs:string) as element(div) {
     let $color :=
         if ($level = "error") then
@@ -361,12 +425,6 @@ declare function html:buildResultsSimpleRow($ruleCode as xs:string, $longText, $
         <td style="padding-top:3px;vertical-align:top;"><span style="font-size:1.3em;">{ $count } </span></td>
     </tr>
 };
-
-
-
-
-
-
 
 (: Builds HTML table rows for rules. :)
 declare function html:buildResultRows_C($ruleCode as xs:string, $longText, $text, $invalidStrValues as xs:string*, $invalidValues as element()*,
