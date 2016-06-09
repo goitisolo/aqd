@@ -388,7 +388,7 @@ declare variable $labels:M43_SHORT := labels:getLabel("M", "M43_SHORT");
 declare variable $labels:C6.1 := "Check that namespace is registered in vocabulary";
 declare variable $labels:C6.1_SHORT := "Check that namespace is registered in vocabulary";
 
-declare variable $labels:DOC := doc("aqd-labels.xml");
+declare variable $labels:DOC := doc("http://converterstest.eionet.europa.eu/xmlfile/aqd-labels.xml");
 declare variable $labels:PLACEHOLDER := "LABEL MISSING";
 
 declare function labels:getLabel($section as xs:string, $id as xs:string) {
