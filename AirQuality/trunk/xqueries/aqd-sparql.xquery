@@ -59,7 +59,7 @@ declare function sparqlx:toCountSparql($sparql as xs:string) as xs:string {
 
 declare function sparqlx:countsSparqlResults($sparql as xs:string) as xs:integer {
     let $countingSparql := sparqlx:toCountSparql($sparql)
-    let $endpoint :=  sparqlx:executeSparqlQuery($countingSparql)
+    let $endpoint := sparqlx:executeSimpleSparqlQuery($countingSparql)
 
     (: Counting all results:)
     let $count :=  $countingSparql

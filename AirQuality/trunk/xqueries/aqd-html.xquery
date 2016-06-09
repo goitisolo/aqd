@@ -14,11 +14,11 @@ declare function html:getHead() as element()* {
 };
 
 declare function html:getFoot() as element()* {
-    <script src="https://cdn.jsdelivr.net/jquery/2.2.4/jquery.min.js"></script>,
-    <script src="https://cdn.jsdelivr.net/foundation/6.2.3/foundation.min.js"></script>,
+    (<script src="https://cdn.jsdelivr.net/jquery/2.2.4/jquery.min.js">&#32;</script>,
+    <script src="https://cdn.jsdelivr.net/foundation/6.2.3/foundation.min.js">&#32;</script>,
     <script type="text/javascript">
         $(document).foundation();
-    </script>
+    </script>)
 };
 
 declare function html:getModalInfo($ruleCode, $longText) as element()* {
