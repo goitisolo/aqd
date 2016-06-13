@@ -798,3 +798,17 @@ as element(tr)*{
         html:buildResultRows_M($ruleCode, $longText, $text, $invalidStrValues, $invalidValues,
                 $valueHeading, $validMsg, $invalidMsg, $skippedMsg,$errorLevel, ())
 };
+
+declare function html:buildItemsList($ruleId as xs:string, $vocabularyUrl as xs:string, $ids as xs:string*) as element(div) {
+    let $list :=
+        for $id in $ids
+        let $refUrl := concat($vocabularyUrl, $id)
+        return
+            <p>{ $refUrl }</p>
+
+    return
+        <div>
+            <a id='vocLink-{$ruleId}' href='javascript:toggleItem("vocValuesDiv","vocLink", "{$ruleId}", "combination")'>Show combinations</a>
+            <div id="vocValuesDiv-{$ruleId}" style="display:none">{ $list }</div>
+        </div>
+};

@@ -815,8 +815,8 @@ return
         {html:buildResultRows_B("B36", $labels:B36, $labels:B36_SHORT, $invalidResidentPopulation, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "", "error")}
         {html:buildResultRows_B("B37", $labels:B37, $labels:B37_SHORT, $invalidPopulationYear, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "","warning")}
         {html:buildResultRows_B("B38", $labels:B38, $labels:B38_SHORT, $invalidArea, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "", "error")}
-        {html:buildResultTable_B("B39a", $labels:B39a, $labels:B39a_SHORT, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "", "error", $invalidPollutantCombinations)}
-        {html:buildResultTable_B("B39b", $labels:B39b, $labels:B39b_SHORT, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "", "error", $invalidPollutantOccurences)}
+        {html:buildResultRowsHTML_B("B39a", $labels:B39a, <span>{$labels:B39a_SHORT} - {html:buildItemsList("B39a", "", "")}</span>, (), (), "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "", $invalidPollutantCombinations)}
+        {html:buildResultTable_B("B39b", $labels:B39b, $labels:B39b_SHORT, "aqd:AQD_Zone/@gml:id", "All values are valid", " missing value", "", "error", $invalidPollutantOccurences)}
         {html:buildResultTable_B("B39c", $labels:B39c, $labels:B39c_SHORT, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "", "error", $invalidPollutantRepeated)}
         {xmlconv:buildResultRowsWithTotalCount("B40", $labels:B40, $labels:B40_SHORT ,(), (), "aqd:timeExtensionExemption", "", "", "", $invalidTimeExtensionExemption)}
         {html:buildResultTable_B("B41", $labels:B41, $labels:B41_SHORT, (), "All values are valid", " invalid value", "", "error", $invalidPollutansB41)}

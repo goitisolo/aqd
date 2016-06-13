@@ -20,6 +20,7 @@ import module namespace sparqlx = "aqd-sparql" at "aqd-sparql.xquery";
 import module namespace labels = "aqd-labels" at "aqd-labels.xquery";
 import module namespace html = "aqd-html" at "aqd-html.xquery";
 import module namespace vocabulary = "aqd-vocabulary" at "aqd-vocabulary.xquery";
+import module namespace dd = "aqd-dd" at "aqd-dd.xquery";
 
 declare namespace aqd = "http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0";
 declare namespace gml = "http://www.opengis.net/gml/3.2";
@@ -226,7 +227,6 @@ SELECT ?zone ?inspireId ?inspireLabel ?relevantEmissions ?stationClassification
   FILTER (CONTAINS(str(?zone), '", $cdrUrl, "d/') and str(?stationClassification)='http://dd.eionet.europa.eu/vocabulary/aq/stationclassification/background')
   }")(: order by ?zone"):)
 };
-
 
 (:
 declare function xmlconv:getPollutantCode($cdrUrl as xs:string)
@@ -448,6 +448,98 @@ as xs:string
     } order by ?zone")
 };
 
+declare function query:getC31($countryCode as xs:string) {
+    "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX aqr: <http://reference.eionet.europa.eu/aq/ontology/>
+PREFIX aq: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+PREFIX aqdd: <http://dd.eionet.europa.eu/property/>
+
+SELECT DISTINCT
+?Namespace
+?Pollutant
+?ReportingYear
+?countOnB
+?countOnC
+?countOnG
+
+WHERE {
+
+{
+
+SELECT DISTINCT
+?Namespace
+(year(?reportingBegin) as ?ReportingYear)
+?pollURI
+?countOnB
+?countOnC
+
+WHERE {
+
+{
+SELECT DISTINCT
+?Namespace
+?pollURI
+count(distinct bif:concat(str(?Zone), str(?pollURI), str(?ProtectionTarget))) AS ?countOnB
+
+WHERE {
+
+  ?zoneURI a aqr:Zone;
+           aqr:zoneCode ?Zone;
+           aqr:pollutants ?polltargetURI;
+           aqr:inspireNamespace ?Namespace .
+
+?polltargetURI aqr:protectionTarget ?ProtectionTarget .
+?polltargetURI aqr:pollutantCode ?pollURI .
+
+} }
+{
+SELECT DISTINCT
+?Namespace
+?reportingBegin
+?pollURI
+count(distinct bif:concat(str(?Zone), str(?pollURI), str(?ProtectionTarget))) AS ?countOnC
+
+WHERE {
+
+  ?areURI a aqr:AssessmentRegime;
+           aqr:zone ?Zone;
+           aqr:reportingBegin ?reportingBegin ;
+           aqr:pollutant ?pollURI;
+           aqr:assessmentThreshold ?areThre ;
+           aqr:inspireNamespace ?Namespace .
+
+?areThre aqr:protectionTarget ?ProtectionTarget .
+
+} }
+
+}}
+
+{
+SELECT DISTINCT
+?Namespace
+(year(?reportingBegin) as ?ReportingYear)
+?pollURI
+count(distinct bif:concat(str(?Zone), str(?pollURI), str(?ProtectionTarget))) AS ?countOnG
+
+WHERE {
+
+  ?attURI a aqr:Attainment;
+           aqr:zone ?Zone;
+           aqr:reportingBegin ?reportingBegin ;
+           aqr:pollutant ?pollURI;
+           aqr:environmentalObjective ?envObj ;
+           aqr:inspireNamespace ?Namespace .
+
+?envObj aqr:protectionTarget ?ProtectionTarget .
+FILTER contains(str(?Namespace),", $countryCode, ") .
+} }
+
+?pollURI rdfs:label ?Pollutant .
+
+FILTER regex(?pollURI,'') .
+
+} ORDER BY ?Namespace ?ReportingYear ?Pollutant"
+};
 (: Rule implementations :)
 declare function xmlconv:checkReport($source_url as xs:string, $countryCode as xs:string, $bDir as xs:string) as element(table) {
 
@@ -963,6 +1055,54 @@ let $invalidZoneGmlEndPosition :=
                 xmlconv:getErrorTD(data($endPosition), "gml:endPosition", fn:true())
             }
         </tr>
+
+(: C31 :)
+(:
+let $resultXml := if (fn:string-length($countryCode) = 2) then xmlconv:getProtectionTarget($cdrUrl) else ""
+let $isInspireIdCodesAvailable := string-length($resultXml) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($resultXml, "xml"))
+
+let $allowedCombinations :=
+for $rec in xmlconv:executeSparqlQuery($resultXml)
+return
+    distinct-values(concat(data($rec//sparql:binding[@name='zoneId']/sparql:literal), "#", data($rec//sparql:binding[@name='pollutantCode']/sparql:uri), "#",data($rec//sparql:binding[@name='protectionTarget']/sparql:uri)))
+
+let $aqdEnvironmentalObjective :=
+    for $x in  $docRoot//aqd:AQD_AssessmentRegime
+    let $key := concat(data($x/aqd:zone/@xlink:href), "#", data($x/aqd:pollutant/@xlink:href), "#",data($x/aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/@xlink:href))
+        where empty(index-of($allowedCombinations, $key))
+    return $x/@gml:id
+:)
+
+(: C31 :)
+let $C31query := query:getC31($countryCode)
+let $C31Bresult := sparqlx:executeSparqlQuery($C31query)
+let $C31BCount :=
+    for $i in $C31Bresult//sparql:result
+    where ($i/sparql:binding[@name = "ReportingYear"]/string(sparql:literal) = $reportingYear)
+    return
+    <result>
+        <pollutant>{$i/sparql:binding[@name = "Pollutant"]/string(sparql:literal)}</pollutant>
+        <count>{$i/sparql:binding[@name = "countOnB"]/string(sparql:literal)}</count>
+    </result>
+
+let $C31Count :=
+    <results> {
+        for $x in //aqd:AQD_AssessmentRegime/aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget[not(@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/NA")]
+            let $pollutant := $x/../../../../../aqd:pollutant/@xlink:href
+            let $zone := $x/../../../../../aqd:zone/@xlink:href
+            let $protectiontarget := $x/@xlink:href
+            let $key := string-join(($zone, $pollutant, $protectiontarget), "#")
+            group by $pollutant
+            return
+                <result>
+                    <pollutant>{dd:getNameFromPollutantCode($pollutant)}</pollutant>
+                    <count>{ count($key) }</count>
+                </result>}
+    </results>
+
+let $C31Result := 1
+    (:TODO: FIX THIS :)
+
 
 (: C32 :)
 let $samplingPointSparqlC32 :=
