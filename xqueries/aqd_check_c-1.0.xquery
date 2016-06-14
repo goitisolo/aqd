@@ -995,7 +995,7 @@ let $invalidZoneGmlEndPosition :=
 (: C31 :)
 let $C31query := xmlconv:getC31($countryCode)
 let $C31Bresults := <results>{sparqlx:executeSparqlQuery($C31query)}</results>
-let $C31BCount :=
+let $C31BCount := <results>{
     for $i in $C31Bresults//sparql:result
     where ($i/sparql:binding[@name = "ReportingYear"]/string(sparql:literal) = $reportingYear)
     return
@@ -1003,6 +1003,7 @@ let $C31BCount :=
         <pollutantName>{$i/sparql:binding[@name = "Pollutant"]/string(sparql:literal)}</pollutantName>
         <count>{$i/sparql:binding[@name = "countOnB"]/string(sparql:literal)}</count>
     </result>
+  }</results>
 
 let $C31Result :=
     <results> {
