@@ -8,6 +8,7 @@ xquery version "1.0";
 :)
 
 module namespace html = "aqd-html";
+import module namespace labels = "aqd-labels" at "aqd-labels.xquery";
 
 declare function html:getHead() as element()* {  
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/foundation/6.2.3/foundation.min.css"/>    
@@ -459,7 +460,7 @@ as element(tr)*{
                 </td>
                 <td></td>
             </tr>,
-            if (count($recordDetails)>0) then
+            if (count($recordDetails) > 0) then
                 <tr>
                     <td></td>
                     <td colspan="3">
@@ -811,4 +812,52 @@ declare function html:buildItemsList($ruleId as xs:string, $vocabularyUrl as xs:
             <a id='vocLink-{$ruleId}' href='javascript:toggleItem("vocValuesDiv","vocLink", "{$ruleId}", "combination")'>Show combinations</a>
             <div id="vocValuesDiv-{$ruleId}" style="display:none">{ $list }</div>
         </div>
+};
+
+declare function html:buildResultC31($ruleCode as xs:string, $resultsC as element(results), $resultsB as element(results)) as element(tr)* {
+    let $text := $labels:C31_SHORT
+    let $longText := $labels:C31
+    let $bodyTR :=
+        for $x in $resultsC/result
+            let $vsName := string($x/pollutantName)
+            let $vsCode := string($x/pollutantCode)
+            let $countC := string($x/count)
+            let $countB :=
+                for $i in $resultsB/result
+                    where ($i/pollutantName = $vsName)
+                return string($i/count)
+        return
+        <tr class="{if ($countB != $countC) then "error" else ()}">
+            <td>{$vsName}</td>
+            <td>{$vsCode}</td>
+            <td>{$countC}</td>
+            <td>{$countB}</td>
+        </tr>
+    let $bulletType := if (count($bodyTR[@class = "error"]) > 0) then "error" else "info"
+    return
+        (<tr style="border-top:1px solid #666666;">
+            <td style="padding-top:3px;vertical-align:top;">{ html:getBullet($ruleCode, $bulletType) }</td>
+            <th style="padding-top:3px;vertical-align:top;text-align:left;">{ $text } {html:getModalInfo($ruleCode, $longText)}</th>
+            <td>
+                <a id='feedbackLink-{$ruleCode}' href='javascript:toggle("feedbackRow","feedbackLink", "{$ruleCode}")' style="padding-left:10px;">Show records</a>
+            </td>
+        </tr>,
+        <tr>
+            <td></td>
+            <td>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Pollutant Name</th>
+                            <th>Pollutant Code</th>
+                            <th>Count C</th>
+                            <th>Count B</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {$bodyTR}
+                    </tbody>
+                </table>
+            </td>
+        </tr>)
 };
