@@ -21,6 +21,7 @@ import module namespace labels = "aqd-labels" at "aqd-labels.xquery";
 import module namespace html = "aqd-html" at "aqd-html.xquery";
 import module namespace vocabulary = "aqd-vocabulary" at "aqd-vocabulary.xquery";
 import module namespace dd = "aqd-dd" at "aqd-dd.xquery";
+import module namespace filter = "aqd-filter" at "aqd-filter.xquery";
 
 declare namespace aqd = "http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0";
 declare namespace gml = "http://www.opengis.net/gml/3.2";
@@ -448,97 +449,32 @@ as xs:string
     } order by ?zone")
 };
 
-declare function query:getC31($countryCode as xs:string) {
-    "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+declare function xmlconv:getC31($countryCode as xs:string) as xs:string {
+    concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX aqr: <http://reference.eionet.europa.eu/aq/ontology/>
 PREFIX aq: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
 PREFIX aqdd: <http://dd.eionet.europa.eu/property/>
 
 SELECT DISTINCT
 ?Namespace
+(year(xsd:dateTime(?reportingBegin)) as ?ReportingYear)
 ?Pollutant
-?ReportingYear
-?countOnB
-?countOnC
-?countOnG
-
-WHERE {
-
-{
-
-SELECT DISTINCT
-?Namespace
-(year(?reportingBegin) as ?ReportingYear)
-?pollURI
-?countOnB
-?countOnC
-
-WHERE {
-
-{
-SELECT DISTINCT
-?Namespace
-?pollURI
 count(distinct bif:concat(str(?Zone), str(?pollURI), str(?ProtectionTarget))) AS ?countOnB
 
 WHERE {
 
-  ?zoneURI a aqr:Zone;
-           aqr:zoneCode ?Zone;
-           aqr:pollutants ?polltargetURI;
-           aqr:inspireNamespace ?Namespace .
+?zoneURI a aqr:Zone;
+aqr:zoneCode ?Zone;
+aqr:pollutants ?polltargetURI;
+aqr:reportingBegin ?reportingBegin ;
+aqr:inspireNamespace ?Namespace .
 
 ?polltargetURI aqr:protectionTarget ?ProtectionTarget .
 ?polltargetURI aqr:pollutantCode ?pollURI .
-
-} }
-{
-SELECT DISTINCT
-?Namespace
-?reportingBegin
-?pollURI
-count(distinct bif:concat(str(?Zone), str(?pollURI), str(?ProtectionTarget))) AS ?countOnC
-
-WHERE {
-
-  ?areURI a aqr:AssessmentRegime;
-           aqr:zone ?Zone;
-           aqr:reportingBegin ?reportingBegin ;
-           aqr:pollutant ?pollURI;
-           aqr:assessmentThreshold ?areThre ;
-           aqr:inspireNamespace ?Namespace .
-
-?areThre aqr:protectionTarget ?ProtectionTarget .
-
-} }
-
-}}
-
-{
-SELECT DISTINCT
-?Namespace
-(year(?reportingBegin) as ?ReportingYear)
-?pollURI
-count(distinct bif:concat(str(?Zone), str(?pollURI), str(?ProtectionTarget))) AS ?countOnG
-
-WHERE {
-
-  ?attURI a aqr:Attainment;
-           aqr:zone ?Zone;
-           aqr:reportingBegin ?reportingBegin ;
-           aqr:pollutant ?pollURI;
-           aqr:environmentalObjective ?envObj ;
-           aqr:inspireNamespace ?Namespace .
-
-?envObj aqr:protectionTarget ?ProtectionTarget .
-FILTER contains(str(?Namespace),", $countryCode, ") .
-} }
-
 ?pollURI rdfs:label ?Pollutant .
-
 FILTER regex(?pollURI,'') .
-
-} ORDER BY ?Namespace ?ReportingYear ?Pollutant"
+FILTER STRSTARTS(str(?Namespace),'", $countryCode, "') .
+}")
 };
 (: Rule implementations :)
 declare function xmlconv:checkReport($source_url as xs:string, $countryCode as xs:string, $bDir as xs:string) as element(table) {
@@ -1057,37 +993,20 @@ let $invalidZoneGmlEndPosition :=
         </tr>
 
 (: C31 :)
-(:
-let $resultXml := if (fn:string-length($countryCode) = 2) then xmlconv:getProtectionTarget($cdrUrl) else ""
-let $isInspireIdCodesAvailable := string-length($resultXml) > 0 and doc-available(xmlconv:getSparqlEndpointUrl($resultXml, "xml"))
-
-let $allowedCombinations :=
-for $rec in xmlconv:executeSparqlQuery($resultXml)
-return
-    distinct-values(concat(data($rec//sparql:binding[@name='zoneId']/sparql:literal), "#", data($rec//sparql:binding[@name='pollutantCode']/sparql:uri), "#",data($rec//sparql:binding[@name='protectionTarget']/sparql:uri)))
-
-let $aqdEnvironmentalObjective :=
-    for $x in  $docRoot//aqd:AQD_AssessmentRegime
-    let $key := concat(data($x/aqd:zone/@xlink:href), "#", data($x/aqd:pollutant/@xlink:href), "#",data($x/aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/@xlink:href))
-        where empty(index-of($allowedCombinations, $key))
-    return $x/@gml:id
-:)
-
-(: C31 :)
-let $C31query := query:getC31($countryCode)
-let $C31Bresult := sparqlx:executeSparqlQuery($C31query)
+let $C31query := xmlconv:getC31($countryCode)
+let $C31Bresults := <results>{sparqlx:executeSparqlQuery($C31query)}</results>
 let $C31BCount :=
-    for $i in $C31Bresult//sparql:result
+    for $i in $C31Bresults//sparql:result
     where ($i/sparql:binding[@name = "ReportingYear"]/string(sparql:literal) = $reportingYear)
     return
     <result>
-        <pollutant>{$i/sparql:binding[@name = "Pollutant"]/string(sparql:literal)}</pollutant>
+        <pollutantName>{$i/sparql:binding[@name = "Pollutant"]/string(sparql:literal)}</pollutantName>
         <count>{$i/sparql:binding[@name = "countOnB"]/string(sparql:literal)}</count>
     </result>
 
-let $C31Count :=
+let $C31Result :=
     <results> {
-        for $x in //aqd:AQD_AssessmentRegime/aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget[not(@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/NA")]
+        for $x in $docRoot//aqd:AQD_AssessmentRegime/aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget[not(../string(aqd:objectiveType) = ("http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/MO", "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/ECO"))]
             let $pollutant := $x/../../../../../aqd:pollutant/@xlink:href
             let $zone := $x/../../../../../aqd:zone/@xlink:href
             let $protectiontarget := $x/@xlink:href
@@ -1095,14 +1014,14 @@ let $C31Count :=
             group by $pollutant
             return
                 <result>
-                    <pollutant>{dd:getNameFromPollutantCode($pollutant)}</pollutant>
+                    <pollutantName>{dd:getNameFromPollutantCode($pollutant)}</pollutantName>
+                    <pollutantCode>{tokenize($pollutant, "/")[last()]}</pollutantCode>
                     <count>{ count($key) }</count>
                 </result>}
     </results>
-
-let $C31Result := 1
-    (:TODO: FIX THIS :)
-
+let $C31Result := filter:filterByName($C31Result, "pollutantCode", (
+    "1","7","8","9","5", "6001", "10", "20", "5012", "5018", "5014", "5015", "5029"
+))
 
 (: C32 :)
 let $samplingPointSparqlC32 :=
@@ -1128,8 +1047,8 @@ let $aqdModelAssessMentTypes :=
 let $allAssessmentTypes := ($aqdSamplingPointAssessMEntTypes, $aqdModelAssessMentTypes)
 
 let $tblC32 :=
-    for $sMetadata in $docRoot//aqd:AQD_AssessmentRegime/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata                
-        let $id := string($sMetadata/@xlink:href)        
+    for $sMetadata in $docRoot//aqd:AQD_AssessmentRegime/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata
+        let $id := string($sMetadata/@xlink:href)
         let $docType := string($sMetadata/../aqd:assessmentType/@xlink:href)
         let $regimeId := string($sMetadata/../../../@gml:id)
         return 
@@ -1313,6 +1232,7 @@ return
         {html:buildResultTable_C("C29", concat("aqd:zone xlink:href attribute shall resolve to a traversable link to an AQ zone in /aqd:AQD_Zone reported under cdr.eionet.europa.eu/ZZ/eu/aqd/b/...  The ./aqd:pollutant and ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget within the Assessment Regime shall equal one combination /aqd:AQD_Zone/aqd:pollutants/aqd:Pollutant/aqd:pollutantCode and /aqd:AQD_Zone/aqd:pollutants/aqd:Pollutant/aqd:protectionTarget within  the  linked  zone  aqd:AQD_Zone/aqd:pollutants",
                 "Exception : Where ./aqd:pollutant resolves to http://dd.eionet.europa.eu/vocabulary/aq/pollutant/6001 ./aqd:zone xlink:href attribute MAY resolve to <aqd:zone nilReason='inapplicable'/>"),
                 $labels:C29_SHORT, (), "All values are valid", " invalid value", "","warning", $tblC29)}
+        {html:buildResultC31("C31", $C31Result, $C31BCount)}
         {html:buildResultTable_C("C32", $labels:C32, $labels:C32_SHORT, (),"All valid", " invalid value",  "","warning", $tblC32)}
         {html:buildResultRows_C("C33", $labels:C33, $labels:C33_SHORT, $invalidAssessmentGmlEndPosition,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error", ())}
         {html:buildResultRows_C("C35", $labels:C35, $labels:C35_SHORT, $invalidAssessmentUsed,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error", ())}
