@@ -76,9 +76,9 @@ declare function common:checkNamespaces($source_url) {
     return distinct-values($invalidNamespaces)
 };
 
-declare function common:getReportingYear($xml as document-node()) {
+declare function common:getReportingYear($xml as document-node()) as xs:string {
     let $year := year-from-dateTime($xml//aqd:reportingPeriod/gml:TimePeriod/gml:beginPosition)
-    return if (exists($year) and $year castable as xs:integer) then xs:integer($year) else ()
+    return if (exists($year) and $year castable as xs:integer) then xs:string($year) else ""
 };
 
 declare function common:containsAny($seq1 as xs:string*, $seq2 as xs:string*) as xs:boolean {
