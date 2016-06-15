@@ -489,6 +489,7 @@ let $zonesUrl := concat($cdrUrl, $bDir)
 let $reportingYear := common:getReportingYear($docRoot)
 
 
+
 let $latestZonesUrl := xmlconv:getLatestZoneEnvelope($zonesUrl, $reportingYear)
 
 
@@ -1165,12 +1166,20 @@ return $x
 
 let $invalidsamplingPointAssessmentMetadata40 :=
     for $aqdPollutantC40 in $docRoot//aqd:AQD_AssessmentRegime
-
-    let $pollutantXlinkC40 := fn:substring-after(data($aqdPollutantC40/aqd:pollutant/@xlink:href),"pollutant/")
-   where not(empty(index-of($xmlconv:VALID_POLLUTANT_IDS_40,$pollutantXlinkC40)))
-
-   return if (count($aqdPollutantC40/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata)>=1
+        let $pollutantXlinkC40 := fn:substring-after(data($aqdPollutantC40/aqd:pollutant/@xlink:href),"pollutant/")
+    where not(empty(index-of($xmlconv:VALID_POLLUTANT_IDS_40,$pollutantXlinkC40)))
+    return if (count($aqdPollutantC40/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata)>=1
         or count($aqdPollutantC40/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:modelAssessmentMetadata)>=1) then () else $aqdPollutantC40/@gml:id
+
+(: C41 gml:timePosition MUST be provided and must be equal or greater than (aqd:reportingPeriod – 5 years) included in the ReportingHeader :)
+    let $C41minYear := xs:integer($reportingYear) - 5
+    let $C41invalid :=
+        for $x in $docRoot/aqd:AQD_AssessmentRegime[aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:classificationDate/gml:TimeInstant[gml:timePosition castable as xs:integer]/xs:integer(gml:timePosition) < $C41minYear]
+        return
+            <tr>
+                <td title="aqd:AQD_AssessmentRegime/aqd:inspireId/base:Identifier/base:localId">{string($x/aqd:inspireId/base:Identifier/base:localId)}</td>
+                <td title=""></td>
+            </tr>
 
 return
     <table style="border-collapse:collapse;display:inline">
@@ -1241,6 +1250,7 @@ return
         {html:buildResultRows_C("C38", $labels:C38, $labels:C38_SHORT, $invalidAqdReportingMetricTest,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","warning", ())}
         {html:buildResultRows_C("C40", <span>The total number of /aqd:assessmentMethods/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata and /aqd:assessmentMethods/aqd:AssessmentMethods/aqd:modelAssessmentMetadata citations within a MS (delivery) shall be GREATER THAN OR EQUAL to 1 where ./aqd:pollutant xlink:href attribute resolves to{xmlconv:buildVocItemsList("C40", $vocabulary:POLLUTANT_VOCABULARY, $xmlconv:VALID_POLLUTANT_IDS_40)}</span>,
                 $labels:C40_SHORT, $invalidsamplingPointAssessmentMetadata40,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","warning", ())}
+        {html:buildResultRows_C("C41", $labels:C41, $labels:C41_SHORT, $C41invalid, (), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","warning", ())}
     </table>
 };
 
