@@ -945,68 +945,6 @@ or
 
         </tr>
 
-(: D52 moved to D67 - 70:)
-(:
-let $allProcNotMatchingCondition :=
-for $proc in $docRoot//aqd:AQD_SamplingPointProcess
-let $demonstrated := data($proc/aqd:equivalenceDemonstration/aqd:EquivalenceDemonstration/aqd:equivalenceDemonstrated/@xlink:href)
-let $demonstrationReport := data($proc/aqd:equivalenceDemonstration/aqd:EquivalenceDemonstration/aqd:demonstrationReport)
-let $documentation := data($proc/aqd:dataQuality/aqd:DataQuality/aqd:documentation)
-let $qaReport := data($proc/aqd:dataQuality/aqd:DataQuality/aqd:qaReport)
-
-    where fn:string-length($qaReport) = 0 or fn:string-length($documentation) = 0 or fn:string-length($demonstrationReport) = 0
-        or not(xmlconv:isValidConceptCode($demonstrated, $xmlconv:EQUIVALENCEDEMONSTRATED_VOCABULARY))
-
-return concat(data($proc/ompr:inspireId/base:Identifier/base:namespace), '/' , data($proc/ompr:inspireId/base:Identifier/base:localId))
-
-
-let $allInvalidTrueUsedAQD :=
-    for $invalidTrueUsedAQD in $docRoot//aqd:AQD_SamplingPoint
-        let $procIds := data($invalidTrueUsedAQD/ef:observingCapability/ef:ObservingCapability/ef:procedure/@xlink:href)
-        let $aqdUsed := $invalidTrueUsedAQD/aqd:usedAQD = true()
-
-    for $procId in $procIds
-    return
-        if ($aqdUsed  and  not(empty(index-of($allProcNotMatchingCondition, $procId)))) then
-        <tr>
-            <td title="gml:id">{data($invalidTrueUsedAQD/@gml:id)}</td>
-            <td title="base:localId">{data($invalidTrueUsedAQD/ef:inspireId/base:Identifier/base:localId)}</td>
-            <td title="base:namespace">{data($invalidTrueUsedAQD/ef:inspireId/base:Identifier/base:namespace)}</td>
-            <td title="ef:procedure">{$procId}</td>
-            <td title="ef:ObservingCapability">{data($invalidTrueUsedAQD/ef:observingCapability/ef:ObservingCapability/@gml:id)}</td>
-
-        </tr>
-        else ()
-:)
-
-(:D52 Done by Jaume Targa :)
-(: let $allInvalidZoneXlinks :=
-    for $invalidZoneXlinks in $docRoot//aqd:AQD_SamplingPoint/aqd:zone
-     where
-        count(xmlconv:executeSparqlQuery(xmlconv:getSamplingPointZone($invalidZoneXlinks/@xlink:href))/*) = 0
-    return
-        <tr>
-            <td title="gml:id">{data($invalidZoneXlinks/../@gml:id)}</td>
-            <td title="aqd:zone">{data($invalidZoneXlinks/@xlink:href)}</td>
-        </tr>
-:)
-
-(: D52 Done by Jaume Targa; re-using M25 :)
-    let $allTrueUsedAQD :=
-        for $trueUsedAQD in $docRoot//aqd:AQD_SamplingPoint
-        where $trueUsedAQD/aqd:usedAQD = true()
-        return $trueUsedAQD
-
-    let $allInvalidTrueUsedAQD :=
-        for $invalidTrueUsedAQD in $allTrueUsedAQD
-        where
-            count(sparqlx:executeSparqlQuery(xmlconv:getSamplingPointAssessment($invalidTrueUsedAQD/ef:inspireId/base:Identifier/base:localId ,$invalidTrueUsedAQD/ef:inspireId/base:Identifier/base:namespace))/*) = 0
-        return
-            <tr>
-                <td title="gml:id">{data($invalidTrueUsedAQD/@gml:id)}</td>
-                <td title="base:localId">{data($invalidTrueUsedAQD/ef:inspireId/base:Identifier/base:localId)}</td>
-                <td title="base:namespace">{data($invalidTrueUsedAQD/ef:inspireId/base:Identifier/base:namespace)}</td>
-            </tr>
 (: D53 Done by Rait :)
 let $allInvalidZoneXlinks :=
     for $invalidZoneXlinks in $docRoot//aqd:AQD_SamplingPoint/aqd:zone[not(@nilReason='inapplicable')]
@@ -1447,7 +1385,6 @@ return
         {html:buildResultRows_D("D46", $labels:D46, $labels:D46_SHORT, (), $allUnknownEfOperationActivityPeriod, "", "", "", "","info", ())}
         {html:buildResultRows_D("D50", $labels:D50, $labels:D50_SHORT, (), $invalidStationClassificationLink, "", concat(fn:string(count($invalidStationClassificationLink))," errors found"), "", "","error", ())}
         {html:buildResultRows_D("D51", $labels:D51, $labels:D51_SHORT, (), $invalidObservedPropertyCombinations, "", concat(fn:string(count($invalidObservedPropertyCombinations))," errors found"), " invalid attribute", "", "warning",())}
-    	{html:buildResultRows_D("D52", $labels:D52, $labels:D52_SHORT, (), $allInvalidTrueUsedAQD, "", concat(fn:string(count($allInvalidTrueUsedAQD))," errors found"), "", "", "warning",())}
         {html:buildResultRows_D("D53", $labels:D53, $labels:D53_SHORT, (), $allInvalidZoneXlinks, "", concat(fn:string(count( $allInvalidZoneXlinks))," errors found"), " invalid attribute", "", "error",())}
         {html:buildResultRows_D("D54", $labels:D54, $labels:D54_SHORT, (), $invalidDuplicateSamplingPointProcessIds, "", concat(string(count($invalidDuplicateSamplingPointProcessIds))," errors found.") , " invalid attribute", "","error", ())}
         <tr style="border-top:2px solid #666666">
