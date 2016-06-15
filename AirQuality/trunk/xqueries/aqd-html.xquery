@@ -822,10 +822,7 @@ declare function html:buildResultC31($ruleCode as xs:string, $resultsC as elemen
             let $vsName := string($x/pollutantName)
             let $vsCode := string($x/pollutantCode)
             let $countC := string($x/count)
-            let $countB :=
-                for $i in $resultsB/result
-                    where ($i/pollutantName = $vsName)
-                return string($i/count)
+            let $countB := string($resultsB/result[pollutantName = $vsName]/count)
         return
         <tr class="{if ($countB != $countC) then "error" else ()}">
             <td>{$vsName}</td>
