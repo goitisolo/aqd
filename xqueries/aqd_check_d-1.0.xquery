@@ -1210,60 +1210,22 @@ let $allInvalidTrueUsedAQD68 :=
 
 (: D69 Jaume Targa :)
 let $allProcNotMatchingCondition69 :=
-for $proc in $docRoot//aqd:AQD_SamplingPointProcess
-let $documentation := data($proc/aqd:dataQuality/aqd:DataQuality/aqd:documentation)
-let $qaReport := data($proc/aqd:dataQuality/aqd:DataQuality/aqd:qaReport)
-
-where fn:string-length($documentation) = 0
-
-return concat(data($proc/ompr:inspireId/base:Identifier/base:namespace), '/' , data($proc/ompr:inspireId/base:Identifier/base:localId))
-
+    for $proc in $docRoot//aqd:AQD_SamplingPointProcess
+        let $documentation := data($proc/aqd:dataQuality/aqd:DataQuality/aqd:documentation)
+        let $qaReport := data($proc/aqd:dataQuality/aqd:DataQuality/aqd:qaReport)
+    where (string-length($documentation) = 0) and (string-length($qaReport) = 0)
+    return concat(data($proc/ompr:inspireId/base:Identifier/base:namespace), '/' , data($proc/ompr:inspireId/base:Identifier/base:localId))
 
 let $allInvalidTrueUsedAQD69 :=
-    for $invalidTrueUsedAQD69 in $docRoot//aqd:AQD_SamplingPoint
-        let $procIds69 := data($invalidTrueUsedAQD69/ef:observingCapability/ef:ObservingCapability/ef:procedure/@xlink:href)
-        let $aqdUsed69 := $invalidTrueUsedAQD69/aqd:usedAQD = true()
-
-    for $procId69 in $procIds69
+    for $invalidTrueUsedAQD69 in $docRoot//aqd:AQD_SamplingPoint[aqd:usedAQD = "true" and ef:observingCapability/ef:ObservingCapability/ef:procedure/@xlink:href = $allProcNotMatchingCondition69]
     return
-        if ($aqdUsed69  and  not(empty(index-of($allProcNotMatchingCondition69, $procId69)))) then
         <tr>
             <td title="gml:id">{data($invalidTrueUsedAQD69/@gml:id)}</td>
             <td title="base:localId">{data($invalidTrueUsedAQD69/ef:inspireId/base:Identifier/base:localId)}</td>
             <td title="base:namespace">{data($invalidTrueUsedAQD69/ef:inspireId/base:Identifier/base:namespace)}</td>
-            <td title="ef:procedure">{$procId69}</td>
+            <td title="ef:procedure">{string($invalidTrueUsedAQD69/ef:observingCapability/ef:ObservingCapability/ef:procedure/@xlink:href)}</td>
             <td title="ef:ObservingCapability">{data($invalidTrueUsedAQD69/ef:observingCapability/ef:ObservingCapability/@gml:id)}</td>
-
         </tr>
-        else ()
-
-(: D70 Jaume Targa :)
-let $allProcNotMatchingCondition70 :=
-for $proc in $docRoot//aqd:AQD_SamplingPointProcess
-let $documentation := data($proc/aqd:dataQuality/aqd:DataQuality/aqd:documentation)
-let $qaReport := data($proc/aqd:dataQuality/aqd:DataQuality/aqd:qaReport)
-
-where fn:string-length($qaReport) = 0
-return concat(data($proc/ompr:inspireId/base:Identifier/base:namespace), '/' , data($proc/ompr:inspireId/base:Identifier/base:localId))
-
-let $allInvalidTrueUsedAQD70 :=
-    for $invalidTrueUsedAQD70 in $docRoot//aqd:AQD_SamplingPoint
-        let $procIds70 := data($invalidTrueUsedAQD70/ef:observingCapability/ef:ObservingCapability/ef:procedure/@xlink:href)
-        let $aqdUsed70 := $invalidTrueUsedAQD70/aqd:usedAQD = true()
-
-    for $procId70 in $procIds70
-    return
-        if ($aqdUsed70  and  not(empty(index-of($allProcNotMatchingCondition70, $procId70)))) then
-        <tr>
-            <td title="gml:id">{data($invalidTrueUsedAQD70/@gml:id)}</td>
-            <td title="base:localId">{data($invalidTrueUsedAQD70/ef:inspireId/base:Identifier/base:localId)}</td>
-            <td title="base:namespace">{data($invalidTrueUsedAQD70/ef:inspireId/base:Identifier/base:namespace)}</td>
-            <td title="ef:procedure">{$procId70}</td>
-            <td title="ef:ObservingCapability">{data($invalidTrueUsedAQD70/ef:observingCapability/ef:ObservingCapability/@gml:id)}</td>
-
-        </tr>
-        else ()
-
 
 (: D71 :)
 let $localSampleIds := $docRoot//gml:featureMember/aqd:AQD_Sample/aqd:inspireId/base:Identifier
@@ -1529,21 +1491,7 @@ return
                 'i.e. http://dd.eionet.europa.eu/vocabulary/aq/equivalencedemonstrated/yes ',
                 'but /aqd:demonstrationReport not provided. '), $labels:PLACEHOLDER,
                         (), $allInvalidTrueUsedAQD68, "", concat(fn:string(count($allInvalidTrueUsedAQD68))," errors found"), "", "", "warning",())}
-        {html:buildResultRows_D("D69", concat('SamplingPointProcess(es) is missing mandatory document on Traceability and Uncertainty Estimation ',
-                        ' via aqd:AQD_SamplingPointProcess/aqd:dataQuality/aqd:DataQuality/aqd:documentation. ',''), $labels:PLACEHOLDER,
-                        (), $allInvalidTrueUsedAQD69, "", concat(fn:string(count($allInvalidTrueUsedAQD69))," errors found"), "", "", "warning",())}
-        {html:buildResultRows_D("D70", concat('SamplingPointProcess(es) is missing mandatory document on QA/QC ',
-                        ' via aqd:AQD_SamplingPointProcess/aqd:dataQuality/aqd:DataQuality/aqd:qaReport. ',''), $labels:PLACEHOLDER,
-                        (), $allInvalidTrueUsedAQD70, "", concat(fn:string(count($allInvalidTrueUsedAQD70))," errors found"), "", "", "warning",())}
-        <!--{xmlconv:buildResultRows("D67", <span>Where .AQD_SamplingPoint/aqd:usedAQD is 'true' the content of ./aqd:AQD_SamplingPointProcess/aqd:equivalenceDemonstrated shall resolve to any concept in
-            <a href="{ $xmlconv:EQUIVALENCEDEMONSTRATED_VOCABULARY }">{ $xmlconv:EQUIVALENCEDEMONSTRATED_VOCABULARY }</a></span>,
-                (),$allInvalid67, "", concat(string(count($allInvalid67))," errors found.") , "", "","error", ())}
-        {xmlconv:buildResultRows("D68", <span>Where ./AQD_SamplingPoint/aqd:usedAQD is “true”, ./aqd:demonstrationReport shall be  populate</span>,
-                (),$allInvalid68, "", concat(string(count($allInvalid68))," errors found.") , "", "","error", ())}
-        {xmlconv:buildResultRows("D69", <span>Where ./AQD_SamplingPoint/aqd:usedAQD is “true”, ./aqd:documentation shall be populate</span>,
-            (),$allInvalid69, "", concat(string(count($allInvalid69))," errors found.") , "", "","error", ())}
-        {xmlconv:buildResultRows("D70", <span>Where ./AQD_SamplingPoint/aqd:usedAQD is “true”, ./aqd:qaReport shall be populated</span>,
-                (),$allInvalid70, "", concat(string(count($allInvalid70))," errors found.") , "", "","error", ())}-->
+        {html:buildResultRows_D("D69", $labels:D69, $labels:D69_SHORT, (), $allInvalidTrueUsedAQD69, "", concat(fn:string(count($allInvalidTrueUsedAQD69))," errors found"), "", "", "warning",())}
         <tr style="border-top:2px solid #666666">
                 <td style="vertical-align:top;"></td>
                 <td style="vertical-align:top;"></td>
