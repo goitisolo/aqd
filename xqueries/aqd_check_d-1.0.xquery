@@ -383,8 +383,15 @@ for $rec in doc($source_url)//gml:featureMember/descendant::*[name()='aqd:AQD_St
 
 let $invalidStationMedia := xmlconv:checkVocabularyConceptValues($source_url, "aqd:AQD_Station", "ef:mediaMonitored", $vocabulary:MEDIA_VALUE_VOCABULARY_BASE_URI)
 
-(: D20 Done by Rait:)
-let $invalidPoints := distinct-values($docRoot//aqd:AQD_Station[count(ef:geometry/gml:Point) >0 and ef:geometry/gml:Point/@srsName != "urn:ogc:def:crs:EPSG::4258" and ef:geometry/gml:Point/@srsName != "urn:ogc:def:crs:EPSG::4326"]/@gml:id)
+(: D20 ./ef:geometry/gml:Points the srsName attribute shall be a recognisable URN :)
+let $D20validURN := ("urn:ogc:def:crs:EPSG::3035", "urn:ogc:def:crs:EPSG::4258", "urn:ogc:def:crs:EPSG::4326")
+let $D20invalid :=
+    for $x in distinct-values($docRoot//aqd:AQD_Station[count(ef:geometry/gml:Point) > 0 and not(ef:geometry/gml:Point/@srsName = $D20validURN)]/ef:inspireId/base:Identifier/string(base:localId))
+    return
+        <tr>
+            <td title="base:localId">{$x}</td>
+        </tr>
+
 
 (: D21 Done by Rait :)
 let $invalidPos_srsDim  := distinct-values($docRoot//aqd:AQD_Station/ef:geometry/gml:Point/gml:pos[@srsDimension != "2"]/
@@ -1369,7 +1376,7 @@ return
         {html:buildResultRowsWithTotalCount_D("D19", <span>The content of /aqd:AQD_Station/ef:mediaMonitored shall resolve to any concept in
             <a href="{ $vocabulary:MEDIA_VALUE_VOCABULARY_BASE_URI }">{ $vocabulary:MEDIA_VALUE_VOCABULARY_BASE_URI }</a></span>, $labels:PLACEHOLDER,
             (), (), "ef:mediaMonitored", "", "", "","warning", $invalidStationMedia)}
-        {html:buildResultRows_D("D20", $labels:D20, $labels:D20_SHORT, $invalidPoints,(), "aqd:AQD_Station/@gml:id","All smsName attributes are valid"," invalid attribute","", "warning",())}
+        {html:buildResultRows_D("D20", $labels:D20, $labels:D20_SHORT, (), (), "aqd:AQD_Station/ef:inspireId/base:Identifier/base:localId","All smsName attributes are valid"," invalid attribute","", "warning", $D20invalid)}
         {html:buildResultRows_D("D21", $labels:D21, $labels:D21_SHORT, $invalidPosD21, () , "aqd:AQD_Zone/@gml:id", "All srsDimension attributes resolve to ""2""", " invalid attribute", "","error",())}
         {html:buildResultRows_D("D23", $labels:D23, $labels:D23_SHORT, (), $allInvalidEfOperationActivityPeriod, "", fn:string(count($allInvalidEfOperationActivityPeriod)), "", "","error", ())}
         {html:buildResultRows_D("D24", $labels:D24, $labels:D24_SHORT, (), $allUnknownEfOperationActivityPeriodD24, "", string(count($allUnknownEfOperationActivityPeriodD24)), "", "","warning",(), fn:false())}
