@@ -1185,8 +1185,7 @@ let $invalidsamplingPointAssessmentMetadata40 :=
         where (string($x) = "") or (not(common:includesURL($x)))
         return
             <tr>
-                <td title="base:localId">{$x/../../../..}</td>
-                <td>test</td>
+                <td title="base:localId">{$x/../../../aqd:inspireId/base:Identifier/base:localId}</td>             
             </tr>
 
 
