@@ -1163,7 +1163,6 @@ where empty(index-of($aqdSamplingPointID, $x))
 return $x
 
 (: 40 :)
-
 let $invalidsamplingPointAssessmentMetadata40 :=
     for $aqdPollutantC40 in $docRoot//aqd:AQD_AssessmentRegime
         let $pollutantXlinkC40 := fn:substring-after(data($aqdPollutantC40/aqd:pollutant/@xlink:href),"pollutant/")
@@ -1174,12 +1173,22 @@ let $invalidsamplingPointAssessmentMetadata40 :=
 (: C41 gml:timePosition MUST be provided and must be equal or greater than (aqd:reportingPeriod – 5 years) included in the ReportingHeader :)
     let $C41minYear := xs:integer($reportingYear) - 5
     let $C41invalid :=
-        for $x in $docRoot/aqd:AQD_AssessmentRegime[aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:classificationDate/gml:TimeInstant[gml:timePosition castable as xs:integer]/xs:integer(gml:timePosition) < $C41minYear]
+        for $x in $docRoot//aqd:AQD_AssessmentRegime[aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:classificationDate/gml:TimeInstant[gml:timePosition castable as xs:integer]/xs:integer(gml:timePosition) < $C41minYear]
         return
             <tr>
                 <td title="aqd:AQD_AssessmentRegime/aqd:inspireId/base:Identifier/base:localId">{string($x/aqd:inspireId/base:Identifier/base:localId)}</td>
                 <td title=""></td>
             </tr>
+(: C42 :)
+    let $C42invalid :=
+        for $x in $docRoot//aqd:AQD_AssessmentRegime/aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:classificationReport
+        where (string($x) = "") or (not(common:includesURL($x)))
+        return
+            <tr>
+                <td title="base:localId">{$x/../../../..}</td>
+                <td>test</td>
+            </tr>
+
 
 return
     <table style="border-collapse:collapse;display:inline">
@@ -1251,6 +1260,7 @@ return
         {html:buildResultRows_C("C40", <span>The total number of /aqd:assessmentMethods/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata and /aqd:assessmentMethods/aqd:AssessmentMethods/aqd:modelAssessmentMetadata citations within a MS (delivery) shall be GREATER THAN OR EQUAL to 1 where ./aqd:pollutant xlink:href attribute resolves to{xmlconv:buildVocItemsList("C40", $vocabulary:POLLUTANT_VOCABULARY, $xmlconv:VALID_POLLUTANT_IDS_40)}</span>,
                 $labels:C40_SHORT, $invalidsamplingPointAssessmentMetadata40,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","warning", ())}
         {html:buildResultRows_C("C41", $labels:C41, $labels:C41_SHORT, $C41invalid, (), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","warning", ())}
+        {html:buildResultRows_C("C42", $labels:C42, $labels:C42_SHORT, $C42invalid, (), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","warning", ())}
     </table>
 };
 

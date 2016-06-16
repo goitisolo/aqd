@@ -170,3 +170,7 @@ declare function common:getHashValue($hash as xs:string*, $key as xs:string, $se
     let $result := if (empty($result)) then "" else $result[1]
     return $result
 };
+
+declare function common:includesURL($x as xs:string) {
+    contains($x, "http://") or contains($x, "https://")
+};
