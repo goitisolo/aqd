@@ -328,6 +328,13 @@ let  $tblD16 :=
             <td title="base:namespace">{$id}</td>
             <td title="base:localId">{count($localId)}</td>
         </tr>
+(: D17 aqd:AQD_Station/ef:name shall return a string :)
+let $D17invalid :=
+    for $x in //aqd:AQD_Station[ef:name = ""]
+    return
+    <tr>
+        <td title="base:localId">{$x/ef:inspireId/base:Identifier/string(base:localId)}</td>
+    </tr>
 
 (: D19 :)
 (:
@@ -1323,6 +1330,7 @@ return
                     concat($countD15duplicates, " error", substring("s ", number(not($countD15duplicates > 1)) * 2) ,"found") }</td>
         </tr>
         {html:buildResultRows_D("D16", $labels:D16, $labels:D16_SHORT, (), (), "", string(count($tblD16)), "", "","error",$tblD16)}
+        {html:buildResultRows_D("D17", $labels:D17, $labels:D17_SHORT, (), (), "", "All values are valid", "", "","warning", $D17invalid)}
         {html:buildResultRowsWithTotalCount_D("D19", <span>The content of /aqd:AQD_Station/ef:mediaMonitored shall resolve to any concept in
             <a href="{ $vocabulary:MEDIA_VALUE_VOCABULARY_BASE_URI }">{ $vocabulary:MEDIA_VALUE_VOCABULARY_BASE_URI }</a></span>, $labels:PLACEHOLDER,
             (), (), "ef:mediaMonitored", "", "", "","warning", $invalidStationMedia)}
