@@ -21,6 +21,7 @@ import module namespace sparqlx = "aqd-sparql" at "aqd-sparql.xquery";
 import module namespace labels = "aqd-labels" at "aqd-labels.xquery";
 import module namespace html = "aqd-html" at "aqd-html.xquery";
 import module namespace vocabulary = "aqd-vocabulary" at "aqd-vocabulary.xquery";
+import module namespace dd = "aqd-dd" at "aqd-dd.xquery";
 
 declare namespace aqd = "http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0";
 declare namespace gml = "http://www.opengis.net/gml/3.2";
@@ -618,7 +619,16 @@ let $allObservingCapabilityPeriod := (($invalidPosition), ($overlappingPeriods))
 
 
 (: D40 :)
-let $invalidObservedProperty := xmlconv:checkVocabularyConceptValues($source_url, "ef:ObservingCapability", "ef:observedProperty", $vocabulary:POLLUTANT_VOCABULARY)
+(:let $invalidObservedProperty := xmlconv:checkVocabularyConceptValues($source_url, "ef:ObservingCapability", "ef:observedProperty", $vocabulary:POLLUTANT_VOCABULARY):)
+
+let $D40invalid :=
+    for $x in $docRoot//aqd:AQD_SamplingPoint
+    where (not($x/ef:observingCapability/ef:ObservingCapability/ef:observedProperty/@xlink:href = $dd:VALIDPOLLUTANTS)) or
+            (count(distinct-values(data($x/ef:observingCapability/ef:ObservingCapability/ef:observedProperty/@xlink:href))) > 1)
+    return
+        <tr>
+            <td title="base:localId">{$x/ef:inspireId/base:Identifier/string(base:localId)}</td>
+        </tr>
 
 (: D41
 let $aqdSampleLocal :=
@@ -1387,9 +1397,9 @@ return
         {html:buildResultRows_D("D35", $labels:D35, $labels:D35_SHORT, $invalidPos, () , "aqd:AQD_SamplingPoint/@gml:id", "All srsDimension attributes resolve to ""2""", " invalid attribute", "","error",())}
         {html:buildResultRows_D("D36", $labels:D36, $labels:D36_SHORT, $invalidSamplingPointPos, () , "aqd:AQD_SamplingPoint/@gml:id", "All attributes are valid", " invalid attribute", "","warning",())}
         {html:buildResultRows_D("D37", $labels:D37, $labels:D37_SHORT, (), $allObservingCapabilityPeriod, "", concat(fn:string(count($allObservingCapabilityPeriod))," errors found"), "", "","error", ())}
-        {html:buildResultRowsWithTotalCount_D("D40", <span>The content of ../ef:observedProperty shall resolve to a valid code within
+        {html:buildResultRows_D("D40", <span>The content of ../ef:observedProperty shall resolve to a valid code within
             <a href="{ $vocabulary:POLLUTANT_VOCABULARY }">{ $vocabulary:POLLUTANT_VOCABULARY }</a></span>, $labels:PLACEHOLDER,
-                (), (), "ef:observedProperty", "", "", "","error", $invalidObservedProperty)}
+                (), (), "ef:observedProperty", "All values are valid", "invalid pollutant", "","error", $D40invalid)}
         <tr style="border-top:2px solid #666666">
             <th colspan="3" style="vertical-align:top;text-align:left">Internal XML cross-checks between AQD_SamplingPoint and AQD_Sample;AQD_SamplingPointProcess;AQD_Station;AQD_Network</th>
         </tr>
