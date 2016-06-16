@@ -286,6 +286,15 @@ let $invalidNetworkType := xmlconv:checkVocabularyConceptValues($source_url, "aq
 
 (: D11 :)
 let $invalidAQDNetworkBeginPosition := distinct-values($docRoot//aqd:AQD_Network/aqd:operationActivityPeriod/gml:TimePeriod[((gml:beginPosition>=gml:endPosition) and (gml:endPosition!=""))]/../../@gml:id)
+
+(: D12 aqd:AQD_Network/ef:name shall return a string :)
+let $D12invalid :=
+    for $x in //aqd:AQD_Network[string(ef:name) = ""]
+    return
+        <tr>
+            <td title="base:localId">{$x/ef:inspireId/base:Identifier/string(base:localId)}</td>
+        </tr>
+
 (: D14 Done by Rait  :)
 let $invalidTimeZone := xmlconv:checkVocabularyConceptValues($source_url, "aqd:AQD_Network", "aqd:aggregationTimeZone", $vocabulary:TIMEZONE_VOCABULARY)
 (: D15 Done by Rait :)
@@ -1332,6 +1341,7 @@ return
             <a href="{ $vocabulary:NETWORK_TYPE_VOCABULARY }">{ $vocabulary:NETWORK_TYPE_VOCABULARY }</a></span>, $labels:PLACEHOLDER,
                 (), (), "aqd:networkType", "", "", "","warning", $invalidNetworkType)}
         {html:buildResultRows_D("D11", $labels:D11, $labels:D11_SHORT, $invalidAQDNetworkBeginPosition, () , "aqd:AQD_Network/@gml:id", "All attributes are valid", " invalid attribute ", "","error", ())}
+        {html:buildResultRows_D("D12", $labels:D12, $labels:D12_SHORT, $D12invalid, () , "aqd:AQD_Network/ef:inspireId/base:Identifier/base:localId", "All attributes are valid", " invalid attribute ", "","error", ())}
         {html:buildResultRowsWithTotalCount_D("D14", <span>The content of /aqd:AQD_Network/aqd:aggregationTimeZone attribute shall resolve to a valid code in
             <a href="{ $vocabulary:TIMEZONE_VOCABULARY }">{ $vocabulary:TIMEZONE_VOCABULARY }</a></span>, $labels:PLACEHOLDER,
                 (), (), "aqd:aggregationTimeZone", "", "", "","error",$invalidTimeZone)}
