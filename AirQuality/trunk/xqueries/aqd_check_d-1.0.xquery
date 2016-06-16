@@ -1247,18 +1247,16 @@ let $tblD72 :=
 
 (: D73 :)
 let $allGmlPoint := $docRoot//aqd:AQD_Sample/sams:shape/gml:Point
-let $tblD73 := if (count($allGmlPoint) > 0) then
-for $point in $docRoot//aqd:AQD_Sample/sams:shape/gml:Point[@srsName != "urn:ogc:def:crs:EPSG::4258" and @srsName != "urn:ogc:def:crs:EPSG::4326"]
+let $D73validURN := ("urn:ogc:def:crs:EPSG::3035", "urn:ogc:def:crs:EPSG::4258", "urn:ogc:def:crs:EPSG::4326")
+let $D73invalid :=
+    for $point in $docRoot//aqd:AQD_Sample/sams:shape/gml:Point[not(@srsName = $D73validURN)]
     return
         <tr>
-            <td title="aqd:AQD_Sample">{data($point/../../@gml:id)}</td>
+            <td title="aqd:AQD_Sample">{data($point/../../aqd:inspireId/base:Identifier/base:localId)}</td>
             <td title="gml:Point">{data($point/@gml:id)}</td>
             <td title="gml:Point/@srsName">{data($point/@srsName)}</td>
-
         </tr>
-else
-    ()
-let $strErr73 := for $tr in $tblD73
+let $strErr73 := for $tr in $D73invalid
 return data($tr/td[@title='aqd:AQD_Sample'])
 
 let $isInvalidInvalidD73 := if (count($allGmlPoint) > 0) then fn:true() else fn:false()
@@ -1496,7 +1494,7 @@ return
         </tr>
         {html:buildResultRows_D("D71", $labels:D71, $labels:D71_SHORT, (),$invalidDuplicateSampleIds, "", concat(string(count($invalidDuplicateSampleIds))," errors found.") , "", "","error", ())}
         {html:buildResultRows_D("D72", $labels:D72, $labels:D72_SHORT, (), (), "", string(count($tblD72)), "", "","error",$tblD72)}
-        {html:buildResultRows_D("D73", $labels:D73, $labels:D73_SHORT, $strErr73 ,(), "", concat(string(count($tblD73)), $errMsg73), "", "",$errLevelD73, $tblD73, $isInvalidInvalidD73 )}
+        {html:buildResultRows_D("D73", $labels:D73, $labels:D73_SHORT, $strErr73 ,(), "", concat(string(count($D73invalid)), $errMsg73), "", "",$errLevelD73, $D73invalid, $isInvalidInvalidD73 )}
         {html:buildResultRows_D("D74", $labels:D74, $labels:D74_SHORT, $invalidPointDimension,(), "aqd:AQD_Sample/@gml:id","All srsDimension attributes are valid"," invalid attribute","","error", ())}
         {html:buildResultRows_D("D78", $labels:D78, $labels:D78_SHORT, $invalidInletHeigh,(), "aqd:AQD_Sample/@gml:id","All values are valid"," invalid attribute","", "warning",())}
         <tr style="border-top:3px solid #666666">
