@@ -324,7 +324,7 @@ let  $tblD16 :=
     let $localId := $docRoot//aqd:AQD_Station/ef:inspireId/base:Identifier[base:namespace = $id]/base:localId
     return
         <tr>
-	    <td title="feature">Station(s)</td>
+	        <td title="feature">Station(s)</td>
             <td title="base:namespace">{$id}</td>
             <td title="base:localId">{count($localId)}</td>
         </tr>
@@ -335,6 +335,20 @@ let $D17invalid :=
     <tr>
         <td title="base:localId">{$x/ef:inspireId/base:Identifier/string(base:localId)}</td>
     </tr>
+(: D18 Cross-check with AQD_Network (aqd:AQD_Station/ef:belongsTo shall resolve to a traversable local of global URI to ../AQD_Network) :)
+let $aqdNetworkLocal :=
+    for $z in $docRoot//aqd:AQD_Network
+    let $id := concat(data($z/ef:inspireId/base:Identifier/base:namespace), '/',
+            data($z/ef:inspireId/base:Identifier/base:localId))
+    return $id
+
+let $D18invalid :=
+    for $x in $docRoot//aqd:AQD_Station[not(ef:belongsTo/@xlink:href = $aqdNetworkLocal)]
+    return
+        <tr>
+            <td title="aqd:AQD_Station">{$x/ef:inspireId/base:Identifier/string(base:localId)}</td>
+            <td title="ef:belongsTo">{$x/ef:belongsTo/string(@xlink:href)}</td>
+        </tr>
 
 (: D19 :)
 (:
@@ -1331,6 +1345,7 @@ return
         </tr>
         {html:buildResultRows_D("D16", $labels:D16, $labels:D16_SHORT, (), (), "", string(count($tblD16)), "", "","error",$tblD16)}
         {html:buildResultRows_D("D17", $labels:D17, $labels:D17_SHORT, (), (), "", "All values are valid", "", "","warning", $D17invalid)}
+        {html:buildResultRows_D("D18", $labels:D18, $labels:D18_SHORT, (), (), "", "All values are valid", "", "","warning", $D18invalid)}
         {html:buildResultRowsWithTotalCount_D("D19", <span>The content of /aqd:AQD_Station/ef:mediaMonitored shall resolve to any concept in
             <a href="{ $vocabulary:MEDIA_VALUE_VOCABULARY_BASE_URI }">{ $vocabulary:MEDIA_VALUE_VOCABULARY_BASE_URI }</a></span>, $labels:PLACEHOLDER,
             (), (), "ef:mediaMonitored", "", "", "","warning", $invalidStationMedia)}
