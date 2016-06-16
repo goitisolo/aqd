@@ -520,11 +520,18 @@ let  $tblD32 :=
 let $invalidSamplingPointMedia := xmlconv:checkVocabularyConceptValues($source_url, "aqd:AQD_SamplingPoint", "ef:mediaMonitored", $vocabulary:MEDIA_VALUE_VOCABULARY_BASE_URI)
 
 (: D34 :)
-let $allGeometryPoint :=
-for $rec in $docRoot//aqd:AQD_SamplingPoint/ef:geometry/gml:Point
-return <tr>{$rec}</tr>
+(:let $allGeometryPoint :=
+    for $rec in $docRoot//aqd:AQD_SamplingPoint/ef:geometry/gml:Point
+    return <tr>{$rec}</tr>:)
 
-let $invalidGeometryPoint := distinct-values($docRoot//aqd:AQD_SamplingPoint[count(ef:geometry/gml:Point) >0 and ef:geometry/gml:Point/@srsName != "urn:ogc:def:crs:EPSG::4258" and ef:geometry/gml:Point/@srsName != "urn:ogc:def:crs:EPSG::4326"]/@gml:id)
+let $D34validURN := ("urn:ogc:def:crs:EPSG::3035", "urn:ogc:def:crs:EPSG::4258", "urn:ogc:def:crs:EPSG::4326")
+let $D34invalid :=
+    for $x in distinct-values($docRoot//aqd:AQD_SamplingPoint[count(ef:geometry/gml:Point) > 0 and not(ef:geometry/gml:Point/@srsName = $D34validURN)]/ef:inspireId/base:Identifier/string(base:localId))
+    return
+        <tr>
+            <td title="base:localId">{$x}</td>
+        </tr>
+
 
 (: D35 :)
 let $invalidPos  := distinct-values($docRoot/gml:featureMember//aqd:AQD_SamplingPoint/ef:geometry/gml:Point/gml:pos[@srsDimension != "2"]/
@@ -1409,8 +1416,7 @@ return
         {html:buildResultRowsWithTotalCount_D("D33", <span>The content of aqd:AQD_SamplingPoint/ef:mediaMonitored shall resolve to any concept in
             <a href="{ $vocabulary:MEDIA_VALUE_VOCABULARY }">{ $vocabulary:MEDIA_VALUE_VOCABULARY }</a></span>, $labels:PLACEHOLDER,
             (), (), "ef:mediaMonitored", "", "", "","warning", $invalidSamplingPointMedia)}
-        {html:buildResultRowsWithTotalCount_D("D34", <span>aqd:AQD_SamplingPoint/am:geometry/gml:Point the srsName attribute  shall  be  a  recognisable  URN .  The  following  2  srsNames  are  expected urn:ogc:def:crs:EPSG::4258 or urn:ogc:def:crs:EPSG::4326</span>, $labels:PLACEHOLDER,
-            $invalidGeometryPoint, (), "gml:point", "", "", "","warning", $allGeometryPoint)}
+        {html:buildResultRows_D("D34", $labels:D34, $labels:D34_SHORT, (), (), "", "All values are valid", "", "", "error", $D34invalid)}
         {html:buildResultRows_D("D35", $labels:D35, $labels:D35_SHORT, $invalidPos, () , "aqd:AQD_SamplingPoint/@gml:id", "All srsDimension attributes resolve to ""2""", " invalid attribute", "","error",())}
         {html:buildResultRows_D("D36", $labels:D36, $labels:D36_SHORT, $invalidSamplingPointPos, () , "aqd:AQD_SamplingPoint/@gml:id", "All attributes are valid", " invalid attribute", "","warning",())}
         {html:buildResultRows_D("D37", $labels:D37, $labels:D37_SHORT, (), $allObservingCapabilityPeriod, "", concat(fn:string(count($allObservingCapabilityPeriod))," errors found"), "", "","error", ())}
