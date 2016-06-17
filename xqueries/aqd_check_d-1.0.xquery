@@ -1531,7 +1531,7 @@ return
         {html:buildResultRows_D("D72", $labels:D72, $labels:D72_SHORT, (), (), "", string(count($tblD72)), "", "","error",$tblD72)}
         {html:buildResultRows_D("D73", $labels:D73, $labels:D73_SHORT, $strErr73 ,(), "", concat(string(count($D73invalid)), $errMsg73), "", "",$errLevelD73, $D73invalid, $isInvalidInvalidD73 )}
         {html:buildResultRows_D("D74", $labels:D74, $labels:D74_SHORT, $invalidPointDimension,(), "aqd:AQD_Sample/@gml:id","All srsDimension attributes are valid"," invalid attribute","","error", ())}
-        {html:buildResultRows_D("D75", $labels:D75, $labels:D75_SHORT, $D75invalid,(), "aqd:AQD_Sample/aqd:inspireId/base:Identifier/base:localId","All attributes are valid"," invalid attribute","","error", ())}
+        {html:buildResultRows_D("D75", $labels:D75, $labels:D75_SHORT, $D75invalid,(), "aqd:AQD_Sample/aqd:inspireId/base:Identifier/base:localId","All attributes are valid"," invalid attribute","","warning", ())}
         {html:buildResultRows_D("D78", $labels:D78, $labels:D78_SHORT, $invalidInletHeigh,(), "aqd:AQD_Sample/@gml:id","All values are valid"," invalid attribute","", "warning",())}
         <tr style="border-top:3px solid #666666">
                 <td style="vertical-align:top;"></td>
