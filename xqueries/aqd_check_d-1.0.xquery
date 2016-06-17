@@ -1302,6 +1302,27 @@ let $D75invalid :=
         else
             ()
 
+(: D76 :)
+let $sampleDistanceMap :=
+    map:merge((
+        for $x in $docRoot//aqd:AQD_Sample[not(string(aqd:buildingDistance) = "")]
+        let $id := concat($x/aqd:inspireId/base:Identifier/base:namespace, "/", $x/aqd:inspireId/base:Identifier/base:localId)
+        let $distance := string($x/aqd:buildingDistance)
+        return map:entry($id, $distance)
+    ))
+let $D76invalid :=
+    for $x in $docRoot//aqd:AQD_SamplingPoint[aqd:relevantEmissions/aqd:RelevantEmissions/aqd:stationClassification/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/stationclassification/traffic"]
+    let $xlink := string($x/ef:observingCapability/ef:ObservingCapability/ef:featureOfInterest/@xlink:href)
+    let $distance := map:get($sampleDistanceMap, $xlink)
+    return
+        if ($distance castable as xs:double) then
+            ()
+        else
+            <tr>
+                <td title="base:localId">{$x/ef:inspireId/base:Identifier/string(base:localId)}</td>
+            </tr>
+
+
 (: D78 :)
 let $invalidInletHeigh :=
 for $inletHeigh in  $docRoot//aqd:AQD_Sample/aqd:inletHeight
@@ -1531,7 +1552,8 @@ return
         {html:buildResultRows_D("D72", $labels:D72, $labels:D72_SHORT, (), (), "", string(count($tblD72)), "", "","error",$tblD72)}
         {html:buildResultRows_D("D73", $labels:D73, $labels:D73_SHORT, $strErr73 ,(), "", concat(string(count($D73invalid)), $errMsg73), "", "",$errLevelD73, $D73invalid, $isInvalidInvalidD73 )}
         {html:buildResultRows_D("D74", $labels:D74, $labels:D74_SHORT, $invalidPointDimension,(), "aqd:AQD_Sample/@gml:id","All srsDimension attributes are valid"," invalid attribute","","error", ())}
-        {html:buildResultRows_D("D75", $labels:D75, $labels:D75_SHORT, $D75invalid,(), "aqd:AQD_Sample/aqd:inspireId/base:Identifier/base:localId","All attributes are valid"," invalid attribute","","warning", ())}
+        {html:buildResultRows_D("D75", $labels:D75, $labels:D75_SHORT, $D75invalid,(), "aqd:AQD_Sample/aqd:inspireId/base:Identifier/base:localId", "All attributes are valid", " invalid attribute","","warning", ())}
+        {html:buildResultRows_D("D76", $labels:D76, $labels:D76_SHORT, (), (), "aqd:AQD_Sample/aqd:inspireId/base:Identifier/base:localId", "All attributes are valid", " invalid attribute","","warning", $D76invalid)}
         {html:buildResultRows_D("D78", $labels:D78, $labels:D78_SHORT, $invalidInletHeigh,(), "aqd:AQD_Sample/@gml:id","All values are valid"," invalid attribute","", "warning",())}
         <tr style="border-top:3px solid #666666">
                 <td style="vertical-align:top;"></td>
