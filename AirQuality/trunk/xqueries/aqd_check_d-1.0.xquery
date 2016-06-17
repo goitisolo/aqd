@@ -22,6 +22,7 @@ import module namespace labels = "aqd-labels" at "aqd-labels.xquery";
 import module namespace html = "aqd-html" at "aqd-html.xquery";
 import module namespace vocabulary = "aqd-vocabulary" at "aqd-vocabulary.xquery";
 import module namespace dd = "aqd-dd" at "aqd-dd.xquery";
+import module namespace geox = "aqd-geo" at "aqd-geo.xquery";
 
 declare namespace aqd = "http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0";
 declare namespace gml = "http://www.opengis.net/gml/3.2";
@@ -1267,6 +1268,40 @@ let $errMsg73  := if (count($allGmlPoint) > 0) then " errors found" else " gml:P
 let $invalidPointDimension  := distinct-values($docRoot//aqd:AQD_Sample/sams:shape/gml:Point[@srsDimension != "2"]/
 concat(../@gml:id, ": srsDimension=", @srsDimension))
 
+(: D75 :)
+let $approximity := 0.0003
+
+(: SampleID|long#lat :)
+let $aqdSampleMap := map:merge((
+    for $allPos in $docRoot//aqd:AQD_Sample[not(sams:shape/gml:Point/gml:pos = "")]
+        let $id := concat($allPos/aqd:inspireId/base:Identifier/base:namespace,"/",$allPos/aqd:inspireId/base:Identifier/base:localId)
+        let $pos := $allPos/sams:shape/gml:Point/string(gml:pos)
+    return map:entry($id, $pos)
+))
+
+let $D75invalid :=
+    for $x in $docRoot//aqd:AQD_SamplingPoint[not(ef:geometry/gml:Point/gml:pos = "")]
+        let $samplingPos := $x/ef:geometry/gml:Point/string(gml:pos)
+        let $xlink := $x/ef:observingCapability/ef:ObservingCapability/ef:featureOfInterest/string(@xlink:href)
+        (: checks Sample map for value :)
+        let $samplePos := map:get($aqdSampleMap, $xlink)
+        let $sampleLong := geox:getX($samplePos)
+        let $sampleLat := geox:getY($samplePos)
+        let $samplingLong := geox:getX($samplingPos)
+        let $samplingLat := geox:getY($samplingPos)
+
+        let $sampleLong := if ($sampleLong castable as xs:decimal) then xs:decimal($sampleLong) else 0.00
+        let $sampleLat := if ($sampleLat castable as xs:decimal) then xs:decimal($sampleLat) else 0.00
+
+        let $samplingLong := if ($samplingLong castable as xs:decimal) then xs:decimal($samplingLong) else 0.00
+        let $samplingLat := if ($samplingLat castable as xs:decimal) then xs:decimal($samplingLat) else 0.00
+
+    return
+        if (abs($samplingLong - $sampleLong) > $approximity or abs($samplingLat - $sampleLat) > $approximity) then
+            $x/ef:inspireId/base:Identifier/string(base:localId)
+        else
+            ()
+
 (: D78 :)
 let $invalidInletHeigh :=
 for $inletHeigh in  $docRoot//aqd:AQD_Sample/aqd:inletHeight
@@ -1496,6 +1531,7 @@ return
         {html:buildResultRows_D("D72", $labels:D72, $labels:D72_SHORT, (), (), "", string(count($tblD72)), "", "","error",$tblD72)}
         {html:buildResultRows_D("D73", $labels:D73, $labels:D73_SHORT, $strErr73 ,(), "", concat(string(count($D73invalid)), $errMsg73), "", "",$errLevelD73, $D73invalid, $isInvalidInvalidD73 )}
         {html:buildResultRows_D("D74", $labels:D74, $labels:D74_SHORT, $invalidPointDimension,(), "aqd:AQD_Sample/@gml:id","All srsDimension attributes are valid"," invalid attribute","","error", ())}
+        {html:buildResultRows_D("D75", $labels:D75, $labels:D75_SHORT, $D75invalid,(), "aqd:AQD_Sample/aqd:inspireId/base:Identifier/base:localId","All attributes are valid"," invalid attribute","","error", ())}
         {html:buildResultRows_D("D78", $labels:D78, $labels:D78_SHORT, $invalidInletHeigh,(), "aqd:AQD_Sample/@gml:id","All values are valid"," invalid attribute","", "warning",())}
         <tr style="border-top:3px solid #666666">
                 <td style="vertical-align:top;"></td>
