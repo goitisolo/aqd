@@ -20,6 +20,7 @@ import module namespace html = "aqd-html" at "aqd-html.xquery";
 import module namespace sparqlx = "aqd-sparql" at "aqd-sparql.xquery";
 import module namespace labels = "aqd-labels" at "aqd-labels.xquery";
 import module namespace vocabulary = "aqd-vocabulary" at "aqd-vocabulary.xquery";
+import module namespace query = "aqd-query" at "aqd-query.xquery";
 
 declare namespace aqd = "http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0";
 declare namespace gml = "http://www.opengis.net/gml/3.2";
@@ -38,76 +39,6 @@ declare variable $xmlconv:ISO2_CODES as xs:string* := ("AL","AT","BA","BE","BG",
     "FR","GB","GR","HR","HU","IE","IL","IS","IT","JO","LB","LI","LT","LU","LV","MA","ME","MK","MT","NL","NO","PL","PS","PT",
      "RO","RS","SE","SI","SK","TN","TR","XK","UK");
 
-declare function xmlconv:getNutsSparql($countryCode as xs:string)
-as xs:string
-{
-    concat("PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
-    SELECT ?concepturl ?label ?code
-    WHERE {
-      ?concepturl skos:inScheme <http://dd.eionet.europa.eu/vocabulary/common/nuts/>;
-                  skos:prefLabel ?label;
-                  skos:notation ?code
-                  FILTER regex(?code, '^", $countryCode, "', 'i')
-    }")
-};
-declare function xmlconv:getLau2Sparql($countryCode as xs:string) as xs:string {
-    concat("PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
-    SELECT ?concepturl ?label ?code
-    WHERE {
-      ?concepturl skos:inScheme <http://dd.eionet.europa.eu/vocabulary/lau2/", $countryCode, "/>;
-                  skos:prefLabel ?label;
-                  skos:notation ?code
-    }")
-};
-
-declare function xmlconv:getLau1Sparql($countryCode as xs:string) as xs:string {
-    concat("PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
-    SELECT ?concepturl ?label ?code
-    WHERE {
-      ?concepturl skos:inScheme <http://dd.eionet.europa.eu/vocabulary/lau1/", $countryCode, "/>;
-                  skos:prefLabel ?label;
-                  skos:notation ?code
-    }")
-};
-
-declare function xmlconv:getLangCodesSparql() as xs:string {
-    "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
-    SELECT distinct ?code ?label ?concepturl
-    WHERE {
-      ?concepturl a skos:Concept .
-      {?concepturl skos:inScheme <http://dd.eionet.europa.eu/vocabulary/common/iso639-3/>;
-                  skos:prefLabel ?label;
-                  skos:notation ?code}
-      UNION
-      {?concepturl skos:inScheme <http://dd.eionet.europa.eu/vocabulary/common/iso639-5/>;
-                  skos:prefLabel ?label;
-                  skos:notation ?code}
-
-    }"
-};
-
-declare function xmlconv:getZonesSparql($nameSpaces as xs:string*) as xs:string {
-    let $nameSpacesStr :=
-        for $nameSpace in $nameSpaces
-        return concat("""", $nameSpace, """")
-
-    let $nameSpacesStr :=
-        fn:string-join($nameSpacesStr, ",")
-
-    return concat(
-        "PREFIX aqr: <http://reference.eionet.europa.eu/aq/ontology/>
-
-        SELECT ?inspireid
-        FROM <http://rdfdata.eionet.europa.eu/airquality/zones.ttl>
-        WHERE {
-          ?zoneuri a aqr:Zone ;
-                    aqr:inspireNamespace ?namespace;
-                     aqr:inspireId ?inspireid .
-        filter (?namespace in (", $nameSpacesStr,  "))
-        }"
-    )
-};
-
 (: Rule implementations :)
 declare function xmlconv:checkReport($source_url as xs:string, $countryCode as xs:string) as element(table) {
 
@@ -119,7 +50,7 @@ let $countZones := count($docRoot//aqd:AQD_Zone)
 
 (: B2 :)
 let $nameSpaces := distinct-values($docRoot//base:namespace)
-let $zonesSparql := xmlconv:getZonesSparql($nameSpaces)
+let $zonesSparql := query:getZonesSparql($nameSpaces)
 let $isZonesAvailable := string-length($zonesSparql) > 0 and doc-available(sparqlx:getSparqlEndpointUrl($zonesSparql, "xml"))
 let $knownZones := if ($isZonesAvailable ) then distinct-values(data(sparqlx:executeSimpleSparqlQuery($zonesSparql)//sparql:binding[@name='inspireid']/sparql:literal)) else ()
 let $unknownZones :=
@@ -280,7 +211,7 @@ let $invalidNamespaces := common:checkNamespaces($source_url)
 
 
 (: B13 :)
-let $langCodeSparql := xmlconv:getLangCodesSparql()
+let $langCodeSparql := query:getLangCodesSparql()
 let $isLangCodesAvailable := string-length($langCodeSparql) > 0 and doc-available(sparqlx:getSparqlEndpointUrl($langCodeSparql, "xml"))
 let $langCodes := if ($isLangCodesAvailable) then distinct-values(data(sparqlx:executeSimpleSparqlQuery($langCodeSparql)//sparql:binding[@name='code']/sparql:literal)) else ()
 let $isLangCodesAvailable := count($langCodes) > 0
@@ -1000,19 +931,4 @@ return
         }
     </div>
 
-};
-
-declare function xmlconv:aproceed($source_url as xs:string, $country as xs:string) {
-    let $docRoot := doc($source_url)
-    let $aqdShapeFileLink := $docRoot//aqd:AQD_Zone/aqd:shapefileLink
-    let $invalidLink :=
-    for $link in $aqdShapeFileLink
-        let $envLink := common:getEnvelopeXML($link)
-        let $envExists := doc-available($envLink)
-        return
-        if (not($envExists) or ($envExists and count(doc($envLink)/envelope/file[@link=$link]) = 0)) then
-            concat($link/../@gml:id, ' ', $link)
-        else ()
-
-    return $invalidLink
 };
