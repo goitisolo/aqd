@@ -20,6 +20,7 @@ import module namespace sparqlx = "aqd-sparql" at "aqd-sparql.xquery";
 import module namespace labels = "aqd-labels" at "aqd-labels.xquery";
 import module namespace html = "aqd-html" at "aqd-html.xquery";
 import module namespace vocabulary = "aqd-vocabulary" at "aqd-vocabulary.xquery";
+import module namespace query = "aqd-query" at "aqd-query.xquery";
 
 declare namespace aqd = "http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0";
 declare namespace gml = "http://www.opengis.net/gml/3.2";
@@ -47,64 +48,7 @@ declare function xmlconv:getErrorTD($errValue,  $element as xs:string, $showMiss
         </td>
 };
 
-declare function xmlconv:getSamplingPointAssessment($inspireId as xs:string, $inspireNamespace as xs:string)
-as xs:string
-{
-    concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-           PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
-           PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
-           PREFIX aq: <http://reference.eionet.europa.eu/aq/ontology/>
 
-        SELECT *
-            where {
-                    ?assessmentRegime a aqd:AQD_AssessmentRegime;
-                    aqd:assessmentMethods  ?assessmentMethods .
-                    ?assessmentMethods aqd:samplingPointAssessmentMetadata ?samplingPointAssessment .
-                    ?samplingPointAssessment aq:inspireId ?inspireId.
-                    ?samplingPointAssessment aq:inspireNamespace ?inspireNamespace.
-                    FILTER(?inspireId='",$inspireId,"' and ?inspireNamespace='",$inspireNamespace,"')
-                  }")
-};
-
-declare function xmlconv:getZonesSparql($nameSpaces as xs:string*)
-as xs:string
-{
-    let $nameSpacesStr :=
-        for $nameSpace in $nameSpaces
-        return concat("""", $nameSpace, """")
-
-    let $nameSpacesStr :=
-        fn:string-join($nameSpacesStr, ",")
-
-    return     concat(
-            "PREFIX aqr: <http://reference.eionet.europa.eu/aq/ontology/>
-
-            SELECT ?inspireid
-            FROM <http://rdfdata.eionet.europa.eu/airquality/zones.ttl>
-            WHERE {
-              ?zoneuri a aqr:Zone ;
-                        aqr:inspireNamespace ?namespace;
-                         aqr:inspireId ?inspireid .
-            filter (?namespace in (", $nameSpacesStr,  "))
-    } order by ?inspireid"
-    )
-};
-
-declare function xmlconv:getSamplingPointZone($zoneId as xs:string*)
-as xs:string
-{
-    concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-            PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
-            PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
-
-            SELECT *
-            WHERE {
-                    ?zone a aqd:AQD_Zone;
-                    aqd:inspireId ?inspireId .
-                    ?inspireId rdfs:label ?inspireLabel
-                    FILTER(?inspireLabel = '",$zoneId,"')
-                  }")
-};
 
 (: Rule implementations :)
 declare function xmlconv:checkReport($source_url as xs:string, $countryCode as xs:string) as element(table) {
@@ -131,7 +75,7 @@ let $M2Combinations :=
         doc($source_url)//gml:featureMember/descendant::*[name()=$featureType]
 
 let $nameSpaces := distinct-values($docRoot//base:namespace)
-let $zonesSparql := xmlconv:getZonesSparql($nameSpaces)
+let $zonesSparql := query:getZonesSparql_M($nameSpaces)
 let $isZonesAvailable := string-length($zonesSparql) > 0 and doc-available(sparqlx:getSparqlEndpointUrl($zonesSparql, "xml"))
 let $knownZones := if ($isZonesAvailable ) then distinct-values(data(sparqlx:executeSparqlQuery($zonesSparql)//sparql:binding[@name='inspireid']/sparql:literal)) else ()
 let $unknownZones :=
@@ -154,7 +98,7 @@ let $M3Combinations :=
         doc($source_url)//gml:featureMember/descendant::*[name()=$featureType]
 
 let $nameSpaces := distinct-values($docRoot//base:namespace)
-let $zonesSparql := xmlconv:getZonesSparql($nameSpaces)
+let $zonesSparql := query:getZonesSparql_M($nameSpaces)
 let $isZonesAvailable := string-length($zonesSparql) > 0 and doc-available(sparqlx:getSparqlEndpointUrl($zonesSparql, "xml"))
 let $knownZones := if ($isZonesAvailable ) then distinct-values(data(sparqlx:executeSparqlQuery($zonesSparql)//sparql:binding[@name='inspireid']/sparql:literal)) else ()
 let $unknownZones :=
@@ -471,7 +415,7 @@ let $invalidObservedPropertyCombinations :=
     let $allInvalidTrueUsedAQD :=
         for $invalidTrueUsedAQD in $allTrueUsedAQD
         where
-            count(sparqlx:executeSparqlQuery(xmlconv:getSamplingPointAssessment($invalidTrueUsedAQD/ef:inspireId/base:Identifier/base:localId ,$invalidTrueUsedAQD/ef:inspireId/base:Identifier/base:namespace))/*) = 0
+            count(sparqlx:executeSparqlQuery(query:getSamplingPointAssessment($invalidTrueUsedAQD/ef:inspireId/base:Identifier/base:localId ,$invalidTrueUsedAQD/ef:inspireId/base:Identifier/base:namespace))/*) = 0
         return
             <tr>
                 <td title="gml:id">{data($invalidTrueUsedAQD/@gml:id)}</td>
@@ -495,7 +439,7 @@ let $allInvalZoneXlinks :=
 (: M26 Amended by Jaume Targa to add nilReason; also updated line 978 to pick $allInvalZoneXlinks :)
 let $allInvalZoneXlinks :=
    for $invalidZoneXlinks in $docRoot//gml:featureMember/aqd:AQD_Model/aqd:zone
-       where count(sparqlx:executeSparqlQuery(xmlconv:getSamplingPointZone($invalidZoneXlinks/@xlink:href))/*) = 0
+       where count(sparqlx:executeSparqlQuery(query:getSamplingPointZone($invalidZoneXlinks/@xlink:href))/*) = 0
 
        return if (not($invalidZoneXlinks/@nilReason="inapplicable")) then
            (<tr>

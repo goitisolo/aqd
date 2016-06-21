@@ -1721,35 +1721,3 @@ return
     </div>
 
 };
-
-declare function xmlconv:aproceed ($source_url, $countryCode ) {
-
-let $docRoot := doc($source_url)
-
-let $invalidPos_srsDim  := distinct-values($docRoot//aqd:AQD_Station/ef:geometry/gml:Point/gml:pos[@srsDimension != "2"]/
-concat(../../../@gml:id, ": srsDimension=", @srsDimension))
-
-
-let $aqdStationPos :=
-    for $allPos in $docRoot//aqd:AQD_Station
-    where not(empty($allPos/ef:geometry/gml:Point/gml:pos))
-    return concat($allPos/ef:inspireId/base:Identifier/base:namespace,"/",$allPos/ef:inspireId/base:Identifier/base:localId,"|",
-        fn:substring-before(data($allPos/ef:geometry/gml:Point/gml:pos), " "), "#", fn:substring-after(data($allPos/ef:geometry/gml:Point/gml:pos), " "))
-
-
-let $invalidPos_order :=
-    for $gmlPos in $docRoot//aqd:AQD_SamplingPoint
-        let $samplingPos := data($gmlPos/ef:geometry/gml:Point/gml:pos)
-        let $samplingLat := if (not(empty($samplingPos))) then fn:substring-before($samplingPos, " ") else ""
-        let $samplingLong := if (not(empty($samplingPos))) then fn:substring-after($samplingPos, " ") else ""
-
-        let $samplingLat := if ($samplingLat castable as xs:decimal) then xs:decimal($samplingLat) else 0.00
-        let $samplingLong := if ($samplingLong castable as xs:decimal) then xs:decimal($samplingLong) else 0.00
-
-        return if ($samplingLat < $samplingLong and $countryCode != 'FR')
-        then concat($gmlPos/@gml:id, " : lat=" , string($samplingLat), " :long=", string($samplingLong)) else ()
-
-let $invalidPosD21 := (($invalidPos_srsDim), ($invalidPos_order))
-
-return data($invalidPos_order )
-};

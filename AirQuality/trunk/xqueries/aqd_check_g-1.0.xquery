@@ -20,6 +20,7 @@ import module namespace sparqlx = "aqd-sparql" at "aqd-sparql.xquery";
 import module namespace labels = "aqd-labels" at "aqd-labels.xquery";
 import module namespace html = "aqd-html" at "aqd-html.xquery";
 import module namespace vocabulary = "aqd-vocabulary" at "aqd-vocabulary.xquery";
+import module namespace query = "aqd-query" at "aqd-query.xquery";
 
 declare namespace aqd = "http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0";
 declare namespace gml = "http://www.opengis.net/gml/3.2";
@@ -72,199 +73,6 @@ declare function xmlconv:getErrorTD($errValue,  $element as xs:string, $showMiss
         </td>
 };
 
-(: ---- SPARQL methods --- :)
-declare function xmlconv:getTimeExtensionExemption($cdrUrl as xs:string) as xs:string {
-concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-        PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
-        PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
-
-        SELECT ?zone ?timeExtensionExemption ?localId
-        WHERE {
-                ?zone a aqd:AQD_Zone ;
-                aqd:timeExtensionExemption ?timeExtensionExemption .
-                ?zone aqd:inspireId ?inspireid .
-                ?inspireid aqd:localId ?localId
-        FILTER (CONTAINS(str(?zone), '", $cdrUrl,  "'b/') and (?timeExtensionExemption != 'http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/none'))
-      }")(: order by  ?zone "):)
-};
-
-(:
-declare function xmlconv:getAqdZone($cdrUrl as xs:string)
-as xs:string
-{ concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-            PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
-            PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
-
-            SELECT ?zone ?timeExtensionExemption ?localId
-            WHERE {
-                ?zone a aqd:AQD_Zone ;
-                aqd:timeExtensionExemption ?timeExtensionExemption .
-                ?zone aqd:inspireId ?inspireid .
-                ?inspireid aqd:localId ?localId
-                FILTER (CONTAINS(str(?zone), '", $cdrUrl, "b/') and (?timeExtensionExemption != ""))
-            } order by  ?zone ")
-
-};
-:)
-
-declare function xmlconv:getExistingAttainmentSqarql($cdrUrl as xs:string) as xs:string {
-concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
-PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
-SELECT distinct concat(?inspireLabel,'#',
-  str(?pollutant), '#',
-  str(?objectiveType), '#',
-  str(?reportingMetric), '#',
-  str(?protectionTarget) ) as ?key
-WHERE {
-        ?attainment a aqd:AQD_Attainment;
-       aqd:pollutant ?pollutant .
-       ?attainment  aqd:inspireId ?inspireId .
-       ?inspireId rdfs:label ?inspireLabel .
-       ?attainment aqd:environmentalObjective ?envObjective .
-?envObjective aqd:objectiveType ?objectiveType .
-?envObjective aqd:reportingMetric  ?reportingMetric .
-?envObjective aqd:protectionTarget  ?protectionTarget .
-FILTER (CONTAINS(str(?attainment), '" , $cdrUrl,  "g/')) .
-}") (: order by ?key"):)
-};
-
-
-declare function xmlconv:getInspireLabels($cdrUrl as xs:string) as xs:string {
-concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
-PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
-
-SELECT distinct  ?inspireLabel
-    WHERE {
-        ?attainment a aqd:AQD_Attainment;
-        aqd:inspireId ?inspireId .
-        ?inspireId rdfs:label ?inspireLabel .
-        FILTER (CONTAINS(str(?attainment), '", $cdrUrl, "g/')) .
-}")(: order by ?inspireLabel"):)
-};
-
-declare function xmlconv:getLocallD($cdrUrl as xs:string) as xs:string {
-    concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-            PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
-            PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
-
-           SELECT ?zone ?inspireId ?localId ?inspireLabel
-           WHERE {
-                  ?zone a aqd:AQD_AssessmentRegime ;
-                  aqd:inspireId ?inspireId .
-                  ?inspireId rdfs:label ?inspireLabel .
-                  ?inspireId aqd:localId ?localId .
-           FILTER (CONTAINS(str(?zone), '",$cdrUrl, "c/'))
-       }")(:  order by  ?zone"):)
-};
-
-declare function xmlconv:getAssessmentMethods() as xs:string {
-      "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-       PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
-       PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
-       PREFIX aq: <http://reference.eionet.europa.eu/aq/ontology/>
-
-       SELECT ?assessmentRegime ?inspireId ?localId ?inspireLabel ?assessmentMethods  ?assessmentMetadata ?assessmentMetadataNamespace ?assessmentMetadataId ?samplingPointAssessmentMetadata ?metadataId ?metadataNamespace
-       WHERE {
-              ?assessmentRegime a aqd:AQD_AssessmentRegime ;
-              aqd:inspireId ?inspireId .
-              ?inspireId rdfs:label ?inspireLabel .
-              ?inspireId aqd:localId ?localId .
-              ?assessmentRegime aqd:assessmentMethods ?assessmentMethods .
-              ?assessmentMethods aqd:modelAssessmentMetadata ?assessmentMetadata .
-              ?assessmentMetadata aq:inspireNamespace ?assessmentMetadataNamespace .
-              ?assessmentMetadata aq:inspireId ?assessmentMetadataId .
-              OPTIONAL { ?assessmentMethods aqd:samplingPointAssessmentMetadata ?samplingPointAssessmentMetadata. }
-              OPTIONAL {?samplingPointAssessmentMetadata aq:inspireId ?metadataId. }
-              OPTIONAL {?samplingPointAssessmentMetadata aq:inspireNamespace ?metadataNamespace . }
-             }"(: order by DESC(?samplingPointAssessmentMetadata) ?assessmentRegime":)
-};
-
-declare function xmlconv:getSamplingPointAssessmentMetadata() as xs:string {
-        "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-        PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
-        PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
-        PREFIX aq: <http://reference.eionet.europa.eu/aq/ontology/>
-
-       SELECT ?assessmentRegime ?inspireId ?localId ?inspireLabel ?assessmentMethods  ?samplingPointAssessmentMetadata ?metadataId ?metadataNamespace
-       WHERE {
-              ?assessmentRegime a aqd:AQD_AssessmentRegime ;
-              aqd:inspireId ?inspireId .
-              ?inspireId rdfs:label ?inspireLabel .
-              ?inspireId aqd:localId ?localId .
-              ?assessmentRegime aqd:assessmentMethods ?assessmentMethods .
-              ?assessmentMethods aqd:samplingPointAssessmentMetadata ?samplingPointAssessmentMetadata.
-              ?samplingPointAssessmentMetadata aq:inspireId ?metadataId.
-              ?samplingPointAssessmentMetadata aq:inspireNamespace ?metadataNamespace.
-              }"(: order by ?assessmentRegime":)
-};
-
-declare function xmlconv:getZoneLocallD($cdrUrl as xs:string) as xs:string {
-
-    concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-        PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
-        PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
-
-       SELECT ?zone ?inspireId ?localId ?inspireLabel
-       WHERE {
-              ?zone a aqd:AQD_Zone ;
-              aqd:inspireId ?inspireId .
-              ?inspireId rdfs:label ?inspireLabel .
-              ?inspireId aqd:localId ?localId .
-       FILTER (CONTAINS(str(?zone), '",  $cdrUrl, "b/'))
-   }")(:  order by ?zone"):)
-};
-
-declare function xmlconv:getPollutantlD($cdrUrl as xs:string) as xs:string {
-    concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-            PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
-            PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
-
-          SELECT distinct concat(?inspireLabel, '#', str(?pollutantCode)) as ?key
-          WHERE {
-                 ?zone a aqd:AQD_Zone ;
-                  aqd:inspireId ?inspireId .
-                 ?inspireId rdfs:label ?inspireLabel .
-                 ?zone aqd:pollutants ?pollutants .
-                 ?pollutants aqd:pollutantCode ?pollutantCode .
-          FILTER (CONTAINS(str(?zone), '", $cdrUrl, "b/'))
-          }")(:  order by ?key"):)
-    };
-
-declare function xmlconv:getModel($cdrUrl as xs:string) as xs:string {
-concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-        PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
-        PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
-
-        SELECT ?model ?inspireId ?inspireLabel  ?localId ?namespace
-        WHERE {
-                ?model a aqd:AQD_Model ;
-                 aqd:inspireId ?inspireId .
-                 ?inspireId rdfs:label ?inspireLabel .
-                 ?inspireId aqd:localId ?localId .
-                 ?inspireId aqd:namespace ?namespace .
-        FILTER(CONTAINS(str(?model), '", $cdrUrl , "d/'))
-      }")(: order by ?model"):)
-};
-
-declare function xmlconv:getSamplingPoint($cdrUrl as xs:string) as xs:string {
-concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-        PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
-        PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
-
-        SELECT ?samplingPoint ?inspireId ?inspireLabel ?localId ?namespace
-        WHERE {
-                ?samplingPoint a aqd:AQD_SamplingPoint ;
-                 aqd:inspireId ?inspireId .
-                 ?inspireId rdfs:label ?inspireLabel .
-                 ?inspireId aqd:localId ?localId .
-                 ?inspireId aqd:namespace ?namespace .
-
-        FILTER(CONTAINS(str(?samplingPoint), '", $cdrUrl, "d/'))
-      }")(:  order by ?samplingPoint"):)
-};
-
 (: Rule implementations :)
 declare function xmlconv:checkReport($source_url as xs:string, $countryCode as xs:string) as element(table) {
 
@@ -288,7 +96,7 @@ let $tblAllAttainments :=
 
 (: G2 :)
 let $attainmentsInDelivery := $docRoot//aqd:AQD_Attainment
-let $inspireSparql := xmlconv:getInspireLabels($cdrUrl)
+let $inspireSparql := query:getInspireLabels($cdrUrl)
 let $isCRAvailable := string-length($inspireSparql) > 0 and doc-available(sparqlx:getSparqlEndpointUrl($inspireSparql, "xml"))
 
 let $attainmentsInCR := if ($isCRAvailable) then
@@ -311,7 +119,7 @@ return
 
 
 (: G3 :)
-let $existingAttainmentSparql := xmlconv:getExistingAttainmentSqarql($cdrUrl)
+let $existingAttainmentSparql := query:getExistingAttainmentSqarql($cdrUrl)
 let $isCRAvailable := string-length($existingAttainmentSparql) > 0 and doc-available(sparqlx:getSparqlEndpointUrl($existingAttainmentSparql, "xml"))
 
 let $attainmentsKeysInCR := if($isCRAvailable) then
@@ -532,7 +340,7 @@ let $invalidExceedanceDescriptionAdjustment:=
      </tr>
 
 (: G13 :)
-let $resultXml := if (fn:string-length($countryCode) = 2) then xmlconv:getLocallD($cdrUrl) else ""
+let $resultXml := if (fn:string-length($countryCode) = 2) then query:getLocallD($cdrUrl) else ""
 let $isLocallDCodesAvailable := string-length($resultXml) > 0 and doc-available(sparqlx:getSparqlEndpointUrl($resultXml, "xml"))
 let $inspireLabel := if($isLocallDCodesAvailable) then distinct-values(data(sparqlx:executeSparqlQuery($resultXml)//sparql:binding[@name='inspireLabel']/sparql:literal)) else "x"
 let $isLocallDCodesAvailable := count($resultXml) > 0
@@ -552,7 +360,7 @@ let $invalidAssessment :=
 (: G14 TODO Need's clarification , number of fields doesn't match :)
 
 (: G15 :)
-let $resultXml := if (fn:string-length($countryCode) = 2) then xmlconv:getZoneLocallD($cdrUrl) else ""
+let $resultXml := if (fn:string-length($countryCode) = 2) then query:getZoneLocallD($cdrUrl) else ""
 let $isZoneLocallDCodesAvailable := string-length($resultXml) > 0 and doc-available(sparqlx:getSparqlEndpointUrl($resultXml, "xml"))
 let $zoneLocallD := if($isZoneLocallDCodesAvailable) then distinct-values(data(sparqlx:executeSparqlQuery($resultXml)//sparql:binding[@name='inspireLabel']/sparql:literal)) else ""
 let $isZoneLocallDCodesAvailable := count($resultXml) > 0
@@ -572,12 +380,12 @@ let $invalidAssessmentZone :=
 
 (: G17 :)
 
-let $resultXml := if (fn:string-length($countryCode) = 2) then xmlconv:getZoneLocallD($cdrUrl) else ""
+let $resultXml := if (fn:string-length($countryCode) = 2) then query:getZoneLocallD($cdrUrl) else ""
 let $isZoneLocallDCodesAvailable := string-length($resultXml) > 0 and doc-available(sparqlx:getSparqlEndpointUrl($resultXml, "xml"))
 let $zoneLocallD := if($isZoneLocallDCodesAvailable) then distinct-values(data(sparqlx:executeSparqlQuery($resultXml)//sparql:binding[@name='inspireLabel']/sparql:literal)) else ()
 let $isZoneLocallDCodesAvailable := count($zoneLocallD) > 0
 
-let $resultSparql := if (fn:string-length($countryCode) = 2) then xmlconv:getPollutantlD($cdrUrl) else ""
+let $resultSparql := if (fn:string-length($countryCode) = 2) then query:getPollutantlD($cdrUrl) else ""
 let $isPollutantCodesAvailable := string-length($resultSparql) > 0 and doc-available(sparqlx:getSparqlEndpointUrl($resultSparql, "xml"))
 let $pollutansCode:= if($isPollutantCodesAvailable) then distinct-values(data(sparqlx:executeSparqlQuery($resultSparql)//sparql:binding[@name='key']/sparql:literal)) else ()
 let $isPollutantCodesAvailable := count($pollutansCode) > 0
@@ -593,7 +401,7 @@ let $invalidPollutant :=
 
 (: G18 :)
 
-let $resultXml := if (fn:string-length($countryCode) = 2) then xmlconv:getTimeExtensionExemption($cdrUrl) else ""
+let $resultXml := if (fn:string-length($countryCode) = 2) then query:getTimeExtensionExemption($cdrUrl) else ""
 let $isLocalCodesAvailable := string-length($resultXml) > 0 and doc-available(sparqlx:getSparqlEndpointUrl($resultXml, "xml"))
 let $localId := if($isLocalCodesAvailable) then distinct-values(data(sparqlx:executeSparqlQuery($resultXml)//sparql:binding[@name='localId']/sparql:literal)) else ""
 let $isLocalCodesAvailable := count($resultXml) > 0
@@ -838,7 +646,7 @@ let $invalidAreaClassificationCodes := xmlconv:isinvalidDDConceptLimited($source
 (: used below as well :)
 let $modelCdrUrl := if ($countryCode = 'gi') then common:getCdrUrl('gb') else $cdrUrl
 
-let $resultXml := if (fn:string-length($countryCode) = 2) then xmlconv:getModel($modelCdrUrl) else ""
+let $resultXml := if (fn:string-length($countryCode) = 2) then query:getModel($modelCdrUrl) else ""
 let $isModelCodesAvailable := string-length($resultXml) > 0 and doc-available(sparqlx:getSparqlEndpointUrl($resultXml, "xml"))
 (:let $modelLocallD := if($isModelCodesAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($resultXml)//sparql:binding[@name='inspireLabel']/sparql:literal)) else "":)
 let $modelLocallD := if($isModelCodesAvailable) then distinct-values(data(sparqlx:executeSparqlQuery($resultXml)//concat(sparql:binding[@name='namespace']/sparql:literal,"/",sparql:binding[@name='localId']/sparql:literal))) else ""
@@ -857,18 +665,18 @@ let $invalidAssessmentModel :=
 
 (: G40   :)
 
-let $resultXml := if (fn:string-length($countryCode) = 2) then xmlconv:getLocallD($cdrUrl) else ""
+let $resultXml := if (fn:string-length($countryCode) = 2) then query:getLocallD($cdrUrl) else ""
 let $isLocallDCodesAvailable := string-length($resultXml) > 0 and doc-available(sparqlx:getSparqlEndpointUrl($resultXml, "xml"))
 let $inspireLabel := if($isLocallDCodesAvailable) then distinct-values(data(sparqlx:executeSparqlQuery($resultXml)//sparql:binding[@name='inspireLabel']/sparql:literal)) else ""
 
 
-let $resultXml2 :=  xmlconv:getAssessmentMethods()
+let $resultXml2 :=  query:getAssessmentMethods()
 let $isAssessmentMethodsAvailable := string-length($resultXml2) > 0 and doc-available(sparqlx:getSparqlEndpointUrl($resultXml2, "xml"))
 let $assessmentMetadataNamespace := if($isAssessmentMethodsAvailable) then distinct-values(data(sparqlx:executeSparqlQuery($resultXml2)//sparql:binding[@name='assessmentMetadataNamespace']/sparql:literal)) else ""
 let $assessmentMetadataId := if($isAssessmentMethodsAvailable) then distinct-values(data(sparqlx:executeSparqlQuery($resultXml2)//sparql:binding[@name='assessmentMetadataId']/sparql:literal)) else ""
 let $assessmentMetadata := if($isAssessmentMethodsAvailable) then distinct-values(data(sparqlx:executeSparqlQuery($resultXml2)//concat(sparql:binding[@name='assessmentMetadataNamespace']/sparql:literal,"/",sparql:binding[@name='assessmentMetadataId']/sparql:literal))) else ""
 (: for G42, G67 :)
-let $resultXml3 :=  xmlconv:getSamplingPointAssessmentMetadata()
+let $resultXml3 :=  query:getSamplingPointAssessmentMetadata()
 let $isAssessmentMethodsAvailable := string-length($resultXml3) > 0 and doc-available(sparqlx:getSparqlEndpointUrl($resultXml3, "xml"))
 let $samplingPointAssessmentMetadata := if($isAssessmentMethodsAvailable) then 
     let $results := sparqlx:executeSparqlQuery($resultXml3)
@@ -904,7 +712,7 @@ let $isAssessmentMethodsAvailable := count($resultXml2) > 0
 (: - CAUTION - Some of the following variables are being used in other rules :)
 
 let $modelCdrUrl_1 := $cdrUrl
-let $resultXml := if (fn:string-length($countryCode) = 2) then xmlconv:getSamplingPoint($modelCdrUrl_1) else ""
+let $resultXml := if (fn:string-length($countryCode) = 2) then query:getSamplingPoint($modelCdrUrl_1) else ""
 let $isSamplingPointAvailable := string-length($resultXml) > 0 and doc-available(sparqlx:getSparqlEndpointUrl($resultXml, "xml"))
 let $samplingPointlD := if($isSamplingPointAvailable) then
     let $results := sparqlx:executeSparqlQuery($resultXml)
@@ -974,7 +782,7 @@ let $invalidAreaClassificationAdjusmentCodes := xmlconv:isinvalidDDConceptLimite
 
 (: G53 :)
 
-let $resultXml := if (fn:string-length($countryCode) = 2) then xmlconv:getModel($modelCdrUrl) else ""
+let $resultXml := if (fn:string-length($countryCode) = 2) then query:getModel($modelCdrUrl) else ""
 let $isModelAvailable := string-length($resultXml) > 0 and doc-available(sparqlx:getSparqlEndpointUrl($resultXml, "xml"))
 let $model := if($isModelCodesAvailable) then distinct-values(data(sparqlx:executeSparqlQuery($resultXml)//concat(sparql:binding[@name='namespace']/sparql:literal,"/",sparql:binding[@name='localId']/sparql:literal))) else ""
 let $isModelAvailable := count($resultXml) > 0
@@ -1499,35 +1307,5 @@ return
         </div>
         }
     </div>
-
-};
-
-declare function xmlconv:aproceed($source_url, $countryCode) {
-
-let $docRoot := doc($source_url)
-
-let $cdrUrl := common:getCdrUrl($countryCode)
-let $modelCdrUrl := if ($countryCode = 'gi') then common:getCdrUrl('gb') else $cdrUrl
-
-let $resultXml := if (fn:string-length($countryCode) = 2) then xmlconv:getModel($modelCdrUrl) else ""
-let $isModelCodesAvailable := string-length($resultXml) > 0 and doc-available(sparqlx:getSparqlEndpointUrl($resultXml, "xml"))
-(:let $modelLocallD := if($isModelCodesAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($resultXml)//sparql:binding[@name='inspireLabel']/sparql:literal)) else "":)
-let $modelLocallD := if($isModelCodesAvailable) then distinct-values(data(sparqlx:executeSparqlQuery($resultXml)//concat(sparql:binding[@name='namespace']/sparql:literal,"/",sparql:binding[@name='localId']/sparql:literal))) else ""
-
-
-let $invalidAssessmentModel :=
-  for $x in $docRoot//aqd:AQD_Attainment/aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:modelUsed
-    where $isModelCodesAvailable
-    return
-        if (empty(index-of($modelLocallD, $x/fn:normalize-space(@xlink:href)))) then
-            <tr>
-                <td title="Feature type">{ "aqd:AQD_Attainment" }</td>
-                <td title="gml:id">{data($x/../../../../../@gml:id)}</td>
-                <td title="aqd:AQD_Model">{data($x/fn:normalize-space(@xlink:href))}</td>
-            </tr>
-        else
-            ()
-
-return $invalidAssessmentModel
 
 };
