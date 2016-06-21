@@ -22,6 +22,7 @@ import module namespace html = "aqd-html" at "aqd-html.xquery";
 import module namespace vocabulary = "aqd-vocabulary" at "aqd-vocabulary.xquery";
 import module namespace dd = "aqd-dd" at "aqd-dd.xquery";
 import module namespace filter = "aqd-filter" at "aqd-filter.xquery";
+import module namespace query = "aqd-query" at "aqd-query.xquery";
 
 declare namespace aqd = "http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0";
 declare namespace gml = "http://www.opengis.net/gml/3.2";
@@ -341,36 +342,6 @@ declare function xmlconv:getLatestDEnvelope($cdrUrl as xs:string) {
             FILTER(!bound(?replacedBy))
             FILTER(CONTAINS(str(?dataset), '", $cdrUrl, "d/'))
     }")
-};
-
-declare function xmlconv:getAssessmentTypeModel($cdrUrl as xs:string) as xs:string {
-    concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-         PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
-         PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
-
-    SELECT ?zone ?inspireId ?inspireLabel ?assessmentType
-        WHERE {
-         ?zone a aqd:AQD_Model ;
-         aqd:inspireId ?inspireId .
-         ?inspireId rdfs:label ?inspireLabel .
-         ?zone aqd:assessmentType ?assessmentType
-       FILTER (CONTAINS(str(?zone), '",$cdrUrl,"d/'))
-   }")
-};
-
-declare function xmlconv:getAssessmentType($cdrUrl as xs:string) as xs:string {
-    concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-         PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
-         PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
-
-    SELECT ?zone ?inspireId ?inspireLabel ?assessmentType
-        WHERE {
-         ?zone a aqd:AQD_SamplingPoint ;
-         aqd:inspireId ?inspireId .
-         ?inspireId rdfs:label ?inspireLabel .
-         ?zone aqd:assessmentType ?assessmentType
-       FILTER (CONTAINS(str(?zone), '", $cdrUrl,  "d/'))
-   }")
 };
 
 (:
@@ -1028,7 +999,7 @@ let $C31Result := filter:filterByName($C31Result, "pollutantCode", (
 (: C32 :)
 let $samplingPointSparqlC32 :=
     if (fn:string-length($countryCode) = 2) then 
-        xmlconv:getAssessmentType($cdrUrl) 
+        query:getAssessmentTypeSamplingPoint($cdrUrl)
     else 
         "" 
 let $aqdSamplingPointAssessMEntTypes := 
@@ -1038,7 +1009,7 @@ let $aqdSamplingPointAssessMEntTypes :=
 
 let $modelSparql :=
     if (fn:string-length($countryCode) = 2) then
-        xmlconv:getAssessmentTypeModel($cdrUrl) 
+        query:getAssessmentTypeModel($cdrUrl)
     else
         ""
 let $aqdModelAssessMentTypes := 
@@ -1381,8 +1352,13 @@ declare function xmlconv:isValidAssessmentTypeCombination($id as xs:string, $typ
     let $combinationObjective := concat($id, "#", $vocabulary:ASSESSMENTTYPE_VOCABULARY, "objective")
     
     let $combinationOk := 
-        if ($typeInDoc = ("fixed", "indicative", "model")) then
+        if ($typeInDoc = ("fixed", "model")) then
             if ($combination = $allCombinations) then
+                true()
+            else
+                false()
+        else if ($typeInDoc = "indicative") then
+            if ($allCombinations = ($combinationFixed, $combinationIndicative)) then
                 true()
             else
                 false()

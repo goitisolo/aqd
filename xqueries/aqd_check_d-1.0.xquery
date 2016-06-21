@@ -195,7 +195,6 @@ let $tblD4 :=
     let $omprName := substring-after($tmpEfName,concat($efName,"#"))
     return
         <tr>
-
             <td title="gml:id">{common:checkLink($modelType)}</td>
             <td title="ef:inspireId/localId">{common:checkLink($inspireId)}</td>
             <td title="ompr:inspireId/localId">{common:checkLink($aqdInspireId)}</td>
