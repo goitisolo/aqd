@@ -1304,7 +1304,7 @@ return
         {html:buildResultRows_D("D45", $labels:D45, $labels:D45_SHORT, (), $allOperationActivitPeriod, "", concat(fn:string(count($allOperationActivitPeriod))," errors found"), "", "", "error",())}
         {html:buildResultRows_D("D46", $labels:D46, $labels:D46_SHORT, (), $allUnknownEfOperationActivityPeriod, "", "", "", "","info", ())}
         {html:buildResultRows_D("D50", $labels:D50, $labels:D50_SHORT, (), $invalidStationClassificationLink, "", concat(fn:string(count($invalidStationClassificationLink))," errors found"), "", "","error", ())}
-        {html:buildResultRows_D("D51", $labels:D51, $labels:D51_SHORT, (), $invalidObservedPropertyCombinations, "", concat(fn:string(count($invalidObservedPropertyCombinations))," errors found"), " invalid attribute", "", "warning",())}
+        {html:buildResultRows_D("D51", $labels:D51, $labels:D51_SHORT, (), $D51invalid, "", concat(fn:string(count($D51invalid))," errors found"), " invalid attribute", "", "warning",())}
         {html:buildResultRows_D("D53", $labels:D53, $labels:D53_SHORT, (), $allInvalidZoneXlinks, "", concat(fn:string(count( $allInvalidZoneXlinks))," errors found"), " invalid attribute", "", "error",())}
         {html:buildResultRows_D("D54", $labels:D54, $labels:D54_SHORT, (), $invalidDuplicateSamplingPointProcessIds, "", concat(string(count($invalidDuplicateSamplingPointProcessIds))," errors found.") , " invalid attribute", "","error", ())}
         <tr style="border-top:2px solid #666666">
