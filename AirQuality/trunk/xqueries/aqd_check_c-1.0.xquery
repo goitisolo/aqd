@@ -34,7 +34,7 @@ declare namespace base2 = "http://inspire.ec.europa.eu/schemas/base2/1.0";
 declare namespace sparql = "http://www.w3.org/2005/sparql-results#";
 declare namespace xlink = "http://www.w3.org/1999/xlink";
 declare namespace skos="http://www.w3.org/2004/02/skos/core#";
-declare namespace rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" ;
+declare namespace rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#";
 declare namespace prop="http://dd.eionet.europa.eu/property/";
 
 declare variable $xmlconv:ISO2_CODES as xs:string* := ("AL","AT","BA","BE","BG","CH","CY","CZ","DE","DK","DZ","EE","EG","ES","FI",
