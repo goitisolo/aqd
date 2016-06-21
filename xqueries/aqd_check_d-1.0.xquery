@@ -535,8 +535,22 @@ let $D34invalid :=
 
 
 (: D35 :)
-let $invalidPos  := distinct-values($docRoot/gml:featureMember//aqd:AQD_SamplingPoint/ef:geometry/gml:Point/gml:pos[@srsDimension != "2"]/
-concat(../../../../../@gml:id, ": srsDimension=", @srsDimension))
+let $invalidPos  :=
+    for $x in $docRoot/gml:featureMember//aqd:AQD_SamplingPoint
+        let $invalidOrder :=
+            for $i in $x/ef:geometry/gml:Point/gml:pos
+                let $latlongToken := tokenize($i,"\s+")
+                let $lat := number($latlongToken[1])
+                let $long := number($latlongToken[2])
+            where ($long > $lat)
+            return 1
+    where ($x/ef:geometry/gml:Point/gml:pos/@srsDimension != "2" or $invalidOrder = 1)
+    return
+        <tr>
+            <td title="base:localId">{string($x/ef:inspireId/base:Identifier/base:localId)}</td>
+            <td title="@srsDimension">{string($x/ef:geometry/gml:Point/gml:pos/@srsDimension)}</td>
+            <td title="Pos">{string($x/ef:geometry/gml:Point/gml:pos)}</td>
+        </tr>
 
 (: D36 :)
 
@@ -1281,7 +1295,7 @@ return
             <a href="{ $vocabulary:MEDIA_VALUE_VOCABULARY }">{ $vocabulary:MEDIA_VALUE_VOCABULARY }</a></span>, $labels:PLACEHOLDER,
             (), (), "ef:mediaMonitored", "", "", "","warning", $invalidSamplingPointMedia)}
         {html:buildResultRows_D("D34", $labels:D34, $labels:D34_SHORT, (), (), "", "All values are valid", "", "", "error", $D34invalid)}
-        {html:buildResultRows_D("D35", $labels:D35, $labels:D35_SHORT, $invalidPos, () , "aqd:AQD_SamplingPoint/@gml:id", "All srsDimension attributes resolve to ""2""", " invalid attribute", "","error",())}
+        {html:buildResultRows_D("D35", $labels:D35, $labels:D35_SHORT, (), () , "aqd:AQD_SamplingPoint/ef:inspireId/base:Identifier/base:localId", "All srsDimension attributes resolve to ""2""", " invalid elements", "","error", $invalidPos)}
         {html:buildResultRows_D("D36", $labels:D36, $labels:D36_SHORT, $invalidSamplingPointPos, () , "aqd:AQD_SamplingPoint/@gml:id", "All attributes are valid", " invalid attribute", "","warning",())}
         {html:buildResultRows_D("D37", $labels:D37, $labels:D37_SHORT, (), $allObservingCapabilityPeriod, "", concat(fn:string(count($allObservingCapabilityPeriod))," errors found"), "", "","error", ())}
         {html:buildResultRows_D("D40", <span>The content of ../ef:observedProperty shall resolve to a valid code within
@@ -1298,7 +1312,7 @@ return
         {html:buildResultRows_D("D43", $labels:D43, $labels:D43_SHORT, (),$invalidEfbroader, "aqd:AQD_SamplingPoint/@gml:id", "All attributes are valid", " invalid attribute", "","warning", ())}
         {html:buildResultRows_D("D44", $labels:D44, $labels:D44_SHORT, (),$invalidEfbelongsTo, "aqd:AQD_SamplingPoint/@gml:id", "All attributes are valid", " invalid attribute", "","warning", ())}
         {html:buildResultRows_D("D44b", $labels:D44b, $labels:D44b_SHORT, (),$invalidStationEfbelongsTo, "aqd:AQD_Station/@gml:id", "All attributes are valid", " invalid attribute", "","warning", ())}
-	    <tr style="border-top:2px solid #666666">
+	      <tr style="border-top:2px solid #666666">
             <th colspan="3" style="vertical-align:top;text-align:left"></th>
         </tr>
         {html:buildResultRows_D("D45", $labels:D45, $labels:D45_SHORT, (), $allOperationActivitPeriod, "", concat(fn:string(count($allOperationActivitPeriod))," errors found"), "", "", "error",())}
@@ -1338,7 +1352,7 @@ return
                 (), $allInvalid61, "", concat(fn:string(count($allInvalid61))," errors found"), "", "", ())}-->
         {html:buildResultRowsWithTotalCount_D("D63", <span>Where ./aqd:detectionLimit is resolved uom link resolving to any concept in <a href="{ $vocabulary:UOM_CONCENTRATION_VOCABULARY }">{ $vocabulary:UOM_CONCENTRATION_VOCABULARY }</a> shall be provided</span>, $labels:PLACEHOLDER,
                 (), (), "aqd:detectionLimit", "", "", "","error",$allInvalid63 )}
-	    <tr style="border-top:1px solid #666666">
+	      <tr style="border-top:1px solid #666666">
             <th colspan="3" style="vertical-align:top;text-align:left">Checks on SamplingPointProcess(es) where the xlinked SamplingPoint has aqd:AQD_SamplingPoint/aqd:usedAQD equals TRUE (D67 to D70): </th>
         </tr>
         {html:buildResultRows_D("D67", concat('SamplingPointProcess(es) with incorrect code for Equivalence demonstration',

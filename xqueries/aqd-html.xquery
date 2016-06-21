@@ -858,3 +858,10 @@ declare function html:buildResultC31($ruleCode as xs:string, $resultsC as elemen
             </td>
         </tr>)
 };
+
+declare function html:buildInfoTable($ruleId as xs:string, $table as element(table)) {
+    <div>
+        <a id='vocLink-{$ruleId}' href='javascript:toggleItem("vocValuesDiv","vocLink", "{$ruleId}", "combination")'>Show combinations</a>
+        <div id="vocValuesDiv-{$ruleId}" style="display:none">{ $table }</div>
+    </div>
+};
