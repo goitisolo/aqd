@@ -564,9 +564,9 @@ let $invalidPollutantCombinations :=
     where not($pollutantCombinations//combination[concat($pollutantCodeVocabulary, code) = $code and concat($pollutantTargetVocabulary, target) = $target])
     return
         <tr>
-            <td title="gml:id">{data($x/../../@gml:id)}</td>
-            <td title="code">{data($code)}</td>
-            <td title="target">{data($target)}</td>
+            <td title="base:localId">{string($x/../../am:inspireId/base:Identifier/base:localId)}</td>
+            <td title="Pollutant">{string($code)}</td>
+            <td title="Protection target">{string($target)}</td>
         </tr>
 (:~
     B39b - Count combination occurrences
@@ -591,8 +591,8 @@ let $invalidPollutantOccurences :=
     for $x in $pollutantOccurrences//result[warning = 1]
     return
         <tr>
-            <td title="code">{data($x/code)}</td>
-            <td title="target">{data($x/target)}</td>
+            <td title="Pollutant">{data($x/code)}</td>
+            <td title="Protection target">{data($x/target)}</td>
         </tr>
 
 (:~
@@ -611,12 +611,10 @@ let $invalidPollutantRepeated :=
         where not(empty($codes))
         return
             <tr>
-                <td title="gml:id">{data($x/@gml:id)}</td>
+                <td title="base:localId">{data($x/am:inspireId/base:Identifier/base:localId)}</td>
             </tr>
 
-(:~
-    B40 -
- :)
+(: B40 - :)
 
 let $tempStr := xmlconv:checkVocabularyConceptValues($source_url, "", "aqd:AQD_Zone", "aqd:timeExtensionExemption", "http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/")
 let $invalidTimeExtensionExemption := $tempStr

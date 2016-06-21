@@ -104,9 +104,9 @@ declare function xmlconv:proceed($source_url as xs:string) {
             "This XML file passed all checks without errors or warnings"
 
 return
-        <div class="feedbacktext">
-            {html:getHead()}
-			<span id="feedbackStatus" class="{$errorLevel}" style="display:none">{$feedbackmessage}</span>
+    <div class="feedbacktext">
+        {html:getHead()}
+        <span id="feedbackStatus" class="{$errorLevel}" style="display:none">{$feedbackmessage}</span>
             <p>Checked XML file: <a href="{common:getCleanUrl($source_url)}">{common:getCleanUrl($source_url)}</a></p>
             {
             if (empty($validObligations)) then
