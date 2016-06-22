@@ -45,6 +45,11 @@ declare function html:getBullet($text as xs:string, $level as xs:string) as elem
         <div class="{$level}" style="background-color: { $color }; font-size: 0.8em; color: white; padding-left:5px;padding-right:5px;margin-right:5px;margin-top:2px;text-align:center">{ $text }</div>
 };
 
+declare function html:buildInfoTR($text as xs:string) as element(tr) {
+    <tr>
+        <th colspan="3">{$text}</th>
+    </tr>
+};
 
 (:~
 : JavaScript
@@ -864,4 +869,15 @@ declare function html:buildInfoTable($ruleId as xs:string, $table as element(tab
         <a id='vocLink-{$ruleId}' href='javascript:toggleItem("vocValuesDiv","vocLink", "{$ruleId}", "combination")'>Show combinations</a>
         <div id="vocValuesDiv-{$ruleId}" style="display:none">{ $table }</div>
     </div>
+};
+
+declare function html:getErrorTD($errValue,  $element as xs:string, $showMissing as xs:boolean)
+as element(td)
+{
+    let $val := if ($showMissing and string-length($errValue)=0) then "-blank-" else $errValue
+    return
+        <td title="{ $element }" style="color:red">{
+            $val
+        }
+        </td>
 };

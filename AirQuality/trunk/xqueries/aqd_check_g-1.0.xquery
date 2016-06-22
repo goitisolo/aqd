@@ -975,13 +975,7 @@ let $invalidAdjustmentType_82  :=
     </tr>
     else ()
 return
-    <table style="border-collapse:collapse;display:inline">
-        <colgroup>
-            <col width="15px" style="text-align:center"/>
-            <col width="450px" style="text-align:left"/>
-            <col width="350px" style="text-align:left"/>
-            <col width="*"/>
-        </colgroup>
+    <table class="hover">
         {html:buildResultRows_G("G1", $labels:G1, $labels:G1_SHORT, (), (), "", string($countAttainments), "", "","error", $tblAllAttainments)}
         {html:buildResultRows_G("G2", $labels:G2, $labels:G2_SHORT, (), (), "", string(count($newAttainments)), "", "","error", $newAttainments)}
         {html:buildResultRows_G("G3", $labels:G3, $labels:G3_SHORT, (), (), "", string(count($changedAttainments)), "", "","error", $changedAttainments)}

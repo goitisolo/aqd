@@ -524,13 +524,7 @@ let  $tblM41 :=
 let $invalidSrsName := distinct-values($docRoot//aqd:AQD_Sample[count(sams:shape) >0 and sams:shape/@srsName != "urn:ogc:def:crs:EPSG::4258" and sams:shape/@srsName != "urn:ogc:def:crs:EPSG::4326"]/@gml:id)
 
     return
-    <table style="border-collapse:collapse;display:inline">
-        <colgroup>
-            <col width="15px" style="text-align:center"/>
-            <col width="500px" style="text-align:left"/>
-            <col width="350px" style="text-align:left"/>
-            <col width="*"/>
-        </colgroup>
+    <table class="hover">
         {html:buildResultRows_M("M1", $labels:M1, $labels:M1_SHORT, (), (), "", string(sum($countFeatureTypes)), "", "","error", $tblAllFeatureTypes)}
         {html:buildResultRows_M("M2", $labels:M2, $labels:M2_SHORT, (), (), "", string(count($tblM2)), "", "","error",())}
         {html:buildResultRows_M("M3", $labels:M3, $labels:M3_SHORT, (), (), "", string(count($tblM3)), "", "","error",())}
