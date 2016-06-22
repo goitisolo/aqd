@@ -189,15 +189,6 @@ declare variable $xmlconv:VALID_POLLUTANT_IDS_40 as xs:string* := ($xmlconv:MAND
 
 declare variable $xmlconv:VALID_POLLUTANT_IDS_21 as xs:string* := ("1","8","9","10","5","6001","5014","5018","5015","5029","5012","20");
 
-declare function xmlconv:getErrorTD($errValue,  $element as xs:string, $showMissing as xs:boolean) as element(td) {
-    let $val := if ($showMissing and string-length($errValue)=0) then "-blank-" else $errValue
-    return
-        <td title="{ $element }" style="color:red">{
-            $val
-        }
-        </td>
-};
-
 declare function xmlconv:getProtectionTarget($cdrUrl as xs:string, $bDir as xs:string) as xs:string {
 concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
          PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
@@ -960,7 +951,7 @@ let $invalidZoneGmlEndPosition :=
         <tr>
             <td title="aqd:AQD_AssessmentRegime/ @gml:id">{data($zone/../../@gml:id)}</td>
             <td title="aqd:AQD_Zone/@gml:id">{data($zone/@gml:id)}</td>{
-                xmlconv:getErrorTD(data($endPosition), "gml:endPosition", fn:true())
+                html:getErrorTD(data($endPosition), "gml:endPosition", fn:true())
             }
         </tr>
 
@@ -1054,12 +1045,12 @@ let $invalidAssessmentGmlEndPosition :=
             <td title="aqd:AQD_AssessmentRegime/ @gml:id">{data($assessmentMetadata/../../../@gml:id)}</td>{
                 if ($assessmentMetadata/local-name() = 'modelAssessmentMetadata') then
                     (<td title="aqd:AQD_Model/ @gml:id">{data($assessmentMetadata/aqd:AQD_Model/@gml:id)}</td>,
-                        xmlconv:getErrorTD(data($endPosition), "gml:endPosition", fn:true())
+                        html:getErrorTD(data($endPosition), "gml:endPosition", fn:true())
                     ,<td title="aqd:AQD_SamplingPoint/ @gml:id"/>, <td title="gml:endPosition"/>)
                 else if ($assessmentMetadata/local-name() = 'samplingPointAssessmentMetadata') then
                     (<td title="aqd:AQD_Model/ @gml:id"/>, <td title="gml:endPosition"/>,
                         <td title="aqd:AQD_SamplingPoint/ @gml:id">{data($assessmentMetadata/aqd:AQD_SamplingPoint/@gml:id)}</td>,
-                        xmlconv:getErrorTD(data($endPosition), "gml:endPosition", fn:true())
+                        html:getErrorTD(data($endPosition), "gml:endPosition", fn:true())
                     )
                 else
                     ()
@@ -1086,12 +1077,12 @@ let $invalidAssessmentUsed :=
             <td title="aqd:AQD_AssessmentRegime/ @gml:id">{data($assessmentMetadata/../../../@gml:id)}</td>{
                 if ($assessmentMetadata/local-name() = 'modelAssessmentMetadata') then
                     (<td title="aqd:AQD_Model/ @gml:id">{data($assessmentMetadata/aqd:AQD_Model/@gml:id)}</td>,
-                        xmlconv:getErrorTD(data($used), "aqd:used", fn:true())
+                        html:getErrorTD(data($used), "aqd:used", fn:true())
                     ,<td title="aqd:AQD_SamplingPoint/ @gml:id"/>, <td title="aqd:usedAQD"/>)
                 else if ($assessmentMetadata/local-name() = 'samplingPointAssessmentMetadata') then
                     (<td title="aqd:AQD_Model/ @gml:id"/>, <td title="aqd:used"/>,
                         <td title="aqd:AQD_SamplingPoint/ @gml:id">{data($assessmentMetadata/aqd:AQD_SamplingPoint/@gml:id)}</td>,
-                        xmlconv:getErrorTD(data($used), "aqd:usedAQD", fn:true())
+                        html:getErrorTD(data($used), "aqd:usedAQD", fn:true())
                     )
                 else
                     ()
@@ -1162,69 +1153,69 @@ let $invalidsamplingPointAssessmentMetadata40 :=
 
 return
     <table class="hover">
-        {html:buildResultRows_C("C1", $labels:C1, $labels:C1_SHORT, (), (), "", string($countRegimes), "", "","warning", $tblAllRegimes)}
-        {html:buildResultRows_C("C4", $labels:C4, $labels:C4_SHORT, $invalidDuplicateGmlIds, (), "@gml:id", "No duplicates found", " duplicate", "","error",())}
-        {html:buildResultRows_C("C5", $labels:C5, $labels:C5_SHORT, $invalidDuplicateLocalIds, (), "base:localId", "No duplicates found", " duplicate", "","error", ())}
-        {html:buildResultRows_C("C6", $labels:C6, $labels:C6_SHORT, (), (), "", string(count($tblC6)), "", "","info",$tblC6)}
-        {html:buildResultRows_C("C6.1", $labels:C6.1, $labels:C6.1_SHORT, $invalidNamespaces, (), "base:Identifier/base:namespace", "All values are valid", " invalid namespaces", "", "error", ())}
+        {html:buildResultRows("C1", $labels:C1, $labels:C1_SHORT, (), (), "", string($countRegimes), "", "","warning", $tblAllRegimes)}
+        {html:buildResultRows("C4", $labels:C4, $labels:C4_SHORT, $invalidDuplicateGmlIds, (), "@gml:id", "No duplicates found", " duplicate", "","error",())}
+        {html:buildResultRows("C5", $labels:C5, $labels:C5_SHORT, $invalidDuplicateLocalIds, (), "base:localId", "No duplicates found", " duplicate", "","error", ())}
+        {html:buildResultRows("C6", $labels:C6, $labels:C6_SHORT, (), (), "", string(count($tblC6)), "", "","info",$tblC6)}
+        {html:buildResultRows("C6.1", $labels:C6.1, $labels:C6.1_SHORT, $invalidNamespaces, (), "base:Identifier/base:namespace", "All values are valid", " invalid namespaces", "", "error", ())}
         
-        {html:buildResultRows_C("C7", $labels:C7, $labels:C7_SHORT, $invalidAssessmentRegim,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error", ())}
+        {html:buildResultRows("C7", $labels:C7, $labels:C7_SHORT, $invalidAssessmentRegim,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error", ())}
         {xmlconv:buildPollutantResultRows("C8",
                 $missingPollutantC8, " missing pollutant", "warning", xmlconv:buildVocItemRows($vocabulary:POLLUTANT_VOCABULARY, $missingPollutantC8))}
-        {html:buildResultRows_C("C9", $labels:C9, $labels:C9_SHORT, (), (), "", string(count($foundPollutantC9)), "", "", "info", xmlconv:buildVocItemRows($vocabulary:POLLUTANT_VOCABULARY, $foundPollutantC9))}
-        {html:buildResultRows_C("C10", <span>Where ./aqd:pollutant resolves to http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1 the 3 elements within ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/may only resolve to the following combinations {xmlconv:buildItemsList("C10","", $xmlconv:VALID_ENVIRONMENTALOBJECTIVE_C10)}</span>,
+        {html:buildResultRows("C9", $labels:C9, $labels:C9_SHORT, (), (), "", string(count($foundPollutantC9)), "", "", "info", xmlconv:buildVocItemRows($vocabulary:POLLUTANT_VOCABULARY, $foundPollutantC9))}
+        {html:buildResultRows("C10", <span>Where ./aqd:pollutant resolves to http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1 the 3 elements within ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/may only resolve to the following combinations {xmlconv:buildItemsList("C10","", $xmlconv:VALID_ENVIRONMENTALOBJECTIVE_C10)}</span>,
                 $labels:C10_SHORT, $invalidAqdAssessmentRegimeAqdPollutant,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error", ())}
-        {html:buildResultRows_C("C11", <span> Where ./aqd:pollutant resolves to http://dd.eionet.europa.eu/vocabulary/aq/pollutant/7 the 3 elements within ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/may only resolve to the following combinations {xmlconv:buildItemsList("C11","", $xmlconv:VALID_ENVIRONMENTALOBJECTIVE_C11)}</span>,
+        {html:buildResultRows("C11", <span> Where ./aqd:pollutant resolves to http://dd.eionet.europa.eu/vocabulary/aq/pollutant/7 the 3 elements within ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/may only resolve to the following combinations {xmlconv:buildItemsList("C11","", $xmlconv:VALID_ENVIRONMENTALOBJECTIVE_C11)}</span>,
                 $labels:C11_SHORT, $invalidAqdAssessmentRegimeAqdPollutantC11,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error", ())}
-        {html:buildResultRows_C("C12", <span>Where ./aqd:pollutant resolves to http://dd.eionet.europa.eu/vocabulary/aq/pollutant/8 the22 3 elements within ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/may only resolve to the following combinations {xmlconv:buildItemsList("C12","", $xmlconv:VALID_ENVIRONMENTALOBJECTIVE_C12)}</span>,
+        {html:buildResultRows("C12", <span>Where ./aqd:pollutant resolves to http://dd.eionet.europa.eu/vocabulary/aq/pollutant/8 the22 3 elements within ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/may only resolve to the following combinations {xmlconv:buildItemsList("C12","", $xmlconv:VALID_ENVIRONMENTALOBJECTIVE_C12)}</span>,
                 $labels:C12_SHORT, $invalidAqdAssessmentRegimeAqdPollutantC12,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error", ())}
-        {html:buildResultRows_C("C13", <span>Where ./aqd:pollutant resolves to http://dd.eionet.europa.eu/vocabulary/aq/pollutant/9 the 3 elements within ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/may only resolve to the following combinations {xmlconv:buildItemsList("C13","", $xmlconv:VALID_ENVIRONMENTALOBJECTIVE_C13)}</span>,
+        {html:buildResultRows("C13", <span>Where ./aqd:pollutant resolves to http://dd.eionet.europa.eu/vocabulary/aq/pollutant/9 the 3 elements within ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/may only resolve to the following combinations {xmlconv:buildItemsList("C13","", $xmlconv:VALID_ENVIRONMENTALOBJECTIVE_C13)}</span>,
                 $labels:C13_SHORT, $invalidAqdAssessmentRegimeAqdPollutantC13,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error", ())}
-        {html:buildResultRows_C("C14", <span>Where ./aqd:pollutant resolves to http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5 the 3 elements within ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/may only resolve to the following combinations {xmlconv:buildItemsList("C14","", $xmlconv:VALID_ENVIRONMENTALOBJECTIVE_C14)}</span>,
+        {html:buildResultRows("C14", <span>Where ./aqd:pollutant resolves to http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5 the 3 elements within ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/may only resolve to the following combinations {xmlconv:buildItemsList("C14","", $xmlconv:VALID_ENVIRONMENTALOBJECTIVE_C14)}</span>,
                 $labels:C14_SHORT, $invalidAqdAssessmentRegimeAqdPollutantC14,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error", ())}
-        {html:buildResultRows_C("C15", <span>Where ./aqd:pollutant resolves to http://dd.eionet.europa.eu/vocabulary/aq/pollutant/6001 the 3 elements within ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/may only resolve to the following combinations {xmlconv:buildItemsList("C15","", $xmlconv:VALID_ENVIRONMENTALOBJECTIVE_C15)}</span>,
+        {html:buildResultRows("C15", <span>Where ./aqd:pollutant resolves to http://dd.eionet.europa.eu/vocabulary/aq/pollutant/6001 the 3 elements within ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/may only resolve to the following combinations {xmlconv:buildItemsList("C15","", $xmlconv:VALID_ENVIRONMENTALOBJECTIVE_C15)}</span>,
                 $labels:C15_SHORT, $invalidAqdAssessmentRegimeAqdPollutantC15,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error", ())}
-        {html:buildResultRows_C("C16", <span>Where ./aqd:pollutant resolves to http://dd.eionet.europa.eu/vocabulary/aq/pollutant/10 the 3 elements within ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/may only resolve to the following combinations {xmlconv:buildItemsList("C16","", $xmlconv:VALID_ENVIRONMENTALOBJECTIVE_C16)}</span>,
+        {html:buildResultRows("C16", <span>Where ./aqd:pollutant resolves to http://dd.eionet.europa.eu/vocabulary/aq/pollutant/10 the 3 elements within ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/may only resolve to the following combinations {xmlconv:buildItemsList("C16","", $xmlconv:VALID_ENVIRONMENTALOBJECTIVE_C16)}</span>,
                 $labels:C16_SHORT, $invalidAqdAssessmentRegimeAqdPollutantC16,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error", ())}
 
-        {html:buildResultRows_C("C17", <span>Where ./aqd:pollutant resolves to http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5012  or http://dd.eionet.europa.eu/vocabulary/aq/pollutant/20 the 3 elements within ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/may only resolve to the following combinations{xmlconv:buildItemsList("C17","", $xmlconv:VALID_ENVIRONMENTALOBJECTIVE_C17)}</span>,
+        {html:buildResultRows("C17", <span>Where ./aqd:pollutant resolves to http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5012  or http://dd.eionet.europa.eu/vocabulary/aq/pollutant/20 the 3 elements within ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/may only resolve to the following combinations{xmlconv:buildItemsList("C17","", $xmlconv:VALID_ENVIRONMENTALOBJECTIVE_C17)}</span>,
                 $labels:C17_SHORT, $invalidAqdAssessmentRegimeAqdPollutantC17,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error", ())}
-        {html:buildResultRows_C("C18", <span>Where ./aqd:pollutant resolves to http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5014  or http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5018 or http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5015 or http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5029 the 3 elements within ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/may only resolve to the following combinations{xmlconv:buildItemsList("C18","", $xmlconv:VALID_ENVIRONMENTALOBJECTIVE_C18)}</span>,
+        {html:buildResultRows("C18", <span>Where ./aqd:pollutant resolves to http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5014  or http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5018 or http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5015 or http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5029 the 3 elements within ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/may only resolve to the following combinations{xmlconv:buildItemsList("C18","", $xmlconv:VALID_ENVIRONMENTALOBJECTIVE_C18)}</span>,
                 $labels:C18_SHORT, $invalidAqdAssessmentRegimeAqdPollutantC18,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error", ())}
-        {html:buildResultRows_C("C19", <span>The 3  elements  within ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/ may  only resolve  to  the  following  combination
+        {html:buildResultRows("C19", <span>The 3  elements  within ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/ may  only resolve  to  the  following  combination
             aqd:objectiveType xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/MO aqd:reportingMetric xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean aqd:protectionTarget xlink:href attribute  shall  resolve  to  one  of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/NA where
             <a href="{ $vocabulary:POLLUTANT_VOCABULARY }">{ $vocabulary:POLLUTANT_VOCABULARY }</a> that must be one of
             {xmlconv:buildVocItemsList("C19", $vocabulary:POLLUTANT_VOCABULARY, $xmlconv:VALID_POLLUTANT_IDS_19)}</span>,
                 $labels:C19_SHORT, $invalidAqdAssessmentRegimeAqdPollutantC19, (), "aqd:reportingMetric", "All values are valid", " invalid value", "","warning", ())}
         <!--{xmlconv:buildResultRows("C20", "Where ./aqd:pollutant resolves to http://dd.eionet.europa.eu/vocabulary/aq/pollutant/7 and ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType xlink:href attribute resolve to http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LTO ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:exceedanceAttainment xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/assessmentthresholdexceedance/aboveLTO http://dd.eionet.europa.eu/vocabulary/aq/assessmentthresholdexceedance/belowLTO",
             $invalidAqdAssessmentRegimeAqdPollutantC20,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error", ())}-->
-        {html:buildResultRows_C("C20", $labels:C20, $labels:C20_SHORT, $invalidAqdAssessmentRegimeAqdPollutantC20, (), "aqd:reportingMetric", "All values are valid", " invalid value", "","warning", ())}
+        {html:buildResultRows("C20", $labels:C20, $labels:C20_SHORT, $invalidAqdAssessmentRegimeAqdPollutantC20, (), "aqd:reportingMetric", "All values are valid", " invalid value", "","warning", ())}
         <!--{xmlconv:buildResultRows("C22", "Where ./aqd:objectiveType resolves to http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/MO THEN ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:exceedanceAttainment xlink:href attribute shall resolve to http://dd.eionet.europa.eu/vocabulary/aq/assessmentthresholdexceedance/NA",
                 $invalidAqdAssessmentRegimeAqdPollutantC22,(), "aqd:AQD_AssesmentRegime", "All values are valid", " invalid value", "","warning", ())}-->
-        {html:buildResultRows_C("C23a", $labels:C23a, $labels:C23a_SHORT, $invalidAqdAssessmentType,(), "aqd:AQD_AssesmentRegime", "All values are valid", " invalid value", "","error", ())}
-        {html:buildResultRows_C("C23b", $labels:C23b, $labels:C23b_SHORT, $invalid23B,(), "aqd:AQD_AssesmentRegime", "All values are valid", " invalid value", "","warning", ())}
-        {html:buildResultRows_C("C24", $labels:C24, $labels:C24_SHORT, (),(), "", "", " ", "","warning", ())}
-        {html:buildResultRows_C("C25", $labels:C25, $labels:C25_SHORT, (),(), "", "", " ", "","warning", ())}
-        {html:buildResultTable_C("C26", $labels:C26, $labels:C26_SHORT, (), "All values are valid", " invalid value", "","warning", $tblC26)}
-        {html:buildResultTable_C("C27", concat("The  number of unique zones cited by /aqd:AQD_AssessmentRegime (", $countZoneIds2 , ") shall be EQUAL to the number of unique zones in ./aqd:AQD_Zone (", $countZoneIds1, ")"),
+        {html:buildResultRows("C23a", $labels:C23a, $labels:C23a_SHORT, $invalidAqdAssessmentType,(), "aqd:AQD_AssesmentRegime", "All values are valid", " invalid value", "","error", ())}
+        {html:buildResultRows("C23b", $labels:C23b, $labels:C23b_SHORT, $invalid23B,(), "aqd:AQD_AssesmentRegime", "All values are valid", " invalid value", "","warning", ())}
+        {html:buildResultRows("C24", $labels:C24, $labels:C24_SHORT, (),(), "", "", " ", "","warning", ())}
+        {html:buildResultRows("C25", $labels:C25, $labels:C25_SHORT, (),(), "", "", " ", "","warning", ())}
+        {html:buildResultTable("C26", $labels:C26, $labels:C26_SHORT, (), "All values are valid", " invalid value", "","warning", $tblC26)}
+        {html:buildResultTable("C27", concat("The  number of unique zones cited by /aqd:AQD_AssessmentRegime (", $countZoneIds2 , ") shall be EQUAL to the number of unique zones in ./aqd:AQD_Zone (", $countZoneIds1, ")"),
             $labels:C27_SHORT, (), "Count of unique zones matches", " not unique zone",  "", "warning", $resultC27)}
         <!--{xmlconv:buildResultRows("C27", concat("aqd:zone xlink:href attribute shall resolve to a traversable link to an AQ zone in /aqd:AQD_Zone reported under cdr.eionet.europa.eu/ZZ/eu/aqd/b/...  The ./aqd:pollutant and ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget within the Assessment Regime shall equal one combination /aqd:AQD_Zone/aqd:pollutants/aqd:Pollutant/aqd:pollutantCode and /aqd:AQD_Zone/aqd:pollutants/aqd:Pollutant/aqd:protectionTarget within  the  linked  zone  aqd:AQD_Zone/aqd:pollutants",
                 "Exception : Where ./aqd:pollutant resolves to the list in  C9 and http://dd.eionet.europa.eu/vocabulary/aq/pollutant/6001 ./aqd:zone xlink:href attribute MAY resolve to <aqd:zone nilReason='inapplicable'/>"),
                 $invalidAqdAssessmentRegimeZone,(),  "aqd:AQD_Model or aqd:AQD_SamplingPoint", "All values are valid", " invalid value", "","warning", ())}-->
-        {html:buildResultRows_C("C28", $labels:C28, $labels:C28_SHORT, $invalidZoneGmlEndPosition,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error", ())}
-        {html:buildResultTable_C("C29", concat("aqd:zone xlink:href attribute shall resolve to a traversable link to an AQ zone in /aqd:AQD_Zone reported under cdr.eionet.europa.eu/ZZ/eu/aqd/b/...  The ./aqd:pollutant and ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget within the Assessment Regime shall equal one combination /aqd:AQD_Zone/aqd:pollutants/aqd:Pollutant/aqd:pollutantCode and /aqd:AQD_Zone/aqd:pollutants/aqd:Pollutant/aqd:protectionTarget within  the  linked  zone  aqd:AQD_Zone/aqd:pollutants",
+        {html:buildResultRows("C28", $labels:C28, $labels:C28_SHORT, $invalidZoneGmlEndPosition,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error", ())}
+        {html:buildResultTable("C29", concat("aqd:zone xlink:href attribute shall resolve to a traversable link to an AQ zone in /aqd:AQD_Zone reported under cdr.eionet.europa.eu/ZZ/eu/aqd/b/...  The ./aqd:pollutant and ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget within the Assessment Regime shall equal one combination /aqd:AQD_Zone/aqd:pollutants/aqd:Pollutant/aqd:pollutantCode and /aqd:AQD_Zone/aqd:pollutants/aqd:Pollutant/aqd:protectionTarget within  the  linked  zone  aqd:AQD_Zone/aqd:pollutants",
                 "Exception : Where ./aqd:pollutant resolves to http://dd.eionet.europa.eu/vocabulary/aq/pollutant/6001 ./aqd:zone xlink:href attribute MAY resolve to <aqd:zone nilReason='inapplicable'/>"),
                 $labels:C29_SHORT, (), "All values are valid", " invalid value", "","warning", $tblC29)}
         {html:buildResultC31("C31", $C31Result, $C31BCount)}
-        {html:buildResultTable_C("C32", $labels:C32, $labels:C32_SHORT, (),"All valid", " invalid value",  "","warning", $tblC32)}
-        {html:buildResultRows_C("C33", $labels:C33, $labels:C33_SHORT, $invalidAssessmentGmlEndPosition,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error", ())}
-        {html:buildResultRows_C("C35", $labels:C35, $labels:C35_SHORT, $invalidAssessmentUsed,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error", ())}
-        {html:buildResultRows_C("C37", $labels:C37, $labels:C37_SHORT, $invalidAqdReportingMetric,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","warning", ())}
-        {html:buildResultRows_C("C38", $labels:C38, $labels:C38_SHORT, $invalidAqdReportingMetricTest,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","warning", ())}
-        {html:buildResultRows_C("C40", <span>The total number of /aqd:assessmentMethods/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata and /aqd:assessmentMethods/aqd:AssessmentMethods/aqd:modelAssessmentMetadata citations within a MS (delivery) shall be GREATER THAN OR EQUAL to 1 where ./aqd:pollutant xlink:href attribute resolves to{xmlconv:buildVocItemsList("C40", $vocabulary:POLLUTANT_VOCABULARY, $xmlconv:VALID_POLLUTANT_IDS_40)}</span>,
+        {html:buildResultTable("C32", $labels:C32, $labels:C32_SHORT, (),"All valid", " invalid value",  "","warning", $tblC32)}
+        {html:buildResultRows("C33", $labels:C33, $labels:C33_SHORT, $invalidAssessmentGmlEndPosition,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error", ())}
+        {html:buildResultRows("C35", $labels:C35, $labels:C35_SHORT, $invalidAssessmentUsed,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error", ())}
+        {html:buildResultRows("C37", $labels:C37, $labels:C37_SHORT, $invalidAqdReportingMetric,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","warning", ())}
+        {html:buildResultRows("C38", $labels:C38, $labels:C38_SHORT, $invalidAqdReportingMetricTest,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","warning", ())}
+        {html:buildResultRows("C40", <span>The total number of /aqd:assessmentMethods/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata and /aqd:assessmentMethods/aqd:AssessmentMethods/aqd:modelAssessmentMetadata citations within a MS (delivery) shall be GREATER THAN OR EQUAL to 1 where ./aqd:pollutant xlink:href attribute resolves to{xmlconv:buildVocItemsList("C40", $vocabulary:POLLUTANT_VOCABULARY, $xmlconv:VALID_POLLUTANT_IDS_40)}</span>,
                 $labels:C40_SHORT, $invalidsamplingPointAssessmentMetadata40,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","warning", ())}
-        {html:buildResultRows_C("C41", $labels:C41, $labels:C41_SHORT, $C41invalid, (), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","warning", ())}
-        {html:buildResultRows_C("C42", $labels:C42, $labels:C42_SHORT, $C42invalid, (), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","warning", ())}
+        {html:buildResultRows("C41", $labels:C41, $labels:C41_SHORT, $C41invalid, (), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","warning", ())}
+        {html:buildResultRows("C42", $labels:C42, $labels:C42_SHORT, $C42invalid, (), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","warning", ())}
     </table>
 };
 
@@ -1266,7 +1257,7 @@ declare function xmlconv:buildPollutantResultRows($ruleCode as xs:string,  $inva
             "Assessment regimes reported for all expected pollutants"
 
     return
-        html:buildResultRows_C($ruleCode, <span>{$msg}</span>, <span>{$msg}</span>, $invalidStrValues, (),
+        html:buildResultRows($ruleCode, <span>{$msg}</span>, <span>{$msg}</span>, $invalidStrValues, (),
                 "", "", " missing pollutant", "","warning", xmlconv:buildVocItemRows($vocabulary:POLLUTANT_VOCABULARY, $invalidStrValues))
 };
 
