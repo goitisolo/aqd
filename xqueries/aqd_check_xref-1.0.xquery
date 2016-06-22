@@ -44,7 +44,7 @@ as xs:string
 
 declare function xmlconv:validateCode($elems, $scheme as xs:string) as element(div)* {
     let $sparql := xmlconv:getConceptUrlSparql($scheme)
-    let $crConcepts := sparqlx:executeSparqlQuery($sparql)
+    let $crConcepts := sparqlx:executeSimpleSparqlQuery($sparql)
 
     for $polCodeElem in $elems
     let $polCode := normalize-space($polCodeElem)
@@ -237,7 +237,7 @@ declare function xmlconv:getReferencedEnvelope($obligation as xs:string, $locali
         }
         ORDER BY desc(?released)")
 
-    let $envelopes := sparqlx:executeSparqlQuery($sparql)
+    let $envelopes := sparqlx:executeSimpleSparqlQuery($sparql)
 
     let $envelopeUrl :=
         if (count($envelopes//sparql:result) > 0 ) then
@@ -275,13 +275,13 @@ WHERE {
     ?type IN (", string-join($prefixedTypes, ','), "))
 }")
 
-    let $featureTypes := sparqlx:executeSparqlQuery($sparql)
+    let $featureTypes := sparqlx:executeSimpleSparqlQuery($sparql)
     return
         $featureTypes//sparql:result/sparql:binding[@name="id"]/sparql:literal
 };
 declare function xmlconv:checkCrosslinkReferences() {
-    let $envelopeXml := common:getEnvelopeXML($source_url)
-    let $coverage := $envelopeXml/envelope/coverage
+    let $envelopeXml := doc(common:getEnvelopeXML($source_url))
+    let $coverage := string($envelopeXml/envelope/coverage)
     let $dataflowDEnvelopeUrl := xmlconv:getReferencedEnvelope($xmlconv:DATAFLOW_D_OBLIGATION, $coverage)
     let $dataflowDEnvelopeLink :=
         if (string-length($dataflowDEnvelopeUrl)>0) then
