@@ -107,8 +107,10 @@ return
     <div class="feedbacktext">
         {html:getHead()}
         <span id="feedbackStatus" class="{$errorLevel}" style="display:none">{$feedbackmessage}</span>
+        <div class="column row">
             <p>Checked XML file: <a href="{common:getCleanUrl($source_url)}">{common:getCleanUrl($source_url)}</a></p>
-            {
+        </div>
+        <div class="column row">{
             if (empty($validObligations)) then
                 <p>Nothing to check - the envelope is not attached to any of the Air Quality obligation where QA script is available.</p>
             else
@@ -118,21 +120,20 @@ return
                     if (count($validObligations) = 1) then
                         <p>The envelope is attached to the following obligation: <a href="{$validObligations[1]}">{$validObligations[1]}</a></p>
                     else
-                        <span>
-                            <p>The envelope is attached to the following obligations:</p>
-                            <ul>
-                                {
-                                    for $obligation in $validObligations
-                                    return
-                                        <li><a href="{$obligation}">{$obligation}</a></li>
-                                }
-                            </ul>
-                        </span>
+                        <p>The envelope is attached to the following obligations:</p>,
+                        <ul>
+                            {
+                                for $obligation in $validObligations
+                                return
+                                    <li><a href="{$obligation}">{$obligation}</a></li>
+                            }
+                        </ul>
                     }
                     {$messages}
                 </div>
             }
             {html:getFoot()}
         </div>
+    </div>
 };
-xmlconv:proceed( $source_url )
+xmlconv:proceed($source_url)

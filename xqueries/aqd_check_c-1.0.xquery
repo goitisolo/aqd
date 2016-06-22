@@ -1161,13 +1161,7 @@ let $invalidsamplingPointAssessmentMetadata40 :=
 
 
 return
-    <table style="border-collapse:collapse;display:inline">
-        <colgroup>
-            <col width="15px" style="text-align:center"/>
-            <col width="450px" style="text-align:left"/>
-            <col width="350px" style="text-align:left"/>
-            <col width="*"/>
-        </colgroup>
+    <table class="hover">
         {html:buildResultRows_C("C1", $labels:C1, $labels:C1_SHORT, (), (), "", string($countRegimes), "", "","warning", $tblAllRegimes)}
         {html:buildResultRows_C("C4", $labels:C4, $labels:C4_SHORT, $invalidDuplicateGmlIds, (), "@gml:id", "No duplicates found", " duplicate", "","error",())}
         {html:buildResultRows_C("C5", $labels:C5, $labels:C5_SHORT, $invalidDuplicateLocalIds, (), "base:localId", "No duplicates found", " duplicate", "","error", ())}
