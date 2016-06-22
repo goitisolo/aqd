@@ -1106,9 +1106,9 @@ let $aqdSampleMap := map:merge((
 ))
 
 let $D75invalid :=
-    for $x in $docRoot//aqd:AQD_SamplingPoint[not(ef:geometry/gml:Point/gml:pos = "")]
-        let $samplingPos := $x/ef:geometry/gml:Point/string(gml:pos)
-        let $xlink := $x/ef:observingCapability/ef:ObservingCapability/ef:featureOfInterest/string(@xlink:href)
+    for $x in $docRoot//aqd:AQD_SamplingPoint[not(ef:geometry/gml:Point/gml:pos = "")]/ef:observingCapability
+        let $samplingPos := $x/../ef:geometry/gml:Point/string(gml:pos)
+        let $xlink := ($x/ef:ObservingCapability/ef:featureOfInterest/@xlink:href)
         (: checks Sample map for value :)
         let $samplePos := map:get($aqdSampleMap, $xlink)
         let $sampleLong := geox:getX($samplePos)
@@ -1124,7 +1124,7 @@ let $D75invalid :=
 
     return
         if (abs($samplingLong - $sampleLong) > $approximity or abs($samplingLat - $sampleLat) > $approximity) then
-            $x/ef:inspireId/base:Identifier/string(base:localId)
+            $x/../ef:inspireId/base:Identifier/string(base:localId)
         else
             ()
 
