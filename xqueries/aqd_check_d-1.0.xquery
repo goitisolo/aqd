@@ -292,7 +292,7 @@ let $invalidAQDNetworkBeginPosition := distinct-values($docRoot//aqd:AQD_Network
 
 (: D12 aqd:AQD_Network/ef:name shall return a string :)
 let $D12invalid :=
-    for $x in //aqd:AQD_Network[string(ef:name) = ""]
+    for $x in $docRoot//aqd:AQD_Network[string(ef:name) = ""]
     return
         <tr>
             <td title="base:localId">{$x/ef:inspireId/base:Identifier/string(base:localId)}</td>
@@ -343,7 +343,7 @@ let  $tblD16 :=
         </tr>
 (: D17 aqd:AQD_Station/ef:name shall return a string :)
 let $D17invalid :=
-    for $x in //aqd:AQD_Station[ef:name = ""]
+    for $x in $docRoot//aqd:AQD_Station[ef:name = ""]
     return
     <tr>
         <td title="base:localId">{$x/ef:inspireId/base:Identifier/string(base:localId)}</td>

@@ -499,9 +499,7 @@ let $invalidPollutantCombinations :=
             <td title="Pollutant">{string($code)}</td>
             <td title="Protection target">{string($target)}</td>
         </tr>
-(:~
-    B39b - Count combination occurrences
- :)
+(: B39b - Count combination occurrences  :)
 let $pollutantOccurrences := <results> {
     for $x in $pollutantCombinations//combination
     let $code := concat($pollutantCodeVocabulary, $x/code)
@@ -526,9 +524,7 @@ let $invalidPollutantOccurences :=
             <td title="Protection target">{data($x/target)}</td>
         </tr>
 
-(:~
-    B39c - Combination cannot be repeated in individual zone
- :)
+(: B39c - Combination cannot be repeated in individual zone :)
 let $invalidPollutantRepeated :=
     for $x in $docRoot//aqd:AQD_Zone
         let $codes :=
@@ -546,12 +542,10 @@ let $invalidPollutantRepeated :=
             </tr>
 
 (: B40 - :)
-
 let $tempStr := xmlconv:checkVocabularyConceptValues($source_url, "", "aqd:AQD_Zone", "aqd:timeExtensionExemption", "http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/")
 let $invalidTimeExtensionExemption := $tempStr
 
 (: B41 :)
-
 let $zoneIds :=
 for $x in $docRoot//aqd:AQD_Zone/aqd:pollutants
 where ($x/aqd:Pollutant/aqd:pollutantCode/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/8" and $x/aqd:Pollutant/aqd:protectionTarget/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H")
@@ -573,7 +567,6 @@ return
         </tr>
 
 (: B42 :)
-
 let $zoneIds :=
     for $x in $docRoot//aqd:AQD_Zone/aqd:pollutants
     where ($x/aqd:Pollutant/aqd:pollutantCode/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5" and $x/aqd:Pollutant/aqd:protectionTarget/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H")
@@ -594,7 +587,6 @@ let $aqdInvalidPollutansB42 :=
 
 
 (: B43 :)
-
 let $zoneIds :=
     for $x in $docRoot//aqd:AQD_Zone/aqd:pollutants
     where (($x/aqd:Pollutant/aqd:pollutantCode/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/20" and $x/aqd:Pollutant/aqd:protectionTarget/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H")
