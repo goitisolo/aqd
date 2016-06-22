@@ -428,19 +428,6 @@ declare function xmlconv:proceed($source_url as xs:string) as element(div) {
         else
             ()
         }
-        <div>
-        {()
-            (:
-            Discover vocablary concepts used in XML
-            let  $items := distinct-values(doc($source_url)//*[starts-with(@xlink:href, 'http://rdfdata') or starts-with(@xlink:href, 'http://dd.eionet')]/concat(@xlink:href,' - ',  name(.)))
-            return
-                for $n in $items
-                order by $n
-                return
-                    <p>{$n}</p>
-                :)
-            }
-        </div>
     </div>
 
 };
