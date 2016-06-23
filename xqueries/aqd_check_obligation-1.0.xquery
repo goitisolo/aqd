@@ -106,6 +106,7 @@ declare function xmlconv:proceed($source_url as xs:string) {
 return
     <div class="feedbacktext">
         {html:getHead()}
+        {html:getCSS()}
         <span id="feedbackStatus" class="{$errorLevel}" style="display:none">{$feedbackmessage}</span>
         <div class="column row">
             <p>Checked XML file: <a href="{common:getCleanUrl($source_url)}">{common:getCleanUrl($source_url)}</a></p>

@@ -1152,7 +1152,7 @@ let $invalidsamplingPointAssessmentMetadata40 :=
 
 
 return
-    <table class="hover">
+    <table class="maintable hover">
         {html:buildResultRows("C1", $labels:C1, $labels:C1_SHORT, (), (), "", string($countRegimes), "", "","warning", $tblAllRegimes)}
         {html:buildResultRows("C4", $labels:C4, $labels:C4_SHORT, $invalidDuplicateGmlIds, (), "@gml:id", "No duplicates found", " duplicate", "","error",())}
         {html:buildResultRows("C5", $labels:C5, $labels:C5_SHORT, $invalidDuplicateLocalIds, (), "base:localId", "No duplicates found", " duplicate", "","error", ())}

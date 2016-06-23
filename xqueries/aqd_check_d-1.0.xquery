@@ -1143,59 +1143,17 @@ for $inletHeigh in  $docRoot//aqd:AQD_Sample/aqd:inletHeight
     return if (($inletHeigh/@uom != "http://dd.eionet.europa.eu/vocabulary/uom/length/m") or (common:is-a-number(data($inletHeigh))=false())) then $inletHeigh/../@gml:id else ()
 
 return
-    <table class="hover">
+    <table class="maintable hover">
         {html:buildResultRows("D1", $labels:D1, $labels:D1_SHORT, (), (), "", string(sum($countFeatureTypes)), "", "","error", $tblAllFeatureTypes)}
         {html:buildResultRows("D2", $labels:D2, $labels:D2_SHORT, (), (), "", string(count($tblD2)), "", "","error",())}
         {html:buildResultRows("D3", $labels:D3, $labels:D3_SHORT, (), (), "", string(count($tblD3)), "", "","error",())}
         {html:buildResultRows("D4", $labels:D4, $labels:D4_SHORT, (), (), "", string(count($tblD4)), "", "","error",$tblD4)}
-        <tr>
-            <tr>
-                <td>{ html:getBullet("D5", if ($countD5duplicates = 0) then "info" else "error") }</td>
-                <th>{ $labels:D5 }</th>
-                <td>{
-                    if ($countD5duplicates = 0) then
-                        "All Ids are unique"
-                    else
-                        concat($countD5duplicates, " duplicate", substring("s ", number(not($countD5duplicates > 1)) * 2) ,"found") }</td>
-            </tr>
-            {
-                if ($countGmlIdDuplicates > 0) then
-                    <tr style="font-size: 0.9em;color:grey;">
-                        <td colspan="2">aqd:AQD_Model/@gml:id - </td>
-                        <td>{ string-join($duplicateGmlIds, ", ")}</td>
-                    </tr>
-                else
-                    ()
-            }
-            {
-                if ($countefInspireIdDuplicates > 0) then
-                    <tr style="font-size: 0.9em;color:grey;">
-                        <td colspan="2">ef:inspireId - </td>
-                        <td>{ string-join($duplicateefInspireIds, ", ")}</td>
-                    </tr>
-                else
-                    ()
-            }
-            {
-                if ($countaqdInspireIdDuplicates > 0) then
-                    <tr style="font-size: 0.9em;color:grey;">
-                        <td colspan="2">aqd:inspireId - </td>
-                        <td>{ string-join($duplicateaqdInspireIds, ", ")}</td>
-                    </tr>
-                else
-                    ()
-            }
-        </tr>
+        {html:buildCountRow("D5", $countD5duplicates, $labels:D5, (), " duplicate", ())}
+        {html:buildConcatRow($duplicateGmlIds, "aqd:AQD_Model/@gml:id - ")}
+        {html:buildConcatRow($duplicateefInspireIds, "ef:inspireId - ")}
+        {html:buildConcatRow($duplicateaqdInspireIds, "aqd:inspireId - ")}
         {html:buildInfoTR("Specific checks on AQD_Network feature(s) within this XML")}
-        <tr>
-            <td>{ html:getBullet("D6", if ($countD6duplicates = 0) then "info" else "error") }</td>
-            <th>{ $labels:D6 }</th>
-            <td>{
-                if ($countD6duplicates = 0) then
-                   "All Ids are unique"
-                else
-                    concat($countD6duplicates, " error", substring("s ", number(not($countD6duplicates > 1)) * 2), "found") }</td>
-        </tr>
+        {html:buildCountRow("D6", $countD6duplicates, $labels:D6, (), (), ())}
         {html:buildResultRows("D7", $labels:D7, $labels:D7_SHORT, (), (), "", string(count($tblD7)), "", "", "error", $tblD7)}
         {html:buildResultRows("D7.1", $labels:D7.1, $labels:D7.1_SHORT, $invalidNamespaces, (), "base:Identifier/base:namespace", "All values are valid", " invalid namespaces", "", "error", ())}
         {html:buildResultRowsWithTotalCount_D("D8", $labels:D8, $labels:D8_SHORT, (), (), "ef:mediaMonitored", "", "", "", "warning", $invalidNetworkMedia)}
@@ -1205,16 +1163,7 @@ return
         {html:buildResultRows("D12", $labels:D12, $labels:D12_SHORT, $D12invalid, () , "aqd:AQD_Network/ef:inspireId/base:Identifier/base:localId", "All attributes are valid", " invalid attribute ", "", "error", ())}
         {html:buildResultRowsWithTotalCount_D("D14", $labels:D14, $labels:D14_SHORT, (), (), "aqd:aggregationTimeZone", "", "", "","error", $invalidTimeZone)}
         {html:buildInfoTR("Specific checks on AQD_Station feature(s) within this XML")}
-        <tr>
-            <td>{html:getBullet("D15", if ($countD15duplicates = 0) then "info" else "error")}</td>
-            <th>aqd:AQD_Station/ef:inspireId/base:Identifier/base:localId shall be an unique code within namespace</th>
-            <td>{
-                if ($countD15duplicates = 0) then
-                    "All Ids are unique"
-                else
-                    concat($countD15duplicates, " error", substring("s ", number(not($countD15duplicates > 1)) * 2) ,"found") }
-            </td>
-        </tr>
+        {html:buildCountRow("D15", $countD15duplicates, $labels:D15, "All Ids are unique", ())}
         {html:buildResultRows("D16", $labels:D16, $labels:D16_SHORT, (), (), "", string(count($tblD16)), "", "","error",$tblD16)}
         {html:buildResultRows("D17", $labels:D17, $labels:D17_SHORT, (), (), "", "All values are valid", "", "","warning", $D17invalid)}
         {html:buildResultRows("D18", $labels:D18, $labels:D18_SHORT, (), (), "", "All values are valid", "", "","warning", $D18invalid)}

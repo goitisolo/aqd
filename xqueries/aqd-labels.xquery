@@ -8,7 +8,11 @@ xquery version "3.0";
 :)
 
 module namespace labels = "aqd-labels";
+(: HTML Labels :)
+declare variable $labels:SHOWRECORDS := "Show Records";
+declare variable $labels:SHOWCOMBINATIONS := "Show Combinations";
 
+(: QC Labels :)
 declare variable $labels:B1 := labels:getLabel("B", "B1");
 declare variable $labels:B1_SHORT :=  labels:getLabel("B", "B1_SHORT");
 declare variable $labels:B2 :=  labels:getLabel("B", "B2");
@@ -217,6 +221,8 @@ declare variable $labels:D12 := labels:getLabel("D", "D12");
 declare variable $labels:D12_SHORT :=  labels:getLabel("D", "D12_SHORT");
 declare variable $labels:D14 := labels:getLabel("D", "D14");
 declare variable $labels:D14_SHORT :=  labels:getLabel("D", "D14_SHORT");
+declare variable $labels:D15 := labels:getLabel("D", "D15");
+declare variable $labels:D15_SHORT :=  labels:getLabel("D", "D15_SHORT");
 declare variable $labels:D16 := labels:getLabel("D", "D16");
 declare variable $labels:D16_SHORT :=  labels:getLabel("D", "D16_SHORT");
 declare variable $labels:D17 := labels:getLabel("D", "D17");
