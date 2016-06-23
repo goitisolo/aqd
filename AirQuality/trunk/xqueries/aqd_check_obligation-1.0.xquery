@@ -5,8 +5,7 @@ xquery version "1.0" encoding "UTF-8";
  : Version:     $Id$
  : Created:     30 December 2014
  : Copyright:   European Environment Agency
- :)
-(:~
+ :
  : AirQuality obligation dependentent XQuery script call library modules based on the obligation URL extracted from CDR envelope XML.
  : The original request: http://taskman.eionet.europa.eu/issues/21548
  :
@@ -15,23 +14,25 @@ xquery version "1.0" encoding "UTF-8";
  : BLOCKER logic added and other changes by Hermann Peifer, EEA, August 2015
  :)
 
-(: Dataflow B script - Zones :)
+(:~
+ : Dataflow B script - Zones
+ : Dataflow C script - Assessment regimes
+ : Dataflow D script -
+ : Dataflow G script -
+ : Dataflow M script -
+ :)
 import module namespace dfB = "http://converters.eionet.europa.eu/dataflowB" at "aqd_check_b-1.0.xquery";
-(: Dataflow C script - Assessment regimes :)
 import module namespace dfC = "http://converters.eionet.europa.eu/dataflowC" at "aqd_check_c-1.0.xquery";
-(: Dataflow D script -  :)
 import module namespace dfD = "http://converters.eionet.europa.eu/dataflowD" at "aqd_check_d-1.0.xquery";
-(: Dataflow G script -  :)
 import module namespace dfG = "http://converters.eionet.europa.eu/dataflowG" at "aqd_check_g-1.0.xquery";
-(: Dataflow M script -  :)
 import module namespace dfM = "http://converters.eionet.europa.eu/dataflowM" at "aqd_check_m-1.0.xquery";
 import module namespace common = "aqd-common" at "aqd_check_common.xquery";
 import module namespace html = "aqd-html" at "aqd-html.xquery";
 
 declare namespace xmlconv = "http://converters.eionet.europa.eu";
-
+declare option output:method "html";
 (:===================================================================:)
-(: Variable given as an external parameter by the QA service                                                 :)
+(: Variable given as an external parameter by the QA service         :)
 (:===================================================================:)
 
 declare variable $source_url as xs:string external;
