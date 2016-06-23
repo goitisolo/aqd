@@ -966,7 +966,7 @@ let $invalidAdjustmentType_82  :=
     </tr>
     else ()
 return
-    <table class="hover">
+    <table class="maintable hover">
         {html:buildResultRows("G1", $labels:G1, $labels:G1_SHORT, (), (), "", string($countAttainments), "", "","error", $tblAllAttainments)}
         {html:buildResultRows("G2", $labels:G2, $labels:G2_SHORT, (), (), "", string(count($newAttainments)), "", "","error", $newAttainments)}
         {html:buildResultRows("G3", $labels:G3, $labels:G3_SHORT, (), (), "", string(count($changedAttainments)), "", "","error", $changedAttainments)}
