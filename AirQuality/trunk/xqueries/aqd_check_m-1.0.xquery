@@ -126,7 +126,6 @@ let $tblM4 :=
     let $omprName := substring-after($tmpEfName,concat($efName,"#"))
     return
         <tr>
-
             <td title="gml:id">{common:checkLink($modelType)}</td>
             <td title="ef:inspireId">{common:checkLink($inspireId)}</td>
             <td title="ompr:inspireId">{common:checkLink($aqdInspireId)}</td>
@@ -207,7 +206,7 @@ let  $tblM7 :=
         </tr>
 
 (: M7.1 :)
-let $invalidNamespaces := common:checkNamespaces($source_url) 
+let $invalidNamespaces := common:checkNamespaces($source_url)
 
 (: M12 :)
 let $invalidGeometry := distinct-values($docRoot//aqd:AQD_Model[count(ef:geometry) >0 and ef:geometry/@srsName != "urn:ogc:def:crs:EPSG::4258" and ef:geometry/@srsName != "urn:ogc:def:crs:EPSG::4326"]/@gml:id)
@@ -389,7 +388,6 @@ let $invalidObservedPropertyCombinations :=
             <td title="aqd:objectiveType">{data($oPC/aqd:objectiveType/@xlink:href)}</td>
             <td title="aqd:objectiveType">{data($oPC/aqd:reportingMetric/@xlink:href)}</td>
             <td title="aqd:objectiveType">{data($oPC/aqd:protectionTarget/@xlink:href)}</td>
-
         </tr>
 
 (: M24 :)
@@ -513,58 +511,16 @@ let  $tblM41 :=
 let $invalidSrsName := distinct-values($docRoot//aqd:AQD_Sample[count(sams:shape) >0 and sams:shape/@srsName != "urn:ogc:def:crs:EPSG::4258" and sams:shape/@srsName != "urn:ogc:def:crs:EPSG::4326"]/@gml:id)
 
     return
-    <table class="hover">
+    <table class="maintable hover">
         {html:buildResultRows("M1", $labels:M1, $labels:M1_SHORT, (), (), "", string(sum($countFeatureTypes)), "", "","error", $tblAllFeatureTypes)}
         {html:buildResultRows("M2", $labels:M2, $labels:M2_SHORT, (), (), "", string(count($tblM2)), "", "","error",())}
         {html:buildResultRows("M3", $labels:M3, $labels:M3_SHORT, (), (), "", string(count($tblM3)), "", "","error",())}
         {html:buildResultRows("M4", $labels:M4, $labels:M4_SHORT, (), (), "", string(count($tblM4)), "", "","error",$tblM4)}
-        <tr style="border-top:1px solid #666666">
-        <tr>
-            <td style="vertical-align:top;">{ html:getBullet("M5", if ($countB8duplicates = 0) then "info" else "error") }</td>
-            <th style="vertical-align:top;">{ $labels:M5 }</th>
-            <td style="vertical-align:top;">{
-                if ($countB8duplicates = 0) then
-                    "All Ids are unique"
-                else
-                    concat($countB8duplicates, " duplicate", substring("s ", number(not($countB8duplicates > 1)) * 2) ,"found") }</td>
-        </tr>
-        {
-            if ($countGmlIdDuplicates > 0) then
-                <tr style="font-size: 0.9em;color:grey;">
-                    <td colspan="2" style="text-align:right;vertical-align:top;">aqd:AQD_Model/@gml:id - </td>
-                    <td style="font-style:italic;vertical-align:top;">{ string-join($duplicateGmlIds, ", ")}</td>
-                </tr>
-            else
-                ()
-        }
-        {
-            if ($countamInspireIdDuplicates > 0) then
-                <tr style="font-size: 0.9em;color:grey;">
-                    <td colspan="2" style="text-align:right;vertical-align:top;">am:inspireId - </td>
-                    <td style="font-style:italic;vertical-align:top;">{ string-join($duplicateamInspireIds, ", ")}</td>
-                </tr>
-            else
-                ()
-        }
-        {
-            if ($countaqdInspireIdDuplicates > 0) then
-                <tr style="font-size: 0.9em;color:grey;">
-                    <td colspan="2" style="text-align:right;vertical-align:top;">aqd:inspireId - </td>
-                    <td style="font-style:italic;vertical-align:top;">{ string-join($duplicateaqdInspireIds, ", ")}</td>
-                </tr>
-            else
-                ()
-        }
-        </tr>
-        <tr style="border-top:1px solid #666666">
-            <td style="vertical-align:top;">{ html:getBullet("M6", if ($countM6duplicates = 0) then "info" else "error") }</td>
-            <th style="vertical-align:top;">{ $labels:M6 }</th>
-            <td style="vertical-align:top;">{
-                if ($countM6duplicates = 0) then
-                    <span style="font-size:1.3em;">All Ids are unique</span>
-                else
-                    concat($countM6duplicates, " error", substring("s ", number(not($countM6duplicates > 1)) * 2) ,"found") }</td>
-        </tr>
+        {html:buildCountRow("M5", $countB8duplicates, $labels:M5, "All Ids are unique", "duplicate")}
+        {html:buildConcatRow($duplicateGmlIds, "aqd:AQD_Model/@gml:id -")}
+        {html:buildConcatRow($duplicateamInspireIds, "am:inspireId - ")}
+        {html:buildConcatRow($duplicateaqdInspireIds, "aqd:inspireId - ")}
+        {html:buildCountRow("M6", $countM6duplicates, $labels:M6, "All Ids are unique", ())}
         {html:buildResultRows("M7", $labels:M7, $labels:M7_SHORT, (), (), "", string(count($tblM7)), "", "","error",$tblM7)}
         {html:buildResultRows("M7.1", $labels:M7.1, $labels:M7.1_SHORT, $invalidNamespaces, (), "base:Identifier/base:namespace", "All values are valid", " invalid namespaces", "", "error", ())}
         {html:buildResultRows("M12", $labels:M12, $labels:M12_SHORT, $invalidGeometry,(), "aqd:AQD_Model/@gml:id","All srsName attributes are valid"," invalid attribute","","error", ())}
@@ -584,7 +540,6 @@ let $invalidSrsName := distinct-values($docRoot//aqd:AQD_Sample[count(sams:shape
         {html:buildResultRows("M40", $labels:M40, $labels:M40_SHORT, (),$invalidDuplicateModelAreaIds, "", concat(string(count($invalidDuplicateModelAreaIds))," errors found.") , "", "","error",())}
         {html:buildResultRows("M41", $labels:M41, $labels:M41_SHORT, (), (), "", string(count($tblM41)), "", "","error",$tblM41)}
         {html:buildResultRows("M43", $labels:M43, $labels:M43_SHORT, $invalidSrsName,(), "aqd:AQD_ModelArea/@gml:id","All srsDimension attributes are valid"," invalid attribute","","error", ())}
-
     </table>
 };
 
@@ -606,11 +561,11 @@ declare function xmlconv:checkVocabularyConceptValues($source_url as xs:string, 
         where string-length($conceptUrl) > 0
 
         return
-            <tr isvalid="{ xmlconv:isMatchingVocabCode($crConcepts, $conceptUrl) }">
+            <tr isvalid="{xmlconv:isMatchingVocabCode($crConcepts, $conceptUrl)}">
                 <td title="Feature type">{ $featureType }</td>
                 <td title="gml:id">{data($rec/@gml:id)}</td>
                 <td title="ef:name">{data($rec/ef:name)}</td>
-                <td title="{ $element }" style="color:red">{$conceptUrl}</td>
+                <td title="{$element}" style="color:red">{$conceptUrl}</td>
             </tr>
         else
             ()
@@ -794,7 +749,7 @@ return
                     <li><div style="width:50px; display:inline-block;margin-left:10px">{html:getBullet('Orange', 'warning')}</div> - the non-crucial check did NOT pass.</li>
                     <li><div style="width:50px; display:inline-block;margin-left:10px">{html:getBullet('Grey', 'skipped')}</div> - the check was skipped due to no relevant values found to check.</li>
                 </ul>
-                <p>Click on the "Show records" link to see more details about the test result.</p>
+                <p>Click on the "{$labels:SHOWRECORDS}" link to see more details about the test result.</p>
             </fieldset>
             <h3>Test results</h3>
             {$result}

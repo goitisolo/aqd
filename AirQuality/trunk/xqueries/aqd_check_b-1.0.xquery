@@ -21,6 +21,7 @@ import module namespace sparqlx = "aqd-sparql" at "aqd-sparql.xquery";
 import module namespace labels = "aqd-labels" at "aqd-labels.xquery";
 import module namespace vocabulary = "aqd-vocabulary" at "aqd-vocabulary.xquery";
 import module namespace query = "aqd-query" at "aqd-query.xquery";
+import module namespace errors = "aqd-errors" at "aqd-errors.xquery";
 
 declare namespace aqd = "http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0";
 declare namespace gml = "http://www.opengis.net/gml/3.2";
@@ -665,61 +666,12 @@ return
         {html:buildResultsSimpleRow("B4", $labels:B4, $labels:B4_SHORT, $countZonesWithLAU, "info" )}
         {html:buildResultRows("B6", $labels:B6, $labels:B6_SHORT, (), (), "", string(count($tblB6)), "", "", "error", $tblB6)}
         {html:buildResultRows("B7", $labels:B7, $labels:B7_SHORT, (), (), "", string(count($tblB7)), "", "", "error", $tblB7)}
-
-        <tr>
-            <td style="vertical-align:top;">{ html:getBullet("B8", if ($countB8duplicates = 0) then "info" else "warning") }</td>
-            <th style="vertical-align:top;">{ $labels:B8_SHORT }</th>
-            <td style="vertical-align:top;">{
-                if ($countB8duplicates = 0) then
-                    "All Ids are unique"
-                else
-                    concat($countB8duplicates, " duplicate", substring("s ", number(not($countB8duplicates > 1)) * 2) ,"found") }</td>
-        </tr>
-        {
-            if ($countGmlIdDuplicates > 0) then
-                <tr style="font-size: 0.9em;color:grey;">
-                    <td colspan="2" style="text-align:right;vertical-align:top;">aqd:AQD_Zone/@gml:id - </td>
-                    <td style="font-style:italic;vertical-align:top;">{ string-join($duplicateGmlIds, ", ")}</td>
-                </tr>
-            else
-                ()
-        }
-        {
-            if ($countamInspireIdDuplicates > 0) then
-                <tr style="font-size: 0.9em;color:grey;">
-                    <td colspan="2" style="text-align:right;vertical-align:top;">am:inspireId - </td>
-                    <td style="font-style:italic;vertical-align:top;">{ string-join($duplicateamInspireIds, ", ")}</td>
-                </tr>
-            else
-                ()
-        }
-        {
-            if ($countaqdInspireIdDuplicates > 0) then
-                <tr style="font-size: 0.9em;color:grey;">
-                    <td colspan="2" style="text-align:right;vertical-align:top;">aqd:inspireId - </td>
-                    <td style="font-style:italic;vertical-align:top;">{ string-join($duplicateaqdInspireIds, ", ")}</td>
-                </tr>
-            else
-                ()
-        }
-        <tr>
-            <td style="vertical-align:top;">{ html:getBullet("B9", if ($countB9duplicates = 0) then "info" else "error") }</td>
-            <th style="vertical-align:top;">{ $labels:B9_SHORT }</th>
-            <td style="vertical-align:top;">{
-                if ($countB9duplicates = 0) then
-                    "All Ids are unique"
-                else
-                    concat($countB9duplicates, " error", substring("s ", number(not($countB9duplicates > 1)) * 2) ,"found") }</td>
-        </tr>
-        {
-            if ($countAmInspireIdDuplicates > 0) then
-                <tr style="font-size: 0.9em;color:grey;">
-                    <td colspan="2" style="text-align:right;vertical-align:top;">Duplicate base:namespace:base:localId - </td>
-                    <td style="font-style:italic;vertical-align:top;">{ string-join($duplicateAmInspireIds, ", ")}</td>
-                </tr>
-            else
-                ()
-        }
+        {html:buildCountRow("B8", $countB8duplicates, $labels:B8_SHORT, (), " duplicate", $errors:WARNING)}
+        {html:buildConcatRow($duplicateGmlIds, "aqd:AQD_Zone/@gml:id - ")}
+        {html:buildConcatRow($duplicateamInspireIds, "am:inspireId - ")}
+        {html:buildConcatRow($duplicateaqdInspireIds, "aqd:inspireId - ")}
+        {html:buildCountRow("B9", $countB9duplicates, $labels:B9_SHORT, (), (), ())}
+        {html:buildConcatRow($duplicateAmInspireIds, "Duplicate base:namespace:base:localId - ")}
         {html:buildResultRows("B10", $labels:B10, $labels:B10_SHORT, (), (), "", string(count($tblB10)), "", "", "error", $tblB10)}
         {html:buildResultRows_B("B10.1", $labels:B10.1, $labels:B10.1_SHORT, $invalidNamespaces, "base:Identifier/base:namespace", "All values are valid", " invalid namespaces", "", "error")}
         {html:buildResultRows_B("B13", $labels:B13, $labels:B13_SHORT, $invalidLangCode, "/aqd:AQD_Zone/am:name/gn:GeographicalName/gn:language", "All values are valid", " invalid value", $langSkippedMsg,"warning")}
@@ -734,24 +686,8 @@ return
         {html:buildResultRows_B("B31", $labels:B31, $labels:B31_SHORT, $invalidLegalBasisName, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "","warning")}
         {html:buildResultRows_B("B32", $labels:B32, $labels:B32_SHORT, $invalidLegalBasisDate, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "","warning")}
         {html:buildResultRows_B("B33", $labels:B33, $labels:B33_SHORT, $invalidLegalBasisLink, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "","warning")}
-        <tr>
-            <td style="vertical-align:top;">{ html:getBullet("B35", if ($countB35duplicates = 0) then "info" else "error") }</td>
-            <th style="vertical-align:top;">{ $labels:B35_SHORT }</th>
-            <td style="vertical-align:top;">{
-                if ($countB35duplicates = 0) then
-                    "All Ids are unique"
-                else
-                    concat($countB35duplicates, " error", substring("s ", number(not($countB35duplicates > 1)) * 2) ,"found") }</td>
-        </tr>
-        {
-            if ($countAmNamespaceAndaqdZoneCodeDuplicates > 0) then
-                <tr style="font-size: 0.9em;color:grey;">
-                    <td colspan="2" style="text-align:right;vertical-align:top;">Duplicate base:namespace:aqd:zoneCode - </td>
-                    <td style="font-style:italic;vertical-align:top;">{ string-join($dublicateAmNamespaceAndaqdZoneCodeIds, ", ")}</td>
-                </tr>
-            else
-                ()
-        }
+        {html:buildCountRow("B35", $countB35duplicates, $labels:B35_SHORT, (), (), ())}
+        {html:buildConcatRow($dublicateAmNamespaceAndaqdZoneCodeIds, "Duplicate base:namespace:aqd:zoneCode - ")}
         {html:buildResultRows_B("B36", $labels:B36, $labels:B36_SHORT, $invalidResidentPopulation, "aqd:AQD_Zone/am:inspireId/base:Identifier/base:localId", "All values are valid", " invalid value", "", "error")}
         {html:buildResultRows_B("B37", $labels:B37, $labels:B37_SHORT, $invalidPopulationYear, "aqd:AQD_Zone/am:inspireId/base:Identifier/base:localId", "All values are valid", " invalid value", "","warning")}
         {html:buildResultRows_B("B38", $labels:B38, $labels:B38_SHORT, $invalidArea, "aqd:AQD_Zone/am:inspireId/base:Identifier/base:localId", "All values are valid", " invalid value", "", "error")}
