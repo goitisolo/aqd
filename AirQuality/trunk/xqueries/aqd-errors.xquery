@@ -22,3 +22,14 @@ declare function errors:getClass($elems) {
   else
       "info"
 };
+
+declare function errors:getClassColor($class as xs:string) {
+    if ($class = $errors:WARNING) then
+        "orange"
+    else if ($class = $errors:ERROR or $class = $errors:BLOCKER) then
+        "red"
+    else if ($class = $errors:INFO) then
+        "deepskyblue"
+    else
+        "grey"
+};

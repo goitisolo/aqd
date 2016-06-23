@@ -1163,7 +1163,7 @@ return
         {html:buildResultRows("D12", $labels:D12, $labels:D12_SHORT, $D12invalid, () , "aqd:AQD_Network/ef:inspireId/base:Identifier/base:localId", "All attributes are valid", " invalid attribute ", "", "error", ())}
         {html:buildResultRowsWithTotalCount_D("D14", $labels:D14, $labels:D14_SHORT, (), (), "aqd:aggregationTimeZone", "", "", "","error", $invalidTimeZone)}
         {html:buildInfoTR("Specific checks on AQD_Station feature(s) within this XML")}
-        {html:buildCountRow("D15", $countD15duplicates, $labels:D15, "All Ids are unique", ())}
+        {html:buildCountRow("D15", $countD15duplicates, $labels:D15, "All Ids are unique", (), ())}
         {html:buildResultRows("D16", $labels:D16, $labels:D16_SHORT, (), (), "", string(count($tblD16)), "", "","error",$tblD16)}
         {html:buildResultRows("D17", $labels:D17, $labels:D17_SHORT, (), (), "", "All values are valid", "", "","warning", $D17invalid)}
         {html:buildResultRows("D18", $labels:D18, $labels:D18_SHORT, (), (), "", "All values are valid", "", "","warning", $D18invalid)}

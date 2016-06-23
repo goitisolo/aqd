@@ -659,7 +659,7 @@ for $link in $aqdShapeFileLink
 let $invalidZoneType := xmlconv:checkVocabularyConceptValues($source_url, "", "aqd:AQD_Zone", "aqd:aqdZoneType", $vocabulary:ZONETYPE_VOCABULARY)
 
 return
-    <table class="hover">
+    <table class="maintable hover">
         {html:buildResultsSimpleRow("B1", $labels:B1, $labels:B1_SHORT, $countZones, "info")}
         {html:buildResultRows("B2", $labels:B2, $labels:B2_SHORT, (), (), "", string(count($tblB2)), "", "", "error", $tblB2)}
         {html:buildResultsSimpleRow("B3", $labels:B3, $labels:B3_SHORT, $countZonesWithAmGeometry, "info")}

@@ -17,19 +17,6 @@ declare function html:getHead() as element()* {
 declare function html:getCSS() as element(style) {
     <style>
         <![CDATA[
-        .maintable th {
-            text-align:left;
-        }
-        .maintable tr {
-            border-top:1px solid #666666;
-        }
-        .maintable td {
-            padding-top:3px;
-            vertical-align:top;
-        }
-        .aaaa {
-            padding-left:10px;
-        }
         .bullet {
             font-size: 0.8em;
             color: white;
@@ -38,6 +25,17 @@ declare function html:getCSS() as element(style) {
             margin-right:5px;
             margin-top:2px;
             text-align:center;
+            width: 5%
+        }
+        .maintable > tbody > tr > th {
+            text-align:left;
+            width: 75%
+        }
+        .maintable > tbody > tr {
+            border-top:1px solid #666666;
+        }
+        .aaaa {
+            padding-left:10px;
         }
         .datatable {
             font-size: 0.9em;
@@ -46,15 +44,15 @@ declare function html:getCSS() as element(style) {
             display:none;
             border:0px;
         }
-        .datatable tr {
+        .datatable > tbody > tr {
             font-size: 0.9em;
             color:#666666;
         }
-        .smalltable tr {
+        .smalltable > tbody > tr {
              font-size: 0.9em;
              color:grey;
         }
-        .smalltable td {
+        .smalltable > tbody > td {
             font-style:italic;
             vertical-align:top;
         }
@@ -66,6 +64,9 @@ declare function html:getCSS() as element(style) {
         }
         .resultTD {
 
+        }
+        .largeText {
+            font-size:1.3em;
         }
         ]]>
     </style>
@@ -82,6 +83,8 @@ declare function html:getFoot() as element()* {
 declare function html:getModalInfo($ruleCode, $longText) as element()* {
     (<span><a class="small" data-open="{concat('text-modal-', $ruleCode)}">&#8505;</a></span>,
     <div class="reveal" id="{concat('text-modal-', $ruleCode)}" data-reveal="">
+        <h4>{$ruleCode}</h4>
+        <hr/>
         <p>{$longText}</p>
         <button class="close-button" data-close="" aria-label="Close modal" type="button">x</button>
     </div>)
@@ -172,9 +175,9 @@ declare function html:buildResultRows($ruleCode as xs:string, $longText, $text, 
     let $result :=
         (
             <tr>
-                <td>{ html:getBullet($ruleCode, $bulletType) }</td>
-                <th>{ $text } {html:getModalInfo($ruleCode, $longText)}</th>
-                <td><span style="font-size:1.3em;">{
+                <td class="bullet">{html:getBullet($ruleCode, $bulletType)}</td>
+                <th colspan="2">{$text} {html:getModalInfo($ruleCode, $longText)}</th>
+                <td><span class="largeText">{
                     if (string-length($skippedMsg) > 0) then
                         $skippedMsg
                     else if ($countInvalidValues = 0) then
@@ -188,7 +191,6 @@ declare function html:buildResultRows($ruleCode as xs:string, $longText, $text, 
                         ()
                 }
                 </td>
-                <td></td>
             </tr>,
             if (count($recordDetails) > 0) then
                 <tr>
@@ -229,9 +231,9 @@ declare function html:buildResultRows_B($ruleCode as xs:string, $longText, $text
     let $result :=
         (
             <tr>
-                <td>{ html:getBullet($ruleCode, $bulletType) }</td>
-                <th>{ $text } {html:getModalInfo($ruleCode, $longText)}</th>
-                <td>{
+                <td class="bullet">{ html:getBullet($ruleCode, $bulletType) }</td>
+                <th colspan="2">{ $text } {html:getModalInfo($ruleCode, $longText)}</th>
+                <td class="largeText">{
                     if (string-length($skippedMsg) > 0) then
                         $skippedMsg
                     else if ($countInvalidValues = 0) then
@@ -256,9 +258,9 @@ declare function html:buildResultTable($ruleCode as xs:string, $longText, $text,
     let $result :=
         (
             <tr>
-                <td>{ html:getBullet($ruleCode, $bulletType) }</td>
-                <th>{ $text } {html:getModalInfo($ruleCode, $longText)}</th>
-                <td><span style="font-size:1.3em;">{
+                <td class="bullet">{ html:getBullet($ruleCode, $bulletType) }</td>
+                <th colspan="2">{ $text } {html:getModalInfo($ruleCode, $longText)}</th>
+                <td><span class="largeText">{
                     if (string-length($skippedMsg) > 0) then
                         $skippedMsg
                     else if ($countInvalidValues = 0) then
@@ -272,7 +274,6 @@ declare function html:buildResultTable($ruleCode as xs:string, $longText, $text,
                         ()
                 }
                 </td>
-                <td></td>
             </tr>,
             if (count($recordDetails)>0) then
                 <tr>
@@ -296,9 +297,9 @@ declare function html:buildResultsSimpleRow($ruleCode as xs:string, $longText, $
     let $bulletType := $errorLevel
     return
     <tr>
-        <td>{ html:getBullet($ruleCode, $bulletType) }</td>
-        <th>{ $text } {html:getModalInfo($ruleCode, $longText)}</th>
-        <td><span style="font-size:1.3em;">{ $count } </span></td>
+        <td class="bullet">{html:getBullet($ruleCode, $bulletType)}</td>
+        <th colspan="2">{$text} {html:getModalInfo($ruleCode, $longText)}</th>
+        <td class="largeText">{$count}</td>
     </tr>
 };
 
@@ -382,8 +383,8 @@ declare function html:buildResultC31($ruleCode as xs:string, $resultsC as elemen
     let $bulletType := if (count($bodyTR[@class = "error"]) > 0) then "error" else "info"
     return
         (<tr>
-            <td>{ html:getBullet($ruleCode, $bulletType) }</td>
-            <th>{ $text } {html:getModalInfo($ruleCode, $longText)}</th>
+            <td class="bullet">{ html:getBullet($ruleCode, $bulletType) }</td>
+            <th colspan="2">{ $text } {html:getModalInfo($ruleCode, $longText)}</th>
             <td>
                 <a id='feedbackLink-{$ruleCode}' href='javascript:toggle("feedbackRow","feedbackLink", "{$ruleCode}")'>{$labels:SHOWRECORDS}</a>
             </td>
@@ -424,7 +425,7 @@ declare function html:getErrorTD($errValue,  $element as xs:string, $showMissing
         </td>
 };
 
-declare function html:buildConcatRow($elems, $header as xs:string) as element(tr) {
+declare function html:buildConcatRow($elems, $header as xs:string) as element(tr)? {
     if (count($elems) > 0) then
         <tr style="font-size: 0.9em;color:grey;">
             <td colspan="2" style="text-align:right;vertical-align:top;">{$header}</td>
@@ -449,8 +450,8 @@ declare function html:buildCountRow($ruleCode as xs:string, $count as xs:integer
             $count || $unit || substring("s ", number(not($count > 1)) * 2) || "found"
     return
     <tr>
-        <td>{html:getBullet($ruleCode, $class)}</td>
-        <th>{$header}</th>
-        <td class="resultTD">{$message}</td>
+        <td class="bullet">{html:getBullet($ruleCode, $class)}</td>
+        <th colspan="2">{$header}</th>
+        <td class="largeText">{$message}</td>
     </tr>
 };
