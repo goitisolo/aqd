@@ -443,17 +443,11 @@ declare function xmlconv:checkReport($source_url as xs:string, $countryCode as x
 
 (: SETUP COMMON VARIABLES :)
 let $envelopeUrl := common:getEnvelopeXML($source_url)
-
 let $docRoot := doc($source_url)
-
 let $cdrUrl := common:getCdrUrl($countryCode)
 let $zonesUrl := concat($cdrUrl, $bDir)
 let $reportingYear := common:getReportingYear($docRoot)
-
-
-
 let $latestZonesUrl := xmlconv:getLatestZoneEnvelope($zonesUrl, $reportingYear)
-
 
 (: C1 :)
 let $countRegimes := count($docRoot//aqd:AQD_AssessmentRegime)
@@ -855,10 +849,14 @@ let $tblC26 :=
 
 
 (: 27 :)
-
 (: return all zones listed in the doc :)
-
-let $resultXml := if (fn:string-length($countryCode) = 2) then xmlconv:getInspireId($latestZonesUrl) else ""
+(: "Error [" || $err:code || "]: " || $err:description :)
+let $resultXml :=
+    try {
+        if (fn:string-length($countryCode) = 2) then xmlconv:getInspireId($latestZonesUrl) else ""
+    } catch * {
+        ""
+    }
 let $isInspireIdCodesAvailable := string-length($resultXml) > 0 and doc-available(sparqlx:getSparqlEndpointUrl($resultXml, "xml"))
 let $zoneIds := if($isInspireIdCodesAvailable) then distinct-values(data(sparqlx:executeSparqlQuery($resultXml)//sparql:binding[@name='inspireLabel']/sparql:literal)) else ()
 
