@@ -25,11 +25,11 @@ declare function html:getCSS() as element(style) {
             margin-right:5px;
             margin-top:2px;
             text-align:center;
-            width: 5%
+            width: 5%;
         }
         .maintable > tbody > tr > th {
             text-align:left;
-            width: 75%
+            width: 75%;
         }
         .maintable > tbody > tr {
             border-top:1px solid #666666;
@@ -47,6 +47,9 @@ declare function html:getCSS() as element(style) {
         .datatable > tbody > tr {
             font-size: 0.9em;
             color:#666666;
+        }
+        .smalltable {
+            display:none;
         }
         .smalltable > tbody > tr {
              font-size: 0.9em;
@@ -81,7 +84,7 @@ declare function html:getFoot() as element()* {
 };
 
 declare function html:getModalInfo($ruleCode, $longText) as element()* {
-    (<span><a class="small" data-open="{concat('text-modal-', $ruleCode)}">&#8505;</a></span>,
+    (<span><a class="largeText" data-open="{concat('text-modal-', $ruleCode)}">&#8520;</a></span>,
     <div class="reveal" id="{concat('text-modal-', $ruleCode)}" data-reveal="">
         <h4>{$ruleCode}</h4>
         <hr/>
