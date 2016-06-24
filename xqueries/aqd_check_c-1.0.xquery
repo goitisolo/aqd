@@ -40,134 +40,9 @@ declare namespace prop="http://dd.eionet.europa.eu/property/";
 declare variable $xmlconv:ISO2_CODES as xs:string* := ("AL","AT","BA","BE","BG","CH","CY","CZ","DE","DK","DZ","EE","EG","ES","FI",
     "FR","GB","GR","HR","HU","IE","IL","IS","IT","JO","LB","LI","LT","LU","LV","MA","ME","MK","MT","NL","NO","PL","PS","PT",
      "RO","RS","SE","SI","SK","TN","TR","XK","UK");
-(:===================================================================:)
-(: Variable given as an external parameter by the QA service                                                 :)
-(:===================================================================:)
-
-declare variable $xmlconv:VALID_ENVIRONMENTALOBJECTIVE_C11 as xs:string* := ("aqd:objectiveType xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/TV aqd:reportingMetric xlink:href attribute  shall  resolve  to  one  of http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/daysAbove-3yr aqd:protectionTarget xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H","or",
-"aqd:objectiveType xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LTO aqd:reportingMetric xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/daysAbove aqd:protectionTarget xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H","or","or
-aqd:objectiveType xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/TV
-aqd:reportingMetric xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/AOT40c-5yr aqd:protectionTarget
-xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V","or","aqd:objectiveType xlink:href attribute shall resolve to one of
-http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LTO
-aqd:reportingMetric xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/AOT40c
-aqd:protectionTarget xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V", "or",
-"aqd:objectiveType xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/INT aqd:reportingMetric xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/hrsAbove
-aqd:protectionTarget xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H",
-"or", "aqd:objectiveType xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/ALT aqd:reportingMetric xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/hrsAbove
-aqd:protectionTarget xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H");
-
-declare variable $xmlconv:VALID_ENVIRONMENTALOBJECTIVE_C10 as xs:string* := ("aqd:objectiveType xlink:href attribute shall resolve to one of
-http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV aqd:reportingMetric
-xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/hrsAbove
-aqd:protectionTarget xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H",
-"or","aqd:objectiveType xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV
-aqd:reportingMetric xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/daysAbove
-aqd:protectionTarget xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H",
-"or","aqd:objectiveType xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/CL
-aqd:reportingMetric xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean
-aqd:protectionTarget xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V",
-"or","aqd:objectiveType xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/CL
-aqd:reportingMetric xlink:href attribute shall resolve to one of
-http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/wMean aqd:protectionTarget
-xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V",
-"or", "aqd:objectiveType xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/ALT
-aqd:reportingMetric xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/3hAbove
-aqd:protectionTarget xlink:href attribute shall resolve to one of
-http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H");
-
-declare variable $xmlconv:VALID_ENVIRONMENTALOBJECTIVE_C12 as xs:string* := ("aqd:objectiveType xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/objective
-type/LV aqd:reportingMetric
-xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/hrsAbove
-aqd:protectionTarget
-xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H","or","
-http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV
-aqd:reportingMetric xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/a
-Mean aqd:protectionTarget xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H",
-"or","aqd:objectiveType xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LVMOT aqd:reportingMetric xlink:href attribute shall resolve to one of
-http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean aqd:protectionTarget xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H",
-"or","aqd:objectiveType xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LVMOT aqd:reportingMetric xlink:href attribute shall resolve to one of
-http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/hoursAbove aqd:protectionTarget xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H",
-"or", "aqd:objectiveType xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/ALT aqd:reportingMetric xlink:href attribute shall resolve to one of
-http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/3hAbove aqd:protectionTarget xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H",
-"or", "aqd:objectiveType xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LVmaxMOT aqd:reportingMetric xlink:href attribute shall resolve to one of
-http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean aqd:protectionTarget xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H",
-"or", "aqd:objectiveType xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LVmaxMOT aqd:reportingMetric xlink:href attribute shall resolve to one of
-http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/hrsAbove aqd:protectionTarget xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H");
-
-
-declare variable $xmlconv:VALID_ENVIRONMENTALOBJECTIVE_C13 as xs:string* := ("aqd:objectiveType xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/CL aqd:reportingMetric xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean aqd:protectionTarget xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V");
-
-declare variable $xmlconv:VALID_ENVIRONMENTALOBJECTIVE_C14 as xs:string* := ("aqd:objectiveType xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV
-aqd:reportingMetric xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/daysAbove
-aqd:protectionTarget xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H",
-"or","
-http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV
-aqd:reportingMetric xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean
-aqd:protectionTarget xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H");
-
-declare variable $xmlconv:VALID_ENVIRONMENTALOBJECTIVE_C15 as xs:string* := ("
-    aqd:objectiveType xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/ECO
-    aqd:reportingMetric xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/AEI
-    aqd:protectionTarget xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H","or","
-    
-    aqd:objectiveType xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV
-    aqd:reportingMetric xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean
-    aqd:protectionTarget xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H","or","
-    
-    aqd:objectiveType xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/TV
-    aqd:reportingMetric xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean
-    aqd:protectionTarget xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H","or","
-    
-    aqd:objectiveType xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LVMOT
-    aqd:reportingMetric xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean
-    aqd:protectionTarget xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H","or","
-    
-    aqd:objectiveType xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LVMOT
-    aqd:reportingMetric xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean
-    aqd:protectionTarget xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H-S1","or","
-    
-    aqd:objectiveType xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV
-    aqd:reportingMetric xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean
-    aqd:protectionTarget xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H-S1","or","
-    
-    aqd:objectiveType xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV
-    aqd:reportingMetric xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean
-    aqd:protectionTarget xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H-S2","or","
-    
-    aqd:objectiveType xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/MO
-    aqd:reportingMetric xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/NA
-    aqd:protectionTarget xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/NA");
-
-
-declare variable $xmlconv:VALID_ENVIRONMENTALOBJECTIVE_C16 as xs:string* := (
-"aqd:objectiveType xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV
-aqd:reportingMetric xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/daysAbove
-aqd:protectionTarget xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H");
-declare variable $xmlconv:VALID_ENVIRONMENTALOBJECTIVE_C17 as xs:string* := (
-"aqd:objectiveType xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV
-aqd:reportingMetric xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean
-aqd:protectionTarget xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H",
-"or", "aqd:objectiveType xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/MO
-aqd:reportingMetric xlink:href attribute shall resolve to one of  http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/NA
-aqd:protectionTarget xlink:href attribute shall resolve to one of  http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/NA");
-
-declare variable $xmlconv:VALID_ENVIRONMENTALOBJECTIVE_C18 as xs:string* := (
-"aqd:objectiveType xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/TV
-aqd:reportingMetric xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean
-aqd:protectionTarget xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H",
-"or", "aqd:objectiveType xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/MO
-aqd:reportingMetric xlink:href attribute shall resolve to one of  http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/NA
-aqd:protectionTarget xlink:href attribute shall resolve to one of  http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/NA");
-
-
-
 declare variable $xmlconv:VALID_POLLUTANT_IDS as xs:string* := ("1", "7", "8", "9", "5", "6001", "10","20", "5012", "5014", "5015", "5018", "5029");
-
 declare variable $xmlconv:VALID_POLLUTANT_IDS_18 as xs:string* := ("5014", "5015", "5018", "5029");
-
 declare variable $xmlconv:MANDATORY_POLLUTANT_IDS_8  as xs:string* := ("1","7","8","9","5","6001","10","20","5012","5014","5015","5018","5029");
-
 declare variable $xmlconv:UNIQUE_POLLUTANT_IDS_9  as xs:string* := ("1","7","8","9","5","6001","10","20","5012","5014","5015","5018","5029","1045",
 "1046","1047","1771","1772","1629","1659","1657","1668","1631","2012","2014","2015","2018","7013","4013","4813","653","5013","5610","5617","5759",
 "5626","5655","5763","7029","611","618","760","627","656","7419","20","428","430","432","503","505","394","447","6005","6006","6007","24","486",
@@ -188,256 +63,6 @@ declare variable $xmlconv:VALID_POLLUTANT_IDS_40 as xs:string* := ($xmlconv:MAND
 '451','443','316','441','475','449','21','431','464','482','6011','6012','32','25':)
 
 declare variable $xmlconv:VALID_POLLUTANT_IDS_21 as xs:string* := ("1","8","9","10","5","6001","5014","5018","5015","5029","5012","20");
-
-declare function xmlconv:getProtectionTarget($cdrUrl as xs:string, $bDir as xs:string) as xs:string {
-concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-         PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
-         PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
-         SELECT distinct  ?zoneId ?pollutantCode ?protectionTarget
-         WHERE {
-               ?zone a aqd:AQD_Zone;
-               aqd:pollutants ?pollutants .
-               ?zone aqd:inspireId ?ii .
-               ?ii rdfs:label ?zoneId .
-               ?pollutants aqd:pollutantCode ?pollutantCode .
-               ?pollutants aqd:protectionTarget ?protectionTarget .
-         FILTER (CONTAINS(str(?zone), '", $cdrUrl, $bDir, "'))
-} order by ?zone ")
-};
-
-declare function xmlconv:getSamplingPointInspireLabel($cdrUrl as xs:string) as xs:string {
-concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-         PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
-         PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
-
-SELECT ?zone ?inspireId ?inspireLabel ?relevantEmissions ?stationClassification
-  WHERE {
-         ?zone a aqd:AQD_SamplingPoint ;
-          aqd:inspireId ?inspireId .
-         ?inspireId rdfs:label ?inspireLabel .
-         ?zone aqd:relevantEmissions ?relevantEmissions .
-         ?relevantEmissions aqd:stationClassification ?stationClassification
-  FILTER (CONTAINS(str(?zone), '", $cdrUrl, "d/') and str(?stationClassification)='http://dd.eionet.europa.eu/vocabulary/aq/stationclassification/background')
-  }")(: order by ?zone"):)
-};
-
-(:
-declare function xmlconv:getPollutantCode($cdrUrl as xs:string)
-as xs:string
-{concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-         PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
-         PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
-
-               SELECT distinct ?zone ?pollutants ?pollutantCode ?protectionTarget
-         WHERE {
-               ?zone a aqd:AQD_Zone;
-                aqd:pollutants ?pollutants .
-               ?pollutants aqd:pollutantCode ?pollutantCode .
-               ?pollutants aqd:protectionTarget ?protectionTarget .
-         FILTER (CONTAINS(str(?zone), '", $cdrUrl, "b/'))
-} order by ?zone")
-};
-
-
-
-declare function xmlconv:getAqdModelID($countryCode as xs:string)
-as xs:string
-{
-let $countryCode := xmlconv:reChangeCountrycode($countryCode)
-return
-   concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-    PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
-    PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
-
-       SELECT ?zone ?inspireId ?inspireLabel
-         WHERE {
-              ?zone a aqd:AQD_Model;
-              aqd:inspireId ?inspireId .
-              ?inspireId rdfs:label ?inspireLabel .
-         FILTER (CONTAINS(str(?zone), '", $cdrUrl, "d/'))
-} order by ?zone")
-};
-:)
-
-
-declare function xmlconv:getModelEndPosition($latestDEnvelopes as xs:string*, $startDate as xs:string, $endDate as xs:string) as xs:string {
-let $last := count($latestDEnvelopes)
-let $filters :=
-    for $x at $pos in $latestDEnvelopes
-    return 
-        if (not($pos = $last)) then
-            concat("CONTAINS(str(?zone), '", $x , "') || ")
-        else
-            concat("CONTAINS(str(?zone), '", $x , "')")
-let $filters := string-join($filters, "")
-return
-concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-    PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
-    PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
-
-SELECT DISTINCT ?inspireLabel
-    WHERE {
-        ?zone a aqd:AQD_Model ;
-        aqd:inspireId ?inspireId .
-        ?inspireId rdfs:label ?inspireLabel .
-        ?zone aqd:observingCapability ?observingCapability .
-        ?observingCapability aqd:observingTime ?observingTime .
-        ?observingTime aqd:beginPosition ?beginPosition .
-        optional {?observingTime aqd:endPosition ?endPosition} .
-        FILTER(xsd:date(SUBSTR(xsd:string(?beginPosition),1,10)) <= xsd:date('", $endDate, "')) .
-        FILTER(!bound(?endPosition) or (xsd:date(SUBSTR(xsd:string(?endPosition),1,10)) > xsd:date('", $startDate, "'))) .
-        FILTER(", $filters, ")
-}")
-};
-
-declare function xmlconv:getSamplingPointEndPosition($latestDEnvelopes as xs:string*, $startDate as xs:string, $endDate as xs:string) as xs:string {
-    let $last := count($latestDEnvelopes)
-    let $filters :=
-        for $x at $pos in $latestDEnvelopes
-        return
-            if (not($pos = $last)) then
-                concat("CONTAINS(str(?zone), '", $x , "') || ")
-            else
-                concat("CONTAINS(str(?zone), '", $x , "')")
-    let $filters := string-join($filters, "")
-    return
-    concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-        PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
-        PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
-
-        SELECT DISTINCT ?inspireLabel
-        WHERE {
-            ?zone a aqd:AQD_SamplingPoint ;
-            aqd:inspireId ?inspireId .
-            ?inspireId rdfs:label ?inspireLabel .
-            ?zone aqd:observingCapability ?observingCapability .
-            ?observingCapability aqd:observingTime ?observingTime .
-            ?observingTime aqd:beginPosition ?beginPosition .
-            optional {?observingTime aqd:endPosition ?endPosition }
-            FILTER(xsd:date(SUBSTR(xsd:string(?beginPosition),1,10)) <= xsd:date('", $endDate, "')) .
-            FILTER(!bound(?endPosition) or (xsd:date(SUBSTR(xsd:string(?endPosition),1,10)) > xsd:date('", $startDate, "'))) .
-            FILTER(", $filters, ")
-    }")
-};
-
-declare function xmlconv:getLatestDEnvelope($cdrUrl as xs:string) {
-    concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-    PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
-    PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
-    PREFIX ptype: <http://purl.org/dc/dcmitype/>
-    PREFIX pterms: <http://purl.org/dc/terms/>
-    SELECT ?dataset
-    WHERE {
-    ?dataset a ptype:Dataset .
-            optional {?dataset pterms:isReplacedBy ?replacedBy} .
-            FILTER(!bound(?replacedBy))
-            FILTER(CONTAINS(str(?dataset), '", $cdrUrl, "d/'))
-    }")
-};
-
-(:
-declare function xmlconv:getInspireLabelD($countryCode as xs:string)
-as xs:string
-{
-let $countryCode := xmlconv:reChangeCountrycode($countryCode)
-return
-concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-    PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
-    PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
-
-    SELECT ?zone ?inspireId ?inspireLabel
-      WHERE {
-          ?zone a aqd:AQD_SamplingPoint ;
-          aqd:inspireId ?inspireId .
-          ?inspireId rdfs:label ?inspireLabel .
-      FILTER (CONTAINS(str(?zone), '", $cdrUrl, "d/'))
-} order by ?zone")
-};
-:)
-
-
-(: Returns latest zones envelope for this country:)
-declare function xmlconv:getLatestZoneEnvelope($zonesUrl as xs:string, $reportingYear) as xs:string? {
-    let $query := concat("PREFIX aqd: <http://rod.eionet.europa.eu/schema.rdf#>
-  SELECT *
-   WHERE {
-        ?envelope a aqd:Delivery ;
-        aqd:released ?date ;
-        aqd:hasFile ?file ;
-        aqd:period ?period
-        FILTER(CONTAINS(str(?envelope), '", $zonesUrl, "'))
-        FILTER(STRSTARTS(str(?period), '", $reportingYear, "'))
-  } order by desc(?date)
-limit 1")
-    let $result := doc(sparqlx:getSparqlEndpointUrl($query, "xml"))//sparql:binding[@name='envelope']/sparql:uri
-    return $result
-};
-
-declare function xmlconv:getInspireId($latestZonesUrl as xs:string)
-as xs:string
-{
-concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
-PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
-PREFIX aq: <http://reference.eionet.europa.eu/aq/ontology/>
-
-  SELECT ?zone ?inspireId ?inspireLabel ?reportingYear
-   WHERE {
-        ?zone a aqd:AQD_Zone ;
-        aqd:inspireId ?inspireId .
-        ?inspireId rdfs:label ?inspireLabel .
-        ?zone aqd:residentPopulationYear ?yearElement .
-        ?yearElement rdfs:label ?reportingYear
-   FILTER (CONTAINS(str(?zone), '", $latestZonesUrl, "'))
-  } order by ?zone")
-};
-
-declare function xmlconv:getPollutantCodeAndProtectionTarge($cdrUrl as xs:string, $bDir as xs:string)
-as xs:string
-{
- concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-    PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
-    PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
-
-      SELECT ?zone ?inspireId ?inspireLabel ?pollutants ?pollutantCode ?protectionTarget
-        WHERE {
-              ?zone a aqd:AQD_Zone ;
-              aqd:inspireId ?inspireId .
-              ?inspireId rdfs:label ?inspireLabel .
-              ?zone aqd:pollutants ?pollutants .
-              ?pollutants aqd:pollutantCode ?pollutantCode .
-              ?pollutants aqd:protectionTarget ?protectionTarget .
-      FILTER (CONTAINS(str(?zone), '", $cdrUrl, $bDir, "'))
-    } order by ?zone")
-};
-
-declare function xmlconv:getC31($countryCode as xs:string) as xs:string {
-    concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX aqr: <http://reference.eionet.europa.eu/aq/ontology/>
-PREFIX aq: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
-PREFIX aqdd: <http://dd.eionet.europa.eu/property/>
-
-SELECT DISTINCT
-?Namespace
-(year(xsd:dateTime(?reportingBegin)) as ?ReportingYear)
-?Pollutant
-count(distinct bif:concat(str(?Zone), str(?pollURI), str(?ProtectionTarget))) AS ?countOnB
-
-WHERE {
-
-?zoneURI a aqr:Zone;
-aqr:zoneCode ?Zone;
-aqr:pollutants ?polltargetURI;
-aqr:reportingBegin ?reportingBegin ;
-aqr:inspireNamespace ?Namespace .
-
-?polltargetURI aqr:protectionTarget ?ProtectionTarget .
-?polltargetURI aqr:pollutantCode ?pollURI .
-?pollURI rdfs:label ?Pollutant .
-FILTER regex(?pollURI,'') .
-FILTER STRSTARTS(str(?Namespace),'", $countryCode, "') .
-}")
-};
 (: Rule implementations :)
 declare function xmlconv:checkReport($source_url as xs:string, $countryCode as xs:string, $bDir as xs:string) as element(table) {
 
@@ -447,7 +72,7 @@ let $docRoot := doc($source_url)
 let $cdrUrl := common:getCdrUrl($countryCode)
 let $zonesUrl := concat($cdrUrl, $bDir)
 let $reportingYear := common:getReportingYear($docRoot)
-let $latestZonesUrl := xmlconv:getLatestZoneEnvelope($zonesUrl, $reportingYear)
+let $latestZonesUrl := query:getLatestZoneEnvelope($zonesUrl, $reportingYear)
 
 (: C1 :)
 let $countRegimes := count($docRoot//aqd:AQD_AssessmentRegime)
@@ -801,11 +426,11 @@ let $invalid23B :=
 let $startDate := substring(data($docRoot//aqd:reportingPeriod/gml:TimePeriod/gml:beginPosition),1,10)
 let $endDate := substring(data($docRoot//aqd:reportingPeriod/gml:TimePeriod/gml:endPosition),1,10)
 
-let $latestDEnvelopes := distinct-values(data(sparqlx:executeSparqlQuery(xmlconv:getLatestDEnvelope($cdrUrl))//sparql:binding[@name='dataset']/sparql:uri))
-let $modelSparql := if (fn:string-length($countryCode) = 2) then xmlconv:getModelEndPosition($latestDEnvelopes, $startDate, $endDate) else ""
+let $latestDEnvelopes := distinct-values(data(sparqlx:executeSparqlQuery(query:getLatestDEnvelope($cdrUrl))//sparql:binding[@name='dataset']/sparql:uri))
+let $modelSparql := if (fn:string-length($countryCode) = 2) then query:getModelEndPosition($latestDEnvelopes, $startDate, $endDate) else ""
 let $modelMethods := distinct-values(data(sparqlx:executeSparqlQuery($modelSparql)//sparql:binding[@name='inspireLabel']/sparql:literal))
 
-let $samplingPointSparql := if (fn:string-length($countryCode) = 2) then xmlconv:getSamplingPointEndPosition($latestDEnvelopes,$startDate,$endDate) else ""
+let $samplingPointSparql := if (fn:string-length($countryCode) = 2) then query:getSamplingPointEndPosition($latestDEnvelopes,$startDate,$endDate) else ""
 let $sampingPointMethods := distinct-values(data(sparqlx:executeSparqlQuery($samplingPointSparql)//sparql:binding[@name='inspireLabel']/sparql:literal))
 
 
@@ -853,7 +478,7 @@ let $tblC26 :=
 (: "Error [" || $err:code || "]: " || $err:description :)
 let $resultXml :=
     try {
-        if (fn:string-length($countryCode) = 2) then xmlconv:getInspireId($latestZonesUrl) else ""
+        if (fn:string-length($countryCode) = 2) then query:getInspireId($latestZonesUrl) else ""
     } catch * {
         ""
     }
@@ -909,7 +534,7 @@ let $isInspireIdCodesAvailable := string-length($resultXml) > 0 and doc-availabl
 let $inspireId := if($isInspireIdCodesAvailable) then distinct-values(data(xmlconv:executeSparqlQuery($resultXml)//sparql:binding[@name='inspireLabel']/sparql:literal)) else ""
 :)
 
-let $resultSparql := if (fn:string-length($countryCode) = 2) then xmlconv:getPollutantCodeAndProtectionTarge($cdrUrl, $bDir) else ""
+let $resultSparql := if (fn:string-length($countryCode) = 2) then query:getPollutantCodeAndProtectionTarge($cdrUrl, $bDir) else ""
 let $isProtectionTargetAvailable := string-length($resultSparql) > 0 and doc-available(sparqlx:getSparqlEndpointUrl($resultSparql, "xml"))
 
 let $validRows :=
@@ -954,7 +579,7 @@ let $invalidZoneGmlEndPosition :=
         </tr>
 
 (: C31 :)
-let $C31query := xmlconv:getC31($countryCode)
+let $C31query := query:getC31($countryCode)
 let $C31Bresults := <results>{sparqlx:executeSparqlQuery($C31query)}</results>
 let $C31BCount := <results>{
     for $i in $C31Bresults//sparql:result
@@ -1106,7 +731,7 @@ let $invalidAqdReportingMetric := if (count($reportingMetric)>1) then $reporting
 
 (: C38 :)
 
-let $resultXml := if (fn:string-length($countryCode) = 2) then xmlconv:getSamplingPointInspireLabel($cdrUrl) else ""
+let $resultXml := if (fn:string-length($countryCode) = 2) then query:getSamplingPointInspireLabel($cdrUrl) else ""
 let $isInspireLebelCodesAvailable := string-length($resultXml) > 0 and doc-available(sparqlx:getSparqlEndpointUrl($resultXml, "xml"))
 let $aqdSamplingPointID := if($isInspireLebelCodesAvailable) then distinct-values(data(sparqlx:executeSparqlQuery($resultXml)//sparql:binding[@name='inspireLabel']/sparql:literal)) else ""
 let $isInspireLebelCodesAvailable := count($resultXml) > 0
@@ -1156,62 +781,35 @@ return
         {html:buildResultRows("C5", $labels:C5, $labels:C5_SHORT, $invalidDuplicateLocalIds, (), "base:localId", "No duplicates found", " duplicate", "","error", ())}
         {html:buildResultRows("C6", $labels:C6, $labels:C6_SHORT, (), (), "", string(count($tblC6)), "", "","info",$tblC6)}
         {html:buildResultRows("C6.1", $labels:C6.1, $labels:C6.1_SHORT, $invalidNamespaces, (), "base:Identifier/base:namespace", "All values are valid", " invalid namespaces", "", "error", ())}
-        
         {html:buildResultRows("C7", $labels:C7, $labels:C7_SHORT, $invalidAssessmentRegim,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error", ())}
-        {xmlconv:buildPollutantResultRows("C8",
-                $missingPollutantC8, " missing pollutant", "warning", xmlconv:buildVocItemRows($vocabulary:POLLUTANT_VOCABULARY, $missingPollutantC8))}
+        {xmlconv:buildPollutantResultRows("C8", $missingPollutantC8, " missing pollutant", "warning", xmlconv:buildVocItemRows($vocabulary:POLLUTANT_VOCABULARY, $missingPollutantC8))}
         {html:buildResultRows("C9", $labels:C9, $labels:C9_SHORT, (), (), "", string(count($foundPollutantC9)), "", "", "info", xmlconv:buildVocItemRows($vocabulary:POLLUTANT_VOCABULARY, $foundPollutantC9))}
-        {html:buildResultRows("C10", <span>Where ./aqd:pollutant resolves to http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1 the 3 elements within ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/may only resolve to the following combinations {xmlconv:buildItemsList("C10","", $xmlconv:VALID_ENVIRONMENTALOBJECTIVE_C10)}</span>,
-                $labels:C10_SHORT, $invalidAqdAssessmentRegimeAqdPollutant,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error", ())}
-        {html:buildResultRows("C11", <span> Where ./aqd:pollutant resolves to http://dd.eionet.europa.eu/vocabulary/aq/pollutant/7 the 3 elements within ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/may only resolve to the following combinations {xmlconv:buildItemsList("C11","", $xmlconv:VALID_ENVIRONMENTALOBJECTIVE_C11)}</span>,
-                $labels:C11_SHORT, $invalidAqdAssessmentRegimeAqdPollutantC11,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error", ())}
-        {html:buildResultRows("C12", <span>Where ./aqd:pollutant resolves to http://dd.eionet.europa.eu/vocabulary/aq/pollutant/8 the22 3 elements within ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/may only resolve to the following combinations {xmlconv:buildItemsList("C12","", $xmlconv:VALID_ENVIRONMENTALOBJECTIVE_C12)}</span>,
-                $labels:C12_SHORT, $invalidAqdAssessmentRegimeAqdPollutantC12,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error", ())}
-        {html:buildResultRows("C13", <span>Where ./aqd:pollutant resolves to http://dd.eionet.europa.eu/vocabulary/aq/pollutant/9 the 3 elements within ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/may only resolve to the following combinations {xmlconv:buildItemsList("C13","", $xmlconv:VALID_ENVIRONMENTALOBJECTIVE_C13)}</span>,
-                $labels:C13_SHORT, $invalidAqdAssessmentRegimeAqdPollutantC13,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error", ())}
-        {html:buildResultRows("C14", <span>Where ./aqd:pollutant resolves to http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5 the 3 elements within ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/may only resolve to the following combinations {xmlconv:buildItemsList("C14","", $xmlconv:VALID_ENVIRONMENTALOBJECTIVE_C14)}</span>,
-                $labels:C14_SHORT, $invalidAqdAssessmentRegimeAqdPollutantC14,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error", ())}
-        {html:buildResultRows("C15", <span>Where ./aqd:pollutant resolves to http://dd.eionet.europa.eu/vocabulary/aq/pollutant/6001 the 3 elements within ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/may only resolve to the following combinations {xmlconv:buildItemsList("C15","", $xmlconv:VALID_ENVIRONMENTALOBJECTIVE_C15)}</span>,
-                $labels:C15_SHORT, $invalidAqdAssessmentRegimeAqdPollutantC15,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error", ())}
-        {html:buildResultRows("C16", <span>Where ./aqd:pollutant resolves to http://dd.eionet.europa.eu/vocabulary/aq/pollutant/10 the 3 elements within ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/may only resolve to the following combinations {xmlconv:buildItemsList("C16","", $xmlconv:VALID_ENVIRONMENTALOBJECTIVE_C16)}</span>,
-                $labels:C16_SHORT, $invalidAqdAssessmentRegimeAqdPollutantC16,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error", ())}
-
-        {html:buildResultRows("C17", <span>Where ./aqd:pollutant resolves to http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5012  or http://dd.eionet.europa.eu/vocabulary/aq/pollutant/20 the 3 elements within ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/may only resolve to the following combinations{xmlconv:buildItemsList("C17","", $xmlconv:VALID_ENVIRONMENTALOBJECTIVE_C17)}</span>,
-                $labels:C17_SHORT, $invalidAqdAssessmentRegimeAqdPollutantC17,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error", ())}
-        {html:buildResultRows("C18", <span>Where ./aqd:pollutant resolves to http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5014  or http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5018 or http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5015 or http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5029 the 3 elements within ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/may only resolve to the following combinations{xmlconv:buildItemsList("C18","", $xmlconv:VALID_ENVIRONMENTALOBJECTIVE_C18)}</span>,
-                $labels:C18_SHORT, $invalidAqdAssessmentRegimeAqdPollutantC18,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error", ())}
-        {html:buildResultRows("C19", <span>The 3  elements  within ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/ may  only resolve  to  the  following  combination
-            aqd:objectiveType xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/MO aqd:reportingMetric xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean aqd:protectionTarget xlink:href attribute  shall  resolve  to  one  of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/NA where
-            <a href="{ $vocabulary:POLLUTANT_VOCABULARY }">{ $vocabulary:POLLUTANT_VOCABULARY }</a> that must be one of
-            {xmlconv:buildVocItemsList("C19", $vocabulary:POLLUTANT_VOCABULARY, $xmlconv:VALID_POLLUTANT_IDS_19)}</span>,
-                $labels:C19_SHORT, $invalidAqdAssessmentRegimeAqdPollutantC19, (), "aqd:reportingMetric", "All values are valid", " invalid value", "","warning", ())}
-        <!--{xmlconv:buildResultRows("C20", "Where ./aqd:pollutant resolves to http://dd.eionet.europa.eu/vocabulary/aq/pollutant/7 and ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType xlink:href attribute resolve to http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LTO ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:exceedanceAttainment xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/assessmentthresholdexceedance/aboveLTO http://dd.eionet.europa.eu/vocabulary/aq/assessmentthresholdexceedance/belowLTO",
-            $invalidAqdAssessmentRegimeAqdPollutantC20,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error", ())}-->
+        {html:buildResultRows("C10", $labels:C10, $labels:C10_SHORT, $invalidAqdAssessmentRegimeAqdPollutant,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error", ())}
+        {html:buildResultRows("C11", $labels:C11, $labels:C11_SHORT, $invalidAqdAssessmentRegimeAqdPollutantC11,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error", ())}
+        {html:buildResultRows("C12", $labels:C12, $labels:C12_SHORT, $invalidAqdAssessmentRegimeAqdPollutantC12,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error", ())}
+        {html:buildResultRows("C13", $labels:C13, $labels:C13_SHORT, $invalidAqdAssessmentRegimeAqdPollutantC13,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error", ())}
+        {html:buildResultRows("C14", $labels:C14, $labels:C14_SHORT, $invalidAqdAssessmentRegimeAqdPollutantC14,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error", ())}
+        {html:buildResultRows("C15", $labels:C15, $labels:C15_SHORT, $invalidAqdAssessmentRegimeAqdPollutantC15,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error", ())}
+        {html:buildResultRows("C16", $labels:C16, $labels:C16_SHORT, $invalidAqdAssessmentRegimeAqdPollutantC16,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error", ())}
+        {html:buildResultRows("C17", $labels:C17, $labels:C17_SHORT, $invalidAqdAssessmentRegimeAqdPollutantC17,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error", ())}
+        {html:buildResultRows("C18", $labels:C18, $labels:C18_SHORT, $invalidAqdAssessmentRegimeAqdPollutantC18,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error", ())}
+        {html:buildResultRows("C19", $labels:C19, $labels:C19_SHORT, $invalidAqdAssessmentRegimeAqdPollutantC19, (), "aqd:reportingMetric", "All values are valid", " invalid value", "","warning", ())}
         {html:buildResultRows("C20", $labels:C20, $labels:C20_SHORT, $invalidAqdAssessmentRegimeAqdPollutantC20, (), "aqd:reportingMetric", "All values are valid", " invalid value", "","warning", ())}
-        <!--{xmlconv:buildResultRows("C22", "Where ./aqd:objectiveType resolves to http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/MO THEN ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:exceedanceAttainment xlink:href attribute shall resolve to http://dd.eionet.europa.eu/vocabulary/aq/assessmentthresholdexceedance/NA",
-                $invalidAqdAssessmentRegimeAqdPollutantC22,(), "aqd:AQD_AssesmentRegime", "All values are valid", " invalid value", "","warning", ())}-->
         {html:buildResultRows("C23a", $labels:C23a, $labels:C23a_SHORT, $invalidAqdAssessmentType,(), "aqd:AQD_AssesmentRegime", "All values are valid", " invalid value", "","error", ())}
         {html:buildResultRows("C23b", $labels:C23b, $labels:C23b_SHORT, $invalid23B,(), "aqd:AQD_AssesmentRegime", "All values are valid", " invalid value", "","warning", ())}
         {html:buildResultRows("C24", $labels:C24, $labels:C24_SHORT, (),(), "", "", " ", "","warning", ())}
         {html:buildResultRows("C25", $labels:C25, $labels:C25_SHORT, (),(), "", "", " ", "","warning", ())}
         {html:buildResultTable("C26", $labels:C26, $labels:C26_SHORT, (), "All values are valid", " invalid value", "","warning", $tblC26)}
-        {html:buildResultTable("C27", concat("The  number of unique zones cited by /aqd:AQD_AssessmentRegime (", $countZoneIds2 , ") shall be EQUAL to the number of unique zones in ./aqd:AQD_Zone (", $countZoneIds1, ")"),
-            $labels:C27_SHORT, (), "Count of unique zones matches", " not unique zone",  "", "warning", $resultC27)}
-        <!--{xmlconv:buildResultRows("C27", concat("aqd:zone xlink:href attribute shall resolve to a traversable link to an AQ zone in /aqd:AQD_Zone reported under cdr.eionet.europa.eu/ZZ/eu/aqd/b/...  The ./aqd:pollutant and ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget within the Assessment Regime shall equal one combination /aqd:AQD_Zone/aqd:pollutants/aqd:Pollutant/aqd:pollutantCode and /aqd:AQD_Zone/aqd:pollutants/aqd:Pollutant/aqd:protectionTarget within  the  linked  zone  aqd:AQD_Zone/aqd:pollutants",
-                "Exception : Where ./aqd:pollutant resolves to the list in  C9 and http://dd.eionet.europa.eu/vocabulary/aq/pollutant/6001 ./aqd:zone xlink:href attribute MAY resolve to <aqd:zone nilReason='inapplicable'/>"),
-                $invalidAqdAssessmentRegimeZone,(),  "aqd:AQD_Model or aqd:AQD_SamplingPoint", "All values are valid", " invalid value", "","warning", ())}-->
+        {html:buildResultTable("C27", labels:interpolate($labels:C27, ($countZoneIds2, $countZoneIds1)), $labels:C27_SHORT, (), "Count of unique zones matches", " not unique zone",  "", "warning", $resultC27)}
         {html:buildResultRows("C28", $labels:C28, $labels:C28_SHORT, $invalidZoneGmlEndPosition,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error", ())}
-        {html:buildResultTable("C29", concat("aqd:zone xlink:href attribute shall resolve to a traversable link to an AQ zone in /aqd:AQD_Zone reported under cdr.eionet.europa.eu/ZZ/eu/aqd/b/...  The ./aqd:pollutant and ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget within the Assessment Regime shall equal one combination /aqd:AQD_Zone/aqd:pollutants/aqd:Pollutant/aqd:pollutantCode and /aqd:AQD_Zone/aqd:pollutants/aqd:Pollutant/aqd:protectionTarget within  the  linked  zone  aqd:AQD_Zone/aqd:pollutants",
-                "Exception : Where ./aqd:pollutant resolves to http://dd.eionet.europa.eu/vocabulary/aq/pollutant/6001 ./aqd:zone xlink:href attribute MAY resolve to <aqd:zone nilReason='inapplicable'/>"),
-                $labels:C29_SHORT, (), "All values are valid", " invalid value", "","warning", $tblC29)}
+        {html:buildResultTable("C29", $labels:C29, $labels:C29_SHORT, (), "All values are valid", " invalid value", "","warning", $tblC29)}
         {html:buildResultC31("C31", $C31Result, $C31BCount)}
         {html:buildResultTable("C32", $labels:C32, $labels:C32_SHORT, (),"All valid", " invalid value",  "","warning", $tblC32)}
         {html:buildResultRows("C33", $labels:C33, $labels:C33_SHORT, $invalidAssessmentGmlEndPosition,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error", ())}
         {html:buildResultRows("C35", $labels:C35, $labels:C35_SHORT, $invalidAssessmentUsed,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error", ())}
         {html:buildResultRows("C37", $labels:C37, $labels:C37_SHORT, $invalidAqdReportingMetric,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","warning", ())}
         {html:buildResultRows("C38", $labels:C38, $labels:C38_SHORT, $invalidAqdReportingMetricTest,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","warning", ())}
-        {html:buildResultRows("C40", <span>The total number of /aqd:assessmentMethods/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata and /aqd:assessmentMethods/aqd:AssessmentMethods/aqd:modelAssessmentMetadata citations within a MS (delivery) shall be GREATER THAN OR EQUAL to 1 where ./aqd:pollutant xlink:href attribute resolves to{xmlconv:buildVocItemsList("C40", $vocabulary:POLLUTANT_VOCABULARY, $xmlconv:VALID_POLLUTANT_IDS_40)}</span>,
-                $labels:C40_SHORT, $invalidsamplingPointAssessmentMetadata40,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","warning", ())}
+        {html:buildResultRows("C40", $labels:C40, $labels:C40_SHORT, $invalidsamplingPointAssessmentMetadata40,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","warning", ())}
         {html:buildResultRows("C41", $labels:C41, $labels:C41_SHORT, $C41invalid, (), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","warning", ())}
         {html:buildResultRows("C42", $labels:C42, $labels:C42_SHORT, $C42invalid, (), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","warning", ())}
     </table>
