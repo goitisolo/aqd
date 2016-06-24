@@ -23,6 +23,7 @@ import module namespace html = "aqd-html" at "aqd-html.xquery";
 import module namespace vocabulary = "aqd-vocabulary" at "aqd-vocabulary.xquery";
 import module namespace dd = "aqd-dd" at "aqd-dd.xquery";
 import module namespace geox = "aqd-geo" at "aqd-geo.xquery";
+import module namespace query = "aqd-query" at "aqd-query.xquery";
 
 declare namespace aqd = "http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0";
 declare namespace gml = "http://www.opengis.net/gml/3.2";
@@ -45,64 +46,6 @@ declare variable $xmlconv:ISO2_CODES as xs:string* := ("AL", "AD", "AT","BA","BE
 
 declare variable $xmlconv:FEATURE_TYPES := ("aqd:AQD_Network", "aqd:AQD_Station", "aqd:AQD_SamplingPointProcess", "aqd:AQD_Sample",
 "aqd:AQD_RepresentativeArea", "aqd:AQD_SamplingPoint");
-
-declare function xmlconv:getSamplingPointAssessment($inspireId as xs:string, $inspireNamespace as xs:string)
-as xs:string
-{
-    concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-           PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
-           PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
-           PREFIX aq: <http://reference.eionet.europa.eu/aq/ontology/>
-
-        SELECT *
-            where {
-                    ?assessmentRegime a aqd:AQD_AssessmentRegime;
-                    aqd:assessmentMethods  ?assessmentMethods .
-                    ?assessmentMethods aqd:samplingPointAssessmentMetadata ?samplingPointAssessment .
-                    ?samplingPointAssessment aq:inspireId ?inspireId.
-                    ?samplingPointAssessment aq:inspireNamespace ?inspireNamespace.
-                    FILTER(?inspireId='",$inspireId,"' and ?inspireNamespace='",$inspireNamespace,"')
-                  }")
-};
-declare function xmlconv:getSamplingPointZone($zoneId as xs:string)
-as xs:string
-{
-    concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-            PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
-            PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
-
-            SELECT *
-            WHERE {
-                    ?zone a aqd:AQD_Zone;
-                    aqd:inspireId ?inspireId .
-                    ?inspireId rdfs:label ?inspireLabel
-                    FILTER(?inspireLabel = '",$zoneId,"')
-                  }")
-};
-
-declare function xmlconv:getZonesSparql($nameSpaces as xs:string*)
-as xs:string
-{
-    let $nameSpacesStr :=
-        for $nameSpace in $nameSpaces
-        return concat("""", $nameSpace, """")
-
-    let $nameSpacesStr :=
-        fn:string-join($nameSpacesStr, ",")
-
-    return     concat(
-            "PREFIX aqr: <http://reference.eionet.europa.eu/aq/ontology/>
-
-            SELECT ?inspireid
-            FROM <http://rdfdata.eionet.europa.eu/airquality/zones.ttl>
-            WHERE {
-              ?zoneuri a aqr:Zone ;
-                        aqr:inspireNamespace ?namespace;
-                         aqr:inspireId ?inspireid .
-            filter (?namespace in (", $nameSpacesStr,  "))
-    } order by ?zoneuri"
-    )
-};
 
 (: Rule implementations :)
 declare function xmlconv:checkReport($source_url as xs:string, $countryCode as xs:string) as element(table) {
@@ -128,7 +71,7 @@ let $D2Combinations :=
         doc($source_url)//gml:featureMember/descendant::*[name()=$featureType]
 
 let $nameSpaces := distinct-values($docRoot//base:namespace)
-let $zonesSparql := xmlconv:getZonesSparql($nameSpaces)
+let $zonesSparql := query:getZonesSparql($nameSpaces)
 let $isZonesAvailable := string-length($zonesSparql) > 0 and doc-available(sparqlx:getSparqlEndpointUrl($zonesSparql, "xml"))
 let $knownZones := if ($isZonesAvailable ) then distinct-values(data(sparqlx:executeSparqlQuery($zonesSparql)//sparql:binding[@name='inspireid']/sparql:literal)) else ()
 let $unknownZones :=
@@ -149,7 +92,7 @@ let $D3Combinations :=
         doc($source_url)//gml:featureMember/descendant::*[name()=$featureType]
 
 let $nameSpaces := distinct-values($docRoot//base:namespace)
-let $zonesSparql := xmlconv:getZonesSparql($nameSpaces)
+let $zonesSparql := query:getZonesSparql($nameSpaces)
 let $isZonesAvailable := string-length($zonesSparql) > 0 and doc-available(sparqlx:getSparqlEndpointUrl($zonesSparql, "xml"))
 let $knownZones := if ($isZonesAvailable ) then distinct-values(data(sparqlx:executeSparqlQuery($zonesSparql)//sparql:binding[@name='inspireid']/sparql:literal)) else ()
 let $unknownZones :=
@@ -795,30 +738,39 @@ let $invalidStationClassificationLink :=
 let $environmentalObjectiveCombinations :=
     doc("http://dd.eionet.europa.eu/vocabulary/aq/environmentalobjective/rdf")
 
-let $D51invalid := for $x in $docRoot//aqd:AQD_SamplingPoint/aqd:environmentalObjective/aqd:EnvironmentalObjective
-    let $pollutant := string($x/../../ef:observingCapability/ef:ObservingCapability/ef:observedProperty/@xlink:href)
-    let $objectiveType := string($x/aqd:objectiveType/@xlink:href)
-    let $reportingMetric := string($x/aqd:reportingMetric/@xlink:href)
-    let $protectionTarget := string($x/aqd:protectionTarget/@xlink:href)
-    return
-        if (not($environmentalObjectiveCombinations//skos:Concept[prop:relatedPollutant/@rdf:resource = $pollutant and prop:hasProtectionTarget/@rdf:resource = $protectionTarget
-                and prop:hasObjectiveType/@rdf:resource = $objectiveType and prop:hasReportingMetric/@rdf:resource = $reportingMetric]))
-        then
-            <tr>
-                <td title="base:localId">{string($x/../../ef:inspireId/base:Identifier/base:localId)}</td>
-                <td title="ef:observedProperty">{string($x/../../ef:observingCapability/ef:ObservingCapability/ef:observedProperty/@xlink:href)}</td>
-                <td title="aqd:objectiveType">{string($x/aqd:objectiveType/@xlink:href)}</td>
-                <td title="aqd:reportingMetric">{string($x/aqd:reportingMetric/@xlink:href)}</td>
-                <td title="aqd:protectionTarget">{string($x/aqd:protectionTarget/@xlink:href)}</td>
-            </tr>
-        else
-            ()
+let $D51invalid :=
+    try {
+        for $x in $docRoot//aqd:AQD_SamplingPoint/aqd:environmentalObjective/aqd:EnvironmentalObjective
+            let $pollutant := string($x/../../ef:observingCapability/ef:ObservingCapability/ef:observedProperty/@xlink:href)
+            let $objectiveType := string($x/aqd:objectiveType/@xlink:href)
+            let $reportingMetric := string($x/aqd:reportingMetric/@xlink:href)
+            let $protectionTarget := string($x/aqd:protectionTarget/@xlink:href)
+        return
+            if (not($environmentalObjectiveCombinations//skos:Concept[prop:relatedPollutant/@rdf:resource = $pollutant and prop:hasProtectionTarget/@rdf:resource = $protectionTarget
+                    and prop:hasObjectiveType/@rdf:resource = $objectiveType and prop:hasReportingMetric/@rdf:resource = $reportingMetric]))
+            then
+                <tr>
+                    <td title="base:localId">{string($x/../../ef:inspireId/base:Identifier/base:localId)}</td>
+                    <td title="ef:observedProperty">{string($x/../../ef:observingCapability/ef:ObservingCapability/ef:observedProperty/@xlink:href)}</td>
+                    <td title="aqd:objectiveType">{string($x/aqd:objectiveType/@xlink:href)}</td>
+                    <td title="aqd:reportingMetric">{string($x/aqd:reportingMetric/@xlink:href)}</td>
+                    <td title="aqd:protectionTarget">{string($x/aqd:protectionTarget/@xlink:href)}</td>
+                </tr>
+            else
+                ()
+    } catch * {
+        <tr status="failed">
+            <td title="Error code"> {$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+            <td></td>
+        </tr>
+    }
 
 (: D53 Done by Rait :)
 let $allInvalidZoneXlinks :=
     for $invalidZoneXlinks in $docRoot//aqd:AQD_SamplingPoint/aqd:zone[not(@nilReason='inapplicable')]
      where
-        count(sparqlx:executeSparqlQuery(xmlconv:getSamplingPointZone(string($invalidZoneXlinks/@xlink:href)))/*) = 0
+        count(sparqlx:executeSparqlQuery(query:getSamplingPointZone(string($invalidZoneXlinks/@xlink:href)))/*) = 0
     return
         <tr>
             <td title="gml:id">{data($invalidZoneXlinks/../@gml:id)}</td>
@@ -1023,9 +975,11 @@ let $allProcNotMatchingCondition69 :=
     where (string-length($documentation) = 0) and (string-length($qaReport) = 0)
     return concat(data($proc/ompr:inspireId/base:Identifier/base:namespace), '/' , data($proc/ompr:inspireId/base:Identifier/base:localId))
 
-let $allInvalidTrueUsedAQD69 :=
-    for $invalidTrueUsedAQD69 in $docRoot//aqd:AQD_SamplingPoint[aqd:usedAQD = "true" and ef:observingCapability/ef:ObservingCapability/ef:procedure/@xlink:href = $allProcNotMatchingCondition69]
-    return
+
+    let $allInvalidTrueUsedAQD69 :=
+    try {
+        for $invalidTrueUsedAQD69 in $docRoot//aqd:AQD_SamplingPoint[aqd:usedAQD = "true" and ef:observingCapability/ef:ObservingCapability/ef:procedure/@xlink:href = $allProcNotMatchingCondition69]
+        return
         <tr>
             <td title="gml:id">{data($invalidTrueUsedAQD69/@gml:id)}</td>
             <td title="base:localId">{data($invalidTrueUsedAQD69/ef:inspireId/base:Identifier/base:localId)}</td>
@@ -1033,20 +987,33 @@ let $allInvalidTrueUsedAQD69 :=
             <td title="ef:procedure">{string($invalidTrueUsedAQD69/ef:observingCapability/ef:ObservingCapability/ef:procedure/@xlink:href)}</td>
             <td title="ef:ObservingCapability">{data($invalidTrueUsedAQD69/ef:observingCapability/ef:ObservingCapability/@gml:id)}</td>
         </tr>
-
+    } catch * {
+        <tr status="failed">
+            <td title="Error code"> {$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+            <td></td>
+        </tr>
+    }
 (: D71 :)
 let $localSampleIds := $docRoot//gml:featureMember/aqd:AQD_Sample/aqd:inspireId/base:Identifier
 let $invalidDuplicateSampleIds :=
-    for $idSampleCode in $docRoot//gml:featureMember/aqd:AQD_Sample/aqd:inspireId/base:Identifier
-    where
-        count(index-of($localSampleIds/base:localId, normalize-space($idSampleCode/base:localId))) > 1 and
-                count(index-of($localSampleIds/base:namespace, normalize-space($idSampleCode/base:namespace))) > 1
-    return
-        <tr>
-            <td title="aqd:AQD_Sample">{data($idSampleCode/../../@gml:id)}</td>
-            <td title="base:localId">{data($idSampleCode/base:localId)}</td>
-            <td title="base:namespace">{data($idSampleCode/base:namespace)}</td>
+    try {
+        for $idSampleCode in $docRoot//gml:featureMember/aqd:AQD_Sample/aqd:inspireId/base:Identifier
+        where
+            count(index-of($localSampleIds/base:localId, normalize-space($idSampleCode/base:localId))) > 1 and
+                    count(index-of($localSampleIds/base:namespace, normalize-space($idSampleCode/base:namespace))) > 1
+        return
+            <tr>
+                <td title="aqd:AQD_Sample">{data($idSampleCode/../../@gml:id)}</td>
+                <td title="base:localId">{data($idSampleCode/base:localId)}</td>
+                <td title="base:namespace">{data($idSampleCode/base:namespace)}</td>
+            </tr>
+    } catch * {
+        <tr status="failed">
+            <td title="Error code"> {$err:code}</td>
+            <td title="Error description">{$err:description}</td>
         </tr>
+    }
 
 (: D72 :)
 let $allBaseNamespace := distinct-values($docRoot//aqd:AQD_Sample/aqd:inspireId/base:Identifier/base:namespace)
@@ -1125,16 +1092,23 @@ let $sampleDistanceMap :=
         return map:entry($id, $distance)
     ))
 let $D76invalid :=
-    for $x in $docRoot//aqd:AQD_SamplingPoint[aqd:relevantEmissions/aqd:RelevantEmissions/aqd:stationClassification/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/stationclassification/traffic"]
-    let $xlink := string($x/ef:observingCapability/ef:ObservingCapability/ef:featureOfInterest/@xlink:href)
-    let $distance := map:get($sampleDistanceMap, $xlink)
-    return
-        if ($distance castable as xs:double) then
-            ()
-        else
-            <tr>
-                <td title="base:localId">{$x/ef:inspireId/base:Identifier/string(base:localId)}</td>
-            </tr>
+    try {
+        for $x in $docRoot//aqd:AQD_SamplingPoint[aqd:relevantEmissions/aqd:RelevantEmissions/aqd:stationClassification/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/stationclassification/traffic"]
+        let $xlink := string($x/ef:observingCapability/ef:ObservingCapability/ef:featureOfInterest/@xlink:href)
+        let $distance := map:get($sampleDistanceMap, $xlink)
+        return
+            if ($distance castable as xs:double) then
+                ()
+            else
+                <tr>
+                    <td title="base:localId">{$x/ef:inspireId/base:Identifier/string(base:localId)}</td>
+                </tr>
+    } catch * {
+        <tr status="failed">
+            <td title="Error code"> {$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
 
 
 (: D78 :)
@@ -1171,7 +1145,7 @@ return
         {html:buildResultRows("D20", $labels:D20, $labels:D20_SHORT, (), (), "aqd:AQD_Station/ef:inspireId/base:Identifier/base:localId","All smsName attributes are valid"," invalid attribute","", "warning", $D20invalid)}
         {html:buildResultRows("D21", $labels:D21, $labels:D21_SHORT, $invalidPosD21, (), "aqd:AQD_Zone/@gml:id", "All srsDimension attributes resolve to ""2""", " invalid attribute", "","error",())}
         {html:buildResultRows("D23", $labels:D23, $labels:D23_SHORT, (), $allInvalidEfOperationActivityPeriod, "", fn:string(count($allInvalidEfOperationActivityPeriod)), "", "","error", ())}
-        (: TODO: fix D24 to show warning if count = 0 :)
+        <!-- TODO: fix D24 to show warning if count = 0 :) -->
         {html:buildResultRows("D24", $labels:D24, $labels:D24_SHORT, (), $allUnknownEfOperationActivityPeriodD24, "", string(count($allUnknownEfOperationActivityPeriodD24)), "", "","warning",())}
         {html:buildResultRows("D26", $labels:D26, $labels:D26_SHORT, (), $invalidDuplicateLocalIds, "", "All station codes are valid", " invalid station codes", "","error", ())}
         {html:buildResultRowsWithTotalCount_D("D27", $labels:D27, $labels:D27_SHORT, (), (), "aqd:meteoParams", "", "", "","warning", $invalidMeteoParams)}
@@ -1216,7 +1190,7 @@ return
         {html:buildInfoTR("Specific checks on AQD_Sample feature(s) within this XML")}
         {html:buildResultRows("D71", $labels:D71, $labels:D71_SHORT, (),$invalidDuplicateSampleIds, "", concat(string(count($invalidDuplicateSampleIds))," errors found.") , "", "","error", ())}
         {html:buildResultRows("D72", $labels:D72, $labels:D72_SHORT, (), (), "", string(count($tblD72)), "", "","error",$tblD72)}
-        (: TODO: fix D73 to show errlevel if count = 0 - boolean is set in $isInvalidInvalidD73 :)
+        <!-- TODO: fix D73 to show errlevel if count = 0 - boolean is set in $isInvalidInvalidD73 -->
         {html:buildResultRows("D73", $labels:D73, $labels:D73_SHORT, $strErr73 ,(), "", concat(string(count($D73invalid)), $errMsg73), "", "",$errLevelD73, $D73invalid)}
         {html:buildResultRows("D74", $labels:D74, $labels:D74_SHORT, $invalidPointDimension,(), "aqd:AQD_Sample/@gml:id","All srsDimension attributes are valid"," invalid attribute","","error", ())}
         {html:buildResultRows("D75", $labels:D75, $labels:D75_SHORT, $D75invalid,(), "aqd:AQD_Sample/aqd:inspireId/base:Identifier/base:localId", "All attributes are valid", " invalid attribute","","warning", ())}
@@ -1236,9 +1210,9 @@ declare function xmlconv:checkVocabularyConceptValues($source_url as xs:string, 
     if (doc-available($source_url)) then
         let $sparql :=
             if ($vocabularyType = "collection") then
-                xmlconv:getCollectionConceptUrlSparql($vocabularyUrl)
+                query:getCollectionConceptUrlSparql($vocabularyUrl)
             else
-                xmlconv:getConceptUrlSparql($vocabularyUrl)
+                query:getConceptUrlSparql($vocabularyUrl)
         let $crConcepts := sparqlx:executeSparqlQuery($sparql)
 
         for $rec in doc($source_url)//gml:featureMember/descendant::*[name()=$featureType]
@@ -1261,7 +1235,7 @@ declare function xmlconv:checkVocabularyConceptValues($source_url as xs:string, 
 (: TODO add attribute as method param :)
 declare function xmlconv:checkVocabularyConceptValuesUom($source_url as xs:string, $featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string) as element(tr)* {
     if(doc-available($source_url)) then
-        let $sparql := xmlconv:getConceptUrlSparql($vocabularyUrl)
+        let $sparql := query:getConceptUrlSparql($vocabularyUrl)
         let $crConcepts := sparqlx:executeSparqlQuery($sparql)
         for $rec in doc($source_url)//gml:featureMember/descendant::*[name()=$featureType]
         for $conceptUrl in $rec/child::*[name() = $element]/@uom
@@ -1282,9 +1256,9 @@ as element(tr)*{
     if (doc-available($source_url)) then
         let $sparql :=
             if ($vocabularyType = "collection") then
-                xmlconv:getCollectionConceptUrlSparql($vocabularyUrl)
+                query:getCollectionConceptUrlSparql($vocabularyUrl)
             else
-                xmlconv:getConceptUrlSparql($vocabularyUrl)
+                query:getConceptUrlSparql($vocabularyUrl)
         let $crConcepts := sparqlx:executeSparqlQuery($sparql)
 
         for $rec in $concept/ancestor::*[name()=$featureType]
@@ -1307,9 +1281,9 @@ declare function xmlconv:checkVocabularyConceptValues3($source_url as xs:string,
     if (doc-available($source_url)) then
         let $sparql :=
             if ($vocabularyType = "collection") then
-                xmlconv:getCollectionConceptUrlSparql($vocabularyUrl)
+                query:getCollectionConceptUrlSparql($vocabularyUrl)
             else
-                xmlconv:getConceptUrlSparql($vocabularyUrl)
+                query:getConceptUrlSparql($vocabularyUrl)
         let $crConcepts := sparqlx:executeSparqlQuery($sparql)
 
         for $rec in doc($source_url)//gml:featureMember/descendant::*[name()=$featureType]
@@ -1325,7 +1299,7 @@ declare function xmlconv:checkVocabularyConceptValues3($source_url as xs:string,
 
 declare function xmlconv:isValidConceptCode($conceptUrl as xs:string?, $vocabularyUrl as xs:string) as xs:boolean {
     let $conceptUrl := if (empty($conceptUrl)) then "" else $conceptUrl
-    let $sparql := xmlconv:getConceptUrlSparql($vocabularyUrl)
+    let $sparql := query:getConceptUrlSparql($vocabularyUrl)
     let $crConcepts := sparqlx:executeSparqlQuery($sparql)
     return xmlconv:isMatchingVocabCode($crConcepts, $conceptUrl)
 };
@@ -1333,7 +1307,7 @@ declare function xmlconv:isValidConceptCode($conceptUrl as xs:string?, $vocabula
 declare function xmlconv:checkVocabularyConceptValues4($source_url as xs:string, $featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string) as element(tr)* {
 
     if(doc-available($source_url)) then
-        let $sparql := xmlconv:getConceptUrlSparql($vocabularyUrl)
+        let $sparql := query:getConceptUrlSparql($vocabularyUrl)
         let $crConcepts := sparqlx:executeSparqlQuery($sparql)
         for $rec in doc($source_url)//gml:featureMember/descendant::*[name()=$featureType]
         for $conceptUrl in $rec//child::*[name() = $element]/@xlink:href
@@ -1356,9 +1330,9 @@ as element(tr)*{
     if(doc-available($source_url)) then
         let $sparql :=
             if ($vocabularyType = "collection") then
-                xmlconv:getCollectionConceptUrlSparql($vocabularyUrl)
+                query:getCollectionConceptUrlSparql($vocabularyUrl)
             else
-                xmlconv:getConceptUrlSparql($vocabularyUrl)
+                query:getConceptUrlSparql($vocabularyUrl)
         let $crConcepts := sparqlx:executeSparqlQuery($sparql)
         for $rec in doc($source_url)//gml:featureMember/descendant::*[name()=$featureType]
         for $conceptUrl in $rec/child::*[name() = $element]/aqd:AnalyticalTechnique/child::*[name() = $element]/@xlink:href
@@ -1381,7 +1355,7 @@ as element(tr)* {
     if(doc-available($source_url)) then
       let $crConcepts :=
         for $vocabularyUrl in  $vocabularyUrls
-            let $sparql := xmlconv:getConceptUrlSparql($vocabularyUrl)
+            let $sparql := query:getConceptUrlSparql($vocabularyUrl)
             return
                 sparqlx:executeSparqlQuery($sparql)
 
@@ -1408,9 +1382,9 @@ as element(tr)* {
     if (doc-available($source_url)) then
         let $sparql :=
             if ($vocabularyType = "collection") then
-                xmlconv:getCollectionConceptUrlSparql($vocabularyUrl)
+                query:getCollectionConceptUrlSparql($vocabularyUrl)
             else
-                xmlconv:getConceptUrlSparql($vocabularyUrl)
+                query:getConceptUrlSparql($vocabularyUrl)
         let $crConcepts := sparqlx:executeSparqlQuery($sparql)
         for $rec in doc($source_url)//gml:featureMember/descendant::*[name()=$featureType]
         for $conceptUrl in $rec/child::*[name() = $element]/*/aqd:equipment/@xlink:href
@@ -1431,9 +1405,9 @@ declare function xmlconv:checkMeasurementMethodLinkValues($source_url as xs:stri
     if (doc-available($source_url)) then
         let $sparql :=
             if ($vocabularyType = "collection") then
-                xmlconv:getCollectionConceptUrlSparql($vocabularyUrl)
+                query:getCollectionConceptUrlSparql($vocabularyUrl)
             else
-                xmlconv:getConceptUrlSparql($vocabularyUrl)
+                query:getConceptUrlSparql($vocabularyUrl)
         let $crConcepts := sparqlx:executeSparqlQuery($sparql)
         for $conceptUrl in $concept/../../aqd:measurementMethod/aqd:MeasurementMethod/aqd:measurementMethod/@xlink:href
             let $measurementMethodStyle := if(xmlconv:isMatchingVocabCode($crConcepts, $conceptUrl))then "" else "color:red"
@@ -1449,45 +1423,6 @@ declare function xmlconv:checkMeasurementMethodLinkValues($source_url as xs:stri
             </tr>
         else
             ()
-};
-
-
-
-declare function xmlconv:getConceptUrlSparql($scheme as xs:string) as xs:string {
-    (: Quick fix for #69944. :)
-    if ($scheme = "http://inspire.ec.europa.eu/codelist/MediaValue/") then
-        concat("PREFIX dcterms: <http://purl.org/dc/terms/>
-                PREFIX owl: <http://www.w3.org/2002/07/owl#>
-                PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
-                    SELECT ?concepturl ?label
-                    WHERE {
-                    {
-                      ?concepturl skos:inScheme <", $scheme, ">;
-                                  skos:prefLabel ?label
-                    } UNION {
-                      ?other skos:inScheme <", $scheme, ">;
-                                  skos:prefLabel ?label;
-                                  dcterms:replaces ?concepturl
-                    }
-                }")
-    else                   
-        concat("PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
-        SELECT ?concepturl ?label
-        WHERE {
-          ?concepturl skos:inScheme <", $scheme, ">;
-                      skos:prefLabel ?label
-        }")
-};
-
-declare function xmlconv:getCollectionConceptUrlSparql($collection as xs:string) as xs:string {
-    concat("PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
-    SELECT ?concepturl
-    WHERE {
-        GRAPH <", $collection, "> {
-            <", $collection, "> skos:member ?concepturl .
-            ?concepturl a skos:Concept
-        }
-    }")
 };
 
 declare function xmlconv:isMatchingVocabCode($crConcepts as element(sparql:result)*, $concept as xs:string) as xs:boolean {
@@ -1544,7 +1479,7 @@ return
                     <li><div style="width:50px; display:inline-block;margin-left:10px">{html:getBullet('Orange', 'warning')}</div> - the non-crucial check did NOT pass.</li>
                     <li><div style="width:50px; display:inline-block;margin-left:10px">{html:getBullet('Grey', 'skipped')}</div> - the check was skipped due to no relevant values found to check.</li>
                 </ul>
-                <p>Click on the "Show records" link to see more details about the test result.</p>
+                <p>Click on the {$labels:SHOWRECORDS} link to see more details about the test result.</p>
             </fieldset>
             <h3>Test results</h3>
             {$result}

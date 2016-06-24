@@ -419,6 +419,8 @@ declare variable $labels:M12 := labels:getLabel("M", "M12");
 declare variable $labels:M12_SHORT := labels:getLabel("M", "M12_SHORT");
 declare variable $labels:M15 := labels:getLabel("M", "M15");
 declare variable $labels:M15_SHORT := labels:getLabel("M", "M15_SHORT");
+declare variable $labels:M18 := labels:getLabel("M", "M18");
+declare variable $labels:M18_SHORT := labels:getLabel("M", "M18_SHORT");
 declare variable $labels:M19 := labels:getLabel("M", "M19");
 declare variable $labels:M19_SHORT := labels:getLabel("M", "M19_SHORT");
 declare variable $labels:M23 := labels:getLabel("M", "M23");
@@ -458,4 +460,13 @@ declare function labels:getLabel($section as xs:string, $id as xs:string) {
             $label
         else
             $labels:PLACEHOLDER
+};
+
+declare function labels:interpolate($label as xs:string, $values as xs:string*) {
+    labels:interpolate($label, $values )
+};
+declare %private function labels:interpolate($input as xs:string, $values as xs:string*, $count as xs:integer) {
+    if (count($values) > 0) then
+        labels:interpolate(replace($input, "\$" || $count, head($values)), tail($values), $count + 1)
+    else $input
 };

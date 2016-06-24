@@ -543,7 +543,7 @@ let $invalidPollutantRepeated :=
             </tr>
 
 (: B40 - :)
-let $tempStr := xmlconv:checkVocabularyConceptValues($source_url, "", "aqd:AQD_Zone", "aqd:timeExtensionExemption", "http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/")
+let $tempStr := xmlconv:checkVocabularyConceptValues($source_url, "", "aqd:AQD_Zone", "aqd:timeExtensionExemption", "http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/", (), "")
 let $invalidTimeExtensionExemption := $tempStr
 
 (: B41 :)
@@ -656,7 +656,7 @@ for $link in $aqdShapeFileLink
 
 
 (: B47 :)
-let $invalidZoneType := xmlconv:checkVocabularyConceptValues($source_url, "", "aqd:AQD_Zone", "aqd:aqdZoneType", $vocabulary:ZONETYPE_VOCABULARY)
+let $invalidZoneType := xmlconv:checkVocabularyConceptValues($source_url, "", "aqd:AQD_Zone", "aqd:aqdZoneType", $vocabulary:ZONETYPE_VOCABULARY, (), "")
 
 return
     <table class="maintable hover">
@@ -719,15 +719,6 @@ as element(tr)*{
         html:buildResultRows($ruleCode, $longText, $text, $invalidStrValues, $invalidValues, $valueHeading, $validMsg, $invalidMsg, $skippedMsg, "error",())
 };
 
-declare function xmlconv:checkVocabularyConceptValues($source_url as xs:string, $parentObject as xs:string, $featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string, $limitedIds as xs:string*)
-as element(tr)*{
-    xmlconv:checkVocabularyConceptValues($source_url, $parentObject, $featureType, $element, $vocabularyUrl, $limitedIds, "")
-};
-
-declare function xmlconv:checkVocabularyConceptValues($source_url as xs:string, $parentObject, $featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string)
-as element(tr)*{
-    xmlconv:checkVocabularyConceptValues($source_url, $parentObject, $featureType, $element, $vocabularyUrl, (), "")
-};
 declare function xmlconv:checkVocabularyConceptValues($source_url as xs:string, $parentObject as xs:string, $featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string, $limitedIds as xs:string*, $vocabularyType as xs:string)
 as element(tr)*{
 
