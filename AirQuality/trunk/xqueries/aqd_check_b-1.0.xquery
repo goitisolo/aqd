@@ -5,8 +5,7 @@ xquery version "1.0" encoding "UTF-8";
  : Version:     $Id$
  : Created:     20 June 2013
  : Copyright:   European Environment Agency
- :)
-(:~
+ :
  : XQuery script implements dataflow B tier-1 checks as documented in http://taskman.eionet.europa.eu/documents/3 .
  :
  : @author Enriko Käsper
@@ -53,19 +52,19 @@ let $countZones := count($docRoot//aqd:AQD_Zone)
 let $nameSpaces := distinct-values($docRoot//base:namespace)
 let $zonesSparql := query:getZonesSparql($nameSpaces)
 let $isZonesAvailable := string-length($zonesSparql) > 0 and doc-available(sparqlx:getSparqlEndpointUrl($zonesSparql, "xml"))
-let $knownZones := if ($isZonesAvailable ) then distinct-values(data(sparqlx:executeSimpleSparqlQuery($zonesSparql)//sparql:binding[@name='inspireid']/sparql:literal)) else ()
+let $knownZones := if ($isZonesAvailable) then distinct-values(data(sparqlx:executeSimpleSparqlQuery($zonesSparql)//sparql:binding[@name='inspireid']/sparql:literal)) else ()
 let $unknownZones :=
 for $zone in $docRoot//gml:featureMember/aqd:AQD_Zone
-    let $id := if (empty($zone/@gml:id)) then "" else data($zone/@gml:id)
-    where empty(index-of($knownZones, $id))
+    let $id := string($zone/am:inspireId/base:Identifier/base:localId)
+    where ($id = "" or not($knownZones = $id))
     return $zone
 
 let $tblB2 :=
     for $rec in $unknownZones
     return
         <tr>
-            <td title="gml:id">{data($rec/@gml:id)}</td>
-            <td title="aqd:predecessor">{if (empty($rec/aqd:predecessor)) then "not specified" else data($rec/aqd:predecessor/aqd:AQD_Zone/@gml:id)}</td>
+            <td title="base:localId">{data($rec/am:inspireId/base:Identifier/base:localId)}</td>
+            <td title="aqd:predecessor">{if (empty($rec/aqd:predecessor)) then "not specified" else string($rec/aqd:predecessor/aqd:AQD_Zone/@gml:id)}</td>
         </tr>
 
 (: B3 :)
@@ -74,18 +73,8 @@ let $countZonesWithAmGeometry := count($docRoot//aqd:AQD_Zone/am:geometry)
 let $countZonesWithLAU := count($docRoot//aqd:AQD_Zone[not(empty(aqd:LAU)) or not(empty(aqd:shapefileLink))])
 
 (: B6 :)
-
-(:
-let $allB6Combinations :=
-for $aqdZone in $docRoot//aqd:AQD_Zone
-return concat(data($aqdZone/@gml:id), "#", $aqdZone/am:inspireId, "#", $aqdZone/aqd:inspireId, "#", $aqdZone/ef:name, "#", $aqdZone/ompr:name )
-let $allB6Combinations := fn:distinct-values($allB6Combinations)
-:)
-
-let $allB6Combinations := $docRoot//aqd:AQD_Zone
-
 let $tblB6 :=
-    for $rec in $allB6Combinations
+    for $rec in $docRoot//aqd:AQD_Zone
     (:
     let $zoneType := substring-before($rec, "#")
     let $tmpStr := substring-after($rec, concat($zoneType, "#"))
@@ -196,7 +185,7 @@ let $countB9duplicates := $countAmInspireIdDuplicates
 
 (: B10 :)
 let $allBaseNamespace := distinct-values($docRoot//aqd:AQD_Zone/am:inspireId/base:Identifier/base:namespace)
-let  $tblB10 :=
+let $tblB10 :=
     for $id in $allBaseNamespace
     let $localId := $docRoot//aqd:AQD_Zone/am:inspireId/base:Identifier[base:namespace = $id]/base:localId
  return
@@ -292,6 +281,7 @@ return if ($long > $lat) then concat($latLong/ancestor::*[@gml:id][1]/@gml:id, "
  let $invalidPosition  :=
     for $timePeriod in $docRoot//aqd:AQD_Zone/am:designationPeriod/gml:TimePeriod
         (: XQ does not support 24h that is supported by xsml schema validation :)
+        (: TODO: comment by sofiageo - the above statement is not true, fix this if necessary :)
         let $beginDate := substring(normalize-space($timePeriod/gml:beginPosition),1,10)
         let $endDate := substring(normalize-space($timePeriod/gml:endPosition),1,10)
         let $beginPosition := if ($beginDate castable as xs:date) then xs:date($beginDate) else ()
@@ -553,16 +543,16 @@ where ($x/aqd:Pollutant/aqd:pollutantCode/@xlink:href = "http://dd.eionet.europa
        and ($x/../aqd:timeExtensionExemption/fn:normalize-space(@xlink:href) = "http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/NO2-1h"
         or $x/../aqd:timeExtensionExemption/fn:normalize-space(@xlink:href) = "http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/NO2-annual")
 return
-    data($x/../@gml:id)
+    string($x/../am:inspireId/base:Identifier/base:localId)
 
 
 let $invalidPollutansB41 :=
     for $y in $docRoot//aqd:AQD_Zone[aqd:timeExtensionExemption/fn:normalize-space(@xlink:href) = "http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/NO2-1h"
             or aqd:timeExtensionExemption/fn:normalize-space(@xlink:href) = "http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/NO2-annual"]
-    where empty(index-of($zoneIds,$y/@gml:id))
+    where empty(index-of($zoneIds,string($y/am:inspireId/base:Identifier/base:localId)))
 return
         <tr>
-            <td title="gml:id">{data($y/@gml:id)}</td>
+            <td title="base:localId">{data($y/am:inspireId/base:Identifier/base:localId)}</td>
             <td title="aqd:pollutantCode">{common:checkLink("http://dd.eionet.europa.eu/vocabulary/aq/pollutant/8")}</td>
             <td title="aqd:protectionTarget">{common:checkLink("http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H")}</td>
         </tr>
@@ -573,15 +563,15 @@ let $zoneIds :=
     where ($x/aqd:Pollutant/aqd:pollutantCode/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5" and $x/aqd:Pollutant/aqd:protectionTarget/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H")
             and ($x/../aqd:timeExtensionExemption/fn:normalize-space(@xlink:href) = "http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/PM10-24h"
                     or $x/../aqd:timeExtensionExemption/fn:normalize-space(@xlink:href) = "http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/PM10-annual")
-    return $x/../@gml:id
+    return string($x/../am:inspireId/base:Identifier/base:localId)
 
 let $aqdInvalidPollutansB42 :=
     for $y in $docRoot//aqd:AQD_Zone[aqd:timeExtensionExemption/fn:normalize-space(@xlink:href) = "http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/PM10-24h"
             or aqd:timeExtensionExemption/fn:normalize-space(@xlink:href) = "http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/PM10-annual"]
-    where empty(index-of($zoneIds,$y/@gml:id))
+    where (not($zoneIds = string($y/am:inspireId/base:Identifier/base:localId)))
     return
         <tr>
-            <td title="gml:id">{data($y/@gml:id)}</td>
+            <td title="base:localId">{data($y/am:inspireId/base:Identifier/base:localId)}</td>
             <td title="aqd:pollutantCode">{common:checkLink("http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5")}</td>
             <td title="aqd:protectionTarget">{common:checkLink("http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H")}</td>
         </tr>
@@ -592,14 +582,14 @@ let $zoneIds :=
     for $x in $docRoot//aqd:AQD_Zone/aqd:pollutants
     where (($x/aqd:Pollutant/aqd:pollutantCode/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/20" and $x/aqd:Pollutant/aqd:protectionTarget/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H")
             and ($x/../aqd:timeExtensionExemption/fn:normalize-space(@xlink:href) = "http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/C6H6-annual"))
-    return $x/../@gml:id
+    return string($x/../am:inspireId/base:Identifier/base:localId)
 
 let $aqdInvalidPollutansBenzene :=
     for $y in $docRoot//aqd:AQD_Zone[aqd:timeExtensionExemption/fn:normalize-space(@xlink:href) = "http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/C6H6-annual"]
-    where empty(index-of($zoneIds,$y/@gml:id))
+    where (not($zoneIds = string($y/am:inspireId/base:Identifier/base:localId)))
     return
       <tr>
-            <td title="gml:id">{data($y/@gml:id)}</td>
+            <td title="base:localid">{data($y/am:inspireId/base:Identifier/base:localId)}</td>
             <td title="aqd:pollutantCode">{common:checkLink("http://dd.eionet.europa.eu/vocabulary/aq/pollutant/20")}</td>
             <td title="aqd:protectionTarget">{common:checkLink("http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H")}</td>
         </tr>
@@ -635,12 +625,12 @@ let $lauSkippedMsg := if (fn:string-length($countryCode) != 2) then "The test wa
 :)
 
 (: B45 :)
-
-let $amGeometry := $docRoot//aqd:AQD_Zone[count(am:geometry/@xlink:href)>0]/@gml:id
-let $invalidGeometry :=
-for $x in $amGeometry
-    where (empty($amGeometry)=false())
-return $x
+let $B45invalid :=
+    for $x in $docRoot//aqd:AQD_Zone[count(am:geometry/@xlink:href)>0]
+    return
+        <tr>
+            <td title="base:localId">{string($x/am:inspireId/base:Identifier/base:localId)}</td>
+        </tr>
 
 (: B46 - Where ./aqd:shapefileLink has been used the xlink should return a link to a valid and existing file located in the same cdr envelope as this XML :)
 
@@ -698,7 +688,7 @@ return
         {html:buildResultTable("B41", $labels:B41, $labels:B41_SHORT, (), "All values are valid", " invalid value", "", "error", $invalidPollutansB41)}
         {html:buildResultTable("B42", $labels:B42, $labels:B42_SHORT, (), "All values are valid", " crucial invalid value", "", "error", $aqdInvalidPollutansB42)}
         {html:buildResultTable("B43", $labels:B43, $labels:B43_SHORT, (), "All values are valid", " crucial invalid value", "", "error", $aqdInvalidPollutansBenzene)}
-        {html:buildResultRows_B("B45", $labels:B45, $labels:B45_SHORT, $invalidGeometry, "aqd:AQD_Zone/am:inspireId/base:Identifier/base:localId", "All values are valid", " invalid value", "","warning")}
+        {html:buildResultRows("B45", $labels:B45, $labels:B45_SHORT, (), (), "aqd:AQD_Zone/am:inspireId/base:Identifier/base:localId", "All values are valid", " invalid value", "","warning", $B45invalid)}
         {html:buildResultRows_B("B46", $labels:B46, $labels:B46_SHORT, $invalidLink, "aqd:AQD_Zone/am:inspireId/base:Identifier/base:localId", "All values are valid", " invalid value", "", "error")}
         {xmlconv:buildResultRowsWithTotalCount("B47", $labels:B47, $labels:B47_SHORT, (), (), "aqd:reportingMetric", "", "", "", $invalidZoneType)}
     </table>
@@ -724,9 +714,9 @@ as element(tr)*{
 
     let $sparql :=
         if ($vocabularyType = "collection") then
-            xmlconv:getCollectionConceptUrlSparql($vocabularyUrl)
+            query:getCollectionConceptUrlSparql($vocabularyUrl)
         else
-            xmlconv:getConceptUrlSparql($vocabularyUrl)
+            query:getConceptUrlSparqlB($vocabularyUrl)
     let $crConcepts := sparqlx:executeSimpleSparqlQuery($sparql)
 
     let $allRecords :=
@@ -758,28 +748,6 @@ declare function xmlconv:isValidLimitedValue($conceptUrl as xs:string, $vocabula
         empty($limitedIds) or not(empty(index-of($limitedUrls, $conceptUrl)))
 };
 
-declare function xmlconv:getConceptUrlSparql($scheme as xs:string)
-as xs:string
-{
-    concat("PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
-    SELECT ?concepturl ?label
-    WHERE {
-      ?concepturl skos:inScheme <", $scheme, ">;
-                  skos:prefLabel ?label
-    }")
-};
-declare function xmlconv:getCollectionConceptUrlSparql($collection as xs:string)
-as xs:string
-{
-    concat("PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
-    SELECT ?concepturl
-    WHERE {
-        GRAPH <", $collection, "> {
-            <", $collection, "> skos:member ?concepturl .
-            ?concepturl a skos:Concept
-        }
-    }")
-};
 
 declare function xmlconv:isMatchingVocabCode($crConcepts as element(sparql:results), $concept as xs:string)
 as xs:boolean

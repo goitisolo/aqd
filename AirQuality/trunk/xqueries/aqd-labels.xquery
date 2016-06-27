@@ -453,13 +453,15 @@ declare variable $labels:C6.1_SHORT := "Check that namespace is registered in vo
 declare variable $labels:DOC := doc("http://converterstest.eionet.europa.eu/xmlfile/aqd-labels.xml");
 declare variable $labels:PLACEHOLDER := "LABEL MISSING";
 
-declare function labels:getLabel($section as xs:string, $id as xs:string) {
-    let $label := string($labels:DOC/labels/*[name() = $section]/*[name() = $id])
+declare function labels:getLabel($section as xs:string, $id as xs:string) as element(span) {
+    let $label := $labels:DOC/labels/*[name() = $section]/*[name() = $id]
     return
-        if ($label) then
-            $label
+        if ($label/span) then
+            $label/span
+        else if (string($label) != "") then
+            <span>string($label)</span>
         else
-            $labels:PLACEHOLDER
+            <span>$labels:PLACEHOLDER</span>
 };
 
 declare function labels:interpolate($label as xs:string, $values as xs:string*) {

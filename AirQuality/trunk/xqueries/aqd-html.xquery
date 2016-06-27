@@ -110,7 +110,7 @@ declare function html:getBullet($text as xs:string, $level as xs:string) as elem
 
 declare function html:buildInfoTR($text as xs:string) as element(tr) {
     <tr>
-        <th colspan="3">{$text}</th>
+        <th colspan="4">{$text}</th>
     </tr>
 };
 
