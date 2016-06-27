@@ -421,6 +421,16 @@ declare function query:getConceptUrlSparql($scheme as xs:string) as xs:string {
         }")
 };
 
+(: This is used by B dataflow - Maybe remove if the above function is enough :)
+declare function query:getConceptUrlSparqlB($scheme as xs:string) as xs:string {
+  concat("PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+    SELECT ?concepturl ?label
+    WHERE {
+      ?concepturl skos:inScheme <", $scheme, ">;
+                  skos:prefLabel ?label
+    }")
+};
+
 declare function query:getCollectionConceptUrlSparql($collection as xs:string) as xs:string {
   concat("PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
     SELECT ?concepturl
@@ -431,6 +441,7 @@ declare function query:getCollectionConceptUrlSparql($collection as xs:string) a
         }
     }")
 };
+
 
 (: G - remove comment after migration :)
 

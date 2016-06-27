@@ -5,14 +5,12 @@ xquery version "1.0" encoding "UTF-8";
  : Version:     $Id$
  : Created:     13 September 2013
  : Copyright:   European Environment Agency
- :)
-(:~
+ :
  : XQuery script implements dataflow C tier-1 checks as documented in http://taskman.eionet.europa.eu/documents/3 .
  :
  : @author Rait Väli and Enriko Käsper
+ : @author George Sofianos
  : small modification added by Jaume Targa (ETC/ACM) to align with QA document
- :
- :Quality Assurance and Control rules version: 4.0
  :)
 
 module namespace xmlconv = "http://converters.eionet.europa.eu/dataflowD";
