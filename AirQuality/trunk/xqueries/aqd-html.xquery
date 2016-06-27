@@ -422,10 +422,7 @@ declare function html:buildInfoTable($ruleId as xs:string, $table as element(tab
 declare function html:getErrorTD($errValue,  $element as xs:string, $showMissing as xs:boolean) as element(td) {
     let $val := if ($showMissing and string-length($errValue)=0) then "-blank-" else $errValue
     return
-        <td title="{ $element }" style="color:red">{
-            $val
-        }
-        </td>
+        <td title="{$element}" style="color:red">{$val}</td>
 };
 
 declare function html:buildConcatRow($elems, $header as xs:string) as element(tr)? {

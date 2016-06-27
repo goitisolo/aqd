@@ -58,12 +58,12 @@ let $tblAllFeatureTypes :=
     where $countFeatureTypes[$pos] > 0
     return
         <tr>
-            <td title="Feature type">{ $featureType }</td>
+            <td title="Feature type">{$featureType}</td>
             <td title="Total number">{$countFeatureTypes[$pos]}</td>
         </tr>
 
 (: D2 :)
-let $D2Combinations :=
+let $DCombinations :=
     for $featureType in $xmlconv:FEATURE_TYPES
     return
         doc($source_url)//gml:featureMember/descendant::*[name()=$featureType]
@@ -72,59 +72,42 @@ let $nameSpaces := distinct-values($docRoot//base:namespace)
 let $zonesSparql := query:getZonesSparql($nameSpaces)
 let $isZonesAvailable := string-length($zonesSparql) > 0 and doc-available(sparqlx:getSparqlEndpointUrl($zonesSparql, "xml"))
 let $knownZones := if ($isZonesAvailable ) then distinct-values(data(sparqlx:executeSparqlQuery($zonesSparql)//sparql:binding[@name='inspireid']/sparql:literal)) else ()
-let $unknownZones :=
-    for $zone in $D2Combinations
-    let $id := if (empty($zone/@gml:id)) then "" else data($zone/@gml:id)
-    where empty(index-of($knownZones, $id))
-    return $zone
-
 let $tblD2 :=
-    for $rec in $unknownZones
+    for $zone in $DCombinations
+        let $id := string($zone/ef:inspireId/base:Identifier/base:localId)
+    where ($id = "" or not($knownZones = $id))
     return
-        $rec/@gml:id
+        <tr>
+            <td title="base:localId">{$id}</td>
+        </tr>
+
 
 (: D3 :)
-let $D3Combinations :=
-    for $featureType in $xmlconv:FEATURE_TYPES
-    return
-        doc($source_url)//gml:featureMember/descendant::*[name()=$featureType]
-
-let $nameSpaces := distinct-values($docRoot//base:namespace)
-let $zonesSparql := query:getZonesSparql($nameSpaces)
-let $isZonesAvailable := string-length($zonesSparql) > 0 and doc-available(sparqlx:getSparqlEndpointUrl($zonesSparql, "xml"))
-let $knownZones := if ($isZonesAvailable ) then distinct-values(data(sparqlx:executeSparqlQuery($zonesSparql)//sparql:binding[@name='inspireid']/sparql:literal)) else ()
-let $unknownZones :=
-    for $zone in $D3Combinations
-    let $id := if (empty($zone/@gml:id)) then "" else data($zone/@gml:id)
-    where empty(index-of($knownZones, $id))=false()
-    return $zone
-
 let $tblD3 :=
-    for $rec in $unknownZones
+    for $zone in $DCombinations
+        let $id := string($zone/ef:inspireId/base:Identifier/base:localId)
+    where $knownZones = $id
     return
-        $rec/@gml:id
+        <tr>
+            <td title="base:localId">{$id}</td>
+        </tr>
 
 (: D4 :)
-let $D4Combinations :=
-    for $featureType in $xmlconv:FEATURE_TYPES
-    return
-        doc($source_url)//gml:featureMember/descendant::*[name()=$featureType]
-
 let $allD4Combinations :=
-    for $aqdModel in $D4Combinations
+    for $aqdModel in $DCombinations
     return concat(data($aqdModel/@gml:id), "#", $aqdModel/ef:inspireId/base:Identifier/base:localId, "#", $aqdModel/ompr:inspireId/base:Identifier/base:localId, "#", $aqdModel/ef:name, "#", $aqdModel/ompr:name )
 
 let $allD4Combinations := fn:distinct-values($allD4Combinations)
 let $tblD4 :=
     for $rec in $allD4Combinations
-    let $modelType := substring-before($rec, "#")
-    let $tmpStr := substring-after($rec, concat($modelType, "#"))
-    let $inspireId := substring-before($tmpStr, "#")
-    let $tmpInspireId := substring-after($tmpStr, concat($inspireId, "#"))
-    let $aqdInspireId := substring-before($tmpInspireId, "#")
-    let $tmpEfName := substring-after($tmpInspireId, concat($aqdInspireId, "#"))
-    let $efName := substring-before($tmpEfName, "#")
-    let $omprName := substring-after($tmpEfName,concat($efName,"#"))
+        let $modelType := substring-before($rec, "#")
+        let $tmpStr := substring-after($rec, concat($modelType, "#"))
+        let $inspireId := substring-before($tmpStr, "#")
+        let $tmpInspireId := substring-after($tmpStr, concat($inspireId, "#"))
+        let $aqdInspireId := substring-before($tmpInspireId, "#")
+        let $tmpEfName := substring-after($tmpInspireId, concat($aqdInspireId, "#"))
+        let $efName := substring-before($tmpEfName, "#")
+        let $omprName := substring-after($tmpEfName,concat($efName,"#"))
     return
         <tr>
             <td title="gml:id">{common:checkLink($modelType)}</td>
@@ -135,24 +118,19 @@ let $tblD4 :=
         </tr>
 
 (: D5 :)
-let $D5Combinations :=
-    for $featureType in $xmlconv:FEATURE_TYPES
-    return
-        doc($source_url)//gml:featureMember/descendant::*[name()=$featureType]
-
-let $gmlIds := $D5Combinations/lower-case(normalize-space(@gml:id))
+let $gmlIds := $DCombinations/lower-case(normalize-space(@gml:id))
 let $duplicateGmlIds := distinct-values(
-        for $id in $D5Combinations/@gml:id
+        for $id in $DCombinations/@gml:id
         where string-length(normalize-space($id)) > 0 and count(index-of($gmlIds, lower-case(normalize-space($id)))) > 1
         return
             $id
 )
-let $efInspireIds := for $id in $D5Combinations/ef:inspireId
+let $efInspireIds := for $id in $DCombinations/ef:inspireId
 return
     lower-case(concat("[", normalize-space($id/base:Identifier/base:localId), ", ", normalize-space($id/base:Identifier/base:namespace),
             ", ", normalize-space($id/base:Identifier/base:versionId), "]"))
 let $duplicateefInspireIds := distinct-values(
-        for $id in $D5Combinations/ef:inspireId
+        for $id in $DCombinations/ef:inspireId
         let $key :=
             concat("[", normalize-space($id/base:Identifier/base:localId), ", ", normalize-space($id/base:Identifier/base:namespace),
                     ", ", normalize-space($id/base:Identifier/base:versionId), "]")
@@ -162,12 +140,12 @@ let $duplicateefInspireIds := distinct-values(
 )
 
 
-let $aqdInspireIds := for $id in $D5Combinations/aqd:inspireId
+let $aqdInspireIds := for $id in $DCombinations/aqd:inspireId
 return
     lower-case(concat("[", normalize-space($id/base:Identifier/base:localId), ", ", normalize-space($id/base:Identifier/base:namespace),
             ", ", normalize-space($id/base:Identifier/base:versionId), "]"))
 let $duplicateaqdInspireIds := distinct-values(
-        for $id in $D5Combinations/aqd:inspireId
+        for $id in $DCombinations/aqd:inspireId
         let $key :=
             concat("[", normalize-space($id/base:Identifier/base:localId), ", ", normalize-space($id/base:Identifier/base:namespace),
                     ", ", normalize-space($id/base:Identifier/base:versionId), "]")
@@ -197,12 +175,12 @@ let $countD6duplicates := $countAmInspireIdDuplicates
 
 (: D7 :)
 let $allBaseNamespace := distinct-values($docRoot//aqd:AQD_Network/ef:inspireId/base:Identifier/base:namespace)
-let  $tblD7 :=
+let $tblD7 :=
     for $id in $allBaseNamespace
-    let $localId := $docRoot//aqd:AQD_Network/ef:inspireId/base:Identifier[base:namespace = $id]/base:localId
+        let $localId := $docRoot//aqd:AQD_Network/ef:inspireId/base:Identifier[base:namespace = $id]/base:localId
     return
         <tr>
-	    <td title="feature">Network(s)</td>
+	        <td title="feature">Network(s)</td>
             <td title="base:namespace">{$id}</td>
             <td title="base:localId">{count($localId)}</td>
         </tr>
@@ -217,14 +195,22 @@ let $invalidOrganisationalLevel := xmlconv:checkVocabularyConceptValues($source_
 let $invalidNetworkType := xmlconv:checkVocabularyConceptValues($source_url, "aqd:AQD_Network", "aqd:networkType", $vocabulary:NETWORK_TYPE_VOCABULARY)
 
 (: D11 :)
-let $invalidAQDNetworkBeginPosition := distinct-values($docRoot//aqd:AQD_Network/aqd:operationActivityPeriod/gml:TimePeriod[((gml:beginPosition>=gml:endPosition) and (gml:endPosition!=""))]/../../@gml:id)
+let $D11tmp := distinct-values(
+        $docRoot//aqd:AQD_Network/aqd:operationActivityPeriod/gml:TimePeriod[((gml:beginPosition>=gml:endPosition)
+                and (gml:endPosition!=""))]/../../ef:inspireId/base:Identifier/base:localId)
+let $D11invalid :=
+    for $x in $D11tmp
+    return
+        <tr>
+            <td title="base:localId">{$x}</td>
+        </tr>
 
 (: D12 aqd:AQD_Network/ef:name shall return a string :)
 let $D12invalid :=
     for $x in $docRoot//aqd:AQD_Network[string(ef:name) = ""]
     return
         <tr>
-            <td title="base:localId">{$x/ef:inspireId/base:Identifier/string(base:localId)}</td>
+            <td title="base:localId">{string($x/ef:inspireId/base:Identifier/base:localId)}</td>
         </tr>
 
 (: D14 Done by Rait  :)
@@ -261,22 +247,24 @@ let $invalidDuplicateSamplingPointIds :=
 (: D16 :)
 let $allBaseNamespace := distinct-values($docRoot//aqd:AQD_Station/ef:inspireId/base:Identifier/base:namespace)
 
-let  $tblD16 :=
+let $tblD16 :=
     for $id in $allBaseNamespace
-    let $localId := $docRoot//aqd:AQD_Station/ef:inspireId/base:Identifier[base:namespace = $id]/base:localId
+        let $localId := $docRoot//aqd:AQD_Station/ef:inspireId/base:Identifier[base:namespace = $id]/base:localId
     return
         <tr>
 	        <td title="feature">Station(s)</td>
             <td title="base:namespace">{$id}</td>
             <td title="base:localId">{count($localId)}</td>
         </tr>
+
 (: D17 aqd:AQD_Station/ef:name shall return a string :)
 let $D17invalid :=
     for $x in $docRoot//aqd:AQD_Station[ef:name = ""]
     return
     <tr>
-        <td title="base:localId">{$x/ef:inspireId/base:Identifier/string(base:localId)}</td>
+        <td title="base:localId">{string($x/ef:inspireId/base:Identifier/base:localId)}</td>
     </tr>
+
 (: D18 Cross-check with AQD_Network (aqd:AQD_Station/ef:belongsTo shall resolve to a traversable local of global URI to ../AQD_Network) :)
 let $aqdNetworkLocal :=
     for $z in $docRoot//aqd:AQD_Network
@@ -288,8 +276,8 @@ let $D18invalid :=
     for $x in $docRoot//aqd:AQD_Station[not(ef:belongsTo/@xlink:href = $aqdNetworkLocal)]
     return
         <tr>
-            <td title="aqd:AQD_Station">{$x/ef:inspireId/base:Identifier/string(base:localId)}</td>
-            <td title="ef:belongsTo">{$x/ef:belongsTo/string(@xlink:href)}</td>
+            <td title="aqd:AQD_Station">{string($x/ef:inspireId/base:Identifier/base:localId)}</td>
+            <td title="ef:belongsTo">{string($x/ef:belongsTo/@xlink:href)}</td>
         </tr>
 
 (: D19 :)
@@ -318,16 +306,16 @@ let $invalidStationMedia := xmlconv:checkVocabularyConceptValues($source_url, "a
 (: D20 ./ef:geometry/gml:Points the srsName attribute shall be a recognisable URN :)
 let $D20validURN := ("urn:ogc:def:crs:EPSG::3035", "urn:ogc:def:crs:EPSG::4258", "urn:ogc:def:crs:EPSG::4326")
 let $D20invalid :=
-    for $x in distinct-values($docRoot//aqd:AQD_Station[count(ef:geometry/gml:Point) > 0 and not(ef:geometry/gml:Point/@srsName = $D20validURN)]/ef:inspireId/base:Identifier/string(base:localId))
+    for $x in distinct-values($docRoot//aqd:AQD_Station[count(ef:geometry/gml:Point) > 0 and not(ef:geometry/gml:Point/@srsName = $D20validURN)]/ef:inspireId/base:Identifier/base:localId)
     return
         <tr>
             <td title="base:localId">{$x}</td>
         </tr>
 
 
-(: D21 Done by Rait :)
+(: D21 - The Dimension attribute shall resolve to "2." :)
 let $invalidPos_srsDim  := distinct-values($docRoot//aqd:AQD_Station/ef:geometry/gml:Point/gml:pos[@srsDimension != "2"]/
-concat(../../../@gml:id, ": srsDimension=", @srsDimension))
+concat(../../../ef:inspireId/base:Identifier/base:localId, ": srsDimension=", @srsDimension))
 
 
 let $aqdStationPos :=
@@ -349,7 +337,7 @@ let $invalidPos_order :=
         let $samplingLong := if ($samplingLong castable as xs:decimal) then xs:decimal($samplingLong) else 0.00
 
         return if ($samplingLat < $samplingLong and $countryCode != 'FR')
-        then concat($gmlPos/@gml:id, " : lat=" , string($samplingLat), " :long=", string($samplingLong)) else ()
+        then concat($gmlPos/ef:inspireId/base:Identifier/base:localId, " : lat=" , string($samplingLat), " :long=", string($samplingLong)) else ()
 
 
 let $invalidPosD21 := (($invalidPos_srsDim), ($invalidPos_order))
@@ -484,7 +472,6 @@ let $invalidPos  :=
         </tr>
 
 (: D36 :)
-
 let $approximity := 0.0003
 
 (: StationID|long#lat :)
@@ -545,7 +532,7 @@ let $invalidPosition  :=
             if ((string($beginPosition) = "error" or string($endPosition) = "error") or 
                 ($beginPosition instance of xs:date and $endPosition instance of xs:date and $beginPosition > $endPosition)) then
              <tr>
-                <td title="aqd:AQD_Station">{data($timePeriod/../../../../@gml:id)}</td>
+                <td title="aqd:AQD_SamplingPoint">{data($timePeriod/../../../../ef:inspireId/base:Identifier/base:localId)}</td>
                 <td title="gml:TimePeriod">{data($timePeriod/@gml:id)}</td>
                 <td title="gml:beginPosition">{$timePeriod/gml:beginPosition}</td>
                 <td title="gml:endPosition">{$timePeriod/gml:endPosition}</td>
@@ -577,7 +564,7 @@ for $rec in $docRoot//aqd:AQD_SamplingPoint
        return if ($ok) then () else
 
             <tr>
-                <td title="aqd:AQD_Station">{data($period/../../../../@gml:id)}</td>
+                <td title="aqd:AQD_SamplingPoint">{data($period/../../../../ef:inspireId/base:Identifier/base:localId)}</td>
                 <td title="gml:TimePeriod">{data($period/@gml:id)}</td>
                 <td title="gml:beginPosition">{$period/gml:beginPosition}</td>
                 <td title="gml:endPosition">{$period/gml:endPosition}</td>
@@ -771,11 +758,11 @@ let $allInvalidZoneXlinks :=
         count(sparqlx:executeSparqlQuery(query:getSamplingPointZone(string($invalidZoneXlinks/@xlink:href)))/*) = 0
     return
         <tr>
-            <td title="gml:id">{data($invalidZoneXlinks/../@gml:id)}</td>
+            <td title="base:localId">{data($invalidZoneXlinks/../ef:inspireId/base:Identifier/base:localId)}</td>
             <td title="aqd:zone">{data($invalidZoneXlinks/@xlink:href)}</td>
         </tr>
 
-(: D54 Done by Rait :)
+(: D54 - aqd:AQD_SamplingPointProcess/ompr:inspireId/base:Identifier/base:localId not unique codes :)
 let $localSamplingPointProcessIds := $docRoot//gml:featureMember/aqd:AQD_SamplingPointProcess/ompr:inspireId/base:Identifier
 let $invalidDuplicateSamplingPointProcessIds :=
     for $idSamplingPointProcessCode in $docRoot//gml:featureMember/aqd:AQD_SamplingPointProcess/ompr:inspireId/base:Identifier
@@ -784,7 +771,6 @@ let $invalidDuplicateSamplingPointProcessIds :=
                 count(index-of($localSamplingPointProcessIds/base:namespace, normalize-space($idSamplingPointProcessCode/base:namespace))) > 1
     return
         <tr>
-            <td title="aqd:AQD_SamplingPointProcess">{data($idSamplingPointProcessCode/../../@gml:id)}</td>
             <td title="base:localId">{data($idSamplingPointProcessCode/base:localId)}</td>
             <td title="base:namespace">{data($idSamplingPointProcessCode/base:namespace)}</td>
         </tr>
@@ -822,7 +808,7 @@ for $process in doc($source_url)//aqd:AQD_SamplingPointProcess
 
     return
         <tr>
-            <td title="aqd:AQD_SamplingPointProcess">{data($process/@gml:id)}</td>
+            <td title="aqd:AQD_SamplingPointProcess">{data($process/ompr:inspireId/base:Identifier/base:localId)}</td>
             <td title="aqd:measurementType">{$measurementType}</td>
             <td title="aqd:measurementMethod">{$measurementMethod}</td>
             <td title="aqd:samplingMethod">{$samplingMethod}</td>
@@ -905,65 +891,57 @@ let $allInvalidTrueUsedAQD70 :=
 
 
 (: D67 Jaume Targa :)
-
 let $allProcNotMatchingCondition67 :=
-for $proc in $docRoot//aqd:AQD_SamplingPointProcess
-let $demonstrated := data($proc/aqd:equivalenceDemonstration/aqd:EquivalenceDemonstration/aqd:equivalenceDemonstrated/@xlink:href)
-let $demonstrationReport := data($proc/aqd:equivalenceDemonstration/aqd:EquivalenceDemonstration/aqd:demonstrationReport)
-
-where not(xmlconv:isValidConceptCode($demonstrated, $vocabulary:EQUIVALENCEDEMONSTRATED_VOCABULARY))
-
-return concat(data($proc/ompr:inspireId/base:Identifier/base:namespace), '/' , data($proc/ompr:inspireId/base:Identifier/base:localId))
-
+    for $proc in $docRoot//aqd:AQD_SamplingPointProcess
+        let $demonstrated := data($proc/aqd:equivalenceDemonstration/aqd:EquivalenceDemonstration/aqd:equivalenceDemonstrated/@xlink:href)
+        let $demonstrationReport := data($proc/aqd:equivalenceDemonstration/aqd:EquivalenceDemonstration/aqd:demonstrationReport)
+    where not(xmlconv:isValidConceptCode($demonstrated, $vocabulary:EQUIVALENCEDEMONSTRATED_VOCABULARY))
+    return concat(data($proc/ompr:inspireId/base:Identifier/base:namespace), '/' , data($proc/ompr:inspireId/base:Identifier/base:localId))
 
 let $allInvalidTrueUsedAQD67 :=
     for $invalidTrueUsedAQD67 in $docRoot//aqd:AQD_SamplingPoint
         let $procIds67 := data($invalidTrueUsedAQD67/ef:observingCapability/ef:ObservingCapability/ef:procedure/@xlink:href)
         let $aqdUsed67 := $invalidTrueUsedAQD67/aqd:usedAQD = true()
 
-    for $procId67 in $procIds67
-    return
-        if ($aqdUsed67  and  not(empty(index-of($allProcNotMatchingCondition67, $procId67)))) then
-        <tr>
-            <td title="gml:id">{data($invalidTrueUsedAQD67/@gml:id)}</td>
-            <td title="base:localId">{data($invalidTrueUsedAQD67/ef:inspireId/base:Identifier/base:localId)}</td>
-            <td title="base:namespace">{data($invalidTrueUsedAQD67/ef:inspireId/base:Identifier/base:namespace)}</td>
-            <td title="ef:procedure">{$procId67}</td>
-            <td title="ef:ObservingCapability">{data($invalidTrueUsedAQD67/ef:observingCapability/ef:ObservingCapability/@gml:id)}</td>
-
-        </tr>
-        else ()
+        for $procId67 in $procIds67
+        return
+            if ($aqdUsed67 and not(empty(index-of($allProcNotMatchingCondition67, $procId67)))) then
+                <tr>
+                    <td title="gml:id">{data($invalidTrueUsedAQD67/@gml:id)}</td>
+                    <td title="base:localId">{data($invalidTrueUsedAQD67/ef:inspireId/base:Identifier/base:localId)}</td>
+                    <td title="base:namespace">{data($invalidTrueUsedAQD67/ef:inspireId/base:Identifier/base:namespace)}</td>
+                    <td title="ef:procedure">{$procId67}</td>
+                    <td title="ef:ObservingCapability">{data($invalidTrueUsedAQD67/ef:observingCapability/ef:ObservingCapability/@gml:id)}</td>
+                </tr>
+            else
+                ()
 
 (: D68 Jaume Targa :)
 let $allProcNotMatchingCondition68 :=
-for $proc in $docRoot//aqd:AQD_SamplingPointProcess
-let $demonstrated := data($proc/aqd:equivalenceDemonstration/aqd:EquivalenceDemonstration/aqd:equivalenceDemonstrated/@xlink:href)
-let $demonstrationReport := data($proc/aqd:equivalenceDemonstration/aqd:EquivalenceDemonstration/aqd:demonstrationReport)
-
-where ($demonstrated = 'http://dd.eionet.europa.eu/vocabulary/aq/equivalencedemonstrated/yes' and fn:string-length($demonstrationReport) = 0)
-
-return concat(data($proc/ompr:inspireId/base:Identifier/base:namespace), '/' , data($proc/ompr:inspireId/base:Identifier/base:localId))
-
+    for $proc in $docRoot//aqd:AQD_SamplingPointProcess
+        let $demonstrated := data($proc/aqd:equivalenceDemonstration/aqd:EquivalenceDemonstration/aqd:equivalenceDemonstrated/@xlink:href)
+        let $demonstrationReport := data($proc/aqd:equivalenceDemonstration/aqd:EquivalenceDemonstration/aqd:demonstrationReport)
+    where ($demonstrated = 'http://dd.eionet.europa.eu/vocabulary/aq/equivalencedemonstrated/yes' and fn:string-length($demonstrationReport) = 0)
+    return concat(data($proc/ompr:inspireId/base:Identifier/base:namespace), '/' , data($proc/ompr:inspireId/base:Identifier/base:localId))
 
 let $allInvalidTrueUsedAQD68 :=
     for $invalidTrueUsedAQD68 in $docRoot//aqd:AQD_SamplingPoint
         let $procIds68 := data($invalidTrueUsedAQD68/ef:observingCapability/ef:ObservingCapability/ef:procedure/@xlink:href)
         let $aqdUsed68 := $invalidTrueUsedAQD68/aqd:usedAQD = true()
 
-    for $procId68 in $procIds68
-    return
-        if ($aqdUsed68  and  not(empty(index-of($allProcNotMatchingCondition68, $procId68)))) then
-        <tr>
-            <td title="gml:id">{data($invalidTrueUsedAQD68/@gml:id)}</td>
-            <td title="base:localId">{data($invalidTrueUsedAQD68/ef:inspireId/base:Identifier/base:localId)}</td>
-            <td title="base:namespace">{data($invalidTrueUsedAQD68/ef:inspireId/base:Identifier/base:namespace)}</td>
-            <td title="ef:procedure">{$procId68}</td>
-            <td title="ef:ObservingCapability">{data($invalidTrueUsedAQD68/ef:observingCapability/ef:ObservingCapability/@gml:id)}</td>
+        for $procId68 in $procIds68
+        return
+            if ($aqdUsed68  and  not(empty(index-of($allProcNotMatchingCondition68, $procId68)))) then
+                <tr>
+                    <td title="gml:id">{data($invalidTrueUsedAQD68/@gml:id)}</td>
+                    <td title="base:localId">{data($invalidTrueUsedAQD68/ef:inspireId/base:Identifier/base:localId)}</td>
+                    <td title="base:namespace">{data($invalidTrueUsedAQD68/ef:inspireId/base:Identifier/base:namespace)}</td>
+                    <td title="ef:procedure">{$procId68}</td>
+                    <td title="ef:ObservingCapability">{data($invalidTrueUsedAQD68/ef:observingCapability/ef:ObservingCapability/@gml:id)}</td>
 
-        </tr>
-        else ()
-
-
+                </tr>
+            else
+                ()
 
 (: D69 Jaume Targa :)
 let $allProcNotMatchingCondition69 :=
@@ -974,12 +952,11 @@ let $allProcNotMatchingCondition69 :=
     return concat(data($proc/ompr:inspireId/base:Identifier/base:namespace), '/' , data($proc/ompr:inspireId/base:Identifier/base:localId))
 
 
-    let $allInvalidTrueUsedAQD69 :=
+let $allInvalidTrueUsedAQD69 :=
     try {
         for $invalidTrueUsedAQD69 in $docRoot//aqd:AQD_SamplingPoint[aqd:usedAQD = "true" and ef:observingCapability/ef:ObservingCapability/ef:procedure/@xlink:href = $allProcNotMatchingCondition69]
         return
         <tr>
-            <td title="gml:id">{data($invalidTrueUsedAQD69/@gml:id)}</td>
             <td title="base:localId">{data($invalidTrueUsedAQD69/ef:inspireId/base:Identifier/base:localId)}</td>
             <td title="base:namespace">{data($invalidTrueUsedAQD69/ef:inspireId/base:Identifier/base:namespace)}</td>
             <td title="ef:procedure">{string($invalidTrueUsedAQD69/ef:observingCapability/ef:ObservingCapability/ef:procedure/@xlink:href)}</td>
@@ -992,19 +969,19 @@ let $allProcNotMatchingCondition69 :=
             <td></td>
         </tr>
     }
-(: D71 :)
-let $localSampleIds := $docRoot//gml:featureMember/aqd:AQD_Sample/aqd:inspireId/base:Identifier
+
+(: D71 - ./aqd:inspireId/base:Identifier/base:localId shall be unique for AQD_Sample and unique within the namespace :)
+let $localSampleIds := data($docRoot//aqd:AQD_Sample/aqd:inspireId/base:Identifier/base:localId)
+let $D71namespaces := data($docRoot//base:namespace/../base:localId)
 let $invalidDuplicateSampleIds :=
     try {
-        for $idSampleCode in $docRoot//gml:featureMember/aqd:AQD_Sample/aqd:inspireId/base:Identifier
-        where
-            count(index-of($localSampleIds/base:localId, normalize-space($idSampleCode/base:localId))) > 1 and
-                    count(index-of($localSampleIds/base:namespace, normalize-space($idSampleCode/base:namespace))) > 1
+        for $x in $docRoot//aqd:AQD_Sample/aqd:inspireId/base:Identifier
+            let $id := string($x/base:localId)
+        where count(index-of($localSampleIds, $id)) > 1 or count(index-of($D71namespaces, $id)) > 1
         return
             <tr>
-                <td title="aqd:AQD_Sample">{data($idSampleCode/../../@gml:id)}</td>
-                <td title="base:localId">{data($idSampleCode/base:localId)}</td>
-                <td title="base:namespace">{data($idSampleCode/base:namespace)}</td>
+                <td title="base:localId">{data($x/base:localId)}</td>
+                <td title="base:namespace">{data($x/base:namespace)}</td>
             </tr>
     } catch * {
         <tr status="failed">
@@ -1013,9 +990,9 @@ let $invalidDuplicateSampleIds :=
         </tr>
     }
 
-(: D72 :)
+(: D72 - :)
+(: TODO: Chedk with Jaume, has this check changed? :)
 let $allBaseNamespace := distinct-values($docRoot//aqd:AQD_Sample/aqd:inspireId/base:Identifier/base:namespace)
-
 let $tblD72 :=
     for $id in $allBaseNamespace
     let $localId := $docRoot//aqd:AQD_Sample/aqd:inspireId/base:Identifier[base:namespace = $id]/base:localId
@@ -1131,7 +1108,7 @@ return
         {html:buildResultRowsWithTotalCount_D("D8", $labels:D8, $labels:D8_SHORT, (), (), "ef:mediaMonitored", "", "", "", "warning", $invalidNetworkMedia)}
         {html:buildResultRowsWithTotalCount_D("D9", $labels:D9, $labels:D9_SHORT, (), (), "ef:organisationLevel", "", "", "","warning", $invalidOrganisationalLevel)}
         {html:buildResultRowsWithTotalCount_D("D10", $labels:D10, $labels:D10_SHORT, (), (), "aqd:networkType", "", "", "","warning", $invalidNetworkType)}
-        {html:buildResultRows("D11", $labels:D11, $labels:D11_SHORT, $invalidAQDNetworkBeginPosition, () , "aqd:AQD_Network/@gml:id", "All attributes are valid", " invalid attribute ", "", "error", ())}
+        {html:buildResultRows("D11", $labels:D11, $labels:D11_SHORT, $D11invalid, () , "aqd:AQD_Network/@gml:id", "All attributes are valid", " invalid attribute ", "", "error", ())}
         {html:buildResultRows("D12", $labels:D12, $labels:D12_SHORT, $D12invalid, () , "aqd:AQD_Network/ef:inspireId/base:Identifier/base:localId", "All attributes are valid", " invalid attribute ", "", "error", ())}
         {html:buildResultRowsWithTotalCount_D("D14", $labels:D14, $labels:D14_SHORT, (), (), "aqd:aggregationTimeZone", "", "", "","error", $invalidTimeZone)}
         {html:buildInfoTR("Specific checks on AQD_Station feature(s) within this XML")}

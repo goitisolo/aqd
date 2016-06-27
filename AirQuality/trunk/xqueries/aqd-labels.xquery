@@ -459,16 +459,16 @@ declare function labels:getLabel($section as xs:string, $id as xs:string) as ele
         if ($label/span) then
             $label/span
         else if (string($label) != "") then
-            <span>string($label)</span>
+            <span>{string($label)}</span>
         else
-            <span>$labels:PLACEHOLDER</span>
+            <span>{$labels:PLACEHOLDER}</span>
 };
 
-declare function labels:interpolate($label as xs:string, $values as xs:string*) {
-    labels:interpolate($label, $values )
+declare function labels:interpolate($label as xs:string, $values) {
+    labels:interpolate($label, $values, 1)
 };
-declare %private function labels:interpolate($input as xs:string, $values as xs:string*, $count as xs:integer) {
+declare %private function labels:interpolate($input as xs:string, $values, $count as xs:integer) {
     if (count($values) > 0) then
-        labels:interpolate(replace($input, "\$" || $count, head($values)), tail($values), $count + 1)
+        labels:interpolate(replace($input, "\$" || $count, string(head($values))), tail($values), $count + 1)
     else $input
 };
