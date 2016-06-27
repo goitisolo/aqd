@@ -67,12 +67,12 @@ declare function common:checkNamespaces($source_url) {
     let $prefLabel := $vocDoc//skos:Concept[adms:status/@rdf:resource = $validStatus and @rdf:about = concat($namespaceUrl, $country)]/skos:prefLabel[1]
     let $altLabel := $vocDoc//skos:Concept[adms:status/@rdf:resource = $validStatus and @rdf:about = concat($namespaceUrl, $country)]/skos:altLabel[1]
     let $invalidNamespaces :=
-    for $i in doc($source_url)//base:Identifier/base:namespace/string()
-    return
-      if (not($i = $prefLabel) and not($i = $altLabel)) then
-        $i
-      else
-        ()
+        for $i in doc($source_url)//base:Identifier/base:namespace/string()
+        return
+          if (not($i = $prefLabel) and not($i = $altLabel)) then
+            $i
+          else
+            ()
     return distinct-values($invalidNamespaces)
 };
 
