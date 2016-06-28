@@ -24,6 +24,7 @@ declare namespace sparql = "http://www.w3.org/2005/sparql-results#";
 declare namespace xlink = "http://www.w3.org/1999/xlink";
 declare namespace ompr = "http://inspire.ec.europa.eu/schemas/ompr/2.0";
 declare namespace om = "http://www.opengis.net/om/2.0";
+declare namespace swe = "http://www.opengis.net/swe/2.0";
 
 declare function xmlconv:checkReport($source_url as xs:string, $countryCode as xs:string) as element(table) {
 
@@ -35,7 +36,7 @@ let $E1invalid :=
     try {
         let $all := data($docRoot//om:OM_Observation/@gml:id)
         for $x in $docRoot//om:OM_Observation/@gml:id
-        where count(index-of($all, $x)) > 0
+        where count(index-of($all, $x)) > 1
         return
             <tr>
                 <td title="om:OM_Observation">{string($x)}</td>

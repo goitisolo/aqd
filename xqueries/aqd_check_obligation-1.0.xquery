@@ -32,6 +32,7 @@ import module namespace html = "aqd-html" at "aqd-html.xquery";
 
 declare namespace xmlconv = "http://converters.eionet.europa.eu";
 declare option output:method "html";
+declare option db:inlinelimit '0';
 (:===================================================================:)
 (: Variable given as an external parameter by the QA service         :)
 (:===================================================================:)
@@ -89,7 +90,7 @@ declare function xmlconv:proceed($source_url as xs:string) {
             ()
 
 	(: TODO: Catch fatal errors from obligation-dependent tests, handle them as BLOCKERs :)
-	let $messages := ($resultB, $resultC, $resultD, $resultG, $resultM)
+	let $messages := ($resultB, $resultC, $resultD, $resultE, $resultG, $resultM)
 	let $errorString := normalize-space(string-join($messages//p[@class='error'], ' || '))
     let $warningString := normalize-space(string-join($messages//p[@class='warning'], ' || '))
 
