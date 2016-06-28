@@ -171,9 +171,8 @@ declare function html:javaScriptRoot(){
 };
 
 (: Builds HTML table rows for rules. :)
-declare function html:buildResultRows($ruleCode as xs:string, $longText, $text, $invalidStrValues as xs:string*, $invalidValues as element()*, $valueHeading as xs:string, $validMsg as xs:string, $invalidMsg as xs:string, $skippedMsg, $errorLevel as xs:string, $recordDetails as element(tr)*) as element(tr)* {
-    let $countInvalidValues := count($invalidStrValues) + count($invalidValues)
-    let $recordDetails := if (count($invalidValues) > 0) then $invalidValues else $recordDetails
+declare function html:buildResultRows($ruleCode as xs:string, $longText, $text, $records as element(tr)*, $valueHeading as xs:string, $validMsg as xs:string, $invalidMsg as xs:string, $skippedMsg, $errorLevel as xs:string) as element(tr)* {
+    let $countInvalidValues := count($records)
     let $bulletType := if (string-length($skippedMsg) > 0) then "skipped" else if ($countInvalidValues = 0) then "info" else $errorLevel
     let $result :=
         (
@@ -188,26 +187,26 @@ declare function html:buildResultRows($ruleCode as xs:string, $longText, $text, 
                     else
                         concat($countInvalidValues, $invalidMsg, substring("s ", number(not($countInvalidValues > 1)) * 2) ,"found") }
                 </span>{
-                    if ($countInvalidValues > 0 or count($recordDetails)>0) then
+                    if ($countInvalidValues > 0 or count($records)>0) then
                         <a id='feedbackLink-{$ruleCode}' href='javascript:toggle("feedbackRow","feedbackLink", "{$ruleCode}")'>{$labels:SHOWRECORDS}</a>
                     else
                         ()
                 }
                 </td>
             </tr>,
-            if (count($recordDetails) > 0) then
+            if (count($records) > 0) then
                 <tr>
                     <td></td>
                     <td colspan="3">
                         <table class="datatable" id="feedbackRow-{$ruleCode}">
                             <tr>{
-                                for $th in $recordDetails[1]//td return <th>{ data($th/@title) }</th>
+                                for $th in $records[1]//td return <th>{ data($th/@title) }</th>
                             }</tr>
-                            {$recordDetails}
+                            {$records}
                         </table>
                     </td>
                 </tr>
-            else if (count($invalidStrValues)  > 0) then
+            else if (count($records)  > 0) then
                 <tr>
                     <td></td>
                     <td colspan="3">
@@ -215,7 +214,7 @@ declare function html:buildResultRows($ruleCode as xs:string, $longText, $text, 
                             <tr>
                                 <td></td>
                                 <th colspan="3">{ $valueHeading}</th>
-                                <td>{ string-join($invalidStrValues, ", ")}</td>
+                                <td>{ string-join($records, ", ")}</td>
                             </tr>
                         </table>
                     </td>
@@ -306,19 +305,19 @@ declare function html:buildResultsSimpleRow($ruleCode as xs:string, $longText, $
     </tr>
 };
 
-declare function html:buildResultRowsWithTotalCount_D($ruleCode as xs:string, $longText, $text, $invalidStrValues as xs:string*, $invalidValues as element()*,
-        $valueHeading as xs:string, $validMsg as xs:string, $invalidMsg as xs:string, $skippedMsg, $errorLevel as xs:string,$recordDetails as element(tr)*)
+declare function html:buildResultRowsWithTotalCount_D($ruleCode as xs:string, $longText, $text, $records as element(tr)*,
+        $valueHeading as xs:string, $validMsg as xs:string, $invalidMsg as xs:string, $skippedMsg, $errorLevel as xs:string)
 as element(tr)*{
 
-    let $countCheckedRecords := count($recordDetails)
-    let $invalidValues := $recordDetails[./@isvalid = "false"]
+    let $countCheckedRecords := count($records)
+    let $invalidValues := $records[./@isvalid = "false"]
 
     let $skippedMsg := if ($countCheckedRecords = 0) then "No values found to check" else ""
     let $invalidMsg := if (count($invalidValues) > 0) then concat(" invalid value", substring("s ", number(not(count($invalidValues) > 1)) * 2), " found out of ", $countCheckedRecords, " checked") else ""
     let $validMsg := if (count($invalidValues) = 0) then concat("Checked ", $countCheckedRecords, " value", substring("s", number(not($countCheckedRecords > 1)) * 2), ", all valid") else ""
 
     return
-        html:buildResultRows($ruleCode, $longText, $text, $invalidStrValues, $invalidValues, $valueHeading, $validMsg, $invalidMsg, $skippedMsg, $errorLevel, ())
+        html:buildResultRows($ruleCode, $longText, $text, $records, $valueHeading, $validMsg, $invalidMsg, $skippedMsg, $errorLevel)
 };
 
 declare function html:buildResultRowsWithTotalCount_G($ruleCode as xs:string, $longText, $text, $invalidStrValues as xs:string*, $invalidValues as element()*,
