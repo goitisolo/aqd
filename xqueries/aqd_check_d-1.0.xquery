@@ -1122,8 +1122,8 @@ for $inletHeigh in  $docRoot//aqd:AQD_Sample/aqd:inletHeight
 let $D91invalid :=
     try {
         let $x := data($docRoot//aqd:AQD_SamplingPoint/ef:observingCapability/ef:ObservingCapability/ef:featureOfInterest/@xlink:href)
-        for $i in //aqd:AQD_Sample/aqd:inspireId/base:Identifier
-        let $xlink := $i/base:namespace || "/" || $i/base:localId
+        for $i in $docRoot//aqd:AQD_Sample/aqd:inspireId/base:Identifier
+            let $xlink := $i/base:namespace || "/" || $i/base:localId
         where not($xlink = $x)
         return
             <tr>
@@ -1135,6 +1135,24 @@ let $D91invalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+(: D92 - Each aqd:AQD_SamplingPointProcess reported within the XML shall be xlinked (at least once) via /aqd:AQD_SamplingPoint/ef:observingCapability/ef:ObservingCapability/ef:procedure/@xlink:href :)
+let $D92invalid :=
+        try {
+            let $x := data($docRoot//aqd:AQD_SamplingPoint/ef:observingCapability/ef:ObservingCapability/ef:procedure/@xlink:href)
+            for $i in $docRoot//aqd:AQD_SamplingPointProcess/ompr:inspireId/base:Identifier
+                let $xlink := $i/base:namespace || "/" || $i/base:localId
+            where not($xlink = $x)
+            return
+                <tr>
+                    <td title="AQD_SamplingPointProcess">{string($i/base:localId)}</td>
+                </tr>
+        } catch * {
+            <tr status="failed">
+                <td title="Error code">{$err:code}</td>
+                <td title="Error description">{$err:description}</td>
+            </tr>
+        }
+
 
 return
     <table class="maintable hover">
@@ -1218,6 +1236,7 @@ return
         {html:buildResultRows("D77", $labels:D77, $labels:D77_SHORT, $D77invalid, "aqd:AQD_Sample/aqd:inspireId/base:Identifier/base:localId", "All attributes are valid", " invalid attribute","","warning")}
         {html:buildResultRows("D78", $labels:D78, $labels:D78_SHORT, $invalidInletHeigh, "aqd:AQD_Sample/@gml:id","All values are valid"," invalid attribute","", "warning")}
         {html:buildResultRows("D91", $labels:D91, $labels:D91_SHORT, $D91invalid, "", "All values are valid"," invalid attribute","", "error")}
+        {html:buildResultRows("D92", $labels:D92, $labels:D92_SHORT, $D92invalid, "", "All values are valid"," invalid attribute","", "error")}
         <!--{xmlconv:buildResultRowsWithTotalCount("D67", <span>The content of ./aqd:AQD_SamplingPoint/aqd:samplingEquipment shall resolve to any concept in
             <a href="{ $xmlconv:UOM_CONCENTRATION_VOCABULARY }">{ $xmlconv:UOM_CONCENTRATION_VOCABULARY }</a></span>,
                 (), (), "aqd:samplingEquipment", "", "", "",$allInvalid67 )} -->
