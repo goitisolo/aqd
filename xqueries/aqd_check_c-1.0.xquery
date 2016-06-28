@@ -790,42 +790,42 @@ let $invalidsamplingPointAssessmentMetadata40 :=
 
 return
     <table class="maintable hover">
-        {html:buildResultRows("C1", $labels:C1, $labels:C1_SHORT, (), (), "", string($countRegimes), "", "","warning", $tblAllRegimes)}
-        {html:buildResultRows("C4", $labels:C4, $labels:C4_SHORT, $invalidDuplicateGmlIds, (), "@gml:id", "No duplicates found", " duplicate", "","error",())}
-        {html:buildResultRows("C5", $labels:C5, $labels:C5_SHORT, $invalidDuplicateLocalIds, (), "base:localId", "No duplicates found", " duplicate", "","error", ())}
-        {html:buildResultRows("C6", $labels:C6, $labels:C6_SHORT, (), (), "", string(count($tblC6)), "", "","info",$tblC6)}
-        {html:buildResultRows("C6.1", $labels:C6.1, $labels:C6.1_SHORT, $invalidNamespaces, (), "base:Identifier/base:namespace", "All values are valid", " invalid namespaces", "", "error", ())}
-        {html:buildResultRows("C7", $labels:C7, $labels:C7_SHORT, (),(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error", $C7invalid)}
+        {html:buildResultRows("C1", $labels:C1, $labels:C1_SHORT, $tblAllRegimes, "", string($countRegimes), "", "","warning")}
+        {html:buildResultRows("C4", $labels:C4, $labels:C4_SHORT, $invalidDuplicateGmlIds, "@gml:id", "No duplicates found", " duplicate", "","error")}
+        {html:buildResultRows("C5", $labels:C5, $labels:C5_SHORT, $invalidDuplicateLocalIds, "base:localId", "No duplicates found", " duplicate", "","error")}
+        {html:buildResultRows("C6", $labels:C6, $labels:C6_SHORT, $tblC6, "", string(count($tblC6)), "", "","info")}
+        {html:buildResultRows("C6.1", $labels:C6.1, $labels:C6.1_SHORT, $invalidNamespaces, "base:Identifier/base:namespace", "All values are valid", " invalid namespaces", "", "error")}
+        {html:buildResultRows("C7", $labels:C7, $labels:C7_SHORT, $C7invalid, "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error")}
         {xmlconv:buildPollutantResultRows("C8", $missingPollutantC8, " missing pollutant", "warning", xmlconv:buildVocItemRows($vocabulary:POLLUTANT_VOCABULARY, $missingPollutantC8))}
-        {html:buildResultRows("C9", $labels:C9, $labels:C9_SHORT, (), (), "", string(count($foundPollutantC9)), "", "", "info", xmlconv:buildVocItemRows($vocabulary:POLLUTANT_VOCABULARY, $foundPollutantC9))}
-        {html:buildResultRows("C10", $labels:C10, $labels:C10_SHORT, $invalidAqdAssessmentRegimeAqdPollutant,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error", ())}
-        {html:buildResultRows("C11", $labels:C11, $labels:C11_SHORT, $invalidAqdAssessmentRegimeAqdPollutantC11,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error", ())}
-        {html:buildResultRows("C12", $labels:C12, $labels:C12_SHORT, $invalidAqdAssessmentRegimeAqdPollutantC12,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error", ())}
-        {html:buildResultRows("C13", $labels:C13, $labels:C13_SHORT, $invalidAqdAssessmentRegimeAqdPollutantC13,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error", ())}
-        {html:buildResultRows("C14", $labels:C14, $labels:C14_SHORT, $invalidAqdAssessmentRegimeAqdPollutantC14,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error", ())}
-        {html:buildResultRows("C15", $labels:C15, $labels:C15_SHORT, $invalidAqdAssessmentRegimeAqdPollutantC15,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error", ())}
-        {html:buildResultRows("C16", $labels:C16, $labels:C16_SHORT, $invalidAqdAssessmentRegimeAqdPollutantC16,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error", ())}
-        {html:buildResultRows("C17", $labels:C17, $labels:C17_SHORT, $invalidAqdAssessmentRegimeAqdPollutantC17,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error", ())}
-        {html:buildResultRows("C18", $labels:C18, $labels:C18_SHORT, $invalidAqdAssessmentRegimeAqdPollutantC18,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error", ())}
-        {html:buildResultRows("C19", $labels:C19, $labels:C19_SHORT, $invalidAqdAssessmentRegimeAqdPollutantC19, (), "aqd:reportingMetric", "All values are valid", " invalid value", "","warning", ())}
-        {html:buildResultRows("C20", $labels:C20, $labels:C20_SHORT, $invalidAqdAssessmentRegimeAqdPollutantC20, (), "aqd:reportingMetric", "All values are valid", " invalid value", "","warning", ())}
-        {html:buildResultRows("C23a", $labels:C23a, $labels:C23a_SHORT, $invalidAqdAssessmentType,(), "aqd:AQD_AssesmentRegime", "All values are valid", " invalid value", "","error", ())}
-        {html:buildResultRows("C23b", $labels:C23b, $labels:C23b_SHORT, $invalid23B,(), "aqd:AQD_AssesmentRegime", "All values are valid", " invalid value", "","warning", ())}
-        {html:buildResultRows("C24", $labels:C24, $labels:C24_SHORT, (),(), "", "", " ", "","warning", ())}
-        {html:buildResultRows("C25", $labels:C25, $labels:C25_SHORT, (),(), "", "", " ", "","warning", ())}
-        {html:buildResultTable("C26", $labels:C26, $labels:C26_SHORT, (), "All values are valid", " invalid value", "","warning", $tblC26)}
-        {html:buildResultTable("C27", labels:interpolate($labels:C27, ($countZoneIds2, $countZoneIds1)), $labels:C27_SHORT, (), "Count of unique zones matches", " not unique zone",  "", "warning", $resultC27)}
-        {html:buildResultRows("C28", $labels:C28, $labels:C28_SHORT, $invalidZoneGmlEndPosition,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error", ())}
-        {html:buildResultTable("C29", $labels:C29, $labels:C29_SHORT, (), "All values are valid", " invalid value", "","warning", $tblC29)}
+        {html:buildResultRows("C9", $labels:C9, $labels:C9_SHORT, xmlconv:buildVocItemRows($vocabulary:POLLUTANT_VOCABULARY, $foundPollutantC9), "", string(count($foundPollutantC9)), "", "", "info")}
+        {html:buildResultRows("C10", $labels:C10, $labels:C10_SHORT, $invalidAqdAssessmentRegimeAqdPollutant, "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error")}
+        {html:buildResultRows("C11", $labels:C11, $labels:C11_SHORT, $invalidAqdAssessmentRegimeAqdPollutantC11, "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error")}
+        {html:buildResultRows("C12", $labels:C12, $labels:C12_SHORT, $invalidAqdAssessmentRegimeAqdPollutantC12, "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error")}
+        {html:buildResultRows("C13", $labels:C13, $labels:C13_SHORT, $invalidAqdAssessmentRegimeAqdPollutantC13, "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error")}
+        {html:buildResultRows("C14", $labels:C14, $labels:C14_SHORT, $invalidAqdAssessmentRegimeAqdPollutantC14, "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error")}
+        {html:buildResultRows("C15", $labels:C15, $labels:C15_SHORT, $invalidAqdAssessmentRegimeAqdPollutantC15, "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error")}
+        {html:buildResultRows("C16", $labels:C16, $labels:C16_SHORT, $invalidAqdAssessmentRegimeAqdPollutantC16, "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error")}
+        {html:buildResultRows("C17", $labels:C17, $labels:C17_SHORT, $invalidAqdAssessmentRegimeAqdPollutantC17, "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error")}
+        {html:buildResultRows("C18", $labels:C18, $labels:C18_SHORT, $invalidAqdAssessmentRegimeAqdPollutantC18, "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error")}
+        {html:buildResultRows("C19", $labels:C19, $labels:C19_SHORT, $invalidAqdAssessmentRegimeAqdPollutantC19, "aqd:reportingMetric", "All values are valid", " invalid value", "","warning")}
+        {html:buildResultRows("C20", $labels:C20, $labels:C20_SHORT, $invalidAqdAssessmentRegimeAqdPollutantC20, "aqd:reportingMetric", "All values are valid", " invalid value", "","warning")}
+        {html:buildResultRows("C23a", $labels:C23a, $labels:C23a_SHORT, $invalidAqdAssessmentType, "aqd:AQD_AssesmentRegime", "All values are valid", " invalid value", "","error")}
+        {html:buildResultRows("C23b", $labels:C23b, $labels:C23b_SHORT, $invalid23B, "aqd:AQD_AssesmentRegime", "All values are valid", " invalid value", "","warning")}
+        {html:buildResultRows("C24", $labels:C24, $labels:C24_SHORT, (),(), "", "", " ", "","warning")}
+        {html:buildResultRows("C25", $labels:C25, $labels:C25_SHORT, (),(), "", "", " ", "","warning")}
+        {html:buildResultTable("C26", $labels:C26, $labels:C26_SHORT, $tblC26, "All values are valid", " invalid value", "","warning")}
+        {html:buildResultTable("C27", labels:interpolate($labels:C27, ($countZoneIds2, $countZoneIds1)), $labels:C27_SHORT, $resultC27, "Count of unique zones matches", " not unique zone",  "", "warning")}
+        {html:buildResultRows("C28", $labels:C28, $labels:C28_SHORT, $invalidZoneGmlEndPosition, "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error")}
+        {html:buildResultTable("C29", $labels:C29, $labels:C29_SHORT,  $tblC29, "All values are valid", " invalid value", "","warning")}
         {html:buildResultC31("C31", $C31Result, $C31BCount)}
-        {html:buildResultTable("C32", $labels:C32, $labels:C32_SHORT, (),"All valid", " invalid value",  "","warning", $tblC32)}
-        {html:buildResultRows("C33", $labels:C33, $labels:C33_SHORT, $invalidAssessmentGmlEndPosition,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error", ())}
-        {html:buildResultRows("C35", $labels:C35, $labels:C35_SHORT, $invalidAssessmentUsed,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error", ())}
-        {html:buildResultRows("C37", $labels:C37, $labels:C37_SHORT, $invalidAqdReportingMetric,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","warning", ())}
-        {html:buildResultRows("C38", $labels:C38, $labels:C38_SHORT, $invalidAqdReportingMetricTest,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","warning", ())}
-        {html:buildResultRows("C40", $labels:C40, $labels:C40_SHORT, $invalidsamplingPointAssessmentMetadata40,(), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","warning", ())}
-        {html:buildResultRows("C41", $labels:C41, $labels:C41_SHORT, $C41invalid, (), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","warning", ())}
-        {html:buildResultRows("C42", $labels:C42, $labels:C42_SHORT, $C42invalid, (), "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","warning", ())}
+        {html:buildResultTable("C32", $labels:C32, $labels:C32_SHORT, $tblC32,"All valid", " invalid value",  "","warning")}
+        {html:buildResultRows("C33", $labels:C33, $labels:C33_SHORT, $invalidAssessmentGmlEndPosition, "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error")}
+        {html:buildResultRows("C35", $labels:C35, $labels:C35_SHORT, $invalidAssessmentUsed, "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error")}
+        {html:buildResultRows("C37", $labels:C37, $labels:C37_SHORT, $invalidAqdReportingMetric, "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","warning")}
+        {html:buildResultRows("C38", $labels:C38, $labels:C38_SHORT, $invalidAqdReportingMetricTest, "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","warning")}
+        {html:buildResultRows("C40", $labels:C40, $labels:C40_SHORT, $invalidsamplingPointAssessmentMetadata40, "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","warning")}
+        {html:buildResultRows("C41", $labels:C41, $labels:C41_SHORT, $C41invalid, "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","warning")}
+        {html:buildResultRows("C42", $labels:C42, $labels:C42_SHORT, $C42invalid, "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","warning")}
     </table>
 };
 
