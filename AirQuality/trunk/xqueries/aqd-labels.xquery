@@ -321,8 +321,12 @@ declare variable $labels:D75 := labels:getLabel("D", "D75");
 declare variable $labels:D75_SHORT :=  labels:getLabel("D", "D75_SHORT");
 declare variable $labels:D76 := labels:getLabel("D", "D76");
 declare variable $labels:D76_SHORT :=  labels:getLabel("D", "D76_SHORT");
+declare variable $labels:D77 := labels:getLabel("D", "D77");
+declare variable $labels:D77_SHORT :=  labels:getLabel("D", "D77_SHORT");
 declare variable $labels:D78 := labels:getLabel("D", "D78");
 declare variable $labels:D78_SHORT :=  labels:getLabel("D", "D78_SHORT");
+declare variable $labels:D91 := labels:getLabel("D", "D91");
+declare variable $labels:D91_SHORT :=  labels:getLabel("D", "D91_SHORT");
 
 declare variable $labels:G1 := labels:getLabel("G", "G1");
 declare variable $labels:G1_SHORT := labels:getLabel("G", "G1_SHORT");
