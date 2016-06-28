@@ -66,16 +66,20 @@ declare function common:checkNamespaces($source_url) {
     
     let $prefLabel := $vocDoc//skos:Concept[adms:status/@rdf:resource = $validStatus and @rdf:about = concat($namespaceUrl, $country)]/skos:prefLabel[1]
     let $altLabel := $vocDoc//skos:Concept[adms:status/@rdf:resource = $validStatus and @rdf:about = concat($namespaceUrl, $country)]/skos:altLabel[1]
-    let $invalidNamespaces :=
+    let $invalidNamespaces := distinct-values(
         for $i in doc($source_url)//base:Identifier/base:namespace/string()
         return
           if (not($i = $prefLabel) and not($i = $altLabel)) then
-            <tr>
-                <td title="base:namespace">{$i}</td>
-            </tr>
+            $i
           else
             ()
-    return distinct-values($invalidNamespaces)
+    )
+    for $i in $invalidNamespaces
+    return
+        <tr>
+            <td title="base:namespace">{$i}</td>
+        </tr>
+
 };
 
 declare function common:getReportingYear($xml as document-node()) as xs:string {
