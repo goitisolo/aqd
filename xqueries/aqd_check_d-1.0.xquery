@@ -1059,24 +1059,51 @@ let $D75invalid :=
             ()
 
 (: D76 :)
-let $sampleDistanceMap :=
-    map:merge((
-        for $x in $docRoot//aqd:AQD_Sample[not(string(aqd:buildingDistance) = "")]
-        let $id := concat($x/aqd:inspireId/base:Identifier/base:namespace, "/", $x/aqd:inspireId/base:Identifier/base:localId)
-        let $distance := string($x/aqd:buildingDistance)
-        return map:entry($id, $distance)
-    ))
 let $D76invalid :=
     try {
+        let $sampleDistanceMap :=
+            map:merge((
+                for $x in $docRoot//aqd:AQD_Sample[not(string(aqd:buildingDistance) = "")]
+                let $id := concat($x/aqd:inspireId/base:Identifier/base:namespace, "/", $x/aqd:inspireId/base:Identifier/base:localId)
+                let $distance := string($x/aqd:buildingDistance)
+                return map:entry($id, $distance)
+            ))
         for $x in $docRoot//aqd:AQD_SamplingPoint[aqd:relevantEmissions/aqd:RelevantEmissions/aqd:stationClassification/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/stationclassification/traffic"]
-        let $xlink := string($x/ef:observingCapability/ef:ObservingCapability/ef:featureOfInterest/@xlink:href)
-        let $distance := map:get($sampleDistanceMap, $xlink)
+            let $xlink := string($x/ef:observingCapability/ef:ObservingCapability/ef:featureOfInterest/@xlink:href)
+            let $distance := map:get($sampleDistanceMap, $xlink)
         return
             if ($distance castable as xs:double) then
                 ()
             else
                 <tr>
-                    <td title="base:localId">{$x/ef:inspireId/base:Identifier/string(base:localId)}</td>
+                    <td title="base:localId">{string($x/ef:inspireId/base:Identifier/base:localId)}</td>
+                </tr>
+    } catch * {
+        <tr status="failed">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
+
+(: D77 :)
+let $D77invalid :=
+    try {
+        let $sampleDistanceMap :=
+            map:merge((
+                for $x in $docRoot//aqd:AQD_Sample[not(string(aqd:kerbDistance) = "")]
+                    let $id := concat($x/aqd:inspireId/base:Identifier/base:namespace, "/", $x/aqd:inspireId/base:Identifier/base:localId)
+                    let $distance := string($x/aqd:kerbDistance)
+                return map:entry($id, $distance)
+            ))
+        for $x in $docRoot//aqd:AQD_SamplingPoint[aqd:relevantEmissions/aqd:RelevantEmissions/aqd:stationClassification/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/stationclassification/traffic"]
+            let $xlink := string($x/ef:observingCapability/ef:ObservingCapability/ef:featureOfInterest/@xlink:href)
+            let $distance := map:get($sampleDistanceMap, $xlink)
+        return
+            if ($distance castable as xs:double) then
+                ()
+            else
+                <tr>
+                    <td title="base:localId">{string($x/ef:inspireId/base:Identifier/base:localId)}</td>
                 </tr>
     } catch * {
         <tr status="failed">
@@ -1090,6 +1117,24 @@ let $D76invalid :=
 let $invalidInletHeigh :=
 for $inletHeigh in  $docRoot//aqd:AQD_Sample/aqd:inletHeight
     return if (($inletHeigh/@uom != "http://dd.eionet.europa.eu/vocabulary/uom/length/m") or (common:is-a-number(data($inletHeigh))=false())) then $inletHeigh/../@gml:id else ()
+
+(: D91 - Each aqd:AQD_Sample reported within the XML shall be xlinked (at least once) via aqd:AQD_SamplingPoint/ef:observingCapability/ef:ObservingCapability/ef:featureOfInterest/@xlink:href :)
+let $D91invalid :=
+    try {
+        let $x := data($docRoot//aqd:AQD_SamplingPoint/ef:observingCapability/ef:ObservingCapability/ef:featureOfInterest/@xlink:href)
+        for $i in //aqd:AQD_Sample/aqd:inspireId/base:Identifier
+        let $xlink := $i/base:namespace || "/" || $i/base:localId
+        where not($xlink = $x)
+        return
+            <tr>
+                <td title="AQD_Sample">{string($i/base:localId)}</td>
+            </tr>
+    } catch * {
+        <tr status="failed">
+            <td title="Error code"> {$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
 
 return
     <table class="maintable hover">
@@ -1170,7 +1215,9 @@ return
         {html:buildResultRows("D74", $labels:D74, $labels:D74_SHORT, $invalidPointDimension, "aqd:AQD_Sample/@gml:id","All srsDimension attributes are valid"," invalid attribute","","error")}
         {html:buildResultRows("D75", $labels:D75, $labels:D75_SHORT, $D75invalid, "aqd:AQD_Sample/aqd:inspireId/base:Identifier/base:localId", "All attributes are valid", " invalid attribute","","warning")}
         {html:buildResultRows("D76", $labels:D76, $labels:D76_SHORT, $D76invalid, "aqd:AQD_Sample/aqd:inspireId/base:Identifier/base:localId", "All attributes are valid", " invalid attribute","","warning")}
+        {html:buildResultRows("D77", $labels:D77, $labels:D77_SHORT, $D77invalid, "aqd:AQD_Sample/aqd:inspireId/base:Identifier/base:localId", "All attributes are valid", " invalid attribute","","warning")}
         {html:buildResultRows("D78", $labels:D78, $labels:D78_SHORT, $invalidInletHeigh, "aqd:AQD_Sample/@gml:id","All values are valid"," invalid attribute","", "warning")}
+        {html:buildResultRows("D91", $labels:D91, $labels:D91_SHORT, $D91invalid, "", "All values are valid"," invalid attribute","", "error")}
         <!--{xmlconv:buildResultRowsWithTotalCount("D67", <span>The content of ./aqd:AQD_SamplingPoint/aqd:samplingEquipment shall resolve to any concept in
             <a href="{ $xmlconv:UOM_CONCENTRATION_VOCABULARY }">{ $xmlconv:UOM_CONCENTRATION_VOCABULARY }</a></span>,
                 (), (), "aqd:samplingEquipment", "", "", "",$allInvalid67 )} -->

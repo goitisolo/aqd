@@ -233,8 +233,8 @@ declare function html:buildResultRows_B($ruleCode as xs:string, $longText, $text
     let $result :=
         (
             <tr>
-                <td class="bullet">{ html:getBullet($ruleCode, $bulletType) }</td>
-                <th colspan="2">{ $text } {html:getModalInfo($ruleCode, $longText)}</th>
+                <td class="bullet">{html:getBullet($ruleCode, $bulletType)}</td>
+                <th colspan="2">{$text} {html:getModalInfo($ruleCode, $longText)}</th>
                 <td class="largeText">{
                     if (string-length($skippedMsg) > 0) then
                         $skippedMsg
