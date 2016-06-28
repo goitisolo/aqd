@@ -65,13 +65,32 @@ let $E2invalid :=
         </tr>
     }
 
-
+(:E3 - ./om:resultTime/gml:TimeInstant/gml:timePosition shall be GREATER THAN ./om:phenomenonTime/gml:TimePeriod/gml:endPosition :)
+let $E3invalid :=
+    try {
+        let $all := $docRoot//om:OM_Observation
+        for $x in $all
+            let $timePosition := xs:dateTime($x/om:resultTime/gml:TimeInstant/gml:timePosition)
+            let $endPosition := xs:dateTime($x/om:phenomenonTime/gml:TimePeriod/gml:endPosition)
+        where ($timePosition < $endPosition)
+        return
+            <tr>
+                <td title="@gml:id">{string($x/@gml:id)}</td>
+            </tr>
+    }
+    catch * {
+        <tr status="failed">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
 
 
 return
     <table class="maintable hover">
         {html:buildResultRows("E1", $labels:E1, $labels:E1_SHORT, $E1invalid, "", "", "", "", $errors:ERROR)}
-        {html:buildResultRows("E2", $labels:E2, $labels:E2_SHORT, $E1invalid, "", "", "", "", $errors:ERROR)}
+        {html:buildResultRows("E2", $labels:E2, $labels:E2_SHORT, $E2invalid, "", "", "", "", $errors:ERROR)}
+        {html:buildResultRows("E3", $labels:E3, $labels:E3_SHORT, $E3invalid, "", "", "", "", $errors:ERROR)}
     </table>
 
 };
