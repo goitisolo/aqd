@@ -511,32 +511,32 @@ let $invalidSrsName := distinct-values($docRoot//aqd:AQD_Sample[count(sams:shape
 
     return
     <table class="maintable hover">
-        {html:buildResultRows("M1", $labels:M1, $labels:M1_SHORT, (), (), "", string(sum($countFeatureTypes)), "", "","error", $tblAllFeatureTypes)}
-        {html:buildResultRows("M2", $labels:M2, $labels:M2_SHORT, (), (), "", string(count($tblM2)), "", "","error",())}
-        {html:buildResultRows("M3", $labels:M3, $labels:M3_SHORT, (), (), "", string(count($tblM3)), "", "","error",())}
-        {html:buildResultRows("M4", $labels:M4, $labels:M4_SHORT, (), (), "", string(count($tblM4)), "", "","error",$tblM4)}
+        {html:buildResultRows("M1", $labels:M1, $labels:M1_SHORT, $tblAllFeatureTypes, "", string(sum($countFeatureTypes)), "", "","error")}
+        {html:buildResultRows("M2", $labels:M2, $labels:M2_SHORT, (), "", string(count($tblM2)), "", "","error")}
+        {html:buildResultRows("M3", $labels:M3, $labels:M3_SHORT, (), "", string(count($tblM3)), "", "","error")}
+        {html:buildResultRows("M4", $labels:M4, $labels:M4_SHORT, $tblM4, "", string(count($tblM4)), "", "","error")}
         {html:buildCountRow("M5", $countB8duplicates, $labels:M5, (), " duplicate", ())}
         {html:buildConcatRow($duplicateGmlIds, "aqd:AQD_Model/@gml:id -")}
         {html:buildConcatRow($duplicateamInspireIds, "am:inspireId - ")}
         {html:buildConcatRow($duplicateaqdInspireIds, "aqd:inspireId - ")}
         {html:buildCountRow("M6", $countM6duplicates, $labels:M6, (), (), ())}
-        {html:buildResultRows("M7", $labels:M7, $labels:M7_SHORT, (), (), "", string(count($tblM7)), "", "","error",$tblM7)}
-        {html:buildResultRows("M7.1", $labels:M7.1, $labels:M7.1_SHORT, $invalidNamespaces, (), "base:Identifier/base:namespace", "All values are valid", " invalid namespaces", "", "error", ())}
-        {html:buildResultRows("M12", $labels:M12, $labels:M12_SHORT, $invalidGeometry,(), "aqd:AQD_Model/@gml:id","All srsName attributes are valid"," invalid attribute","","error", ())}
-        {html:buildResultRows("M15", $labels:M15, $labels:M15_SHORT, (), $allObservingCapabilityPeriod, "", concat(fn:string(count($allObservingCapabilityPeriod))," errors found"), "", "","error", ())}
-        {html:buildResultRowsWithTotalCount_M("M18", $labels:M18, $labels:M18_SHORT, (), (), "ef:observedProperty", "", "", "", "error", $invalidObservedProperty)}
-        {html:buildResultRows("M19", $labels:M19, $labels:M19_SHORT, (), $invalideFeatureOfInterest,"aqd:AQD_Model/@gml:id", "All attributes is invalid", " invalid attribute", "","warning", ())}
-        {html:buildResultRows("M23", $labels:M23, $labels:M23_SHORT, (), $invalidObservedPropertyCombinations, "", concat(fn:string(count($invalidObservedPropertyCombinations))," errors found"), "", "","error", ())}
-        {html:buildResultRows("M24", $labels:M24, $labels:M24_SHORT, $invalidAssessmentType, (), "", concat(fn:string(count($invalidAssessmentType))," errors found"), "", "","error", ())}
-        {html:buildResultRows("M25", $labels:M25, $labels:M25_SHORT, (), $allInvalidTrueUsedAQD, "", concat(fn:string(count($allInvalidTrueUsedAQD))," errors found"), "", "","warning", ())}
-        {html:buildResultRows("M26", $labels:M26, $labels:M26_SHORT, (),  $allInvalZoneXlinks, "", concat(fn:string(count( $allInvalZoneXlinks))," errors found"), "", "","error", ())}
-        {html:buildResultRows("M27", $labels:M27, $labels:M27_SHORT, (), $invalidDuplicateModelProcessIds, "", concat(string(count($invalidDuplicateModelProcessIds))," errors found.") , "", "","error", ())}
-        {html:buildResultRows("M28", $labels:M28, $labels:M28_SHORT, (), (), "", string(count($tblM28)), "", "","error", $tblM28)}
-        {html:buildResultRows("M29", $labels:M29, $labels:M29_SHORT, (), $invalidBase2link, "aqd:AQD_ModelProcess/@gml:id","All attributes are valid"," invalid attribute","","error", ())}
-        {html:buildResultRows("M39", $labels:M39, $labels:M39_SHORT, (), $invalidDataQualityReport, "aqd:AQD_ModelProcess/@gml:id","All attributes are valid"," invalid attribute","","error", ())}
-        {html:buildResultRows("M40", $labels:M40, $labels:M40_SHORT, (), $invalidDuplicateModelAreaIds, "", concat(string(count($invalidDuplicateModelAreaIds))," errors found.") , "", "","error",())}
-        {html:buildResultRows("M41", $labels:M41, $labels:M41_SHORT, (), (), "", string(count($tblM41)), "", "","error",$tblM41)}
-        {html:buildResultRows("M43", $labels:M43, $labels:M43_SHORT, $invalidSrsName,(), "aqd:AQD_ModelArea/@gml:id","All srsDimension attributes are valid"," invalid attribute","","error", ())}
+        {html:buildResultRows("M7", $labels:M7, $labels:M7_SHORT, $tblM7, "", string(count($tblM7)), "", "","error")}
+        {html:buildResultRows("M7.1", $labels:M7.1, $labels:M7.1_SHORT, $invalidNamespaces, "base:Identifier/base:namespace", "All values are valid", " invalid namespaces", "", "error")}
+        {html:buildResultRows("M12", $labels:M12, $labels:M12_SHORT, $invalidGeometry, "aqd:AQD_Model/@gml:id","All srsName attributes are valid"," invalid attribute","","error")}
+        {html:buildResultRows("M15", $labels:M15, $labels:M15_SHORT, $allObservingCapabilityPeriod, "", concat(fn:string(count($allObservingCapabilityPeriod))," errors found"), "", "","error")}
+        {html:buildResultRowsWithTotalCount_M("M18", $labels:M18, $labels:M18_SHORT, $invalidObservedProperty, "ef:observedProperty", "", "", "", "error")}
+        {html:buildResultRows("M19", $labels:M19, $labels:M19_SHORT, $invalideFeatureOfInterest,"aqd:AQD_Model/@gml:id", "All attributes is invalid", " invalid attribute", "","warning")}
+        {html:buildResultRows("M23", $labels:M23, $labels:M23_SHORT, $invalidObservedPropertyCombinations, "", concat(fn:string(count($invalidObservedPropertyCombinations))," errors found"), "", "","error")}
+        {html:buildResultRows("M24", $labels:M24, $labels:M24_SHORT, $invalidAssessmentType, "", concat(fn:string(count($invalidAssessmentType))," errors found"), "", "","error")}
+        {html:buildResultRows("M25", $labels:M25, $labels:M25_SHORT, $allInvalidTrueUsedAQD, "", concat(fn:string(count($allInvalidTrueUsedAQD))," errors found"), "", "","warning")}
+        {html:buildResultRows("M26", $labels:M26, $labels:M26_SHORT, $allInvalZoneXlinks, "", concat(fn:string(count( $allInvalZoneXlinks))," errors found"), "", "","error")}
+        {html:buildResultRows("M27", $labels:M27, $labels:M27_SHORT, $invalidDuplicateModelProcessIds, "", concat(string(count($invalidDuplicateModelProcessIds))," errors found.") , "", "","error")}
+        {html:buildResultRows("M28", $labels:M28, $labels:M28_SHORT, $tblM28, "", string(count($tblM28)), "", "","error")}
+        {html:buildResultRows("M29", $labels:M29, $labels:M29_SHORT, $invalidBase2link, "aqd:AQD_ModelProcess/@gml:id","All attributes are valid"," invalid attribute", "","error")}
+        {html:buildResultRows("M39", $labels:M39, $labels:M39_SHORT, $invalidDataQualityReport, "aqd:AQD_ModelProcess/@gml:id","All attributes are valid"," invalid attribute", "","error")}
+        {html:buildResultRows("M40", $labels:M40, $labels:M40_SHORT, $invalidDuplicateModelAreaIds, "", concat(string(count($invalidDuplicateModelAreaIds))," errors found.") , "", "","error")}
+        {html:buildResultRows("M41", $labels:M41, $labels:M41_SHORT, $tblM41, "", string(count($tblM41)), "", "","error")}
+        {html:buildResultRows("M43", $labels:M43, $labels:M43_SHORT, $invalidSrsName, "aqd:AQD_ModelArea/@gml:id","All srsDimension attributes are valid"," invalid attribute", "","error")}
     </table>
 };
 

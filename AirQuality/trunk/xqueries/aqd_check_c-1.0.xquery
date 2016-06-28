@@ -796,7 +796,7 @@ return
         {html:buildResultRows("C6", $labels:C6, $labels:C6_SHORT, $tblC6, "", string(count($tblC6)), "", "","info")}
         {html:buildResultRows("C6.1", $labels:C6.1, $labels:C6.1_SHORT, $invalidNamespaces, "base:Identifier/base:namespace", "All values are valid", " invalid namespaces", "", "error")}
         {html:buildResultRows("C7", $labels:C7, $labels:C7_SHORT, $C7invalid, "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error")}
-        {xmlconv:buildPollutantResultRows("C8", $missingPollutantC8, " missing pollutant", "warning", xmlconv:buildVocItemRows($vocabulary:POLLUTANT_VOCABULARY, $missingPollutantC8))}
+        {html:buildResultRows("C8", $labels:C8, $labels:C8_SHORT, xmlconv:buildVocItemRows($vocabulary:POLLUTANT_VOCABULARY, $missingPollutantC8), "", "", " missing pollutant", "", "warning")}
         {html:buildResultRows("C9", $labels:C9, $labels:C9_SHORT, xmlconv:buildVocItemRows($vocabulary:POLLUTANT_VOCABULARY, $foundPollutantC9), "", string(count($foundPollutantC9)), "", "", "info")}
         {html:buildResultRows("C10", $labels:C10, $labels:C10_SHORT, $invalidAqdAssessmentRegimeAqdPollutant, "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error")}
         {html:buildResultRows("C11", $labels:C11, $labels:C11_SHORT, $invalidAqdAssessmentRegimeAqdPollutantC11, "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error")}
@@ -811,14 +811,14 @@ return
         {html:buildResultRows("C20", $labels:C20, $labels:C20_SHORT, $invalidAqdAssessmentRegimeAqdPollutantC20, "aqd:reportingMetric", "All values are valid", " invalid value", "","warning")}
         {html:buildResultRows("C23a", $labels:C23a, $labels:C23a_SHORT, $invalidAqdAssessmentType, "aqd:AQD_AssesmentRegime", "All values are valid", " invalid value", "","error")}
         {html:buildResultRows("C23b", $labels:C23b, $labels:C23b_SHORT, $invalid23B, "aqd:AQD_AssesmentRegime", "All values are valid", " invalid value", "","warning")}
-        {html:buildResultRows("C24", $labels:C24, $labels:C24_SHORT, (),(), "", "", " ", "","warning")}
-        {html:buildResultRows("C25", $labels:C25, $labels:C25_SHORT, (),(), "", "", " ", "","warning")}
-        {html:buildResultTable("C26", $labels:C26, $labels:C26_SHORT, $tblC26, "All values are valid", " invalid value", "","warning")}
-        {html:buildResultTable("C27", labels:interpolate($labels:C27, ($countZoneIds2, $countZoneIds1)), $labels:C27_SHORT, $resultC27, "Count of unique zones matches", " not unique zone",  "", "warning")}
+        {html:buildResultRows("C24", $labels:C24, $labels:C24_SHORT, (), "", "", " ", "","warning")}
+        {html:buildResultRows("C25", $labels:C25, $labels:C25_SHORT, (), "", "", " ", "","warning")}
+        {html:buildResultTable("C26", $labels:C26, $labels:C26_SHORT, $tblC26, "", "All values are valid", " invalid value", "","warning")}
+        {html:buildResultTable("C27", labels:interpolate($labels:C27, ($countZoneIds2, $countZoneIds1)), $labels:C27_SHORT, $resultC27, "Count of unique zones matches", "", " not unique zone",  "", "warning")}
         {html:buildResultRows("C28", $labels:C28, $labels:C28_SHORT, $invalidZoneGmlEndPosition, "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error")}
-        {html:buildResultTable("C29", $labels:C29, $labels:C29_SHORT,  $tblC29, "All values are valid", " invalid value", "","warning")}
+        {html:buildResultTable("C29", $labels:C29, $labels:C29_SHORT,  $tblC29, "", "All values are valid", " invalid value", "","warning")}
         {html:buildResultC31("C31", $C31Result, $C31BCount)}
-        {html:buildResultTable("C32", $labels:C32, $labels:C32_SHORT, $tblC32,"All valid", " invalid value",  "","warning")}
+        {html:buildResultTable("C32", $labels:C32, $labels:C32_SHORT, $tblC32, "All valid", " invalid value",  "", "", "warning")}
         {html:buildResultRows("C33", $labels:C33, $labels:C33_SHORT, $invalidAssessmentGmlEndPosition, "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error")}
         {html:buildResultRows("C35", $labels:C35, $labels:C35_SHORT, $invalidAssessmentUsed, "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error")}
         {html:buildResultRows("C37", $labels:C37, $labels:C37_SHORT, $invalidAqdReportingMetric, "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","warning")}
@@ -858,17 +858,16 @@ declare function xmlconv:buildVocItemsList($ruleId as xs:string, $vocabularyUrl 
         </div>
 };
 
-declare function xmlconv:buildPollutantResultRows($ruleCode as xs:string,  $invalidStrValues as xs:string*, $invalidMsg as xs:string, $errorLevel as xs:string, $recordDetails as element(tr)*) as element(tr)* {
+declare function xmlconv:buildPollutantResultRows($ruleCode as xs:string,  $records as element(tr)*, $invalidMsg as xs:string, $errorLevel as xs:string) as element(tr)* {
 
     let $msg :=
-        if (count($invalidStrValues) > 0) then
+        if (count($records) > 0) then
             "Assessment regime(s) not found for the following pollutant(s):"
         else
             "Assessment regimes reported for all expected pollutants"
-
+    let $records := xmlconv:buildVocItemRows($vocabulary:POLLUTANT_VOCABULARY, $records)
     return
-        html:buildResultRows($ruleCode, <span>{$msg}</span>, <span>{$msg}</span>, $invalidStrValues, (),
-                "", "", " missing pollutant", "","warning", xmlconv:buildVocItemRows($vocabulary:POLLUTANT_VOCABULARY, $invalidStrValues))
+        html:buildResultRows($ruleCode, <span>{$msg}</span>, <span>{$msg}</span>, $records, "", "", " missing pollutant", "","warning")
 };
 
 declare function xmlconv:buildVocItemRows($vocabularyUrl as xs:string, $codes as xs:string*) as element(tr)* {

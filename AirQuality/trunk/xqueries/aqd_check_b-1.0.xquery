@@ -651,18 +651,18 @@ let $invalidZoneType := xmlconv:checkVocabularyConceptValues($source_url, "", "a
 return
     <table class="maintable hover">
         {html:buildResultsSimpleRow("B1", $labels:B1, $labels:B1_SHORT, $countZones, "info")}
-        {html:buildResultRows("B2", $labels:B2, $labels:B2_SHORT, (), (), "", string(count($tblB2)), "", "", "error", $tblB2)}
+        {html:buildResultRows("B2", $labels:B2, $labels:B2_SHORT, $tblB2, "", string(count($tblB2)), "", "", "error")}
         {html:buildResultsSimpleRow("B3", $labels:B3, $labels:B3_SHORT, $countZonesWithAmGeometry, "info")}
         {html:buildResultsSimpleRow("B4", $labels:B4, $labels:B4_SHORT, $countZonesWithLAU, "info" )}
-        {html:buildResultRows("B6", $labels:B6, $labels:B6_SHORT, (), (), "", string(count($tblB6)), "", "", "error", $tblB6)}
-        {html:buildResultRows("B7", $labels:B7, $labels:B7_SHORT, (), (), "", string(count($tblB7)), "", "", "error", $tblB7)}
+        {html:buildResultRows("B6", $labels:B6, $labels:B6_SHORT, $tblB6, "", string(count($tblB6)), "", "", "error")}
+        {html:buildResultRows("B7", $labels:B7, $labels:B7_SHORT, $tblB7, "", string(count($tblB7)), "", "", "error")}
         {html:buildCountRow("B8", $countB8duplicates, $labels:B8_SHORT, (), " duplicate", $errors:WARNING)}
         {html:buildConcatRow($duplicateGmlIds, "aqd:AQD_Zone/@gml:id - ")}
         {html:buildConcatRow($duplicateamInspireIds, "am:inspireId - ")}
         {html:buildConcatRow($duplicateaqdInspireIds, "aqd:inspireId - ")}
         {html:buildCountRow("B9", $countB9duplicates, $labels:B9_SHORT, (), (), ())}
         {html:buildConcatRow($duplicateAmInspireIds, "Duplicate base:namespace:base:localId - ")}
-        {html:buildResultRows("B10", $labels:B10, $labels:B10_SHORT, (), (), "", string(count($tblB10)), "", "", "error", $tblB10)}
+        {html:buildResultRows("B10", $labels:B10, $labels:B10_SHORT, $tblB10, "", string(count($tblB10)), "", "", "error")}
         {html:buildResultRows_B("B10.1", $labels:B10.1, $labels:B10.1_SHORT, $invalidNamespaces, "base:Identifier/base:namespace", "All values are valid", " invalid namespaces", "", "error")}
         {html:buildResultRows_B("B13", $labels:B13, $labels:B13_SHORT, $invalidLangCode, "/aqd:AQD_Zone/am:name/gn:GeographicalName/gn:language", "All values are valid", " invalid value", $langSkippedMsg,"warning")}
         {html:buildResultRows_B("B18", $labels:B18, $labels:B18_SHORT, $invalidgnSpellingOfName, "aqd:AQD_Zone/@gml:id","All text are valid"," invalid attribute","", "error")}
@@ -681,32 +681,32 @@ return
         {html:buildResultRows_B("B36", $labels:B36, $labels:B36_SHORT, $invalidResidentPopulation, "aqd:AQD_Zone/am:inspireId/base:Identifier/base:localId", "All values are valid", " invalid value", "", "error")}
         {html:buildResultRows_B("B37", $labels:B37, $labels:B37_SHORT, $invalidPopulationYear, "aqd:AQD_Zone/am:inspireId/base:Identifier/base:localId", "All values are valid", " invalid value", "","warning")}
         {html:buildResultRows_B("B38", $labels:B38, $labels:B38_SHORT, $invalidArea, "aqd:AQD_Zone/am:inspireId/base:Identifier/base:localId", "All values are valid", " invalid value", "", "error")}
-        {html:buildResultRows("B39a", $labels:B39a, <span>{$labels:B39a_SHORT} - {html:buildInfoTable("B39a", $B39aItemsList)}</span>, (), (), "aqd:AQD_Zone/am:inspireId/base:Identifier/base:localId", "All values are valid", " invalid value", "", "error", $invalidPollutantCombinations)}
+        {html:buildResultRows("B39a", $labels:B39a, <span>{$labels:B39a_SHORT} - {html:buildInfoTable("B39a", $B39aItemsList)}</span>, $invalidPollutantCombinations, "aqd:AQD_Zone/am:inspireId/base:Identifier/base:localId", "All values are valid", " invalid value", "", "error")}
         {html:buildResultTable("B39b", $labels:B39b, $labels:B39b_SHORT, "aqd:AQD_Zone/am:inspireId/base:Identifier/base:localId", "All values are valid", " missing value", "", "error", $invalidPollutantOccurences)}
         {html:buildResultTable("B39c", $labels:B39c, $labels:B39c_SHORT, "aqd:AQD_Zone/am:inspireId/base:Identifier/base:localId", "All values are valid", " invalid value", "", "error", $invalidPollutantRepeated)}
-        {xmlconv:buildResultRowsWithTotalCount("B40", $labels:B40, $labels:B40_SHORT ,(), (), "aqd:timeExtensionExemption", "", "", "", $invalidTimeExtensionExemption)}
+        {xmlconv:buildResultRowsWithTotalCount("B40", $labels:B40, $labels:B40_SHORT, $invalidTimeExtensionExemption, "aqd:timeExtensionExemption", "", "", "")}
         {html:buildResultTable("B41", $labels:B41, $labels:B41_SHORT, (), "All values are valid", " invalid value", "", "error", $invalidPollutansB41)}
         {html:buildResultTable("B42", $labels:B42, $labels:B42_SHORT, (), "All values are valid", " crucial invalid value", "", "error", $aqdInvalidPollutansB42)}
         {html:buildResultTable("B43", $labels:B43, $labels:B43_SHORT, (), "All values are valid", " crucial invalid value", "", "error", $aqdInvalidPollutansBenzene)}
-        {html:buildResultRows("B45", $labels:B45, $labels:B45_SHORT, (), (), "aqd:AQD_Zone/am:inspireId/base:Identifier/base:localId", "All values are valid", " invalid value", "","warning", $B45invalid)}
+        {html:buildResultRows("B45", $labels:B45, $labels:B45_SHORT, $B45invalid, "aqd:AQD_Zone/am:inspireId/base:Identifier/base:localId", "All values are valid", " invalid value", "","warning")}
         {html:buildResultRows_B("B46", $labels:B46, $labels:B46_SHORT, $invalidLink, "aqd:AQD_Zone/am:inspireId/base:Identifier/base:localId", "All values are valid", " invalid value", "", "error")}
-        {xmlconv:buildResultRowsWithTotalCount("B47", $labels:B47, $labels:B47_SHORT, (), (), "aqd:reportingMetric", "", "", "", $invalidZoneType)}
+        {xmlconv:buildResultRowsWithTotalCount("B47", $labels:B47, $labels:B47_SHORT, $invalidZoneType, "aqd:reportingMetric", "", "", "")}
     </table>
 };
 
-declare function xmlconv:buildResultRowsWithTotalCount($ruleCode as xs:string, $longText, $text, $invalidStrValues as xs:string*, $invalidValues as element()*,
-    $valueHeading as xs:string, $validMsg as xs:string, $invalidMsg as xs:string, $skippedMsg, $recordDetails as element(tr)*)
+declare function xmlconv:buildResultRowsWithTotalCount($ruleCode as xs:string, $longText, $text, $records as element(tr)*,
+        $valueHeading as xs:string, $validMsg as xs:string, $invalidMsg as xs:string, $skippedMsg)
 as element(tr)*{
 
-    let $countCheckedRecords := count($recordDetails)
-    let $invalidValues := $recordDetails[./@isvalid = "false"]
+    let $countCheckedRecords := count($records)
+    let $invalidValues := $records[./@isvalid = "false"]
 
     let $skippedMsg := if ($countCheckedRecords = 0) then "No values found to check" else ""
     let $invalidMsg := if (count($invalidValues) > 0) then concat(" invalid value", substring("s ", number(not(count($invalidValues) > 1)) * 2), " found out of ", $countCheckedRecords, " checked") else ""
     let $validMsg := if (count($invalidValues) = 0) then concat("Checked ", $countCheckedRecords, " value", substring("s", number(not($countCheckedRecords > 1)) * 2), ", all valid") else ""
 
     return
-        html:buildResultRows($ruleCode, $longText, $text, $invalidStrValues, $invalidValues, $valueHeading, $validMsg, $invalidMsg, $skippedMsg, "error",())
+        html:buildResultRows($ruleCode, $longText, $text, $records, $valueHeading, $validMsg, $invalidMsg, $skippedMsg, "error")
 };
 
 declare function xmlconv:checkVocabularyConceptValues($source_url as xs:string, $parentObject as xs:string, $featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string, $limitedIds as xs:string*, $vocabularyType as xs:string)
