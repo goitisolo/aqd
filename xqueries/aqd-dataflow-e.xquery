@@ -142,6 +142,21 @@ let $E8invalid :=
         </tr>
     }
 
+(: E21 - /om:result/swe:DataArray/swe:encoding/swe:TextEncoding shall resolve to decimalSeparator="." tokenSeparator="," blockSeparator="@@" :)
+let $E21invalid :=
+    try {
+        for $x in $docRoot//om:result/swe:DataArray/swe:encoding/swe:TextEncoding[not(@decimalSeparator=".") or not(@tokenSeparator=",") or not(@blockSeparator="@@")]
+        return
+            <tr>
+                <td title="@gml:id">{string($x/../../../../@gml:id)}</td>
+            </tr>
+    }
+    catch * {
+        <tr status="failed">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
 
 return
     <table class="maintable hover">
@@ -151,6 +166,7 @@ return
         {html:buildResultRows("E5", $labels:E5, $labels:E5_SHORT, $E5invalid, "", "", "", "", $errors:ERROR)}
         {html:buildResultRows("E7", $labels:E7, $labels:E7_SHORT, $E7invalid, "", "", "", "", $errors:WARNING)}
         {html:buildResultRows("E8", $labels:E8, $labels:E8_SHORT, $E8invalid, "", "", "", "", $errors:WARNING)}
+        {html:buildResultRows("E21", $labels:E21, $labels:E21_SHORT, $E21invalid, "", "", "", "", $errors:WARNING)}
     </table>
 
 };
