@@ -70,7 +70,9 @@ declare function common:checkNamespaces($source_url) {
         for $i in doc($source_url)//base:Identifier/base:namespace/string()
         return
           if (not($i = $prefLabel) and not($i = $altLabel)) then
-            $i
+            <tr>
+                <td title="base:namespace">{$i}</td>
+            </tr>
           else
             ()
     return distinct-values($invalidNamespaces)
