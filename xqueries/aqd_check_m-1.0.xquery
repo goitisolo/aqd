@@ -79,7 +79,6 @@ let $tblM2 :=
 
 
 (: M3 :)
-
 let $M3Combinations :=
     for $featureType in $xmlconv:FEATURE_TYPES
     return
@@ -548,9 +547,9 @@ declare function xmlconv:checkVocabularyConceptValues($source_url as xs:string, 
     if (doc-available($source_url)) then
         let $sparql :=
             if ($vocabularyType = "collection") then
-                xmlconv:getCollectionConceptUrlSparql($vocabularyUrl)
+                query:getCollectionConceptUrlSparql($vocabularyUrl)
             else
-                xmlconv:getConceptUrlSparql($vocabularyUrl)
+                query:getConceptUrlSparqlB($vocabularyUrl)
         let $crConcepts := sparqlx:executeSparqlQuery($sparql)
         for $rec in doc($source_url)//gml:featureMember/descendant::*[name()=$featureType]
         for $conceptUrl in $rec/child::*[name() = $element]/@xlink:href
@@ -572,9 +571,9 @@ declare function xmlconv:checkVocabularyConceptValues2($source_url as xs:string,
     if (doc-available($source_url)) then
         let $sparql :=
             if ($vocabularyType = "collection") then
-                xmlconv:getCollectionConceptUrlSparql($vocabularyUrl)
+                query:getCollectionConceptUrlSparql($vocabularyUrl)
             else
-                xmlconv:getConceptUrlSparql($vocabularyUrl)
+                query:getConceptUrlSparqlB($vocabularyUrl)
         let $crConcepts := sparqlx:executeSparqlQuery($sparql)
         for $rec in $concept/ancestor::*[name()=$featureType]
         for $conceptUrl in $concept
@@ -596,9 +595,9 @@ declare function xmlconv:checkVocabularyConceptValues3($source_url as xs:string,
     if (doc-available($source_url)) then
         let $sparql :=
             if ($vocabularyType = "collection") then
-                xmlconv:getCollectionConceptUrlSparql($vocabularyUrl)
+                query:getCollectionConceptUrlSparql($vocabularyUrl)
             else
-                xmlconv:getConceptUrlSparql($vocabularyUrl)
+                query:getConceptUrlSparqlB($vocabularyUrl)
         let $crConcepts := sparqlx:executeSparqlQuery($sparql)
         for $rec in doc($source_url)//gml:featureMember/descendant::*[name()=$featureType]
         for $conceptUrl in $rec/child::*[name() = $element]
@@ -614,9 +613,9 @@ declare function xmlconv:checkVocabularyaqdAnalyticalTechniqueValues($source_url
     if(doc-available($source_url)) then
         let $sparql :=
             if ($vocabularyType = "collection") then
-                xmlconv:getCollectionConceptUrlSparql($vocabularyUrl)
+                query:getCollectionConceptUrlSparql($vocabularyUrl)
             else
-                xmlconv:getConceptUrlSparql($vocabularyUrl)
+                query:getConceptUrlSparqlB($vocabularyUrl)
         let $crConcepts := sparqlx:executeSparqlQuery($sparql)
         for $rec in doc($source_url)//gml:featureMember/descendant::*[name()=$featureType]
         for $conceptUrl in $rec/child::*[name() = $element]/aqd:AnalyticalTechnique/child::*[name() = $element]/@xlink:href
@@ -638,9 +637,9 @@ declare function xmlconv:checkVocabularyConceptEquipmentValues($source_url as xs
     if (doc-available($source_url)) then
         let $sparql :=
             if ($vocabularyType = "collection") then
-                xmlconv:getCollectionConceptUrlSparql($vocabularyUrl)
+                query:getCollectionConceptUrlSparql($vocabularyUrl)
             else
-                xmlconv:getConceptUrlSparql($vocabularyUrl)
+                query:getConceptUrlSparqlB($vocabularyUrl)
         let $crConcepts := sparqlx:executeSparqlQuery($sparql)
         for $rec in doc($source_url)//gml:featureMember/descendant::*[name()=$featureType]
         for $conceptUrl in $rec/child::*[name() = $element]/*/aqd:equipment/@xlink:href
@@ -660,9 +659,9 @@ declare function xmlconv:checkMeasurementMethodLinkValues($source_url as xs:stri
     if (doc-available($source_url)) then
         let $sparql :=
             if ($vocabularyType = "collection") then
-                xmlconv:getCollectionConceptUrlSparql($vocabularyUrl)
+                query:getCollectionConceptUrlSparql($vocabularyUrl)
             else
-                xmlconv:getConceptUrlSparql($vocabularyUrl)
+                query:getConceptUrlSparqlB($vocabularyUrl)
         let $crConcepts := sparqlx:executeSparqlQuery($sparql)
         for $conceptUrl in $concept/../../aqd:measurementMethod/aqd:MeasurementMethod/aqd:measurementMethod/@xlink:href
             let $measurementMethodStyle := if(xmlconv:isMatchingVocabCode($crConcepts, $conceptUrl))then "" else "color:red"
@@ -677,26 +676,6 @@ declare function xmlconv:checkMeasurementMethodLinkValues($source_url as xs:stri
             </tr>
     else
         ()
-};
-
-declare function xmlconv:getConceptUrlSparql($scheme as xs:string) as xs:string {
-    concat("PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
-    SELECT ?concepturl ?label
-    WHERE {
-      ?concepturl skos:inScheme <", $scheme, ">;
-                  skos:prefLabel ?label
-    }")
-};
-
-declare function xmlconv:getCollectionConceptUrlSparql($collection as xs:string) as xs:string {
-    concat("PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
-    SELECT ?concepturl
-    WHERE {
-        GRAPH <", $collection, "> {
-            <", $collection, "> skos:member ?concepturl .
-            ?concepturl a skos:Concept
-        }
-    }")
 };
 
 declare function xmlconv:isMatchingVocabCode($crConcepts as element(sparql:result)*, $concept as xs:string) as xs:boolean {
