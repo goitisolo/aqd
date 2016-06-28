@@ -85,12 +85,32 @@ let $E3invalid :=
         </tr>
     }
 
+(: E5 - A valid delivery MUST provide an om:parameter with om:name/@xlink:href to http://dd.eionet.europa.eu/vocabulary/aq/processparameter/SamplingPoint :)
+let $E5invalid :=
+    try {
+        let $all := $docRoot//om:OM_Observation
+        for $x in $all
+            let $xlinks := data($x/om:parameter/om:NamedValue/om:name/@xlink:href)
+        where not("http://dd.eionet.europa.eu/vocabulary/aq/processparameter/SamplingPoint" = $xlinks)
+        return
+            <tr>
+                <td title="@gml:id">{string($x/@gml:id)}</td>
+            </tr>
+    }
+    catch * {
+        <tr status="failed">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
+
 
 return
     <table class="maintable hover">
         {html:buildResultRows("E1", $labels:E1, $labels:E1_SHORT, $E1invalid, "", "", "", "", $errors:ERROR)}
         {html:buildResultRows("E2", $labels:E2, $labels:E2_SHORT, $E2invalid, "", "", "", "", $errors:ERROR)}
         {html:buildResultRows("E3", $labels:E3, $labels:E3_SHORT, $E3invalid, "", "", "", "", $errors:ERROR)}
+        {html:buildResultRows("E5", $labels:E5, $labels:E5_SHORT, $E5invalid, "", "", "", "", $errors:ERROR)}
     </table>
 
 };
