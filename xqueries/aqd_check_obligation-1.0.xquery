@@ -26,6 +26,7 @@ import module namespace dfC = "http://converters.eionet.europa.eu/dataflowC" at 
 import module namespace dfD = "http://converters.eionet.europa.eu/dataflowD" at "aqd_check_d-1.0.xquery";
 import module namespace dfG = "http://converters.eionet.europa.eu/dataflowG" at "aqd_check_g-1.0.xquery";
 import module namespace dfM = "http://converters.eionet.europa.eu/dataflowM" at "aqd_check_m-1.0.xquery";
+import module namespace dfE = "http://converters.eionet.europa.eu/dataflowE" at "aqd-dataflow-e.xquery";
 import module namespace common = "aqd-common" at "aqd_check_common.xquery";
 import module namespace html = "aqd-html" at "aqd-html.xquery";
 
@@ -43,6 +44,7 @@ declare variable $xmlconv:C_OBLIGATIONS as xs:string* := (concat($xmlconv:ROD_PR
 declare variable $xmlconv:D_OBLIGATIONS as xs:string* := (concat($xmlconv:ROD_PREFIX, "672"));
 declare variable $xmlconv:M_OBLIGATIONS as xs:string* := (concat($xmlconv:ROD_PREFIX, "672"));
 declare variable $xmlconv:G_OBLIGATIONS as xs:string* := (concat($xmlconv:ROD_PREFIX, "679"));
+declare variable $xmlconv:E_OBLIGATIONS as xs:string* := $xmlconv:ROD_PREFIX || "673";
 
 declare function xmlconv:proceed($source_url as xs:string) {
 
@@ -52,7 +54,7 @@ declare function xmlconv:proceed($source_url as xs:string) {
     let $countryCode := common:getCountryCode($source_url)
 
     let $validObligations := common:getSublist($obligations,
-            ($xmlconv:B_OBLIGATIONS, $xmlconv:C_OBLIGATIONS, $xmlconv:D_OBLIGATIONS, $xmlconv:G_OBLIGATIONS, $xmlconv:M_OBLIGATIONS))
+            ($xmlconv:B_OBLIGATIONS, $xmlconv:C_OBLIGATIONS, $xmlconv:D_OBLIGATIONS, $xmlconv:G_OBLIGATIONS, $xmlconv:M_OBLIGATIONS, $xmlconv:E_OBLIGATIONS))
 
     let $result := ()
     let $resultB :=
@@ -78,6 +80,11 @@ declare function xmlconv:proceed($source_url as xs:string) {
     let $resultM :=
         if (common:containsAny($obligations, $xmlconv:M_OBLIGATIONS)) then
             dfM:proceed($source_url, $countryCode)
+        else
+            ()
+    let $resultE :=
+        if (common:containsAny($obligations, $xmlconv:E_OBLIGATIONS)) then
+            dfE:proceed($source_url, $countryCode)
         else
             ()
 
