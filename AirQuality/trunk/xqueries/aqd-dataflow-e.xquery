@@ -32,7 +32,7 @@ let $docRoot := doc($source_url)
 (: E1 - /om:OM_Observation gml:id attribute shall be unique code for the group of observations enclosed by /OM_Observation within the delivery. :)
 let $E1invalid :=
     try {
-        let $all := data(//om:OM_Observation/@gml:id)
+        let $all := data($docRoot//om:OM_Observation/@gml:id)
         for $x in $docRoot//om:OM_Observation/@gml:id
         where count(index-of($all, $x)) > 0
         return
@@ -45,9 +45,33 @@ let $E1invalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+(:E2 - /om:phenomenonTime/gml:TimePeriod/gml:beginPosition shall be LESS THAN ./om:phenomenonTime/gml:TimePeriod/gml:endPosition. -:)
+let $E2invalid :=
+    try {
+        let $all := $docRoot//om:phenomenonTime/gml:TimePeriod
+        for $x in $all
+            let $begin := xs:dateTime($x/gml:beginPosition)
+            let $end := xs:dateTime($x/gml:endPosition)
+        where ($end < $begin)
+        return
+            <tr>
+                <td title="@gml:id">{string($x/../../@gml:id)}</td>
+            </tr>
+    }
+    catch * {
+        <tr status="failed">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
+
+
+
+
 return
     <table class="maintable hover">
         {html:buildResultRows("E1", $labels:E1, $labels:E1_SHORT, $E1invalid, "", "", "", "", $errors:ERROR)}
+        {html:buildResultRows("E2", $labels:E2, $labels:E2_SHORT, $E1invalid, "", "", "", "", $errors:ERROR)}
     </table>
 
 };
