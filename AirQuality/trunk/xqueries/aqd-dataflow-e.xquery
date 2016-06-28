@@ -103,6 +103,24 @@ let $E5invalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+(: E7 - A valid delivery SHOULD provide an om:parameter with om:name/@xlink:href to http://dd.eionet.europa.eu/vocabulary/aq/processparameter/AssessmentType :)
+let $E7invalid :=
+    try {
+        let $all := $docRoot//om:OM_Observation
+        for $x in $all
+            let $xlinks := data($x/om:parameter/om:NamedValue/om:name/@xlink:href)
+        where not("http://dd.eionet.europa.eu/vocabulary/aq/processparameter/AssessmentType" = $xlinks)
+        return
+            <tr>
+                <td title="@gml:id">{string($x/@gml:id)}</td>
+            </tr>
+    }
+    catch * {
+        <tr status="failed">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
 
 
 return
@@ -111,6 +129,7 @@ return
         {html:buildResultRows("E2", $labels:E2, $labels:E2_SHORT, $E2invalid, "", "", "", "", $errors:ERROR)}
         {html:buildResultRows("E3", $labels:E3, $labels:E3_SHORT, $E3invalid, "", "", "", "", $errors:ERROR)}
         {html:buildResultRows("E5", $labels:E5, $labels:E5_SHORT, $E5invalid, "", "", "", "", $errors:ERROR)}
+        {html:buildResultRows("E7", $labels:E7, $labels:E7_SHORT, $E7invalid, "", "", "", "", $errors:WARNING)}
     </table>
 
 };
