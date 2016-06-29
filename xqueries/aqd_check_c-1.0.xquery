@@ -1,4 +1,4 @@
-xquery version "1.0" encoding "UTF-8";
+xquery version "3.0" encoding "UTF-8";
 (:
  : Module Name: Implementing Decision 2011/850/EU: AQ info exchange & reporting (Library module)
  :
@@ -94,7 +94,10 @@ let $invalidDuplicateGmlIds :=
     for $id in $docRoot//aqd:AQD_AssessmentRegime/@gml:id
     where count(index-of($gmlIds, lower-case(normalize-space($id)))) > 1
     return
-        $id
+        <tr>
+            <td title="@gml:id">{$id}</td>
+        </tr>
+
 
 (: C5 duplicate ./aqd:inspireId/base:Identifier/base:localId :)
 let $localIds := $docRoot//aqd:AQD_AssessmentRegime/aqd:inspireId/base:Identifier/lower-case(normalize-space(base:localId))
@@ -102,7 +105,9 @@ let $invalidDuplicateLocalIds :=
     for $id in $docRoot//aqd:inspireId/base:Identifier/base:localId
     where count(index-of($localIds, lower-case(normalize-space($id)))) > 1
     return
-        $id
+        <tr>
+            <td title="base:localId">{$id}</td>
+        </tr>
 
 (: C6 :)
 let $allBaseNamespace := distinct-values($docRoot//aqd:AQD_AssessmentRegime/aqd:inspireId/base:Identifier/base:namespace)
@@ -133,14 +138,20 @@ let $missingPollutantC8 :=
 for $code in $xmlconv:MANDATORY_POLLUTANT_IDS_8
     let $pollutantLink := fn:concat($vocabulary:POLLUTANT_VOCABULARY, $code)
     where count($docRoot//aqd:AQD_AssessmentRegime/aqd:pollutant[@xlink:href=$pollutantLink]) < 1
-    return $code
+    return
+        <tr>
+            <td title="pollutant">{$code}</td>
+        </tr>
 
 (: C9 - Provides a count of unique pollutants and lists them :)
 let $foundPollutantC9 :=
 for $code in $xmlconv:UNIQUE_POLLUTANT_IDS_9
     let $pollutantLink := fn:concat($vocabulary:POLLUTANT_VOCABULARY, $code)
     where count($docRoot//aqd:AQD_AssessmentRegime/aqd:pollutant[@xlink:href=$pollutantLink and ..//aqd:objectiveType/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/MO"]) > 0
-    return $code
+    return
+        <tr>
+            <td title="pollutant">{$code}</td>
+        </tr>
 
 (: C10 :)
 let $invalidAqdAssessmentRegimeAqdPollutant :=
@@ -436,8 +447,14 @@ return
     </tr>
 
 (: C23B - Warning :)
+let $C23Btmp := $docRoot//aqd:AQD_AssessmentRegime[count(aqd:assessmentMethods/aqd:AssessmentMethods/aqd:assessmentType/@xlink:href)>0]/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:assessmentTypeDescription[string() = ""]/../../../@gml:id
 let $invalid23B :=
-    $docRoot//aqd:AQD_AssessmentRegime[count(aqd:assessmentMethods/aqd:AssessmentMethods/aqd:assessmentType/@xlink:href)>0]/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:assessmentTypeDescription[string() = ""]/../../../@gml:id
+    for $i in $C23Btmp
+    return
+        <tr>
+            <td title="@gml:id">{$i}</td>
+        </tr>
+
 
 (: C26 :)
 let $startDate := substring(data($docRoot//aqd:reportingPeriod/gml:TimePeriod/gml:beginPosition),1,10)
@@ -739,17 +756,20 @@ let $invalidAqdUsedAQD :=
     return if(empty(index-of($aqdUsedAQD,$assessmentMethods))) then $assessmentMethods else ():)
 
 (: 37 :)
-
 let $reportingMetric := $docRoot//aqd:AQD_AssessmentRegime[aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric/normalize-space(@xlink:href) = "http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/AEI"]/@gml:id
-let $invalidAqdReportingMetric := if (count($reportingMetric)>1) then $reportingMetric else ()
+let $invalidAqdReportingMetric :=
+    if (count($reportingMetric)>1) then
+        for $i in $reportingMetric
+        return
+            <tr><td title="@gml:id">{string($i)}</td></tr>
+    else
+        ()
 
 (: C38 :)
-
 let $resultXml := if (fn:string-length($countryCode) = 2) then query:getSamplingPointInspireLabel($cdrUrl) else ""
 let $isInspireLebelCodesAvailable := string-length($resultXml) > 0 and doc-available(sparqlx:getSparqlEndpointUrl($resultXml, "xml"))
 let $aqdSamplingPointID := if($isInspireLebelCodesAvailable) then distinct-values(data(sparqlx:executeSparqlQuery($resultXml)//sparql:binding[@name='inspireLabel']/sparql:literal)) else ""
 let $isInspireLebelCodesAvailable := count($resultXml) > 0
-
 
 let $aqdSamplingPointAssessmentMetadata :=
     for $aqdAssessmentRegime in $docRoot//aqd:AQD_AssessmentRegime/aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric
@@ -757,9 +777,12 @@ let $aqdSamplingPointAssessmentMetadata :=
 return  $aqdAssessmentRegime/../../../../../aqd:assessmentMethods/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata/fn:normalize-space(@xlink:href)
 
 let $invalidAqdReportingMetricTest :=
-for $x in $aqdSamplingPointAssessmentMetadata
-where empty(index-of($aqdSamplingPointID, $x))
-return $x
+    for $x in $aqdSamplingPointAssessmentMetadata
+    where empty(index-of($aqdSamplingPointID, $x))
+    return
+        <tr>
+            <td title="">{$x}</td>
+        </tr>
 
 (: 40 :)
 let $invalidsamplingPointAssessmentMetadata40 :=
@@ -767,7 +790,10 @@ let $invalidsamplingPointAssessmentMetadata40 :=
         let $pollutantXlinkC40 := fn:substring-after(data($aqdPollutantC40/aqd:pollutant/@xlink:href),"pollutant/")
     where not(empty(index-of($xmlconv:VALID_POLLUTANT_IDS_40,$pollutantXlinkC40)))
     return if (count($aqdPollutantC40/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata)>=1
-        or count($aqdPollutantC40/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:modelAssessmentMetadata)>=1) then () else $aqdPollutantC40/@gml:id
+        or count($aqdPollutantC40/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:modelAssessmentMetadata)>=1) then () else
+        <tr>
+            <td title="@gml:id">{string($aqdPollutantC40/@gml:id)}</td>
+        </tr>
 
 (: C41 gml:timePosition MUST be provided and must be equal or greater than (aqd:reportingPeriod – 5 years) included in the ReportingHeader :)
     let $C41minYear := xs:integer($reportingYear) - 5

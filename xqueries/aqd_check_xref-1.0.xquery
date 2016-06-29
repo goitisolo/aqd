@@ -1,4 +1,4 @@
-xquery version "1.0" encoding "UTF-8";
+xquery version "3.0" encoding "UTF-8";
 (:
  : Module Name: Implementing Decision 2011/850/EU: AQ info exchange & reporting (Main module)
  :
@@ -431,4 +431,4 @@ declare function xmlconv:proceed($source_url as xs:string) as element(div) {
     </div>
 
 };
-xmlconv:proceed( $source_url )
+xmlconv:proceed($source_url)

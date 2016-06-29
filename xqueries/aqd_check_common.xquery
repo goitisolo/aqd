@@ -1,5 +1,6 @@
-module namespace common = "aqd-common";
+xquery version "3.0" encoding "UTF-8";
 
+module namespace common = "aqd-common";
 
 declare namespace base = "http://inspire.ec.europa.eu/schemas/base/3.3";
 declare namespace skos = "http://www.w3.org/2004/02/skos/core#";
@@ -8,7 +9,6 @@ declare namespace rdfs = "http://www.w3.org/2000/01/rdf-schema#";
 declare namespace adms = "http://www.w3.org/ns/adms#";
 declare namespace aqd = "http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0";
 declare namespace gml = "http://www.opengis.net/gml/3.2";
-
 
 declare variable $common:SOURCE_URL_PARAM := "source_url=";
 (:~
