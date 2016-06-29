@@ -9,6 +9,7 @@ xquery version "3.0";
 
 module namespace html = "aqd-html";
 import module namespace labels = "aqd-labels" at "aqd-labels.xquery";
+import module namespace errors = "aqd-errors" at "aqd-errors.xquery";
 
 declare function html:getHead() as element()* {  
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/foundation/6.2.3/foundation.min.css"/>    
@@ -170,24 +171,59 @@ declare function html:javaScriptRoot(){
         <script type="text/javascript">{normalize-space($js)}</script>
 };
 
+declare function html:build1($ruleCode as xs:string, $longText, $text, $records as element(tr)*, $valueHeading as xs:string, $validMsg as xs:string, $unit as xs:string, $skippedMsg, $errorLevel as xs:string) as element(tr)* {
+    let $countRecords := count($records)
+    let $bulletType :=
+        if (string-length($skippedMsg) > 0) then
+            $errors:SKIPPED
+        else if (count($records) > 0) then
+            $errors:INFO
+        else
+            $errorLevel
+    let $message :=
+        if (string-length($skippedMsg) > 0) then
+            $skippedMsg
+        else if ($countRecords > 0) then
+            $validMsg
+        else
+            $countRecords || " " || $unit || " found"
+    return html:buildGeneric($ruleCode, $longText, $text, $records, $valueHeading, $validMsg, $unit, $skippedMsg, $errorLevel, $bulletType)
+};
+declare function html:build2($ruleCode as xs:string, $longText, $text, $records as element(tr)*, $valueHeading as xs:string, $validMsg as xs:string, $unit as xs:string, $skippedMsg, $errorLevel as xs:string) as element(tr)* {
+    let $countRecords := count($records)
+    let $bulletType :=
+        if (string-length($skippedMsg) > 0) then
+            $errors:SKIPPED
+        else if (count($records) = 0) then
+            $errors:INFO
+        else
+            $errorLevel
+    let $message :=
+        if (string-length($skippedMsg) > 0) then
+            $skippedMsg
+        else if ($countRecords = 0) then
+            $validMsg
+        else
+            $countRecords || " " || $unit || substring("s ", number(not($countRecords > 1)) * 2) || " found"
+    return html:buildGeneric($ruleCode, $longText, $text, $records, $valueHeading, $message, $unit, $skippedMsg, $errorLevel, $bulletType)
+};
+
+(: Deprecated, remove after migration :)
+declare function html:buildResultRows($ruleCode as xs:string, $longText, $text, $records as element(tr)*, $valueHeading as xs:string, $validMsg as xs:string, $unit as xs:string, $skippedMsg, $errorLevel as xs:string) as element(tr)* {
+    html:build2($ruleCode, $longText, $text, $records, $valueHeading, $validMsg, $unit, $skippedMsg, $errorLevel)
+};
+
 (: Builds HTML table rows for rules. :)
-declare function html:buildResultRows($ruleCode as xs:string, $longText, $text, $records as element(tr)*, $valueHeading as xs:string, $validMsg as xs:string, $invalidMsg as xs:string, $skippedMsg, $errorLevel as xs:string) as element(tr)* {
-    let $countInvalidValues := count($records)
-    let $bulletType := if (string-length($skippedMsg) > 0) then "skipped" else if ($countInvalidValues = 0) then "info" else $errorLevel
+declare %private function html:buildGeneric($ruleCode as xs:string, $longText, $text, $records as element(tr)*,
+        $valueHeading as xs:string, $message as xs:string, $unit as xs:string, $skippedMsg, $errorLevel as xs:string, $bulletType as xs:string) as element(tr)* {
+    let $countRecords := count($records)
     let $result :=
         (
             <tr>
                 <td class="bullet">{html:getBullet($ruleCode, $bulletType)}</td>
                 <th colspan="2">{$text} {html:getModalInfo($ruleCode, $longText)}</th>
-                <td><span class="largeText">{
-                    if (string-length($skippedMsg) > 0) then
-                        $skippedMsg
-                    else if ($countInvalidValues = 0) then
-                        $validMsg
-                    else
-                        concat($countInvalidValues, $invalidMsg, substring("s ", number(not($countInvalidValues > 1)) * 2) ,"found") }
-                </span>{
-                    if ($countInvalidValues > 0 or count($records)>0) then
+                <td><span class="largeText">{$message}</span>{
+                    if ($countRecords > 0 or count($records)>0) then
                         <a id='feedbackLink-{$ruleCode}' href='javascript:toggle("feedbackRow","feedbackLink", "{$ruleCode}")'>{$labels:SHOWRECORDS}</a>
                     else
                         ()
@@ -206,20 +242,6 @@ declare function html:buildResultRows($ruleCode as xs:string, $longText, $text, 
                         </table>
                     </td>
                 </tr>
-            else if (count($records)  > 0) then
-                <tr>
-                    <td></td>
-                    <td colspan="3">
-                        <table class="smalltable" id="feedbackRow-{$ruleCode}">
-                            <tr>
-                                <td></td>
-                                <th colspan="3">{ $valueHeading}</th>
-                                <td>{ string-join($records, ", ")}</td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-
             else
                 ()
         )
@@ -317,7 +339,7 @@ as element(tr)*{
     let $validMsg := if (count($invalidValues) = 0) then concat("Checked ", $countCheckedRecords, " value", substring("s", number(not($countCheckedRecords > 1)) * 2), ", all valid") else ""
 
     return
-        html:buildResultRows($ruleCode, $longText, $text, $records, $valueHeading, $validMsg, $invalidMsg, $skippedMsg, $errorLevel)
+        html:build2($ruleCode, $longText, $text, $invalidValues, $valueHeading, $validMsg, $invalidMsg, $skippedMsg, $errorLevel)
 };
 
 declare function html:buildResultRowsWithTotalCount_G($ruleCode as xs:string, $longText, $text, $records as element(tr)*,
@@ -332,7 +354,7 @@ as element(tr)*{
     let $validMsg := if (count($invalidValues) = 0) then concat("Checked ", $countCheckedRecords, " value", substring("s", number(not($countCheckedRecords > 1)) * 2), ", all valid") else ""
 
     return
-        html:buildResultRows($ruleCode, $longText, $text, $records, $valueHeading, $validMsg, $invalidMsg, $skippedMsg, $errorLevel)
+        html:build2($ruleCode, $longText, $text, $invalidValues, $valueHeading, $validMsg, $invalidMsg, $skippedMsg, $errorLevel)
 };
 
 
@@ -347,7 +369,7 @@ declare function html:buildResultRowsWithTotalCount_M($ruleCode as xs:string, $l
     let $validMsg := if (count($invalidValues) = 0) then concat("Checked ", $countCheckedRecords, " value", substring("s", number(not($countCheckedRecords > 1)) * 2), ", all valid") else ""
 
     return
-        html:buildResultRows($ruleCode, $longText, $text, $records, $valueHeading, $validMsg, $invalidMsg, $skippedMsg,$errorLevel)
+        html:buildResultRows($ruleCode, $longText, $text, $invalidValues, $valueHeading, $validMsg, $invalidMsg, $skippedMsg,$errorLevel)
 };
 
 declare function html:buildItemsList($ruleId as xs:string, $vocabularyUrl as xs:string, $ids as xs:string*) as element(div) {

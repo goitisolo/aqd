@@ -47,6 +47,7 @@ declare variable $xmlconv:FEATURE_TYPES := ("aqd:AQD_Network", "aqd:AQD_Station"
 
 (: Rule implementations :)
 declare function xmlconv:checkReport($source_url as xs:string, $countryCode as xs:string) as element(table) {
+
 let $docRoot := doc($source_url)
 (: D1 :)
 let $countFeatureTypes :=
@@ -80,7 +81,6 @@ let $tblD2 :=
         <tr>
             <td title="base:localId">{$id}</td>
         </tr>
-
 
 (: D3 :)
 let $tblD3 :=
@@ -232,8 +232,27 @@ let $D12invalid :=
             <td title="base:localId">{string($x/ef:inspireId/base:Identifier/base:localId)}</td>
         </tr>
 
-(: D14 Done by Rait  :)
-let $invalidTimeZone := xmlconv:checkVocabularyConceptValues($source_url, "aqd:AQD_Network", "aqd:aggregationTimeZone", $vocabulary:TIMEZONE_VOCABULARY)
+(: D14 - ./aqd:aggregationTimeZone attribute shall resolve to a valid code in http://dd.eionet.europa.eu/vocabulary/aq/timezone/ :)
+let $D14invalid :=
+    try {
+        let $validTimezones := dd:getValidConcepts("http://dd.eionet.europa.eu/vocabulary/aq/timezone/rdf")
+        for $x in $docRoot//aqd:AQD_Network
+        let $timezone := $x/aqd:aggregationTimeZone/@xlink:href
+        where not($timezone = $validTimezones)
+        return
+            <tr>
+                <td title="Feature type">{$x/name()}</td>
+                <td title="gml:id">{data($x/@gml:id)}</td>
+                <td title="ef:name">{data($x/ef:name)}</td>
+                <td title="aqd:aggregationTimeZone" style="color:red">{string($timezone)}</td>
+            </tr>
+    }  catch * {
+        <tr status="failed">
+            <td title="Error code"> {$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+            <td></td>
+        </tr>
+    }
 (: D15 Done by Rait :)
 let $amInspireIds := $docRoot//aqd:AQD_Station/ef:inspireId/base:Identifier/concat(lower-case(normalize-space(base:namespace)), '##',
         lower-case(normalize-space(base:localId)))
@@ -1241,10 +1260,10 @@ let $D94invalid :=
 
 return
     <table class="maintable hover">
-        {html:buildResultRows("D1", $labels:D1, $labels:D1_SHORT, $tblAllFeatureTypes, "", string(sum($countFeatureTypes)), "", "","error")}
-        {html:buildResultRows("D2", $labels:D2, $labels:D2_SHORT, (), string(count($tblD2)), "", "", "","error")}
-        {html:buildResultRows("D3", $labels:D3, $labels:D3_SHORT, (), string(count($tblD3)), "", "", "","error")}
-        {html:buildResultRows("D4", $labels:D4, $labels:D4_SHORT, $tblD4, string(count($tblD4)), "", "", "","error")}
+        {html:build1("D1", $labels:D1, $labels:D1_SHORT, $tblAllFeatureTypes, "", string(sum($countFeatureTypes)), "", "","error")}
+        {html:build1("D2", $labels:D2, $labels:D2_SHORT, $tblD2, "", "", "", "","error")}
+        {html:build1("D3", $labels:D3, $labels:D3_SHORT, $tblD3, string(count($tblD3)), "", "", "","error")}
+        {html:build1("D4", $labels:D4, $labels:D4_SHORT, $tblD4, string(count($tblD4)), "", "", "","error")}
         {html:buildCountRow("D5", $countD5duplicates, $labels:D5, (), " duplicate", ())}
         {html:buildConcatRow($duplicateGmlIds, "aqd:AQD_Model/@gml:id - ")}
         {html:buildConcatRow($duplicateefInspireIds, "ef:inspireId - ")}
@@ -1258,7 +1277,7 @@ return
         {html:buildResultRowsWithTotalCount_D("D10", $labels:D10, $labels:D10_SHORT, $invalidNetworkType, "aqd:networkType", "", "", "","warning")}
         {html:buildResultRows("D11", $labels:D11, $labels:D11_SHORT, $D11invalid, "aqd:AQD_Network/@gml:id", "All attributes are valid", " invalid attribute ", "", "error")}
         {html:buildResultRows("D12", $labels:D12, $labels:D12_SHORT, $D12invalid, "aqd:AQD_Network/ef:inspireId/base:Identifier/base:localId", "All attributes are valid", " invalid attribute ", "", "error")}
-        {html:buildResultRowsWithTotalCount_D("D14", $labels:D14, $labels:D14_SHORT, $invalidTimeZone, "aqd:aggregationTimeZone", "", "", "","error")}
+        {html:build2("D14", $labels:D14, $labels:D14_SHORT, $D14invalid, "aqd:aggregationTimeZone", "", "", "","error")}
         {html:buildInfoTR("Specific checks on AQD_Station feature(s) within this XML")}
         {html:buildCountRow("D15", $countD15duplicates, $labels:D15, "All Ids are unique", (), ())}
         {html:buildResultRows("D16", $labels:D16, $labels:D16_SHORT, $tblD16, "", string(count($tblD16)), "", "","error")}

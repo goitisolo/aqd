@@ -12,6 +12,7 @@ module namespace errors = "aqd-errors";
 declare variable $errors:WARNING := "warning";
 declare variable $errors:ERROR := "error";
 declare variable $errors:INFO := "info";
+declare variable $errors:SKIPPED := "skipped";
 declare variable $errors:UNKNOWN := "unknown";
 declare variable $errors:BLOCKER := "blocker";
 
