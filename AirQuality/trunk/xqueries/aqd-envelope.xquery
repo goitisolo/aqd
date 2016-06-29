@@ -1,4 +1,4 @@
-xquery version "1.0";
+xquery version "3.0";
 (:
  : Module Name: AirQuality dataflow envelope level check(Main module)
  :

@@ -1,4 +1,4 @@
-xquery version "1.0" encoding "UTF-8";
+xquery version "3.0" encoding "UTF-8";
 (:
  : Module Name: Implementing Decision 2011/850/EU: AQ info exchange & reporting (Library module)
  :
@@ -119,17 +119,23 @@ let $tblD4 :=
 
 (: D5 :)
 let $gmlIds := $DCombinations/lower-case(normalize-space(@gml:id))
-let $duplicateGmlIds := distinct-values(
+let $D5tmp := distinct-values(
         for $id in $DCombinations/@gml:id
         where string-length(normalize-space($id)) > 0 and count(index-of($gmlIds, lower-case(normalize-space($id)))) > 1
         return
             $id
 )
+let $duplicateGmlIds :=
+    for $i in $D5tmp
+    return
+        <tr>
+            <td title="@gml:id">{$i}</td>
+        </tr>
 let $efInspireIds := for $id in $DCombinations/ef:inspireId
 return
     lower-case(concat("[", normalize-space($id/base:Identifier/base:localId), ", ", normalize-space($id/base:Identifier/base:namespace),
             ", ", normalize-space($id/base:Identifier/base:versionId), "]"))
-let $duplicateefInspireIds := distinct-values(
+let $D5tmp := distinct-values(
         for $id in $DCombinations/ef:inspireId
         let $key :=
             concat("[", normalize-space($id/base:Identifier/base:localId), ", ", normalize-space($id/base:Identifier/base:namespace),
@@ -138,13 +144,20 @@ let $duplicateefInspireIds := distinct-values(
         return
             $key
 )
+let $duplicateefInspireIds :=
+    for $i in $D5tmp
+    return
+        <tr>
+            <td title="@gml:id">{string($i)}</td>
+        </tr>
 
 
 let $aqdInspireIds := for $id in $DCombinations/aqd:inspireId
 return
     lower-case(concat("[", normalize-space($id/base:Identifier/base:localId), ", ", normalize-space($id/base:Identifier/base:namespace),
             ", ", normalize-space($id/base:Identifier/base:versionId), "]"))
-let $duplicateaqdInspireIds := distinct-values(
+
+let $D5tmp := distinct-values(
         for $id in $DCombinations/aqd:inspireId
         let $key :=
             concat("[", normalize-space($id/base:Identifier/base:localId), ", ", normalize-space($id/base:Identifier/base:namespace),
@@ -153,6 +166,12 @@ let $duplicateaqdInspireIds := distinct-values(
         return
             $key
 )
+let $duplicateaqdInspireIds :=
+    for $i in $D5tmp
+    return
+        <tr>
+            <td title="@gml:id">{string($i)}</td>
+        </tr>
 
 
 let $countGmlIdDuplicates := count($duplicateGmlIds)
@@ -219,13 +238,20 @@ let $invalidTimeZone := xmlconv:checkVocabularyConceptValues($source_url, "aqd:A
 let $amInspireIds := $docRoot//aqd:AQD_Station/ef:inspireId/base:Identifier/concat(lower-case(normalize-space(base:namespace)), '##',
         lower-case(normalize-space(base:localId)))
 
-let $duplicateEUStationCode := distinct-values(
+let $D15tmp := distinct-values(
         for $identifier in $docRoot//aqd:AQD_Station/ef:inspireId/base:Identifier
         where string-length(normalize-space($identifier/base:localId)) > 0 and count(index-of($amInspireIds,
                 concat(lower-case(normalize-space($identifier/base:namespace)), '##', lower-case(normalize-space($identifier/base:localId))))) > 1
         return
             concat(normalize-space($identifier/base:namespace), ':', normalize-space($identifier/base:localId))
 )
+let $D15invalid :=
+    for $i in $D15tmp
+    return
+        <tr>
+            <td title="id">{string($i)}</td>
+        </tr>
+
 let $countAmInspireIdDuplicates := count($duplicateEUStationCode)
 let $countD15duplicates := $countAmInspireIdDuplicates
 
@@ -314,8 +340,14 @@ let $D20invalid :=
 
 
 (: D21 - The Dimension attribute shall resolve to "2." :)
-let $invalidPos_srsDim  := distinct-values($docRoot//aqd:AQD_Station/ef:geometry/gml:Point/gml:pos[@srsDimension != "2"]/
+let $D21tmp := distinct-values($docRoot//aqd:AQD_Station/ef:geometry/gml:Point/gml:pos[@srsDimension != "2"]/
 concat(../../../ef:inspireId/base:Identifier/base:localId, ": srsDimension=", @srsDimension))
+let $invalidPos_srsDim :=
+    for $i in $D21tmp
+    return
+        <tr>
+            <td title="dimension">{string($i)}</td>
+        </tr>
 
 
 let $aqdStationPos :=
@@ -336,8 +368,13 @@ let $invalidPos_order :=
         let $samplingLat := if ($samplingLat castable as xs:decimal) then xs:decimal($samplingLat) else 0.00
         let $samplingLong := if ($samplingLong castable as xs:decimal) then xs:decimal($samplingLong) else 0.00
 
-        return if ($samplingLat < $samplingLong and $countryCode != 'FR')
-        then concat($gmlPos/ef:inspireId/base:Identifier/base:localId, " : lat=" , string($samplingLat), " :long=", string($samplingLong)) else ()
+        return
+            if ($samplingLat < $samplingLong and $countryCode != 'FR') then
+                <tr>
+                    <td title="lat/long">{concat($gmlPos/ef:inspireId/base:Identifier/base:localId, " : lat=" , string($samplingLat), " :long=", string($samplingLong))}</td>
+                </tr>
+            else
+                ()
 
 
 let $invalidPosD21 := (($invalidPos_srsDim), ($invalidPos_order))
@@ -395,20 +432,20 @@ let $invalidMeteoParams :=xmlconv:checkVocabulariesConceptEquipmentValues($sourc
 
 (: D28 :)
 let $invalidAreaClassification := xmlconv:checkVocabularyConceptValues($source_url, "aqd:AQD_Station", "aqd:areaClassification", $vocabulary:AREA_CLASSIFICATION_VOCABULARY)
-(: D29 :)
 
+(: D29 :)
 let $allDispersionLocal :=
-for $rec in $docRoot//aqd:AQD_Station/aqd:dispersionSituation/aqd:DispersionSituation/aqd:dispersionLocal
-return
-<tr>{$rec}</tr>
+    for $rec in $docRoot//aqd:AQD_Station/aqd:dispersionSituation/aqd:DispersionSituation/aqd:dispersionLocal
+    return
+        <tr>{$rec}</tr>
 let $invalidDispersionLocal := xmlconv:checkVocabularyConceptValues4($source_url, "aqd:AQD_Station", "aqd:dispersionLocal", $vocabulary:DISPERSION_LOCAL_VOCABULARY)
 
 (: D30 :)
 let $invalidDispersionRegional := xmlconv:checkVocabularyConceptValues4($source_url, "aqd:AQD_Station", "aqd:dispersionRegional", $vocabulary:DISPERSION_REGIONAL_VOCABULARY)
 let $allDispersionRegional :=
-for $rec in $docRoot//aqd:AQD_Station/aqd:dispersionSituation/aqd:DispersionSituation/aqd:dispersionRegional
-return
-<tr>{$rec}</tr>
+    for $rec in $docRoot//aqd:AQD_Station/aqd:dispersionSituation/aqd:DispersionSituation/aqd:dispersionRegional
+    return
+        <tr>{$rec}</tr>
 
 (: D31 Done by Rait:)
 let $localSamplingPointIds := $docRoot//gml:featureMember/aqd:AQD_SamplingPoint/ef:inspireId/base:Identifier/base:localId
@@ -423,16 +460,15 @@ let $invalidDuplicateSamplingPointIds :=
         </tr>
 
 (: D32 :)
-
 let $allBaseNamespace := distinct-values($docRoot//aqd:AQD_SamplingPoint//base:Identifier/base:namespace)
 
-let  $tblD32 :=
+let $tblD32 :=
     for $id in $allBaseNamespace
     let $localId := $docRoot//aqd:AQD_SamplingPoint//base:Identifier[base:namespace = $id]/base:localId
     return
         <tr>
-	    <td title="feature">SamplingPoint(s)</td>
-	    <td title="base:namespace">{$id}</td>
+            <td title="feature">SamplingPoint(s)</td>
+            <td title="base:namespace">{$id}</td>
             <td title="base:localId">{count($localId)}</td>
         </tr>
 
@@ -505,8 +541,13 @@ let $invalidSamplingPointPos :=
         let $samplingLong := if ($samplingLong castable as xs:decimal) then xs:decimal($samplingLong) else 0.00
         let $samplingLat := if ($samplingLat castable as xs:decimal) then xs:decimal($samplingLat) else 0.00
 
-        return if (abs($samplingLong - $stationLong) > $approximity
-        or abs($samplingLat - $stationLat) > $approximity) then $gmlPos/@gml:id else ()
+        return
+            if (abs($samplingLong - $stationLong) > $approximity or abs($samplingLat - $stationLat) > $approximity) then
+                <tr>
+                    <td title="@gml:id">{string($gmlPos/@gml:id)}</td>
+                </tr>
+            else
+                ()
 (: D37 :)
 (: check for invalid data or if beginPosition > endPosition :)
 let $invalidPosition  :=
@@ -782,8 +823,8 @@ let $tblD55 :=
     let $localId := $docRoot//aqd:AQD_SamplingPointProcess/ompr:inspireId/base:Identifier[base:namespace = $id]/base:localId
     return
         <tr>
-  	    <td title="feature">SamplingPointProcess(es)</td>
-	    <td title="base:namespace">{$id}</td>
+            <td title="feature">SamplingPointProcess(es)</td>
+            <td title="base:namespace">{$id}</td>
             <td title="unique localId">{count($localId)}</td>
         </tr>
 
@@ -938,7 +979,6 @@ let $allInvalidTrueUsedAQD68 :=
                     <td title="base:namespace">{data($invalidTrueUsedAQD68/ef:inspireId/base:Identifier/base:namespace)}</td>
                     <td title="ef:procedure">{$procId68}</td>
                     <td title="ef:ObservingCapability">{data($invalidTrueUsedAQD68/ef:observingCapability/ef:ObservingCapability/@gml:id)}</td>
-
                 </tr>
             else
                 ()
@@ -1013,16 +1053,19 @@ let $D73invalid :=
             <td title="gml:Point">{data($point/@gml:id)}</td>
             <td title="gml:Point/@srsName">{data($point/@srsName)}</td>
         </tr>
-let $strErr73 := for $tr in $D73invalid
-return data($tr/td[@title='aqd:AQD_Sample'])
-
 let $isInvalidInvalidD73 := if (count($allGmlPoint) > 0) then fn:true() else fn:false()
 let $errLevelD73 := if (count($allGmlPoint) > 0) then "error" else "warning"
 let $errMsg73  := if (count($allGmlPoint) > 0) then " errors found" else " gml:Point elements found"
 
 (: D74 :)
-let $invalidPointDimension  := distinct-values($docRoot//aqd:AQD_Sample/sams:shape/gml:Point[@srsDimension != "2"]/
+let $D74tmp := distinct-values($docRoot//aqd:AQD_Sample/sams:shape/gml:Point[@srsDimension != "2"]/
 concat(../@gml:id, ": srsDimension=", @srsDimension))
+let $invalidPointDimension  :=
+    for $i in $D74tmp
+    return
+        <tr>
+            <td title="dimension">{string($i)}</td>
+        </tr>
 
 (: D75 :)
 let $approximity := 0.0003
@@ -1054,7 +1097,9 @@ let $D75invalid :=
 
     return
         if (abs($samplingLong - $sampleLong) > $approximity or abs($samplingLat - $sampleLat) > $approximity) then
-            $x/../ef:inspireId/base:Identifier/string(base:localId)
+            <tr>
+                <td title="base:localId">{string($x/../ef:inspireId/base:Identifier/string(base:localId))}</td>
+            </tr>
         else
             ()
 
@@ -1116,7 +1161,13 @@ let $D77invalid :=
 (: D78 :)
 let $invalidInletHeigh :=
 for $inletHeigh in  $docRoot//aqd:AQD_Sample/aqd:inletHeight
-    return if (($inletHeigh/@uom != "http://dd.eionet.europa.eu/vocabulary/uom/length/m") or (common:is-a-number(data($inletHeigh))=false())) then $inletHeigh/../@gml:id else ()
+    return
+        if (($inletHeigh/@uom != "http://dd.eionet.europa.eu/vocabulary/uom/length/m") or (common:is-a-number(data($inletHeigh))=false())) then
+            <tr>
+                <td title="@gml:id">{string($inletHeigh/../@gml:id)}</td>
+            </tr>
+        else
+            ()
 
 (: D91 - Each aqd:AQD_Sample reported within the XML shall be xlinked (at least once) via aqd:AQD_SamplingPoint/ef:observingCapability/ef:ObservingCapability/ef:featureOfInterest/@xlink:href :)
 let $D91invalid :=
