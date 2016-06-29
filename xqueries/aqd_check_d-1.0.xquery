@@ -1242,9 +1242,9 @@ let $D94invalid :=
 return
     <table class="maintable hover">
         {html:buildResultRows("D1", $labels:D1, $labels:D1_SHORT, $tblAllFeatureTypes, "", string(sum($countFeatureTypes)), "", "","error")}
-        {html:buildResultRows("D2", $labels:D2, $labels:D2_SHORT, "", string(count($tblD2)), "", "","error",())}
-        {html:buildResultRows("D3", $labels:D3, $labels:D3_SHORT, "", string(count($tblD3)), "", "","error",())}
-        {html:buildResultRows("D4", $labels:D4, $labels:D4_SHORT, "", string(count($tblD4)), "", "","error",$tblD4)}
+        {html:buildResultRows("D2", $labels:D2, $labels:D2_SHORT, (), string(count($tblD2)), "", "", "","error")}
+        {html:buildResultRows("D3", $labels:D3, $labels:D3_SHORT, (), string(count($tblD3)), "", "", "","error")}
+        {html:buildResultRows("D4", $labels:D4, $labels:D4_SHORT, $tblD4, string(count($tblD4)), "", "", "","error")}
         {html:buildCountRow("D5", $countD5duplicates, $labels:D5, (), " duplicate", ())}
         {html:buildConcatRow($duplicateGmlIds, "aqd:AQD_Model/@gml:id - ")}
         {html:buildConcatRow($duplicateefInspireIds, "ef:inspireId - ")}

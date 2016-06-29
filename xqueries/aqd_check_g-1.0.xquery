@@ -127,7 +127,7 @@ for $attainment in $attainmentsInDelivery
         let $existingRec := not(empty(index-of($attainmentsInCR, $inspireKey)))
     return
     if ($existingRec = true() and empty(index-of($attainmentsKeysInCR, $key))) then
-    <tr>
+        <tr>
             <td title="gml:id">{data($attainment/@gml:id)}</td>
             <td title="base:localId">{data($attainment/aqd:inspireId/base:Identifier/base:localId)}</td>
             <td title="base:namespace">{data($attainment/aqd:inspireId/base:Identifier/base:namespace)}</td>
