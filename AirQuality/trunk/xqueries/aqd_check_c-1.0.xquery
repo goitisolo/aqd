@@ -403,11 +403,11 @@ let $invalidAqdAssessmentRegimeAqdPollutantC20 :=
             and ($aqdPollutantC20/../../aqd:exceedanceAttainment/fn:normalize-space(@xlink:href) != "http://dd.eionet.europa.eu/vocabulary/aq/assessmentthresholdexceedance/belowLTO"))
     return  $aqdPollutantC20/../../../../@gml:id:)
 
-(: C20 :)
+(: C21 :)
 let $environmentalObjectiveCombinations :=
     doc("http://dd.eionet.europa.eu/vocabulary/aq/environmentalobjective/rdf")
 
-let $invalidAqdAssessmentRegimeAqdPollutantC20 :=
+let $C21invalid :=
     for $x in $docRoot//aqd:AQD_AssessmentRegime/aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective
         let $pollutant := string($x/../../../../aqd:pollutant/@xlink:href)
         let $objectiveType := string($x/aqd:objectiveType/@xlink:href)
@@ -834,7 +834,7 @@ return
         {html:buildResultRows("C17", $labels:C17, $labels:C17_SHORT, $invalidAqdAssessmentRegimeAqdPollutantC17, "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error")}
         {html:buildResultRows("C18", $labels:C18, $labels:C18_SHORT, $invalidAqdAssessmentRegimeAqdPollutantC18, "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error")}
         {html:buildResultRows("C19", $labels:C19, $labels:C19_SHORT, $invalidAqdAssessmentRegimeAqdPollutantC19, "aqd:reportingMetric", "All values are valid", " invalid value", "","warning")}
-        {html:buildResultRows("C20", $labels:C20, $labels:C20_SHORT, $invalidAqdAssessmentRegimeAqdPollutantC20, "aqd:reportingMetric", "All values are valid", " invalid value", "","warning")}
+        {html:buildResultRows("C20", $labels:C20, $labels:C20_SHORT, $C21invalid, "aqd:reportingMetric", "All values are valid", " invalid value", "","warning")}
         {html:buildResultRows("C23a", $labels:C23a, $labels:C23a_SHORT, $invalidAqdAssessmentType, "aqd:AQD_AssesmentRegime", "All values are valid", " invalid value", "","error")}
         {html:buildResultRows("C23b", $labels:C23b, $labels:C23b_SHORT, $invalid23B, "aqd:AQD_AssesmentRegime", "All values are valid", " invalid value", "","warning")}
         {html:buildResultRows("C24", $labels:C24, $labels:C24_SHORT, (), "", "", " ", "","warning")}
