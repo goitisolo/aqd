@@ -359,6 +359,8 @@ declare variable $labels:E17 := labels:getLabel("E", "E17");
 declare variable $labels:E17_SHORT := labels:getLabel("E", "E17_SHORT");
 declare variable $labels:E18 := labels:getLabel("E", "E18");
 declare variable $labels:E18_SHORT := labels:getLabel("E", "E18_SHORT");
+declare variable $labels:E19 := labels:getLabel("E", "E19");
+declare variable $labels:E19_SHORT := labels:getLabel("E", "E19_SHORT");
 declare variable $labels:E21 := labels:getLabel("E", "E21");
 declare variable $labels:E21_SHORT := labels:getLabel("E", "E21_SHORT");
 
