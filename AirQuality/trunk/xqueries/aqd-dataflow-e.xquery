@@ -208,6 +208,22 @@ let $E16invalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+(: E17 :)
+let $E17invalid :=
+    try {
+        for $x in $docRoot//om:OM_Observation/om:result/swe:DataArray/swe:elementType/swe:DataRecord/swe:field[@name="Validity"
+                and not(swe:Category/@definition = "http://dd.eionet.europa.eu/vocabularies/aq/observationvalidity")]
+        return
+            <tr>
+                <td title="@gml:id">{string($x/../../../../../@gml:id)}</td>
+                <td title="swe:Category">{string($x/swe:Category/@definition)}</td>
+            </tr>
+    } catch * {
+        <tr status="failed">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
 
 (: E21 - /om:result/swe:DataArray/swe:encoding/swe:TextEncoding shall resolve to decimalSeparator="." tokenSeparator="," blockSeparator="@@" :)
 let $E21invalid :=
@@ -237,6 +253,7 @@ return
         {html:build2("E12", $labels:E12, $labels:E12_SHORT, $E12invalid, "", "All records are valid", "record", "", $errors:ERROR)}
         {html:build2("E15", $labels:E15, $labels:E15_SHORT, $E15invalid, "", "All records are valid", "record", "", $errors:ERROR)}
         {html:build2("E16", $labels:E16, $labels:E16_SHORT, $E16invalid, "", "All records are valid", "record", "", $errors:ERROR)}
+        {html:build2("E17", $labels:E17, $labels:E17_SHORT, $E17invalid, "", "All records are valid", "record", "", $errors:ERROR)}
         {html:build2("E21", $labels:E21, $labels:E21_SHORT, $E21invalid, "", "All records are valid", "record", "", $errors:WARNING)}
     </table>
 
