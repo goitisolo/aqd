@@ -651,45 +651,45 @@ let $invalidZoneType := xmlconv:checkVocabularyConceptValues($source_url, "", "a
 return
     <table class="maintable hover">
         {html:buildResultsSimpleRow("B1", $labels:B1, $labels:B1_SHORT, $countZones, "info")}
-        {html:buildResultRows("B2", $labels:B2, $labels:B2_SHORT, $tblB2, "", string(count($tblB2)), "", "", "error")}
+        {html:buildResultRows("B2", $labels:B2, $labels:B2_SHORT, $tblB2, "", string(count($tblB2)), "", "", $errors:ERROR)}
         {html:buildResultsSimpleRow("B3", $labels:B3, $labels:B3_SHORT, $countZonesWithAmGeometry, "info")}
         {html:buildResultsSimpleRow("B4", $labels:B4, $labels:B4_SHORT, $countZonesWithLAU, "info" )}
-        {html:buildResultRows("B6", $labels:B6, $labels:B6_SHORT, $tblB6, "", string(count($tblB6)), "", "", "error")}
-        {html:buildResultRows("B7", $labels:B7, $labels:B7_SHORT, $tblB7, "", string(count($tblB7)), "", "", "error")}
+        {html:buildResultRows("B6", $labels:B6, $labels:B6_SHORT, $tblB6, "", string(count($tblB6)), "", "", $errors:ERROR)}
+        {html:buildResultRows("B7", $labels:B7, $labels:B7_SHORT, $tblB7, "", string(count($tblB7)), "", "", $errors:ERROR)}
         {html:buildCountRow("B8", $countB8duplicates, $labels:B8_SHORT, (), " duplicate", $errors:WARNING)}
         {html:buildConcatRow($duplicateGmlIds, "aqd:AQD_Zone/@gml:id - ")}
         {html:buildConcatRow($duplicateamInspireIds, "am:inspireId - ")}
         {html:buildConcatRow($duplicateaqdInspireIds, "aqd:inspireId - ")}
         {html:buildCountRow("B9", $countB9duplicates, $labels:B9_SHORT, (), (), ())}
         {html:buildConcatRow($duplicateAmInspireIds, "Duplicate base:namespace:base:localId - ")}
-        {html:buildResultRows("B10", $labels:B10, $labels:B10_SHORT, $tblB10, "", string(count($tblB10)), "", "", "error")}
-        {html:buildResultRows_B("B10.1", $labels:B10.1, $labels:B10.1_SHORT, $invalidNamespaces, "base:Identifier/base:namespace", "All values are valid", " invalid namespaces", "", "error")}
+        {html:buildResultRows("B10", $labels:B10, $labels:B10_SHORT, $tblB10, "", string(count($tblB10)), "", "", $errors:ERROR)}
+        {html:buildResultRows_B("B10.1", $labels:B10.1, $labels:B10.1_SHORT, $invalidNamespaces, "base:Identifier/base:namespace", "All values are valid", " invalid namespaces", "", $errors:ERROR)}
         {html:buildResultRows_B("B13", $labels:B13, $labels:B13_SHORT, $invalidLangCode, "/aqd:AQD_Zone/am:name/gn:GeographicalName/gn:language", "All values are valid", " invalid value", $langSkippedMsg,"warning")}
-        {html:buildResultRows_B("B18", $labels:B18, $labels:B18_SHORT, $invalidgnSpellingOfName, "aqd:AQD_Zone/@gml:id","All text are valid"," invalid attribute","", "error")}
-        {html:buildResultRows_B("B20", $labels:B20, $labels:B20_SHORT, $invalidGmlIdsB20, "aqd:AQD_Zone/@gml:id","All srsName attributes are valid"," invalid attribute","", "error")}
+        {html:buildResultRows_B("B18", $labels:B18, $labels:B18_SHORT, $invalidgnSpellingOfName, "aqd:AQD_Zone/@gml:id","All text are valid"," invalid attribute","", $errors:ERROR)}
+        {html:buildResultRows_B("B20", $labels:B20, $labels:B20_SHORT, $invalidGmlIdsB20, "aqd:AQD_Zone/@gml:id","All srsName attributes are valid"," invalid attribute","", $errors:ERROR)}
         {html:buildResultRows_B("B21", $labels:B21, $labels:B21_SHORT, $invalidPosListDimension, "aqd:AQD_Zone/@gml:id", "All srsDimension attributes resolve to ""2""", " invalid attribute", "","warning")}
-        {html:buildResultRows_B("B22", $labels:B22, $labels:B22_SHORT, $invalidPosListCount, "gml:Polygon/@gml:id", "All values are valid", " invalid attribute", "","error")}
-        {html:buildResultRows_B("B23", $labels:B23, $labels:B23_SHORT, $invalidLatLong, "gml:Polygon", "All values are valid", " invalid attribute", "","error")}
+        {html:buildResultRows_B("B22", $labels:B22, $labels:B22_SHORT, $invalidPosListCount, "gml:Polygon/@gml:id", "All values are valid", " invalid attribute", "",$errors:ERROR)}
+        {html:buildResultRows_B("B23", $labels:B23, $labels:B23_SHORT, $invalidLatLong, "gml:Polygon", "All values are valid", " invalid attribute", "",$errors:ERROR)}
         {html:buildResultRows_B("B24", $labels:B24, $labels:B24_SHORT, $invalidManagementZones, "aqd:AQD_Zone/@gml:id", "All zoneType attributes are valid", " invalid attribute", "","warning")}
-        {html:buildResultRows_B("B25", $labels:B25, $labels:B25_SHORT, $invalidPosition, "gml:TimePeriod gml:id", "All positions are valid", " invalid position", "","error")}
-        {html:buildResultRows_B("B28", $labels:B28, $labels:B28_SHORT, $invalidLifespanVer, "gml:id", "All LifespanVersion values are valid", " invalid value", "","error")}
+        {html:buildResultRows_B("B25", $labels:B25, $labels:B25_SHORT, $invalidPosition, "gml:TimePeriod gml:id", "All positions are valid", " invalid position", "",$errors:ERROR)}
+        {html:buildResultRows_B("B28", $labels:B28, $labels:B28_SHORT, $invalidLifespanVer, "gml:id", "All LifespanVersion values are valid", " invalid value", "",$errors:ERROR)}
         {html:buildResultRows_B("B31", $labels:B31, $labels:B31_SHORT, $invalidLegalBasisName, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "","warning")}
         {html:buildResultRows_B("B32", $labels:B32, $labels:B32_SHORT, $invalidLegalBasisDate, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "","warning")}
         {html:buildResultRows_B("B33", $labels:B33, $labels:B33_SHORT, $invalidLegalBasisLink, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "","warning")}
         {html:buildCountRow("B35", $countB35duplicates, $labels:B35_SHORT, (), (), ())}
         {html:buildConcatRow($dublicateAmNamespaceAndaqdZoneCodeIds, "Duplicate base:namespace:aqd:zoneCode - ")}
-        {html:buildResultRows_B("B36", $labels:B36, $labels:B36_SHORT, $invalidResidentPopulation, "aqd:AQD_Zone/am:inspireId/base:Identifier/base:localId", "All values are valid", " invalid value", "", "error")}
+        {html:buildResultRows_B("B36", $labels:B36, $labels:B36_SHORT, $invalidResidentPopulation, "aqd:AQD_Zone/am:inspireId/base:Identifier/base:localId", "All values are valid", " invalid value", "", $errors:ERROR)}
         {html:buildResultRows_B("B37", $labels:B37, $labels:B37_SHORT, $invalidPopulationYear, "aqd:AQD_Zone/am:inspireId/base:Identifier/base:localId", "All values are valid", " invalid value", "","warning")}
-        {html:buildResultRows_B("B38", $labels:B38, $labels:B38_SHORT, $invalidArea, "aqd:AQD_Zone/am:inspireId/base:Identifier/base:localId", "All values are valid", " invalid value", "", "error")}
-        {html:buildResultRows("B39a", $labels:B39a, <span>{$labels:B39a_SHORT} - {html:buildInfoTable("B39a", $B39aItemsList)}</span>, $invalidPollutantCombinations, "aqd:AQD_Zone/am:inspireId/base:Identifier/base:localId", "All values are valid", " invalid value", "", "error")}
-        {html:buildResultTable("B39b", $labels:B39b, $labels:B39b_SHORT, $invalidPollutantOccurences, "aqd:AQD_Zone/am:inspireId/base:Identifier/base:localId", "All values are valid", " missing value", "", "error")}
-        {html:buildResultTable("B39c", $labels:B39c, $labels:B39c_SHORT, $invalidPollutantRepeated, "aqd:AQD_Zone/am:inspireId/base:Identifier/base:localId", "All values are valid", " invalid value", "", "error")}
+        {html:buildResultRows_B("B38", $labels:B38, $labels:B38_SHORT, $invalidArea, "aqd:AQD_Zone/am:inspireId/base:Identifier/base:localId", "All values are valid", " invalid value", "", $errors:ERROR)}
+        {html:buildResultRows("B39a", $labels:B39a, <span>{$labels:B39a_SHORT} - {html:buildInfoTable("B39a", $B39aItemsList)}</span>, $invalidPollutantCombinations, "aqd:AQD_Zone/am:inspireId/base:Identifier/base:localId", "All values are valid", " invalid value", "", $errors:WARNING)}
+        {html:buildResultTable("B39b", $labels:B39b, $labels:B39b_SHORT, $invalidPollutantOccurences, "aqd:AQD_Zone/am:inspireId/base:Identifier/base:localId", "All values are valid", " missing value", "", $errors:ERROR)}
+        {html:buildResultTable("B39c", $labels:B39c, $labels:B39c_SHORT, $invalidPollutantRepeated, "aqd:AQD_Zone/am:inspireId/base:Identifier/base:localId", "All values are valid", " invalid value", "", $errors:ERROR)}
         {xmlconv:buildResultRowsWithTotalCount("B40", $labels:B40, $labels:B40_SHORT, $invalidTimeExtensionExemption, "aqd:timeExtensionExemption", "", "", "")}
-        {html:buildResultTable("B41", $labels:B41, $labels:B41_SHORT, $invalidPollutansB41, "", "All values are valid", " invalid value", "", "error")}
-        {html:buildResultTable("B42", $labels:B42, $labels:B42_SHORT, $aqdInvalidPollutansB42, "", "All values are valid", " crucial invalid value", "", "error")}
-        {html:buildResultTable("B43", $labels:B43, $labels:B43_SHORT, $aqdInvalidPollutansBenzene, "", "All values are valid", " crucial invalid value", "", "error")}
+        {html:buildResultTable("B41", $labels:B41, $labels:B41_SHORT, $invalidPollutansB41, "", "All values are valid", " invalid value", "", $errors:ERROR)}
+        {html:buildResultTable("B42", $labels:B42, $labels:B42_SHORT, $aqdInvalidPollutansB42, "", "All values are valid", " crucial invalid value", "", $errors:ERROR)}
+        {html:buildResultTable("B43", $labels:B43, $labels:B43_SHORT, $aqdInvalidPollutansBenzene, "", "All values are valid", " crucial invalid value", "", $errors:ERROR)}
         {html:buildResultRows("B45", $labels:B45, $labels:B45_SHORT, $B45invalid, "aqd:AQD_Zone/am:inspireId/base:Identifier/base:localId", "All values are valid", " invalid value", "","warning")}
-        {html:buildResultRows_B("B46", $labels:B46, $labels:B46_SHORT, $invalidLink, "aqd:AQD_Zone/am:inspireId/base:Identifier/base:localId", "All values are valid", " invalid value", "", "error")}
+        {html:buildResultRows_B("B46", $labels:B46, $labels:B46_SHORT, $invalidLink, "aqd:AQD_Zone/am:inspireId/base:Identifier/base:localId", "All values are valid", " invalid value", "", $errors:ERROR)}
         {xmlconv:buildResultRowsWithTotalCount("B47", $labels:B47, $labels:B47_SHORT, $invalidZoneType, "aqd:reportingMetric", "", "", "")}
     </table>
 };
@@ -706,7 +706,7 @@ as element(tr)*{
     let $validMsg := if (count($invalidValues) = 0) then concat("Checked ", $countCheckedRecords, " value", substring("s", number(not($countCheckedRecords > 1)) * 2), ", all valid") else ""
 
     return
-        html:buildResultRows($ruleCode, $longText, $text, $records, $valueHeading, $validMsg, $invalidMsg, $skippedMsg, "error")
+        html:buildResultRows($ruleCode, $longText, $text, $records, $valueHeading, $validMsg, $invalidMsg, $skippedMsg, $errors:ERROR)
 };
 
 declare function xmlconv:checkVocabularyConceptValues($source_url as xs:string, $parentObject as xs:string, $featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string, $limitedIds as xs:string*, $vocabularyType as xs:string)
@@ -784,8 +784,8 @@ return
         else
             <div>
                 {
-                    if ($result//div/@class = 'error') then
-                        <p class="error" style="color:red"><strong>This XML file did NOT pass the following crucial check(s): {string-join($result//div[@class='error'], ',')}</strong></p>
+                    if ($result//div/@class = $errors:ERROR) then
+                        <p class="{$errors:ERROR}" style="color:red"><strong>This XML file did NOT pass the following crucial check(s): {string-join($result//div[@class=$errors:ERROR], ',')}</strong></p>
                     else
                         <p>This XML file passed all crucial checks.</p>
                 }
@@ -801,12 +801,12 @@ return
                     <legend>How to read the test results</legend>
                     All test results are labeled with coloured bullets. The number in the bullet reffers to the rule code. The background colour of the bullets means:
                     <ul style="list-style-type: none;">
-                        <li><div style="width:50px; display:inline-block;margin-left:10px">{html:getBullet('Blue', 'info')}</div> - the data confirms to the rule, but additional feedback could be provided in QA result.</li>
-                        <li><div style="width:50px; display:inline-block;margin-left:10px">{html:getBullet('Red', 'error')}</div> - the crucial check did NOT pass and errenous records found from the delivery.</li>
-                        <li><div style="width:50px; display:inline-block;margin-left:10px">{html:getBullet('Orange', 'warning')}</div> - the non-crucial check did NOT pass.</li>
-                        <li><div style="width:50px; display:inline-block;margin-left:10px">{html:getBullet('Grey', 'skipped')}</div> - the check was skipped due to no relevant values found to check.</li>
+                        <li><div style="width:50px; display:inline-block;margin-left:10px">{html:getBullet('Blue', $errors:INFO)}</div> - the data confirms to the rule, but additional feedback could be provided in QA result.</li>
+                        <li><div style="width:50px; display:inline-block;margin-left:10px">{html:getBullet('Red', $errors:ERROR)}</div> - the crucial check did NOT pass and errenous records found from the delivery.</li>
+                        <li><div style="width:50px; display:inline-block;margin-left:10px">{html:getBullet('Orange', $errors:WARNING)}</div> - the non-crucial check did NOT pass.</li>
+                        <li><div style="width:50px; display:inline-block;margin-left:10px">{html:getBullet('Grey', $errors:SKIPPED)}</div> - the check was skipped due to no relevant values found to check.</li>
                     </ul>
-                    <p>Click on the "Show records" link to see more details about the test result.</p>
+                    <p>Click on the "{$labels:SHOWRECORDS}" link to see more details about the test result.</p>
                 </fieldset>
                 <h3>Test results</h3>
                 {$result}
