@@ -21,6 +21,7 @@ import module namespace labels = "aqd-labels" at "aqd-labels.xquery";
 import module namespace vocabulary = "aqd-vocabulary" at "aqd-vocabulary.xquery";
 import module namespace query = "aqd-query" at "aqd-query.xquery";
 import module namespace errors = "aqd-errors" at "aqd-errors.xquery";
+import module namespace dd = "aqd-dd" at "aqd-dd.xquery";
 
 declare namespace aqd = "http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0";
 declare namespace gml = "http://www.opengis.net/gml/3.2";
@@ -532,9 +533,30 @@ let $invalidPollutantRepeated :=
                 <td title="base:localId">{data($x/am:inspireId/base:Identifier/base:localId)}</td>
             </tr>
 
-(: B40 - :)
-let $tempStr := xmlconv:checkVocabularyConceptValues($source_url, "", "aqd:AQD_Zone", "aqd:timeExtensionExemption", "http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/", (), "")
-let $invalidTimeExtensionExemption := $tempStr
+(: B40 - /aqd:timeExtensionExemption attribute must resolve to one of concept within http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/ :)
+let $B40invalid :=
+    try {
+        let $year := xs:integer(substring($docRoot//aqd:AQD_ReportingHeader/aqd:reportingPeriod/gml:TimePeriod/gml:beginPosition, 1, 4))
+        let $valid :=
+            if ($year > 2015) then
+                "http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/none"
+            else
+                dd:getValidConcepts("http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/rdf")
+            for $x in $docRoot//aqd:AQD_Zone/aqd:timeExtensionExemption/@xlink:href
+            where (not($x = $valid))
+            return
+                <tr>
+                    <td title="aqd:AQD_Zone">{string($x/../../am:inspireId/base:Identifier/base:localId)}</td>
+                    <td title="aqd:timeExtensionExemption">{string($x)}</td>
+                </tr>
+
+    } catch * {
+        <tr status="failed">
+            <td title="Error code"> {$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+            <td></td>
+        </tr>
+    }
 
 (: B41 :)
 let $zoneIds :=
@@ -684,7 +706,7 @@ return
         {html:buildResultRows("B39a", $labels:B39a, <span>{$labels:B39a_SHORT} - {html:buildInfoTable("B39a", $B39aItemsList)}</span>, $invalidPollutantCombinations, "aqd:AQD_Zone/am:inspireId/base:Identifier/base:localId", "All values are valid", " invalid value", "", $errors:WARNING)}
         {html:buildResultTable("B39b", $labels:B39b, $labels:B39b_SHORT, $invalidPollutantOccurences, "aqd:AQD_Zone/am:inspireId/base:Identifier/base:localId", "All values are valid", " missing value", "", $errors:ERROR)}
         {html:buildResultTable("B39c", $labels:B39c, $labels:B39c_SHORT, $invalidPollutantRepeated, "aqd:AQD_Zone/am:inspireId/base:Identifier/base:localId", "All values are valid", " invalid value", "", $errors:ERROR)}
-        {xmlconv:buildResultRowsWithTotalCount("B40", $labels:B40, $labels:B40_SHORT, $invalidTimeExtensionExemption, "aqd:timeExtensionExemption", "", "", "")}
+        {html:build2("B40", $labels:B40, $labels:B40_SHORT, $B40invalid, "aqd:timeExtensionExemption", "All values are valid", "record", "", $errors:ERROR)}
         {html:buildResultTable("B41", $labels:B41, $labels:B41_SHORT, $invalidPollutansB41, "", "All values are valid", " invalid value", "", $errors:ERROR)}
         {html:buildResultTable("B42", $labels:B42, $labels:B42_SHORT, $aqdInvalidPollutansB42, "", "All values are valid", " crucial invalid value", "", $errors:ERROR)}
         {html:buildResultTable("B43", $labels:B43, $labels:B43_SHORT, $aqdInvalidPollutansBenzene, "", "All values are valid", " crucial invalid value", "", $errors:ERROR)}
