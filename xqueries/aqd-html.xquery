@@ -391,8 +391,8 @@ declare function html:buildResultC31($ruleCode as xs:string, $resultsC as elemen
         for $x in $resultsC
             let $vsName := string($x/pollutantName)
             let $vsCode := string($x/pollutantCode)
-            let $countC := string($x/count)
-            let $countB := string($resultsB[pollutantName = $vsName]/count)
+            let $countC := xs:integer($x/count)
+            let $countB := xs:integer($resultsB[pollutantName = $vsName]/count)
         return
             if ($countC > $countB) then $errors:ERROR
             else if ($countB > $countC) then $errors:WARNING
