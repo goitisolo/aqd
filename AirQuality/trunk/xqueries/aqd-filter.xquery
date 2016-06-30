@@ -8,10 +8,8 @@ xquery version "3.0";
 
 module namespace filter = "aqd-filter";
 
-declare function filter:filterByName($results as element(results), $elem as xs:string, $string as xs:string*) as element(results) {
-    <results>{
-    for $x in $results/result
+declare function filter:filterByName($results as element(result)*, $elem as xs:string, $string as xs:string*) as element(result)* {
+    for $x in $results
     where ($x/*[local-name() = $elem] = $string)
-    return $x}
-    </results>
+    return $x
 };

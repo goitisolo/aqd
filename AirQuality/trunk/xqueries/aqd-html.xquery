@@ -384,15 +384,15 @@ declare function html:buildItemsList($ruleId as xs:string, $vocabularyUrl as xs:
         </div>
 };
 
-declare function html:buildResultC31($ruleCode as xs:string, $resultsC as element(results), $resultsB as element(results)) as element(tr)* {
+declare function html:buildResultC31($ruleCode as xs:string, $resultsC as element(result)*, $resultsB as element(result)*) as element(tr)* {
     let $text := $labels:C31_SHORT
     let $longText := $labels:C31
     let $bodyTR :=
-        for $x in $resultsC/result
+        for $x in $resultsC
             let $vsName := string($x/pollutantName)
             let $vsCode := string($x/pollutantCode)
             let $countC := string($x/count)
-            let $countB := string($resultsB/result[pollutantName = $vsName]/count)
+            let $countB := string($resultsB[pollutantName = $vsName]/count)
         return
         <tr class="{if ($countB != $countC) then "error" else ()}">
             <td>{$vsName}</td>
