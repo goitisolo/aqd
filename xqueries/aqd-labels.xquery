@@ -10,6 +10,7 @@ xquery version "3.0";
 module namespace labels = "aqd-labels";
 (: HTML Labels :)
 declare variable $labels:SHOWRECORDS := "Show Records";
+declare variable $labels:SHOWERRORS := "Show Errors";
 declare variable $labels:SHOWCOMBINATIONS := "Show Combinations";
 
 (: QC Labels :)

@@ -97,14 +97,12 @@ declare function html:getModalInfo($ruleCode, $longText) as element()* {
 
 declare function html:getBullet($text as xs:string, $level as xs:string) as element(div) {
     let $color :=
-        if ($level = "error") then
-            "red"
-        else if ($level = "warning") then
-            "orange"
-        else if ($level = "skipped") then
-            "gray"
-        else
-            "deepskyblue"
+        switch ($level)
+        case $errors:FAILED return $errors:COLOR_FAILED
+        case $errors:ERROR return $errors:COLOR_ERROR
+        case $errors:WARNING return $errors:COLOR_WARNING
+        case $errors:SKIPPED return $errors:COLOR_SKIPPED
+        default return $errors:COLOR_INFO
     return
         <div class="{$level}" style="background-color: { $color };">{ $text }</div>
 };
@@ -473,4 +471,50 @@ declare function html:buildCountRow($ruleCode as xs:string, $count as xs:integer
         <th colspan="2">{$header}</th>
         <td class="largeText">{$message}</td>
     </tr>
+};
+declare function html:buildCountRow2($ruleCode as xs:string, $longText, $text, $records as element(tr), $header as xs:string,
+        $validMessage as xs:string?, $unit as xs:string?, $errorClass as xs:string?) as element(tr)* {
+    let $status := xs:string($records/@status)
+    let $count := $records/@count
+    let $class :=
+        if ($status = $errors:FAILED) then
+            $errors:FAILED
+        else if ($count = 0) then
+            if (empty($errorClass)) then
+                $errors:ERROR
+            else
+                $errorClass
+        else
+            $errors:INFO
+    let $unit := if (empty($unit)) then "error" else $unit
+    let $validMessage := if (empty($validMessage)) then "All Ids are unique" else $validMessage
+    let $message :=
+        if ($status = $errors:FAILED) then
+            "Check failed:"
+        else if ($count = 0) then
+            "No " || $unit || "s found"
+        else
+            $validMessage
+    return
+        (<tr>
+            <td class="bullet">{html:getBullet($ruleCode, $class)}</td>
+            <th colspan="2">{$text} {html:getModalInfo($ruleCode, $longText)}</th>
+            <td><span class="largeText">{$message}</span>{
+                if ($status = $errors:FAILED) then
+                    <a id='feedbackLink-{$ruleCode}' href='javascript:toggle("feedbackRow","feedbackLink", "{$ruleCode}")' style="padding-left:10px;">{$labels:SHOWERRORS}</a>
+                else ()}
+            </td>
+        </tr>,
+        if ($status = $errors:FAILED) then
+        <tr>
+            <td></td>
+            <td colspan="3">
+                <table class="datatable" id="feedbackRow-{$ruleCode}">
+                    <tr>{
+                        for $th in $records[1]//td return <th>{ data($th/@title) }</th>
+                    }</tr>
+                    {$records}
+                </table>
+            </td>
+        </tr> else ())
 };

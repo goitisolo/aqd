@@ -393,15 +393,30 @@ let $invalidAqdAssessmentRegimeAqdPollutantC19 :=
         else
             ()
 
-(: DEPRECATED C20
-    TODO: REMOVE after testing
+(: C20 :)
+let $C20count :=
+    try {
+        let $rdf := doc("http://dd.eionet.europa.eu/vocabulary/aq/environmentalobjective/rdf")
+        let $rdf :=
+            for $x in $rdf//skos:Concept[string-length(prop:exceedanceThreshold) > 0]
+            return $x/prop:relatedPollutant/@rdf:resource || $x/prop:hasObjectiveType/@rdf:resource || $x/prop:hasReportingMetric/@rdf:resource || $x/prop:hasProtectionTarget/@rdf:resource
 
-let $invalidAqdAssessmentRegimeAqdPollutantC20 :=
-     for $aqdPollutantC20 in  $docRoot//aqd:AQD_AssessmentRegime[count(aqd:pollutant)>0 and aqd:pollutant/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/7"
-        and aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType/@xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LTO"]/aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective
-     where (($aqdPollutantC20/../../aqd:exceedanceAttainment/fn:normalize-space(@xlink:href) != "http://dd.eionet.europa.eu/vocabulary/aq/assessmentthresholdexceedance/aboveLTO")
-            and ($aqdPollutantC20/../../aqd:exceedanceAttainment/fn:normalize-space(@xlink:href) != "http://dd.eionet.europa.eu/vocabulary/aq/assessmentthresholdexceedance/belowLTO"))
-    return  $aqdPollutantC20/../../../../@gml:id:)
+        let $reported :=
+            $docRoot//aqd:AQD_AssessmentRegime/aqd:assessmentThreshold/aqd:AssessmentThreshold/
+                    aqd:environmentalObjective/aqd:EnvironmentalObjective[not(aqd:objectiveType/@xlink:href = $vocabulary:OBJECTIVETYPE_VOCABULARY || "MO")]
+        return
+            <tr count="{count(
+                for $x in $reported
+                where ($x/../../../../aqd:pollutant/@xlink:href || $x/aqd:objectiveType/@xlink:href || $x/aqd:reportingMetric/@xlink:href || $x/aqd:protectionTarget/@xlink:href) = $rdf
+                return 1)}">
+            </tr>
+
+    } catch * {
+        <tr status="failed">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
 
 (: C21 :)
 let $environmentalObjectiveCombinations :=
@@ -834,7 +849,8 @@ return
         {html:buildResultRows("C17", $labels:C17, $labels:C17_SHORT, $invalidAqdAssessmentRegimeAqdPollutantC17, "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error")}
         {html:buildResultRows("C18", $labels:C18, $labels:C18_SHORT, $invalidAqdAssessmentRegimeAqdPollutantC18, "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error")}
         {html:buildResultRows("C19", $labels:C19, $labels:C19_SHORT, $invalidAqdAssessmentRegimeAqdPollutantC19, "aqd:reportingMetric", "All values are valid", " invalid value", "","warning")}
-        {html:buildResultRows("C20", $labels:C20, $labels:C20_SHORT, $C21invalid, "aqd:reportingMetric", "All values are valid", " invalid value", "","warning")}
+        {html:buildCountRow2("C20", $labels:C20, $labels:C20_SHORT, $C20count, "", "At least one valid record found", "record", "warning")}
+        {html:buildResultRows("C21", $labels:C21, $labels:C21_SHORT, $C21invalid, "aqd:reportingMetric", "All values are valid", " invalid value", "","warning")}
         {html:buildResultRows("C23a", $labels:C23a, $labels:C23a_SHORT, $invalidAqdAssessmentType, "aqd:AQD_AssesmentRegime", "All values are valid", " invalid value", "","error")}
         {html:buildResultRows("C23b", $labels:C23b, $labels:C23b_SHORT, $invalid23B, "aqd:AQD_AssesmentRegime", "All values are valid", " invalid value", "","warning")}
         {html:buildResultRows("C24", $labels:C24, $labels:C24_SHORT, (), "", "", " ", "","warning")}
