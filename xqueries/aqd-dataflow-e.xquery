@@ -142,6 +142,22 @@ let $E8invalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+    (: E10 - /om:observedProperty xlink:href attribute shall resolve to a traversable link to http://dd.eionet.europa.eu/vocabulary/aq/pollutant/ :)
+let $E10invalid :=
+    try {
+        let $all := dd:getValidConcepts("http://dd.eionet.europa.eu/vocabulary/aq/pollutant/rdf")
+        for $x in $docRoot//om:OM_Observation/om:observedProperty/@xlink:href
+        where not($x = $all)
+        return
+            <tr>
+                <td title="@gml:id">{string($x/../../@gml:id)}</td>
+            </tr>
+    } catch * {
+        <tr status="failed">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
 
 (: E21 - /om:result/swe:DataArray/swe:encoding/swe:TextEncoding shall resolve to decimalSeparator="." tokenSeparator="," blockSeparator="@@" :)
 let $E21invalid :=
@@ -161,13 +177,14 @@ let $E21invalid :=
 
 return
     <table class="maintable hover">
-        {html:buildResultRows("E1", $labels:E1, $labels:E1_SHORT, $E1invalid, "", "", "", "", $errors:ERROR)}
-        {html:buildResultRows("E2", $labels:E2, $labels:E2_SHORT, $E2invalid, "", "", "", "", $errors:ERROR)}
-        {html:buildResultRows("E3", $labels:E3, $labels:E3_SHORT, $E3invalid, "", "", "", "", $errors:ERROR)}
-        {html:buildResultRows("E5", $labels:E5, $labels:E5_SHORT, $E5invalid, "", "", "", "", $errors:ERROR)}
-        {html:buildResultRows("E7", $labels:E7, $labels:E7_SHORT, $E7invalid, "", "", "", "", $errors:WARNING)}
-        {html:buildResultRows("E8", $labels:E8, $labels:E8_SHORT, $E8invalid, "", "", "", "", $errors:WARNING)}
-        {html:buildResultRows("E21", $labels:E21, $labels:E21_SHORT, $E21invalid, "", "", "", "", $errors:WARNING)}
+        {html:build2("E1", $labels:E1, $labels:E1_SHORT, $E1invalid, "", "All records are valid", "record", "", $errors:ERROR)}
+        {html:build2("E2", $labels:E2, $labels:E2_SHORT, $E2invalid, "", "All records are valid", "record", "", $errors:ERROR)}
+        {html:build2("E3", $labels:E3, $labels:E3_SHORT, $E3invalid, "", "All records are valid", "record", "", $errors:ERROR)}
+        {html:build2("E5", $labels:E5, $labels:E5_SHORT, $E5invalid, "", "All records are valid", "record", "", $errors:ERROR)}
+        {html:build2("E7", $labels:E7, $labels:E7_SHORT, $E7invalid, "", "All records are valid", "record", "", $errors:WARNING)}
+        {html:build2("E8", $labels:E8, $labels:E8_SHORT, $E8invalid, "", "All records are valid", "record", "", $errors:WARNING)}
+        {html:build2("E10", $labels:E10, $labels:E10_SHORT, $E10invalid, "", "All records are valid", "record", "", $errors:ERROR)}
+        {html:build2("E21", $labels:E21, $labels:E21_SHORT, $E21invalid, "", "All records are valid", "record", "", $errors:WARNING)}
     </table>
 
 };
