@@ -387,6 +387,21 @@ declare function html:buildItemsList($ruleId as xs:string, $vocabularyUrl as xs:
 declare function html:buildResultC31($ruleCode as xs:string, $resultsC as element(result)*, $resultsB as element(result)*) as element(tr)* {
     let $text := $labels:C31_SHORT
     let $longText := $labels:C31
+    let $errorTmp :=
+        for $x in $resultsC
+            let $vsName := string($x/pollutantName)
+            let $vsCode := string($x/pollutantCode)
+            let $countC := string($x/count)
+            let $countB := string($resultsB[pollutantName = $vsName]/count)
+        return
+            if ($countC > $countB) then $errors:ERROR
+            else if ($countB > $countC) then $errors:WARNING
+            else ()
+    let $errorClass :=
+        if ($errorTmp = $errors:ERROR) then $errors:ERROR
+        else if ($errorTmp = $errors:WARNING) then $errors:WARNING
+        else $errors:INFO
+
     let $bodyTR :=
         for $x in $resultsC
             let $vsName := string($x/pollutantName)
@@ -394,13 +409,13 @@ declare function html:buildResultC31($ruleCode as xs:string, $resultsC as elemen
             let $countC := string($x/count)
             let $countB := string($resultsB[pollutantName = $vsName]/count)
         return
-        <tr class="{if ($countB != $countC) then "error" else ()}">
+        <tr class="{$errorClass}">
             <td>{$vsName}</td>
             <td>{$vsCode}</td>
             <td>{$countC}</td>
             <td>{$countB}</td>
         </tr>
-    let $bulletType := if (count($bodyTR[@class = "error"]) > 0) then "error" else "info"
+    let $bulletType := errors:getMaxError($bodyTR)
     return
         (<tr>
             <td class="bullet">{ html:getBullet($ruleCode, $bulletType) }</td>

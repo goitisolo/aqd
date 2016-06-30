@@ -650,7 +650,7 @@ let $C31tmp :=
             <result>
                 <pollutantName>{dd:getNameFromPollutantCode($pollutant)}</pollutantName>
                 <pollutantCode>{tokenize($pollutant, "/")[last()]}</pollutantCode>
-                <count>{ count($key) }</count>
+                <count>{count(distinct-values($key))}</count>
             </result>
 let $C31ResultC := filter:filterByName($C31tmp, "pollutantCode", (
     "1","7","8","9","5", "6001", "10", "20", "5012", "5018", "5014", "5015", "5029"
