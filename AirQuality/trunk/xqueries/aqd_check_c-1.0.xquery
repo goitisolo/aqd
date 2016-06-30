@@ -634,7 +634,10 @@ let $C31ResultB :=
     return
         <result>
             <pollutantName>{string($i/sparql:binding[@name = "Pollutant"]/sparql:literal)}</pollutantName>
-            <count>{string($i/sparql:binding[@name = "countOnB"]/sparql:literal)}</count>
+            <count>{
+                let $x := string($i/sparql:binding[@name = "countOnB"]/sparql:literal)
+                return if ($x castable as xs:integer) then xs:integer($x) else 0
+            }</count>
         </result>
 
 let $C31tmp :=
