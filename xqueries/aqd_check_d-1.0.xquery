@@ -418,7 +418,7 @@ let $invalidPosD21 := (($invalidPos_srsDim), ($invalidPos_order))
 
 
 
-(: D24 Done by Rait:)
+(: D24 - List the total number of aqd:AQD_Station which are operational :)
 let $allUnknownEfOperationActivityPeriodD24 :=
     for $operationActivityPeriod in $docRoot//gml:featureMember/aqd:AQD_Station/ef:operationalActivityPeriod
     where $operationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:endPosition[normalize-space(@indeterminatePosition)="unknown"]
