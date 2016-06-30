@@ -159,6 +159,25 @@ let $E10invalid :=
         </tr>
     }
 
+(: E12 :)
+(: IMPLEMENTATION PENDING :)
+let $E12invalid :=
+    try {
+        let $all := ()
+        for $x in $docRoot//om:OM_Observation
+            let $feature := string($x/om:featureOfInterest/@xlink:href)
+        where ($feature = "") or not($feature = $all)
+        return
+            <tr>
+                <td title="@gml:id">{string($x/@gml:id)}</td>
+            </tr>
+    } catch * {
+        <tr status="failed">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
+
 (: E21 - /om:result/swe:DataArray/swe:encoding/swe:TextEncoding shall resolve to decimalSeparator="." tokenSeparator="," blockSeparator="@@" :)
 let $E21invalid :=
     try {
@@ -184,6 +203,7 @@ return
         {html:build2("E7", $labels:E7, $labels:E7_SHORT, $E7invalid, "", "All records are valid", "record", "", $errors:WARNING)}
         {html:build2("E8", $labels:E8, $labels:E8_SHORT, $E8invalid, "", "All records are valid", "record", "", $errors:WARNING)}
         {html:build2("E10", $labels:E10, $labels:E10_SHORT, $E10invalid, "", "All records are valid", "record", "", $errors:ERROR)}
+        {html:build2("E12", $labels:E12, $labels:E12_SHORT, $E12invalid, "", "All records are valid", "record", "", $errors:ERROR)}
         {html:build2("E21", $labels:E21, $labels:E21_SHORT, $E21invalid, "", "All records are valid", "record", "", $errors:WARNING)}
     </table>
 
