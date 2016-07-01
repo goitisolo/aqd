@@ -553,6 +553,25 @@ as xs:string
 };
 :)
 
+declare function query:getG13($envelopeUrl as xs:string, $reportingYear as xs:string) as xs:string {
+  "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
+PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+PREFIX aq: <http://reference.eionet.europa.eu/aq/ontology/>
+
+           SELECT ?zone ?inspireId ?localId ?inspireLabel
+           WHERE {
+                  ?regime a aqd:AQD_AssessmentRegime ;
+                  aqd:zone ?zone ;
+                  aqd:inspireId ?inspireId .
+                  ?zone aq:reportingBegin ?reportingYear .
+                  ?inspireId rdfs:label ?inspireLabel .
+                  ?inspireId aqd:localId ?localId .
+           FILTER (CONTAINS(str(?regime), '" || $envelopeUrl || "c/'))
+           FILTER (strstarts(str(?reportingYear), '" || $reportingYear || "'))
+       }"
+};
+
 declare function query:getExistingAttainmentSqarql($cdrUrl as xs:string) as xs:string {
   concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
