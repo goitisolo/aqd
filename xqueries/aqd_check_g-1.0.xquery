@@ -334,22 +334,28 @@ let $invalidExceedanceDescriptionAdjustment:=
      </tr>
 
 (: G13 :)
-let $resultXml := if (fn:string-length($countryCode) = 2) then query:getLocallD($cdrUrl) else ""
-let $isLocallDCodesAvailable := string-length($resultXml) > 0 and doc-available(sparqlx:getSparqlEndpointUrl($resultXml, "xml"))
-let $inspireLabel := if($isLocallDCodesAvailable) then distinct-values(data(sparqlx:executeSparqlQuery($resultXml)//sparql:binding[@name='inspireLabel']/sparql:literal)) else "x"
-let $isLocallDCodesAvailable := count($resultXml) > 0
-
-let $invalidAssessment :=
-     for $x in $docRoot//aqd:AQD_Attainment/aqd:assessment
-    where $isLocallDCodesAvailable
-    return  if (empty(index-of($inspireLabel, $x/fn:normalize-space(@xlink:href)))) then
-        <tr>
-        <td title="Feature type">{ "aqd:AQD_Attainment" }</td>
-        <td title="gml:id">{data($x/../@gml:id)}</td>
-        <!--<td title="gml:id">{data($inspireLabel)}</td>-->
-        <td title="aqd:assessment">{data($x/fn:normalize-space(@xlink:href))}</td>
-    </tr>
-    else ()
+let $G13invalid :=
+    try {
+        let $query := query:getG13($cdrUrl, $reportingYear)
+        let $inspireLabels :=
+            if (doc-available(sparqlx:getSparqlEndpointUrl($query, "xml"))) then
+                distinct-values(data(sparqlx:executeSparqlQuery(query:getG13($cdrUrl, $reportingYear))//sparql:binding[@name='inspireLabel']/sparql:literal))
+            else
+                ()
+        for $x in $docRoot//aqd:AQD_Attainment/aqd:assessment[not(@xlink:href = $inspireLabels)]
+        return
+            <tr>
+                <td title="Feature type">{"aqd:AQD_Attainment"}</td>
+                <td title="gml:id">{data($x/../@gml:id)}</td>
+                <td title="aqd:assessment">{data($x/@xlink:href)}</td>
+            </tr>
+    } catch * {
+        <tr status="failed">
+            <td title="Error code"> {$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+            <td></td>
+        </tr>
+    }
 
 (: G14 - COUNT number zone-pollutant-target comibantion to match those in dataset B and dataset C for the same reporting Year & compare it with Attainment. :)
 let $G14resultBC :=
@@ -1022,7 +1028,7 @@ return
         {html:buildResultRows("G12", <span>WHERE ./aqd:pollutant xlink:href attribute EQUALs  <a href="{ $vocabulary:POLLUTANT_VOCABULARY }">{ $vocabulary:POLLUTANT_VOCABULARY }</a> that must be one of
             {xmlconv:buildVocItemsList("G12", $vocabulary:POLLUTANT_VOCABULARY, $xmlconv:VALID_POLLUTANT_IDS_11)} ./aqd:exceedanceDescriptionAdjustment may occur</span>, $labels:PLACEHOLDER,
                 $invalidExceedanceDescriptionAdjustment, "base:namespace", "All values are valid", " invalid value", "", "error")}
-        {html:buildResultRows("G13", $labels:G13, $labels:G13_SHORT, $invalidAssessment, "base:namespace", "All values are valid", " invalid value", "","error")}
+        {html:buildResultRows("G13", $labels:G13, $labels:G13_SHORT, $G13invalid, "base:namespace", "All values are valid", " invalid value", "","error")}
         {html:buildResultG14("G14", $labels:G14, $labels:G14_SHORT, $G14resultBC, $G14ResultG)}
         {html:buildResultRows("G15", $labels:G15, $labels:G15_SHORT, $invalidAssessmentZone, "base:namespace", "All values are valid", " invalid value", "","error")}
         {html:buildResultRows("G17", $labels:G17, $labels:G17_SHORT, $invalidPollutant, "base:namespace", "All values are valid", " invalid value", "","error")}
