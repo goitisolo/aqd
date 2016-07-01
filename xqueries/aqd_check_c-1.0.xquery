@@ -22,6 +22,7 @@ import module namespace vocabulary = "aqd-vocabulary" at "aqd-vocabulary.xquery"
 import module namespace dd = "aqd-dd" at "aqd-dd.xquery";
 import module namespace filter = "aqd-filter" at "aqd-filter.xquery";
 import module namespace query = "aqd-query" at "aqd-query.xquery";
+import module namespace errors = "aqd-errors" at "aqd-errors.xquery";
 
 declare namespace aqd = "http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0";
 declare namespace gml = "http://www.opengis.net/gml/3.2";
@@ -571,8 +572,6 @@ let $invalidEqual2 :=
 
 let $countZoneIds1 := count($zoneIds)
 let $countZoneIds2 := count(distinct-values($docRoot//aqd:AQD_AssessmentRegime/aqd:zone/@xlink:href))
-
-
 let $resultC27 := (($invalidEqual), ($invalidEqual2))
 
 (: 29 :)
@@ -837,7 +836,7 @@ return
         {html:buildResultRows("C6", $labels:C6, $labels:C6_SHORT, $tblC6, "", string(count($tblC6)), "", "","info")}
         {html:buildResultRows("C6.1", $labels:C6.1, $labels:C6.1_SHORT, $invalidNamespaces, "base:Identifier/base:namespace", "All values are valid", " invalid namespaces", "", "error")}
         {html:buildResultRows("C7", $labels:C7, $labels:C7_SHORT, $C7invalid, "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error")}
-        {html:buildResultRows("C8", $labels:C8, $labels:C8_SHORT, xmlconv:buildVocItemRows($vocabulary:POLLUTANT_VOCABULARY, $missingPollutantC8), "", "", " missing pollutant", "", "warning")}
+        {html:buildResultRows("C8", $labels:C8, $labels:C8_SHORT, xmlconv:buildVocItemRows($vocabulary:POLLUTANT_VOCABULARY, $missingPollutantC8), "", "", " missing pollutant", "", $errors:WARNING)}
         {html:buildResultRows("C9", $labels:C9, $labels:C9_SHORT, xmlconv:buildVocItemRows($vocabulary:POLLUTANT_VOCABULARY, $foundPollutantC9), "", string(count($foundPollutantC9)), "", "", "info")}
         {html:buildResultRows("C10", $labels:C10, $labels:C10_SHORT, $invalidAqdAssessmentRegimeAqdPollutant, "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error")}
         {html:buildResultRows("C11", $labels:C11, $labels:C11_SHORT, $invalidAqdAssessmentRegimeAqdPollutantC11, "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "","error")}

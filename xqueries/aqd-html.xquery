@@ -443,6 +443,67 @@ declare function html:buildResultC31($ruleCode as xs:string, $resultsC as elemen
             </td>
         </tr>)
 };
+declare function html:buildResultG14($ruleCode as xs:string, $longText, $text, $resultsBC as element(result)*, $resultsG as element(result)*) as element(tr)* {
+    let $errorTmp :=
+        for $x in $resultsBC
+        let $vsName := string($x/pollutantName)
+        let $vsCode := string($x/pollutantCode)
+        let $countB := xs:integer($x/countB)
+        let $countC := xs:integer($x/countC)
+        let $countG := xs:integer($resultsG[pollutantName = $vsName]/count)
+        return
+            if ($countG > $countC) then $errors:ERROR
+            else if ($countC > $countG) then $errors:WARNING
+            else ()
+    let $errorClass :=
+        if ($errorTmp = $errors:ERROR) then $errors:ERROR
+        else if ($errorTmp = $errors:WARNING) then $errors:WARNING
+        else $errors:INFO
+
+    let $bodyTR :=
+        for $x in $resultsBC
+        let $vsName := string($x/pollutantName)
+        let $vsCode := string($x/pollutantCode)
+        let $countB := string($x/countB)
+        let $countC := string($x/countC)
+        let $countG := string($resultsG[pollutantName = $vsName]/count)
+        return
+            <tr class="{$errorClass}">
+                <td>{$vsName}</td>
+                <td>{$vsCode}</td>
+                <td>{$countB}</td>
+                <td>{$countC}</td>
+                <td>{$countG}</td>
+            </tr>
+    let $bulletType := errors:getMaxError($bodyTR)
+    return
+        (<tr>
+            <td class="bullet">{ html:getBullet($ruleCode, $bulletType) }</td>
+            <th colspan="2">{ $text } {html:getModalInfo($ruleCode, $longText)}</th>
+            <td>
+                <a id='feedbackLink-{$ruleCode}' href='javascript:toggle("feedbackRow","feedbackLink", "{$ruleCode}")'>{$labels:SHOWRECORDS}</a>
+            </td>
+        </tr>,
+        <tr>
+            <td></td>
+            <td>
+                <table class="datatable" id="feedbackRow-{$ruleCode}">
+                    <thead>
+                        <tr>
+                            <th>Pollutant Name</th>
+                            <th>Pollutant Code</th>
+                            <th>Count B</th>
+                            <th>Count C</th>
+                            <th>Count G</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {$bodyTR}
+                    </tbody>
+                </table>
+            </td>
+        </tr>)
+};
 
 declare function html:buildInfoTable($ruleId as xs:string, $table as element(table)) {
     <div>

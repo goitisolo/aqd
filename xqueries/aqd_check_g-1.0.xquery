@@ -20,6 +20,9 @@ import module namespace labels = "aqd-labels" at "aqd-labels.xquery";
 import module namespace html = "aqd-html" at "aqd-html.xquery";
 import module namespace vocabulary = "aqd-vocabulary" at "aqd-vocabulary.xquery";
 import module namespace query = "aqd-query" at "aqd-query.xquery";
+import module namespace errors = "aqd-errors" at "aqd-errors.xquery";
+import module namespace dd = "aqd-dd" at "aqd-dd.xquery";
+import module namespace filter = "aqd-filter" at "aqd-filter.xquery";
 
 declare namespace aqd = "http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0";
 declare namespace gml = "http://www.opengis.net/gml/3.2";
@@ -69,6 +72,7 @@ declare function xmlconv:checkReport($source_url as xs:string, $countryCode as x
 let $envelopeUrl := common:getEnvelopeXML($source_url)
 let $docRoot := doc($source_url)
 let $cdrUrl := common:getCdrUrl($countryCode)
+let $reportingYear := common:getReportingYear($docRoot)
 
 (: G1 :)
 let $countAttainments := count($docRoot//aqd:AQD_Attainment)
@@ -347,7 +351,39 @@ let $invalidAssessment :=
     </tr>
     else ()
 
-(: G14 TODO Need's clarification , number of fields doesn't match :)
+(: G14 - COUNT number zone-pollutant-target comibantion to match those in dataset B and dataset C for the same reporting Year & compare it with Attainment. :)
+let $G14resultBC :=
+    for $i in sparqlx:executeSparqlQuery(query:getG14($countryCode))
+    where ($i/sparql:binding[@name = "ReportingYear"]/string(sparql:literal) = $reportingYear)
+    return
+        <result>
+            <pollutantName>{string($i/sparql:binding[@name = "Pollutant"]/sparql:literal)}</pollutantName>
+            <countB>{
+                let $x := string($i/sparql:binding[@name = "countOnB"]/sparql:literal)
+                return if ($x castable as xs:integer) then xs:integer($x) else 0
+            }</countB>
+            <countC>{
+                let $x := string($i/sparql:binding[@name = "countOnC"]/sparql:literal)
+                return if ($x castable as xs:integer) then xs:integer($x) else 0
+            }</countC>
+        </result>
+let $G14tmp :=
+    for $x in $docRoot//aqd:AQD_Attainment/aqd:environmentalObjective/aqd:EnvironmentalObjective/
+            aqd:protectionTarget[not(../string(aqd:objectiveType/@xlink:href) = ("http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/MO", "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/ECO"))]
+    let $pollutant := $x/../../../aqd:pollutant/@xlink:href
+    let $zone := $x/../../../aqd:zone/@xlink:href
+    let $protectiontarget := $x/@xlink:href
+    let $key := string-join(($zone, $pollutant, $protectiontarget), "#")
+    group by $pollutant
+    return
+        <result>
+            <pollutantName>{dd:getNameFromPollutantCode($pollutant)}</pollutantName>
+            <pollutantCode>{tokenize($pollutant, "/")[last()]}</pollutantCode>
+            <count>{count(distinct-values($key))}</count>
+        </result>
+let $G14ResultG := filter:filterByName($G14tmp, "pollutantCode", (
+    "1","7","8","9","5", "6001", "10", "20", "5012", "5018", "5014", "5015", "5029"
+))
 
 (: G15 :)
 let $resultXml := if (fn:string-length($countryCode) = 2) then query:getZoneLocallD($cdrUrl) else ""
@@ -987,6 +1023,7 @@ return
             {xmlconv:buildVocItemsList("G12", $vocabulary:POLLUTANT_VOCABULARY, $xmlconv:VALID_POLLUTANT_IDS_11)} ./aqd:exceedanceDescriptionAdjustment may occur</span>, $labels:PLACEHOLDER,
                 $invalidExceedanceDescriptionAdjustment, "base:namespace", "All values are valid", " invalid value", "", "error")}
         {html:buildResultRows("G13", $labels:G13, $labels:G13_SHORT, $invalidAssessment, "base:namespace", "All values are valid", " invalid value", "","error")}
+        {html:buildResultG14("G14", $labels:G14, $labels:G14_SHORT, $G14resultBC, $G14ResultG)}
         {html:buildResultRows("G15", $labels:G15, $labels:G15_SHORT, $invalidAssessmentZone, "base:namespace", "All values are valid", " invalid value", "","error")}
         {html:buildResultRows("G17", $labels:G17, $labels:G17_SHORT, $invalidPollutant, "base:namespace", "All values are valid", " invalid value", "","error")}
         {html:buildResultRows("G18", $labels:G18, $labels:G18_SHORT, $invalidObjectiveType, "base:namespace", "All values are valid", " invalid value", "","error")}
@@ -1059,7 +1096,7 @@ return
         {html:buildResultRowsWithTotalCount_G("G52", <span>The content of /aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:areaClassification xlink:xref shall resolve to a areaClassification in
             <a href="{ $vocabulary:AREA_CLASSIFICATION_VOCABULARY}">{ $vocabulary:AREA_CLASSIFICATION_VOCABULARY}</a> that must be one of
             {xmlconv:buildVocItemsList("G52", $vocabulary:AREA_CLASSIFICATION_VOCABULARY, $xmlconv:VALID_AREACLASSIFICATION_IDS_52)}
-        </span>, $labels:PLACEHOLDER, $invalidAreaClassificationAdjusmentCodes, "aqd:areaClassification", "", "", "","warning")}
+        </span>, $labels:PLACEHOLDER, $invalidAreaClassificationAdjusmentCodes, "aqd:areaClassification", "", "", "", $errors:ERROR)}
         {html:buildResultRows("G53", $labels:G53, $labels:G53_SHORT, $invalidModel_53, "base:namespace", "All values are valid", " invalid value", "","error")}
         {html:buildResultRows("G54", $labels:G54, $labels:G54_SHORT, $invalidModelUsed_54, "base:namespace", "All values are valid", " invalid value", "","error")}
         {html:buildResultRows("G55", $labels:G55, $labels:G55_SHORT, $invalidStationUsed_55, "base:namespace", "All values are valid", " invalid value", "","error")}
