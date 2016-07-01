@@ -360,6 +360,79 @@ FILTER STRSTARTS(str(?Namespace),'", $countryCode, "') .
 }")
 };
 
+declare function query:getG14($countryCode as xs:string) as xs:string {
+  "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX aqr: <http://reference.eionet.europa.eu/aq/ontology/>
+PREFIX aq: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+PREFIX aqdd: <http://dd.eionet.europa.eu/property/>
+
+SELECT DISTINCT
+?Namespace
+?Pollutant
+?ReportingYear
+?countOnB
+?countOnC
+
+WHERE {
+
+{
+
+SELECT DISTINCT
+?Namespace
+(year(?reportingBegin) as ?ReportingYear)
+?pollURI
+?countOnB
+?countOnC
+
+WHERE {
+
+{
+SELECT DISTINCT
+?Namespace
+?pollURI
+count(distinct bif:concat(str(?Zone), str(?pollURI), str(?ProtectionTarget))) AS ?countOnB
+
+WHERE {
+
+  ?zoneURI a aqr:Zone;
+           aqr:zoneCode ?Zone;
+           aqr:pollutants ?polltargetURI;
+           aqr:inspireNamespace ?Namespace .
+
+?polltargetURI aqr:protectionTarget ?ProtectionTarget .
+?polltargetURI aqr:pollutantCode ?pollURI .
+
+} }
+{
+SELECT DISTINCT
+?Namespace
+?reportingBegin
+?pollURI
+count(distinct bif:concat(str(?Zone), str(?pollURI), str(?ProtectionTarget))) AS ?countOnC
+
+WHERE {
+
+  ?areURI a aqr:AssessmentRegime;
+           aqr:zone ?Zone;
+           aqr:reportingBegin ?reportingBegin ;
+           aqr:pollutant ?pollURI;
+           aqr:assessmentThreshold ?areThre ;
+           aqr:inspireNamespace ?Namespace .
+
+?areThre aqr:protectionTarget ?ProtectionTarget .
+
+} }
+
+}}
+
+?pollURI rdfs:label ?Pollutant .
+
+FILTER STRSTARTS(str(?Namespace),'" || $countryCode || "') .
+FILTER regex(?pollURI, '') .
+
+} ORDER BY ?Namespace ?ReportingYear ?Pollutant"
+};
+
 (: D :)
 declare function query:getSamplingPointAssessment($inspireId as xs:string, $inspireNamespace as xs:string)
 as xs:string

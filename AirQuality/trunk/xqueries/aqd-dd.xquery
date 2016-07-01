@@ -22,25 +22,17 @@ declare variable $dd:VALIDRESOURCE := "http://dd.eionet.europa.eu/vocabulary/dat
 declare variable $dd:VALIDPOLLUTANTS as xs:string* := dd:getValidPollutants();
 
 declare function dd:getNameFromPollutantCode($code as xs:string) as xs:string? {
-  try {
     let $code := tokenize($code, "/")[last()]
     let $codes := doc(concat($vocabulary:POLLUTANT_VOCABULARY, "/rdf"))    
     let $num := concat($vocabulary:POLLUTANT_VOCABULARY, $code)
     let $name := $codes//skos:Concept[@rdf:about = $num]/string(skos:prefLabel)
     return $name
-  } catch * {
-    'Error while retrieving document' || $err:code
-  }
 };
 
 declare function dd:getValidPollutants() as xs:string* {
-  try {
     let $codes := doc(concat($vocabulary:POLLUTANT_VOCABULARY, "/rdf"))
     let $validCodes := $codes//skos:Concept[adms:status/@rdf:resource = $dd:VALIDRESOURCE]/string(@rdf:about)
     return $validCodes
-  } catch * {
-    'Error while retrieving document' || $err:code
-  }
 };
 
 declare function dd:getValidConcepts($url as xs:string) as xs:string* {    
