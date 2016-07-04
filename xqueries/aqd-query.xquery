@@ -775,7 +775,7 @@ declare function query:getSamplingPointMetadataFromFiles($url as xs:string*) as 
    PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
    PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
 
-   SELECT ?localId ?featureOfInterest ?procedure ?observedProperty
+   SELECT ?localId ?featureOfInterest ?procedure ?observedProperty ?inspireLabel
    WHERE {
          ?samplingPoint a aqd:AQD_SamplingPoint;
          aqd:observingCapability ?observingCapability;

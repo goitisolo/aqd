@@ -182,7 +182,7 @@ let $E8invalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
-    (: E10 - /om:observedProperty xlink:href attribute shall resolve to a traversable link to http://dd.eionet.europa.eu/vocabulary/aq/pollutant/ :)
+(: E10 - /om:observedProperty xlink:href attribute shall resolve to a traversable link to http://dd.eionet.europa.eu/vocabulary/aq/pollutant/ :)
 let $E10invalid :=
     try {
         let $all := dd:getValidConcepts("http://dd.eionet.europa.eu/vocabulary/aq/pollutant/rdf")
@@ -198,6 +198,29 @@ let $E10invalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+(: E11 - The pollutant xlinked via /om:observedProperty must match the pollutant code declared via /aqd:AQD_SamplingPoint/ef:observingCapability/ef:ObservingCapability/ef:observedProperty :)
+let $E11invalid :=
+    try {
+        let $latestDfiles := sparqlx:executeSparqlQuery(query:getLatestDEnvelope($cdrUrl))/sparql:binding/sparql:uri/string()
+        let $result := sparqlx:executeSparqlQuery(query:getSamplingPointMetadataFromFiles($latestDfiles))
+        let $resultConcat := for $x in $result
+        return $x/sparql:binding[@name="featureOfInterest"]/sparql:uri/string() || $x/sparql:binding[@name="observedProperty"]/sparql:uri/string()
+        for $x in $docRoot//om:OM_Observation
+            let $observedProperty := $x/om:observedProperty/@xlink:href/string()
+            let $featureOfInterest := "http://reference.eionet.europa.eu/aq/" || $x/om:featureOfInterest/@xlink:href/string()
+            let $concat := $featureOfInterest || $observedProperty
+        where not($concat = $resultConcat)
+        return
+            <tr>
+                <td title="@gml:id">{$x/@gml:id/string()}</td>
+            </tr>
+    } catch * {
+        <tr status="failed">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
+
 
 (: E12 :)
 (: IMPLEMENTATION PENDING :)
@@ -378,6 +401,7 @@ return
         {html:build2("E7", $labels:E7, $labels:E7_SHORT, $E7invalid, "", "All records are valid", "record", "", $errors:WARNING)}
         {html:build2("E8", $labels:E8, $labels:E8_SHORT, $E8invalid, "", "All records are valid", "record", "", $errors:WARNING)}
         {html:build2("E10", $labels:E10, $labels:E10_SHORT, $E10invalid, "", "All records are valid", "record", "", $errors:ERROR)}
+        {html:build2("E11", $labels:E11, $labels:E11_SHORT, $E11invalid, "", "All records are valid", "record", "", $errors:ERROR)}
         {html:build2("E12", $labels:E12, $labels:E12_SHORT, $E12invalid, "", "All records are valid", "record", "", $errors:ERROR)}
         {html:build2("E15", $labels:E15, $labels:E15_SHORT, $E15invalid, "", "All records are valid", "record", "", $errors:ERROR)}
         {html:build2("E16", $labels:E16, $labels:E16_SHORT, $E16invalid, "", "All records are valid", "record", "", $errors:ERROR)}
