@@ -111,11 +111,33 @@ let $E5invalid :=
     try {
         let $all := $docRoot//om:OM_Observation
         for $x in $all
-            let $xlinks := data($x/om:parameter/om:NamedValue/om:name/@xlink:href)
+        let $xlinks := data($x/om:parameter/om:NamedValue/om:name/@xlink:href)
         where not("http://dd.eionet.europa.eu/vocabulary/aq/processparameter/SamplingPoint" = $xlinks)
         return
             <tr>
                 <td title="@gml:id">{string($x/@gml:id)}</td>
+            </tr>
+    } catch * {
+        <tr status="failed">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
+(: E6 :)
+let $E6invalid :=
+    try {
+        let $latestDfiles := sparqlx:executeSparqlQuery(query:getLatestDEnvelope($cdrUrl))/sparql:binding/sparql:uri/string()
+        let $result := sparqlx:executeSparqlQuery(query:getSamplingPointFromFiles($latestDfiles))
+        let $all := $result/sparql:binding[@name = "inspireLabel"]/sparql:literal/string()
+        let $parameters := //om:OM_Observation/om:parameter/om:NamedValue
+        for $x in $parameters[om:name/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/processparameter/SamplingPoint"]
+            let $name := $x/om:name/@xlink:href/string()
+            let $value := $x/om:value/string()
+        where ($value = "" or not($value = $all))
+        return
+            <tr>
+                <td title="base:localId">{string($x/../../@gml:id)}</td>
+                <td title="om:value">{$value}</td>
             </tr>
     } catch * {
         <tr status="failed">
@@ -302,6 +324,7 @@ return
         {html:build2("E3", $labels:E3, $labels:E3_SHORT, $E3invalid, "", "All records are valid", "record", "", $errors:ERROR)}
         {html:build2("E4", $labels:E4, $labels:E4_SHORT, $E4invalid, "", "All records are valid", "record", "", $errors:ERROR)}
         {html:build2("E5", $labels:E5, $labels:E5_SHORT, $E5invalid, "", "All records are valid", "record", "", $errors:ERROR)}
+        {html:build2("E6", $labels:E6, $labels:E6_SHORT, $E6invalid, "", "All records are valid", "record", "", $errors:ERROR)}
         {html:build2("E7", $labels:E7, $labels:E7_SHORT, $E7invalid, "", "All records are valid", "record", "", $errors:WARNING)}
         {html:build2("E8", $labels:E8, $labels:E8_SHORT, $E8invalid, "", "All records are valid", "record", "", $errors:WARNING)}
         {html:build2("E10", $labels:E10, $labels:E10_SHORT, $E10invalid, "", "All records are valid", "record", "", $errors:ERROR)}
