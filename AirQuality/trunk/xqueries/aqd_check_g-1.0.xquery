@@ -813,8 +813,8 @@ OR ./aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:numberExceedanc
 let $G45invalid :=
     try {
         for $x in $docRoot//aqd:AQD_Attainment[aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:exceedance = "true"]
-            let $numerical := $x/aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:numericalExceedance
-            let $numbers := $x/aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:numberExceedances
+            let $numerical := string($x/aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:numericalExceedance)
+            let $numbers := string($x/aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:numberExceedances)
         where ($numerical = "") and not($numbers castable as xs:integer)
         return
             <tr>
@@ -831,8 +831,8 @@ let $G45invalid :=
 let $G46invalid :=
     try {
         for $x in $docRoot//aqd:AQD_Attainment[aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:exceedance = "false"]
-            let $numerical := $x/aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:numericalExceedance
-            let $numbers := $x/aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:numberExceedances
+            let $numerical := string($x/aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:numericalExceedance)
+            let $numbers := string($x/aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:numberExceedances)
         where ($numerical = "") and not($numbers castable as xs:integer)
         return
             <tr>
@@ -931,8 +931,8 @@ OR ./aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:numberExc
 let $G59invalid :=
     try {
         for $x in $docRoot//aqd:AQD_Attainment[aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:exceedance = "true"]
-        let $numerical := $x/aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:numericalExceedance
-        let $numbers := $x/aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:numberExceedances
+            let $numerical := string($x/aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:numericalExceedance)
+            let $numbers := string($x/aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:numberExceedances)
         where ($numerical = "") and not($numbers castable as xs:integer)
         return
             <tr>
@@ -950,8 +950,8 @@ OR ./aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:numberExc
 let $G60invalid :=
     try {
         for $x in $docRoot//aqd:AQD_Attainment[aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:exceedance = "false"]
-        let $numerical := $x/aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:numericalExceedance
-        let $numbers := $x/aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:numberExceedances
+            let $numerical := string($x/aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:numericalExceedance)
+            let $numbers := string($x/aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:numberExceedances)
         where ($numerical = "") and not($numbers castable as xs:integer)
         return
             <tr>
@@ -1095,6 +1095,24 @@ OR ./aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:numberExceedan
 let $G79invalid :=
     try {
         for $x in $docRoot//aqd:AQD_Attainment[aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedance = "true"]
+        let $numerical := string($x/aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:numericalExceedance)
+        let $numbers := string($x/aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:numberExceedances)
+        where ($numerical = "") and not($numbers castable as xs:integer)
+        return
+            <tr>
+                <td title="base:localId">{$x/aqd:inspireId/base:Identifier/base:localId/string()}</td>
+            </tr>
+    } catch * {
+        <tr status="failed">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
+(: G80 - If ./aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedance is FALSE EITHER ./aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:numericalExceedance
+OR ./aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:numberExceedances must be provided AS an integer number :)
+let $G80invalid :=
+    try {
+        for $x in $docRoot//aqd:AQD_Attainment[aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedance = "false"]
         let $numerical := string($x/aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:numericalExceedance)
         let $numbers := string($x/aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:numberExceedances)
         where ($numerical = "") and not($numbers castable as xs:integer)
@@ -1257,6 +1275,7 @@ return
         {html:buildResultRows("G76", $labels:G76, $labels:G76_SHORT, $stationlUsed_76, "base:namespace", "All values are valid", " invalid value", "","error")}
         {html:build2("G78", $labels:G78, $labels:G78_SHORT, $G78invalid, "", "All values are valid", " invalid value", "", $errors:ERROR)}
         {html:build2("G79", $labels:G79, $labels:G79_SHORT, $G79invalid, "", "All values are valid", " invalid value", "", $errors:ERROR)}
+        {html:build2("G80", $labels:G80, $labels:G80_SHORT, $G80invalid, "", "All values are valid", " invalid value", "", $errors:WARNING)}
         {html:buildResultRows("G81", $labels:G81, $labels:G81_SHORT, $invalidAqdAdjustmentType, "base:namespace", "All values are valid", " invalid value", "","error")}
         {$invalidAdjustmentType_82}
     </table>
