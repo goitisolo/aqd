@@ -129,7 +129,7 @@ let $E6invalid :=
         let $latestDfiles := sparqlx:executeSparqlQuery(query:getLatestDEnvelope($cdrUrl))/sparql:binding/sparql:uri/string()
         let $result := sparqlx:executeSparqlQuery(query:getSamplingPointFromFiles($latestDfiles))
         let $all := $result/sparql:binding[@name = "inspireLabel"]/sparql:literal/string()
-        let $parameters := //om:OM_Observation/om:parameter/om:NamedValue
+        let $parameters := $docRoot//om:OM_Observation/om:parameter/om:NamedValue
         for $x in $parameters[om:name/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/processparameter/SamplingPoint"]
             let $name := $x/om:name/@xlink:href/string()
             let $value := $x/om:value/string()
@@ -223,16 +223,16 @@ let $E11invalid :=
 
 
 (: E12 :)
-(: IMPLEMENTATION PENDING :)
 let $E12invalid :=
     try {
-        let $all := ()
+        let $result := sparqlx:executeSparqlQuery(query:getSamples($cdrUrl))
+        let $samples := $result/sparql:binding[@name = "localId"]/sparql:literal/string()
         for $x in $docRoot//om:OM_Observation
-            let $feature := string($x/om:featureOfInterest/@xlink:href)
-        where ($feature = "") or not($feature = $all)
+            let $featureOfInterest := $x/om:featureOfInterest/@xlink:href/tokenize(string(), "/")[last()]
+        where ($featureOfInterest = "") or not($featureOfInterest = $samples)
         return
             <tr>
-                <td title="@gml:id">{string($x/@gml:id)}</td>
+                <td title="@gml:id">{$x/@gml:id/string()}</td>
             </tr>
     } catch * {
         <tr status="failed">

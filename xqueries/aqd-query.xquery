@@ -745,6 +745,21 @@ declare function query:getSamplingPointProcess($cdrUrl as xs:string) as xs:strin
    FILTER(CONTAINS(str(?samplingPointProcess), '" || $cdrUrl || "d/'))
    }"
 };
+declare function query:getSamples($cdrUrl as xs:string) as xs:string {
+  "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+   PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
+   PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+
+   SELECT ?sample ?inspireId ?inspireLabel ?localId ?namespace
+   WHERE {
+           ?sample a aqd:AQD_Sample;
+           aqd:inspireId ?inspireId .
+           ?inspireId rdfs:label ?inspireLabel .
+           ?inspireId aqd:localId ?localId .
+           ?inspireId aqd:namespace ?namespace .
+   FILTER(CONTAINS(str(?sample), '" || $cdrUrl || "d/'))
+   }"
+};
 
 declare function query:getSamplingPointFromFiles($url as xs:string*) as xs:string {
   let $filters :=
