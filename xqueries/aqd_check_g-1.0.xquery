@@ -1075,6 +1075,22 @@ let $stationlUsed_76  :=
                     <td title="aqd:stationlUsed">{data($r/fn:normalize-space(@xlink:href))}</td>
                 </tr>
                 else ()
+(: G78 - ./aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedance shall EQUAL “true” or “false” :)
+let $G78invalid :=
+    try {
+        for $x in $docRoot//aqd:AQD_Attainment/aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedance[not(string() = ("true", "false"))]
+        return
+            <tr>
+                <td title="base:localId">{$x/../../../aqd:inspireId/base:Identifier/base:localId/string()}</td>
+                <td title="aqd:exceedanc">{$x/string()}</td>
+            </tr>
+    } catch * {
+        <tr status="failed">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
+
 (: G81 :)
 let $invalidAdjustmentType := distinct-values($docRoot//aqd:AQD_Attainment[aqd:exceedanceDescriptionAdjustmen/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:adjustmentType/fn:normalize-space(@xlink:href)!="http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/fullyCorrected"]/@gml:id)
 
@@ -1221,6 +1237,7 @@ return
         {html:buildResultRows("G74", $labels:G74, $labels:G74_SHORT, $modelUsed_74, "base:namespace", "All values are valid", " invalid value", "","error")}
         {html:buildResultRows("G75", $labels:G75, $labels:G75_SHORT, $invalidStationUsed_75, "base:namespace", "All values are valid", " invalid value", "","error")}
         {html:buildResultRows("G76", $labels:G76, $labels:G76_SHORT, $stationlUsed_76, "base:namespace", "All values are valid", " invalid value", "","error")}
+        {html:build2("G78", $labels:G78, $labels:G78_SHORT, $G78invalid, "", "All values are valid", " invalid value", "", $errors:ERROR)}
         {html:buildResultRows("G81", $labels:G81, $labels:G81_SHORT, $invalidAqdAdjustmentType, "base:namespace", "All values are valid", " invalid value", "","error")}
         {$invalidAdjustmentType_82}
     </table>
