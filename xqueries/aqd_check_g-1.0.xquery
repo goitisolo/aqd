@@ -290,19 +290,32 @@ let $invalidDuplicateLocalIds :=
 
 
 (: G9 ./ef:inspireId/base:Identifier/base:namespace shall resolve to a unique namespace identifier for the data source (within an annual e-Reporting cycle). :)
-
-let $allBaseNamespace := distinct-values($docRoot//aqd:AQD_Attainment/aqd:inspireId/base:Identifier/base:namespace)
-let  $tblG9 :=
-    for $id in $allBaseNamespace
-    let $localId := $docRoot//aqd:AQD_Attainment/aqd:inspireId/base:Identifier[base:namespace = $id]/base:localId
-    return
-        <tr>
-            <td title="base:namespace">{$id}</td>
-            <td title="base:localId">{count($localId)}</td>
+let $tblG9 :=
+    try {
+        for $id in distinct-values($docRoot//aqd:AQD_Attainment/aqd:inspireId/base:Identifier/base:namespace)
+            let $localId := $docRoot//aqd:AQD_Attainment/aqd:inspireId/base:Identifier[base:namespace = $id]/base:localId
+        return
+            <tr>
+                <td title="base:namespace">{$id}</td>
+                <td title="base:localId">{count($localId)}</td>
+            </tr>
+    } catch * {
+        <tr status="failed">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
         </tr>
+    }
 
 (: G9.1 :)
-let $invalidNamespaces := common:checkNamespaces($source_url)
+let $invalidNamespaces :=
+    try {
+        common:checkNamespaces($source_url)
+    } catch * {
+        <tr status="failed">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
 
 (: G10 pollutant codes :)
 let $invalidPollutantCodes := xmlconv:isinvalidDDConceptLimited($source_url, "", "aqd:AQD_Attainment", "aqd:pollutant",  $vocabulary:POLLUTANT_VOCABULARY, $xmlconv:VALID_POLLUTANT_IDS)
@@ -1016,8 +1029,8 @@ return
         {html:buildResultRows("G6", $labels:G6, $labels:G6_SHORT, $tblG6, "", string(count($tblG6)), " attainment", "","error")}
         {html:buildResultRows("G7", $labels:G7, $labels:G7_SHORT, $tblDuplicateGmlIds, "", "No duplicates found", " duplicate", "", "error")}
         {html:buildResultRows("G8", $labels:G8, $labels:G8_SHORT, $invalidDuplicateLocalIds, "base:localId", "No duplicate values found", " duplicate value", "","error")}
-        {html:buildResultRows("G9", $labels:G9, $labels:G9_SHORT, $tblG9, "", string(count($tblG9)), "", "","info")}
-        {html:buildResultRows("G9.1", $labels:G9.1, $labels:G9.1_SHORT, $invalidNamespaces, "base:Identifier/base:namespace", "All values are valid", " invalid namespaces", "", "error")}
+        {html:buildResultRows("G9", $labels:G9, $labels:G9_SHORT, $tblG9, "", string(count($tblG9)), "", "", $errors:INFO)}
+        {html:buildResultRows("G9.1", $labels:G9.1, $labels:G9.1_SHORT, $invalidNamespaces, "base:Identifier/base:namespace", "All values are valid", " invalid namespaces", "", $errors:ERROR)}
         {html:buildResultRowsWithTotalCount_G("G10", <span>The content of /aqd:AQD_Attainment/aqd:pollutant xlink:xref shall resolve to a pollutant in
             <a href="{ $vocabulary:POLLUTANT_VOCABULARY }">{ $vocabulary:POLLUTANT_VOCABULARY }</a> that must be one of
             {xmlconv:buildVocItemsList("G10", $vocabulary:POLLUTANT_VOCABULARY, $xmlconv:VALID_POLLUTANT_IDS)}
