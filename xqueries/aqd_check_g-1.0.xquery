@@ -1140,6 +1140,24 @@ let $invalidAdjustmentType_82  :=
                     <td title="gml:id">{data($r/fn:normalize-space(@xlink:href))}</td>
     </tr>
     else ()
+(: G85 - :)
+let $G85invalid :=
+    try {
+        for $x in $docRoot//aqd:AQD_Attainment[aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedance = "true"]
+            let $stationUsed := data($x/aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:stationUsed/@xlink:href)
+            let $modelUsed := data($x/aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:modelUsed/@xlink:href)
+        where (count($stationUsed) = 0 and count($modelUsed) = 0)
+        return
+            <tr>
+                <td title="base:localId">{$x/aqd:inspireId/base:Identifier/base:localId/string()}</td>
+            </tr>
+    } catch * {
+        <tr status="failed">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
+
 return
     <table class="maintable hover">
         {html:buildResultRows("G1", $labels:G1, $labels:G1_SHORT, $tblAllAttainments, "", string($countAttainments), "", "","error")}
@@ -1277,6 +1295,7 @@ return
         {html:build2("G79", $labels:G79, $labels:G79_SHORT, $G79invalid, "", "All values are valid", " invalid value", "", $errors:ERROR)}
         {html:build2("G80", $labels:G80, $labels:G80_SHORT, $G80invalid, "", "All values are valid", " invalid value", "", $errors:WARNING)}
         {html:buildResultRows("G81", $labels:G81, $labels:G81_SHORT, $invalidAqdAdjustmentType, "base:namespace", "All values are valid", " invalid value", "","error")}
+        {html:build2("G85", $labels:G85, $labels:G85_SHORT, $G85invalid, "", "All values are valid", " invalid value", "", $errors:ERROR)}
         {$invalidAdjustmentType_82}
     </table>
 };
