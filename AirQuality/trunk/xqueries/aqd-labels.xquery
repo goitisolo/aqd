@@ -460,6 +460,8 @@ declare variable $labels:G75 := labels:getLabel("G", "G75");
 declare variable $labels:G75_SHORT := labels:getLabel("G", "G75_SHORT");
 declare variable $labels:G76 := labels:getLabel("G", "G76");
 declare variable $labels:G76_SHORT := labels:getLabel("G", "G76_SHORT");
+declare variable $labels:G78 := labels:getLabel("G", "G78");
+declare variable $labels:G78_SHORT := labels:getLabel("G", "G78_SHORT");
 declare variable $labels:G81 := labels:getLabel("G", "G81");
 declare variable $labels:G81_SHORT := labels:getLabel("G", "G81_SHORT");
 
