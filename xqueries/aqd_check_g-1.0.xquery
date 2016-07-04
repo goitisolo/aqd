@@ -1211,8 +1211,8 @@ return
         {html:buildResultRows("G65", $labels:G65, $labels:G65_SHORT, $invalidModelAssessmentMetadata_65, "base:namespace", "All values are valid", " invalid value", "","error")}
         {html:buildResultRows("G66", $labels:G66, $labels:G66_SHORT, $samplingPointAssessmentMetadata_66, "base:namespace", "All values are valid", " invalid value", "","error")}
         {html:buildResultRows("G67", $labels:G67, $labels:G67_SHORT, $samplingPointAssessmentMetadata_67, "base:namespace", "All values are valid", " invalid value", "","error")}
-        {html:buildResultRows("G70", $labels:G70, $labels:G70_SHORT, $aqdSurfaceArea, "base:namespace", "All values are valid", " invalid value", "", "warning")}
-        {html:buildResultRows("G71", $labels:G71, $labels:G71_SHORT, $aqdroadLength, "base:namespace", "All values are valid", " invalid value", "","warning")}
+        {html:buildResultRows("G70", $labels:G70, $labels:G70_SHORT, $aqdSurfaceArea, "base:namespace", "All values are valid", " invalid value", "", $errors:ERROR)}
+        {html:buildResultRows("G71", $labels:G71, $labels:G71_SHORT, $aqdroadLength, "base:namespace", "All values are valid", " invalid value", "", $errors:ERROR)}
         {html:buildResultRowsWithTotalCount_G("G72", <span>The content of /aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:areaClassification  xlink:xref shall resolve to a areaClassification in
             <a href="{ $vocabulary:AREA_CLASSIFICATION_VOCABULARY}">{ $vocabulary:AREA_CLASSIFICATION_VOCABULARY}</a> that must be one of
             {xmlconv:buildVocItemsList("G72", $vocabulary:AREA_CLASSIFICATION_VOCABULARY, $xmlconv:VALID_AREACLASSIFICATION_IDS_52)}
