@@ -338,6 +338,35 @@ let $E21invalid :=
         </tr>
     }
 
+(: E26 :)
+let $E26invalid :=
+    try {
+        let $latestDfiles := sparqlx:executeSparqlQuery(query:getLatestDEnvelope($cdrUrl))/sparql:binding/sparql:uri/string()
+        let $result := sparqlx:executeSparqlQuery(query:getSamplingPointMetadataFromFiles($latestDfiles))
+        let $resultsConcat :=
+            for $x in $result
+            return $x/sparql:binding[@name="localId"]/sparql:literal/string() || $x/sparql:binding[@name="procedure"]/sparql:uri/string() ||
+            $x/sparql:binding[@name="featureOfInterest"]/sparql:uri/string() || $x/sparql:binding[@name="observedProperty"]/sparql:uri/string()
+
+        for $x in $docRoot//om:OM_Observation
+            let $samplingPoint := $x/om:parameter/om:NamedValue[om:name/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/processparameter/SamplingPoint"]/om:value/tokenize(., "/")[last()]
+            let $procedure := "http://reference.eionet.europa.eu/aq/" || $x/om:procedure/@xlink:href/string()
+            let $featureOfInterest := "http://reference.eionet.europa.eu/aq/" || $x/om:featureOfInterest/@xlink:href/string()
+            let $observedProperty := $x/om:observedProperty/@xlink:href/string()
+            let $concat := $samplingPoint || $procedure || $featureOfInterest || $observedProperty
+        where not($concat = $resultsConcat)
+        return
+            <tr>
+                <td title="base:localId">{string($x/@gml:id)}</td>
+            </tr>
+    }
+    catch * {
+        <tr status="failed">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
+
 return
     <table class="maintable hover">
         {html:build2("E1", $labels:E1, $labels:E1_SHORT, $E1invalid, "", "All records are valid", "record", "", $errors:ERROR)}
@@ -357,6 +386,7 @@ return
         {html:build2("E19", $labels:E19, $labels:E19_SHORT, $E19invalid, "", "All records are valid", "record", "", $errors:ERROR)}
         {html:build2("E20", $labels:E20, $labels:E20_SHORT, $E20invalid, "", "All records are valid", "record", "", $errors:ERROR)}
         {html:build2("E21", $labels:E21, $labels:E21_SHORT, $E21invalid, "", "All records are valid", "record", "", $errors:WARNING)}
+        {html:build2("E26", $labels:E26, $labels:E26_SHORT, $E26invalid, "", "All records are valid", "record", "", $errors:ERROR)}
     </table>
 
 };
