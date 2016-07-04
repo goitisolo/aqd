@@ -765,3 +765,26 @@ declare function query:getSamplingPointFromFiles($url as xs:string*) as xs:strin
          ?inspireId aqd:namespace ?namespace . " || $filters ||"
    }"
 };
+declare function query:getSamplingPointMetadataFromFiles($url as xs:string*) as xs:string {
+  let $filters :=
+    for $x in $url
+    return "STRSTARTS(str(?samplingPoint), '" || $x || "')"
+  let $filters := "FILTER(" || string-join($filters, " OR ") || ")"
+  return
+    "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+   PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
+   PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+
+   SELECT ?localId ?featureOfInterest ?procedure ?observedProperty
+   WHERE {
+         ?samplingPoint a aqd:AQD_SamplingPoint;
+         aqd:observingCapability ?observingCapability;
+         aqd:inspireId ?inspireId .
+         ?inspireId rdfs:label ?inspireLabel .
+         ?inspireId aqd:localId ?localId .
+         ?inspireId aqd:namespace ?namespace .
+         ?observingCapability aqd:featureOfInterest ?featureOfInterest .
+         ?observingCapability aqd:procedure ?procedure .
+         ?observingCapability aqd:observedProperty ?observedProperty . " || $filters ||"
+   }"
+};
