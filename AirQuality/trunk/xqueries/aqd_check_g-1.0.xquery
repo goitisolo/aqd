@@ -793,40 +793,29 @@ let $invalidStationlUsed  :=
                 </tr>
                 else ()
 
-(: G44 :)
-
-(: let $invalidobjectiveTypesForLimitV:=
-    for $obj in $docRoot//aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:environmentalObjective/aqd:EnvironmentalObjective
-    where
-        $obj/aqd:protectionTarget/@xlink:href != 'http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H'
-                and $obj/aqd:objectiveType/@xlink:href = 'http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV'
-                 or $obj/aqd:objectiveType/@xlink:href = 'http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/TV'
-    return $obj/../../../..
-
-let $tblInvalidobjectiveTypesForLimitV :=
-    for $rec in $invalidobjectiveTypesForLimitV
-    return
-        <tr>
-            <td title="gml:id">{data($rec/@gml:id)}</td>
-            <td title="aqd:protectionTarget">{data($rec//aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/@xlink:href)}</td>
-            <td title="aqd:objectiveType">{data($rec//aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType/@xlink:href)}</td>
-        </tr> :)
+(: G44 - aqd:AQD_Attainment/aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:exceedance shall EQUAL “true” or “false” :)
+let $G44invalid :=
+    try {
+        for $x in $docRoot//aqd:AQD_Attainment/aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:exceedance[not(string() = ("true", "false"))]
+        return
+            <tr>
+                <td title="base:localId">{$x/../../../aqd:inspireId/base:Identifier/base:localId/string()}</td>
+                <td title="aqd:exceedanc">{$x/string()}</td>
+            </tr>
+    } catch * {
+        <tr status="failed">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
 
 (: G47 :)
-
 let $invalidAqdAdjustmentType := distinct-values($docRoot//aqd:AQD_Attainment[aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:adjustmentType/fn:normalize-space(@xlink:href)!="http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/noneApplied"]/@gml:id)
-
-
-
-
-
-
 
 (: G52 :)
 let $invalidAreaClassificationAdjusmentCodes := xmlconv:isinvalidDDConceptLimited($source_url, "aqd:exceedanceDescriptionAdjustment", "aqd:ExceedanceArea", "aqd:areaClassification",  $vocabulary:AREA_CLASSIFICATION_VOCABULARY, $xmlconv:VALID_AREACLASSIFICATION_IDS_52)
 
 (: G53 :)
-
 let $resultXml := if (fn:string-length($countryCode) = 2) then query:getModel($modelCdrUrl) else ""
 let $isModelAvailable := string-length($resultXml) > 0 and doc-available(sparqlx:getSparqlEndpointUrl($resultXml, "xml"))
 let $model := if($isModelCodesAvailable) then distinct-values(data(sparqlx:executeSparqlQuery($resultXml)//concat(sparql:binding[@name='namespace']/sparql:literal,"/",sparql:binding[@name='localId']/sparql:literal))) else ""
@@ -879,7 +868,6 @@ let $invalidStationlUsed_56  :=
 
 
 (: G57 :)
-
 let $invalidAdjustmentReportingMetricG57 :=
     for $aqdAdjustmentReportingMetricG57 in $docRoot//aqd:AQD_Attainment
     let $reportingXlink:= fn:substring-after(data($aqdAdjustmentReportingMetricG57/aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric/fn:normalize-space(@xlink:href)),"reportingmetric/")
@@ -888,19 +876,15 @@ let $invalidAdjustmentReportingMetricG57 :=
 
 
 (: G61 :)
-
 let $invalidExceedanceDescriptionAdjustmentType := xmlconv:isinvalidDDConceptLimited($source_url, "aqd:exceedanceDescriptionAdjustment", "aqd:AdjustmentMethod", "aqd:adjustmentType", $vocabulary:ADJUSTMENTTYPE_VOCABULARY, $xmlconv:VALID_ADJUSTMENTTYPE_IDS)
 
 (: G62 :)
-
 let $invalidExceedanceDescriptionAdjustmentSrc := xmlconv:isinvalidDDConceptLimited($source_url, "aqd:exceedanceDescriptionAdjustment", "aqd:AdjustmentMethod", "aqd:adjustmentSource", $vocabulary:ADJUSTMENTSOURCE_VOCABULARY, $xmlconv:VALID_ADJUSTMENTSOURCE_IDS)
 
 (: G63 :)
-
 let $invalidExceedanceDescriptionAdjustmentAssessment := xmlconv:isinvalidDDConceptLimited($source_url, "aqd:exceedanceDescriptionAdjustment", "aqd:AssessmentMethods", "aqd:assessmentType", $vocabulary:ASSESSMENTTYPE_VOCABULARY, $xmlconv:VALID_ASSESSMENTTYPE_IDS)
 
 (: G64 :)
-
 let $modelAssessmentMetadata_64 :=
    for $r in xmlconv:getValidDDConceptLimited($source_url, "aqd:exceedanceDescriptionAdjustment", "aqd:AdjustmentMethod", "aqd:adjustmentType", $vocabulary:ADJUSTMENTTYPE_VOCABULARY, $xmlconv:VALID_ADJUSTMENTTYPE_IDS)
     let $root := $r/../../../../. (: aqd:AQD_Attainment :)
@@ -950,14 +934,12 @@ let $samplingPointAssessmentMetadata_67  :=
                 </tr>
                 else ()
 (: G70 :)
-
 let $aqdSurfaceArea := $docRoot//aqd:AQD_Attainment/aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:surfaceArea[count(@uom)>0 and fn:normalize-space(@uom)!="http://dd.eionet.europa.eu/vocabulary/uom/area/km2" and fn:normalize-space(@uom)!="http://dd.eionet.europa.eu/vocabularyconcept/uom/area/km2"]/../../../../../@gml:id
 
 (: G71 :)
 let $aqdroadLength := $docRoot//aqd:AQD_Attainment/aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:roadLength[count(@uom)>0 and fn:normalize-space(@uom)!="http://dd.eionet.europa.eu/vocabulary/uom/length/km" and fn:normalize-space(@uom)!="http://dd.eionet.europa.eu/vocabularyconcept/uom/length/km"]/../../../../../@gml:id
 
 (: G72 :)
-
 let $invalidAreaClassificationCode  := xmlconv:isinvalidDDConceptLimited($source_url, "aqd:exceedanceDescriptionFinal", "aqd:ExceedanceArea",  "aqd:areaClassification",  $vocabulary:AREA_CLASSIFICATION_VOCABULARY, $xmlconv:VALID_AREACLASSIFICATION_IDS_52)
 
 (: G73 :)
@@ -984,7 +966,6 @@ let $modelUsed_74  :=
                 </tr>
                 else ()
 (: G75 :)
-
 let $invalidStationUsed_75  :=
     for $r in $docRoot//aqd:AQD_Attainment//aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:stationUsed
        where $isSamplingPointAvailable
@@ -1006,7 +987,6 @@ let $stationlUsed_76  :=
                 </tr>
                 else ()
 (: G81 :)
-
 let $invalidAdjustmentType := distinct-values($docRoot//aqd:AQD_Attainment[aqd:exceedanceDescriptionAdjustmen/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:adjustmentType/fn:normalize-space(@xlink:href)!="http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/fullyCorrected"]/@gml:id)
 
 (: G82 TODO :  Description is not logical!! :)
@@ -1111,6 +1091,7 @@ return
         {html:buildResultRows("G40", $labels:G40, $labels:G40_SHORT, $invalidModelUsed, "base:namespace", "All values are valid", " invalid value", "","error")}
         {html:buildResultRows("G41", $labels:G41, $labels:G41_SHORT, $invalidStationUsed, "base:namespace", "All values are valid", " invalid value", "","error")}
         {html:buildResultRows("G42", $labels:G42, $labels:G42_SHORT, $invalidStationlUsed, "base:namespace", "All values are valid", " invalid value", "","error")}
+        {html:build2("G44", $labels:G44, $labels:G44_SHORT, $G44invalid, "", "All values are valid", " invalid value", "", $errors:ERROR)}
         {html:buildResultRows("G47", $labels:G47, $labels:G47_SHORT, $invalidAqdAdjustmentType, "base:namespace", "All values are valid", " invalid value", "","error")}
         {html:buildResultRowsWithTotalCount_G("G52", <span>The content of /aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:areaClassification xlink:xref shall resolve to a areaClassification in
             <a href="{ $vocabulary:AREA_CLASSIFICATION_VOCABULARY}">{ $vocabulary:AREA_CLASSIFICATION_VOCABULARY}</a> that must be one of
