@@ -1090,6 +1090,24 @@ let $G78invalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+(: G79 - If ./aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedance is TRUE EITHER ./aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:numericalExceedance
+OR ./aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:numberExceedances must be provided AS an integer number :)
+let $G79invalid :=
+    try {
+        for $x in $docRoot//aqd:AQD_Attainment[aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedance = "true"]
+        let $numerical := string($x/aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:numericalExceedance)
+        let $numbers := string($x/aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:numberExceedances)
+        where ($numerical = "") and not($numbers castable as xs:integer)
+        return
+            <tr>
+                <td title="base:localId">{$x/aqd:inspireId/base:Identifier/base:localId/string()}</td>
+            </tr>
+    } catch * {
+        <tr status="failed">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
 
 (: G81 :)
 let $invalidAdjustmentType := distinct-values($docRoot//aqd:AQD_Attainment[aqd:exceedanceDescriptionAdjustmen/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:adjustmentType/fn:normalize-space(@xlink:href)!="http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/fullyCorrected"]/@gml:id)
@@ -1238,6 +1256,7 @@ return
         {html:buildResultRows("G75", $labels:G75, $labels:G75_SHORT, $invalidStationUsed_75, "base:namespace", "All values are valid", " invalid value", "","error")}
         {html:buildResultRows("G76", $labels:G76, $labels:G76_SHORT, $stationlUsed_76, "base:namespace", "All values are valid", " invalid value", "","error")}
         {html:build2("G78", $labels:G78, $labels:G78_SHORT, $G78invalid, "", "All values are valid", " invalid value", "", $errors:ERROR)}
+        {html:build2("G79", $labels:G79, $labels:G79_SHORT, $G79invalid, "", "All values are valid", " invalid value", "", $errors:ERROR)}
         {html:buildResultRows("G81", $labels:G81, $labels:G81_SHORT, $invalidAqdAdjustmentType, "base:namespace", "All values are valid", " invalid value", "","error")}
         {$invalidAdjustmentType_82}
     </table>
