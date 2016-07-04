@@ -808,6 +808,26 @@ let $G44invalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+(: G45 - If ./aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:exceedance is TRUE EITHER ./aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:numericalExceedance
+OR ./aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:numberExceedances must be provided AS an integer number :)
+let $G45invalid :=
+    try {
+        for $x in $docRoot//aqd:AQD_Attainment[aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:exceedance = "true"]
+            let $numerical := $x/aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:numericalExceedance
+            let $numbers := $x/aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:numberExceedances
+        where not($numerical) or not($numbers castable as xs:integer)
+        return
+            <tr>
+                <td title="base:localId">{$x/aqd:inspireId/base:Identifier/base:localId/string()}</td>
+            </tr>
+    } catch * {
+        <tr status="failed">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
+
+
 
 (: G47 :)
 let $invalidAqdAdjustmentType := distinct-values($docRoot//aqd:AQD_Attainment[aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:adjustmentType/fn:normalize-space(@xlink:href)!="http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/noneApplied"]/@gml:id)
@@ -1092,6 +1112,7 @@ return
         {html:buildResultRows("G41", $labels:G41, $labels:G41_SHORT, $invalidStationUsed, "base:namespace", "All values are valid", " invalid value", "","error")}
         {html:buildResultRows("G42", $labels:G42, $labels:G42_SHORT, $invalidStationlUsed, "base:namespace", "All values are valid", " invalid value", "","error")}
         {html:build2("G44", $labels:G44, $labels:G44_SHORT, $G44invalid, "", "All values are valid", " invalid value", "", $errors:ERROR)}
+        {html:build2("G45", $labels:G45, $labels:G45_SHORT, $G45invalid, "", "All values are valid", " invalid value", "", $errors:ERROR)}
         {html:buildResultRows("G47", $labels:G47, $labels:G47_SHORT, $invalidAqdAdjustmentType, "base:namespace", "All values are valid", " invalid value", "","error")}
         {html:buildResultRowsWithTotalCount_G("G52", <span>The content of /aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:areaClassification xlink:xref shall resolve to a areaClassification in
             <a href="{ $vocabulary:AREA_CLASSIFICATION_VOCABULARY}">{ $vocabulary:AREA_CLASSIFICATION_VOCABULARY}</a> that must be one of
