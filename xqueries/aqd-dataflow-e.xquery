@@ -12,6 +12,8 @@ import module namespace html = "aqd-html" at "aqd-html.xquery";
 import module namespace errors = "aqd-errors" at "aqd-errors.xquery";
 import module namespace labels = "aqd-labels" at "aqd-labels.xquery";
 import module namespace dd = "aqd-dd" at "aqd-dd.xquery";
+import module namespace query = "aqd-query" at "aqd-query.xquery";
+import module namespace sparqlx = "aqd-sparql" at "aqd-sparql.xquery";
 
 declare namespace aqd = "http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0";
 declare namespace gml = "http://www.opengis.net/gml/3.2";
@@ -30,6 +32,7 @@ declare function xmlconv:checkReport($source_url as xs:string, $countryCode as x
 
 let $envelopeUrl := common:getEnvelopeXML($source_url)
 let $docRoot := doc($source_url)
+let $cdrUrl := common:getCdrUrl($countryCode)
 
 (: E1 - /om:OM_Observation gml:id attribute shall be unique code for the group of observations enclosed by /OM_Observation within the delivery. :)
 let $E1invalid :=
@@ -86,7 +89,23 @@ let $E3invalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
-
+(: E4 - ./om:procedure xlink:href attribute shall resolve to a traversable link process configuration in Data flow D: /aqd:AQD_SamplingPointProcess/ompr:inspireld/base:Identifier/base:localId:)
+let $E4invalid :=
+    try {
+        let $result := sparqlx:executeSparqlQuery(query:getSamplingPointProcess($cdrUrl))
+        let $all := $result/sparql:binding[@name = "inspireLabel"]/sparql:literal/string()
+        let $procedures := $docRoot//om:procedure/@xlink:href/string()
+        for $x in $procedures[not(. = $all)]
+        return
+            <tr>
+                <td title="base:localId">{$x}</td>
+            </tr>
+    } catch * {
+        <tr status="failed">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
 (: E5 - A valid delivery MUST provide an om:parameter with om:name/@xlink:href to http://dd.eionet.europa.eu/vocabulary/aq/processparameter/SamplingPoint :)
 let $E5invalid :=
     try {
@@ -98,8 +117,7 @@ let $E5invalid :=
             <tr>
                 <td title="@gml:id">{string($x/@gml:id)}</td>
             </tr>
-    }
-    catch * {
+    } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
@@ -282,6 +300,7 @@ return
         {html:build2("E1", $labels:E1, $labels:E1_SHORT, $E1invalid, "", "All records are valid", "record", "", $errors:ERROR)}
         {html:build2("E2", $labels:E2, $labels:E2_SHORT, $E2invalid, "", "All records are valid", "record", "", $errors:ERROR)}
         {html:build2("E3", $labels:E3, $labels:E3_SHORT, $E3invalid, "", "All records are valid", "record", "", $errors:ERROR)}
+        {html:build2("E4", $labels:E4, $labels:E4_SHORT, $E4invalid, "", "All records are valid", "record", "", $errors:ERROR)}
         {html:build2("E5", $labels:E5, $labels:E5_SHORT, $E5invalid, "", "All records are valid", "record", "", $errors:ERROR)}
         {html:build2("E7", $labels:E7, $labels:E7_SHORT, $E7invalid, "", "All records are valid", "record", "", $errors:WARNING)}
         {html:build2("E8", $labels:E8, $labels:E8_SHORT, $E8invalid, "", "All records are valid", "record", "", $errors:WARNING)}
