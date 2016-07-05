@@ -322,9 +322,8 @@ let $G11invalid :=
     try {
         for $exceedanceDescriptionBase in $docRoot//aqd:AQD_Attainment/aqd:pollutant
         let $pollutantXlinkG11 := fn:substring-after(data($exceedanceDescriptionBase/fn:normalize-space(@xlink:href)), "pollutant/")
-        where empty(index-of(('1', '5', '6001', '10'), $pollutantXlinkG11))
-        return if (not(exists($exceedanceDescriptionBase/../aqd:exceedanceDescriptionBase)))
-        then () else
+        where empty(index-of(('1', '5', '6001', '10'), $pollutantXlinkG11)) and exists($exceedanceDescriptionBase/../aqd:exceedanceDescriptionBase)
+        return
             <tr>
                 <td title="Feature type">{"aqd:AQD_Attainment"}</td>
                 <td title="gml:id">{data($exceedanceDescriptionBase/../@gml:id)}</td>
@@ -342,9 +341,8 @@ let $G12invalid :=
     try {
         for $exceedanceDescriptionAdjustment in $docRoot//aqd:AQD_Attainment/aqd:pollutant
         let $pollutantXlinkG12 := fn:substring-after(data($exceedanceDescriptionAdjustment/fn:normalize-space(@xlink:href)), "pollutant/")
-        where empty(index-of(('1', '5', '6001', '10'), $pollutantXlinkG12))
-        return if (not(exists($exceedanceDescriptionAdjustment/../aqd:exceedanceDescriptionAdjustment)))
-        then () else
+        where empty(index-of(('1', '5', '6001', '10'), $pollutantXlinkG12)) and (exists($exceedanceDescriptionAdjustment/../aqd:exceedanceDescriptionAdjustment))
+        return
             <tr>
                 <td title="Feature type">{"aqd:AQD_Attainment"}</td>
                 <td title="gml:id">{data($exceedanceDescriptionAdjustment/../@gml:id)}</td>
@@ -441,13 +439,13 @@ let $G15invalid :=
         let $zoneLocallD := if($isZoneLocallDCodesAvailable) then distinct-values(data(sparqlx:executeSparqlQuery($resultXml)//sparql:binding[@name='inspireLabel']/sparql:literal)) else ""
         let $isZoneLocallDCodesAvailable := count($resultXml) > 0
         for $x in $docRoot//aqd:AQD_Attainment/aqd:zone
-        where $isZoneLocallDCodesAvailable and not($x/@nilReason = "inapplicable")
-        return if (empty(index-of($zoneLocallD, $x/fn:normalize-space(@xlink:href)))) then <tr>
-            <td title="Feature type">{"aqd:AQD_Attainment"}</td>
-            <td title="gml:id">{data($x/../@gml:id)}</td>
-            <td title="aqd:zone">{data($x/fn:normalize-space(@xlink:href))}</td>
-        </tr>
-        else ()
+        where $isZoneLocallDCodesAvailable and not($x/@nilReason = "inapplicable") and (empty(index-of($zoneLocallD, $x/fn:normalize-space(@xlink:href))))
+        return
+            <tr>
+                <td title="Feature type">{"aqd:AQD_Attainment"}</td>
+                <td title="gml:id">{data($x/../@gml:id)}</td>
+                <td title="aqd:zone">{data($x/fn:normalize-space(@xlink:href))}</td>
+            </tr>
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
@@ -471,9 +469,12 @@ let $G17invalid :=
         for $x in $docRoot//aqd:AQD_Attainment
         let $zoneId := if (not(empty($x/aqd:zone/@xlink:href))) then data($x/aqd:zone/@xlink:href) else ""
         where $isPollutantCodesAvailable and $isZoneLocallDCodesAvailable and
-                (not(empty(index-of($zoneLocallD, $zoneId))))
+                (not(empty(index-of($zoneLocallD, $zoneId)))) and
+                (empty(index-of($pollutansCode, concat($x/aqd:zone/fn:normalize-space(@xlink:href), '#', $x/aqd:pollutant/fn:normalize-space(@xlink:href)))))
         return
-            if (empty(index-of($pollutansCode, concat($x/aqd:zone/fn:normalize-space(@xlink:href), '#', $x/aqd:pollutant/fn:normalize-space(@xlink:href))))) then $x/@gml:id else ()
+            <tr>
+                <td title="base:localId">{$x/aqd:inspireId/base:Identifier/base:localId/string()}</td>
+            </tr>
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
@@ -491,8 +492,11 @@ let $G18invalid :=
         let $isLocalCodesAvailable := count($resultXml) > 0
 
         for $x in $docRoot//aqd:AQD_Attainment/aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType
-        where $isLocalCodesAvailable and empty(index-of($localId, $x/../../../../../aqd:zone/@xlink:href)) = false()
-        return if ($x/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LVmaxMOT") then $x/../../../../../@gml:id else ()
+        where $isLocalCodesAvailable and empty(index-of($localId, $x/../../../../../aqd:zone/@xlink:href)) = false() and ($x/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LVmaxMOT")
+        return
+            <tr>
+                <td title="base:localId">{$x/../../../../../aqd:inspireId/base:Identifier/base:localId/string()}</td>
+            </tr>
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
@@ -573,10 +577,13 @@ let $G22invalid :=
 (: 23 :)
 let $G23invalid :=
     try {
-        for $aqdReportingMetric in $docRoot//aqd:AQD_Attainment
-        let $reportingXlink := fn:substring-after(data($aqdReportingMetric/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric/fn:normalize-space(@xlink:href)), "reportingmetric/")
-        where empty(index-of(data($aqdReportingMetric/aqd:pollutant/fn:normalize-space(@xlink:href)), "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1")) = false()
-        return if (empty(index-of(('daysAbove', 'hrsAbove', 'wMean', 'aMean', '3hAbove'), $reportingXlink))) then $aqdReportingMetric/@gml:id else ()
+        for $x in $docRoot//aqd:AQD_Attainment
+        let $reportingXlink := fn:substring-after(data($x/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric/fn:normalize-space(@xlink:href)), "reportingmetric/")
+        where empty(index-of(data($x/aqd:pollutant/fn:normalize-space(@xlink:href)), "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1")) = false() and (empty(index-of(('daysAbove', 'hrsAbove', 'wMean', 'aMean', '3hAbove'), $reportingXlink)))
+        return
+            <tr>
+                <td title="base:localId">{$x/aqd:inspireId/base:Identifier/base:localId/string()}</td>
+            </tr>
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
@@ -586,10 +593,13 @@ let $G23invalid :=
 (: 24 :)
 let $G24invalid :=
     try {
-        for $aqdReportingMetricG24 in $docRoot//aqd:AQD_Attainment
-        let $reportingXlink := fn:substring-after(data($aqdReportingMetricG24/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric/fn:normalize-space(@xlink:href)), "reportingmetric/")
-        where empty(index-of(data($aqdReportingMetricG24/aqd:pollutant/fn:normalize-space(@xlink:href)), "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5")) = false()
-        return if (empty(index-of(('daysAbove', 'aMean'), $reportingXlink))) then $aqdReportingMetricG24/@gml:id else ()
+        for $x in $docRoot//aqd:AQD_Attainment
+        let $reportingXlink := fn:substring-after(data($x/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric/fn:normalize-space(@xlink:href)), "reportingmetric/")
+        where empty(index-of(data($x/aqd:pollutant/fn:normalize-space(@xlink:href)), "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5")) = false() and (empty(index-of(('daysAbove', 'aMean'), $reportingXlink)))
+        return
+            <tr>
+                <td title="base:localId">{$x/aqd:inspireId/base:Identifier/base:localId/string()}</td>
+            </tr>
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
@@ -614,10 +624,14 @@ let $tblInvalidSurfaceAreas :=
 (: G25 :)
 let $G25invalid :=
     try {
-        for $aqdReportingMetricG25 in $docRoot//aqd:AQD_Attainment
-        let $reportingXlink := fn:substring-after(data($aqdReportingMetricG25/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric/fn:normalize-space(@xlink:href)), "reportingmetric/")
-        where empty(index-of(data($aqdReportingMetricG25/aqd:pollutant/fn:normalize-space(@xlink:href)), "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/6001")) = false()
-        return if (empty(index-of(('aMean'), $reportingXlink)) and empty(index-of(('AEI'), $reportingXlink))) then $aqdReportingMetricG25/@gml:id else ()
+        for $x in $docRoot//aqd:AQD_Attainment
+        let $reportingXlink := fn:substring-after(data($x/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric/fn:normalize-space(@xlink:href)), "reportingmetric/")
+        where empty(index-of(data($x/aqd:pollutant/fn:normalize-space(@xlink:href)), "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/6001")) = false() and
+                (empty(index-of(('aMean'), $reportingXlink)) and empty(index-of(('AEI'), $reportingXlink)))
+        return
+            <tr>
+                <td title="base:localId">{$x/aqd:inspireId/base:Identifier/base:localId/string()}</td>
+            </tr>
     }  catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
@@ -630,13 +644,13 @@ let $G26invalid :=
     try {
         for $aqdReportingMetricG26 in $docRoot//aqd:AQD_Attainment
         let $reportingXlink := fn:substring-after(data($aqdReportingMetricG26/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric/fn:normalize-space(@xlink:href)), "reportingmetric/")
-        where empty(index-of(data($aqdReportingMetricG26/aqd:pollutant/fn:normalize-space(@xlink:href)), "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/10")) = false()
-        return if (empty(index-of(('daysAbove'), $reportingXlink))) then
+        where empty(index-of(data($aqdReportingMetricG26/aqd:pollutant/fn:normalize-space(@xlink:href)), "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/10")) = false() and (empty(index-of(('daysAbove'), $reportingXlink)))
+        return
             <tr>
                 <td title="Feature type">{"aqd:AQD_Attainment"}</td>
                 <td title="gml:id">{data($aqdReportingMetricG26/@gml:id)}</td>
                 <td title="aqd:pollutant">{data($aqdReportingMetricG26/aqd:pollutant/fn:normalize-space(@xlink:href))}</td>
-            </tr> else ()
+            </tr>
     }  catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
@@ -957,7 +971,11 @@ let $G46invalid :=
 (: G47 :)
 let $G47invalid :=
     try {
-        distinct-values($docRoot//aqd:AQD_Attainment[aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:adjustmentType/fn:normalize-space(@xlink:href) != "http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/noneApplied"]/@gml:id)
+        for $x in $docRoot//aqd:AQD_Attainment[aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:adjustmentType/fn:normalize-space(@xlink:href) != "http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/noneApplied"]
+        return
+            <tr>
+                <td title="base:localId">{$x/aqd:inspireId/base:Identifier/base:localId/string()}</td>
+            </tr>
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
@@ -1080,10 +1098,14 @@ let $G56invalid :=
 (: G57 - :)
 let $G57invalid :=
     try {
-        for $aqdAdjustmentReportingMetricG57 in $docRoot//aqd:AQD_Attainment
-        let $reportingXlink := fn:substring-after(data($aqdAdjustmentReportingMetricG57/aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric/fn:normalize-space(@xlink:href)), "reportingmetric/")
-        where empty(index-of(data($aqdAdjustmentReportingMetricG57/aqd:pollutant/fn:normalize-space(@xlink:href)), "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/6001")) = false()
-        return if (empty(index-of(('aMean'), $reportingXlink))) then $reportingXlink else ()
+        for $x in $docRoot//aqd:AQD_Attainment
+        let $reportingXlink := fn:substring-after(data($x/aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric/fn:normalize-space(@xlink:href)), "reportingmetric/")
+        where empty(index-of(data($x/aqd:pollutant/fn:normalize-space(@xlink:href)), "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/6001")) = false() and
+                (empty(index-of(('aMean'), $reportingXlink)))
+        return
+            <tr>
+                <td title="reporting link">{$reportingXlink}</td>
+            </tr>
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
@@ -1287,7 +1309,11 @@ let $G67invalid :=
 (: G70 :)
 let $G70invalid :=
     try {
-        $docRoot//aqd:AQD_Attainment/aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:surfaceArea[count(@uom) > 0 and fn:normalize-space(@uom) != "http://dd.eionet.europa.eu/vocabulary/uom/area/km2" and fn:normalize-space(@uom) != "http://dd.eionet.europa.eu/vocabularyconcept/uom/area/km2"]/../../../../../@gml:id
+        for $x in $docRoot//aqd:AQD_Attainment[aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:surfaceArea[count(@uom) > 0 and fn:normalize-space(@uom) != "http://dd.eionet.europa.eu/vocabulary/uom/area/km2" and fn:normalize-space(@uom) != "http://dd.eionet.europa.eu/vocabularyconcept/uom/area/km2"]]
+        return
+            <tr>
+                <td title="base:localId">{$x/aqd:inspireId/base:Identifier/base:localId/string()}</td>
+            </tr>
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
@@ -1298,7 +1324,11 @@ let $G70invalid :=
 (: G71 :)
 let $G71invalid :=
     try {
-        $docRoot//aqd:AQD_Attainment/aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:roadLength[count(@uom) > 0 and fn:normalize-space(@uom) != "http://dd.eionet.europa.eu/vocabulary/uom/length/km" and fn:normalize-space(@uom) != "http://dd.eionet.europa.eu/vocabularyconcept/uom/length/km"]/../../../../../@gml:id
+        for $x in $docRoot//aqd:AQD_Attainment[aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:roadLength[count(@uom) > 0 and fn:normalize-space(@uom) != "http://dd.eionet.europa.eu/vocabulary/uom/length/km" and fn:normalize-space(@uom) != "http://dd.eionet.europa.eu/vocabularyconcept/uom/length/km"]]
+        return
+            <tr>
+                <td title="base:localId">{$x/aqd:inspireId/base:Identifier/base:localId/string()}</td>
+            </tr>
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
@@ -1472,7 +1502,11 @@ let $G80invalid :=
 (: G81 :)
 let $G81invalid :=
     try {
-        distinct-values($docRoot//aqd:AQD_Attainment[aqd:exceedanceDescriptionAdjustmen/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:adjustmentType/fn:normalize-space(@xlink:href)!="http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/fullyCorrected"]/@gml:id)
+        for $x in $docRoot//aqd:AQD_Attainment[aqd:exceedanceDescriptionAdjustmen/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:adjustmentType/fn:normalize-space(@xlink:href)!="http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/fullyCorrected"]
+        return
+            <tr>
+                <td title="base:localId">{$x/aqd:inspireId/base:Identifier/base:localId/string()}</td>
+            </tr>
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
@@ -1545,7 +1579,6 @@ let $G86invalid :=
         </tr>
     }
 
-
 return
     <table class="maintable hover">
         {html:buildResultRows("G1", $labels:G1, $labels:G1_SHORT, $tblAllAttainments, "", string($countAttainments), "", "",$errors:ERROR)}
@@ -1604,7 +1637,7 @@ return
                 $G27invalid, "aqd:reportingMetric", "All values are valid", " invalid value", "",$errors:ERROR)}
         {html:buildResultRowsWithTotalCount_G("G28", <span>./aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType xlink:href attribute shall resolve to one of
             <a href="{ $vocabulary:OBJECTIVETYPE_VOCABULARY }">{ $vocabulary:OBJECTIVETYPE_VOCABULARY }</a>
-            Allowed items: {xmlconv:buildVocItemsList("G28", $vocabulary:OBJECTIVETYPE_VOCABULARY, $xmlconv:VALID_OBJECTIVETYPE_IDS_28)}</span>, $labels:PLACEHOLDER, invalidObjectiveTypes_28, "aqd:objectivetype", "", "", "",$errors:ERROR)}
+            Allowed items: {xmlconv:buildVocItemsList("G28", $vocabulary:OBJECTIVETYPE_VOCABULARY, $xmlconv:VALID_OBJECTIVETYPE_IDS_28)}</span>, $labels:PLACEHOLDER, $G28invalid, "aqd:objectivetype", "", "", "",$errors:ERROR)}
         {html:buildResultRowsWithTotalCount_G("G29", <span>The content of ./aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:EnvironmentalObjective/aqd:reportingMetric shall resolve to a valid concept in
             <a href="{ $vocabulary:REPMETRIC_VOCABULARY }">{ $vocabulary:REPMETRIC_VOCABULARY }</a> that must be one of
             {xmlconv:buildVocItemsList("G29", $vocabulary:REPMETRIC_VOCABULARY, $xmlconv:VALID_REPMETRIC_IDS_29)}</span>, $labels:PLACEHOLDER, $G29invalid, "aqd:reportingMetric", "", "", "",$errors:ERROR)}
