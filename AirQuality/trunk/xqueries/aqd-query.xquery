@@ -803,3 +803,35 @@ declare function query:getSamplingPointMetadataFromFiles($url as xs:string*) as 
          ?observingCapability aqd:observedProperty ?observedProperty . " || $filters ||"
    }"
 };
+
+declare function query:getG86Models($cdrUrl as xs:string) as xs:string {
+  "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+   PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
+   PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+
+   SELECT ?localId ?inspireLabel
+   WHERE {
+         ?model a aqd:AQD_Model;
+         aqd:inspireId ?inspireId .
+         ?inspireId rdfs:label ?inspireLabel .
+         ?inspireId aqd:localId ?localId .
+         ?inspireId aqd:namespace ?namespace .
+    FILTER(CONTAINS(str(?model), '" || $cdrUrl || "'))
+   }"
+};
+
+declare function query:getG86Stations($cdrUrl as xs:string) as xs:string {
+  "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+   PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
+   PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+
+   SELECT ?localId ?inspireLabel
+   WHERE {
+         ?samplingPoint a aqd:AQD_SamplingPoint;
+         aqd:inspireId ?inspireId .
+         ?inspireId rdfs:label ?inspireLabel .
+         ?inspireId aqd:localId ?localId .
+         ?inspireId aqd:namespace ?namespace .
+   FILTER(CONTAINS(str(?samplingPoint), '" || $cdrUrl || "'))
+   }"
+};
