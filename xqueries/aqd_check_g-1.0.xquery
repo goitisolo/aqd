@@ -1160,6 +1160,34 @@ let $G85invalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+(: G86 :)
+let $G86invalid :=
+    try {
+        let $stations := sparqlx:executeSparqlQuery(query:getG86Stations($cdrUrl))/sparql:binding[@name="inspireLabel"]/sparql:literal/string()
+        let $models := sparqlx:executeSparqlQuery(query:getG86Models($cdrUrl))/sparql:binding[@name="inspireLabel"]/sparql:literal/string()
+        for $x in $docRoot//aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea[aqd:stationUsed/@xlink:href or aqd:modelUsed/@xlink:href]
+        let $stationErrors :=
+            for $i in data($x/aqd:stationUsed/@xlink:href)
+            where (not($i = $stations))
+            return 1
+        let $modelErrors :=
+            for $i in data($x/aqd:modelUsed/@xlink:href)
+            where (not($i = $models))
+            return 1
+        where (count($stationErrors) >0 or count($modelErrors) >0)
+        return
+            <tr>
+                <td title="base:localId">{string($x/../../../../aqd:inspireId/base:Identifier/base:localId)}</td>
+                <td title="aqd:stationUsed">{data($x/aqd:stationUsed/@xlink:href)}</td>
+                <td title="aqd:modelUsed">{data($x/aqd:modelUsed/@xlink:href)}</td>
+            </tr>
+    } catch * {
+        <tr status="failed">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
+
 
 return
     <table class="maintable hover">
@@ -1299,6 +1327,7 @@ return
         {html:build2("G80", $labels:G80, $labels:G80_SHORT, $G80invalid, "", "All values are valid", " invalid value", "", $errors:WARNING)}
         {html:buildResultRows("G81", $labels:G81, $labels:G81_SHORT, $invalidAqdAdjustmentType, "base:namespace", "All values are valid", " invalid value", "","error")}
         {html:build2("G85", $labels:G85, $labels:G85_SHORT, $G85invalid, "", "All values are valid", " invalid value", "", $errors:ERROR)}
+        {html:build2("G86", $labels:G86, $labels:G86_SHORT, $G86invalid, "", "All values are valid", " invalid value", "", $errors:ERROR)}
         {$invalidAdjustmentType_82}
     </table>
 };
