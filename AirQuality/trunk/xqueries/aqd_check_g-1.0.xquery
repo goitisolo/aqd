@@ -404,6 +404,24 @@ let $G14ResultG := filter:filterByName($G14tmp, "pollutantCode", (
     "1","7","8","9","5", "6001", "10", "20", "5012", "5018", "5014", "5015", "5029"
 ))
 
+(: G14.1 :)
+let $G14.1invalid :=
+    try {
+        let $all := sparqlx:executeSparqlQuery(query:getAssessmentRegimeIds($cdrUrl))//sparql:binding[@name="inspireLabel"]/sparql:literal/string()
+        let $allLocal := data($docRoot//aqd:AQD_Attainment/aqd:assessment/@xlink:href)
+        for $x in $all
+        where (not($x = $allLocal))
+        return
+            <tr>
+                <td title="aqd:AQD_AssessmentRegime">{$x}</td>
+            </tr>
+    } catch * {
+        <tr status="failed">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
+
 (: G15 :)
 let $resultXml := if (fn:string-length($countryCode) = 2) then query:getZoneLocallD($cdrUrl) else ""
 let $isZoneLocallDCodesAvailable := string-length($resultXml) > 0 and doc-available(sparqlx:getSparqlEndpointUrl($resultXml, "xml"))
@@ -1213,6 +1231,7 @@ return
                 $invalidExceedanceDescriptionAdjustment, "base:namespace", "All values are valid", " invalid value", "", "error")}
         {html:buildResultRows("G13", $labels:G13, $labels:G13_SHORT, $G13invalid, "base:namespace", "All values are valid", " invalid value", "","error")}
         {html:buildResultG14("G14", $labels:G14, $labels:G14_SHORT, $G14resultBC, $G14ResultG)}
+        {html:build2("G14.1", $labels:G14.1, $labels:G14.1_SHORT, $G14.1invalid, "", "All assessment regimes are reported", " missing assessment regime", "", $errors:WARNING)}
         {html:buildResultRows("G15", $labels:G15, $labels:G15_SHORT, $invalidAssessmentZone, "base:namespace", "All values are valid", " invalid value", "","error")}
         {html:buildResultRows("G17", $labels:G17, $labels:G17_SHORT, $invalidPollutant, "base:namespace", "All values are valid", " invalid value", "","error")}
         {html:buildResultRows("G18", $labels:G18, $labels:G18_SHORT, $invalidObjectiveType, "base:namespace", "All values are valid", " invalid value", "","error")}
