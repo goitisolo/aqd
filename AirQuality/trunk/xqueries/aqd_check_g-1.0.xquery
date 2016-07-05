@@ -37,9 +37,6 @@ declare namespace xlink = "http://www.w3.org/1999/xlink";
 declare variable $xmlconv:ISO2_CODES as xs:string* := ("AL","AT","BA","BE","BG","CH","CY","CZ","DE","DK","DZ","EE","EG","ES","FI",
     "FR","GB","GR","HR","HU","IE","IL","IS","IT","JO","LB","LI","LT","LU","LV","MA","ME","MK","MT","NL","NO","PL","PS","PT",
      "RO","RS","SE","SI","SK","TN","TR","XK","UK");
-(:===================================================================:)
-(: Variable given as an external parameter by the QA service         :)
-(:===================================================================:)
 declare variable $xmlconv:VALID_POLLUTANT_IDS as xs:string* := ("1", "7", "8", "9", "5", "6001", "10","20", "5012", "5014", "5015", "5018", "5029");
 declare variable $xmlconv:VALID_POLLUTANT_IDS_11 as xs:string* := ("1", "5", "6001", "10");
 declare variable $xmlconv:VALID_POLLUTANT_IDS_27 as xs:string* := ("5", "8", "6001", "10","20", "5012", "5014", "5015", "5018", "5029");
@@ -73,6 +70,28 @@ let $envelopeUrl := common:getEnvelopeXML($source_url)
 let $docRoot := doc($source_url)
 let $cdrUrl := common:getCdrUrl($countryCode)
 let $reportingYear := common:getReportingYear($docRoot)
+
+(: GLOBAL variables needed for all checks :)
+let $assessmentRegimeIds := distinct-values(data(sparqlx:executeSparqlQuery(query:getAssessmentRegimeIdsC($cdrUrl))//sparql:binding[@name='inspireLabel']/sparql:literal))
+let $assessmentMetadataNamespace := distinct-values(data(sparqlx:executeSparqlQuery(query:getAssessmentMethods())//sparql:binding[@name='assessmentMetadataNamespace']/sparql:literal))
+let $assessmentMetadataId := distinct-values(data(sparqlx:executeSparqlQuery(query:getAssessmentMethods())//sparql:binding[@name='assessmentMetadataId']/sparql:literal))
+let $assessmentMetadata := distinct-values(data(sparqlx:executeSparqlQuery(query:getAssessmentMethods())//concat(sparql:binding[@name='assessmentMetadataNamespace']/sparql:literal,"/",sparql:binding[@name='assessmentMetadataId']/sparql:literal)))
+let $validAssessment :=
+    for $x in $docRoot//aqd:AQD_Attainment/aqd:assessment[@xlink:href = $assessmentRegimeIds]
+    return $x
+let $samplingPointlD :=
+    let $results := if (fn:string-length($countryCode) = 2) then sparqlx:executeSparqlQuery(query:getSamplingPoint($cdrUrl)) else ()
+    let $values :=
+        for $i in $results
+        return concat($i/sparql:binding[@name='namespace']/sparql:literal, '/', $i/sparql:binding[@name = 'localId']/sparql:literal)
+    return distinct-values($values)
+let $isSamplingPointAvailable := count($samplingPointlD) > 0
+let $samplingPointAssessmentMetadata :=
+    let $results := sparqlx:executeSparqlQuery(query:getSamplingPointAssessmentMetadata())
+    return distinct-values(
+            for $i in $results
+            return concat($i/sparql:binding[@name='metadataNamespace']/sparql:literal,"/", $i/sparql:binding[@name='metadataId']/sparql:literal)
+    )
 
 (: G1 :)
 let $countAttainments := count($docRoot//aqd:AQD_Attainment)
@@ -456,21 +475,13 @@ let $G15invalid :=
 (: G17 :)
 let $G17invalid :=
     try {
-        let $resultXml := if (fn:string-length($countryCode) = 2) then query:getZoneLocallD($cdrUrl) else ""
-        let $isZoneLocallDCodesAvailable := string-length($resultXml) > 0 and doc-available(sparqlx:getSparqlEndpointUrl($resultXml, "xml"))
-        let $zoneLocallD := if($isZoneLocallDCodesAvailable) then distinct-values(data(sparqlx:executeSparqlQuery($resultXml)//sparql:binding[@name='inspireLabel']/sparql:literal)) else ()
-        let $isZoneLocallDCodesAvailable := count($zoneLocallD) > 0
+        let $zones := if (fn:string-length($countryCode) = 2) then distinct-values(data(sparqlx:executeSparqlQuery(query:getZoneLocallD($cdrUrl))//sparql:binding[@name='inspireLabel']/sparql:literal)) else ()
+        let $pollutants := if (fn:string-length($countryCode) = 2) then distinct-values(data(sparqlx:executeSparqlQuery(query:getPollutantlD($cdrUrl))//sparql:binding[@name='key']/sparql:literal)) else ()
 
-        let $resultSparql := if (fn:string-length($countryCode) = 2) then query:getPollutantlD($cdrUrl) else ""
-        let $isPollutantCodesAvailable := string-length($resultSparql) > 0 and doc-available(sparqlx:getSparqlEndpointUrl($resultSparql, "xml"))
-        let $pollutansCode:= if($isPollutantCodesAvailable) then distinct-values(data(sparqlx:executeSparqlQuery($resultSparql)//sparql:binding[@name='key']/sparql:literal)) else ()
-        let $isPollutantCodesAvailable := count($pollutansCode) > 0
-
-        for $x in $docRoot//aqd:AQD_Attainment
-        let $zoneId := if (not(empty($x/aqd:zone/@xlink:href))) then data($x/aqd:zone/@xlink:href) else ""
-        where $isPollutantCodesAvailable and $isZoneLocallDCodesAvailable and
-                (not(empty(index-of($zoneLocallD, $zoneId)))) and
-                (empty(index-of($pollutansCode, concat($x/aqd:zone/fn:normalize-space(@xlink:href), '#', $x/aqd:pollutant/fn:normalize-space(@xlink:href)))))
+        for $x in $docRoot//aqd:AQD_Attainment[aqd:zone/@xlink:href]
+        let $zone := data($x/aqd:zone/@xlink:href)
+        let $pollutant := concat($x/aqd:zone/@xlink:href, '#', $x/aqd:pollutant/@xlink:href)
+        where exists($zones) and exists($pollutants) and ($zone = $zones) and not($pollutant = $pollutants)
         return
             <tr>
                 <td title="base:localId">{$x/aqd:inspireId/base:Identifier/base:localId/string()}</td>
@@ -486,13 +497,11 @@ let $G17invalid :=
 (: G18 :)
 let $G18invalid :=
     try {
-        let $resultXml := if (fn:string-length($countryCode) = 2) then query:getTimeExtensionExemption($cdrUrl) else ""
-        let $isLocalCodesAvailable := string-length($resultXml) > 0 and doc-available(sparqlx:getSparqlEndpointUrl($resultXml, "xml"))
-        let $localId := if($isLocalCodesAvailable) then distinct-values(data(sparqlx:executeSparqlQuery($resultXml)//sparql:binding[@name='localId']/sparql:literal)) else ""
-        let $isLocalCodesAvailable := count($resultXml) > 0
-
-        for $x in $docRoot//aqd:AQD_Attainment/aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType
-        where $isLocalCodesAvailable and empty(index-of($localId, $x/../../../../../aqd:zone/@xlink:href)) = false() and ($x/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LVmaxMOT")
+        let $localId :=  if (fn:string-length($countryCode) = 2) then distinct-values(data(sparqlx:executeSparqlQuery(query:getTimeExtensionExemption($cdrUrl))//sparql:binding[@name='localId']/sparql:literal)) else ""
+        for $x in $docRoot//aqd:AQD_Attainment[aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType/@xlink:href]
+        let $objectiveType := data($x/aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType/@xlink:href)
+        let $zone := data($x/aqd:zone/@xlink:href)
+        where exists($localId) and ($zone = $localId) and ($objectiveType != "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LVmaxMOT")
         return
             <tr>
                 <td title="base:localId">{$x/../../../../../aqd:inspireId/base:Identifier/base:localId/string()}</td>
@@ -835,17 +844,8 @@ let $G39invalid :=
 (: G40 - :)
 let $G40invalid  :=
     try {
-        let $inspireLabel := distinct-values(data(sparqlx:executeSparqlQuery(query:getLocallD($cdrUrl))//sparql:binding[@name='inspireLabel']/sparql:literal))
-        let $assessmentMetadataNamespace := distinct-values(data(sparqlx:executeSparqlQuery(query:getAssessmentMethods())//sparql:binding[@name='assessmentMetadataNamespace']/sparql:literal))
-        let $assessmentMetadataId := distinct-values(data(sparqlx:executeSparqlQuery(query:getAssessmentMethods())//sparql:binding[@name='assessmentMetadataId']/sparql:literal))
-        let $assessmentMetadata := distinct-values(data(sparqlx:executeSparqlQuery(query:getAssessmentMethods())//concat(sparql:binding[@name='assessmentMetadataNamespace']/sparql:literal,"/",sparql:binding[@name='assessmentMetadataId']/sparql:literal)))
-        let $validAssessment_40 :=
-            for $x in $docRoot//aqd:AQD_Attainment/aqd:assessment
-            where (not(empty(index-of($inspireLabel, $x/fn:normalize-space(@xlink:href)))))
-            return $x
-
-        for $r in $validAssessment_40/../aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:modelUsed
-        where exists($assessmentMetadata) and ((empty(index-of($assessmentMetadata, $r/fn:normalize-space(@xlink:href)))))
+        for $r in $validAssessment/../aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:modelUsed[@xlink:href = $assessmentMetadata]
+        where exists($assessmentMetadata)
         return
             <tr>
                 <td title="gml:id">{data($r/../../../../../@gml:id)}</td>
@@ -862,18 +862,8 @@ let $G40invalid  :=
 (: G41 - :)
 let $G41invalid :=
     try {
-        let $samplingPointlD :=
-            let $results := if (fn:string-length($countryCode) = 2) then sparqlx:executeSparqlQuery(query:getSamplingPoint($cdrUrl)) else ()
-            let $values :=
-                for $i in $results
-                return concat($i/sparql:binding[@name='namespace']/sparql:literal, '/', $i/sparql:binding[@name = 'localId']/sparql:literal)
-            let $values := distinct-values($values)
-        return if (not(empty($values))) then $values else ()
-
-        let $isSamplingPointAvailable := count($samplingPointlD) > 0
-
-        for $r in $docRoot//aqd:AQD_Attainment/aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:stationUsed
-        where (empty(index-of($samplingPointlD, $r/fn:normalize-space(@xlink:href)))) and $isSamplingPointAvailable
+        for $r in $docRoot//aqd:AQD_Attainment/aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:stationUsed[not(@xlink:href = $samplingPointlD)]
+        where $isSamplingPointAvailable
         return
             <tr>
                 <td title="gml:id">{data($r/../../../../../../../@gml:id)}</td>
@@ -889,20 +879,8 @@ let $G41invalid :=
 (: G42 - :)
 let $G42invalid  :=
     try {
-        let $samplingPointAssessmentMetadata :=
-            let $results := sparqlx:executeSparqlQuery(query:getSamplingPointAssessmentMetadata())
-            return distinct-values(
-                for $i in $results
-                return concat($i/sparql:binding[@name='metadataNamespace']/sparql:literal,"/", $i/sparql:binding[@name='metadataId']/sparql:literal)
-            )
-
-        let $inspireLabel := distinct-values(data(sparqlx:executeSparqlQuery(query:getLocallD($cdrUrl))//sparql:binding[@name='inspireLabel']/sparql:literal))
-        let $validAssessment_40 :=
-            for $x in $docRoot//aqd:AQD_Attainment/aqd:assessment
-            return  if (not(empty(index-of($inspireLabel, $x/fn:normalize-space(@xlink:href))))) then $x else ()
-
-        for $r in $validAssessment_40/../aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:stationlUsed
-        where exists($samplingPointAssessmentMetadata) and ((empty(index-of($samplingPointAssessmentMetadata, $r/fn:normalize-space(@xlink:href)))))
+        for $r in $validAssessment/../aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:stationlUsed[not(@xlink:href = $samplingPointAssessmentMetadata)]
+        where exists($samplingPointAssessmentMetadata)
         return
             <tr>
                 <td title="gml:id">{data($r/../../../../../@gml:id)}</td>
@@ -1000,8 +978,8 @@ let $G53invalid :=
         let $model := if (fn:string-length($countryCode) = 2) then distinct-values(data(sparqlx:executeSparqlQuery(query:getModel($cdrUrl))//concat(sparql:binding[@name='namespace']/sparql:literal,"/",sparql:binding[@name='localId']/sparql:literal))) else ()
         let $isModelAvailable := count($model) > 0
 
-        for $r in $docRoot//aqd:AQD_Attainment/aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:modelUsed
-        where ((empty(index-of($model, $r/fn:normalize-space(@xlink:href))))) and $isModelAvailable
+        for $r in $docRoot//aqd:AQD_Attainment/aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:modelUsed[not(@xlink:href = $model)]
+        where $isModelAvailable
         return
             <tr>
                 <td title="gml:id">{data($r/../../../../../../../@gml:id)}</td>
@@ -1014,18 +992,10 @@ let $G53invalid :=
         </tr>
     }
 
-
 (: G54 - :)
 let $G54invalid :=
     try {
-        let $inspireLabel := distinct-values(data(sparqlx:executeSparqlQuery(query:getLocallD($cdrUrl))//sparql:binding[@name='inspireLabel']/sparql:literal))
-        let $validAssessment_40 :=
-            for $x in $docRoot//aqd:AQD_Attainment/aqd:assessment
-            return  if (not(empty(index-of($inspireLabel, $x/fn:normalize-space(@xlink:href))))) then $x else ()
-        let $assessmentMetadata := distinct-values(data(sparqlx:executeSparqlQuery(query:getAssessmentMethods())//concat(sparql:binding[@name='assessmentMetadataNamespace']/sparql:literal,"/",sparql:binding[@name='assessmentMetadataId']/sparql:literal)))
-
-        for $r in $validAssessment_40/../aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:modelUsed
-        where ((empty(index-of($assessmentMetadata, $r/fn:normalize-space(@xlink:href)))))
+        for $r in $validAssessment/../aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:modelUsed[not(@xlink:href = $assessmentMetadata)]
         return
             <tr>
                 <td title="gml:id">{data($r/../../../../../@gml:id)}</td>
@@ -1042,17 +1012,8 @@ let $G54invalid :=
 (: G55 :)
 let $G55invalid :=
     try {
-        let $samplingPointlD :=
-            let $results := if (fn:string-length($countryCode) = 2) then sparqlx:executeSparqlQuery(query:getSamplingPoint($cdrUrl)) else ()
-            let $values :=
-                for $i in $results
-                return concat($i/sparql:binding[@name = 'namespace']/sparql:literal, '/', $i/sparql:binding[@name = 'localId']/sparql:literal)
-            let $values := distinct-values($values)
-            return if (not(empty($values))) then $values else ()
-
-        let $isSamplingPointAvailable := count($samplingPointlD) > 0
-        for $r in $docRoot//aqd:AQD_Attainment/aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:stationUsed
-        where (empty(index-of($samplingPointlD, $r/fn:normalize-space(@xlink:href)))) and $isSamplingPointAvailable
+        for $r in $docRoot//aqd:AQD_Attainment/aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:stationUsed[not(@xlink:href = $samplingPointlD)]
+        where $isSamplingPointAvailable
         return
             <tr>
                 <td title="gml:id">{data($r/../../../../../../../@gml:id)}</td>
@@ -1068,19 +1029,8 @@ let $G55invalid :=
 (: G56 :)
 let $G56invalid :=
     try {
-        let $samplingPointAssessmentMetadata :=
-            let $results := sparqlx:executeSparqlQuery(query:getSamplingPointAssessmentMetadata())
-            return distinct-values(
-                    for $i in $results
-                    return concat($i/sparql:binding[@name='metadataNamespace']/sparql:literal,"/", $i/sparql:binding[@name='metadataId']/sparql:literal)
-            )
-        let $inspireLabel := distinct-values(data(sparqlx:executeSparqlQuery(query:getLocallD($cdrUrl))//sparql:binding[@name='inspireLabel']/sparql:literal))
-        let $validAssessment_40 :=
-            for $x in $docRoot//aqd:AQD_Attainment/aqd:assessment
-            return  if (not(empty(index-of($inspireLabel, $x/fn:normalize-space(@xlink:href))))) then $x else ()
-
-        for $r in $validAssessment_40/../aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:stationlUsed
-        where exists($samplingPointAssessmentMetadata) and ((empty(index-of($samplingPointAssessmentMetadata, $r/fn:normalize-space(@xlink:href)))))
+        for $r in $validAssessment/../aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:stationlUsed[not(@xlink:href = $samplingPointAssessmentMetadata)]
+        where exists($samplingPointAssessmentMetadata)
         return
             <tr>
                 <td title="gml:id">{data($r/../../../../../@gml:id)}</td>
@@ -1226,14 +1176,8 @@ let $G64invalid :=
 (: G65 :)
 let $G65invalid :=
     try {
-        let $inspireLabel := distinct-values(data(sparqlx:executeSparqlQuery(query:getLocallD($cdrUrl))//sparql:binding[@name='inspireLabel']/sparql:literal))
-        let $validAssessment_40 :=
-            for $x in $docRoot//aqd:AQD_Attainment/aqd:assessment
-            return  if (not(empty(index-of($inspireLabel, $x/fn:normalize-space(@xlink:href))))) then $x else ()
-        let $assessmentMetadata := distinct-values(data(sparqlx:executeSparqlQuery(query:getAssessmentMethods())//concat(sparql:binding[@name='assessmentMetadataNamespace']/sparql:literal,"/",sparql:binding[@name='assessmentMetadataId']/sparql:literal)))
-
-        for $r in $validAssessment_40/../aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:assessmentMethod/aqd:AssessmentMethods/aqd:modelAssessmentMetadata
-        where exists($assessmentMetadata) and ((empty(index-of($assessmentMetadata, $r/fn:normalize-space(@xlink:href)))))
+        for $r in $validAssessment/../aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:assessmentMethod/aqd:AssessmentMethods/aqd:modelAssessmentMetadata[not(@xlink:href = $assessmentMetadata)]
+        where exists($assessmentMetadata)
         return
             <tr>
                 <td title="gml:id">{data($r/../../../../../../../@gml:id)}</td>
@@ -1250,16 +1194,6 @@ let $G65invalid :=
 (: G66 :)
 let $G66invalid :=
     try {
-        let $samplingPointlD :=
-            let $results := if (fn:string-length($countryCode) = 2) then sparqlx:executeSparqlQuery(query:getSamplingPoint($cdrUrl)) else ()
-            let $values :=
-                for $i in $results
-                return concat($i/sparql:binding[@name = 'namespace']/sparql:literal, '/', $i/sparql:binding[@name = 'localId']/sparql:literal)
-            let $values := distinct-values($values)
-            return if (not(empty($values))) then $values else ()
-
-        let $isSamplingPointAvailable := count($samplingPointlD) > 0
-
         for $r in xmlconv:getValidDDConceptLimited($source_url, "aqd:exceedanceDescriG66ptionAdjustment", "aqd:AdjustmentMethod", "aqd:adjustmentType", $vocabulary:ADJUSTMENTTYPE_VOCABULARY, $xmlconv:VALID_ADJUSTMENTTYPE_IDS)
         let $root := $r/../../../../. (: aqd:AQD_Attainment :)
         let $meta := $root//aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:assessmentMethod/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata
@@ -1279,20 +1213,7 @@ let $G66invalid :=
 (: G67 - :)
 let $G67invalid :=
     try {
-        let $samplingPointAssessmentMetadata :=
-            let $results := sparqlx:executeSparqlQuery(query:getSamplingPointAssessmentMetadata())
-            return distinct-values(
-                    for $i in $results
-                    return concat($i/sparql:binding[@name='metadataNamespace']/sparql:literal,"/", $i/sparql:binding[@name='metadataId']/sparql:literal)
-            )
-        let $inspireLabel := distinct-values(data(sparqlx:executeSparqlQuery(query:getLocallD($cdrUrl))//sparql:binding[@name='inspireLabel']/sparql:literal))
-        let $validAssessment_40 :=
-            for $x in $docRoot//aqd:AQD_Attainment/aqd:assessment
-            return  if (not(empty(index-of($inspireLabel, $x/fn:normalize-space(@xlink:href))))) then $x else ()
-        let $assessmentMetadata := distinct-values(data(sparqlx:executeSparqlQuery(query:getAssessmentMethods())//concat(sparql:binding[@name='assessmentMetadataNamespace']/sparql:literal,"/",sparql:binding[@name='assessmentMetadataId']/sparql:literal)))
-
-        for $r in $validAssessment_40/../aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:assessmentMethod/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata
-        where ((empty(index-of($samplingPointAssessmentMetadata, $r/fn:normalize-space(@xlink:href)))))
+        for $r in $validAssessment/../aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:assessmentMethod/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata[not(@xlink:href = $samplingPointAssessmentMetadata)]
         return
             <tr>
                 <td title="gml:id">{data($r/../../../../../../../@gml:id)}</td>
@@ -1371,14 +1292,8 @@ let $G73invalid :=
 (: G74 :)
 let $modelUsed_74  :=
     try {
-        let $inspireLabel := distinct-values(data(sparqlx:executeSparqlQuery(query:getLocallD($cdrUrl))//sparql:binding[@name='inspireLabel']/sparql:literal))
-        let $validAssessment_40 :=
-            for $x in $docRoot//aqd:AQD_Attainment/aqd:assessment
-            return  if (not(empty(index-of($inspireLabel, $x/fn:normalize-space(@xlink:href))))) then $x else ()
-        let $assessmentMetadata := distinct-values(data(sparqlx:executeSparqlQuery(query:getAssessmentMethods())//concat(sparql:binding[@name='assessmentMetadataNamespace']/sparql:literal,"/",sparql:binding[@name='assessmentMetadataId']/sparql:literal)))
-
-        for $r in $validAssessment_40/../aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:modelUsed
-        where exists($assessmentMetadata) and ((empty(index-of($assessmentMetadata, $r/fn:normalize-space(@xlink:href)))))
+        for $r in $validAssessment/../aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:modelUsed[not(@xlink:href = $assessmentMetadata)]
+        where exists($assessmentMetadata)
         return
             <tr>
                 <td title="gml:id">{data($r/../../../../../../../@gml:id)}</td>
@@ -1394,14 +1309,6 @@ let $modelUsed_74  :=
 (: G75 :)
 let $G75invalid  :=
     try {
-        let $samplingPointlD :=
-            let $results := if (fn:string-length($countryCode) = 2) then sparqlx:executeSparqlQuery(query:getSamplingPoint($cdrUrl)) else ()
-            let $values :=
-                for $i in $results
-                return concat($i/sparql:binding[@name = 'namespace']/sparql:literal, '/', $i/sparql:binding[@name = 'localId']/sparql:literal)
-            let $values := distinct-values($values)
-            return if (not(empty($values))) then $values else ()
-
         for $r in $docRoot//aqd:AQD_Attainment//aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:stationUsed
         where exists($samplingPointlD) and (empty(index-of($samplingPointlD, $r/fn:normalize-space(@xlink:href))))
         return
@@ -1419,21 +1326,8 @@ let $G75invalid  :=
 (: G76 :)
 let $G76invalid  :=
     try {
-        let $samplingPointAssessmentMetadata :=
-            let $results := sparqlx:executeSparqlQuery(query:getSamplingPointAssessmentMetadata())
-            return distinct-values(
-                    for $i in $results
-                    return concat($i/sparql:binding[@name='metadataNamespace']/sparql:literal,"/", $i/sparql:binding[@name='metadataId']/sparql:literal)
-            )
-
-        let $inspireLabel := distinct-values(data(sparqlx:executeSparqlQuery(query:getLocallD($cdrUrl))//sparql:binding[@name = 'inspireLabel']/sparql:literal))
-        let $validAssessment_40 :=
-            for $x in $docRoot//aqd:AQD_Attainment/aqd:assessment
-            return if (not(empty(index-of($inspireLabel, $x/fn:normalize-space(@xlink:href))))) then $x else ()
-        let $assessmentMetadata := distinct-values(data(sparqlx:executeSparqlQuery(query:getAssessmentMethods())//concat(sparql:binding[@name = 'assessmentMetadataNamespace']/sparql:literal, "/", sparql:binding[@name = 'assessmentMetadataId']/sparql:literal)))
-
-        for $r in $validAssessment_40/../aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:stationlUsed
-        where exists($assessmentMetadata) and ((empty(index-of($samplingPointAssessmentMetadata, $r/fn:normalize-space(@xlink:href)))))
+        for $r in $validAssessment/../aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:stationlUsed[not(@xlink:href = $samplingPointAssessmentMetadata)]
+        where exists($assessmentMetadata)
         return
             <tr>
                 <td title="gml:id">{data($r/../../../../../@gml:id)}</td>
@@ -1517,8 +1411,7 @@ let $G81invalid :=
 (: G82 - :)
 let $G82invalid :=
     try {
-        for $r in $docRoot//aqd:AQD_Attainment//aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:adjustmentType
-        where (not(empty(index-of($xmlconv:ADJUSTMENTTYPES, $r/fn:normalize-space(@xlink:href)))))
+        for $r in $docRoot//aqd:AQD_Attainment//aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:adjustmentType[@xlink:href = $xmlconv:ADJUSTMENTTYPES]
         return
             <tr>
                 <td title="gml:id">{data($r/../../../../../@gml:id)}</td>
