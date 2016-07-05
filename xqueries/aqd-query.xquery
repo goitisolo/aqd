@@ -609,19 +609,19 @@ SELECT distinct  ?inspireLabel
 }")(: order by ?inspireLabel"):)
 };
 
-declare function query:getLocallD($cdrUrl as xs:string) as xs:string {
-  concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-            PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
-            PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+declare function query:getAssessmentRegimeIdsC($cdrUrl as xs:string) as xs:string {
+  "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+   PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
+   PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
 
-           SELECT ?zone ?inspireId ?localId ?inspireLabel
-           WHERE {
-                  ?zone a aqd:AQD_AssessmentRegime ;
-                  aqd:inspireId ?inspireId .
-                  ?inspireId rdfs:label ?inspireLabel .
-                  ?inspireId aqd:localId ?localId .
-           FILTER (CONTAINS(str(?zone), '",$cdrUrl, "c/'))
-       }")(:  order by  ?zone"):)
+   SELECT ?localId ?inspireLabel
+   WHERE {
+          ?regime a aqd:AQD_AssessmentRegime ;
+          aqd:inspireId ?inspireId .
+          ?inspireId rdfs:label ?inspireLabel .
+          ?inspireId aqd:localId ?localId .
+          FILTER (CONTAINS(str(?regime), '" || $cdrUrl || "c/'))
+   }"
 };
 
 declare function query:getAssessmentMethods() as xs:string {
