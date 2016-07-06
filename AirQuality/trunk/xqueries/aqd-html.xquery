@@ -205,6 +205,48 @@ declare function html:build2($ruleCode as xs:string, $longText, $text, $records 
             $countRecords || " " || $unit || substring("s ", number(not($countRecords > 1)) * 2) || " found"
     return html:buildGeneric($ruleCode, $longText, $text, $records, $valueHeading, $message, $unit, $skippedMsg, $errorLevel, $bulletType)
 };
+declare function html:build9($ruleCode as xs:string, $longText, $text, $records as element(tr)*, $valueHeading as xs:string, $validMsg as xs:string, $unit as xs:string, $skippedMsg, $errorLevel as xs:string) as element(tr)* {
+    let $countRecords := count($records)
+    let $countInvalid := count($records/@valid = "false")
+    let $bulletType :=
+        if ($countRecords = 0) then
+            $errors:SKIPPED
+        else if ($countInvalid > 0) then
+            $errorLevel
+        else
+            $errors:INFO
+    let $message :=
+        if ($countRecords = 0) then
+            $skippedMsg
+        else if ($countInvalid > 0) then
+            $countInvalid || " " || $unit || substring("s ", number(not($countRecords > 1)) * 2) || " found"
+        else
+            $validMsg
+
+    return html:buildGeneric($ruleCode, $longText, $text, $records, $valueHeading, $validMsg, $unit, $skippedMsg, $errorLevel, $bulletType)
+};
+declare function html:build7($ruleCode as xs:string, $longText, $text, $records as element(tr)*, $valueHeading as xs:string, $validMsg as xs:string, $unit as xs:string, $skippedMsg, $errorLevel as xs:string) as element(tr)* {
+    let $countRecords := count($records)
+    let $countInvalid := count($records/@valid = "false")
+    let $bulletType :=
+        if ($countRecords = 0) then
+            $errors:SKIPPED
+        else if ($countRecords = 1) then
+            $errors:INFO
+        else
+            $errorLevel
+    let $message :=
+        if ($countRecords = 0) then
+            $skippedMsg
+        else if ($countRecords > 1) then
+            $unit || "is not unique"
+        else if ($countRecords = 1) then
+            $validMsg
+        else
+            "unknown error"
+
+    return html:buildGeneric($ruleCode, $longText, $text, $records, $valueHeading, $validMsg, $unit, $skippedMsg, $errorLevel, $bulletType)
+};
 
 (: Deprecated, remove after migration :)
 declare function html:buildResultRows($ruleCode as xs:string, $longText, $text, $records as element(tr)*, $valueHeading as xs:string, $validMsg as xs:string, $unit as xs:string, $skippedMsg, $errorLevel as xs:string) as element(tr)* {
