@@ -559,14 +559,17 @@ PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
 PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
 PREFIX aq: <http://reference.eionet.europa.eu/aq/ontology/>
 
-           SELECT ?zone ?inspireId ?localId ?inspireLabel
+           SELECT ?inspireLabel ?pollutant ?objectiveType
            WHERE {
                   ?regime a aqd:AQD_AssessmentRegime ;
+                  aqd:assessmentThreshold ?assessmentThreshold ;
+                  aqd:pollutant ?pollutant ;
                   aqd:zone ?zone ;
                   aqd:inspireId ?inspireId .
                   ?zone aq:reportingBegin ?reportingYear .
                   ?inspireId rdfs:label ?inspireLabel .
                   ?inspireId aqd:localId ?localId .
+                  ?assessmentThreshold aq:objectiveType ?objectiveType .
            FILTER (CONTAINS(str(?regime), '" || $envelopeUrl || "c/'))
            FILTER (strstarts(str(?reportingYear), '" || $reportingYear || "'))
        }"
