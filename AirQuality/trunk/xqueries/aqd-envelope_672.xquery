@@ -173,7 +173,7 @@ as element(div)
     let $envelope := doc($url)/envelope
 
     (: set variables for envelope year :)
-    let $minimumYear := 2014
+    let $minimumYear := 2015
     let $maximumYear := 2016
 
     (: Count of string values :)

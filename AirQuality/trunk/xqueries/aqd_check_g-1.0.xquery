@@ -377,7 +377,6 @@ let $G12invalid :=
 (: G13 :)
 let $G13invalid :=
     try {
-
         let $inspireLabels := distinct-values(data(sparqlx:executeSparqlQuery(query:getG13($cdrUrl, $reportingYear))//sparql:binding[@name='inspireLabel']/sparql:literal))
         for $x in $docRoot//aqd:AQD_Attainment/aqd:assessment[not(@xlink:href = $inspireLabels)]
         return
