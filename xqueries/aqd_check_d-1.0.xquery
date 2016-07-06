@@ -51,6 +51,10 @@ declare function xmlconv:checkReport($source_url as xs:string, $countryCode as x
 
 let $docRoot := doc($source_url)
 (: COMMON variables used in many QCs :)
+let $countFeatureTypes :=
+    for $featureType in $xmlconv:FEATURE_TYPES
+    return
+        count(doc($source_url)//gml:featureMember/descendant::*[name()=$featureType])
 let $DCombinations :=
     for $featureType in $xmlconv:FEATURE_TYPES
     return
@@ -64,11 +68,11 @@ let $sampleNamespaces := distinct-values($docRoot//aqd:AQD_Sample/aqd:inspireId/
 let $D1table :=
     try {
         for $featureType at $pos in $xmlconv:FEATURE_TYPES
-        where $DCombinations[$pos] > 0
+        where $countFeatureTypes[$pos] > 0
         return
             <tr>
                 <td title="Feature type">{$featureType}</td>
-                <td title="Total number">{$DCombinations[$pos]}</td>
+                <td title="Total number">{$countFeatureTypes[$pos]}</td>
             </tr>
     } catch * {
         <tr status="failed">
