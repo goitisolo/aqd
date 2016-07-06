@@ -211,25 +211,18 @@ let $D5invalid := $countGmlIdDuplicates + $countefInspireIdDuplicates + $countaq
 
 
 (: D6 Done by Rait ./ef:inspireId/base:Identifier/base:localId shall be an unique code for AQD_network and unique within the namespace.:)
-let $D6invalid :=
-    try {
-        let $amInspireIds := $docRoot//aqd:AQD_Network/ef:inspireId/base:Identifier/concat(lower-case(normalize-space(base:namespace)), '##',
-                lower-case(normalize-space(base:localId)))
-        let $duplicateEUStationCode := distinct-values(
-                for $identifier in $docRoot//aqd:AQD_Network/ef:inspireId/base:Identifier
-                where string-length(normalize-space($identifier/base:localId)) > 0 and count(index-of($amInspireIds,
-                        concat(lower-case(normalize-space($identifier/base:namespace)), '##', lower-case(normalize-space($identifier/base:localId))))) > 1
-                return
-                    concat(normalize-space($identifier/base:namespace), ':', normalize-space($identifier/base:localId))
-        )
-        let $countAmInspireIdDuplicates := count($duplicateEUStationCode)
-        return $countAmInspireIdDuplicates
-    } catch * {
-        <tr status="failed">
-            <td title="Error code">{$err:code}</td>
-            <td title="Error description">{$err:description}</td>
-        </tr>
-    }
+(: TODO FIX TRY CATCH :)
+    let $amInspireIds := $docRoot//aqd:AQD_Network/ef:inspireId/base:Identifier/concat(lower-case(normalize-space(base:namespace)), '##',
+            lower-case(normalize-space(base:localId)))
+    let $duplicateEUStationCode := distinct-values(
+            for $identifier in $docRoot//aqd:AQD_Network/ef:inspireId/base:Identifier
+            where string-length(normalize-space($identifier/base:localId)) > 0 and count(index-of($amInspireIds,
+                    concat(lower-case(normalize-space($identifier/base:namespace)), '##', lower-case(normalize-space($identifier/base:localId))))) > 1
+            return
+                concat(normalize-space($identifier/base:namespace), ':', normalize-space($identifier/base:localId))
+    )
+    let $countAmInspireIdDuplicates := count($duplicateEUStationCode)
+    let $D6invalid := $countAmInspireIdDuplicates
 
 (: D7 :)
 let $D7table :=
