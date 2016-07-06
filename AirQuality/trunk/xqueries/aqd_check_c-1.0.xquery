@@ -182,7 +182,10 @@ let $C7invalid :=
 (: C8 - if a regime is missing for a pollutant in the list, warning should be thrown :)
 let $C8invalid :=
     try {
-        for $code in $xmlconv:MANDATORY_POLLUTANT_IDS_8
+        let $pollutants :=
+            if ($countryCode = "gi") then remove($xmlconv:MANDATORY_POLLUTANT_IDS_8, index-of($xmlconv:MANDATORY_POLLUTANT_IDS_8, "9"))
+            else $xmlconv:MANDATORY_POLLUTANT_IDS_8
+        for $code in $pollutants
         let $pollutantLink := fn:concat($vocabulary:POLLUTANT_VOCABULARY, $code)
         where count($docRoot//aqd:AQD_AssessmentRegime/aqd:pollutant[@xlink:href = $pollutantLink]) < 1
         return
