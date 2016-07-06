@@ -63,7 +63,10 @@ let $nameSpaces := distinct-values($docRoot//base:namespace)
 let $knownZones := distinct-values(data(sparqlx:executeSparqlQuery(query:getZonesSparql($nameSpaces))//sparql:binding[@name='inspireid']/sparql:literal))
 let $SPOnamespaces := distinct-values($docRoot//aqd:AQD_SamplingPoint//base:Identifier/base:namespace)
 let $SPPnamespaces := distinct-values($docRoot//aqd:AQD_SamplingPointProcess/ompr:inspireId/base:Identifier/base:namespace)
+let $networkNamespaces := distinct-values($docRoot//aqd:AQD_Network/ef:inspireId/base:Identifier/base:namespace)
 let $sampleNamespaces := distinct-values($docRoot//aqd:AQD_Sample/aqd:inspireId/base:Identifier/base:namespace)
+let $stationNamespaces := distinct-values($docRoot//aqd:AQD_Station/ef:inspireId/base:Identifier/base:namespace)
+
 (: D1 :)
 let $D1table :=
     try {
@@ -227,8 +230,7 @@ let $D5invalid := $countGmlIdDuplicates + $countefInspireIdDuplicates + $countaq
 (: D7 :)
 let $D7table :=
     try {
-        let $allBaseNamespace := distinct-values($docRoot//aqd:AQD_Network/ef:inspireId/base:Identifier/base:namespace)
-        for $id in $allBaseNamespace
+        for $id in $networkNamespaces
         let $localId := $docRoot//aqd:AQD_Network/ef:inspireId/base:Identifier[base:namespace = $id]/base:localId
         return
             <tr>
@@ -373,9 +375,7 @@ let $D15invalid :=
 (: D16 :)
 let $D16table :=
     try {
-        let $allBaseNamespace := distinct-values($docRoot//aqd:AQD_Station/ef:inspireId/base:Identifier/base:namespace)
-
-        for $id in $allBaseNamespace
+        for $id in $networkNamespaces
         let $localId := $docRoot//aqd:AQD_Station/ef:inspireId/base:Identifier[base:namespace = $id]/base:localId
         return
             <tr>
@@ -655,7 +655,7 @@ let $D31invalid :=
 (: D32 :)
 let $D32table :=
     try {
-        for $id in $allBaseNamespace
+        for $id in $networkNamespaces
         let $localId := $docRoot//aqd:AQD_SamplingPoint//base:Identifier[base:namespace = $id]/base:localId
         return
             <tr>
