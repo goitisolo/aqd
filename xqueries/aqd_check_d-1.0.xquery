@@ -22,6 +22,7 @@ import module namespace vocabulary = "aqd-vocabulary" at "aqd-vocabulary.xquery"
 import module namespace dd = "aqd-dd" at "aqd-dd.xquery";
 import module namespace geox = "aqd-geo" at "aqd-geo.xquery";
 import module namespace query = "aqd-query" at "aqd-query.xquery";
+import module namespace errors = "aqd-errors" at "aqd-errors.xquery";
 
 declare namespace aqd = "http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0";
 declare namespace gml = "http://www.opengis.net/gml/3.2";
@@ -49,57 +50,75 @@ declare variable $xmlconv:FEATURE_TYPES := ("aqd:AQD_Network", "aqd:AQD_Station"
 declare function xmlconv:checkReport($source_url as xs:string, $countryCode as xs:string) as element(table) {
 
 let $docRoot := doc($source_url)
-(: D1 :)
-let $countFeatureTypes :=
-    for $featureType in $xmlconv:FEATURE_TYPES
-    return
-        count(doc($source_url)//gml:featureMember/descendant::*[name()=$featureType])
-let $tblAllFeatureTypes :=
-    for $featureType at $pos in $xmlconv:FEATURE_TYPES
-    where $countFeatureTypes[$pos] > 0
-    return
-        <tr>
-            <td title="Feature type">{$featureType}</td>
-            <td title="Total number">{$countFeatureTypes[$pos]}</td>
-        </tr>
-
-(: D2 :)
+(: COMMON variables used in many QCs :)
 let $DCombinations :=
     for $featureType in $xmlconv:FEATURE_TYPES
     return
         doc($source_url)//gml:featureMember/descendant::*[name()=$featureType]
-
 let $nameSpaces := distinct-values($docRoot//base:namespace)
-let $zonesSparql := query:getZonesSparql($nameSpaces)
-let $isZonesAvailable := string-length($zonesSparql) > 0 and doc-available(sparqlx:getSparqlEndpointUrl($zonesSparql, "xml"))
-let $knownZones := if ($isZonesAvailable ) then distinct-values(data(sparqlx:executeSparqlQuery($zonesSparql)//sparql:binding[@name='inspireid']/sparql:literal)) else ()
-let $tblD2 :=
-    for $zone in $DCombinations
-        let $id := string($zone/ef:inspireId/base:Identifier/base:localId)
-    where ($id = "" or not($knownZones = $id))
-    return
-        <tr>
-            <td title="base:localId">{$id}</td>
+let $knownZones := distinct-values(data(sparqlx:executeSparqlQuery(query:getZonesSparql($nameSpaces))//sparql:binding[@name='inspireid']/sparql:literal))
+let $SPOnamespaces := distinct-values($docRoot//aqd:AQD_SamplingPoint//base:Identifier/base:namespace)
+let $SPPnamespaces := distinct-values($docRoot//aqd:AQD_SamplingPointProcess/ompr:inspireId/base:Identifier/base:namespace)
+let $sampleNamespaces := distinct-values($docRoot//aqd:AQD_Sample/aqd:inspireId/base:Identifier/base:namespace)
+(: D1 :)
+let $D1table :=
+    try {
+        for $featureType at $pos in $xmlconv:FEATURE_TYPES
+        where $DCombinations[$pos] > 0
+        return
+            <tr>
+                <td title="Feature type">{$featureType}</td>
+                <td title="Total number">{$DCombinations[$pos]}</td>
+            </tr>
+    } catch * {
+        <tr status="failed">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
         </tr>
+    }
+
+(: D2 :)
+let $D2table :=
+    try {
+        for $zone in $DCombinations
+        let $id := string($zone/ef:inspireId/base:Identifier/base:localId)
+        where ($id = "" or not($knownZones = $id))
+        return
+            <tr>
+                <td title="base:localId">{$id}</td>
+            </tr>
+    } catch * {
+        <tr status="failed">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
 
 (: D3 :)
-let $tblD3 :=
-    for $zone in $DCombinations
+let $D3table :=
+    try {
+        for $zone in $DCombinations
         let $id := string($zone/ef:inspireId/base:Identifier/base:localId)
-    where $knownZones = $id
-    return
-        <tr>
-            <td title="base:localId">{$id}</td>
+        where $knownZones = $id
+        return
+            <tr>
+                <td title="base:localId">{$id}</td>
+            </tr>
+    } catch * {
+        <tr status="failed">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
         </tr>
+    }
 
 (: D4 :)
-let $allD4Combinations :=
-    for $aqdModel in $DCombinations
-    return concat(data($aqdModel/@gml:id), "#", $aqdModel/ef:inspireId/base:Identifier/base:localId, "#", $aqdModel/ompr:inspireId/base:Identifier/base:localId, "#", $aqdModel/ef:name, "#", $aqdModel/ompr:name )
-
-let $allD4Combinations := fn:distinct-values($allD4Combinations)
-let $tblD4 :=
-    for $rec in $allD4Combinations
+let $D4table :=
+    try {
+        let $allD4Combinations :=
+            for $aqdModel in $DCombinations
+            return concat(data($aqdModel/@gml:id), "#", $aqdModel/ef:inspireId/base:Identifier/base:localId, "#", $aqdModel/ompr:inspireId/base:Identifier/base:localId, "#", $aqdModel/ef:name, "#", $aqdModel/ompr:name)
+        let $allD4Combinations := fn:distinct-values($allD4Combinations)
+        for $rec in $allD4Combinations
         let $modelType := substring-before($rec, "#")
         let $tmpStr := substring-after($rec, concat($modelType, "#"))
         let $inspireId := substring-before($tmpStr, "#")
@@ -107,17 +126,24 @@ let $tblD4 :=
         let $aqdInspireId := substring-before($tmpInspireId, "#")
         let $tmpEfName := substring-after($tmpInspireId, concat($aqdInspireId, "#"))
         let $efName := substring-before($tmpEfName, "#")
-        let $omprName := substring-after($tmpEfName,concat($efName,"#"))
-    return
-        <tr>
-            <td title="gml:id">{common:checkLink($modelType)}</td>
-            <td title="ef:inspireId/localId">{common:checkLink($inspireId)}</td>
-            <td title="ompr:inspireId/localId">{common:checkLink($aqdInspireId)}</td>
-            <td title="ef:name">{common:checkLink($efName)}</td>
-            <td title="ompr:name">{common:checkLink($omprName)}</td>
+        let $omprName := substring-after($tmpEfName, concat($efName, "#"))
+        return
+            <tr>
+                <td title="gml:id">{common:checkLink($modelType)}</td>
+                <td title="ef:inspireId/localId">{common:checkLink($inspireId)}</td>
+                <td title="ompr:inspireId/localId">{common:checkLink($aqdInspireId)}</td>
+                <td title="ef:name">{common:checkLink($efName)}</td>
+                <td title="ompr:name">{common:checkLink($omprName)}</td>
+            </tr>
+    } catch * {
+        <tr status="failed">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
         </tr>
+    }
 
 (: D5 :)
+(: TODO: FIX TRY CATCH :)
 let $gmlIds := $DCombinations/lower-case(normalize-space(@gml:id))
 let $D5tmp := distinct-values(
         for $id in $DCombinations/@gml:id
@@ -162,7 +188,7 @@ let $D5tmp := distinct-values(
         let $key :=
             concat("[", normalize-space($id/base:Identifier/base:localId), ", ", normalize-space($id/base:Identifier/base:namespace),
                     ", ", normalize-space($id/base:Identifier/base:versionId), "]")
-        where  string-length(normalize-space($id/base:Identifier/base:localId)) > 0 and count(index-of($aqdInspireIds, lower-case($key))) > 1
+        where string-length(normalize-space($id/base:Identifier/base:localId)) > 0 and count(index-of($aqdInspireIds, lower-case($key))) > 1
         return
             $key
 )
@@ -177,60 +203,125 @@ let $duplicateaqdInspireIds :=
 let $countGmlIdDuplicates := count($duplicateGmlIds)
 let $countefInspireIdDuplicates := count($duplicateefInspireIds)
 let $countaqdInspireIdDuplicates := count($duplicateaqdInspireIds)
-let $countD5duplicates := $countGmlIdDuplicates + $countefInspireIdDuplicates + $countaqdInspireIdDuplicates
+let $D5invalid := $countGmlIdDuplicates + $countefInspireIdDuplicates + $countaqdInspireIdDuplicates
+
 
 (: D6 Done by Rait ./ef:inspireId/base:Identifier/base:localId shall be an unique code for AQD_network and unique within the namespace.:)
-let $amInspireIds := $docRoot//aqd:AQD_Network/ef:inspireId/base:Identifier/concat(lower-case(normalize-space(base:namespace)), '##',
-        lower-case(normalize-space(base:localId)))
-let $duplicateEUStationCode := distinct-values(
-        for $identifier in $docRoot//aqd:AQD_Network/ef:inspireId/base:Identifier
-        where string-length(normalize-space($identifier/base:localId)) > 0 and count(index-of($amInspireIds,
-                concat(lower-case(normalize-space($identifier/base:namespace)), '##', lower-case(normalize-space($identifier/base:localId))))) > 1
-        return
-            concat(normalize-space($identifier/base:namespace), ':', normalize-space($identifier/base:localId))
-)
-let $countAmInspireIdDuplicates := count($duplicateEUStationCode)
-let $countD6duplicates := $countAmInspireIdDuplicates
+let $D6invalid :=
+    try {
+        let $amInspireIds := $docRoot//aqd:AQD_Network/ef:inspireId/base:Identifier/concat(lower-case(normalize-space(base:namespace)), '##',
+                lower-case(normalize-space(base:localId)))
+        let $duplicateEUStationCode := distinct-values(
+                for $identifier in $docRoot//aqd:AQD_Network/ef:inspireId/base:Identifier
+                where string-length(normalize-space($identifier/base:localId)) > 0 and count(index-of($amInspireIds,
+                        concat(lower-case(normalize-space($identifier/base:namespace)), '##', lower-case(normalize-space($identifier/base:localId))))) > 1
+                return
+                    concat(normalize-space($identifier/base:namespace), ':', normalize-space($identifier/base:localId))
+        )
+        let $countAmInspireIdDuplicates := count($duplicateEUStationCode)
+        return $countAmInspireIdDuplicates
+    } catch * {
+        <tr status="failed">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
 
 (: D7 :)
-let $allBaseNamespace := distinct-values($docRoot//aqd:AQD_Network/ef:inspireId/base:Identifier/base:namespace)
-let $tblD7 :=
-    for $id in $allBaseNamespace
+let $D7table :=
+    try {
+        let $allBaseNamespace := distinct-values($docRoot//aqd:AQD_Network/ef:inspireId/base:Identifier/base:namespace)
+        for $id in $allBaseNamespace
         let $localId := $docRoot//aqd:AQD_Network/ef:inspireId/base:Identifier[base:namespace = $id]/base:localId
-    return
-        <tr>
-	        <td title="feature">Network(s)</td>
-            <td title="base:namespace">{$id}</td>
-            <td title="base:localId">{count($localId)}</td>
+        return
+            <tr>
+                <td title="feature">Network(s)</td>
+                <td title="base:namespace">{$id}</td>
+                <td title="base:localId">{count($localId)}</td>
+            </tr>
+    } catch * {
+        <tr status="failed">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
         </tr>
+    }
 
 (: D7.1 :)
-let $invalidNamespaces := common:checkNamespaces($source_url)
+let $D7.1invalid :=
+    try {
+        common:checkNamespaces($source_url)
+    } catch * {
+        <tr status="failed">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
+
 (: D8 :)
-let $invalidNetworkMedia := xmlconv:checkVocabularyConceptValues($source_url, "aqd:AQD_Network", "ef:mediaMonitored", $vocabulary:MEDIA_VALUE_VOCABULARY_BASE_URI)
+let $D8invalid :=
+    try {
+        xmlconv:checkVocabularyConceptValues($source_url, "aqd:AQD_Network", "ef:mediaMonitored", $vocabulary:MEDIA_VALUE_VOCABULARY_BASE_URI)
+    } catch * {
+        <tr status="failed">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
+
 (: D9 :)
-let $invalidOrganisationalLevel := xmlconv:checkVocabularyConceptValues($source_url, "aqd:AQD_Network", "ef:organisationLevel", $vocabulary:ORGANISATIONAL_LEVEL_VOCABULARY)
+let $D9invalid :=
+    try {
+        xmlconv:checkVocabularyConceptValues($source_url, "aqd:AQD_Network", "ef:organisationLevel", $vocabulary:ORGANISATIONAL_LEVEL_VOCABULARY)
+    } catch * {
+        <tr status="failed">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
+
 (: D10 :)
-let $invalidNetworkType := xmlconv:checkVocabularyConceptValues($source_url, "aqd:AQD_Network", "aqd:networkType", $vocabulary:NETWORK_TYPE_VOCABULARY)
+let $D10invalid :=
+    try {
+        xmlconv:checkVocabularyConceptValues($source_url, "aqd:AQD_Network", "aqd:networkType", $vocabulary:NETWORK_TYPE_VOCABULARY)
+    } catch * {
+        <tr status="failed">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
 
 (: D11 :)
-let $D11tmp := distinct-values(
-        $docRoot//aqd:AQD_Network/aqd:operationActivityPeriod/gml:TimePeriod[((gml:beginPosition>=gml:endPosition)
-                and (gml:endPosition!=""))]/../../ef:inspireId/base:Identifier/base:localId)
 let $D11invalid :=
-    for $x in $D11tmp
-    return
-        <tr>
-            <td title="base:localId">{$x}</td>
+    try {
+        let $D11tmp := distinct-values(
+                $docRoot//aqd:AQD_Network/aqd:operationActivityPeriod/gml:TimePeriod[((gml:beginPosition >= gml:endPosition)
+                        and (gml:endPosition != ""))]/../../ef:inspireId/base:Identifier/base:localId)
+        for $x in $D11tmp
+        return
+            <tr>
+                <td title="base:localId">{$x}</td>
+            </tr>
+    } catch * {
+        <tr status="failed">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
         </tr>
+    }
 
 (: D12 aqd:AQD_Network/ef:name shall return a string :)
 let $D12invalid :=
-    for $x in $docRoot//aqd:AQD_Network[string(ef:name) = ""]
-    return
-        <tr>
-            <td title="base:localId">{string($x/ef:inspireId/base:Identifier/base:localId)}</td>
+    try {
+        for $x in $docRoot//aqd:AQD_Network[string(ef:name) = ""]
+        return
+            <tr>
+                <td title="base:localId">{string($x/ef:inspireId/base:Identifier/base:localId)}</td>
+            </tr>
+    } catch * {
+        <tr status="failed">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
         </tr>
+    }
 
 (: D14 - ./aqd:aggregationTimeZone attribute shall resolve to a valid code in http://dd.eionet.europa.eu/vocabulary/aq/timezone/ :)
 let $D14invalid :=
@@ -254,297 +345,410 @@ let $D14invalid :=
         </tr>
     }
 (: D15 Done by Rait :)
-let $amInspireIds := $docRoot//aqd:AQD_Station/ef:inspireId/base:Identifier/concat(lower-case(normalize-space(base:namespace)), '##',
-        lower-case(normalize-space(base:localId)))
-
-let $D15tmp := distinct-values(
-        for $identifier in $docRoot//aqd:AQD_Station/ef:inspireId/base:Identifier
-        where string-length(normalize-space($identifier/base:localId)) > 0 and count(index-of($amInspireIds,
-                concat(lower-case(normalize-space($identifier/base:namespace)), '##', lower-case(normalize-space($identifier/base:localId))))) > 1
-        return
-            concat(normalize-space($identifier/base:namespace), ':', normalize-space($identifier/base:localId))
-)
 let $D15invalid :=
-    for $i in $D15tmp
-    return
-        <tr>
-            <td title="id">{string($i)}</td>
+    try {
+        let $amInspireIds := $docRoot//aqd:AQD_Station/ef:inspireId/base:Identifier/concat(lower-case(normalize-space(base:namespace)), '##',
+                lower-case(normalize-space(base:localId)))
+
+        let $D15tmp := distinct-values(
+                for $identifier in $docRoot//aqd:AQD_Station/ef:inspireId/base:Identifier
+                where string-length(normalize-space($identifier/base:localId)) > 0 and count(index-of($amInspireIds,
+                        concat(lower-case(normalize-space($identifier/base:namespace)), '##', lower-case(normalize-space($identifier/base:localId))))) > 1
+                return
+                    concat(normalize-space($identifier/base:namespace), ':', normalize-space($identifier/base:localId))
+        )
+        let $D15tmp :=
+            for $i in $D15tmp
+            return
+                <tr>
+                    <td title="id">{string($i)}</td>
+                </tr>
+        let $countAmInspireIdDuplicates := count($duplicateEUStationCode)
+        return $countAmInspireIdDuplicates
+    }  catch * {
+        <tr status="failed">
+            <td title="Error code"> {$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+            <td></td>
         </tr>
-
-let $countAmInspireIdDuplicates := count($duplicateEUStationCode)
-let $countD15duplicates := $countAmInspireIdDuplicates
-
-
-(:
-let $localSamplingPointIds := $docRoot//gml:featureMember/aqd:AQD_SamplingPoint/ef:inspireId/base:Identifier/base:localId
-let $invalidDuplicateSamplingPointIds :=
-    for $idCode in $docRoot//gml:featureMember/aqd:AQD_SamplingPoint/ef:inspireId/base:Identifier/base:localId
-    where
-        count(index-of($localSamplingPointIds, normalize-space($idCode))) > 1
-    return
-        <tr>
-            <td title="aqd:AQD_SamplingPoint">{data($idCode/../../../@gml:id)}</td>
-            <td title="base:localId">{data($idCode)}</td>
-        </tr>
-:)
-
+    }
 
 (: D16 :)
-let $allBaseNamespace := distinct-values($docRoot//aqd:AQD_Station/ef:inspireId/base:Identifier/base:namespace)
+let $D16table :=
+    try {
+        let $allBaseNamespace := distinct-values($docRoot//aqd:AQD_Station/ef:inspireId/base:Identifier/base:namespace)
 
-let $tblD16 :=
-    for $id in $allBaseNamespace
+        for $id in $allBaseNamespace
         let $localId := $docRoot//aqd:AQD_Station/ef:inspireId/base:Identifier[base:namespace = $id]/base:localId
-    return
-        <tr>
-	        <td title="feature">Station(s)</td>
-            <td title="base:namespace">{$id}</td>
-            <td title="base:localId">{count($localId)}</td>
+        return
+            <tr>
+                <td title="feature">Station(s)</td>
+                <td title="base:namespace">{$id}</td>
+                <td title="base:localId">{count($localId)}</td>
+            </tr>
+    }  catch * {
+        <tr status="failed">
+            <td title="Error code"> {$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+            <td></td>
         </tr>
+    }
 
 (: D17 aqd:AQD_Station/ef:name shall return a string :)
 let $D17invalid :=
-    for $x in $docRoot//aqd:AQD_Station[ef:name = ""]
-    return
-    <tr>
-        <td title="base:localId">{string($x/ef:inspireId/base:Identifier/base:localId)}</td>
-    </tr>
+    try {
+        for $x in $docRoot//aqd:AQD_Station[ef:name = ""]
+        return
+            <tr>
+                <td title="base:localId">{string($x/ef:inspireId/base:Identifier/base:localId)}</td>
+            </tr>
+    }  catch * {
+        <tr status="failed">
+            <td title="Error code"> {$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+            <td></td>
+        </tr>
+    }
 
 (: D18 Cross-check with AQD_Network (aqd:AQD_Station/ef:belongsTo shall resolve to a traversable local of global URI to ../AQD_Network) :)
-let $aqdNetworkLocal :=
-    for $z in $docRoot//aqd:AQD_Network
-    let $id := concat(data($z/ef:inspireId/base:Identifier/base:namespace), '/',
-            data($z/ef:inspireId/base:Identifier/base:localId))
-    return $id
-
 let $D18invalid :=
-    for $x in $docRoot//aqd:AQD_Station[not(ef:belongsTo/@xlink:href = $aqdNetworkLocal)]
-    return
-        <tr>
-            <td title="aqd:AQD_Station">{string($x/ef:inspireId/base:Identifier/base:localId)}</td>
-            <td title="ef:belongsTo">{string($x/ef:belongsTo/@xlink:href)}</td>
+    try {
+        let $aqdNetworkLocal :=
+            for $z in $docRoot//aqd:AQD_Network
+            let $id := concat(data($z/ef:inspireId/base:Identifier/base:namespace), '/',
+                    data($z/ef:inspireId/base:Identifier/base:localId))
+            return $id
+
+        for $x in $docRoot//aqd:AQD_Station[not(ef:belongsTo/@xlink:href = $aqdNetworkLocal)]
+        return
+            <tr>
+                <td title="aqd:AQD_Station">{string($x/ef:inspireId/base:Identifier/base:localId)}</td>
+                <td title="ef:belongsTo">{string($x/ef:belongsTo/@xlink:href)}</td>
+            </tr>
+    }  catch * {
+        <tr status="failed">
+            <td title="Error code"> {$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+            <td></td>
         </tr>
-
+    }
 (: D19 :)
-(:
-let $sparqlD19 := xmlconv:getConceptUrlSparql($xmlconv:MEDIA_VALUE_VOCABULARY_BASE_URI)
-let $crConcepts := xmlconv:executeSparqlEndpoint($sparqlD19)//sparql:result
-
-let $invalidStationMedia :=
-for $rec in doc($source_url)//gml:featureMember/descendant::*[name()='aqd:AQD_Station']
-
-    for $conceptUrl in $rec/child::*[name() = 'ef:mediaMonitored']/@xlink:href
-        let $conceptUrl := normalize-space(data($conceptUrl))
-        where string-length($conceptUrl) > 0 and not(xmlconv:isMatchingVocabCode($crConcepts, $conceptUrl))
-
-                return
-                    <tr isvalid="{ xmlconv:isMatchingVocabCode($crConcepts, $conceptUrl) }">
-                        <td title="Feature type">aqd:AQD_Station</td>
-                        <td title="gml:id">{data($rec/@gml:id)}</td>
-                        <td title="ef:name">{data($rec/ef:name)}</td>
-                        <td title="ef:mediaMonitored" style="color:red">{$conceptUrl}</td>
-                    </tr>
-:)
-
-let $invalidStationMedia := xmlconv:checkVocabularyConceptValues($source_url, "aqd:AQD_Station", "ef:mediaMonitored", $vocabulary:MEDIA_VALUE_VOCABULARY_BASE_URI)
+let $D19invalid :=
+    try {
+        xmlconv:checkVocabularyConceptValues($source_url, "aqd:AQD_Station", "ef:mediaMonitored", $vocabulary:MEDIA_VALUE_VOCABULARY_BASE_URI)
+    }  catch * {
+        <tr status="failed">
+            <td title="Error code"> {$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+            <td></td>
+        </tr>
+    }
 
 (: D20 ./ef:geometry/gml:Points the srsName attribute shall be a recognisable URN :)
-let $D20validURN := ("urn:ogc:def:crs:EPSG::3035", "urn:ogc:def:crs:EPSG::4258", "urn:ogc:def:crs:EPSG::4326")
 let $D20invalid :=
-    for $x in distinct-values($docRoot//aqd:AQD_Station[count(ef:geometry/gml:Point) > 0 and not(ef:geometry/gml:Point/@srsName = $D20validURN)]/ef:inspireId/base:Identifier/base:localId)
-    return
-        <tr>
-            <td title="base:localId">{$x}</td>
+    try {
+        let $D20validURN := ("urn:ogc:def:crs:EPSG::3035", "urn:ogc:def:crs:EPSG::4258", "urn:ogc:def:crs:EPSG::4326")
+        for $x in distinct-values($docRoot//aqd:AQD_Station[count(ef:geometry/gml:Point) > 0 and not(ef:geometry/gml:Point/@srsName = $D20validURN)]/ef:inspireId/base:Identifier/base:localId)
+        return
+            <tr>
+                <td title="base:localId">{$x}</td>
+            </tr>
+    }  catch * {
+        <tr status="failed">
+            <td title="Error code"> {$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+            <td></td>
         </tr>
+    }
 
 
 (: D21 - The Dimension attribute shall resolve to "2." :)
-let $D21tmp := distinct-values($docRoot//aqd:AQD_Station/ef:geometry/gml:Point/gml:pos[@srsDimension != "2"]/
-concat(../../../ef:inspireId/base:Identifier/base:localId, ": srsDimension=", @srsDimension))
-let $invalidPos_srsDim :=
-    for $i in $D21tmp
-    return
-        <tr>
-            <td title="dimension">{string($i)}</td>
-        </tr>
-
-
-let $aqdStationPos :=
-    for $allPos in $docRoot//aqd:AQD_Station
-    where not(empty($allPos/ef:geometry/gml:Point/gml:pos))
-    return concat($allPos/ef:inspireId/base:Identifier/base:namespace,"/",$allPos/ef:inspireId/base:Identifier/base:localId,"|",
-        fn:substring-before(data($allPos/ef:geometry/gml:Point/gml:pos), " "), "#", fn:substring-after(data($allPos/ef:geometry/gml:Point/gml:pos), " "))
-
-
-let $invalidPos_order :=
-    for $gmlPos in $docRoot//aqd:AQD_SamplingPoint
-
-        let $samplingPos := data($gmlPos/ef:geometry/gml:Point/gml:pos)
-        let $samplingLat := if (not(empty($samplingPos))) then fn:substring-before($samplingPos, " ") else ""
-        let $samplingLong := if (not(empty($samplingPos))) then fn:substring-after($samplingPos, " ") else ""
-
-
-        let $samplingLat := if ($samplingLat castable as xs:decimal) then xs:decimal($samplingLat) else 0.00
-        let $samplingLong := if ($samplingLong castable as xs:decimal) then xs:decimal($samplingLong) else 0.00
-
-        return
-            if ($samplingLat < $samplingLong and $countryCode != 'FR') then
+let $invalidPosD21 :=
+    try {
+        let $D21tmp := distinct-values($docRoot//aqd:AQD_Station/ef:geometry/gml:Point/gml:pos[@srsDimension != "2"]/
+        concat(../../../ef:inspireId/base:Identifier/base:localId, ": srsDimension=", @srsDimension))
+        let $invalidPos_srsDim :=
+            for $i in $D21tmp
+            return
                 <tr>
-                    <td title="lat/long">{concat($gmlPos/ef:inspireId/base:Identifier/base:localId, " : lat=" , string($samplingLat), " :long=", string($samplingLong))}</td>
+                    <td title="dimension">{string($i)}</td>
                 </tr>
-            else
-                ()
 
 
-let $invalidPosD21 := (($invalidPos_srsDim), ($invalidPos_order))
+        let $aqdStationPos :=
+            for $allPos in $docRoot//aqd:AQD_Station
+            where not(empty($allPos/ef:geometry/gml:Point/gml:pos))
+            return concat($allPos/ef:inspireId/base:Identifier/base:namespace, "/", $allPos/ef:inspireId/base:Identifier/base:localId, "|",
+                    fn:substring-before(data($allPos/ef:geometry/gml:Point/gml:pos), " "), "#", fn:substring-after(data($allPos/ef:geometry/gml:Point/gml:pos), " "))
+
+
+        let $invalidPos_order :=
+            for $gmlPos in $docRoot//aqd:AQD_SamplingPoint
+
+            let $samplingPos := data($gmlPos/ef:geometry/gml:Point/gml:pos)
+            let $samplingLat := if (not(empty($samplingPos))) then fn:substring-before($samplingPos, " ") else ""
+            let $samplingLong := if (not(empty($samplingPos))) then fn:substring-after($samplingPos, " ") else ""
+
+
+            let $samplingLat := if ($samplingLat castable as xs:decimal) then xs:decimal($samplingLat) else 0.00
+            let $samplingLong := if ($samplingLong castable as xs:decimal) then xs:decimal($samplingLong) else 0.00
+
+            return
+                if ($samplingLat < $samplingLong and $countryCode != 'FR') then
+                    <tr>
+                        <td title="lat/long">{concat($gmlPos/ef:inspireId/base:Identifier/base:localId, " : lat=", string($samplingLat), " :long=", string($samplingLong))}</td>
+                    </tr>
+                else
+                    ()
+        return (($invalidPos_srsDim), ($invalidPos_order))
+    }  catch * {
+        <tr status="failed">
+            <td title="Error code"> {$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+            <td></td>
+        </tr>
+    }
 
 (: D23 Done by Rait :)
-    let $allEfOperationActivityPeriod :=
-        for $allOperationActivityPeriod in $docRoot//gml:featureMember/aqd:AQD_Station/ef:operationalActivityPeriod
-        where ($allOperationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:endPosition[normalize-space(@indeterminatePosition)!="unknown"]
-                or fn:string-length($allOperationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:endPosition) > 0)
-        return $allOperationActivityPeriod
+let $D23invalid :=
+    try {
+        let $allEfOperationActivityPeriod :=
+            for $allOperationActivityPeriod in $docRoot//gml:featureMember/aqd:AQD_Station/ef:operationalActivityPeriod
+            where ($allOperationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:endPosition[normalize-space(@indeterminatePosition) != "unknown"]
+                    or fn:string-length($allOperationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:endPosition) > 0)
+            return $allOperationActivityPeriod
 
-    let $allInvalidEfOperationActivityPeriod :=
-            for $operationActivityPeriod in  $allEfOperationActivityPeriod
-            where ($operationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:endPosition < $operationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:beginPosition)and ($operationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:endPosition!="")
-    return
-        <tr>
-            <td title="aqd:AQD_Station">{data($operationActivityPeriod/../@gml:id)}</td>
-            <td title="gml:TimePeriod">{data($operationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/@gml:id)}</td>
-            <td title="gml:beginPosition">{$operationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:beginPosition}</td>
-            <td title="gml:endPosition">{$operationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:endPosition}</td>
+        for $operationActivityPeriod in $allEfOperationActivityPeriod
+        where ($operationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:endPosition < $operationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:beginPosition) and ($operationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:endPosition != "")
+        return
+            <tr>
+                <td title="aqd:AQD_Station">{data($operationActivityPeriod/../@gml:id)}</td>
+                <td title="gml:TimePeriod">{data($operationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/@gml:id)}</td>
+                <td title="gml:beginPosition">{$operationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:beginPosition}</td>
+                <td title="gml:endPosition">{$operationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:endPosition}</td>
+            </tr>
+    }  catch * {
+        <tr status="failed">
+            <td title="Error code"> {$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+            <td></td>
         </tr>
-
-
+    }
 
 (: D24 - List the total number of aqd:AQD_Station which are operational :)
-let $allUnknownEfOperationActivityPeriodD24 :=
-    for $operationActivityPeriod in $docRoot//gml:featureMember/aqd:AQD_Station/ef:operationalActivityPeriod
-    where $operationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:endPosition[normalize-space(@indeterminatePosition)="unknown"]
-            or fn:string-length($operationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:endPosition) = 0
-    return
-        <tr>
-            <td title="aqd:AQD_Station">{data($operationActivityPeriod/../@gml:id)}</td>
-            <td title="gml:TimePeriod">{data($operationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/@gml:id)}</td>
-            <td title="gml:beginPosition">{$operationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:beginPosition}</td>
-            <td title="gml:endPosition">{$operationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:endPosition}</td>
+let $D24invalid :=
+    try {
+        for $operationActivityPeriod in $docRoot//gml:featureMember/aqd:AQD_Station/ef:operationalActivityPeriod
+        where $operationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:endPosition[normalize-space(@indeterminatePosition) = "unknown"]
+                or fn:string-length($operationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:endPosition) = 0
+        return
+            <tr>
+                <td title="aqd:AQD_Station">{data($operationActivityPeriod/../@gml:id)}</td>
+                <td title="gml:TimePeriod">{data($operationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/@gml:id)}</td>
+                <td title="gml:beginPosition">{$operationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:beginPosition}</td>
+                <td title="gml:endPosition">{$operationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:endPosition}</td>
+            </tr>
+    }  catch * {
+        <tr status="failed">
+            <td title="Error code"> {$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+            <td></td>
         </tr>
-(: D26 Done by Rait:)
+    }
 
-let $localEUStationCode := $docRoot//gml:featureMember/aqd:AQD_Station/upper-case(normalize-space(aqd:EUStationCode))
-let $invalidDuplicateLocalIds :=
-    for $EUStationCode in $docRoot//gml:featureMember/aqd:AQD_Station/aqd:EUStationCode
-    where
-    count(index-of($localEUStationCode, upper-case(normalize-space($EUStationCode)))) > 1 or
-     (
-     count(index-of($xmlconv:ISO2_CODES , substring(upper-case(normalize-space($EUStationCode)), 1, 2))) = 0
-     )
-    return
-        <tr>
-            <td title="aqd:AQD_Station">{data($EUStationCode/../@gml:id)}</td>
-            <td title="aqd:EUStationCode">{data($EUStationCode)}</td>
+(: D26 Done by Rait:)
+let $D26invalid :=
+    try {
+        let $localEUStationCode := $docRoot//gml:featureMember/aqd:AQD_Station/upper-case(normalize-space(aqd:EUStationCode))
+        for $EUStationCode in $docRoot//gml:featureMember/aqd:AQD_Station/aqd:EUStationCode
+        where
+            count(index-of($localEUStationCode, upper-case(normalize-space($EUStationCode)))) > 1 or
+                    (
+                        count(index-of($xmlconv:ISO2_CODES, substring(upper-case(normalize-space($EUStationCode)), 1, 2))) = 0
+                    )
+        return
+            <tr>
+                <td title="aqd:AQD_Station">{data($EUStationCode/../@gml:id)}</td>
+                <td title="aqd:EUStationCode">{data($EUStationCode)}</td>
+            </tr>
+    }  catch * {
+        <tr status="failed">
+            <td title="Error code"> {$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+            <td></td>
         </tr>
+    }
 
 (: D27 :)
-let $invalidMeteoParams :=xmlconv:checkVocabulariesConceptEquipmentValues($source_url, "aqd:AQD_Station", "aqd:meteoParams", $vocabulary:METEO_PARAMS_VOCABULARY, "collection")
+let $D27invalid :=
+    try {
+        xmlconv:checkVocabulariesConceptEquipmentValues($source_url, "aqd:AQD_Station", "aqd:meteoParams", $vocabulary:METEO_PARAMS_VOCABULARY, "collection")
+    }  catch * {
+        <tr status="failed">
+            <td title="Error code"> {$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+            <td></td>
+        </tr>
+    }
 
 (: D28 :)
-let $invalidAreaClassification := xmlconv:checkVocabularyConceptValues($source_url, "aqd:AQD_Station", "aqd:areaClassification", $vocabulary:AREA_CLASSIFICATION_VOCABULARY)
+let $D28invalid :=
+    try {
+        xmlconv:checkVocabularyConceptValues($source_url, "aqd:AQD_Station", "aqd:areaClassification", $vocabulary:AREA_CLASSIFICATION_VOCABULARY)
+    }  catch * {
+        <tr status="failed">
+            <td title="Error code"> {$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+            <td></td>
+        </tr>
+    }
 
 (: D29 :)
-let $allDispersionLocal :=
-    for $rec in $docRoot//aqd:AQD_Station/aqd:dispersionSituation/aqd:DispersionSituation/aqd:dispersionLocal
-    return
-        <tr>{$rec}</tr>
-let $invalidDispersionLocal := xmlconv:checkVocabularyConceptValues4($source_url, "aqd:AQD_Station", "aqd:dispersionLocal", $vocabulary:DISPERSION_LOCAL_VOCABULARY)
+let $D29invalid :=
+    try {
+        let $allDispersionLocal :=
+            for $rec in $docRoot//aqd:AQD_Station/aqd:dispersionSituation/aqd:DispersionSituation/aqd:dispersionLocal
+            return
+                <tr>{$rec}</tr>
+        return xmlconv:checkVocabularyConceptValues4($source_url, "aqd:AQD_Station", "aqd:dispersionLocal", $vocabulary:DISPERSION_LOCAL_VOCABULARY)
+    }  catch * {
+        <tr status="failed">
+            <td title="Error code"> {$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+            <td></td>
+        </tr>
+    }
 
 (: D30 :)
-let $invalidDispersionRegional := xmlconv:checkVocabularyConceptValues4($source_url, "aqd:AQD_Station", "aqd:dispersionRegional", $vocabulary:DISPERSION_REGIONAL_VOCABULARY)
-let $allDispersionRegional :=
-    for $rec in $docRoot//aqd:AQD_Station/aqd:dispersionSituation/aqd:DispersionSituation/aqd:dispersionRegional
-    return
-        <tr>{$rec}</tr>
+let $D30invalid :=
+    try {
+        let $allDispersionRegional :=
+            for $rec in $docRoot//aqd:AQD_Station/aqd:dispersionSituation/aqd:DispersionSituation/aqd:dispersionRegional
+            return
+                <tr>{$rec}</tr>
+        return xmlconv:checkVocabularyConceptValues4($source_url, "aqd:AQD_Station", "aqd:dispersionRegional", $vocabulary:DISPERSION_REGIONAL_VOCABULARY)
+    }  catch * {
+        <tr status="failed">
+            <td title="Error code"> {$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+            <td></td>
+        </tr>
+    }
 
 (: D31 Done by Rait:)
-let $localSamplingPointIds := $docRoot//gml:featureMember/aqd:AQD_SamplingPoint/ef:inspireId/base:Identifier/base:localId
-let $invalidDuplicateSamplingPointIds :=
-    for $idCode in $docRoot//gml:featureMember/aqd:AQD_SamplingPoint/ef:inspireId/base:Identifier/base:localId
-    where
-        count(index-of($localSamplingPointIds, normalize-space($idCode))) > 1
-    return
-        <tr>
-            <td title="aqd:AQD_SamplingPoint">{data($idCode/../../../@gml:id)}</td>
-            <td title="base:localId">{data($idCode)}</td>
+let $D31invalid :=
+    try {
+        let $localSamplingPointIds := $docRoot//gml:featureMember/aqd:AQD_SamplingPoint/ef:inspireId/base:Identifier/base:localId
+        for $idCode in $docRoot//gml:featureMember/aqd:AQD_SamplingPoint/ef:inspireId/base:Identifier/base:localId
+        where
+            count(index-of($localSamplingPointIds, normalize-space($idCode))) > 1
+        return
+            <tr>
+                <td title="aqd:AQD_SamplingPoint">{data($idCode/../../../@gml:id)}</td>
+                <td title="base:localId">{data($idCode)}</td>
+            </tr>
+    }  catch * {
+        <tr status="failed">
+            <td title="Error code"> {$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+            <td></td>
         </tr>
+    }
 
 (: D32 :)
-let $allBaseNamespace := distinct-values($docRoot//aqd:AQD_SamplingPoint//base:Identifier/base:namespace)
-
-let $tblD32 :=
-    for $id in $allBaseNamespace
-    let $localId := $docRoot//aqd:AQD_SamplingPoint//base:Identifier[base:namespace = $id]/base:localId
-    return
-        <tr>
-            <td title="feature">SamplingPoint(s)</td>
-            <td title="base:namespace">{$id}</td>
-            <td title="base:localId">{count($localId)}</td>
+let $D32table :=
+    try {
+        for $id in $allBaseNamespace
+        let $localId := $docRoot//aqd:AQD_SamplingPoint//base:Identifier[base:namespace = $id]/base:localId
+        return
+            <tr>
+                <td title="feature">SamplingPoint(s)</td>
+                <td title="base:namespace">{$id}</td>
+                <td title="base:localId">{count($localId)}</td>
+            </tr>
+    }  catch * {
+        <tr status="failed">
+            <td title="Error code"> {$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+            <td></td>
         </tr>
+    }
 
 (: D33 :)
-let $invalidSamplingPointMedia := xmlconv:checkVocabularyConceptValues($source_url, "aqd:AQD_SamplingPoint", "ef:mediaMonitored", $vocabulary:MEDIA_VALUE_VOCABULARY_BASE_URI)
+let $D33invalid :=
+    try {
+        xmlconv:checkVocabularyConceptValues($source_url, "aqd:AQD_SamplingPoint", "ef:mediaMonitored", $vocabulary:MEDIA_VALUE_VOCABULARY_BASE_URI)
+    }  catch * {
+        <tr status="failed">
+            <td title="Error code"> {$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+            <td></td>
+        </tr>
+    }
 
 (: D34 :)
-(:let $allGeometryPoint :=
-    for $rec in $docRoot//aqd:AQD_SamplingPoint/ef:geometry/gml:Point
-    return <tr>{$rec}</tr>:)
-
-let $D34validURN := ("urn:ogc:def:crs:EPSG::3035", "urn:ogc:def:crs:EPSG::4258", "urn:ogc:def:crs:EPSG::4326")
 let $D34invalid :=
-    for $x in distinct-values($docRoot//aqd:AQD_SamplingPoint[count(ef:geometry/gml:Point) > 0 and not(ef:geometry/gml:Point/@srsName = $D34validURN)]/ef:inspireId/base:Identifier/string(base:localId))
-    return
-        <tr>
-            <td title="base:localId">{$x}</td>
+    try {
+        let $D34validURN := ("urn:ogc:def:crs:EPSG::3035", "urn:ogc:def:crs:EPSG::4258", "urn:ogc:def:crs:EPSG::4326")
+        for $x in distinct-values($docRoot//aqd:AQD_SamplingPoint[count(ef:geometry/gml:Point) > 0 and not(ef:geometry/gml:Point/@srsName = $D34validURN)]/ef:inspireId/base:Identifier/string(base:localId))
+        return
+            <tr>
+                <td title="base:localId">{$x}</td>
+            </tr>
+    }  catch * {
+        <tr status="failed">
+            <td title="Error code"> {$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+            <td></td>
         </tr>
-
+    }
 
 (: D35 :)
-let $invalidPos  :=
-    for $x in $docRoot/gml:featureMember//aqd:AQD_SamplingPoint
+let $D35invalid  :=
+    try {
+        for $x in $docRoot/gml:featureMember//aqd:AQD_SamplingPoint
         let $invalidOrder :=
             for $i in $x/ef:geometry/gml:Point/gml:pos
-                let $latlongToken := tokenize($i,"\s+")
-                let $lat := number($latlongToken[1])
-                let $long := number($latlongToken[2])
+            let $latlongToken := tokenize($i, "\s+")
+            let $lat := number($latlongToken[1])
+            let $long := number($latlongToken[2])
             where ($long > $lat)
             return 1
-    where ($x/ef:geometry/gml:Point/gml:pos/@srsDimension != "2" or $invalidOrder = 1)
-    return
-        <tr>
-            <td title="base:localId">{string($x/ef:inspireId/base:Identifier/base:localId)}</td>
-            <td title="@srsDimension">{string($x/ef:geometry/gml:Point/gml:pos/@srsDimension)}</td>
-            <td title="Pos">{string($x/ef:geometry/gml:Point/gml:pos)}</td>
+        where ($x/ef:geometry/gml:Point/gml:pos/@srsDimension != "2" or $invalidOrder = 1)
+        return
+            <tr>
+                <td title="base:localId">{string($x/ef:inspireId/base:Identifier/base:localId)}</td>
+                <td title="@srsDimension">{string($x/ef:geometry/gml:Point/gml:pos/@srsDimension)}</td>
+                <td title="Pos">{string($x/ef:geometry/gml:Point/gml:pos)}</td>
+            </tr>
+    }  catch * {
+        <tr status="failed">
+            <td title="Error code"> {$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+            <td></td>
         </tr>
+    }
 
 (: D36 :)
-let $approximity := 0.0003
+let $D36invalid :=
+    try {
+        let $approximity := 0.0003
 
-(: StationID|long#lat :)
-let $aqdStationPos :=
-    for $allPos in $docRoot//aqd:AQD_Station
-    where not(empty($allPos/ef:geometry/gml:Point/gml:pos))
-    return concat($allPos/ef:inspireId/base:Identifier/base:namespace,"/",$allPos/ef:inspireId/base:Identifier/base:localId,"|",
-        fn:substring-before(data($allPos/ef:geometry/gml:Point/gml:pos), " "), "#", fn:substring-after(data($allPos/ef:geometry/gml:Point/gml:pos), " "))
+        (: StationID|long#lat :)
+        let $aqdStationPos :=
+            for $allPos in $docRoot//aqd:AQD_Station
+            where not(empty($allPos/ef:geometry/gml:Point/gml:pos))
+            return concat($allPos/ef:inspireId/base:Identifier/base:namespace, "/", $allPos/ef:inspireId/base:Identifier/base:localId, "|",
+                    fn:substring-before(data($allPos/ef:geometry/gml:Point/gml:pos), " "), "#", fn:substring-after(data($allPos/ef:geometry/gml:Point/gml:pos), " "))
 
 
-let $invalidSamplingPointPos :=
-    for $gmlPos in $docRoot//aqd:AQD_SamplingPoint[ef:geometry/gml:Point/gml:pos]
+        for $gmlPos in $docRoot//aqd:AQD_SamplingPoint[ef:geometry/gml:Point/gml:pos]
         let $efBroader := $gmlPos/ef:broader/@xlink:href
         let $samplingStationId := data($efBroader)
         let $stationPos :=
             for $station in $aqdStationPos
-              let $stationId := fn:substring-before($station, "|")
-              return if ($stationId = $samplingStationId) then $station else ()
+            let $stationId := fn:substring-before($station, "|")
+            return if ($stationId = $samplingStationId) then $station else ()
 
         let $stationLong := if (not(empty($stationPos))) then fn:substring-before(fn:substring-after($stationPos[1], "|"), "#") else ""
         let $stationLat := if (not(empty($stationPos))) then fn:substring-after(fn:substring-after($stationPos[1], "|"), "#") else ""
@@ -567,224 +771,291 @@ let $invalidSamplingPointPos :=
                 </tr>
             else
                 ()
-(: D37 :)
-(: check for invalid data or if beginPosition > endPosition :)
-let $invalidPosition  :=
-    for $timePeriod in $docRoot//aqd:AQD_SamplingPoint/ef:observingCapability/ef:ObservingCapability/ef:observingTime/gml:TimePeriod
-        (: XQ does not support 24h that is supported by xml schema validation :)
-        (: TODO: comment by sofiageo - the above statement is not true, fix this if necessary :)
-        let $beginDate := substring(normalize-space($timePeriod/gml:beginPosition),1,10)
-        let $endDate := substring(normalize-space($timePeriod/gml:endPosition),1,10)
-        let $beginPosition := 
-            if ($beginDate castable as xs:date) then 
-                xs:date($beginDate)             
-            else
-                "error"
-        let $endPosition := 
-            if ($endDate castable as xs:date) then 
-                xs:date($endDate) 
-            else if ($endDate = "") then
-                "empty"
-            else
-                "error"
+    }  catch * {
+        <tr status="failed">
+            <td title="Error code"> {$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+            <td></td>
+        </tr>
+    }
 
-        return
-            if ((string($beginPosition) = "error" or string($endPosition) = "error") or 
-                ($beginPosition instance of xs:date and $endPosition instance of xs:date and $beginPosition > $endPosition)) then
-             <tr>
-                <td title="aqd:AQD_SamplingPoint">{data($timePeriod/../../../../ef:inspireId/base:Identifier/base:localId)}</td>
-                <td title="gml:TimePeriod">{data($timePeriod/@gml:id)}</td>
-                <td title="gml:beginPosition">{$timePeriod/gml:beginPosition}</td>
-                <td title="gml:endPosition">{$timePeriod/gml:endPosition}</td>
-            </tr>
+(: D37 - check for invalid data or if beginPosition > endPosition :)
+let $D37invalid :=
+    try {
+        let $invalidPosition :=
+            for $timePeriod in $docRoot//aqd:AQD_SamplingPoint/ef:observingCapability/ef:ObservingCapability/ef:observingTime/gml:TimePeriod
+            (: XQ does not support 24h that is supported by xml schema validation :)
+            (: TODO: comment by sofiageo - the above statement is not true, fix this if necessary :)
+            let $beginDate := substring(normalize-space($timePeriod/gml:beginPosition), 1, 10)
+            let $endDate := substring(normalize-space($timePeriod/gml:endPosition), 1, 10)
+            let $beginPosition :=
+                if ($beginDate castable as xs:date) then
+                    xs:date($beginDate)
+                else
+                    "error"
+            let $endPosition :=
+                if ($endDate castable as xs:date) then
+                    xs:date($endDate)
+                else if ($endDate = "") then
+                    "empty"
+                else
+                    "error"
 
-            else
-                ()
+            return
+                if ((string($beginPosition) = "error" or string($endPosition) = "error") or
+                        ($beginPosition instance of xs:date and $endPosition instance of xs:date and $beginPosition > $endPosition)) then
+                    <tr>
+                        <td title="aqd:AQD_SamplingPoint">{data($timePeriod/../../../../ef:inspireId/base:Identifier/base:localId)}</td>
+                        <td title="gml:TimePeriod">{data($timePeriod/@gml:id)}</td>
+                        <td title="gml:beginPosition">{$timePeriod/gml:beginPosition}</td>
+                        <td title="gml:endPosition">{$timePeriod/gml:endPosition}</td>
+                    </tr>
+
+                else
+                    ()
 
 
-(: sort by begin and find if end is greater than next end :)
-let $overlappingPeriods :=
-for $rec in $docRoot//aqd:AQD_SamplingPoint
-    let $observingCapabilities :=
-    for $cp in $rec/ef:observingCapability/ef:ObservingCapability/ef:observingTime/gml:TimePeriod
-    order by $cp/gml:beginPosition
-        return $cp
+        (: sort by begin and find if end is greater than next end :)
+        let $overlappingPeriods :=
+            for $rec in $docRoot//aqd:AQD_SamplingPoint
+            let $observingCapabilities :=
+                for $cp in $rec/ef:observingCapability/ef:ObservingCapability/ef:observingTime/gml:TimePeriod
+                order by $cp/gml:beginPosition
+                return $cp
 
-    for $period at $pos in $observingCapabilities
+            for $period at $pos in $observingCapabilities
 
-        let $ok := if ($pos < count($observingCapabilities))
-        then
-            if ($period/gml:endPosition castable as xs:dateTime and $observingCapabilities[$pos+1]/gml:beginPosition castable as xs:dateTime) then
-                 if (xs:dateTime($period/gml:endPosition) > xs:dateTime($observingCapabilities[$pos+1]/gml:beginPosition)) then fn:false() else fn:true()
+            let $ok := if ($pos < count($observingCapabilities))
+            then
+                if ($period/gml:endPosition castable as xs:dateTime and $observingCapabilities[$pos + 1]/gml:beginPosition castable as xs:dateTime) then
+                    if (xs:dateTime($period/gml:endPosition) > xs:dateTime($observingCapabilities[$pos + 1]/gml:beginPosition)) then fn:false() else fn:true()
+                else
+                    fn:true()
             else
                 fn:true()
-        else
-            fn:true()
 
-       return if ($ok) then () else
+            return if ($ok) then () else
 
-            <tr>
-                <td title="aqd:AQD_SamplingPoint">{data($period/../../../../ef:inspireId/base:Identifier/base:localId)}</td>
-                <td title="gml:TimePeriod">{data($period/@gml:id)}</td>
-                <td title="gml:beginPosition">{$period/gml:beginPosition}</td>
-                <td title="gml:endPosition">{$period/gml:endPosition}</td>
-            </tr>
+                <tr>
+                    <td title="aqd:AQD_SamplingPoint">{data($period/../../../../ef:inspireId/base:Identifier/base:localId)}</td>
+                    <td title="gml:TimePeriod">{data($period/@gml:id)}</td>
+                    <td title="gml:beginPosition">{$period/gml:beginPosition}</td>
+                    <td title="gml:endPosition">{$period/gml:endPosition}</td>
+                </tr>
 
 
-let $allObservingCapabilityPeriod := (($invalidPosition), ($overlappingPeriods))
-
+        return (($invalidPosition), ($overlappingPeriods))
+    }  catch * {
+        <tr status="failed">
+            <td title="Error code"> {$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+            <td></td>
+        </tr>
+    }
 
 (: D40 :)
-(:let $invalidObservedProperty := xmlconv:checkVocabularyConceptValues($source_url, "ef:ObservingCapability", "ef:observedProperty", $vocabulary:POLLUTANT_VOCABULARY):)
-
 let $D40invalid :=
-    for $x in $docRoot//aqd:AQD_SamplingPoint
-    where (not($x/ef:observingCapability/ef:ObservingCapability/ef:observedProperty/@xlink:href = $dd:VALIDPOLLUTANTS)) or
-            (count(distinct-values(data($x/ef:observingCapability/ef:ObservingCapability/ef:observedProperty/@xlink:href))) > 1)
-    return
-        <tr>
-            <td title="base:localId">{$x/ef:inspireId/base:Identifier/string(base:localId)}</td>
+    try {
+        for $x in $docRoot//aqd:AQD_SamplingPoint
+        where (not($x/ef:observingCapability/ef:ObservingCapability/ef:observedProperty/@xlink:href = $dd:VALIDPOLLUTANTS)) or
+                (count(distinct-values(data($x/ef:observingCapability/ef:ObservingCapability/ef:observedProperty/@xlink:href))) > 1)
+        return
+            <tr>
+                <td title="base:localId">{$x/ef:inspireId/base:Identifier/string(base:localId)}</td>
+            </tr>
+    }  catch * {
+        <tr status="failed">
+            <td title="Error code"> {$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+            <td></td>
         </tr>
-
-(: D41
-let $aqdSampleLocal :=
-    for $allSampleLocal in $docRoot//aqd:AQD_Sample
-    return $allSampleLocal/@gml:id
-
-let $invalideFeatureOfInterest :=
-    for $x in $docRoot//aqd:AQD_SamplingPoint/ef:observingCapability/ef:ObservingCapability/ef:featureOfInterest
-    where empty(index-of($aqdSampleLocal,fn:normalize-space(fn:substring-after($x/@xlink:href,"/"))))
-    return
-    <tr>
-        <td title="aqd:AQD_SamplingPoint">{data($x/../../../@gml:id)}</td>
-        <td title="ef:featureOfInterest">{data(fn:normalize-space(fn:substring-after($x/@xlink:href,"/")))}</td>
-    </tr>
-:)
+    }
 
 (: D41 Updated by Jaume Targa following working logic of D44 :)
-let $aqdSampleLocal :=
-    for $z in $docRoot//aqd:AQD_Sample
-    let $id := concat(data($z/aqd:inspireId/base:Identifier/base:namespace), '/',
-        data($z/aqd:inspireId/base:Identifier/base:localId))
-    return $id
+let $D41invalid :=
+    try {
+        let $aqdSampleLocal :=
+            for $z in $docRoot//aqd:AQD_Sample
+            let $id := concat(data($z/aqd:inspireId/base:Identifier/base:namespace), '/',
+                    data($z/aqd:inspireId/base:Identifier/base:localId))
+            return $id
 
-let $invalideFeatureOfInterest :=
-    for $x in $docRoot//aqd:AQD_SamplingPoint/ef:observingCapability/ef:ObservingCapability/ef:featureOfInterest
-    where empty(index-of($aqdSampleLocal,fn:normalize-space($x/@xlink:href)))
-    return
-    <tr>
-      <td title="aqd:AQD_SamplingPoint">{data($x/../@gml:id)}</td>
-      <td title="ef:featureOfInterest">{data(fn:normalize-space($x/@xlink:href))}</td>
-    </tr>
-
+        for $x in $docRoot//aqd:AQD_SamplingPoint/ef:observingCapability/ef:ObservingCapability/ef:featureOfInterest
+        where empty(index-of($aqdSampleLocal, fn:normalize-space($x/@xlink:href)))
+        return
+            <tr>
+                <td title="aqd:AQD_SamplingPoint">{data($x/../@gml:id)}</td>
+                <td title="ef:featureOfInterest">{data(fn:normalize-space($x/@xlink:href))}</td>
+            </tr>
+    }  catch * {
+        <tr status="failed">
+            <td title="Error code"> {$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+            <td></td>
+        </tr>
+    }
 
 (: D42 :)
-let $aqdProcessLocal :=
-    for $allProcessLocal in $docRoot//aqd:AQD_SamplingPointProcess
-    let $id := concat(data($allProcessLocal/ompr:inspireId/base:Identifier/base:namespace),
-        '/', data($allProcessLocal/ompr:inspireId/base:Identifier/base:localId))
-    return $id
+let $D42invalid :=
+    try {
+        let $aqdProcessLocal :=
+            for $allProcessLocal in $docRoot//aqd:AQD_SamplingPointProcess
+            let $id := concat(data($allProcessLocal/ompr:inspireId/base:Identifier/base:namespace),
+                    '/', data($allProcessLocal/ompr:inspireId/base:Identifier/base:localId))
+            return $id
 
-let $invalidEfprocedure :=
-    for $x in $docRoot//aqd:AQD_SamplingPoint/ef:observingCapability/ef:ObservingCapability/ef:procedure
-    where empty(index-of($aqdProcessLocal,fn:normalize-space($x/@xlink:href)))
-    return
-    <tr>
-      <td title="aqd:AQD_SamplingPoint">{data($x/../../../@gml:id)}</td>
-      <td title="ef:procedure">{data(fn:normalize-space($x/@xlink:href))}</td>
-    </tr>
+        for $x in $docRoot//aqd:AQD_SamplingPoint/ef:observingCapability/ef:ObservingCapability/ef:procedure
+        where empty(index-of($aqdProcessLocal, fn:normalize-space($x/@xlink:href)))
+        return
+            <tr>
+                <td title="aqd:AQD_SamplingPoint">{data($x/../../../@gml:id)}</td>
+                <td title="ef:procedure">{data(fn:normalize-space($x/@xlink:href))}</td>
+            </tr>
+    }  catch * {
+        <tr status="failed">
+            <td title="Error code"> {$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+            <td></td>
+        </tr>
+    }
 
 (: D43 Updated by Jaume Targa following working logic of D44 :)
-let $aqdStationLocal :=
-    for $z in $docRoot//aqd:AQD_Station
-    let $id := concat(data($z/ef:inspireId/base:Identifier/base:namespace), '/',
-        data($z/ef:inspireId/base:Identifier/base:localId))
-    return $id
+let $D43invalid :=
+    try {
+        let $aqdStationLocal :=
+            for $z in $docRoot//aqd:AQD_Station
+            let $id := concat(data($z/ef:inspireId/base:Identifier/base:namespace), '/',
+                    data($z/ef:inspireId/base:Identifier/base:localId))
+            return $id
 
-let $invalidEfbroader :=
-    for $x in $docRoot//aqd:AQD_SamplingPoint/ef:broader
-    where empty(index-of($aqdStationLocal,fn:normalize-space($x/@xlink:href)))
-    return
-    <tr>
-      <td title="aqd:AQD_SamplingPoint">{data($x/../@gml:id)}</td>
-      <td title="ef:broader">{data(fn:normalize-space($x/@xlink:href))}</td>
-    </tr>
+        for $x in $docRoot//aqd:AQD_SamplingPoint/ef:broader
+        where empty(index-of($aqdStationLocal, fn:normalize-space($x/@xlink:href)))
+        return
+            <tr>
+                <td title="aqd:AQD_SamplingPoint">{data($x/../@gml:id)}</td>
+                <td title="ef:broader">{data(fn:normalize-space($x/@xlink:href))}</td>
+            </tr>
+    }  catch * {
+        <tr status="failed">
+            <td title="Error code"> {$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+            <td></td>
+        </tr>
+    }
 
 (: D44 :)
-let $aqdNetworkLocal :=
-    for $z in $docRoot//aqd:AQD_Network
-    let $id := concat(data($z/ef:inspireId/base:Identifier/base:namespace), '/',
-        data($z/ef:inspireId/base:Identifier/base:localId))
-    return $id
+let $D44invalid :=
+    try {
+        let $aqdNetworkLocal :=
+            for $z in $docRoot//aqd:AQD_Network
+            let $id := concat(data($z/ef:inspireId/base:Identifier/base:namespace), '/',
+                    data($z/ef:inspireId/base:Identifier/base:localId))
+            return $id
 
-let $invalidEfbelongsTo :=
-    for $x in $docRoot//aqd:AQD_SamplingPoint/ef:belongsTo
-    where empty(index-of($aqdNetworkLocal,fn:normalize-space($x/@xlink:href)))
-    return
-    <tr>
-      <td title="aqd:AQD_SamplingPoint">{data($x/../@gml:id)}</td>
-      <td title="ef:belongsTo">{data(fn:normalize-space($x/@xlink:href))}</td>
-    </tr>
+
+        for $x in $docRoot//aqd:AQD_SamplingPoint/ef:belongsTo
+        where empty(index-of($aqdNetworkLocal, fn:normalize-space($x/@xlink:href)))
+        return
+            <tr>
+                <td title="aqd:AQD_SamplingPoint">{data($x/../@gml:id)}</td>
+                <td title="ef:belongsTo">{data(fn:normalize-space($x/@xlink:href))}</td>
+            </tr>
+    }  catch * {
+        <tr status="failed">
+            <td title="Error code"> {$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+            <td></td>
+        </tr>
+    }
 
 (: D44b :)
-let $invalidStationEfbelongsTo :=
-    for $x in $docRoot//aqd:AQD_Station/ef:belongsTo
-    where empty(index-of($aqdNetworkLocal,fn:normalize-space($x/@xlink:href)))
-    return
-    <tr>
-      <td title="aqd:AQD_Station">{data($x/../@gml:id)}</td>
-      <td title="ef:belongsTo">{data(fn:normalize-space($x/@xlink:href))}</td>
-    </tr>
-
-(: D45 :)
-(: Find all period with out end period :)
-let $allNotNullEndOperationActivityPeriods :=
-    for $allOperationActivityPeriod in $docRoot//aqd:AQD_SamplingPoint/ef:operationalActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod
-    where ($allOperationActivityPeriod/gml:endPosition[normalize-space(@indeterminatePosition)!="unknown"]
-            or fn:string-length($allOperationActivityPeriod/gml:endPosition) > 0)
-
-    return $allOperationActivityPeriod
-
-let $allOperationActivitPeriod :=
-    for $operationActivitPeriod in $allNotNullEndOperationActivityPeriods
-    where ((xs:dateTime($operationActivitPeriod/gml:endPosition) < xs:dateTime($operationActivitPeriod/gml:beginPosition)))
-    return
-        <tr>
-            <td title="aqd:AQD_Station">{data($operationActivitPeriod/../../../../@gml:id)}</td>
-            <td title="gml:TimePeriod">{data($operationActivitPeriod/@gml:id)}</td>
-            <td title="gml:beginPosition">{$operationActivitPeriod/gml:beginPosition}</td>
-            <td title="gml:endPosition">{$operationActivitPeriod/gml:endPosition}</td>
+let $D44binvalid :=
+    try {
+        for $x in $docRoot//aqd:AQD_Station/ef:belongsTo
+        where empty(index-of($aqdNetworkLocal, fn:normalize-space($x/@xlink:href)))
+        return
+            <tr>
+                <td title="aqd:AQD_Station">{data($x/../@gml:id)}</td>
+                <td title="ef:belongsTo">{data(fn:normalize-space($x/@xlink:href))}</td>
+            </tr>
+    }  catch * {
+        <tr status="failed">
+            <td title="Error code"> {$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+            <td></td>
         </tr>
+    }
+
+(: D45 - Find all period with out end period :)
+let $D45invalid :=
+    try {
+        let $allNotNullEndOperationActivityPeriods :=
+            for $allOperationActivityPeriod in $docRoot//aqd:AQD_SamplingPoint/ef:operationalActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod
+            where ($allOperationActivityPeriod/gml:endPosition[normalize-space(@indeterminatePosition) != "unknown"]
+                    or fn:string-length($allOperationActivityPeriod/gml:endPosition) > 0)
+
+            return $allOperationActivityPeriod
+
+        for $operationActivitPeriod in $allNotNullEndOperationActivityPeriods
+        where ((xs:dateTime($operationActivitPeriod/gml:endPosition) < xs:dateTime($operationActivitPeriod/gml:beginPosition)))
+        return
+            <tr>
+                <td title="aqd:AQD_Station">{data($operationActivitPeriod/../../../../@gml:id)}</td>
+                <td title="gml:TimePeriod">{data($operationActivitPeriod/@gml:id)}</td>
+                <td title="gml:beginPosition">{$operationActivitPeriod/gml:beginPosition}</td>
+                <td title="gml:endPosition">{$operationActivitPeriod/gml:endPosition}</td>
+            </tr>
+    }  catch * {
+        <tr status="failed">
+            <td title="Error code"> {$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+            <td></td>
+        </tr>
+    }
 
 (: D46 :)
-let $allUnknownEfOperationActivityPeriod :=
-    for $operationActivityPeriod in $docRoot//gml:featureMember/aqd:AQD_SamplingPoint/ef:operationalActivityPeriod
-    where $operationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:endPosition[normalize-space(@indeterminatePosition)="unknown"]
-            or fn:string-length($operationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:endPosition) = 0
-    return
-        <tr>
-            <td title="aqd:AQD_SamplingPoint">{data($operationActivityPeriod/../@gml:id)}</td>
-            <td title="gml:TimePeriod">{data($operationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/@gml:id)}</td>
-            <td title="gml:beginPosition">{$operationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:beginPosition}</td>
-            <td title="gml:endPosition">{$operationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:endPosition}</td>
+let $D46invalid :=
+    try {
+        for $operationActivityPeriod in $docRoot//gml:featureMember/aqd:AQD_SamplingPoint/ef:operationalActivityPeriod
+        where $operationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:endPosition[normalize-space(@indeterminatePosition) = "unknown"]
+                or fn:string-length($operationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:endPosition) = 0
+        return
+            <tr>
+                <td title="aqd:AQD_SamplingPoint">{data($operationActivityPeriod/../@gml:id)}</td>
+                <td title="gml:TimePeriod">{data($operationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/@gml:id)}</td>
+                <td title="gml:beginPosition">{$operationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:beginPosition}</td>
+                <td title="gml:endPosition">{$operationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:endPosition}</td>
+            </tr>
+    }  catch * {
+        <tr status="failed">
+            <td title="Error code"> {$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+            <td></td>
         </tr>
+    }
 
-(:D50 Done by Rait:)
-let $invalidStationClassificationLink :=
-    for $allLinks in $docRoot//gml:featureMember/aqd:AQD_SamplingPoint
-    where not(substring($allLinks/aqd:relevantEmissions/aqd:RelevantEmissions/aqd:stationClassification/@xlink:href,1,fn:string-length("http://dd.eionet.europa.eu/vocabulary/aq/stationclassification"))="http://dd.eionet.europa.eu/vocabulary/aq/stationclassification")
-    return
-        <tr>
-            <td title="gml:id">{data($allLinks/@gml:id)}</td>
-            <td title="xlink:href">{data($allLinks/aqd:relevantEmissions/aqd:RelevantEmissions/aqd:stationClassification/@xlink:href)}</td>
+(:D50 :)
+let $D50invalid :=
+    try {
+        for $allLinks in $docRoot//gml:featureMember/aqd:AQD_SamplingPoint
+        where not(substring($allLinks/aqd:relevantEmissions/aqd:RelevantEmissions/aqd:stationClassification/@xlink:href, 1, fn:string-length("http://dd.eionet.europa.eu/vocabulary/aq/stationclassification")) = "http://dd.eionet.europa.eu/vocabulary/aq/stationclassification")
+        return
+            <tr>
+                <td title="gml:id">{data($allLinks/@gml:id)}</td>
+                <td title="xlink:href">{data($allLinks/aqd:relevantEmissions/aqd:RelevantEmissions/aqd:stationClassification/@xlink:href)}</td>
+            </tr>
+    }  catch * {
+        <tr status="failed">
+            <td title="Error code"> {$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+            <td></td>
         </tr>
+    }
 
 (: D51 :)
-let $environmentalObjectiveCombinations :=
-    doc("http://dd.eionet.europa.eu/vocabulary/aq/environmentalobjective/rdf")
-
 let $D51invalid :=
     try {
+        let $environmentalObjectiveCombinations := doc("http://dd.eionet.europa.eu/vocabulary/aq/environmentalobjective/rdf")
         for $x in $docRoot//aqd:AQD_SamplingPoint/aqd:environmentalObjective/aqd:EnvironmentalObjective
             let $pollutant := string($x/../../ef:observingCapability/ef:ObservingCapability/ef:observedProperty/@xlink:href)
             let $objectiveType := string($x/aqd:objectiveType/@xlink:href)
@@ -812,154 +1083,195 @@ let $D51invalid :=
     }
 
 (: D53 Done by Rait :)
-let $allInvalidZoneXlinks :=
-    for $invalidZoneXlinks in $docRoot//aqd:AQD_SamplingPoint/aqd:zone[not(@nilReason='inapplicable')]
-     where
-        count(sparqlx:executeSparqlQuery(query:getSamplingPointZone(string($invalidZoneXlinks/@xlink:href)))/*) = 0
-    return
-        <tr>
-            <td title="base:localId">{data($invalidZoneXlinks/../ef:inspireId/base:Identifier/base:localId)}</td>
-            <td title="aqd:zone">{data($invalidZoneXlinks/@xlink:href)}</td>
+let $D53invalid :=
+    try {
+        for $invalidZoneXlinks in $docRoot//aqd:AQD_SamplingPoint/aqd:zone[not(@nilReason = 'inapplicable')]
+        where
+            count(sparqlx:executeSparqlQuery(query:getSamplingPointZone(string($invalidZoneXlinks/@xlink:href)))/*) = 0
+        return
+            <tr>
+                <td title="base:localId">{data($invalidZoneXlinks/../ef:inspireId/base:Identifier/base:localId)}</td>
+                <td title="aqd:zone">{data($invalidZoneXlinks/@xlink:href)}</td>
+            </tr>
+    } catch * {
+        <tr status="failed">
+            <td title="Error code"> {$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+            <td></td>
         </tr>
+    }
 
 (: D54 - aqd:AQD_SamplingPointProcess/ompr:inspireId/base:Identifier/base:localId not unique codes :)
-let $localSamplingPointProcessIds := $docRoot//gml:featureMember/aqd:AQD_SamplingPointProcess/ompr:inspireId/base:Identifier
-let $invalidDuplicateSamplingPointProcessIds :=
-    for $idSamplingPointProcessCode in $docRoot//gml:featureMember/aqd:AQD_SamplingPointProcess/ompr:inspireId/base:Identifier
-    where
-        count(index-of($localSamplingPointProcessIds/base:localId, normalize-space($idSamplingPointProcessCode/base:localId))) > 1 and
-                count(index-of($localSamplingPointProcessIds/base:namespace, normalize-space($idSamplingPointProcessCode/base:namespace))) > 1
-    return
-        <tr>
-            <td title="base:localId">{data($idSamplingPointProcessCode/base:localId)}</td>
-            <td title="base:namespace">{data($idSamplingPointProcessCode/base:namespace)}</td>
+let $D54invalid :=
+    try {
+        let $localSamplingPointProcessIds := $docRoot//gml:featureMember/aqd:AQD_SamplingPointProcess/ompr:inspireId/base:Identifier
+        for $idSamplingPointProcessCode in $docRoot//gml:featureMember/aqd:AQD_SamplingPointProcess/ompr:inspireId/base:Identifier
+        where
+            count(index-of($localSamplingPointProcessIds/base:localId, normalize-space($idSamplingPointProcessCode/base:localId))) > 1 and
+                    count(index-of($localSamplingPointProcessIds/base:namespace, normalize-space($idSamplingPointProcessCode/base:namespace))) > 1
+        return
+            <tr>
+                <td title="base:localId">{data($idSamplingPointProcessCode/base:localId)}</td>
+                <td title="base:namespace">{data($idSamplingPointProcessCode/base:namespace)}</td>
+            </tr>
+    } catch * {
+        <tr status="failed">
+            <td title="Error code"> {$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+            <td></td>
         </tr>
+    }
 
 (: D55 :)
-let $allBaseNamespace := distinct-values($docRoot//aqd:AQD_SamplingPointProcess/ompr:inspireId/base:Identifier/base:namespace)
-let $tblD55 :=
-    for $id in $allBaseNamespace
-    let $localId := $docRoot//aqd:AQD_SamplingPointProcess/ompr:inspireId/base:Identifier[base:namespace = $id]/base:localId
-    return
-        <tr>
-            <td title="feature">SamplingPointProcess(es)</td>
-            <td title="base:namespace">{$id}</td>
-            <td title="unique localId">{count($localId)}</td>
+let $D55table :=
+    try {
+        for $id in $SPPnamespaces
+        let $localId := $docRoot//aqd:AQD_SamplingPointProcess/ompr:inspireId/base:Identifier[base:namespace = $id]/base:localId
+        return
+            <tr>
+                <td title="feature">SamplingPointProcess(es)</td>
+                <td title="base:namespace">{$id}</td>
+                <td title="unique localId">{count($localId)}</td>
+            </tr>
+    } catch * {
+        <tr status="failed">
+            <td title="Error code"> {$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+            <td></td>
         </tr>
-
+    }
 
 (: D56 Done by Rait :)
-let $allInvalidMeasurementType
-     := xmlconv:checkVocabularyConceptValues($source_url, "aqd:AQD_SamplingPointProcess", "aqd:measurementType", $vocabulary:MEASUREMENTTYPE_VOCABULARY)
-
+let $D56invalid :=
+    try {
+        xmlconv:checkVocabularyConceptValues($source_url, "aqd:AQD_SamplingPointProcess", "aqd:measurementType", $vocabulary:MEASUREMENTTYPE_VOCABULARY)
+    } catch * {
+        <tr status="failed">
+            <td title="Error code"> {$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+            <td></td>
+        </tr>
+    }
 
 (: D57 :)
-let $allConceptUrl57 :=
-for $process in doc($source_url)//aqd:AQD_SamplingPointProcess
-    let $measurementType := data($process/aqd:measurementType/@xlink:href)
-    let $measurementMethod := data($process/aqd:measurementMethod/aqd:MeasurementMethod/aqd:measurementMethod/@xlink:href)
-    let $samplingMethod := data($process/aqd:samplingMethod/aqd:SamplingMethod/aqd:samplingMethod/@xlink:href)
-    let $analyticalTechnique := data($process/aqd:analyticalTechnique/aqd:AnalyticalTechnique/aqd:analyticalTechnique/@xlink:href)
-    where ($measurementType  = 'http://dd.eionet.europa.eu/vocabulary/aq/measurementtype/automatic' or
-         $measurementType = 'http://dd.eionet.europa.eu/vocabulary/aq/measurementtype/remote')
-         and (
-            string-length($samplingMethod) > 0 or string-length($analyticalTechnique) > 0 or not(xmlconv:isValidConceptCode($measurementMethod,$vocabulary:MEASUREMENTMETHOD_VOCABULARY))
-            )
+let $D57table :=
+    try {
+        for $process in doc($source_url)//aqd:AQD_SamplingPointProcess
+        let $measurementType := data($process/aqd:measurementType/@xlink:href)
+        let $measurementMethod := data($process/aqd:measurementMethod/aqd:MeasurementMethod/aqd:measurementMethod/@xlink:href)
+        let $samplingMethod := data($process/aqd:samplingMethod/aqd:SamplingMethod/aqd:samplingMethod/@xlink:href)
+        let $analyticalTechnique := data($process/aqd:analyticalTechnique/aqd:AnalyticalTechnique/aqd:analyticalTechnique/@xlink:href)
+        where ($measurementType = 'http://dd.eionet.europa.eu/vocabulary/aq/measurementtype/automatic' or
+                $measurementType = 'http://dd.eionet.europa.eu/vocabulary/aq/measurementtype/remote')
+                and (
+                    string-length($samplingMethod) > 0 or string-length($analyticalTechnique) > 0 or not(xmlconv:isValidConceptCode($measurementMethod, $vocabulary:MEASUREMENTMETHOD_VOCABULARY))
+                )
 
-    return
-        <tr>
-            <td title="aqd:AQD_SamplingPointProcess">{data($process/ompr:inspireId/base:Identifier/base:localId)}</td>
-            <td title="aqd:measurementType">{$measurementType}</td>
-            <td title="aqd:measurementMethod">{$measurementMethod}</td>
-            <td title="aqd:samplingMethod">{$samplingMethod}</td>
-            <td title="aqd:analyticalTechnique">{$analyticalTechnique}</td>
+        return
+            <tr>
+                <td title="aqd:AQD_SamplingPointProcess">{data($process/ompr:inspireId/base:Identifier/base:localId)}</td>
+                <td title="aqd:measurementType">{$measurementType}</td>
+                <td title="aqd:measurementMethod">{$measurementMethod}</td>
+                <td title="aqd:samplingMethod">{$samplingMethod}</td>
+                <td title="aqd:analyticalTechnique">{$analyticalTechnique}</td>
+            </tr>
+    } catch * {
+        <tr status="failed">
+            <td title="Error code"> {$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+            <td></td>
         </tr>
+    }
 
 (: D58 Done by Rait :)
-let $allConceptUrl58 :=
-    for $conceptUrl in doc($source_url)//gml:featureMember/aqd:AQD_SamplingPointProcess/aqd:measurementType/@xlink:href
-    where $conceptUrl = 'http://dd.eionet.europa.eu/vocabulary/aq/measurementtype/active' or
-            $conceptUrl = 'http://dd.eionet.europa.eu/vocabulary/aq/measurementtype/passive'
-    return $conceptUrl
-
-let $elementsIncluded :=
-    for $checkElements in $allConceptUrl58
-        let $style1 := if(count($checkElements/../../aqd:samplingMethod) = 0 ) then "color:red;" else ""
-        let $style2 := if(count($checkElements/../../aqd:analyticalTechnique) = 0) then "color:red;" else ""
-        let $style3 := if(count($checkElements/../../aqd:measurementMethod) >= 1) then "color:red;" else ""
-    where (count($checkElements/../../aqd:samplingMethod) = 0 or count($checkElements/../../aqd:analyticalTechnique) = 0)
-             or count($checkElements/../../aqd:measurementMethod) >= 1
-    return
-        <tr>
-            <td title="gml:id">{data($checkElements/../../@gml:id)}</td>
-            <td style="{$style1}" title="aqd:samplingMethod">{if(count($checkElements/../../aqd:samplingMethod) = 0 ) then "Error, shall  be provided." else "Valid."}</td>
-            <td style="{$style2}" title="aqd:analyticalTechnique">{if(count($checkElements/../../aqd:analyticalTechnique) = 0) then "Error, shall  be provided." else "Valid."}</td>
-            <td style="{$style3}" title="aqd:measurementMethod">{if(count($checkElements/../../aqd:measurementMethod) >= 1) then "Error, shall not be provided." else "Valid."}</td>
+let $D58table :=
+    try {
+        let $allConceptUrl58 :=
+        for $conceptUrl in doc($source_url)//gml:featureMember/aqd:AQD_SamplingPointProcess/aqd:measurementType/@xlink:href
+        where $conceptUrl = 'http://dd.eionet.europa.eu/vocabulary/aq/measurementtype/active' or
+                $conceptUrl = 'http://dd.eionet.europa.eu/vocabulary/aq/measurementtype/passive'
+        return $conceptUrl
+        for $checkElements in $allConceptUrl58
+            let $style1 := if(count($checkElements/../../aqd:samplingMethod) = 0 ) then "color:red;" else ""
+            let $style2 := if(count($checkElements/../../aqd:analyticalTechnique) = 0) then "color:red;" else ""
+            let $style3 := if(count($checkElements/../../aqd:measurementMethod) >= 1) then "color:red;" else ""
+        where (count($checkElements/../../aqd:samplingMethod) = 0 or count($checkElements/../../aqd:analyticalTechnique) = 0)
+                 or count($checkElements/../../aqd:measurementMethod) >= 1
+        return
+            <tr>
+                <td title="gml:id">{data($checkElements/../../@gml:id)}</td>
+                <td style="{$style1}" title="aqd:samplingMethod">{if(count($checkElements/../../aqd:samplingMethod) = 0 ) then "Error, shall  be provided." else "Valid."}</td>
+                <td style="{$style2}" title="aqd:analyticalTechnique">{if(count($checkElements/../../aqd:analyticalTechnique) = 0) then "Error, shall  be provided." else "Valid."}</td>
+                <td style="{$style3}" title="aqd:measurementMethod">{if(count($checkElements/../../aqd:measurementMethod) >= 1) then "Error, shall not be provided." else "Valid."}</td>
+            </tr>
+    } catch * {
+        <tr status="failed">
+            <td title="Error code"> {$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+            <td></td>
         </tr>
+    }
 
 (: D59 Done by Rait:)
-let  $allInvalidAnalyticalTechnique
-    := xmlconv:checkVocabularyaqdAnalyticalTechniqueValues($source_url, "aqd:AQD_SamplingPointProcess", "aqd:analyticalTechnique", $vocabulary:ANALYTICALTECHNIQUE_VOCABULARY, "")
+let $D59invalid :=
+    try {
+        xmlconv:checkVocabularyaqdAnalyticalTechniqueValues($source_url, "aqd:AQD_SamplingPointProcess", "aqd:analyticalTechnique", $vocabulary:ANALYTICALTECHNIQUE_VOCABULARY, "")
+    } catch * {
+        <tr status="failed">
+            <td title="Error code"> {$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+            <td></td>
+        </tr>
+    }
 
 (: D60a  :)
-let  $allInvalid60a
-    := xmlconv:checkVocabularyConceptEquipmentValues($source_url, "aqd:AQD_SamplingPointProcess", "aqd:measurementEquipment", $vocabulary:MEASUREMENTEQUIPMENT_VOCABULARY, "")
+let $D60ainvalid :=
+    try {
+        xmlconv:checkVocabularyConceptEquipmentValues($source_url, "aqd:AQD_SamplingPointProcess", "aqd:measurementEquipment", $vocabulary:MEASUREMENTEQUIPMENT_VOCABULARY, "")
+    } catch * {
+        <tr status="failed">
+            <td title="Error code"> {$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+            <td></td>
+        </tr>
+    }
 
 (: D60b :)
-let  $allInvalid60b
-    := xmlconv:checkVocabularyConceptEquipmentValues($source_url, "aqd:AQD_SamplingPointProcess", "aqd:samplingEquipment", $vocabulary:SAMPLINGEQUIPMENT_VOCABULARY, "")
+let $D60binvalid :=
+    try {
+        xmlconv:checkVocabularyConceptEquipmentValues($source_url, "aqd:AQD_SamplingPointProcess", "aqd:samplingEquipment", $vocabulary:SAMPLINGEQUIPMENT_VOCABULARY, "")
+    } catch * {
+        <tr status="failed">
+            <td title="Error code"> {$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+            <td></td>
+        </tr>
+    }
 
 (: D63 :)
-let  $allInvalid63
-    := xmlconv:checkVocabularyConceptValuesUom($source_url, "aqd:DataQuality", "aqd:detectionLimit", $vocabulary:UOM_CONCENTRATION_VOCABULARY)
-
-(: Block for D67 to D70 Jaume Targa:)
-
-(: Original from D52
-
-let $allProcNotMatchingCondition70 :=
-for $proc in $docRoot//aqd:AQD_SamplingPointProcess
-let $demonstrated := data($proc/aqd:equivalenceDemonstration/aqd:EquivalenceDemonstration/aqd:equivalenceDemonstrated/@xlink:href)
-let $demonstrationReport := data($proc/aqd:equivalenceDemonstration/aqd:EquivalenceDemonstration/aqd:demonstrationReport)
-let $documentation := data($proc/aqd:dataQuality/aqd:DataQuality/aqd:documentation)
-let $qaReport := data($proc/aqd:dataQuality/aqd:DataQuality/aqd:qaReport)
-
-    where fn:string-length($qaReport) = 0 or fn:string-length($documentation) = 0 or fn:string-length($demonstrationReport) = 0
-        or not(xmlconv:isValidConceptCode($demonstrated, $xmlconv:EQUIVALENCEDEMONSTRATED_VOCABULARY))
-
-return concat(data($proc/ompr:inspireId/base:Identifier/base:namespace), '/' , data($proc/ompr:inspireId/base:Identifier/base:localId))
-
-
-let $allInvalidTrueUsedAQD70 :=
-    for $invalidTrueUsedAQD70 in $docRoot//aqd:AQD_SamplingPoint
-        let $procIds70 := data($invalidTrueUsedAQD70/ef:observingCapability/ef:ObservingCapability/ef:procedure/@xlink:href)
-        let $aqdUsed70 := $invalidTrueUsedAQD70/aqd:usedAQD = true()
-
-    for $procId70 in $procIds70
-    return
-        if ($aqdUsed70  and  not(empty(index-of($allProcNotMatchingCondition70, $procId70)))) then
-        <tr>
-            <td title="gml:id">{data($invalidTrueUsedAQD70/@gml:id)}</td>
-            <td title="base:localId">{data($invalidTrueUsedAQD70/ef:inspireId/base:Identifier/base:localId)}</td>
-            <td title="base:namespace">{data($invalidTrueUsedAQD70/ef:inspireId/base:Identifier/base:namespace)}</td>
-            <td title="ef:procedure">{$procId70}</td>
-            <td title="ef:ObservingCapability">{data($invalidTrueUsedAQD70/ef:observingCapability/ef:ObservingCapability/@gml:id)}</td>
-
+let $D63invalid :=
+    try {
+        xmlconv:checkVocabularyConceptValuesUom($source_url, "aqd:DataQuality", "aqd:detectionLimit", $vocabulary:UOM_CONCENTRATION_VOCABULARY)
+    } catch * {
+        <tr status="failed">
+            <td title="Error code"> {$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+            <td></td>
         </tr>
-        else ()
-:)
+    }
 
 
 (: D67 Jaume Targa :)
-let $allProcNotMatchingCondition67 :=
-    for $proc in $docRoot//aqd:AQD_SamplingPointProcess
-        let $demonstrated := data($proc/aqd:equivalenceDemonstration/aqd:EquivalenceDemonstration/aqd:equivalenceDemonstrated/@xlink:href)
-        let $demonstrationReport := data($proc/aqd:equivalenceDemonstration/aqd:EquivalenceDemonstration/aqd:demonstrationReport)
-    where not(xmlconv:isValidConceptCode($demonstrated, $vocabulary:EQUIVALENCEDEMONSTRATED_VOCABULARY))
-    return concat(data($proc/ompr:inspireId/base:Identifier/base:namespace), '/' , data($proc/ompr:inspireId/base:Identifier/base:localId))
+let $D67invalid :=
+    try {
+        let $allProcNotMatchingCondition67 :=
+            for $proc in $docRoot//aqd:AQD_SamplingPointProcess
+            let $demonstrated := data($proc/aqd:equivalenceDemonstration/aqd:EquivalenceDemonstration/aqd:equivalenceDemonstrated/@xlink:href)
+            let $demonstrationReport := data($proc/aqd:equivalenceDemonstration/aqd:EquivalenceDemonstration/aqd:demonstrationReport)
+            where not(xmlconv:isValidConceptCode($demonstrated, $vocabulary:EQUIVALENCEDEMONSTRATED_VOCABULARY))
+            return concat(data($proc/ompr:inspireId/base:Identifier/base:namespace), '/', data($proc/ompr:inspireId/base:Identifier/base:localId))
 
-let $allInvalidTrueUsedAQD67 :=
-    for $invalidTrueUsedAQD67 in $docRoot//aqd:AQD_SamplingPoint
+        for $invalidTrueUsedAQD67 in $docRoot//aqd:AQD_SamplingPoint
         let $procIds67 := data($invalidTrueUsedAQD67/ef:observingCapability/ef:ObservingCapability/ef:procedure/@xlink:href)
         let $aqdUsed67 := $invalidTrueUsedAQD67/aqd:usedAQD = true()
 
@@ -975,23 +1287,31 @@ let $allInvalidTrueUsedAQD67 :=
                 </tr>
             else
                 ()
+    } catch * {
+        <tr status="failed">
+            <td title="Error code"> {$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+            <td></td>
+        </tr>
+    }
 
 (: D68 Jaume Targa :)
-let $allProcNotMatchingCondition68 :=
-    for $proc in $docRoot//aqd:AQD_SamplingPointProcess
-        let $demonstrated := data($proc/aqd:equivalenceDemonstration/aqd:EquivalenceDemonstration/aqd:equivalenceDemonstrated/@xlink:href)
-        let $demonstrationReport := data($proc/aqd:equivalenceDemonstration/aqd:EquivalenceDemonstration/aqd:demonstrationReport)
-    where ($demonstrated = 'http://dd.eionet.europa.eu/vocabulary/aq/equivalencedemonstrated/yes' and fn:string-length($demonstrationReport) = 0)
-    return concat(data($proc/ompr:inspireId/base:Identifier/base:namespace), '/' , data($proc/ompr:inspireId/base:Identifier/base:localId))
+let $D68invalid :=
+    try {
+        let $allProcNotMatchingCondition68 :=
+            for $proc in $docRoot//aqd:AQD_SamplingPointProcess
+            let $demonstrated := data($proc/aqd:equivalenceDemonstration/aqd:EquivalenceDemonstration/aqd:equivalenceDemonstrated/@xlink:href)
+            let $demonstrationReport := data($proc/aqd:equivalenceDemonstration/aqd:EquivalenceDemonstration/aqd:demonstrationReport)
+            where ($demonstrated = 'http://dd.eionet.europa.eu/vocabulary/aq/equivalencedemonstrated/yes' and fn:string-length($demonstrationReport) = 0)
+            return concat(data($proc/ompr:inspireId/base:Identifier/base:namespace), '/', data($proc/ompr:inspireId/base:Identifier/base:localId))
 
-let $allInvalidTrueUsedAQD68 :=
-    for $invalidTrueUsedAQD68 in $docRoot//aqd:AQD_SamplingPoint
+        for $invalidTrueUsedAQD68 in $docRoot//aqd:AQD_SamplingPoint
         let $procIds68 := data($invalidTrueUsedAQD68/ef:observingCapability/ef:ObservingCapability/ef:procedure/@xlink:href)
         let $aqdUsed68 := $invalidTrueUsedAQD68/aqd:usedAQD = true()
 
         for $procId68 in $procIds68
         return
-            if ($aqdUsed68  and  not(empty(index-of($allProcNotMatchingCondition68, $procId68)))) then
+            if ($aqdUsed68 and not(empty(index-of($allProcNotMatchingCondition68, $procId68)))) then
                 <tr>
                     <td title="gml:id">{data($invalidTrueUsedAQD68/@gml:id)}</td>
                     <td title="base:localId">{data($invalidTrueUsedAQD68/ef:inspireId/base:Identifier/base:localId)}</td>
@@ -1001,18 +1321,24 @@ let $allInvalidTrueUsedAQD68 :=
                 </tr>
             else
                 ()
+    } catch * {
+        <tr status="failed">
+            <td title="Error code"> {$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+            <td></td>
+        </tr>
+    }
 
 (: D69 Jaume Targa :)
-let $allProcNotMatchingCondition69 :=
-    for $proc in $docRoot//aqd:AQD_SamplingPointProcess
-        let $documentation := data($proc/aqd:dataQuality/aqd:DataQuality/aqd:documentation)
-        let $qaReport := data($proc/aqd:dataQuality/aqd:DataQuality/aqd:qaReport)
-    where (string-length($documentation) = 0) and (string-length($qaReport) = 0)
-    return concat(data($proc/ompr:inspireId/base:Identifier/base:namespace), '/' , data($proc/ompr:inspireId/base:Identifier/base:localId))
-
-
 let $allInvalidTrueUsedAQD69 :=
     try {
+        let $allProcNotMatchingCondition69 :=
+            for $proc in $docRoot//aqd:AQD_SamplingPointProcess
+            let $documentation := data($proc/aqd:dataQuality/aqd:DataQuality/aqd:documentation)
+            let $qaReport := data($proc/aqd:dataQuality/aqd:DataQuality/aqd:qaReport)
+            where (string-length($documentation) = 0) and (string-length($qaReport) = 0)
+            return concat(data($proc/ompr:inspireId/base:Identifier/base:namespace), '/' , data($proc/ompr:inspireId/base:Identifier/base:localId))
+
         for $invalidTrueUsedAQD69 in $docRoot//aqd:AQD_SamplingPoint[aqd:usedAQD = "true" and ef:observingCapability/ef:ObservingCapability/ef:procedure/@xlink:href = $allProcNotMatchingCondition69]
         return
         <tr>
@@ -1030,10 +1356,10 @@ let $allInvalidTrueUsedAQD69 :=
     }
 
 (: D71 - ./aqd:inspireId/base:Identifier/base:localId shall be unique for AQD_Sample and unique within the namespace :)
-let $localSampleIds := data($docRoot//aqd:AQD_Sample/aqd:inspireId/base:Identifier/base:localId)
-let $D71namespaces := data($docRoot//base:namespace/../base:localId)
-let $invalidDuplicateSampleIds :=
+let $D71invalid :=
     try {
+        let $localSampleIds := data($docRoot//aqd:AQD_Sample/aqd:inspireId/base:Identifier/base:localId)
+        let $D71namespaces := data($docRoot//base:namespace/../base:localId)
         for $x in $docRoot//aqd:AQD_Sample/aqd:inspireId/base:Identifier
             let $id := string($x/base:localId)
         where count(index-of($localSampleIds, $id)) > 1 or count(index-of($D71namespaces, $id)) > 1
@@ -1050,55 +1376,74 @@ let $invalidDuplicateSampleIds :=
     }
 
 (: D72 - :)
-(: TODO: Chedk with Jaume, has this check changed? :)
-let $allBaseNamespace := distinct-values($docRoot//aqd:AQD_Sample/aqd:inspireId/base:Identifier/base:namespace)
-let $tblD72 :=
-    for $id in $allBaseNamespace
-    let $localId := $docRoot//aqd:AQD_Sample/aqd:inspireId/base:Identifier[base:namespace = $id]/base:localId
-    return
-        <tr>
-            <td title="base:namespace">{$id}</td>
-            <td title="base:localId">{count($localId)}</td>
+(: TODO: Check with Jaume, has this check changed? :)
+let $D72table :=
+    try {
+        for $id in $sampleNamespaces
+        let $localId := $docRoot//aqd:AQD_Sample/aqd:inspireId/base:Identifier[base:namespace = $id]/base:localId
+        return
+            <tr>
+                <td title="base:namespace">{$id}</td>
+                <td title="base:localId">{count($localId)}</td>
+            </tr>
+    } catch * {
+        <tr status="failed">
+            <td title="Error code"> {$err:code}</td>
+            <td title="Error description">{$err:description}</td>
         </tr>
+    }
 
 (: D73 :)
 let $allGmlPoint := $docRoot//aqd:AQD_Sample/sams:shape/gml:Point
 let $D73validURN := ("urn:ogc:def:crs:EPSG::3035", "urn:ogc:def:crs:EPSG::4258", "urn:ogc:def:crs:EPSG::4326")
 let $D73invalid :=
-    for $point in $docRoot//aqd:AQD_Sample/sams:shape/gml:Point[not(@srsName = $D73validURN)]
-    return
-        <tr>
-            <td title="aqd:AQD_Sample">{data($point/../../aqd:inspireId/base:Identifier/base:localId)}</td>
-            <td title="gml:Point">{data($point/@gml:id)}</td>
-            <td title="gml:Point/@srsName">{data($point/@srsName)}</td>
+    try {
+        for $point in $docRoot//aqd:AQD_Sample/sams:shape/gml:Point[not(@srsName = $D73validURN)]
+        return
+            <tr>
+                <td title="aqd:AQD_Sample">{data($point/../../aqd:inspireId/base:Identifier/base:localId)}</td>
+                <td title="gml:Point">{data($point/@gml:id)}</td>
+                <td title="gml:Point/@srsName">{data($point/@srsName)}</td>
+            </tr>
+    } catch * {
+        <tr status="failed">
+            <td title="Error code"> {$err:code}</td>
+            <td title="Error description">{$err:description}</td>
         </tr>
+    }
 let $isInvalidInvalidD73 := if (count($allGmlPoint) > 0) then fn:true() else fn:false()
 let $errLevelD73 := if (count($allGmlPoint) > 0) then "error" else "warning"
 let $errMsg73  := if (count($allGmlPoint) > 0) then " errors found" else " gml:Point elements found"
 
 (: D74 :)
-let $D74tmp := distinct-values($docRoot//aqd:AQD_Sample/sams:shape/gml:Point[@srsDimension != "2"]/
-concat(../@gml:id, ": srsDimension=", @srsDimension))
-let $invalidPointDimension  :=
-    for $i in $D74tmp
-    return
-        <tr>
-            <td title="dimension">{string($i)}</td>
+let $D74invalid :=
+    try {
+        let $D74tmp := distinct-values($docRoot//aqd:AQD_Sample/sams:shape/gml:Point[@srsDimension != "2"]/concat(../@gml:id, ": srsDimension=", @srsDimension))
+        for $i in $D74tmp
+        return
+            <tr>
+                <td title="dimension">{string($i)}</td>
+            </tr>
+    } catch * {
+        <tr status="failed">
+            <td title="Error code"> {$err:code}</td>
+            <td title="Error description">{$err:description}</td>
         </tr>
+    }
 
 (: D75 :)
-let $approximity := 0.0003
-
-(: SampleID|long#lat :)
-let $aqdSampleMap := map:merge((
-    for $allPos in $docRoot//aqd:AQD_Sample[not(sams:shape/gml:Point/gml:pos = "")]
-        let $id := concat($allPos/aqd:inspireId/base:Identifier/base:namespace,"/",$allPos/aqd:inspireId/base:Identifier/base:localId)
-        let $pos := $allPos/sams:shape/gml:Point/string(gml:pos)
-    return map:entry($id, $pos)
-))
-
 let $D75invalid :=
-    for $x in $docRoot//aqd:AQD_SamplingPoint[not(ef:geometry/gml:Point/gml:pos = "")]/ef:observingCapability
+    try {
+        let $approximity := 0.0003
+
+        (: SampleID|long#lat :)
+        let $aqdSampleMap := map:merge((
+            for $allPos in $docRoot//aqd:AQD_Sample[not(sams:shape/gml:Point/gml:pos = "")]
+            let $id := concat($allPos/aqd:inspireId/base:Identifier/base:namespace, "/", $allPos/aqd:inspireId/base:Identifier/base:localId)
+            let $pos := $allPos/sams:shape/gml:Point/string(gml:pos)
+            return map:entry($id, $pos)
+        ))
+        for $x in $docRoot//aqd:AQD_SamplingPoint[not(ef:geometry/gml:Point/gml:pos = "")]/ef:observingCapability
         let $samplingPos := $x/../ef:geometry/gml:Point/string(gml:pos)
         let $xlink := ($x/ef:ObservingCapability/ef:featureOfInterest/@xlink:href)
         (: checks Sample map for value :)
@@ -1114,13 +1459,19 @@ let $D75invalid :=
         let $samplingLong := if ($samplingLong castable as xs:decimal) then xs:decimal($samplingLong) else 0.00
         let $samplingLat := if ($samplingLat castable as xs:decimal) then xs:decimal($samplingLat) else 0.00
 
-    return
-        if (abs($samplingLong - $sampleLong) > $approximity or abs($samplingLat - $sampleLat) > $approximity) then
-            <tr>
-                <td title="base:localId">{string($x/../ef:inspireId/base:Identifier/string(base:localId))}</td>
-            </tr>
-        else
-            ()
+        return
+            if (abs($samplingLong - $sampleLong) > $approximity or abs($samplingLat - $sampleLat) > $approximity) then
+                <tr>
+                    <td title="base:localId">{string($x/../ef:inspireId/base:Identifier/string(base:localId))}</td>
+                </tr>
+            else
+                ()
+    } catch * {
+        <tr status="failed">
+            <td title="Error code"> {$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
 
 (: D76 :)
 let $D76invalid :=
@@ -1178,15 +1529,22 @@ let $D77invalid :=
 
 
 (: D78 :)
-let $invalidInletHeigh :=
-for $inletHeigh in  $docRoot//aqd:AQD_Sample/aqd:inletHeight
-    return
-        if (($inletHeigh/@uom != "http://dd.eionet.europa.eu/vocabulary/uom/length/m") or (common:is-a-number(data($inletHeigh))=false())) then
-            <tr>
-                <td title="@gml:id">{string($inletHeigh/../@gml:id)}</td>
-            </tr>
-        else
-            ()
+let $D78invalid :=
+    try {
+        for $inletHeigh in $docRoot//aqd:AQD_Sample/aqd:inletHeight
+        return
+            if (($inletHeigh/@uom != "http://dd.eionet.europa.eu/vocabulary/uom/length/m") or (common:is-a-number(data($inletHeigh)) = false())) then
+                <tr>
+                    <td title="@gml:id">{string($inletHeigh/../@gml:id)}</td>
+                </tr>
+            else
+                ()
+    } catch * {
+        <tr status="failed">
+            <td title="Error code"> {$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
 
 (: D91 - Each aqd:AQD_Sample reported within the XML shall be xlinked (at least once) via aqd:AQD_SamplingPoint/ef:observingCapability/ef:ObservingCapability/ef:featureOfInterest/@xlink:href :)
 let $D91invalid :=
@@ -1260,89 +1618,90 @@ let $D94invalid :=
 
 return
     <table class="maintable hover">
-        {html:build1("D1", $labels:D1, $labels:D1_SHORT, $tblAllFeatureTypes, "", string(sum($countFeatureTypes)), "", "","error")}
-        {html:build1("D2", $labels:D2, $labels:D2_SHORT, $tblD2, "", "", "", "","error")}
-        {html:build1("D3", $labels:D3, $labels:D3_SHORT, $tblD3, string(count($tblD3)), "", "", "","error")}
-        {html:build1("D4", $labels:D4, $labels:D4_SHORT, $tblD4, string(count($tblD4)), "", "", "","error")}
-        {html:buildCountRow("D5", $countD5duplicates, $labels:D5, (), " duplicate", ())}
+        {html:build1("D1", $labels:D1, $labels:D1_SHORT, $D1table, "", string(sum($DCombinations)), "", "",$errors:ERROR)}
+        {html:build1("D2", $labels:D2, $labels:D2_SHORT, $D2table, "", "", "", "",$errors:ERROR)}
+        {html:build1("D3", $labels:D3, $labels:D3_SHORT, $D3table, string(count($D3table)), "", "", "",$errors:ERROR)}
+        {html:build1("D4", $labels:D4, $labels:D4_SHORT, $D4table, string(count($D4table)), "", "", "",$errors:ERROR)}
+        {html:buildCountRow("D5", $D5invalid, $labels:D5, (), " duplicate", ())}
         {html:buildConcatRow($duplicateGmlIds, "aqd:AQD_Model/@gml:id - ")}
         {html:buildConcatRow($duplicateefInspireIds, "ef:inspireId - ")}
         {html:buildConcatRow($duplicateaqdInspireIds, "aqd:inspireId - ")}
         {html:buildInfoTR("Specific checks on AQD_Network feature(s) within this XML")}
-        {html:buildCountRow("D6", $countD6duplicates, $labels:D6, (), (), ())}
-        {html:buildResultRows("D7", $labels:D7, $labels:D7_SHORT, $tblD7, "", string(count($tblD7)), "", "", "error")}
-        {html:buildResultRows("D7.1", $labels:D7.1, $labels:D7.1_SHORT, $invalidNamespaces, "base:Identifier/base:namespace", "All values are valid", " invalid namespaces", "", "error")}
-        {html:buildResultRowsWithTotalCount_D("D8", $labels:D8, $labels:D8_SHORT, $invalidNetworkMedia, "ef:mediaMonitored", "", "", "", "warning")}
-        {html:buildResultRowsWithTotalCount_D("D9", $labels:D9, $labels:D9_SHORT, $invalidOrganisationalLevel, "ef:organisationLevel", "", "", "","warning")}
-        {html:buildResultRowsWithTotalCount_D("D10", $labels:D10, $labels:D10_SHORT, $invalidNetworkType, "aqd:networkType", "", "", "","warning")}
-        {html:buildResultRows("D11", $labels:D11, $labels:D11_SHORT, $D11invalid, "aqd:AQD_Network/@gml:id", "All attributes are valid", " invalid attribute ", "", "error")}
-        {html:buildResultRows("D12", $labels:D12, $labels:D12_SHORT, $D12invalid, "aqd:AQD_Network/ef:inspireId/base:Identifier/base:localId", "All attributes are valid", " invalid attribute ", "", "error")}
-        {html:build2("D14", $labels:D14, $labels:D14_SHORT, $D14invalid, "aqd:aggregationTimeZone", "", "", "","error")}
+        {html:buildCountRow("D6", $D6invalid, $labels:D6, (), (), ())}
+        {html:buildResultRows("D7", $labels:D7, $labels:D7_SHORT, $D7table, "", string(count($D7table)), "", "", $errors:ERROR)}
+        {html:buildResultRows("D7.1", $labels:D7.1, $labels:D7.1_SHORT, $D7.1invalid, "base:Identifier/base:namespace", "All values are valid", " invalid namespaces", "", $errors:ERROR)}
+        {html:buildResultRowsWithTotalCount_D("D8", $labels:D8, $labels:D8_SHORT, $D8invalid, "ef:mediaMonitored", "", "", "", $errors:WARNING)}
+        {html:buildResultRowsWithTotalCount_D("D9", $labels:D9, $labels:D9_SHORT, $D9invalid, "ef:organisationLevel", "", "", "",$errors:WARNING)}
+        {html:buildResultRowsWithTotalCount_D("D10", $labels:D10, $labels:D10_SHORT, $D10invalid, "aqd:networkType", "", "", "",$errors:WARNING)}
+        {html:buildResultRows("D11", $labels:D11, $labels:D11_SHORT, $D11invalid, "aqd:AQD_Network/@gml:id", "All attributes are valid", " invalid attribute ", "", $errors:ERROR)}
+        {html:buildResultRows("D12", $labels:D12, $labels:D12_SHORT, $D12invalid, "aqd:AQD_Network/ef:inspireId/base:Identifier/base:localId", "All attributes are valid", " invalid attribute ", "", $errors:ERROR)}
+        {html:build2("D14", $labels:D14, $labels:D14_SHORT, $D14invalid, "aqd:aggregationTimeZone", "", "", "",$errors:ERROR)}
         {html:buildInfoTR("Specific checks on AQD_Station feature(s) within this XML")}
-        {html:buildCountRow("D15", $countD15duplicates, $labels:D15, "All Ids are unique", (), ())}
-        {html:buildResultRows("D16", $labels:D16, $labels:D16_SHORT, $tblD16, "", string(count($tblD16)), "", "","error")}
-        {html:buildResultRows("D17", $labels:D17, $labels:D17_SHORT, $D17invalid, "", "All values are valid", "", "","warning")}
-        {html:buildResultRows("D18", $labels:D18, $labels:D18_SHORT, $D18invalid, "", "All values are valid", "", "","warning")}
-        {html:buildResultRowsWithTotalCount_D("D19", $labels:D19, $labels:D19, $invalidStationMedia, "ef:mediaMonitored", "", "", "","warning")}
-        {html:buildResultRows("D20", $labels:D20, $labels:D20_SHORT, $D20invalid, "aqd:AQD_Station/ef:inspireId/base:Identifier/base:localId","All smsName attributes are valid"," invalid attribute","", "warning")}
-        {html:buildResultRows("D21", $labels:D21, $labels:D21_SHORT, $invalidPosD21, "aqd:AQD_Zone/@gml:id", "All srsDimension attributes resolve to ""2""", " invalid attribute", "","error")}
-        {html:buildResultRows("D23", $labels:D23, $labels:D23_SHORT, $allInvalidEfOperationActivityPeriod, "", fn:string(count($allInvalidEfOperationActivityPeriod)), "", "","error")}
+        {html:buildCountRow("D15", $D15invalid, $labels:D15, "All Ids are unique", (), ())}
+        {html:buildResultRows("D16", $labels:D16, $labels:D16_SHORT, $D16table, "", string(count($D16table)), "", "",$errors:ERROR)}
+        {html:buildResultRows("D17", $labels:D17, $labels:D17_SHORT, $D17invalid, "", "All values are valid", "", "",$errors:WARNING)}
+        {html:buildResultRows("D18", $labels:D18, $labels:D18_SHORT, $D18invalid, "", "All values are valid", "", "",$errors:WARNING)}
+        {html:buildResultRowsWithTotalCount_D("D19", $labels:D19, $labels:D19, $D19invalid, "ef:mediaMonitored", "", "", "",$errors:WARNING)}
+        {html:buildResultRows("D20", $labels:D20, $labels:D20_SHORT, $D20invalid, "aqd:AQD_Station/ef:inspireId/base:Identifier/base:localId","All smsName attributes are valid"," invalid attribute","", $errors:WARNING)}
+        {html:buildResultRows("D21", $labels:D21, $labels:D21_SHORT, $invalidPosD21, "aqd:AQD_Zone/@gml:id", "All srsDimension attributes resolve to ""2""", " invalid attribute", "",$errors:ERROR)}
+        {html:buildResultRows("D23", $labels:D23, $labels:D23_SHORT, $D23invalid, "", fn:string(count($D23invalid)), "", "",$errors:ERROR)}
         <!-- TODO: fix D24 to show warning if count = 0 :) -->
-        {html:buildResultRows("D24", $labels:D24, $labels:D24_SHORT, $allUnknownEfOperationActivityPeriodD24, "", string(count($allUnknownEfOperationActivityPeriodD24)), "", "","warning")}
-        {html:buildResultRows("D26", $labels:D26, $labels:D26_SHORT, $invalidDuplicateLocalIds, "", "All station codes are valid", " invalid station codes", "","error")}
-        {html:buildResultRowsWithTotalCount_D("D27", $labels:D27, $labels:D27_SHORT, $invalidMeteoParams, "aqd:meteoParams", "", "", "","warning")}
-        {html:buildResultRowsWithTotalCount_D("D28", $labels:D28, $labels:D28_SHORT, $invalidAreaClassification, "aqd:areaClassification", "", "", "","error")}
-        {html:buildResultRowsWithTotalCount_D("D29", $labels:D29, $labels:D29_SHORT, $invalidDispersionLocal, "aqd:dispersionLocal", "", "", "","warning")}
-        {html:buildResultRowsWithTotalCount_D("D30", $labels:D30, $labels:D30_SHORT, $invalidDispersionRegional, "aqd:dispersionRegional", "", "", "","warning")}
-        {html:buildResultRows("D31", $labels:D31, $labels:D31_SHORT, $invalidDuplicateSamplingPointIds, "", concat(string(count($invalidDuplicateSamplingPointIds))," errors found.") , "", "","error")}
-        {html:buildResultRows("D32", $labels:D32, $labels:D32_SHORT, $tblD32, "", string(count($tblD32)), "", "","error")}
-        {html:buildResultRowsWithTotalCount_D("D33", $labels:D33, $labels:D33_SHORT, $invalidSamplingPointMedia, "ef:mediaMonitored", "", "", "","warning")}
-        {html:buildResultRows("D34", $labels:D34, $labels:D34_SHORT, $D34invalid, "", "All values are valid", "", "", "error")}
-        {html:buildResultRows("D35", $labels:D35, $labels:D35_SHORT, $invalidPos, "aqd:AQD_SamplingPoint/ef:inspireId/base:Identifier/base:localId", "All srsDimension attributes resolve to ""2""", " invalid elements", "","error")}
-        {html:buildResultRows("D36", $labels:D36, $labels:D36_SHORT, $invalidSamplingPointPos, "aqd:AQD_SamplingPoint/@gml:id", "All attributes are valid", " invalid attribute", "","warning")}
-        {html:buildResultRows("D37", $labels:D37, $labels:D37_SHORT, $allObservingCapabilityPeriod, "", concat(fn:string(count($allObservingCapabilityPeriod))," errors found"), "", "","error")}
-        {html:buildResultRows("D40", $labels:D40, $labels:D40_SHORT, $D40invalid, "ef:observedProperty", "All values are valid", "invalid pollutant", "","error")}
+        {html:buildResultRows("D24", $labels:D24, $labels:D24_SHORT, $D24invalid, "", string(count($D24invalid)), "", "",$errors:WARNING)}
+        {html:buildResultRows("D26", $labels:D26, $labels:D26_SHORT, $D26invalid, "", "All station codes are valid", " invalid station codes", "",$errors:ERROR)}
+        {html:buildResultRowsWithTotalCount_D("D27", $labels:D27, $labels:D27_SHORT, $D27invalid, "aqd:meteoParams", "", "", "",$errors:WARNING)}
+        {html:buildResultRowsWithTotalCount_D("D28", $labels:D28, $labels:D28_SHORT, $D28invalid, "aqd:areaClassification", "", "", "",$errors:ERROR)}
+        {html:buildResultRowsWithTotalCount_D("D29", $labels:D29, $labels:D29_SHORT, $D29invalid, "aqd:dispersionLocal", "", "", "",$errors:WARNING)}
+        {html:buildResultRowsWithTotalCount_D("D30", $labels:D30, $labels:D30_SHORT, $D30invalid, "aqd:dispersionRegional", "", "", "",$errors:WARNING)}
+        {html:buildResultRows("D31", $labels:D31, $labels:D31_SHORT, $D31invalid, "", concat(string(count($D31invalid))," errors found.") , "", "",$errors:ERROR)}
+        {html:buildResultRows("D32", $labels:D32, $labels:D32_SHORT, $D32table, "", string(count($D32table)), "", "",$errors:ERROR)}
+        {html:buildResultRowsWithTotalCount_D("D33", $labels:D33, $labels:D33_SHORT, $D33invalid, "ef:mediaMonitored", "", "", "",$errors:WARNING)}
+        {html:buildResultRows("D34", $labels:D34, $labels:D34_SHORT, $D34invalid, "", "All values are valid", "", "", $errors:ERROR)}
+        {html:buildResultRows("D35", $labels:D35, $labels:D35_SHORT, $D35invalid, "aqd:AQD_SamplingPoint/ef:inspireId/base:Identifier/base:localId", "All srsDimension attributes resolve to ""2""", " invalid elements", "",$errors:ERROR)}
+        {html:buildResultRows("D36", $labels:D36, $labels:D36_SHORT, $D36invalid, "aqd:AQD_SamplingPoint/@gml:id", "All attributes are valid", " invalid attribute", "",$errors:WARNING)}
+        {html:buildResultRows("D37", $labels:D37, $labels:D37_SHORT, $D37invalid, "", concat(fn:string(count($D37invalid))," errors found"), "", "",$errors:ERROR)}
+        {html:buildResultRows("D40", $labels:D40, $labels:D40_SHORT, $D40invalid, "ef:observedProperty", "All values are valid", "invalid pollutant", "",$errors:ERROR)}
         {html:buildInfoTR("Internal XML cross-checks between AQD_SamplingPoint and AQD_Sample;AQD_SamplingPointProcess;AQD_Station;AQD_Network")}
         {html:buildInfoTR("Please note that the qa might give you warning if different features have been submitted in separate XMLs")}
-        {html:buildResultRows("D41", $labels:D41, $labels:D41_SHORT, $invalideFeatureOfInterest,"aqd:AQD_SamplingPoint/@gml:id", "All attributes are valid", " invalid attribute", "","warning")}
-        {html:buildResultRows("D42", $labels:D42, $labels:D42_SHORT, $invalidEfprocedure, "aqd:AQD_SamplingPoint/@gml:id", "All attributes are valid", " invalid attribute", "","warning")}
-        {html:buildResultRows("D43", $labels:D43, $labels:D43_SHORT, $invalidEfbroader, "aqd:AQD_SamplingPoint/@gml:id", "All attributes are valid", " invalid attribute", "","warning")}
-        {html:buildResultRows("D44", $labels:D44, $labels:D44_SHORT, $invalidEfbelongsTo, "aqd:AQD_SamplingPoint/@gml:id", "All attributes are valid", " invalid attribute", "","warning")}
-        {html:buildResultRows("D44b", $labels:D44b, $labels:D44b_SHORT, $invalidStationEfbelongsTo, "aqd:AQD_Station/@gml:id", "All attributes are valid", " invalid attribute", "","warning")}
-        {html:buildResultRows("D45", $labels:D45, $labels:D45_SHORT, $allOperationActivitPeriod, "", concat(fn:string(count($allOperationActivitPeriod))," errors found"), "", "", "error")}
-        {html:buildResultRows("D46", $labels:D46, $labels:D46_SHORT, $allUnknownEfOperationActivityPeriod, "", "", "", "","info")}
-        {html:buildResultRows("D50", $labels:D50, $labels:D50_SHORT, $invalidStationClassificationLink, "", concat(fn:string(count($invalidStationClassificationLink))," errors found"), "", "","error")}
-        {html:buildResultRows("D51", $labels:D51, $labels:D51_SHORT, $D51invalid, "", concat(fn:string(count($D51invalid))," errors found"), " invalid attribute", "", "warning")}
-        {html:buildResultRows("D53", $labels:D53, $labels:D53_SHORT, $allInvalidZoneXlinks, "", concat(fn:string(count( $allInvalidZoneXlinks))," errors found"), " invalid attribute", "", "error")}
-        {html:buildResultRows("D54", $labels:D54, $labels:D54_SHORT, $invalidDuplicateSamplingPointProcessIds, "", concat(string(count($invalidDuplicateSamplingPointProcessIds))," errors found.") , " invalid attribute", "","error")}
+        {html:buildResultRows("D41", $labels:D41, $labels:D41_SHORT, $D41invalid,"aqd:AQD_SamplingPoint/@gml:id", "All attributes are valid", " invalid attribute", "",$errors:WARNING)}
+        {html:buildResultRows("D42", $labels:D42, $labels:D42_SHORT, $D42invalid, "aqd:AQD_SamplingPoint/@gml:id", "All attributes are valid", " invalid attribute", "",$errors:WARNING)}
+        {html:buildResultRows("D43", $labels:D43, $labels:D43_SHORT, $D43invalid, "aqd:AQD_SamplingPoint/@gml:id", "All attributes are valid", " invalid attribute", "",$errors:WARNING)}
+        {html:buildResultRows("D44", $labels:D44, $labels:D44_SHORT, $D44invalid, "aqd:AQD_SamplingPoint/@gml:id", "All attributes are valid", " invalid attribute", "",$errors:WARNING)}
+        {html:buildResultRows("D44b", $labels:D44b, $labels:D44b_SHORT, $D44binvalid, "aqd:AQD_Station/@gml:id", "All attributes are valid", " invalid attribute", "",$errors:WARNING)}
+        {html:buildResultRows("D45", $labels:D45, $labels:D45_SHORT, $D45invalid, "", concat(fn:string(count($D45invalid))," errors found"), "", "", $errors:ERROR)}
+        {html:buildResultRows("D46", $labels:D46, $labels:D46_SHORT, $D46invalid, "", "", "", "","info")}
+        {html:buildResultRows("D50", $labels:D50, $labels:D50_SHORT, $D50invalid, "", concat(fn:string(count($D50invalid))," errors found"), "", "",$errors:ERROR)}
+        {html:buildResultRows("D51", $labels:D51, $labels:D51_SHORT, $D51invalid, "", concat(fn:string(count($D51invalid))," errors found"), " invalid attribute", "", $errors:WARNING)}
+        {html:buildResultRows("D53", $labels:D53, $labels:D53_SHORT, $D53invalid, "", concat(fn:string(count($D53invalid))," errors found"), " invalid attribute", "", $errors:ERROR)}
+        {html:buildResultRows("D54", $labels:D54, $labels:D54_SHORT, $D54invalid, "", concat(string(count($D54invalid))," errors found.") , " invalid attribute", "",$errors:ERROR)}
         {html:buildInfoTR("Specific checks on AQD_SamplingPointProcess feature(s) within this XML")}
-        {html:buildResultRows("D55", $labels:D55, $labels:D55_SHORT, $tblD55, "", string(count($tblD55)), "", "","info")}
-        {html:buildResultRowsWithTotalCount_D("D56", $labels:D56, $labels:D56_SHORT, $allInvalidMeasurementType, "aqd:measurementType", "", "", "","error")}
-        {html:buildResultRows("D57", $labels:D57, $labels:D57_SHORT, $allConceptUrl57, "", concat(string(count($allConceptUrl57)), " errors found"), "", "", "error")}
-        {html:buildResultRows("D58", $labels:D58, $labels:D58_SHORT, $elementsIncluded, "", concat(fn:string(count($elementsIncluded))," errors found"), " invalid attribute", "","warning")}
-        {html:buildResultRowsWithTotalCount_D("D59", $labels:D59, $labels:D59_SHORT, $allInvalidAnalyticalTechnique, "aqd:analyticalTechnique", "", "", "","error")}
-        {html:buildResultRowsWithTotalCount_D("D60a", $labels:D60a, $labels:D60a_SHORT, $allInvalid60a, "aqd:measurementEquipment", "", "", "","error")}
-        {html:buildResultRowsWithTotalCount_D("D60b", $labels:D60b, $labels:D60b_SHORT, $allInvalid60b, "aqd:samplingEquipment", "", "", "","error")}
+        {html:buildResultRows("D55", $labels:D55, $labels:D55_SHORT, $D55table, "", string(count($D55table)), "", "","info")}
+        {html:buildResultRowsWithTotalCount_D("D56", $labels:D56, $labels:D56_SHORT, $D56invalid, "aqd:measurementType", "", "", "",$errors:ERROR)}
+        {html:buildResultRows("D57", $labels:D57, $labels:D57_SHORT, $D57table, "", concat(string(count($D57table)), " errors found"), "", "", $errors:ERROR)}
+        {html:buildResultRows("D58", $labels:D58, $labels:D58_SHORT, $D58table, "", concat(fn:string(count($D58table))," errors found"), " invalid attribute", "",$errors:WARNING)}
+        {html:buildResultRowsWithTotalCount_D("D59", $labels:D59, $labels:D59_SHORT, $D59invalid, "aqd:analyticalTechnique", "", "", "",$errors:ERROR)}
+        {html:buildResultRowsWithTotalCount_D("D60a", $labels:D60a, $labels:D60a_SHORT, $D60ainvalid, "aqd:measurementEquipment", "", "", "",$errors:ERROR)}
+        {html:buildResultRowsWithTotalCount_D("D60b", $labels:D60b, $labels:D60b_SHORT, $D60binvalid, "aqd:samplingEquipment", "", "", "",$errors:ERROR)}
         <!--{xmlconv:buildResultRows("D61", "Total number ./aqd:dataQuality/aqd:DataQuality/aqd:detectionLimit witch does not contain an integer, fixed point or floating point number ",
                 (), $allInvalid61, "", concat(fn:string(count($allInvalid61))," errors found"), "", "", ())}-->
-        {html:buildResultRowsWithTotalCount_D("D63", $labels:D63, $labels:D63_SHORT, $allInvalid63, "aqd:detectionLimit", "", "", "","error")}
+        {html:buildResultRowsWithTotalCount_D("D63", $labels:D63, $labels:D63_SHORT, $D63invalid, "aqd:detectionLimit", "", "", "",$errors:ERROR)}
         {html:buildInfoTR("Checks on SamplingPointProcess(es) where the xlinked SamplingPoint has aqd:AQD_SamplingPoint/aqd:usedAQD equals TRUE (D67 to D70):")}
-        {html:buildResultRows("D67", $labels:D67, $labels:D67_SHORT, $allInvalidTrueUsedAQD68, "", concat(fn:string(count($allInvalidTrueUsedAQD68))," errors found"), "", "", "warning")}
-        {html:buildResultRows("D69", $labels:D69, $labels:D69_SHORT, $allInvalidTrueUsedAQD69, "", concat(fn:string(count($allInvalidTrueUsedAQD69))," errors found"), "", "", "warning")}
+        {html:buildResultRows("D67", $labels:D67, $labels:D67_SHORT, $D67invalid, "", concat(fn:string(count($D67invalid))," errors found"), "", "", $errors:WARNING)}
+        {html:buildResultRows("D68", $labels:D68, $labels:D68_SHORT, $D68invalid, "", concat(fn:string(count($D68invalid))," errors found"), "", "", $errors:WARNING)}
+        {html:buildResultRows("D69", $labels:D69, $labels:D69_SHORT, $allInvalidTrueUsedAQD69, "", concat(fn:string(count($allInvalidTrueUsedAQD69))," errors found"), "", "", $errors:WARNING)}
         {html:buildInfoTR("Specific checks on AQD_Sample feature(s) within this XML")}
-        {html:buildResultRows("D71", $labels:D71, $labels:D71_SHORT, $invalidDuplicateSampleIds, "", concat(string(count($invalidDuplicateSampleIds))," errors found.") , "", "","error")}
-        {html:buildResultRows("D72", $labels:D72, $labels:D72_SHORT, $tblD72, "", string(count($tblD72)), "", "","error")}
+        {html:buildResultRows("D71", $labels:D71, $labels:D71_SHORT, $D71invalid, "", concat(string(count($D71invalid))," errors found.") , "", "",$errors:ERROR)}
+        {html:buildResultRows("D72", $labels:D72, $labels:D72_SHORT, $D72table, "", string(count($D72table)), "", "",$errors:ERROR)}
         <!-- TODO: fix D73 to show errlevel if count = 0 - boolean is set in $isInvalidInvalidD73 -->
         {html:buildResultRows("D73", $labels:D73, $labels:D73_SHORT, $D73invalid, "", concat(string(count($D73invalid)), $errMsg73), "", "",$errLevelD73)}
-        {html:buildResultRows("D74", $labels:D74, $labels:D74_SHORT, $invalidPointDimension, "aqd:AQD_Sample/@gml:id","All srsDimension attributes are valid"," invalid attribute","","error")}
-        {html:buildResultRows("D75", $labels:D75, $labels:D75_SHORT, $D75invalid, "aqd:AQD_Sample/aqd:inspireId/base:Identifier/base:localId", "All attributes are valid", " invalid attribute","","warning")}
-        {html:buildResultRows("D76", $labels:D76, $labels:D76_SHORT, $D76invalid, "aqd:AQD_Sample/aqd:inspireId/base:Identifier/base:localId", "All attributes are valid", " invalid attribute","","warning")}
-        {html:buildResultRows("D77", $labels:D77, $labels:D77_SHORT, $D77invalid, "aqd:AQD_Sample/aqd:inspireId/base:Identifier/base:localId", "All attributes are valid", " invalid attribute","","warning")}
-        {html:buildResultRows("D78", $labels:D78, $labels:D78_SHORT, $invalidInletHeigh, "aqd:AQD_Sample/@gml:id","All values are valid"," invalid attribute","", "warning")}
-        {html:buildResultRows("D91", $labels:D91, $labels:D91_SHORT, $D91invalid, "", "All values are valid"," invalid attribute","", "error")}
-        {html:buildResultRows("D92", $labels:D92, $labels:D92_SHORT, $D92invalid, "", "All values are valid"," invalid attribute","", "error")}
-        {html:buildResultRows("D93", $labels:D93, $labels:D93_SHORT, $D93invalid, "", "All values are valid"," invalid attribute","", "error")}
-        {html:buildResultRows("D94", $labels:D94, $labels:D94_SHORT, $D94invalid, "", "All values are valid"," invalid attribute","", "error")}
+        {html:buildResultRows("D74", $labels:D74, $labels:D74_SHORT, $D74invalid, "aqd:AQD_Sample/@gml:id","All srsDimension attributes are valid"," invalid attribute","",$errors:ERROR)}
+        {html:buildResultRows("D75", $labels:D75, $labels:D75_SHORT, $D75invalid, "aqd:AQD_Sample/aqd:inspireId/base:Identifier/base:localId", "All attributes are valid", " invalid attribute","",$errors:WARNING)}
+        {html:buildResultRows("D76", $labels:D76, $labels:D76_SHORT, $D76invalid, "aqd:AQD_Sample/aqd:inspireId/base:Identifier/base:localId", "All attributes are valid", " invalid attribute","",$errors:WARNING)}
+        {html:buildResultRows("D77", $labels:D77, $labels:D77_SHORT, $D77invalid, "aqd:AQD_Sample/aqd:inspireId/base:Identifier/base:localId", "All attributes are valid", " invalid attribute","",$errors:WARNING)}
+        {html:buildResultRows("D78", $labels:D78, $labels:D78_SHORT, $D78invalid, "aqd:AQD_Sample/@gml:id","All values are valid"," invalid attribute","", $errors:WARNING)}
+        {html:buildResultRows("D91", $labels:D91, $labels:D91_SHORT, $D91invalid, "", "All values are valid"," invalid attribute","", $errors:ERROR)}
+        {html:buildResultRows("D92", $labels:D92, $labels:D92_SHORT, $D92invalid, "", "All values are valid"," invalid attribute","", $errors:ERROR)}
+        {html:buildResultRows("D93", $labels:D93, $labels:D93_SHORT, $D93invalid, "", "All values are valid"," invalid attribute","", $errors:ERROR)}
+        {html:buildResultRows("D94", $labels:D94, $labels:D94_SHORT, $D94invalid, "", "All values are valid"," invalid attribute","", $errors:ERROR)}
         <!--{xmlconv:buildResultRowsWithTotalCount("D67", <span>The content of ./aqd:AQD_SamplingPoint/aqd:samplingEquipment shall resolve to any concept in
             <a href="{ $xmlconv:UOM_CONCENTRATION_VOCABULARY }">{ $xmlconv:UOM_CONCENTRATION_VOCABULARY }</a></span>,
                 (), (), "aqd:samplingEquipment", "", "", "",$allInvalid67 )} -->
