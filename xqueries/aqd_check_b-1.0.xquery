@@ -773,10 +773,10 @@ let $invalidZoneType := xmlconv:checkVocabularyConceptValues($source_url, "", "a
 
 return
     <table class="maintable hover">
-        {html:buildResultsSimpleRow("B1", $labels:B1, $labels:B1_SHORT, $countZones, "info")}
+        {html:buildResultsSimpleRow("B1", $labels:B1, $labels:B1_SHORT, $countZones, $errors:INFO)}
         {html:buildResultRows("B2", $labels:B2, $labels:B2_SHORT, $B2table, "", string(count($B2table)), "", "", $errors:ERROR)}
-        {html:buildResultsSimpleRow("B3", $labels:B3, $labels:B3_SHORT, $countZonesWithAmGeometry, "info")}
-        {html:buildResultsSimpleRow("B4", $labels:B4, $labels:B4_SHORT, $countZonesWithLAU, "info" )}
+        {html:buildResultsSimpleRow("B3", $labels:B3, $labels:B3_SHORT, $countZonesWithAmGeometry, $errors:INFO)}
+        {html:buildResultsSimpleRow("B4", $labels:B4, $labels:B4_SHORT, $countZonesWithLAU, $errors:INFO )}
         {html:buildResultRows("B6", $labels:B6, $labels:B6_SHORT, $B6table, "", string(count($B6table)), "", "", $errors:ERROR)}
         {html:buildResultRows("B7", $labels:B7, $labels:B7_SHORT, $B7table, "", string(count($B7table)), "", "", $errors:ERROR)}
         {html:buildCountRow("B8", $B8invalid, $labels:B8_SHORT, (), " duplicate", $errors:WARNING)}
