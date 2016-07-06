@@ -65,18 +65,15 @@ declare function xmlconv:replaceSourceUrl($url as xs:string, $url2 as xs:string)
         fn:concat(fn:substring-before($url, $xmlconv:SOURCE_URL_PARAM), $xmlconv:SOURCE_URL_PARAM, $url2)
     else
         $url2
-}
-;
+};
 
 (: Not documented in QA doc: count only XML files related to AQ e-Reporting :)
 declare function xmlconv:getAQFiles($url as xs:string)   {
-
     for $pn in fn:doc($url)//file[contains(@schema,'AirQualityReporting.xsd') and string-length(@link)>0]
     let $fileUrl := xmlconv:replaceSourceUrl($url, string($pn/@link))
     return
         $fileUrl
-}
-;
+};
 
 (: QA doc 2.1.3 Check for Reporting Header within an envelope :)
 declare function xmlconv:checkFileReportingHeader($envelope as node()*, $file as xs:string, $pos as xs:integer)

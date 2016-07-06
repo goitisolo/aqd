@@ -1619,7 +1619,6 @@ let $D94invalid :=
         </tr>
     }
 
-
 return
     <table class="maintable hover">
         {html:build1("D1", $labels:D1, $labels:D1_SHORT, $D1table, "", string(sum($DCombinations)), "", "",$errors:ERROR)}
