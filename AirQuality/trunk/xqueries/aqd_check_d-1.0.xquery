@@ -948,8 +948,7 @@ let $D44invalid :=
             let $id := concat(data($z/ef:inspireId/base:Identifier/base:namespace), '/',
                     data($z/ef:inspireId/base:Identifier/base:localId))
             return $id
-
-
+        
         for $x in $docRoot//aqd:AQD_SamplingPoint/ef:belongsTo
         where empty(index-of($aqdNetworkLocal, fn:normalize-space($x/@xlink:href)))
         return
@@ -968,6 +967,12 @@ let $D44invalid :=
 (: D44b :)
 let $D44binvalid :=
     try {
+        let $aqdNetworkLocal :=
+            for $z in $docRoot//aqd:AQD_Network
+            let $id := concat(data($z/ef:inspireId/base:Identifier/base:namespace), '/',
+                    data($z/ef:inspireId/base:Identifier/base:localId))
+            return $id
+
         for $x in $docRoot//aqd:AQD_Station/ef:belongsTo
         where empty(index-of($aqdNetworkLocal, fn:normalize-space($x/@xlink:href)))
         return
