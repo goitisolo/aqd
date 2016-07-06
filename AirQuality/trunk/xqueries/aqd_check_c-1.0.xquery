@@ -72,9 +72,9 @@ let $docRoot := doc($source_url)
 let $cdrUrl := common:getCdrUrl($countryCode)
 let $zonesUrl := concat($cdrUrl, $bDir)
 let $reportingYear := common:getReportingYear($docRoot)
-let $latestZonesUrl := query:getLatestZoneEnvelope($zonesUrl, $reportingYear)
+let $latestZones := query:getLatestZoneEnvelope($zonesUrl, $reportingYear)
 
-let $zoneIds := if (fn:string-length($countryCode) = 2) then distinct-values(data(sparqlx:executeSparqlQuery(query:getInspireId($latestZonesUrl))//sparql:binding[@name = 'inspireLabel']/sparql:literal)) else ()
+let $zoneIds := if ((fn:string-length($countryCode) = 2) and exists($latestZones)) then distinct-values(data(sparqlx:executeSparqlQuery(query:getInspireId($latestZones))//sparql:binding[@name = 'inspireLabel']/sparql:literal)) else ()
 let $countZoneIds1 := count($zoneIds)
 let $countZoneIds2 := count(distinct-values($docRoot//aqd:AQD_AssessmentRegime/aqd:zone/@xlink:href))
 
