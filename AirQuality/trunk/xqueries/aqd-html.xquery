@@ -12,7 +12,7 @@ import module namespace labels = "aqd-labels" at "aqd-labels.xquery";
 import module namespace errors = "aqd-errors" at "aqd-errors.xquery";
 
 declare function html:getHead() as element()* {  
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/foundation/6.2.3/foundation.min.css"></link>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/foundation/6.2.3/foundation.min.css">&#32;</link>
 };
 
 declare function html:getCSS() as element(style) {
