@@ -769,7 +769,15 @@ let $B46invalid :=
     }
 
 (: B47 :)
-let $invalidZoneType := xmlconv:checkVocabularyConceptValues($source_url, "", "aqd:AQD_Zone", "aqd:aqdZoneType", $vocabulary:ZONETYPE_VOCABULARY, (), "")
+let $B47invalid :=
+    try {
+        xmlconv:checkVocabularyConceptValues($source_url, "", "aqd:AQD_Zone", "aqd:aqdZoneType", $vocabulary:ZONETYPE_VOCABULARY, (), "")
+    } catch * {
+        <tr status="failed">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
 
 return
     <table class="maintable hover">
@@ -777,15 +785,15 @@ return
         {html:buildResultRows("B2", $labels:B2, $labels:B2_SHORT, $B2table, "", string(count($B2table)), "", "", $errors:ERROR)}
         {html:buildResultsSimpleRow("B3", $labels:B3, $labels:B3_SHORT, $countZonesWithAmGeometry, $errors:INFO)}
         {html:buildResultsSimpleRow("B4", $labels:B4, $labels:B4_SHORT, $countZonesWithLAU, $errors:INFO )}
-        {html:buildResultRows("B6", $labels:B6, $labels:B6_SHORT, $B6table, "", string(count($B6table)), "", "", $errors:ERROR)}
-        {html:buildResultRows("B7", $labels:B7, $labels:B7_SHORT, $B7table, "", string(count($B7table)), "", "", $errors:ERROR)}
+        {html:build0("B6", $labels:B6, $labels:B6_SHORT, $B6table, "", string(count($B6table)), "record")}
+        {html:build0("B7", $labels:B7, $labels:B7_SHORT, $B7table, "", string(count($B7table)), "record")}
         {html:buildCountRow("B8", $B8invalid, $labels:B8_SHORT, (), " duplicate", $errors:WARNING)}
         {html:buildConcatRow($duplicateGmlIds, "aqd:AQD_Zone/@gml:id - ")}
         {html:buildConcatRow($duplicateamInspireIds, "am:inspireId - ")}
         {html:buildConcatRow($duplicateaqdInspireIds, "aqd:inspireId - ")}
         {html:buildCountRow("B9", $B9invalid, $labels:B9_SHORT, (), (), ())}
         {html:buildConcatRow($duplicateAmInspireIds, "Duplicate base:namespace:base:localId - ")}
-        {html:buildResultRows("B10", $labels:B10, $labels:B10_SHORT, $B10table, "", string(count($B10table)), "", "", $errors:ERROR)}
+        {html:build0("B10", $labels:B10, $labels:B10_SHORT, $B10table, "", string(count($B10table)), "record")}
         {html:buildResultRows_B("B10.1", $labels:B10.1, $labels:B10.1_SHORT, $B10.1invalid, "base:Identifier/base:namespace", "All values are valid", " invalid namespaces", "", $errors:ERROR)}
         {html:buildResultRows_B("B13", $labels:B13, $labels:B13_SHORT, $B13invalid, "/aqd:AQD_Zone/am:name/gn:GeographicalName/gn:language", "All values are valid", " invalid value", $langSkippedMsg,$errors:WARNING)}
         {html:buildResultRows_B("B18", $labels:B18, $labels:B18_SHORT, $B18invalid, "aqd:AQD_Zone/@gml:id","All text are valid"," invalid attribute","", $errors:ERROR)}
@@ -813,7 +821,7 @@ return
         {html:buildResultTable("B43", $labels:B43, $labels:B43_SHORT, $B43invalid, "", "All values are valid", " crucial invalid value", "", $errors:ERROR)}
         {html:buildResultRows("B45", $labels:B45, $labels:B45_SHORT, $B45invalid, "aqd:AQD_Zone/am:inspireId/base:Identifier/base:localId", "All values are valid", " invalid value", "",$errors:WARNING)}
         {html:buildResultRows_B("B46", $labels:B46, $labels:B46_SHORT, $B46invalid, "aqd:AQD_Zone/am:inspireId/base:Identifier/base:localId", "All values are valid", " invalid value", "", $errors:ERROR)}
-        {xmlconv:buildResultRowsWithTotalCount("B47", $labels:B47, $labels:B47_SHORT, $invalidZoneType, "aqd:reportingMetric", "", "", "")}
+        {xmlconv:buildResultRowsWithTotalCount("B47", $labels:B47, $labels:B47_SHORT, $B47invalid, "aqd:reportingMetric", "", "", "")}
     </table>
 };
 
@@ -829,7 +837,7 @@ as element(tr)*{
     let $validMsg := if (count($invalidValues) = 0) then concat("Checked ", $countCheckedRecords, " value", substring("s", number(not($countCheckedRecords > 1)) * 2), ", all valid") else ""
 
     return
-        html:buildResultRows($ruleCode, $longText, $text, $records, $valueHeading, $validMsg, $invalidMsg, $skippedMsg, $errors:ERROR)
+        html:buildResultRows($ruleCode, $longText, $text, $invalidValues, $valueHeading, $validMsg, $invalidMsg, $skippedMsg, $errors:ERROR)
 };
 
 declare function xmlconv:checkVocabularyConceptValues($source_url as xs:string, $parentObject as xs:string, $featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string, $limitedIds as xs:string*, $vocabularyType as xs:string)

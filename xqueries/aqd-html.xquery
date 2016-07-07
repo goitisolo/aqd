@@ -12,7 +12,7 @@ import module namespace labels = "aqd-labels" at "aqd-labels.xquery";
 import module namespace errors = "aqd-errors" at "aqd-errors.xquery";
 
 declare function html:getHead() as element()* {  
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/foundation/6.2.3/foundation.min.css"/>    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/foundation/6.2.3/foundation.min.css"></link>
 };
 
 declare function html:getCSS() as element(style) {
@@ -168,7 +168,21 @@ declare function html:javaScriptRoot(){
     return
         <script type="text/javascript">{normalize-space($js)}</script>
 };
+declare function html:build0($ruleCode as xs:string, $longText, $text, $records as element(tr)*, $valueHeading as xs:string, $validMsg as xs:string, $unit as xs:string) {
+    let $countRecords := count($records)
+    let $bulletType :=
+        if (count($records) = 0) then
+            $errors:SKIPPED
+        else
+            $errors:INFO
+    let $message :=
+        if ($bulletType = $errors:SKIPPED) then
+            "No records found"
+        else
+            $countRecords || " " || $unit || substring("s ", number(not($countRecords > 1)) * 2) || " found"
 
+        return html:buildGeneric($ruleCode, $longText, $text, $records, $valueHeading, $message, $unit, $bulletType)
+};
 declare function html:build1($ruleCode as xs:string, $longText, $text, $records as element(tr)*, $valueHeading as xs:string, $validMsg as xs:string, $unit as xs:string, $skippedMsg, $errorLevel as xs:string) as element(tr)* {
     let $countRecords := count($records)
     let $bulletType :=
@@ -185,7 +199,7 @@ declare function html:build1($ruleCode as xs:string, $longText, $text, $records 
             $validMsg
         else
             $countRecords || " " || $unit || " found"
-    return html:buildGeneric($ruleCode, $longText, $text, $records, $valueHeading, $validMsg, $unit, $skippedMsg, $errorLevel, $bulletType)
+    return html:buildGeneric($ruleCode, $longText, $text, $records, $valueHeading, $validMsg, $unit, $bulletType)
 };
 declare function html:build2($ruleCode as xs:string, $longText, $text, $records as element(tr)*, $valueHeading as xs:string, $validMsg as xs:string, $unit as xs:string, $skippedMsg, $errorLevel as xs:string) as element(tr)* {
     let $countRecords := count($records)
@@ -203,7 +217,7 @@ declare function html:build2($ruleCode as xs:string, $longText, $text, $records 
             $validMsg
         else
             $countRecords || " " || $unit || substring("s ", number(not($countRecords > 1)) * 2) || " found"
-    return html:buildGeneric($ruleCode, $longText, $text, $records, $valueHeading, $message, $unit, $skippedMsg, $errorLevel, $bulletType)
+    return html:buildGeneric($ruleCode, $longText, $text, $records, $valueHeading, $message, $unit, $bulletType)
 };
 declare function html:build9($ruleCode as xs:string, $longText, $text, $records as element(tr)*, $valueHeading as xs:string, $validMsg as xs:string, $unit as xs:string, $skippedMsg, $errorLevel as xs:string) as element(tr)* {
     let $countRecords := count($records)
@@ -223,7 +237,7 @@ declare function html:build9($ruleCode as xs:string, $longText, $text, $records 
         else
             $validMsg
 
-    return html:buildGeneric($ruleCode, $longText, $text, $records, $valueHeading, $validMsg, $unit, $skippedMsg, $errorLevel, $bulletType)
+    return html:buildGeneric($ruleCode, $longText, $text, $records, $valueHeading, $validMsg, $unit, $bulletType)
 };
 declare function html:build7($ruleCode as xs:string, $longText, $text, $records as element(tr)*, $valueHeading as xs:string, $validMsg as xs:string, $unit as xs:string, $skippedMsg, $errorLevel as xs:string) as element(tr)* {
     let $countRecords := count($records)
@@ -245,7 +259,7 @@ declare function html:build7($ruleCode as xs:string, $longText, $text, $records 
         else
             "unknown error"
 
-    return html:buildGeneric($ruleCode, $longText, $text, $records, $valueHeading, $validMsg, $unit, $skippedMsg, $errorLevel, $bulletType)
+    return html:buildGeneric($ruleCode, $longText, $text, $records, $valueHeading, $validMsg, $unit, $bulletType)
 };
 
 (: Deprecated, remove after migration :)
@@ -255,7 +269,7 @@ declare function html:buildResultRows($ruleCode as xs:string, $longText, $text, 
 
 (: Builds HTML table rows for rules. :)
 declare %private function html:buildGeneric($ruleCode as xs:string, $longText, $text, $records as element(tr)*,
-        $valueHeading as xs:string, $message as xs:string, $unit as xs:string, $skippedMsg, $errorLevel as xs:string, $bulletType as xs:string) as element(tr)* {
+        $valueHeading as xs:string, $message as xs:string, $unit as xs:string, $bulletType as xs:string) as element(tr)* {
     let $countRecords := count($records)
     let $result :=
         (
