@@ -1619,7 +1619,7 @@ let $D94invalid :=
 
 return
     <table class="maintable hover">
-        {html:build1("D1", $labels:D1, $labels:D1_SHORT, $D1table, "", string(sum($DCombinations)), "", "",$errors:ERROR)}
+        {html:build1("D1", $labels:D1, $labels:D1_SHORT, $D1table, "", string(sum($countFeatureTypes)), "", "",$errors:ERROR)}
         {html:build1("D2", $labels:D2, $labels:D2_SHORT, $D2table, "", "", "", "",$errors:ERROR)}
         {html:build1("D3", $labels:D3, $labels:D3_SHORT, $D3table, string(count($D3table)), "", "", "",$errors:ERROR)}
         {html:build1("D4", $labels:D4, $labels:D4_SHORT, $D4table, string(count($D4table)), "", "", "",$errors:ERROR)}
