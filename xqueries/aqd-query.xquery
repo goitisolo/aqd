@@ -25,11 +25,31 @@ declare function query:getZoneIdsByReportingYear($countryCode as xs:string, $rep
               ?inspireId rdfs:label ?inspireLabel .
               ?inspireId aqd:localId ?localId .
               ?zone aqd:residentPopulationYear ?yearElement .
-              ?yearElement rdfs:label ?reportingYear.
+              ?yearElement rdfs:label ?reportingYear .
               FILTER(CONTAINS(str(?zone), '" || common:getCdrUrl($countryCode) || "'))
               FILTER(str(?reportingYear) = '" || $reportingYear || "')
        }"
 
+  return distinct-values(sparqlx:executeSparqlQuery($query)//sparql:binding[@name = 'inspireLabel']/sparql:literal/string())
+};
+
+declare function query:getRegimeIdsByReportingYear($countryCode as xs:string, $reportingYear as xs:string) as xs:string* {
+  let $query := "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+        PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
+        PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+
+       SELECT ?inspireLabel
+       WHERE {
+              ?regime a aqd:AQD_AssessmentRegime ;
+              aqd:inspireId ?inspireId .
+              ?inspireId rdfs:label ?inspireLabel .
+              ?inspireId aqd:localId ?localId .
+              ?regime aqd:assessmentThreshold ?threshold .
+              ?threshold aqd:classificationDate ?classificationDate .
+              ?classificationDate rdfs:label ?reportingYear .
+              FILTER(CONTAINS(str(?regime), '" || common:getCdrUrl($countryCode) || "'))
+              FILTER(str(?reportingYear) = '" || $reportingYear || "')
+       }"
   return distinct-values(sparqlx:executeSparqlQuery($query)//sparql:binding[@name = 'inspireLabel']/sparql:literal/string())
 };
 
