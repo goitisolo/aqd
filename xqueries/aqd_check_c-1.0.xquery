@@ -63,6 +63,7 @@ declare variable $xmlconv:VALID_POLLUTANT_IDS_40 as xs:string* := ($xmlconv:MAND
 '451','443','316','441','475','449','21','431','464','482','6011','6012','32','25':)
 
 declare variable $xmlconv:VALID_POLLUTANT_IDS_21 as xs:string* := ("1","8","9","10","5","6001","5014","5018","5015","5029","5012","20");
+declare variable $xmlconv:OBLIGATIONS as xs:string* := ("http://rod.eionet.europa.eu/obligations/671", "http://rod.eionet.europa.eu/obligations/694");
 (: Rule implementations :)
 declare function xmlconv:checkReport($source_url as xs:string, $countryCode as xs:string, $bDir as xs:string) as element(table) {
 
@@ -81,19 +82,20 @@ let $countZoneIds2 := count(distinct-values($docRoot//aqd:AQD_AssessmentRegime/a
 (: C0 :)
 let $C0invalid :=
     try {
-        let $knownRegimes := query:getRegimeIdsByReportingYear($countryCode, $reportingYear)
-        for $x in $docRoot//aqd:AQD_AssessmentRegime[concat(aqd:inspireId/base:Identifier/base:namespace, "/", aqd:inspireId/base:Identifier/base:localId) = $knownRegimes]
-        return
+        if (query:deliveryExists($xmlconv:OBLIGATIONS, $countryCode, $reportingYear)) then
             <tr>
-                <td title="base:namespace">{$x/aqd:inspireId/base:Identifier/base:namespace/string()}</td>
-                <td title="base:localId">{$x/aqd:inspireId/base:Identifier/base:localId/string()}</td>
+                <td title="base:localId">{$docRoot//aqd:AQD_ReportingHeader/aqd:inspireId/base:Identifier/base:namespace/string()}</td>
+                <td title="base:localId">{$docRoot//aqd:AQD_ReportingHeader/aqd:inspireId/base:Identifier/base:localId/string()}</td>
             </tr>
+        else
+            ()
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+
 (: C1 :)
 let $C1table :=
     try {
@@ -1008,7 +1010,7 @@ let $C42invalid :=
 
 return
     <table class="maintable hover">
-        {html:build2("C0", $labels:C0, $labels:C0_SHORT, $C0invalid, "", string(count($C0invalid)), "record", "", $errors:WARNING)}
+        {html:buildExists("C0", $labels:C0, $labels:C0_SHORT, $C0invalid, "", "Delivery is unique", "record", $errors:WARNING)}
         {html:buildResultRows("C1", $labels:C1, $labels:C1_SHORT, $C1table, "", string(count($C1table)), "", "", $errors:WARNING)}
         {html:buildResultRows("C4", $labels:C4, $labels:C4_SHORT, $C4invalid, "@gml:id", "No duplicates found", " duplicate", "",$errors:ERROR)}
         {html:buildResultRows("C5", $labels:C5, $labels:C5_SHORT, $C5invalid, "base:localId", "No duplicates found", " duplicate", "",$errors:ERROR)}

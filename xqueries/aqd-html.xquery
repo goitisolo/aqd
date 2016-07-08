@@ -168,6 +168,28 @@ declare function html:javaScriptRoot(){
     return
         <script type="text/javascript">{normalize-space($js)}</script>
 };
+declare function html:buildExists($ruleCode as xs:string, $longText, $text, $records as element(tr)*, $valueHeading as xs:string, $validMsg as xs:string, $unit as xs:string, $errorLevel as xs:string) {
+    let $countRecords := count($records)
+    let $bulletType :=
+        if (count($records) = 0) then
+            $errors:INFO
+        else
+            $errorLevel
+    let $message :=
+        if ($bulletType = $errors:INFO) then
+            $validMsg
+        else
+            $countRecords || " " || $unit || substring("s ", number(not($countRecords > 1)) * 2) || " found"
+
+    let $result :=
+        <tr>
+            <td class="bullet">{html:getBullet($ruleCode, $bulletType)}</td>
+            <th colspan="2">{$text} {html:getModalInfo($ruleCode, $longText)}</th>
+            <td><span class="largeText">{$message}</span></td>
+        </tr>
+
+    return $result
+};
 declare function html:build0($ruleCode as xs:string, $longText, $text, $records as element(tr)*, $valueHeading as xs:string, $validMsg as xs:string, $unit as xs:string) {
     let $countRecords := count($records)
     let $bulletType :=
@@ -236,8 +258,7 @@ declare function html:build9($ruleCode as xs:string, $longText, $text, $records 
             $countInvalid || " " || $unit || substring("s ", number(not($countRecords > 1)) * 2) || " found"
         else
             $validMsg
-
-    return html:buildGeneric($ruleCode, $longText, $text, $records, $valueHeading, $validMsg, $unit, $bulletType)
+    return html:buildGeneric($ruleCode, $longText, $text, $records, $valueHeading, $message, $unit, $bulletType)
 };
 declare function html:build7($ruleCode as xs:string, $longText, $text, $records as element(tr)*, $valueHeading as xs:string, $validMsg as xs:string, $unit as xs:string, $skippedMsg, $errorLevel as xs:string) as element(tr)* {
     let $countRecords := count($records)
