@@ -45,8 +45,28 @@ declare function xmlconv:checkReport($source_url as xs:string, $countryCode as x
 
 let $envelopeUrl := common:getEnvelopeXML($source_url)
 let $docRoot := doc($source_url)
+let $reportingYear := common:getReportingYear($docRoot)
+let $countryCode := common:getCountryCode()
 let $nameSpaces := distinct-values($docRoot//base:namespace)
 let $zonesNamespaces := distinct-values($docRoot//aqd:AQD_Zone/am:inspireId/base:Identifier/base:namespace)
+
+(: B0 :)
+let $B0invalid :=
+    try {
+        let $knownZones := query:getZoneIdsByReportingYear($countryCode, $reportingYear)
+        for $x in $docRoot//aqd:AQD_Zone[concat(am:inspireId/base:Identifier/base:namespace, "/", am:inspireId/base:Identifier/base:localId) = $knownZones]
+        return
+            <tr>
+                <td title="base:namespace">{$x/am:inspireId/base:Identifier/base:namespace/string()}</td>
+                <td title="base:localId">{$x/am:inspireId/base:Identifier/base:localId/string()}</td>
+            </tr>
+    } catch * {
+        <tr status="failed">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
+
 (: B1 :)
 let $countZones := count($docRoot//aqd:AQD_Zone)
 
@@ -781,6 +801,7 @@ let $B47invalid :=
 
 return
     <table class="maintable hover">
+        {html:build2("B0", $labels:B0, $labels:B0_SHORT, $B0invalid, "", string(count($B0invalid)), "record", "", $errors:WARNING)}
         {html:buildResultsSimpleRow("B1", $labels:B1, $labels:B1_SHORT, $countZones, $errors:INFO)}
         {html:buildResultRows("B2", $labels:B2, $labels:B2_SHORT, $B2table, "", string(count($B2table)), "", "", $errors:ERROR)}
         {html:buildResultsSimpleRow("B3", $labels:B3, $labels:B3_SHORT, $countZonesWithAmGeometry, $errors:INFO)}

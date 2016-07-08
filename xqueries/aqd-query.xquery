@@ -9,9 +9,31 @@ xquery version "3.0";
 
 module namespace query = "aqd-query";
 import module namespace sparqlx = "aqd-sparql" at "aqd-sparql.xquery";
+import module namespace common = "aqd-common" at "aqd_check_common.xquery";
 declare namespace sparql = "http://www.w3.org/2005/sparql-results#";
 
-(: B - remove comment after migration :)
+(: Generic queries :)
+declare function query:getZoneIdsByReportingYear($countryCode as xs:string, $reportingYear as xs:string) as xs:string* {
+  let $query := "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+        PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
+        PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+
+       SELECT ?inspireLabel
+       WHERE {
+              ?zone a aqd:AQD_Zone ;
+              aqd:inspireId ?inspireId .
+              ?inspireId rdfs:label ?inspireLabel .
+              ?inspireId aqd:localId ?localId .
+              ?zone aqd:residentPopulationYear ?yearElement .
+              ?yearElement rdfs:label ?reportingYear.
+              FILTER(CONTAINS(str(?zone), '" || common:getCdrUrl($countryCode) || "'))
+              FILTER(str(?reportingYear) = '" || $reportingYear || "')
+       }"
+
+  return distinct-values(sparqlx:executeSparqlQuery($query)//sparql:binding[@name = 'inspireLabel']/sparql:literal/string())
+};
+
+(: B :)
 declare function query:getNutsSparql($countryCode as xs:string) as xs:string {
   concat("PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
     SELECT ?concepturl ?label ?code
