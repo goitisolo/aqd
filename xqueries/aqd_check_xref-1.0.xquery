@@ -27,7 +27,7 @@ import module namespace sparqlx = "aqd-sparql" at "aqd-sparql.xquery";
 import module namespace labels = "aqd-labels" at "aqd-labels.xquery";
 import module namespace html = "aqd-html" at "aqd-html.xquery";
 
-
+declare option db:inlinelimit '0';
 declare variable $xmlconv:DATAFLOW_D_OBLIGATION := "http://rod.eionet.europa.eu/obligations/672";
 declare variable $source_url as xs:string external;
 
