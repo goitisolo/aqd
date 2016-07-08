@@ -604,7 +604,25 @@ declare function html:buildConcatRow($elems, $header as xs:string) as element(tr
     else
         ()
 };
-
+declare function html:buildCountRow0($ruleCode as xs:string, $count as xs:integer, $header as xs:string, $validMessage as xs:string?, $unit as xs:string?, $errorClass as xs:string?) as element(tr) {
+    let $errorClsas :=
+        if ($count > 0) then
+            $errors:INFO
+        else if (empty($errorClass)) then $errors:ERROR
+        else $errorClass
+    let $validMessage := if (empty($validMessage)) then "All Ids are unique" else $validMessage
+    let $message :=
+        if ($count = 0) then
+            $validMessage
+        else
+            $count || $unit || substring("s ", number(not($count > 1)) * 2) || "found"
+    return
+        <tr>
+            <td class="bullet">{html:getBullet($ruleCode, $errorClsas)}</td>
+            <th colspan="2">{$header}</th>
+            <td class="largeText">{$message}</td>
+        </tr>
+};
 declare function html:buildCountRow($ruleCode as xs:string, $count as xs:integer, $header as xs:string, $validMessage as xs:string?, $unit as xs:string?, $errorClass as xs:string?) as element(tr) {
     let $class :=
         if ($count = 0) then

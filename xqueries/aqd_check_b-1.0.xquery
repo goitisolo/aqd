@@ -802,7 +802,7 @@ let $B47invalid :=
 return
     <table class="maintable hover">
         {html:buildExists("B0", $labels:B0, $labels:B0_SHORT, $B0invalid, "", "Delivery is unique", "record", $errors:WARNING)}
-        {html:buildResultsSimpleRow("B1", $labels:B1, $labels:B1_SHORT, $countZones, $errors:INFO)}
+        {html:buildCountRow0("B1", $labels:B1, $labels:B1_SHORT, $countZones, $errors:INFO)}
         {html:buildResultRows("B2", $labels:B2, $labels:B2_SHORT, $B2table, "", string(count($B2table)), "", "", $errors:ERROR)}
         {html:buildResultsSimpleRow("B3", $labels:B3, $labels:B3_SHORT, $countZonesWithAmGeometry, $errors:INFO)}
         {html:buildResultsSimpleRow("B4", $labels:B4, $labels:B4_SHORT, $countZonesWithLAU, $errors:INFO )}
