@@ -62,6 +62,7 @@ declare variable $xmlconv:VALID_ASSESSMENTTYPE_IDS as xs:string* := ("fixed","mo
 declare variable $xmlconv:VALID_PROTECTIONTARGET_IDS as xs:string* := ("H-S1","H-S2");
 
 declare variable $xmlconv:ADJUSTMENTTYPES as xs:string* := ("http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/noneApplied","http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/noneApplicable", "http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/fullyCorrected");
+declare variable $xmlconv:OBLIGATIONS as xs:string* := ("http://rod.eionet.europa.eu/obligations/679");
 
 (: Rule implementations :)
 declare function xmlconv:checkReport($source_url as xs:string, $countryCode as xs:string) as element(table) {
@@ -92,6 +93,22 @@ let $samplingPointAssessmentMetadata :=
             for $i in $results
             return concat($i/sparql:binding[@name='metadataNamespace']/sparql:literal,"/", $i/sparql:binding[@name='metadataId']/sparql:literal)
     )
+(: G0 :)
+let $G0invalid :=
+    try {
+        if (query:deliveryExists($xmlconv:OBLIGATIONS, $countryCode, $reportingYear)) then
+            <tr>
+                <td title="base:localId">{$docRoot//aqd:AQD_ReportingHeader/aqd:inspireId/base:Identifier/base:namespace/string()}</td>
+                <td title="base:localId">{$docRoot//aqd:AQD_ReportingHeader/aqd:inspireId/base:Identifier/base:localId/string()}</td>
+            </tr>
+        else
+            ()
+    } catch * {
+        <tr status="failed">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
 
 (: G1 :)
 let $countAttainments := count($docRoot//aqd:AQD_Attainment)
@@ -1477,6 +1494,7 @@ let $G86invalid :=
 
 return
     <table class="maintable hover">
+        {html:buildExists("G0", $labels:G0, $labels:G0_SHORT, $G0invalid, "", "Delivery is unique", "record", $errors:WARNING)}
         {html:buildResultRows("G1", $labels:G1, $labels:G1_SHORT, $tblAllAttainments, "", string($countAttainments), "", "",$errors:ERROR)}
         {html:buildResultRows("G2", $labels:G2, $labels:G2_SHORT, $G2table, "", string(count($G2table)), "", "",$errors:ERROR)}
         {html:buildResultRows("G3", $labels:G3, $labels:G3_SHORT, $G3table, "", string(count($G3table)), "", "",$errors:ERROR)}
