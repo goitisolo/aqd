@@ -78,6 +78,22 @@ let $zoneIds := if ((fn:string-length($countryCode) = 2) and exists($latestZones
 let $countZoneIds1 := count($zoneIds)
 let $countZoneIds2 := count(distinct-values($docRoot//aqd:AQD_AssessmentRegime/aqd:zone/@xlink:href))
 
+(: C0 :)
+let $C0invalid :=
+    try {
+        let $knownRegimes := query:getRegimeIdsByReportingYear($countryCode, $reportingYear)
+        for $x in $docRoot//aqd:AQD_AssessmentRegime[concat(aqd:inspireId/base:Identifier/base:namespace, "/", aqd:inspireId/base:Identifier/base:localId) = $knownRegimes]
+        return
+            <tr>
+                <td title="base:namespace">{$x/aqd:inspireId/base:Identifier/base:namespace/string()}</td>
+                <td title="base:localId">{$x/aqd:inspireId/base:Identifier/base:localId/string()}</td>
+            </tr>
+    } catch * {
+        <tr status="failed">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
 (: C1 :)
 let $C1table :=
     try {
@@ -992,6 +1008,7 @@ let $C42invalid :=
 
 return
     <table class="maintable hover">
+        {html:build2("C0", $labels:C0, $labels:C0_SHORT, $C0invalid, "", string(count($C0invalid)), "record", "", $errors:WARNING)}
         {html:buildResultRows("C1", $labels:C1, $labels:C1_SHORT, $C1table, "", string(count($C1table)), "", "", $errors:WARNING)}
         {html:buildResultRows("C4", $labels:C4, $labels:C4_SHORT, $C4invalid, "@gml:id", "No duplicates found", " duplicate", "",$errors:ERROR)}
         {html:buildResultRows("C5", $labels:C5, $labels:C5_SHORT, $C5invalid, "base:localId", "No duplicates found", " duplicate", "",$errors:ERROR)}
