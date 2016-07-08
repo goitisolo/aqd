@@ -45,11 +45,14 @@ declare variable $xmlconv:ISO2_CODES as xs:string* := ("AL", "AD", "AT","BA","BE
 
 declare variable $xmlconv:FEATURE_TYPES := ("aqd:AQD_Network", "aqd:AQD_Station", "aqd:AQD_SamplingPointProcess", "aqd:AQD_Sample",
 "aqd:AQD_RepresentativeArea", "aqd:AQD_SamplingPoint");
+declare variable $xmlconv:OBLIGATIONS as xs:string* := ("http://rod.eionet.europa.eu/obligations/672");
 
 (: Rule implementations :)
 declare function xmlconv:checkReport($source_url as xs:string, $countryCode as xs:string) as element(table) {
 
 let $docRoot := doc($source_url)
+let $reportingYear := common:getReportingYear($docRoot)
+
 (: COMMON variables used in many QCs :)
 let $countFeatureTypes :=
     for $featureType in $xmlconv:FEATURE_TYPES
@@ -66,6 +69,23 @@ let $SPPnamespaces := distinct-values($docRoot//aqd:AQD_SamplingPointProcess/omp
 let $networkNamespaces := distinct-values($docRoot//aqd:AQD_Network/ef:inspireId/base:Identifier/base:namespace)
 let $sampleNamespaces := distinct-values($docRoot//aqd:AQD_Sample/aqd:inspireId/base:Identifier/base:namespace)
 let $stationNamespaces := distinct-values($docRoot//aqd:AQD_Station/ef:inspireId/base:Identifier/base:namespace)
+
+(: D0 :)
+let $D0invalid :=
+    try {
+        if (query:deliveryExists($xmlconv:OBLIGATIONS, $countryCode, $reportingYear)) then
+            <tr>
+                <td title="base:localId">{$docRoot//aqd:AQD_ReportingHeader/aqd:inspireId/base:Identifier/base:namespace/string()}</td>
+                <td title="base:localId">{$docRoot//aqd:AQD_ReportingHeader/aqd:inspireId/base:Identifier/base:localId/string()}</td>
+            </tr>
+        else
+            ()
+    } catch * {
+        <tr status="failed">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
 
 (: D1 :)
 let $D1table :=
@@ -1619,6 +1639,7 @@ let $D94invalid :=
 
 return
     <table class="maintable hover">
+        {html:buildExists("D0", $labels:D0, $labels:D0_SHORT, $D0invalid, "", "Delivery is unique", "record", $errors:WARNING)}
         {html:build1("D1", $labels:D1, $labels:D1_SHORT, $D1table, "", string(sum($countFeatureTypes)), "", "",$errors:ERROR)}
         {html:build1("D2", $labels:D2, $labels:D2_SHORT, $D2table, "", "", "", "",$errors:ERROR)}
         {html:build1("D3", $labels:D3, $labels:D3_SHORT, $D3table, string(count($D3table)), "", "", "",$errors:ERROR)}

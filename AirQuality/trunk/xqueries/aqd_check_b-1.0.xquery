@@ -39,6 +39,7 @@ declare variable $xmlconv:invalidCount as xs:integer := 0;
 declare variable $xmlconv:ISO2_CODES as xs:string* := ("AL","AT","BA","BE","BG","CH","CY","CZ","DE","DK","DZ","EE","EG","ES","FI",
     "FR","GB","GR","HR","HU","IE","IL","IS","IT","JO","LB","LI","LT","LU","LV","MA","ME","MK","MT","NL","NO","PL","PS","PT",
      "RO","RS","SE","SI","SK","TN","TR","XK","UK");
+declare variable $xmlconv:OBLIGATIONS as xs:string* := ("http://rod.eionet.europa.eu/obligations/670", "http://rod.eionet.europa.eu/obligations/693");
 
 (: Rule implementations :)
 declare function xmlconv:checkReport($source_url as xs:string, $countryCode as xs:string) as element(table) {
@@ -46,20 +47,19 @@ declare function xmlconv:checkReport($source_url as xs:string, $countryCode as x
 let $envelopeUrl := common:getEnvelopeXML($source_url)
 let $docRoot := doc($source_url)
 let $reportingYear := common:getReportingYear($docRoot)
-let $countryCode := common:getCountryCode($source_url)
 let $nameSpaces := distinct-values($docRoot//base:namespace)
 let $zonesNamespaces := distinct-values($docRoot//aqd:AQD_Zone/am:inspireId/base:Identifier/base:namespace)
 
 (: B0 :)
 let $B0invalid :=
     try {
-        let $knownZones := query:getZoneIdsByReportingYear($countryCode, $reportingYear)
-        for $x in $docRoot//aqd:AQD_Zone[concat(am:inspireId/base:Identifier/base:namespace, "/", am:inspireId/base:Identifier/base:localId) = $knownZones]
-        return
+        if (query:deliveryExists($xmlconv:OBLIGATIONS, $countryCode, $reportingYear)) then
             <tr>
-                <td title="base:namespace">{$x/am:inspireId/base:Identifier/base:namespace/string()}</td>
-                <td title="base:localId">{$x/am:inspireId/base:Identifier/base:localId/string()}</td>
+                <td title="base:localId">{$docRoot//aqd:AQD_ReportingHeader/aqd:inspireId/base:Identifier/base:namespace/string()}</td>
+                <td title="base:localId">{$docRoot//aqd:AQD_ReportingHeader/aqd:inspireId/base:Identifier/base:localId/string()}</td>
             </tr>
+        else
+            ()
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
@@ -801,7 +801,7 @@ let $B47invalid :=
 
 return
     <table class="maintable hover">
-        {html:build2("B0", $labels:B0, $labels:B0_SHORT, $B0invalid, "", string(count($B0invalid)), "record", "", $errors:WARNING)}
+        {html:buildExists("B0", $labels:B0, $labels:B0_SHORT, $B0invalid, "", "Delivery is unique", "record", $errors:WARNING)}
         {html:buildResultsSimpleRow("B1", $labels:B1, $labels:B1_SHORT, $countZones, $errors:INFO)}
         {html:buildResultRows("B2", $labels:B2, $labels:B2_SHORT, $B2table, "", string(count($B2table)), "", "", $errors:ERROR)}
         {html:buildResultsSimpleRow("B3", $labels:B3, $labels:B3_SHORT, $countZonesWithAmGeometry, $errors:INFO)}

@@ -13,6 +13,23 @@ import module namespace common = "aqd-common" at "aqd_check_common.xquery";
 declare namespace sparql = "http://www.w3.org/2005/sparql-results#";
 
 (: Generic queries :)
+declare function query:deliveryExists($obligations as xs:string*, $countryCode as xs:string, $reportingYear as xs:string) as xs:boolean {
+  let $query :=
+    "PREFIX aqd: <http://rod.eionet.europa.eu/schema.rdf#>
+       SELECT ?envelope
+       WHERE {
+          ?envelope a aqd:Delivery ;
+          aqd:obligation ?obligation ;
+          aqd:released ?date ;
+          aqd:hasFile ?file ;
+          aqd:period ?period
+          FILTER(str(?obligation) in ('" || string-join($obligations, "','") || "'))
+          FILTER(CONTAINS(str(?envelope), '" || common:getCdrUrl($countryCode) || "'))
+          FILTER(STRSTARTS(str(?period), '" || $reportingYear || "'))
+       }"
+   return count(sparqlx:executeSparqlQuery($query)//sparql:binding[@name = 'envelope']/sparql:uri) > 0
+};
+
 declare function query:getZoneIdsByReportingYear($countryCode as xs:string, $reportingYear as xs:string) as xs:string* {
   let $query := "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
         PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
