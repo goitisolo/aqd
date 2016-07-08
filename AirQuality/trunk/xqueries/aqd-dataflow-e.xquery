@@ -27,12 +27,30 @@ declare namespace xlink = "http://www.w3.org/1999/xlink";
 declare namespace ompr = "http://inspire.ec.europa.eu/schemas/ompr/2.0";
 declare namespace om = "http://www.opengis.net/om/2.0";
 declare namespace swe = "http://www.opengis.net/swe/2.0";
-
+declare variable $xmlconv:OBLIGATIONS as xs:string* := ("http://rod.eionet.europa.eu/obligations/673");
 declare function xmlconv:checkReport($source_url as xs:string, $countryCode as xs:string) as element(table) {
 
 let $envelopeUrl := common:getEnvelopeXML($source_url)
 let $docRoot := doc($source_url)
+let $reportingYear := common:getReportingYear($docRoot)
 let $cdrUrl := common:getCdrUrl($countryCode)
+
+(: E0 :)
+let $E0invalid :=
+    try {
+        if (query:deliveryExists($xmlconv:OBLIGATIONS, $countryCode, $reportingYear)) then
+            <tr>
+                <td title="base:localId">{$docRoot//aqd:AQD_ReportingHeader/aqd:inspireId/base:Identifier/base:namespace/string()}</td>
+                <td title="base:localId">{$docRoot//aqd:AQD_ReportingHeader/aqd:inspireId/base:Identifier/base:localId/string()}</td>
+            </tr>
+        else
+            ()
+    } catch * {
+        <tr status="failed">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
 
 (: E1 - /om:OM_Observation gml:id attribute shall be unique code for the group of observations enclosed by /OM_Observation within the delivery. :)
 let $E1invalid :=
@@ -392,6 +410,7 @@ let $E26invalid :=
 
 return
     <table class="maintable hover">
+        {html:buildExists("E0", $labels:E0, $labels:E0_SHORT, $E0invalid, "", "Delivery is unique", "record", $errors:WARNING)}
         {html:build2("E1", $labels:E1, $labels:E1_SHORT, $E1invalid, "", "All records are valid", "record", "", $errors:ERROR)}
         {html:build2("E2", $labels:E2, $labels:E2_SHORT, $E2invalid, "", "All records are valid", "record", "", $errors:ERROR)}
         {html:build2("E3", $labels:E3, $labels:E3_SHORT, $E3invalid, "", "All records are valid", "record", "", $errors:ERROR)}

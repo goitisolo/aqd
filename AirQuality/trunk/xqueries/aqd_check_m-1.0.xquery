@@ -38,10 +38,12 @@ declare variable $xmlconv:ISO2_CODES as xs:string* := ("AL","AT","BA","BE","BG",
      "RO","RS","SE","SI","SK","TN","TR","XK","UK");
 
 declare variable $xmlconv:FEATURE_TYPES := ("aqd:AQD_Model", "aqd:AQD_ModelProcess", "aqd:AQD_ModelArea");
+declare variable $xmlconv:OBLIGATIONS as xs:string* := ("http://rod.eionet.europa.eu/obligations/672");
 
 (: Rule implementations :)
 declare function xmlconv:checkReport($source_url as xs:string, $countryCode as xs:string) as element(table) {
 let $docRoot := doc($source_url)
+let $reportingYear := common:getReportingYear($docRoot)
 let $nameSpaces := distinct-values($docRoot//base:namespace)
 let $modelNamespaces := distinct-values($docRoot//aqd:AQD_Model/ef:inspireId/base:Identifier/base:namespace)
 let $modelProcessNamespaces := distinct-values($docRoot//aqd:AQD_ModelProcess/ompr:inspireld/base:Identifier/base:namespace)
@@ -50,6 +52,23 @@ let $MCombinations :=
     for $featureType in $xmlconv:FEATURE_TYPES
     return
         doc($source_url)//gml:featureMember/descendant::*[name()=$featureType]
+
+(: M0 :)
+let $M0invalid :=
+    try {
+        if (query:deliveryExists($xmlconv:OBLIGATIONS, $countryCode, $reportingYear)) then
+            <tr>
+                <td title="base:localId">{$docRoot//aqd:AQD_ReportingHeader/aqd:inspireId/base:Identifier/base:namespace/string()}</td>
+                <td title="base:localId">{$docRoot//aqd:AQD_ReportingHeader/aqd:inspireId/base:Identifier/base:localId/string()}</td>
+            </tr>
+        else
+            ()
+    } catch * {
+        <tr status="failed">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
 
 (: M1 :)
 let $countFeatureTypes :=
@@ -635,6 +654,7 @@ let $M43invalid :=
 
     return
     <table class="maintable hover">
+        {html:buildExists("M0", $labels:M0, $labels:M0_SHORT, $M0invalid, "", "Delivery is unique", "record", $errors:WARNING)}
         {html:buildResultRows("M1", $labels:M1, $labels:M1_SHORT, $M1table, "", string(sum($countFeatureTypes)), "", "",$errors:ERROR)}
         {html:buildResultRows("M2", $labels:M2, $labels:M2_SHORT, (), "", string(count($M2table)), "", "",$errors:ERROR)}
         {html:buildResultRows("M3", $labels:M3, $labels:M3_SHORT, (), "", string(count($M3table)), "", "",$errors:ERROR)}
