@@ -96,6 +96,24 @@ let $B2errorLevel :=
     else
         $errors:INFO
 
+(: B3 :)
+let $B3table :=
+    try {
+        for $zone in $docRoot//aqd:AQD_Zone
+        let $id := $zone/am:inspireId/base:Identifier/base:namespace || "/" || $zone/am:inspireId/base:Identifier/base:localId
+        where ($knownZones = $id)
+        return
+            <tr>
+                <td title="base:localId">{$zone/am:inspireId/base:Identifier/base:localId/string()}</td>
+                <td title="aqd:predecessor">{if (empty($zone/aqd:predecessor)) then "not specified" else $zone/aqd:predecessor/aqd:AQD_Zone/@gml:id}</td>
+            </tr>
+    } catch * {
+        <tr status="failed">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
+
 (: B4 :)
 let $B4table :=
     try {
@@ -807,6 +825,7 @@ return
         {html:buildExists("B0", $labels:B0, $labels:B0_SHORT, $B0invalid, "", "Delivery is unique", "record", $errors:WARNING)}
         {html:buildCountRow0("B1", $labels:B1, $labels:B1_SHORT, $countZones, "", "record", $errors:INFO)}
         {html:buildSimple("B2", $labels:B2, $labels:B2_SHORT, $B2table, "", "", "record", $B2errorLevel)}
+        {html:build0("B3", $labels:B3, $labels:B3_SHORT, $B3table, "", "", "record")}
         {html:build0("B4", $labels:B4, $labels:B4_SHORT, $B4table, "", string(count($B4table)), "record")}
         {html:buildResultsSimpleRow("B6a", $labels:B6a, $labels:B6a_SHORT, $countZonesWithAmGeometry, $errors:INFO)}
         {html:buildResultsSimpleRow("B6b", $labels:B6b, $labels:B6b_SHORT, $countZonesWithLAU, $errors:INFO )}
