@@ -328,8 +328,8 @@ concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 };
 :)
 
-(: Returns latest zones envelope for this country:)
-declare function query:getLatestZoneEnvelope($zonesUrl as xs:string, $reportingYear) as xs:string? {
+(: Returns latest report envelope for this country :)
+declare function query:getLatestEnvelope($url as xs:string, $reportingYear) as xs:string? {
   let $query := concat("PREFIX aqd: <http://rod.eionet.europa.eu/schema.rdf#>
   SELECT *
    WHERE {
@@ -337,12 +337,45 @@ declare function query:getLatestZoneEnvelope($zonesUrl as xs:string, $reportingY
         aqd:released ?date ;
         aqd:hasFile ?file ;
         aqd:period ?period
-        FILTER(CONTAINS(str(?envelope), '", $zonesUrl, "'))
+        FILTER(CONTAINS(str(?envelope), '", $url, "'))
         FILTER(STRSTARTS(str(?period), '", $reportingYear, "'))
   } order by desc(?date)
 limit 1")
   let $result := doc(sparqlx:getSparqlEndpointUrl($query, "xml"))//sparql:binding[@name='envelope']/sparql:uri
   return $result
+};
+
+declare function query:getLatestRegimeIds($latestEnvelopeUrl as xs:string) as xs:string {
+  let $query := "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+   PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
+   PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+   PREFIX aq: <http://reference.eionet.europa.eu/aq/ontology/>
+
+   SELECT ?inspireLabel
+   WHERE {
+        ?regime a aqd:AQD_AssessmentRegime ;
+        aqd:inspireId ?inspireId .
+        ?inspireId rdfs:label ?inspireLabel .
+   FILTER (CONTAINS(str(?zone), '" || $latestEnvelopeUrl || "'))
+  }"
+  return data(doc(sparqlx:executeSparqlQuery($query))//sparql:binding[@name='inspireLabel']/sparql:literal)
+};
+
+declare function query:getAllRegimeIds($namespaces as xs:string) as xs:string {
+  let $query := "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+   PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
+   PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+   PREFIX aq: <http://reference.eionet.europa.eu/aq/ontology/>
+
+   SELECT *
+   WHERE {
+        ?regime a aqd:AQD_AssessmentRegime ;
+        aqd:inspireId ?inspireId .
+        ?inspireId rdfs:label ?inspireLabel .
+        ?inspireId aqd:namespace ?namespace
+        FILTER(str(?namespace) in ('" || string-join($namespaces, "','") || "'))
+  }"
+  return data(doc(sparqlx:executeSparqlQuery($query))//sparql:binding[@name='inspireLabel']/sparql:literal)
 };
 
 declare function query:getInspireId($latestZonesUrl as xs:string)

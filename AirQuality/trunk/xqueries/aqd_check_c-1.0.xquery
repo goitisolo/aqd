@@ -73,11 +73,16 @@ let $docRoot := doc($source_url)
 let $cdrUrl := common:getCdrUrl($countryCode)
 let $zonesUrl := concat($cdrUrl, $bDir)
 let $reportingYear := common:getReportingYear($docRoot)
-let $latestZones := query:getLatestZoneEnvelope($zonesUrl, $reportingYear)
+let $latestZones := query:getLatestEnvelope($zonesUrl, $reportingYear)
+let $namespaces := distinct-values($docRoot//base:namespace)
 
 let $zoneIds := if ((fn:string-length($countryCode) = 2) and exists($latestZones)) then distinct-values(data(sparqlx:executeSparqlQuery(query:getInspireId($latestZones))//sparql:binding[@name = 'inspireLabel']/sparql:literal)) else ()
 let $countZoneIds1 := count($zoneIds)
 let $countZoneIds2 := count(distinct-values($docRoot//aqd:AQD_AssessmentRegime/aqd:zone/@xlink:href))
+
+let $latestCenvelope := query:getLatestEnvelope($cdrUrl || "c/", $reportingYear)
+let $knownRegimes := if (exists($latestCenvelope)) then query:getLatestRegimeIds($latestCenvelope) else ()
+let $allRegimes := query:getAllRegimeIds($namespaces)
 
 (: C0 :)
 let $C0invalid :=
@@ -116,6 +121,36 @@ let $C1table :=
         </tr>
     }
 
+(: C2 :)
+let $C2table :=
+    try {
+        for $x in $docRoot//aqd:AQD_AssessmentRegime
+        let $id := $x/aqd:inspireId/base:Identifier/base:namespace || "/" || $x/aqd:inspireId/base:Identifier/base:localId
+        where (not($knownRegimes = $id))
+        return
+            <tr>
+                <td title="gml:id">{data($x/@gml:id)}</td>
+                <td title="base:localId">{data($x/aqd:inspireId/base:Identifier/base:localId)}</td>
+                <td title="base:namespace">{data($x/aqd:inspireId/base:Identifier/base:namespace)}</td>
+                <td title="aqd:zone">{common:checkLink(data($x/aqd:zone/@xlink:href))}</td>
+                <td title="aqd:pollutant">{common:checkLink(data($x/aqd:pollutant/@xlink:href))}</td>
+                <td title="aqd:protectionTarget">{common:checkLink(data($x/aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/@xlink:href))}</td>
+            </tr>
+    } catch * {
+        <tr status="failed">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
+let $C2errorLevel :=
+    if (count(
+        for $x in $docRoot//aqd:AQD_AssessmentRegime
+        let $id := $x/aqd:inspireId/base:Identifier/base:namespace || "/" || $x/aqd:inspireId/base:Identifier/base:localId
+        where ($allRegimes = $id)
+        return 1) > 0) then
+            $errors:ERROR
+    else
+        $errors:INFO
 
 (: C4 - duplicate @gml:ids :)
 let $C4invalid :=
@@ -1012,6 +1047,7 @@ return
     <table class="maintable hover">
         {html:buildExists("C0", $labels:C0, $labels:C0_SHORT, $C0invalid, "", "Delivery is unique", "record", $errors:WARNING)}
         {html:buildResultRows("C1", $labels:C1, $labels:C1_SHORT, $C1table, "", string(count($C1table)), "", "", $errors:WARNING)}
+        {html:buildSimple("C2", $labels:C2, $labels:C2_SHORT, $C2table, "", string(count($C2table)), "record", $C2errorLevel)}
         {html:buildResultRows("C4", $labels:C4, $labels:C4_SHORT, $C4invalid, "@gml:id", "No duplicates found", " duplicate", "",$errors:ERROR)}
         {html:buildResultRows("C5", $labels:C5, $labels:C5_SHORT, $C5invalid, "base:localId", "No duplicates found", " duplicate", "",$errors:ERROR)}
         {html:buildResultRows("C6", $labels:C6, $labels:C6_SHORT, $C6table, "", string(count($C6table)), "", "",$errors:INFO)}

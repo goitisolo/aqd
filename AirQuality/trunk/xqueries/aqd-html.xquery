@@ -197,8 +197,8 @@ declare function html:buildSimple($ruleCode as xs:string, $longText, $text, $rec
             "No records found"
         else
             $countRecords || " " || $unit || substring("s ", number(not($countRecords > 1)) * 2) || " found"
-
-    return html:buildGeneric($ruleCode, $longText, $text, $records, $valueHeading, $message, $unit, $errorLevel)
+    let $bulletType := $errorLevel
+    return html:buildGeneric($ruleCode, $longText, $text, $records, $valueHeading, $message, $unit, $bulletType)
 };
 declare function html:build0($ruleCode as xs:string, $longText, $text, $records as element(tr)*, $valueHeading as xs:string, $validMsg as xs:string, $unit as xs:string) {
     let $countRecords := count($records)
