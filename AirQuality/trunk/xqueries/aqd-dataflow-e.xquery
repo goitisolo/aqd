@@ -52,6 +52,14 @@ let $E0invalid :=
         </tr>
     }
 
+(: E01 :)
+let $E01count :=
+    try {
+        count($docRoot//om:OM_Observation)
+    } catch * {
+        0
+    }
+
 (: E1 - /om:OM_Observation gml:id attribute shall be unique code for the group of observations enclosed by /OM_Observation within the delivery. :)
 let $E1invalid :=
     try {
@@ -411,6 +419,7 @@ let $E26invalid :=
 return
     <table class="maintable hover">
         {html:buildExists("E0", $labels:E0, $labels:E0_SHORT, $E0invalid, "", "Delivery is unique", "record", $errors:WARNING)}
+        {html:buildCountRow0("E01", $labels:E01, $labels:E01_SHORT, $E01count, "", "record", $errors:INFO)}
         {html:build2("E1", $labels:E1, $labels:E1_SHORT, $E1invalid, "", "All records are valid", "record", "", $errors:ERROR)}
         {html:build2("E2", $labels:E2, $labels:E2_SHORT, $E2invalid, "", "All records are valid", "record", "", $errors:ERROR)}
         {html:build2("E3", $labels:E3, $labels:E3_SHORT, $E3invalid, "", "All records are valid", "record", "", $errors:ERROR)}

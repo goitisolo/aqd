@@ -604,9 +604,28 @@ declare function html:buildConcatRow($elems, $header as xs:string) as element(tr
     else
         ()
 };
-declare function html:buildCountRow0($ruleCode as xs:string, $count as xs:integer, $header as xs:string, $validMessage as xs:string?, $unit as xs:string?, $errorClass as xs:string?) as element(tr) {
+declare function html:buildCountRow0($ruleCode as xs:string, $longText, $text, $count as xs:integer, $validMessage as xs:string?, $unit as xs:string?, $errorClass as xs:string?) as element(tr) {
     let $errorClsas :=
         if ($count > 0) then
+            $errors:INFO
+        else if (empty($errorClass)) then $errors:ERROR
+        else $errorClass
+    let $message :=
+        if ($count = 0) then
+            "No " || $unit || "s found"
+        else
+            $count || " " || $unit || substring("s ", number(not($count > 1)) * 2) || "found"
+    return
+        <tr>
+            <td class="bullet">{html:getBullet($ruleCode, $errorClsas)}</td>
+            <th colspan="2">{$text} {html:getModalInfo($ruleCode, $longText)}</th>
+            <td class="largeText">{$message}</td>
+        </tr>
+};
+
+declare function html:buildCountRow($ruleCode as xs:string, $longText, $text, $count as xs:integer, $validMessage as xs:string?, $unit as xs:string?, $errorClass as xs:string?) as element(tr) {
+    let $class :=
+        if ($count = 0) then
             $errors:INFO
         else if (empty($errorClass)) then $errors:ERROR
         else $errorClass
@@ -617,29 +636,9 @@ declare function html:buildCountRow0($ruleCode as xs:string, $count as xs:intege
         else
             $count || $unit || substring("s ", number(not($count > 1)) * 2) || "found"
     return
-        <tr>
-            <td class="bullet">{html:getBullet($ruleCode, $errorClsas)}</td>
-            <th colspan="2">{$header}</th>
-            <td class="largeText">{$message}</td>
-        </tr>
-};
-declare function html:buildCountRow($ruleCode as xs:string, $count as xs:integer, $header as xs:string, $validMessage as xs:string?, $unit as xs:string?, $errorClass as xs:string?) as element(tr) {
-    let $class :=
-        if ($count = 0) then
-            "info"
-        else if (empty($errorClass)) then "error"
-        else $errorClass
-    let $unit := if (empty($unit)) then "error" else $unit
-    let $validMessage := if (empty($validMessage)) then "All Ids are unique" else $validMessage
-    let $message :=
-        if ($count = 0) then
-            $validMessage
-        else
-            $count || $unit || substring("s ", number(not($count > 1)) * 2) || "found"
-    return
     <tr>
         <td class="bullet">{html:getBullet($ruleCode, $class)}</td>
-        <th colspan="2">{$header}</th>
+        <th colspan="2">{$text} {html:getModalInfo($ruleCode, $longText)}</th>
         <td class="largeText">{$message}</td>
     </tr>
 };
