@@ -802,17 +802,17 @@ let $B47invalid :=
 return
     <table class="maintable hover">
         {html:buildExists("B0", $labels:B0, $labels:B0_SHORT, $B0invalid, "", "Delivery is unique", "record", $errors:WARNING)}
-        {html:buildCountRow0("B1", $labels:B1, $labels:B1_SHORT, $countZones, $errors:INFO)}
+        {html:buildCountRow0("B1", $labels:B1, $labels:B1_SHORT, $countZones, "", "record", $errors:INFO)}
         {html:buildResultRows("B2", $labels:B2, $labels:B2_SHORT, $B2table, "", string(count($B2table)), "", "", $errors:ERROR)}
         {html:buildResultsSimpleRow("B3", $labels:B3, $labels:B3_SHORT, $countZonesWithAmGeometry, $errors:INFO)}
         {html:buildResultsSimpleRow("B4", $labels:B4, $labels:B4_SHORT, $countZonesWithLAU, $errors:INFO )}
         {html:build0("B6", $labels:B6, $labels:B6_SHORT, $B6table, "", string(count($B6table)), "record")}
         {html:build0("B7", $labels:B7, $labels:B7_SHORT, $B7table, "", string(count($B7table)), "record")}
-        {html:buildCountRow("B8", $B8invalid, $labels:B8_SHORT, (), " duplicate", $errors:WARNING)}
+        {html:buildCountRow("B8", $labels:B8, $labels:B8_SHORT, $B8invalid, (), "duplicate", $errors:WARNING)}
         {html:buildConcatRow($duplicateGmlIds, "aqd:AQD_Zone/@gml:id - ")}
         {html:buildConcatRow($duplicateamInspireIds, "am:inspireId - ")}
         {html:buildConcatRow($duplicateaqdInspireIds, "aqd:inspireId - ")}
-        {html:buildCountRow("B9", $B9invalid, $labels:B9_SHORT, (), (), ())}
+        {html:buildCountRow("B9", $labels:B9, $labels:B9_SHORT, $B9invalid, (), (), ())}
         {html:buildConcatRow($duplicateAmInspireIds, "Duplicate base:namespace:base:localId - ")}
         {html:build0("B10", $labels:B10, $labels:B10_SHORT, $B10table, "", string(count($B10table)), "record")}
         {html:buildResultRows_B("B10.1", $labels:B10.1, $labels:B10.1_SHORT, $B10.1invalid, "base:Identifier/base:namespace", "All values are valid", " invalid namespaces", "", $errors:ERROR)}
@@ -828,7 +828,7 @@ return
         {html:buildResultRows_B("B31", $labels:B31, $labels:B31_SHORT, $B31invalid, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "",$errors:WARNING)}
         {html:buildResultRows_B("B32", $labels:B32, $labels:B32_SHORT, $B32invalid, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "",$errors:WARNING)}
         {html:buildResultRows_B("B33", $labels:B33, $labels:B33_SHORT, $B33invalid, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "",$errors:WARNING)}
-        {html:buildCountRow("B35", $countB35duplicates, $labels:B35_SHORT, (), (), ())}
+        {html:buildCountRow("B35", $labels:B35, $labels:B35_SHORT, $countB35duplicates, (), (), ())}
         {html:buildConcatRow($dublicateAmNamespaceAndaqdZoneCodeIds, "Duplicate base:namespace:aqd:zoneCode - ")}
         {html:buildResultRows_B("B36", $labels:B36, $labels:B36_SHORT, $B36invalid, "aqd:AQD_Zone/am:inspireId/base:Identifier/base:localId", "All values are valid", " invalid value", "", $errors:ERROR)}
         {html:buildResultRows_B("B37", $labels:B37, $labels:B37_SHORT, $B37invalid, "aqd:AQD_Zone/am:inspireId/base:Identifier/base:localId", "All values are valid", " invalid value", "",$errors:WARNING)}
