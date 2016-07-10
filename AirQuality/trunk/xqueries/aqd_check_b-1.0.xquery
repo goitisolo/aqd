@@ -50,6 +50,9 @@ let $reportingYear := common:getReportingYear($docRoot)
 let $nameSpaces := distinct-values($docRoot//base:namespace)
 let $zonesNamespaces := distinct-values($docRoot//aqd:AQD_Zone/am:inspireId/base:Identifier/base:namespace)
 
+(: Generic variables :)
+let $knownZones := distinct-values(data(sparqlx:executeSimpleSparqlQuery(query:getAllZoneIds($nameSpaces))//sparql:binding[@name = 'label']/sparql:literal))
+
 (: B0 :)
 let $B0invalid :=
     try {
@@ -73,18 +76,36 @@ let $countZones := count($docRoot//aqd:AQD_Zone)
 (: B2 :)
 let $B2table :=
     try {
-        let $knownZones := distinct-values(data(sparqlx:executeSimpleSparqlQuery(query:getZonesSparql($nameSpaces))//sparql:binding[@name = 'inspireid']/sparql:literal))
-        let $unknownZones :=
-            for $zone in $docRoot//gml:featureMember/aqd:AQD_Zone
-            let $id := string($zone/am:inspireId/base:Identifier/base:localId)
-            where ($id = "" or not($knownZones = $id))
-            return $zone
-
-        for $rec in $unknownZones
+        for $zone in $docRoot//aqd:AQD_Zone
+            let $id := $zone/am:inspireId/base:Identifier/base:namespace || "/" || $zone/am:inspireId/base:Identifier/base:localId
+        where ($id = "/" or not($knownZones = $id))
         return
             <tr>
-                <td title="base:localId">{data($rec/am:inspireId/base:Identifier/base:localId)}</td>
-                <td title="aqd:predecessor">{if (empty($rec/aqd:predecessor)) then "not specified" else string($rec/aqd:predecessor/aqd:AQD_Zone/@gml:id)}</td>
+                <td title="base:localId">{$zone/am:inspireId/base:Identifier/base:localId/string()}</td>
+                <td title="aqd:predecessor">{if (empty($zone/aqd:predecessor)) then "not specified" else $zone/aqd:predecessor/aqd:AQD_Zone/@gml:id}</td>
+            </tr>
+    } catch * {
+        <tr status="failed">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
+let $B2errorLevel :=
+    if (count($B2table) = $countZones) then
+        $errors:ERROR
+    else
+        $errors:INFO
+
+(: B4 :)
+let $B4table :=
+    try {
+        for $rec in $docRoot//aqd:AQD_Zone
+        return
+            <tr>
+                <td title="gml:id">{data($rec/@gml:id)}</td>
+                <td title="namespace/localId">{concat(data($rec/am:inspireId/base:Identifier/base:namespace), '/', data($rec/am:inspireId/base:Identifier/base:localId))}</td>
+                <td title="zoneName">{data($rec/am:name/gn:GeographicalName/gn:spelling/gn:SpellingOfName/gn:text)}</td>
+                <td title="zoneCode">{data($rec/aqd:zoneCode)}</td>
             </tr>
     } catch * {
         <tr status="failed">
@@ -93,7 +114,7 @@ let $B2table :=
         </tr>
     }
 
-(: B3 :)
+(: B6a :)
 let $countZonesWithAmGeometry :=
     try {
         count($docRoot//aqd:AQD_Zone/am:geometry)
@@ -104,28 +125,10 @@ let $countZonesWithAmGeometry :=
         </tr>
     }
 
-(: B4 :)
+(: B6b :)
 let $countZonesWithLAU :=
     try {
         count($docRoot//aqd:AQD_Zone[not(empty(aqd:LAU)) or not(empty(aqd:shapefileLink))])
-    } catch * {
-        <tr status="failed">
-            <td title="Error code">{$err:code}</td>
-            <td title="Error description">{$err:description}</td>
-        </tr>
-    }
-
-(: B6 :)
-let $B6table :=
-    try {
-        for $rec in $docRoot//aqd:AQD_Zone
-        return
-            <tr>
-                <td title="gml:id">{data($rec/@gml:id)}</td>
-                <td title="namespace/localId">{concat(data($rec/am:inspireId/base:Identifier/base:namespace), '/', data($rec/am:inspireId/base:Identifier/base:localId))}</td>
-                <td title="zoneName">{data($rec/am:name/gn:GeographicalName/gn:spelling/gn:SpellingOfName/gn:text)}</td>
-                <td title="zoneCode">{data($rec/aqd:zoneCode)}</td>
-            </tr>
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
@@ -803,10 +806,10 @@ return
     <table class="maintable hover">
         {html:buildExists("B0", $labels:B0, $labels:B0_SHORT, $B0invalid, "", "Delivery is unique", "record", $errors:WARNING)}
         {html:buildCountRow0("B1", $labels:B1, $labels:B1_SHORT, $countZones, "", "record", $errors:INFO)}
-        {html:buildResultRows("B2", $labels:B2, $labels:B2_SHORT, $B2table, "", string(count($B2table)), "", "", $errors:ERROR)}
-        {html:buildResultsSimpleRow("B3", $labels:B3, $labels:B3_SHORT, $countZonesWithAmGeometry, $errors:INFO)}
-        {html:buildResultsSimpleRow("B4", $labels:B4, $labels:B4_SHORT, $countZonesWithLAU, $errors:INFO )}
-        {html:build0("B6", $labels:B6, $labels:B6_SHORT, $B6table, "", string(count($B6table)), "record")}
+        {html:buildSimple("B2", $labels:B2, $labels:B2_SHORT, $B2table, "", "", "record", $B2errorLevel)}
+        {html:build0("B4", $labels:B4, $labels:B4_SHORT, $B4table, "", string(count($B4table)), "record")}
+        {html:buildResultsSimpleRow("B6a", $labels:B6a, $labels:B6a_SHORT, $countZonesWithAmGeometry, $errors:INFO)}
+        {html:buildResultsSimpleRow("B6b", $labels:B6b, $labels:B6b_SHORT, $countZonesWithLAU, $errors:INFO )}
         {html:build0("B7", $labels:B7, $labels:B7_SHORT, $B7table, "", string(count($B7table)), "record")}
         {html:buildCountRow("B8", $labels:B8, $labels:B8_SHORT, $B8invalid, (), "duplicate", $errors:WARNING)}
         {html:buildConcatRow($duplicateGmlIds, "aqd:AQD_Zone/@gml:id - ")}

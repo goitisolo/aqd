@@ -190,6 +190,16 @@ declare function html:buildExists($ruleCode as xs:string, $longText, $text, $rec
 
     return $result
 };
+declare function html:buildSimple($ruleCode as xs:string, $longText, $text, $records as element(tr)*, $valueHeading as xs:string, $validMsg as xs:string, $unit as xs:string, $errorLevel as xs:string) {
+    let $countRecords := count($records)
+    let $message :=
+        if ($countRecords = 0) then
+            "No records found"
+        else
+            $countRecords || " " || $unit || substring("s ", number(not($countRecords > 1)) * 2) || " found"
+
+    return html:buildGeneric($ruleCode, $longText, $text, $records, $valueHeading, $message, $unit, $errorLevel)
+};
 declare function html:build0($ruleCode as xs:string, $longText, $text, $records as element(tr)*, $valueHeading as xs:string, $validMsg as xs:string, $unit as xs:string) {
     let $countRecords := count($records)
     let $bulletType :=

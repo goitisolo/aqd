@@ -12,10 +12,24 @@ import module namespace sparqlx = "aqd-sparql" at "aqd-sparql.xquery";
 import module namespace common = "aqd-common" at "aqd_check_common.xquery";
 declare namespace sparql = "http://www.w3.org/2005/sparql-results#";
 
+(: Feature Types queries - These queries return all ids of the specified feature type :)
+declare function query:getAllZoneIds($namespaces as xs:string*) as xs:string {
+  "PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+   PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    SELECT ?label
+    WHERE {
+      ?zone a aqd:AQD_Zone;
+      aqd:inspireId ?inspireid .
+      ?inspireid rdfs:label ?label .
+      ?inspireid aqd:namespace ?namespace
+      FILTER (?namespace in ('" || string-join($namespaces, "' , '") || "'))
+     }"
+};
+
 (: Generic queries :)
 declare function query:deliveryExists($obligations as xs:string*, $countryCode as xs:string, $reportingYear as xs:string) as xs:boolean {
   let $query :=
-    "PREFIX aqd: <http://rod.eionet.europa.eu/schema.rdf#>
+      "PREFIX aqd: <http://rod.eionet.europa.eu/schema.rdf#>
        SELECT ?envelope
        WHERE {
           ?envelope a aqd:Delivery ;
@@ -115,28 +129,6 @@ declare function query:getLangCodesSparql() as xs:string {
                   skos:notation ?code}
 
     }"
-};
-
-declare function query:getZonesSparql($nameSpaces as xs:string*) as xs:string {
-  let $nameSpacesStr :=
-    for $nameSpace in $nameSpaces
-    return concat("""", $nameSpace, """")
-
-  let $nameSpacesStr :=
-    fn:string-join($nameSpacesStr, ",")
-
-  return concat(
-          "PREFIX aqr: <http://reference.eionet.europa.eu/aq/ontology/>
-
-        SELECT ?inspireid
-        FROM <http://rdfdata.eionet.europa.eu/airquality/zones.ttl>
-        WHERE {
-          ?zoneuri a aqr:Zone ;
-                    aqr:inspireNamespace ?namespace;
-                     aqr:inspireId ?inspireid .
-        filter (?namespace in (", $nameSpacesStr,  "))
-        }"
-  )
 };
 
 (: C - Remove comment after migration :)
