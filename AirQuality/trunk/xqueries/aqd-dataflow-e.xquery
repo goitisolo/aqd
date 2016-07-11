@@ -7,7 +7,7 @@ xquery version "3.0";
 :)
 
 module namespace xmlconv = "http://converters.eionet.europa.eu/dataflowE";
-import module namespace common = "aqd-common" at "aqd_check_common.xquery";
+import module namespace common = "aqd-common" at "aqd-common.xquery";
 import module namespace html = "aqd-html" at "aqd-html.xquery";
 import module namespace errors = "aqd-errors" at "aqd-errors.xquery";
 import module namespace labels = "aqd-labels" at "aqd-labels.xquery";
