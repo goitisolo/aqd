@@ -51,7 +51,7 @@ let $nameSpaces := distinct-values($docRoot//base:namespace)
 let $zonesNamespaces := distinct-values($docRoot//aqd:AQD_Zone/am:inspireId/base:Identifier/base:namespace)
 
 (: Generic variables :)
-let $knownZones := distinct-values(data(sparqlx:executeSimpleSparqlQuery(query:getAllZoneIds($nameSpaces))//sparql:binding[@name = 'label']/sparql:literal))
+let $knownZones := distinct-values(data(sparqlx:executeSimpleSparqlQuery(query:getAllZoneIds($nameSpaces))//sparql:binding[@name = 'inspireLabel']/sparql:literal))
 
 (: B0 :)
 let $B0invalid :=

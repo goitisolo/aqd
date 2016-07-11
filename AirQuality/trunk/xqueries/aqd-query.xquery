@@ -1,10 +1,9 @@
 xquery version "3.0";
 
 (:~
-: User: dev-gso
+: User: George Sofianos
 : Date: 6/21/2016
 : Time: 6:37 PM
-: To change this template use File | Settings | File Templates.
 :)
 
 module namespace query = "aqd-query";
@@ -16,11 +15,11 @@ declare namespace sparql = "http://www.w3.org/2005/sparql-results#";
 declare function query:getAllZoneIds($namespaces as xs:string*) as xs:string {
   "PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-    SELECT ?label
+    SELECT ?inspireLabel
     WHERE {
       ?zone a aqd:AQD_Zone;
       aqd:inspireId ?inspireid .
-      ?inspireid rdfs:label ?label .
+      ?inspireid rdfs:label ?inspireLabel .
       ?inspireid aqd:namespace ?namespace
       FILTER (?namespace in ('" || string-join($namespaces, "' , '") || "'))
      }"
