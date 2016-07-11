@@ -376,7 +376,7 @@ limit 1")
   return $result
 };
 
-declare function query:getLatestRegimeIds($latestEnvelopeUrl as xs:string) as xs:string {
+declare function query:getLatestRegimeIds($latestEnvelopeUrl as xs:string) as xs:string? {
   let $query := "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
    PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
    PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
@@ -392,7 +392,7 @@ declare function query:getLatestRegimeIds($latestEnvelopeUrl as xs:string) as xs
   return data(doc(sparqlx:executeSparqlQuery($query))//sparql:binding[@name='inspireLabel']/sparql:literal)
 };
 
-declare function query:getAllRegimeIds($namespaces as xs:string) as xs:string {
+declare function query:getAllRegimeIds($namespaces as xs:string*) as xs:string* {
   let $query := "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
    PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
    PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
@@ -406,7 +406,7 @@ declare function query:getAllRegimeIds($namespaces as xs:string) as xs:string {
         ?inspireId aqd:namespace ?namespace
         FILTER(str(?namespace) in ('" || string-join($namespaces, "','") || "'))
   }"
-  return data(doc(sparqlx:executeSparqlQuery($query))//sparql:binding[@name='inspireLabel']/sparql:literal)
+  return data(sparqlx:executeSparqlQuery($query)//sparql:binding[@name='inspireLabel']/sparql:literal)
 };
 
 declare function query:getInspireId($latestZonesUrl as xs:string)
@@ -674,7 +674,7 @@ PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
 PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
 PREFIX aq: <http://reference.eionet.europa.eu/aq/ontology/>
 
-           SELECT ?inspireLabel ?pollutant ?objectiveType
+           SELECT ?inspireLabel ?pollutant ?objectiveType ?reportingMetric ?protectionTarget
            WHERE {
                   ?regime a aqd:AQD_AssessmentRegime ;
                   aqd:assessmentThreshold ?assessmentThreshold ;
@@ -685,6 +685,8 @@ PREFIX aq: <http://reference.eionet.europa.eu/aq/ontology/>
                   ?inspireId rdfs:label ?inspireLabel .
                   ?inspireId aqd:localId ?localId .
                   ?assessmentThreshold aq:objectiveType ?objectiveType .
+                  ?assessmentThreshold aq:reportingMetric ?reportingMetric .
+                  ?assessmentThreshold aq:protectionTarget ?protectionTarget .
            FILTER (CONTAINS(str(?regime), '" || $envelopeUrl || "c/'))
            FILTER (strstarts(str(?reportingYear), '" || $reportingYear || "'))
        }"
