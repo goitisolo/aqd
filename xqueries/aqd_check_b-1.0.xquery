@@ -824,7 +824,7 @@ return
     <table class="maintable hover">
         {html:buildExists("B0", $labels:B0, $labels:B0_SHORT, $B0invalid, "New Delivery", "Updated Delivery", $errors:WARNING)}
         {html:buildCountRow0("B1", $labels:B1, $labels:B1_SHORT, $countZones, "", "record", $errors:INFO)}
-        {html:buildSimple("B2", $labels:B2, $labels:B2_SHORT, $B2table, "", "", "record", $B2errorLevel)}
+        {html:buildSimple("B2", $labels:B2, $labels:B2_SHORT, $B2table, "", "record", $B2errorLevel)}
         {html:build0("B3", $labels:B3, $labels:B3_SHORT, $B3table, "", "", "record")}
         {html:build0("B4", $labels:B4, $labels:B4_SHORT, $B4table, "", string(count($B4table)), "record")}
         {html:buildResultsSimpleRow("B6a", $labels:B6a, $labels:B6a_SHORT, $countZonesWithAmGeometry, $errors:INFO)}
