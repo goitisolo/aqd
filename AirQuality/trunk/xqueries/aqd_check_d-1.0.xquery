@@ -62,8 +62,8 @@ let $DCombinations :=
     for $featureType in $xmlconv:FEATURE_TYPES
     return
         doc($source_url)//gml:featureMember/descendant::*[name()=$featureType]
-let $nameSpaces := distinct-values($docRoot//base:namespace)
-let $knownZones := distinct-values(data(sparqlx:executeSparqlQuery(query:getZonesSparql($nameSpaces))//sparql:binding[@name='inspireid']/sparql:literal))
+let $namespaces := distinct-values($docRoot//base:namespace)
+let $knownFeatures := distinct-values(data(sparqlx:executeSparqlQuery(query:getAllFeatureIds($xmlconv:FEATURE_TYPES, $namespaces))//sparql:binding[@name='inspireid']/sparql:literal))
 let $SPOnamespaces := distinct-values($docRoot//aqd:AQD_SamplingPoint//base:Identifier/base:namespace)
 let $SPPnamespaces := distinct-values($docRoot//aqd:AQD_SamplingPointProcess/ompr:inspireId/base:Identifier/base:namespace)
 let $networkNamespaces := distinct-values($docRoot//aqd:AQD_Network/ef:inspireId/base:Identifier/base:namespace)
@@ -109,7 +109,7 @@ let $D2table :=
     try {
         for $zone in $DCombinations
         let $id := string($zone/ef:inspireId/base:Identifier/base:localId)
-        where ($id = "" or not($knownZones = $id))
+        where ($id = "" or not($knownFeatures = $id))
         return
             <tr>
                 <td title="base:localId">{$id}</td>
@@ -126,7 +126,7 @@ let $D3table :=
     try {
         for $zone in $DCombinations
         let $id := string($zone/ef:inspireId/base:Identifier/base:localId)
-        where $knownZones = $id
+        where $knownFeatures = $id
         return
             <tr>
                 <td title="base:localId">{$id}</td>
@@ -1644,12 +1644,12 @@ return
         {html:build1("D2", $labels:D2, $labels:D2_SHORT, $D2table, "", "", "", "",$errors:ERROR)}
         {html:build1("D3", $labels:D3, $labels:D3_SHORT, $D3table, string(count($D3table)), "", "", "",$errors:ERROR)}
         {html:build1("D4", $labels:D4, $labels:D4_SHORT, $D4table, string(count($D4table)), "", "", "",$errors:ERROR)}
-        {html:buildCountRow("D5", $D5invalid, $labels:D5, (), " duplicate", ())}
+        {html:buildCountRow("D5", $labels:D5, $labels:D5_SHORT, $D5invalid, (), "duplicate", ())}
         {html:buildConcatRow($duplicateGmlIds, "aqd:AQD_Model/@gml:id - ")}
         {html:buildConcatRow($duplicateefInspireIds, "ef:inspireId - ")}
         {html:buildConcatRow($duplicateaqdInspireIds, "aqd:inspireId - ")}
         {html:buildInfoTR("Specific checks on AQD_Network feature(s) within this XML")}
-        {html:buildCountRow("D6", $D6invalid, $labels:D6, (), (), ())}
+        {html:buildCountRow("D6", $labels:D6, $labels:D6_SHORT, $D6invalid, (), (), ())}
         {html:buildResultRows("D7", $labels:D7, $labels:D7_SHORT, $D7table, "", string(count($D7table)), "", "", $errors:ERROR)}
         {html:buildResultRows("D7.1", $labels:D7.1, $labels:D7.1_SHORT, $D7.1invalid, "base:Identifier/base:namespace", "All values are valid", " invalid namespaces", "", $errors:ERROR)}
         {html:buildResultRowsWithTotalCount_D("D8", $labels:D8, $labels:D8_SHORT, $D8invalid, "ef:mediaMonitored", "", "", "", $errors:WARNING)}
@@ -1659,7 +1659,7 @@ return
         {html:buildResultRows("D12", $labels:D12, $labels:D12_SHORT, $D12invalid, "aqd:AQD_Network/ef:inspireId/base:Identifier/base:localId", "All attributes are valid", " invalid attribute ", "", $errors:ERROR)}
         {html:build2("D14", $labels:D14, $labels:D14_SHORT, $D14invalid, "aqd:aggregationTimeZone", "", "", "",$errors:ERROR)}
         {html:buildInfoTR("Specific checks on AQD_Station feature(s) within this XML")}
-        {html:buildCountRow("D15", $D15invalid, $labels:D15, "All Ids are unique", (), ())}
+        {html:buildCountRow("D15", $labels:D15, $labels:D15_SHORT, $D15invalid, "All Ids are unique", (), ())}
         {html:buildResultRows("D16", $labels:D16, $labels:D16_SHORT, $D16table, "", string(count($D16table)), "", "",$errors:ERROR)}
         {html:buildResultRows("D17", $labels:D17, $labels:D17_SHORT, $D17invalid, "", "All values are valid", "", "",$errors:WARNING)}
         {html:buildResultRows("D18", $labels:D18, $labels:D18_SHORT, $D18invalid, "", "All values are valid", "", "",$errors:WARNING)}
