@@ -682,13 +682,14 @@ PREFIX aq: <http://reference.eionet.europa.eu/aq/ontology/>
                   aqd:inspireId ?inspireId .
                   ?inspireId rdfs:label ?inspireLabel .
                   ?inspireId aqd:localId ?localId .
-                  ?assessmentThreshold aqd:classificationDate ?classificationDate .
-                  ?classificationDate rdfs:label ?reportingYear .
+                  ?regime aqd:declarationFor ?declaration .
+                  ?declaration aq:reportingBegin ?reportingYear .
                   ?assessmentThreshold aq:objectiveType ?objectiveType .
                   ?assessmentThreshold aq:reportingMetric ?reportingMetric .
                   ?assessmentThreshold aq:protectionTarget ?protectionTarget .
            FILTER (CONTAINS(str(?regime), '" || $envelopeUrl || "c/'))
            FILTER (strstarts(str(?reportingYear), '" || $reportingYear || "'))
+
        }"
 };
 (: TODO: Probably deprecated, to be removed :)
