@@ -57,11 +57,17 @@ let $reportingYear := common:getReportingYear($docRoot)
 let $countFeatureTypes :=
     for $featureType in $xmlconv:FEATURE_TYPES
     return
-        count(doc($source_url)//gml:featureMember/descendant::*[name()=$featureType])
+        count($docRoot//descendant::*[name()=$featureType])
+let $countFeatureTypesMap :=
+    map:merge((
+    for $featureType in $xmlconv:FEATURE_TYPES
+    return
+        map:entry($featureType, count($docRoot//descendant::*[name()=$featureType]))
+    ))
 let $DCombinations :=
     for $featureType in $xmlconv:FEATURE_TYPES
     return
-        doc($source_url)//gml:featureMember/descendant::*[name()=$featureType]
+        doc($source_url)//descendant::*[name()=$featureType]
 let $namespaces := distinct-values($docRoot//base:namespace)
 let $knownFeatures := distinct-values(data(sparqlx:executeSparqlQuery(query:getAllFeatureIds($xmlconv:FEATURE_TYPES, $namespaces))//sparql:binding[@name='inspireLabel']/sparql:literal))
 let $SPOnamespaces := distinct-values($docRoot//aqd:AQD_SamplingPoint//base:Identifier/base:namespace)
@@ -104,38 +110,95 @@ let $D1table :=
         </tr>
     }
 
-(: D2 :)
+(: D2 - :)
 let $D2table :=
     try {
-        for $zone in $DCombinations
-        let $id := string($zone/ef:inspireId/base:Identifier/base:localId)
-        where ($id = "" or not($knownFeatures = $id))
+        let $all := map:merge((
+            for $featureType at $pos in $xmlconv:FEATURE_TYPES
+                let $count := count(
+                for $x in $docRoot//descendant::*[name()=$featureType]
+                    let $inspireId := $x/ef:inspireId/base:Identifier/base:namespace/string() || "/" || $x/ef:inspireId/base:Identifier/base:localId/string()
+                where ($inspireId = "/" or not($knownFeatures = $inspireId))
+                return
+                    <tr>
+                        <td title="base:localId">{$x/ef:inspireId/base:Identifier/base:localId/string()}</td>
+                    </tr>)
+            return map:entry($xmlconv:FEATURE_TYPES[$pos], $count)
+        ))
         return
-            <tr>
-                <td title="base:localId">{$id}</td>
-            </tr>
+            map:for-each($all, function($name, $count) {
+                if ($count > 0) then
+                    <tr>
+                        <td title="Feature type">{$name}</td>
+                        <td title="Total number">{$count}</td>
+                    </tr>
+                else
+                    ()
+            })
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+let $D2errorLevel :=
+    try {
+        let $map1 := map:merge((
+            for $x in $D2table
+            return
+                map:entry($x/td[1]/string(), $x/td[2]/number())
+        ))
+        return
+            if ($errors:ERROR =
+                    map:for-each($map1, function($name, $count) {
+                        if ($count = map:get($countFeatureTypesMap, $name)) then
+                            $errors:ERROR
+                        else
+                            $errors:INFO
+                    })) then
+                $errors:ERROR
+            else
+                $errors:INFO
+    } catch * {
+        $errors:FAILED
+    }
 
-(: D3 :)
+(: D3 - :)
 let $D3table :=
     try {
-        for $zone in $DCombinations
-        let $id := string($zone/ef:inspireId/base:Identifier/base:localId)
-        where $knownFeatures = $id
+        let $all := map:merge((
+            for $featureType at $pos in $xmlconv:FEATURE_TYPES
+            let $count := count(
+                    for $x in $docRoot//descendant::*[name()=$featureType]
+                    let $inspireId := $x/ef:inspireId/base:Identifier/base:namespace/string() || "/" || $x/ef:inspireId/base:Identifier/base:localId/string()
+                    where ($knownFeatures = $inspireId)
+                    return
+                        <tr>
+                            <td title="base:localId">{$x/ef:inspireId/base:Identifier/base:localId/string()}</td>
+                        </tr>)
+            return map:entry($xmlconv:FEATURE_TYPES[$pos], $count)
+        ))
         return
-            <tr>
-                <td title="base:localId">{$id}</td>
-            </tr>
+            map:for-each($all, function($name, $count) {
+                    <tr isvalid="{not($count=0)}">
+                        <td title="Feature type">{$name}</td>
+                        <td title="Total number">{$count}</td>
+                    </tr>
+            })
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
         </tr>
+    }
+let $D3errorLevel :=
+    try {
+        if (data($D3table/@isvalid) = "false") then
+            $errors:ERROR
+        else
+            $errors:INFO
+    } catch * {
+        $errors:FAILED
     }
 
 (: D4 :)
@@ -530,7 +593,7 @@ let $invalidPosD21 :=
 let $D23invalid :=
     try {
         let $allEfOperationActivityPeriod :=
-            for $allOperationActivityPeriod in $docRoot//gml:featureMember/aqd:AQD_Station/ef:operationalActivityPeriod
+            for $allOperationActivityPeriod in $docRoot//aqd:AQD_Station/ef:operationalActivityPeriod
             where ($allOperationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:endPosition[normalize-space(@indeterminatePosition) != "unknown"]
                     or fn:string-length($allOperationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:endPosition) > 0)
             return $allOperationActivityPeriod
@@ -555,7 +618,7 @@ let $D23invalid :=
 (: D24 - List the total number of aqd:AQD_Station which are operational :)
 let $D24invalid :=
     try {
-        for $operationActivityPeriod in $docRoot//gml:featureMember/aqd:AQD_Station/ef:operationalActivityPeriod
+        for $operationActivityPeriod in $docRoot//aqd:AQD_Station/ef:operationalActivityPeriod
         where $operationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:endPosition[normalize-space(@indeterminatePosition) = "unknown"]
                 or fn:string-length($operationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:endPosition) = 0
         return
@@ -576,8 +639,8 @@ let $D24invalid :=
 (: D26 Done by Rait:)
 let $D26invalid :=
     try {
-        let $localEUStationCode := $docRoot//gml:featureMember/aqd:AQD_Station/upper-case(normalize-space(aqd:EUStationCode))
-        for $EUStationCode in $docRoot//gml:featureMember/aqd:AQD_Station/aqd:EUStationCode
+        let $localEUStationCode := $docRoot//aqd:AQD_Station/upper-case(normalize-space(aqd:EUStationCode))
+        for $EUStationCode in $docRoot//aqd:AQD_Station/aqd:EUStationCode
         where
             count(index-of($localEUStationCode, upper-case(normalize-space($EUStationCode)))) > 1 or
                     (
@@ -655,8 +718,8 @@ let $D30invalid :=
 (: D31 Done by Rait:)
 let $D31invalid :=
     try {
-        let $localSamplingPointIds := $docRoot//gml:featureMember/aqd:AQD_SamplingPoint/ef:inspireId/base:Identifier/base:localId
-        for $idCode in $docRoot//gml:featureMember/aqd:AQD_SamplingPoint/ef:inspireId/base:Identifier/base:localId
+        let $localSamplingPointIds := $docRoot//aqd:AQD_SamplingPoint/ef:inspireId/base:Identifier/base:localId
+        for $idCode in $docRoot//aqd:AQD_SamplingPoint/ef:inspireId/base:Identifier/base:localId
         where
             count(index-of($localSamplingPointIds, normalize-space($idCode))) > 1
         return
@@ -723,7 +786,7 @@ let $D34invalid :=
 (: D35 :)
 let $D35invalid  :=
     try {
-        for $x in $docRoot/gml:featureMember//aqd:AQD_SamplingPoint
+        for $x in $docRoot//aqd:AQD_SamplingPoint
         let $invalidOrder :=
             for $i in $x/ef:geometry/gml:Point/gml:pos
             let $latlongToken := tokenize($i, "\s+")
@@ -1038,7 +1101,7 @@ let $D45invalid :=
 (: D46 :)
 let $D46invalid :=
     try {
-        for $operationActivityPeriod in $docRoot//gml:featureMember/aqd:AQD_SamplingPoint/ef:operationalActivityPeriod
+        for $operationActivityPeriod in $docRoot//aqd:AQD_SamplingPoint/ef:operationalActivityPeriod
         where $operationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:endPosition[normalize-space(@indeterminatePosition) = "unknown"]
                 or fn:string-length($operationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:endPosition) = 0
         return
@@ -1059,7 +1122,7 @@ let $D46invalid :=
 (:D50 :)
 let $D50invalid :=
     try {
-        for $allLinks in $docRoot//gml:featureMember/aqd:AQD_SamplingPoint
+        for $allLinks in $docRoot//aqd:AQD_SamplingPoint
         where not(substring($allLinks/aqd:relevantEmissions/aqd:RelevantEmissions/aqd:stationClassification/@xlink:href, 1, fn:string-length("http://dd.eionet.europa.eu/vocabulary/aq/stationclassification")) = "http://dd.eionet.europa.eu/vocabulary/aq/stationclassification")
         return
             <tr>
@@ -1126,8 +1189,8 @@ let $D53invalid :=
 (: D54 - aqd:AQD_SamplingPointProcess/ompr:inspireId/base:Identifier/base:localId not unique codes :)
 let $D54invalid :=
     try {
-        let $localSamplingPointProcessIds := $docRoot//gml:featureMember/aqd:AQD_SamplingPointProcess/ompr:inspireId/base:Identifier
-        for $idSamplingPointProcessCode in $docRoot//gml:featureMember/aqd:AQD_SamplingPointProcess/ompr:inspireId/base:Identifier
+        let $localSamplingPointProcessIds := $docRoot//aqd:AQD_SamplingPointProcess/ompr:inspireId/base:Identifier
+        for $idSamplingPointProcessCode in $docRoot//aqd:AQD_SamplingPointProcess/ompr:inspireId/base:Identifier
         where
             count(index-of($localSamplingPointProcessIds/base:localId, normalize-space($idSamplingPointProcessCode/base:localId))) > 1 and
                     count(index-of($localSamplingPointProcessIds/base:namespace, normalize-space($idSamplingPointProcessCode/base:namespace))) > 1
@@ -1209,7 +1272,7 @@ let $D57table :=
 let $D58table :=
     try {
         let $allConceptUrl58 :=
-        for $conceptUrl in doc($source_url)//gml:featureMember/aqd:AQD_SamplingPointProcess/aqd:measurementType/@xlink:href
+        for $conceptUrl in doc($source_url)//aqd:AQD_SamplingPointProcess/aqd:measurementType/@xlink:href
         where $conceptUrl = 'http://dd.eionet.europa.eu/vocabulary/aq/measurementtype/active' or
                 $conceptUrl = 'http://dd.eionet.europa.eu/vocabulary/aq/measurementtype/passive'
         return $conceptUrl
@@ -1641,8 +1704,8 @@ return
     <table class="maintable hover">
         {html:buildExists("D0", $labels:D0, $labels:D0_SHORT, $D0invalid, "New Delivery", "Updated Delivery", $errors:WARNING)}
         {html:build1("D1", $labels:D1, $labels:D1_SHORT, $D1table, "", string(sum($countFeatureTypes)), "", "",$errors:ERROR)}
-        {html:build1("D2", $labels:D2, $labels:D2_SHORT, $D2table, "", "", "", "",$errors:ERROR)}
-        {html:build1("D3", $labels:D3, $labels:D3_SHORT, $D3table, string(count($D3table)), "", "", "",$errors:ERROR)}
+        {html:buildSimple("D2", $labels:D2, $labels:D2_SHORT, $D2table, "", "feature type", $D2errorLevel)}
+        {html:buildSimple("D3", $labels:D3, $labels:D3_SHORT, $D3table, "", "feature type", $D3errorLevel)}
         {html:build1("D4", $labels:D4, $labels:D4_SHORT, $D4table, string(count($D4table)), "", "", "",$errors:ERROR)}
         {html:buildCountRow("D5", $labels:D5, $labels:D5_SHORT, $D5invalid, (), "duplicate", ())}
         {html:buildConcatRow($duplicateGmlIds, "aqd:AQD_Model/@gml:id - ")}
@@ -1743,7 +1806,7 @@ declare function xmlconv:checkVocabularyConceptValues($source_url as xs:string, 
                 query:getConceptUrlSparql($vocabularyUrl)
         let $crConcepts := sparqlx:executeSparqlQuery($sparql)
 
-        for $rec in doc($source_url)//gml:featureMember/descendant::*[name()=$featureType]
+        for $rec in doc($source_url)//descendant::*[name()=$featureType]
 
         for $conceptUrl in $rec/child::*[name() = $element]/@xlink:href
         let $conceptUrl := normalize-space($conceptUrl)
@@ -1765,7 +1828,7 @@ declare function xmlconv:checkVocabularyConceptValuesUom($source_url as xs:strin
     if(doc-available($source_url)) then
         let $sparql := query:getConceptUrlSparql($vocabularyUrl)
         let $crConcepts := sparqlx:executeSparqlQuery($sparql)
-        for $rec in doc($source_url)//gml:featureMember/descendant::*[name()=$featureType]
+        for $rec in doc($source_url)//descendant::*[name()=$featureType]
         for $conceptUrl in $rec/child::*[name() = $element]/@uom
         let $conceptUrl := normalize-space($conceptUrl)
         where string-length($conceptUrl) > 0
@@ -1814,7 +1877,7 @@ declare function xmlconv:checkVocabularyConceptValues3($source_url as xs:string,
                 query:getConceptUrlSparql($vocabularyUrl)
         let $crConcepts := sparqlx:executeSparqlQuery($sparql)
 
-        for $rec in doc($source_url)//gml:featureMember/descendant::*[name()=$featureType]
+        for $rec in doc($source_url)//descendant::*[name()=$featureType]
         for $conceptUrl in $rec/child::*[name() = $element]
         where  not(xmlconv:isMatchingVocabCode($crConcepts, normalize-space($conceptUrl/@xlink:href)))
 
@@ -1837,7 +1900,7 @@ declare function xmlconv:checkVocabularyConceptValues4($source_url as xs:string,
     if(doc-available($source_url)) then
         let $sparql := query:getConceptUrlSparql($vocabularyUrl)
         let $crConcepts := sparqlx:executeSparqlQuery($sparql)
-        for $rec in doc($source_url)//gml:featureMember/descendant::*[name()=$featureType]
+        for $rec in doc($source_url)//descendant::*[name()=$featureType]
         for $conceptUrl in $rec//child::*[name() = $element]/@xlink:href
         let $conceptUrl := normalize-space($conceptUrl)
         where string-length($conceptUrl) > 0 and not(xmlconv:isMatchingVocabCode($crConcepts, $conceptUrl))
@@ -1862,7 +1925,7 @@ as element(tr)*{
             else
                 query:getConceptUrlSparql($vocabularyUrl)
         let $crConcepts := sparqlx:executeSparqlQuery($sparql)
-        for $rec in doc($source_url)//gml:featureMember/descendant::*[name()=$featureType]
+        for $rec in doc($source_url)//descendant::*[name()=$featureType]
         for $conceptUrl in $rec/child::*[name() = $element]/aqd:AnalyticalTechnique/child::*[name() = $element]/@xlink:href
         let $conceptUrl := normalize-space($conceptUrl)
         where string-length($conceptUrl) > 0
@@ -1887,7 +1950,7 @@ as element(tr)* {
             return
                 sparqlx:executeSparqlQuery($sparql)
 
-        for $rec in doc($source_url)//gml:featureMember/descendant::*[name()=$featureType]
+        for $rec in doc($source_url)//descendant::*[name()=$featureType]
         for $conceptUrl in $rec/child::*[name() = $element]/@xlink:href
             let $conceptUrl := normalize-space($conceptUrl)
             where string-length($conceptUrl) > 0
@@ -1914,7 +1977,7 @@ as element(tr)* {
             else
                 query:getConceptUrlSparql($vocabularyUrl)
         let $crConcepts := sparqlx:executeSparqlQuery($sparql)
-        for $rec in doc($source_url)//gml:featureMember/descendant::*[name()=$featureType]
+        for $rec in doc($source_url)//descendant::*[name()=$featureType]
         for $conceptUrl in $rec/child::*[name() = $element]/*/aqd:equipment/@xlink:href
         let $conceptUrl := normalize-space($conceptUrl)
         where string-length($conceptUrl) > 0
@@ -1964,7 +2027,7 @@ declare function xmlconv:isMatchingVocabCode($crConcepts as element(sparql:resul
  :)
 declare function xmlconv:proceed($source_url as xs:string, $countryCode as xs:string) {
 
-let $countFeatures := count(doc($source_url)//gml:featureMember/descendant::*[
+let $countFeatures := count(doc($source_url)//descendant::*[
     not(empty(index-of($xmlconv:FEATURE_TYPES, name())))]
     )
 let $result := if ($countFeatures > 0) then xmlconv:checkReport($source_url, $countryCode) else ()
