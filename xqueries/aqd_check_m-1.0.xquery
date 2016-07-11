@@ -44,10 +44,12 @@ declare variable $xmlconv:OBLIGATIONS as xs:string* := ("http://rod.eionet.europ
 declare function xmlconv:checkReport($source_url as xs:string, $countryCode as xs:string) as element(table) {
 let $docRoot := doc($source_url)
 let $reportingYear := common:getReportingYear($docRoot)
-let $nameSpaces := distinct-values($docRoot//base:namespace)
 let $modelNamespaces := distinct-values($docRoot//aqd:AQD_Model/ef:inspireId/base:Identifier/base:namespace)
 let $modelProcessNamespaces := distinct-values($docRoot//aqd:AQD_ModelProcess/ompr:inspireld/base:Identifier/base:namespace)
 let $modelAreaNamespaces := distinct-values($docRoot//aqd:AQD_ModelArea/aqd:inspireId/base:Identifier/base:namespace)
+let $namespaces := distinct-values($docRoot//base:namespace)
+let $knownFeatures := distinct-values(data(sparqlx:executeSparqlQuery(query:getAllFeatureIds($xmlconv:FEATURE_TYPES, $namespaces))//sparql:binding[@name = 'inspireid']/sparql:literal))
+
 let $MCombinations :=
     for $featureType in $xmlconv:FEATURE_TYPES
     return
@@ -94,11 +96,10 @@ let $M1table :=
 (: M2 :)
 let $M2table :=
     try {
-        let $knownZones := distinct-values(data(sparqlx:executeSparqlQuery(query:getZonesSparql($nameSpaces))//sparql:binding[@name = 'inspireid']/sparql:literal))
         let $unknownZones :=
             for $zone in $MCombinations
             let $id := if (empty($zone/@gml:id)) then "" else data($zone/@gml:id)
-            where empty(index-of($knownZones, $id))
+            where empty(index-of($knownFeatures, $id))
             return $zone
 
         for $rec in $unknownZones
@@ -114,11 +115,10 @@ let $M2table :=
 (: M3 :)
 let $M3table :=
     try {
-        let $knownZones := distinct-values(data(sparqlx:executeSparqlQuery(query:getZonesSparql($nameSpaces))//sparql:binding[@name = 'inspireid']/sparql:literal))
         let $unknownZones :=
             for $zone in $MCombinations
             let $id := if (empty($zone/@gml:id)) then "" else data($zone/@gml:id)
-            where empty(index-of($knownZones, $id)) = false()
+            where empty(index-of($knownFeatures, $id)) = false()
             return $zone
 
         for $rec in $unknownZones
@@ -659,11 +659,11 @@ let $M43invalid :=
         {html:buildResultRows("M2", $labels:M2, $labels:M2_SHORT, (), "", string(count($M2table)), "", "",$errors:ERROR)}
         {html:buildResultRows("M3", $labels:M3, $labels:M3_SHORT, (), "", string(count($M3table)), "", "",$errors:ERROR)}
         {html:buildResultRows("M4", $labels:M4, $labels:M4_SHORT, $M4table, "", string(count($M4table)), "", "",$errors:ERROR)}
-        {html:buildCountRow("M5", $M5invalid, $labels:M5, (), " duplicate", ())}
+        {html:buildCountRow("M5", $labels:M5, $labels:M5_SHORT, $M5invalid,  (), "duplicate", ())}
         {html:buildConcatRow($duplicateGmlIds, "aqd:AQD_Model/@gml:id -")}
         {html:buildConcatRow($duplicateamInspireIds, "am:inspireId - ")}
         {html:buildConcatRow($duplicateaqdInspireIds, "aqd:inspireId - ")}
-        {html:buildCountRow("M6", $M6invalid, $labels:M6, (), (), ())}
+        {html:buildCountRow("M6", $labels:M6, $labels:M6_SHORT, $M6invalid, (), (), ())}
         {html:buildResultRows("M7", $labels:M7, $labels:M7_SHORT, $M7table, "", string(count($M7table)), "", "",$errors:ERROR)}
         {html:buildResultRows("M7.1", $labels:M7.1, $labels:M7.1_SHORT, $M7.1invalid, "base:Identifier/base:namespace", "All values are valid", " invalid namespaces", "", $errors:ERROR)}
         {html:buildResultRows("M12", $labels:M12, $labels:M12_SHORT, $M12invalid, "aqd:AQD_Model/@gml:id","All srsName attributes are valid"," invalid attribute","",$errors:ERROR)}

@@ -26,6 +26,24 @@ declare function query:getAllZoneIds($namespaces as xs:string*) as xs:string {
      }"
 };
 
+declare function query:getAllFeatureIds($featureTypes as xs:string*, $namespaces as xs:string*) as xs:string {
+  let $pre := "PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+   PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    SELECT ?inspireLabel WHERE {"
+  let $mid := string-join(
+    for $featureType in $featureTypes
+    return "
+    {
+      ?zone a " || $featureType || ";
+      aqd:inspireId ?inspireid .
+      ?inspireid rdfs:label ?inspireLabel .
+      ?inspireid aqd:namespace ?namespace
+      FILTER (?namespace in ('" || string-join($namespaces, "' , '") || "'))
+     }", " UNION ")
+  let $end := "}"
+  return $pre || $mid || $end
+};
+
 (: Generic queries :)
 declare function query:deliveryExists($obligations as xs:string*, $countryCode as xs:string, $reportingYear as xs:string) as xs:boolean {
   let $query :=
