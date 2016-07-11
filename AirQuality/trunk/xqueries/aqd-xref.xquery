@@ -22,7 +22,7 @@ declare namespace sparql = "http://www.w3.org/2005/sparql-results#";
 declare namespace ompr = "http://inspire.ec.europa.eu/schemas/ompr/2.0";
 declare namespace om = "http://www.opengis.net/om/2.0";
 
-import module namespace common = "aqd-common" at "aqd_check_common.xquery";
+import module namespace common = "aqd-common" at "aqd-common.xquery";
 import module namespace sparqlx = "aqd-sparql" at "aqd-sparql.xquery";
 import module namespace labels = "aqd-labels" at "aqd-labels.xquery";
 import module namespace html = "aqd-html" at "aqd-html.xquery";
