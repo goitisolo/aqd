@@ -21,13 +21,13 @@ xquery version "3.0" encoding "UTF-8";
  : Dataflow G script -
  : Dataflow M script -
  :)
-import module namespace dfB = "http://converters.eionet.europa.eu/dataflowB" at "aqd_check_b-1.0.xquery";
-import module namespace dfC = "http://converters.eionet.europa.eu/dataflowC" at "aqd_check_c-1.0.xquery";
-import module namespace dfD = "http://converters.eionet.europa.eu/dataflowD" at "aqd_check_d-1.0.xquery";
-import module namespace dfG = "http://converters.eionet.europa.eu/dataflowG" at "aqd_check_g-1.0.xquery";
-import module namespace dfM = "http://converters.eionet.europa.eu/dataflowM" at "aqd_check_m-1.0.xquery";
+import module namespace dfB = "http://converters.eionet.europa.eu/dataflowB" at "aqd-dataflow-b.xquery";
+import module namespace dfC = "http://converters.eionet.europa.eu/dataflowC" at "aqd-dataflow-c.xquery";
+import module namespace dfD = "http://converters.eionet.europa.eu/dataflowD" at "aqd-dataflow-d.xquery";
+import module namespace dfG = "http://converters.eionet.europa.eu/dataflowG" at "aqd-dataflow-g.xquery";
+import module namespace dfM = "http://converters.eionet.europa.eu/dataflowM" at "aqd-dataflow-m.xquery";
 import module namespace dfE = "http://converters.eionet.europa.eu/dataflowE" at "aqd-dataflow-e.xquery";
-import module namespace common = "aqd-common" at "aqd_check_common.xquery";
+import module namespace common = "aqd-common" at "aqd-common.xquery";
 import module namespace html = "aqd-html" at "aqd-html.xquery";
 
 declare namespace xmlconv = "http://converters.eionet.europa.eu";

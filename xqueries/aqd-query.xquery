@@ -8,7 +8,7 @@ xquery version "3.0";
 
 module namespace query = "aqd-query";
 import module namespace sparqlx = "aqd-sparql" at "aqd-sparql.xquery";
-import module namespace common = "aqd-common" at "aqd_check_common.xquery";
+import module namespace common = "aqd-common" at "aqd-common.xquery";
 declare namespace sparql = "http://www.w3.org/2005/sparql-results#";
 
 (: Feature Types queries - These queries return all ids of the specified feature type :)
