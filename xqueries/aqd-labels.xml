@@ -1,16 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <labels xml:lang="en">
   <B>
-    <B1>Total number of AQ zones</B1>
-    <B1_SHORT>Number of zones</B1_SHORT>
-    <B2>Total number of unkown or new records for AQ zone feature for the INSPIRE namespace</B2>
-    <B2_SHORT>Number of unknown zones or new records of zones</B2_SHORT>
-    <B3>The number of zones designated with coordinates via the ./am:geometry element</B3>
-    <B3_SHORT>Number of zones that provides coordinates inside the xml via geometry element</B3_SHORT>
-    <B4>The number of zones designated with coordinates via the ./aqd:LAU element and the ./aqd:shapefileLink element</B4>
-    <B4_SHORT>Number of zones that provides coordinates via Local Administrative Units (LAU) element and external shapefile link</B4_SHORT>
-    <B6>Total number of reported aqd:AQD_Zone</B6>
-    <B6_SHORT>Number of reported zones</B6_SHORT>
+    <B0>Check if delivery if this is a new delivery or updated delivery (via reporting year) </B0>
+    <B0_SHORT>Checks if this delivery is new or an update (on same reporting year)</B0_SHORT>
+    <B1>Compile &amp; feedback upon the total number of AQ zone feature types included in the delivery</B1>
+    <B1_SHORT>Number of zones reported</B1_SHORT>
+    <B2>Compile &amp; feedback upon the total number of new records for AQ zones included in the delivery against previous delivery</B2>
+    <B2_SHORT>Number of new zones compared to previous report</B2_SHORT>
+    <B3>Compile &amp; feedback upon the total number of existing records for AQ zones included in the delivery against previous delivery</B3>
+    <B3_SHORT>Number of existing zones compared to previous report</B3_SHORT>
+    <B4>Compile &amp; feedback upon all reported zones. Feedback report shall include the gml:id attribute, am:inspireId, am:name/gn:GeographicalName/gn:spelling/gn:text &amp; aqd:zoneCode elements as available.</B4>
+    <B4_SHORT>List reported zones</B4_SHORT>
+    <B5>Compile &amp; feedback upon the total number of modification to existing for AQ zone feature types included in the delivery, including ./aqd:predecessor information
+      Report if the object xlinked via aqd:predecessor  is not found within the current or previous deliveries (aqd:AQD_Zone)
+    </B5>
+    <B6a>The number of zones designated with coordinates via the ./am:geometry element</B6a>
+    <B6a_SHORT>Number of zones that provides coordinates inside the xml via geometry element</B6a_SHORT>
+    <B6b>The number of zones designated with coordinates via the ./aqd:LAU element and the ./aqd:shapefileLink element</B6b>
+    <B6b_SHORT>Number of zones that provides coordinates via Local Administrative Units (LAU) element and external shapefile link</B6b_SHORT>
     <B7>List of unique combinations of aqd:aqdZoneType, aqd:pollutantCode and aqd:protectionTarget</B7>
     <B7_SHORT>Number of unique combinations of zone types, pollutants and protection target</B7_SHORT>
     <B8>All gml:id attributes, am:inspireId and aqd:inspireId elements shall have unique content</B8>
@@ -18,14 +25,19 @@
     <B9>./am:inspireId/base:Identifier/base:localId shall be an unique code within namespace</B9>
     <B9_SHORT>LocalId must be a unique</B9_SHORT>
     <B10>./am:inspireId/base:Identifier/base:namespace List base:namespace and count the number of base:localId assigned to each base:namespace.</B10>
-    <B10_SHORT>Number of local Ids</B10_SHORT>
+    <B10_SHORT>List unique namespaces used and count number of elements</B10_SHORT>
+    <B10.1>Check that namespace is registered in vocabulary (http://dd.eionet.europa.eu/vocabulary/aq/namespace/view)</B10.1>
+    <B10.1_SHORT>Check namespace is registered </B10.1_SHORT>
+    <B11>./am:name attribute xsi:nil="false"</B11>
+    <B12>./am:name/gn:GeographicalName attribute xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"</B12>
     <B13>/aqd:AQD_Zone/am:name/gn:GeographicalName/gn:language value shall be the language of the name, given as a three letters code, in accordance with either ISO 639-3 or ISO 639-5.</B13>
     <B13_SHORT>The geographical language code must correspond to either the ISO 639-3 or ISO 639-5. </B13_SHORT>
     <B18>./am:name/gn:GeographicalName/gn:spelling/gn:SpellingOfName/gn:text shall return a string</B18>
     <B18_SHORT>The geographical language text must be a string</B18_SHORT>
-    <B20>/am:geometry/gml:Polygon, ./am:geometry/gml:Point, ./am:geometry/gml:MultiPoint, ./am:geometry/gml:MultiSurface, ./am:geometry/gml:Grid, ./am:geometry/gml:RectifiedGrid the srsName attribute shall be a recognisable URN. The following 3 srsNames are expected ./am:geometry/gml:Polygon/gml:exterior/gml:LinearRing/gml:posList the srsDimension attribute shall resolve to "2" to allow the x &amp; y-coordinate of the feature of interest or urn:ogc:def:crs:EPSG::4258 or urn:ogc:def:crs:EPSG::4326</B20>
-    <B20_SHORT>The coordinate reference system for the zones must be defined with a correct uniform resource name and must either be ETRS 1989,  ETRS89/ETRS-LAEA or WGS 84</B20_SHORT>
-    <B21>./am:geometry/gml:Polygon/gml:exterior/gml:LinearRing/gml:posList the srsDimension attribute shall resolve to "2" to allow the x &amp; y-coordinate of the feature of interest</B21>
+    <B19>./am:name/gn:GeographicalName/gn:spelling/gn:SpellingOfName/gn:script attribute xsi:nil="true" nilReason="unknown"</B19>
+    <B20>/am:geometry/gml:Polygon, ./am:geometry/gml:Point, ./am:geometry/gml:MultiPoint, ./am:geometry/gml:MultiSurface, ./am:geometry/gml:Grid, ./am:geometry/gml:RectifiedGrid the srsName attribute shall be a recognisable URN. The following 3 srsNames are expected urn:ogc:def:crs:EPSG::3035 or urn:ogc:def:crs:EPSG::4258 or urn:ogc:def:crs:EPSG::4326</B20>
+    <B20_SHORT>The coordinate reference system for the zones must be defined with a correct uniform resource name</B20_SHORT>
+    <B21>/am:geometry/gml:Polygon, ./am:geometry/gml:Point, ./am:geometry/gml:MultiPoint, ./am:geometry/gml:MultiSurface, ./am:geometry/gml:Grid, ./am:geometry/gml:RectifiedGrid, ./am:geometry/gml:Polygon/gml:exterior/gml:LinearRing/gml:posList the srsDimension attribute shall resolve to "2" to allow the x &amp; y-coordinate of the feature of interest</B21>
     <B21_SHORT>The dimension attribute must be given the value "2" </B21_SHORT>
     <B22>./am:geometry /gml:Polygon/gml:exterior/gml:LinearRing/gml:posList the count
       attribute shall resolve to the sum of y &amp; x;coordinate doublets.  </B22>
@@ -64,6 +76,9 @@
     <B33>./am:legalBasis/base2:LegislationCitation/base2:link value shall be
       “http://rod.eionet.europa.eu/instruments/650” </B33>
     <B33_SHORT>Legislation citation line must be “http://rod.eionet.europa.eu/instruments/650” </B33_SHORT>
+    <B34>./am:legalBasis/base2:LegislationCitation/base2:level shall be a citation via href xlink attribute of http://inspire.ec.europa.eu/codeList/LegislationLevelValue/[concept]
+      (currently resolves to 404 error)
+    </B34>
     <B35>./aqd:zoneCode shall be a unique code for the zone within the
       ./am:inspireId/base:Identifier/base:namespace. ./aqd:zoneCode . The value may
       equal the value at ./am:inspireId/base:Identifier/base:localId </B35>
@@ -75,14 +90,103 @@
     <B37_SHORT>Year in which the resident population was estimated must have the format yyyy</B37_SHORT>
     <B38>./aqd:area the value will be a decimal number GREATER THAN 0 (zero) </B38>
     <B38_SHORT>The Area value must be a decimal number, greater than zero.</B38_SHORT>
-    <B40>/aqd:timeExtensionExemption attribute must resolve to one of concept within http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/</B40>
-    <B40_SHORT>ExtensionExemption attribute must conform to Vocabulary http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/</B40_SHORT>
+    <B39a>The allowed content combination within
+      ./aqd:pollutants/aqd:Pollutant/aqd:pollutantCode AND
+      ./aqd:pollutants/aqd:Pollutant/aqd:protectionTarget
+      shall be constrained to
+
+      Sulphur dioxide (air) + health http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1  http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H
+
+      Sulphur dioxide (air) + vegetation
+      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1
+      http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V
+      Ozone (air) + health
+      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/7
+      http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H
+
+      Ozone (air) + vegetation
+      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/7
+      http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V
+
+      Nitrogen dioxide Nitrogen dioxide (air) + health http://dd.eionet.europa.eu/vocabulary/aq/pollutant/8
+      http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H
+
+      Nitrogen oxides (air) + eco http://dd.eionet.europa.eu/vocabulary/aq/pollutant/9
+      http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V
+
+      Particulate matter &lt; 10 µm (aerosol) + health http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5  http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H
+
+      Particulate matter &lt; 2.5 µm (aerosol) + health http://dd.eionet.europa.eu/vocabulary/aq/pollutant/6001
+      http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H
+
+      Carbon monoxide (air) + health http://dd.eionet.europa.eu/vocabulary/aq/pollutant/10
+      http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H
+
+      Benzene (air) + health
+      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/20
+      http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H
+      Lead in PM10 (aerosol) + health http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5012
+      http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H
+      Arsenic in PM10 (aerosol) + health http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5018
+      http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H
+      Cadmium in PM10 (aerosol) + health http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5014
+      http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H
+
+      Nickel in PM10 (aerosol) + health http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5015
+    </B39a>
+    <B39a_SHORT>Check for correct Pollutant/ProtectionTarget combination</B39a_SHORT>
+    <B39b>Count number of occurrences across XML and list it as below (it can not be 0)
+
+      Sulphur dioxide (1) + health
+      Sulphur dioxide (1) + vegetation
+      Ozone (7) + health
+      Ozone (7) + vegetation
+      Nitrogen dioxide (8) + health
+      Nitrogen oxides (9) + vegetation
+      Particulate matter &lt; 10 µm (5) + health
+      Particulate matter &lt; 2.5 µm (6001) + health
+      Carbon monoxide (10) + health
+      Benzene (20) + health Lead in PM10 (5012) + health
+      Arsenic in PM10 (5018) + health
+      Cadmium in PM10 (5014) + health
+      Nickel in PM10 (5015) + health
+      Benzo(a)pyrene in PM10 (5029) + health
+      One exception:
+      Nitrogen oxides (9) + vegetation can be 0 for Gibraltar
+    </B39b>
+    <B39b_SHORT>List missing Pollutant/ProtectionTarget combination(s)</B39b_SHORT>
+    <B39c>Combination in B39a can not be repeated within individual AQD:Zone </B39c>
+    <B39c_SHORT>List any individual zone with Pollutant/ProtectionTarget combination repeated</B39c_SHORT>
+    <B40>IF aqd:reportingPeriod included in the ReportingHeader is equal or greater thant year 2015, ./aqd:timeExtensionExemption must resolve to http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/none
+
+      Only 1 entry is allowed.
+
+      Else
+      ./aqd:timeExtensionExemption attribute must resolve to one of  concept within
+      http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/…
+
+      Multiple entries are allowed.
+    </B40>
+    <B40_SHORT>ExtensionExemption accepted prior to 2015 deliveries</B40_SHORT>
     <B41>Where ./aqd:timeExtensionExemption resolves to http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/NO2 1h OR http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/NO2 annual at least one combination within ./aqd:pollutants which includes ./aqd:pollutants/aqd:Pollutant/aqd:pollutantCode AND ./aqd:pollutants/aqd:Pollutant/aqd:protectionTarget shall be constrained to Nitro gen dioxide Nitrogen dioxide (air) + health http://dd.eionet.europa.eu/vocabulary/aq/pollutant/8 http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H</B41>
     <B41_SHORT>Where AQTimeExemption is either NO2-1h, or NO2-annual, then NO2 and Protection Target Health must be present</B41_SHORT>
     <B42>Where ./aqd:timeExtensionExemption resolves to http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/PM10-24h OR http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/PM10-annual at least one combination within ./aqd:pollutants which includes ./aqd:pollutants/aqd:Pollutant/aqd:pollutantCode AND ./aqd:pollutants/aqd:Pollutant/aqd:protectionTarget shall be constrained to Particulate matter &lt; 10 μm (aerosol) + health http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5 http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H</B42>
     <B42_SHORT>Where AQTimeExemption is either PM10-24h, or PM10-annual, then PM10 and Protection Target Health must be present.</B42_SHORT>
     <B43>Where ./aqd:timeExtensionExemption resolves to http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/C6H6-annual at least one combination within ./aqd:pollutants which includes ./aqd:pollutants/aqd:Pollutant/aqd:pollutantCode AND ./aqd:pollutants/aqd:Pollutant/aqd:protectionTarget shall be constrained to Benzene (air) + healt http://dd.eionet.europa.eu/vocabulary/aq/pollutant/20 http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H</B43>
     <B43_SHORT>Where AQTimeExemption is C6H6-annual, then C6H6 and Protection Target Health must be present.</B43_SHORT>
+    <B44>Where ./aqd:LAU has been used the list of the administrative these shall be checked to ensure they relate to the MS. This must be provided if /aqd:shapefileLink is not provided or am:geometry does not contain geometry.
+
+      The value shall be a valid code from the following codelist:
+      http://dd.eionet.europa.eu/vocabulary/common/nuts/
+      http://dd.eionet.europa.eu/vocabulary/lau1/
+      http://dd.eionet.europa.eu/vocabulary/lau2/
+
+      NUTS, LAU1 or LAU2 codes must belong to the country reporting data. Country ISO code at  cdr.eionet.europa.eu/ZZ/eu/aqd/b/…. shall be the same as the codelist:
+      http://dd.eionet.europa.eu/vocabulary/common/nuts/ZZ[concept]
+      http://dd.eionet.europa.eu/vocabulary/lau1/zz/[concept]
+      http://dd.eionet.europa.eu/vocabulary/lau2/zz/[concept]
+      (exception of gb which has lau and nut codeas as uk)
+    </B44>
     <B45>./am:geometry shall not be a href xlink. If geometry is provided via shapefile, please use element aqd:shapefileLink</B45>
     <B45_SHORT>Geometry should not be a hyperlink. If provided via shapefile, element aqd:shapefileLink need to be used</B45_SHORT>
     <B46>Where ./aqd:shapefileLink has been used this should return a link to a valid and
