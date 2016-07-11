@@ -424,6 +424,33 @@ let $G13invalid :=
             <td></td>
         </tr>
     }
+let $G13binvalid :=
+    try {
+        let $G13Results := sparqlx:executeSparqlQuery(query:getG13($cdrUrl, $reportingYear))
+        let $inspireLabels := distinct-values(data($G13Results//sparql:binding[@name='inspireLabel']/sparql:literal))
+        let $remoteConcats :=
+            for $x in $G13Results
+            return $x/sparql:binding[@name='inspireLabel']/sparql:literal || $x/sparql:binding[@name='pollutant']/sparql:literal || $x/sparql:binding[@name='objectiveType']/sparql:literal ||
+            $x/sparql:binding[@name='reportingMetric']/sparql:literal || $x/sparql:binding[@name='protectionTarget']/sparql:literal
+
+        for $x in $docRoot//aqd:AQD_Attainment[aqd:assessment/@xlink:href]
+        let $xlink := $x/aqd:assessment/@xlink:href
+        let $concat := $x/@xlink:href/string() || $x/aqd:pollutant/@xlink:href || $x/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType/@xlink:href ||
+        $x/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric/@xlink:href || $x/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/@xlink:href
+        where (not($xlink = $inspireLabels) and (not($x = $remoteConcats)))
+        return
+            <tr>
+                <td title="Feature type">{"aqd:AQD_Attainment"}</td>
+                <td title="gml:id">{data($x/@gml:id)}</td>
+                <td title="aqd:assessment">{data($x/aqd:assessment/@xlink:href)}</td>
+            </tr>
+    } catch * {
+        <tr status="failed">
+            <td title="Error code"> {$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+            <td></td>
+        </tr>
+    }
 
 (: G14 - COUNT number zone-pollutant-target comibantion to match those in dataset B and dataset C for the same reporting Year & compare it with Attainment. :)
 let $G14resultBC :=
@@ -1523,6 +1550,7 @@ return
             {xmlconv:buildVocItemsList("G12", $vocabulary:POLLUTANT_VOCABULARY, $xmlconv:VALID_POLLUTANT_IDS_11)} ./aqd:exceedanceDescriptionAdjustment may occur</span>, $labels:PLACEHOLDER,
                 $G12invalid, "base:namespace", "All values are valid", " invalid value", "", $errors:ERROR)}
         {html:buildResultRows("G13", $labels:G13, $labels:G13_SHORT, $G13invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
+        {html:buildResultRows("G13b", $labels:G13b, $labels:G13b_SHORT, $G13binvalid, "base:namespace", "All values are valid", " invalid value", "",$errors:WARNING)}
         {html:buildResultG14("G14", $labels:G14, $labels:G14_SHORT, $G14resultBC, $G14ResultG)}
         {html:build2("G14.1", $labels:G14.1, $labels:G14.1_SHORT, $G14.1invalid, "", "All assessment regimes are reported", " missing assessment regime", "", $errors:WARNING)}
         {html:buildResultRows("G15", $labels:G15, $labels:G15_SHORT, $G15invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
