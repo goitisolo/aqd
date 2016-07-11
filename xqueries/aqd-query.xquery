@@ -679,11 +679,11 @@ PREFIX aq: <http://reference.eionet.europa.eu/aq/ontology/>
                   ?regime a aqd:AQD_AssessmentRegime ;
                   aqd:assessmentThreshold ?assessmentThreshold ;
                   aqd:pollutant ?pollutant ;
-                  aqd:zone ?zone ;
                   aqd:inspireId ?inspireId .
-                  ?zone aq:reportingBegin ?reportingYear .
                   ?inspireId rdfs:label ?inspireLabel .
                   ?inspireId aqd:localId ?localId .
+                  ?assessmentThreshold aqd:classificationDate ?classificationDate .
+                  ?classificationDate rdfs:label ?reportingYear .
                   ?assessmentThreshold aq:objectiveType ?objectiveType .
                   ?assessmentThreshold aq:reportingMetric ?reportingMetric .
                   ?assessmentThreshold aq:protectionTarget ?protectionTarget .

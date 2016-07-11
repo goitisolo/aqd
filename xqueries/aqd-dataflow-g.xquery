@@ -405,12 +405,12 @@ let $G13invalid :=
         let $inspireLabels := distinct-values(data($G13Results//sparql:binding[@name='inspireLabel']/sparql:literal))
         let $remoteConcats :=
             for $x in $G13Results
-            return $x/sparql:binding[@name='inspireLabel']/sparql:literal || $x/sparql:binding[@name='pollutant']/sparql:literal || $x/sparql:binding[@name='objectiveType']/sparql:literal
+            return $x/sparql:binding[@name='inspireLabel']/sparql:literal || $x/sparql:binding[@name='pollutant']/sparql:uri || $x/sparql:binding[@name='objectiveType']/sparql:uri
 
         for $x in $docRoot//aqd:AQD_Attainment[aqd:assessment/@xlink:href]
         let $xlink := $x/aqd:assessment/@xlink:href
-        let $concat := $x/@xlink:href/string() || $x/aqd:pollutant/@xlink:href || $x/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType/@xlink:href
-        where (not($xlink = $inspireLabels) and (not($x = $remoteConcats)))
+        let $concat := $x/aqd:assessment/@xlink:href/string() || $x/aqd:pollutant/@xlink:href || $x/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType/@xlink:href
+        where (not($xlink = $inspireLabels) or (not($concat = $remoteConcats)))
         return
             <tr>
                 <td title="Feature type">{"aqd:AQD_Attainment"}</td>
@@ -430,14 +430,14 @@ let $G13binvalid :=
         let $inspireLabels := distinct-values(data($G13Results//sparql:binding[@name='inspireLabel']/sparql:literal))
         let $remoteConcats :=
             for $x in $G13Results
-            return $x/sparql:binding[@name='inspireLabel']/sparql:literal || $x/sparql:binding[@name='pollutant']/sparql:literal || $x/sparql:binding[@name='objectiveType']/sparql:literal ||
-            $x/sparql:binding[@name='reportingMetric']/sparql:literal || $x/sparql:binding[@name='protectionTarget']/sparql:literal
+            return $x/sparql:binding[@name='inspireLabel']/sparql:literal || $x/sparql:binding[@name='pollutant']/sparql:uri || $x/sparql:binding[@name='objectiveType']/sparql:uri ||
+            $x/sparql:binding[@name='reportingMetric']/sparql:uri || $x/sparql:binding[@name='protectionTarget']/sparql:uri
 
         for $x in $docRoot//aqd:AQD_Attainment[aqd:assessment/@xlink:href]
         let $xlink := $x/aqd:assessment/@xlink:href
-        let $concat := $x/@xlink:href/string() || $x/aqd:pollutant/@xlink:href || $x/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType/@xlink:href ||
+        let $concat := $x/aqd:assessment/@xlink:href/string() || $x/aqd:pollutant/@xlink:href || $x/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType/@xlink:href ||
         $x/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric/@xlink:href || $x/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/@xlink:href
-        where (not($xlink = $inspireLabels) and (not($x = $remoteConcats)))
+        where (not($xlink = $inspireLabels) or (not($concat = $remoteConcats)))
         return
             <tr>
                 <td title="Feature type">{"aqd:AQD_Attainment"}</td>
