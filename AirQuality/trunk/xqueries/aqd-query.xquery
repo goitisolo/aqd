@@ -43,6 +43,20 @@ declare function query:getAllFeatureIds($featureTypes as xs:string*, $namespaces
   return $pre || $mid || $end
 };
 
+declare function query:getAllAttainmentIds($cdrUrl as xs:string) as xs:string {
+  "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
+PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+
+SELECT distinct ?inspireLabel
+    WHERE {
+        ?attainment a aqd:AQD_Attainment;
+        aqd:inspireId ?inspireId .
+        ?inspireId rdfs:label ?inspireLabel .
+        FILTER (CONTAINS(str(?attainment), '" || $cdrUrl || "g/')) .
+}"
+};
+
 (: Generic queries :)
 declare function query:deliveryExists($obligations as xs:string*, $countryCode as xs:string, $reportingYear as xs:string) as xs:boolean {
   let $query :=
@@ -675,7 +689,7 @@ PREFIX aq: <http://reference.eionet.europa.eu/aq/ontology/>
            FILTER (strstarts(str(?reportingYear), '" || $reportingYear || "'))
        }"
 };
-
+(: TODO: Probably deprecated, to be removed :)
 declare function query:getExistingAttainmentSqarql($cdrUrl as xs:string) as xs:string {
   concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
@@ -698,20 +712,6 @@ FILTER (CONTAINS(str(?attainment), '" , $cdrUrl,  "g/')) .
 }") (: order by ?key"):)
 };
 
-
-declare function query:getInspireLabels($cdrUrl as xs:string) as xs:string {
-  concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
-PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
-
-SELECT distinct  ?inspireLabel
-    WHERE {
-        ?attainment a aqd:AQD_Attainment;
-        aqd:inspireId ?inspireId .
-        ?inspireId rdfs:label ?inspireLabel .
-        FILTER (CONTAINS(str(?attainment), '", $cdrUrl, "g/')) .
-}")(: order by ?inspireLabel"):)
-};
 
 declare function query:getAssessmentRegimeIdsC($cdrUrl as xs:string) as xs:string {
   "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>

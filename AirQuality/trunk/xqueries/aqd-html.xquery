@@ -168,7 +168,7 @@ declare function html:javaScriptRoot(){
     return
         <script type="text/javascript">{normalize-space($js)}</script>
 };
-declare function html:buildExists($ruleCode as xs:string, $longText, $text, $records as element(tr)*, $valueHeading as xs:string, $validMsg as xs:string, $unit as xs:string, $errorLevel as xs:string) {
+declare function html:buildExists($ruleCode as xs:string, $longText, $text, $records as element(tr)*, $validMessage as xs:string, $invalidMessage as xs:string, $errorLevel as xs:string) {
     let $countRecords := count($records)
     let $bulletType :=
         if (count($records) = 0) then
@@ -177,9 +177,9 @@ declare function html:buildExists($ruleCode as xs:string, $longText, $text, $rec
             $errorLevel
     let $message :=
         if ($bulletType = $errors:INFO) then
-            $validMsg
+            $validMessage
         else
-            $countRecords || " " || $unit || substring("s ", number(not($countRecords > 1)) * 2) || " found"
+            $invalidMessage
 
     let $result :=
         <tr>
