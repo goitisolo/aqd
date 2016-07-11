@@ -73,6 +73,7 @@ let $cdrUrl := common:getCdrUrl($countryCode)
 let $reportingYear := common:getReportingYear($docRoot)
 
 (: GLOBAL variables needed for all checks :)
+let $knownAttainments := distinct-values(data(sparqlx:executeSparqlQuery(query:getAllAttainmentIds($cdrUrl))//sparql:binding[@name='inspireLabel']/sparql:literal))
 let $assessmentRegimeIds := distinct-values(data(sparqlx:executeSparqlQuery(query:getAssessmentRegimeIdsC($cdrUrl))//sparql:binding[@name='inspireLabel']/sparql:literal))
 let $assessmentMetadataNamespace := distinct-values(data(sparqlx:executeSparqlQuery(query:getAssessmentMethods())//sparql:binding[@name='assessmentMetadataNamespace']/sparql:literal))
 let $assessmentMetadataId := distinct-values(data(sparqlx:executeSparqlQuery(query:getAssessmentMethods())//sparql:binding[@name='assessmentMetadataId']/sparql:literal))
@@ -134,18 +135,19 @@ let $tblAllAttainments :=
 (: G2 :)
 let $G2table :=
     try {
-        let $attainments := distinct-values(data(sparqlx:executeSparqlQuery(query:getInspireLabels($cdrUrl))//sparql:binding[@name='inspireLabel']/sparql:literal))
         for $x in $docRoot//aqd:AQD_Attainment
         let $inspireId := concat(data($x/aqd:inspireId/base:Identifier/base:namespace), "/", data($x/aqd:inspireId/base:Identifier/base:localId))
-        where (not($inspireId = $attainments))
+        where (not($inspireId = $knownAttainments))
         return
             <tr>
                 <td title="gml:id">{data($x/@gml:id)}</td>
-                <td title="base:localId">{data($x/aqd:inspireId/base:Identifier/base:localId)}</td>
-                <td title="base:namespace">{data($x/aqd:inspireId/base:Identifier/base:namespace)}</td>
-                <td title="aqd:zone">{common:checkLink(data($x/aqd:zone/@xlink:href))}</td>
-                <td title="aqd:pollutant">{common:checkLink(data($x/aqd:pollutant/@xlink:href))}</td>
-                <td title="aqd:protectionTarget">{common:checkLink(data($x/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/@xlink:href))}</td>
+                <td title="aqd:inspireId">{$inspireId}</td>
+                <td title="aqd:pollutant">{common:checkLink(distinct-values(data($x/aqd:pollutant/@xlink:href)))}</td>
+                <td title="aqd:objectiveType">{common:checkLink(distinct-values(data($x/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType/@xlink:href)))}</td>
+                <td title="aqd:reportingMetric">{common:checkLink(distinct-values(data($x/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric/@xlink:href)))}</td>
+                <td title="aqd:protectionTarget">{common:checkLink(distinct-values(data($x/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/@xlink:href)))}</td>
+                <td title="aqd:zone">{common:checkLink(distinct-values(data($x/aqd:zone/@xlink:href)))}</td>
+                <td title="aqd:assessment">{common:checkLink(distinct-values(data($x/aqd:assessment/@xlink:href)))}</td>
             </tr>
     } catch * {
         <tr status="failed">
@@ -153,29 +155,33 @@ let $G2table :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+let $G2errorLevel :=
+    if (empty($G0invalid)) then
+        if (count($G2table) = $countAttainments) then
+            $errors:INFO
+        else
+            $errors:ERROR
+    else
+        $errors:INFO
 
 
-(: G3 :)
+
+(: G3 - :)
 let $G3table :=
     try {
-        let $attainments := distinct-values(data(sparqlx:executeSparqlQuery(query:getInspireLabels($cdrUrl))//sparql:binding[@name = 'inspireLabel']/sparql:literal))
-        let $keys := distinct-values(data(sparqlx:executeSparqlQuery(query:getExistingAttainmentSqarql($cdrUrl))//sparql:binding[@name = 'key']/sparql:literal))
-        for $attainment in $docRoot//aqd:AQD_Attainment
-        let $inspireKey := concat(data($attainment//aqd:inspireId/base:Identifier/base:namespace), "/", data($attainment//aqd:inspireId/base:Identifier/base:localId))
-        let $key := concat($inspireKey, "#",
-                data($attainment/aqd:pollutant/@xlink:href), "#", data($attainment/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType/@xlink:href), "#",
-                data($attainment/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric/@xlink:href), "#",
-                data($attainment/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/@xlink:href))
-        let $existingRec := not(empty(index-of($attainments, $inspireKey)))
-        where ($inspireKey = $attainments and not($key = $keys))
+        for $x in $docRoot//aqd:AQD_Attainment
+        let $inspireId := data($x/aqd:inspireId/base:Identifier/base:namespace) ||  "/" || data($x/aqd:inspireId/base:Identifier/base:localId)
+        where ($inspireId = $knownAttainments)
         return
             <tr>
-                <td title="gml:id">{data($attainment/@gml:id)}</td>
-                <td title="base:localId">{data($attainment/aqd:inspireId/base:Identifier/base:localId)}</td>
-                <td title="base:namespace">{data($attainment/aqd:inspireId/base:Identifier/base:namespace)}</td>
-                <td title="aqd:zone">{common:checkLink(data($attainment/aqd:zone/@xlink:href))}</td>
-                <td title="aqd:pollutant">{common:checkLink(data($attainment/aqd:pollutant/@xlink:href))}</td>
-                <td title="aqd:protectionTarget">{common:checkLink(data($attainment/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/@xlink:href))}</td>
+                <td title="gml:id">{data($x/@gml:id)}</td>
+                <td title="aqd:inspireId">{$inspireId}</td>
+                <td title="aqd:pollutant">{common:checkLink(distinct-values(data($x/aqd:pollutant/@xlink:href)))}</td>
+                <td title="aqd:objectiveType">{common:checkLink(distinct-values(data($x/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType/@xlink:href)))}</td>
+                <td title="aqd:reportingMetric">{common:checkLink(distinct-values(data($x/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric/@xlink:href)))}</td>
+                <td title="aqd:protectionTarget">{common:checkLink(distinct-values(data($x/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/@xlink:href)))}</td>
+                <td title="aqd:zone">{common:checkLink(distinct-values(data($x/aqd:zone/@xlink:href)))}</td>
+                <td title="aqd:assessment">{common:checkLink(distinct-values(data($x/aqd:assessment/@xlink:href)))}</td>
             </tr>
     } catch * {
         <tr status="failed">
@@ -183,32 +189,33 @@ let $G3table :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+let $G3errorLevel :=
+    if (count($G3table) = $countAttainments) then
+        $errors:ERROR
+    else
+        $errors:INFO
 
-(: G4 :)
+(: G4 - :)
 let $G4table :=
     try {
         let $gmlIds := $docRoot//aqd:AQD_Attainment/lower-case(normalize-space(@gml:id))
         let $inspireIds := $docRoot//aqd:AQD_Attainment/lower-case(normalize-space(aqd:inspireId))
-        let $uniqueAttainment :=
-            for $attainment in $docRoot//aqd:AQD_Attainment
-            let $id := $attainment/@gml:id
-            let $inspireId := $attainment/aqd:inspireId
-            where count(index-of($gmlIds, lower-case(normalize-space($id)))) = 1
+        for $x in $docRoot//aqd:AQD_Attainment
+            let $id := $x/@gml:id
+            let $inspireId := $x/aqd:inspireId
+            let $aqdinspireId := concat($x/aqd:inspireId/base:Identifier/base:localId, "/", $x/aqd:inspireId/base:Identifier/base:namespace)
+        where count(index-of($gmlIds, lower-case(normalize-space($id)))) = 1
                     and count(index-of($inspireIds, lower-case(normalize-space($inspireId)))) = 1
-            return
-                $attainment
-        for $rec in $uniqueAttainment
-        let $aqdinspireId := concat($rec/aqd:inspireId/base:Identifier/base:localId, "/", $rec/aqd:inspireId/base:Identifier/base:namespace)
         return
             <tr>
-                <td title="gml:id">{distinct-values($rec/@gml:id)}</td>
+                <td title="gml:id">{distinct-values($x/@gml:id)}</td>
                 <td title="aqd:inspireId">{distinct-values($aqdinspireId)}</td>
-                <td title="aqd:pollutant">{common:checkLink(distinct-values(data($rec/aqd:pollutant/@xlink:href)))}</td>
-                <td title="aqd:objectiveType">{common:checkLink(distinct-values(data($rec/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType/@xlink:href)))}</td>
-                <td title="aqd:reportingMetric">{common:checkLink(distinct-values(data($rec/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric/@xlink:href)))}</td>
-                <td title="aqd:protectionTarget">{common:checkLink(distinct-values(data($rec/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/@xlink:href)))}</td>
-                <td title="aqd:zone">{common:checkLink(distinct-values(data($rec/aqd:zone/@xlink:href)))}</td>
-                <td title="aqd:assessment">{common:checkLink(distinct-values(data($rec/aqd:assessment/@xlink:href)))}</td>
+                <td title="aqd:pollutant">{common:checkLink(distinct-values(data($x/aqd:pollutant/@xlink:href)))}</td>
+                <td title="aqd:objectiveType">{common:checkLink(distinct-values(data($x/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType/@xlink:href)))}</td>
+                <td title="aqd:reportingMetric">{common:checkLink(distinct-values(data($x/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric/@xlink:href)))}</td>
+                <td title="aqd:protectionTarget">{common:checkLink(distinct-values(data($x/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/@xlink:href)))}</td>
+                <td title="aqd:zone">{common:checkLink(distinct-values(data($x/aqd:zone/@xlink:href)))}</td>
+                <td title="aqd:assessment">{common:checkLink(distinct-values(data($x/aqd:assessment/@xlink:href)))}</td>
             </tr>
     } catch * {
         <tr status="failed">
@@ -1494,10 +1501,10 @@ let $G86invalid :=
 
 return
     <table class="maintable hover">
-        {html:buildExists("G0", $labels:G0, $labels:G0_SHORT, $G0invalid, "", "Delivery is unique", "record", $errors:WARNING)}
+        {html:buildExists("G0", $labels:G0, $labels:G0_SHORT, $G0invalid, "New Delivery", "Updated Delivery", $errors:WARNING)}
         {html:buildResultRows("G1", $labels:G1, $labels:G1_SHORT, $tblAllAttainments, "", string($countAttainments), "", "",$errors:ERROR)}
-        {html:buildResultRows("G2", $labels:G2, $labels:G2_SHORT, $G2table, "", string(count($G2table)), "", "",$errors:ERROR)}
-        {html:buildResultRows("G3", $labels:G3, $labels:G3_SHORT, $G3table, "", string(count($G3table)), "", "",$errors:ERROR)}
+        {html:buildSimple("G2", $labels:G2, $labels:G2_SHORT, $G2table, "", string(count($G2table)), "", $G2errorLevel)}
+        {html:buildSimple("G3", $labels:G3, $labels:G3_SHORT, $G3table, "", string(count($G3table)), "", $G3errorLevel)}
         {html:buildResultRows("G4", $labels:G4, $labels:G4_SHORT, $G4table, "", string(count($G4table)), " ", "",$errors:ERROR)}
         {html:buildResultRows("G5", $labels:G5, $labels:G5_SHORT, $G5table, "", string(count($G5table)), " exceedance", "", $errors:ERROR)}
         {html:buildResultRows("G6", $labels:G6, $labels:G6_SHORT, $G6table, "", string(count($G6table)), " attainment", "",$errors:ERROR)}
@@ -1820,5 +1827,4 @@ return
         </div>
         }
     </div>
-
 };
