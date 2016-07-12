@@ -627,7 +627,7 @@ let $D23invalid :=
     }
 
 (: D24 - List the total number of aqd:AQD_Station which are operational :)
-let $D24invalid :=
+let $D24table :=
     try {
         for $operationActivityPeriod in $docRoot//aqd:AQD_Station/ef:operationalActivityPeriod
         where $operationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:endPosition[normalize-space(@indeterminatePosition) = "unknown"]
@@ -1778,8 +1778,7 @@ return
         {html:buildResultRows("D20", $labels:D20, $labels:D20_SHORT, $D20invalid, "aqd:AQD_Station/ef:inspireId/base:Identifier/base:localId","All smsName attributes are valid"," invalid attribute","", $errors:ERROR)}
         {html:buildResultRows("D21", $labels:D21, $labels:D21_SHORT, $invalidPosD21, "aqd:AQD_Zone/@gml:id", "All srsDimension attributes resolve to ""2""", " invalid attribute", "",$errors:ERROR)}
         {html:buildResultRows("D23", $labels:D23, $labels:D23_SHORT, $D23invalid, "", fn:string(count($D23invalid)), "", "",$errors:ERROR)}
-        <!-- TODO: fix D24 to show warning if count = 0 :) -->
-        {html:buildResultRows("D24", $labels:D24, $labels:D24_SHORT, $D24invalid, "", string(count($D24invalid)), "", "",$errors:WARNING)}
+        {html:build1("D24", $labels:D24, $labels:D24_SHORT, $D24table, "", string(count($D24table)) || "records found", "record", "", $errors:WARNING)}
         {html:buildResultRows("D26", $labels:D26, $labels:D26_SHORT, $D26invalid, "", "All station codes are valid", " invalid station codes", "",$errors:ERROR)}
         {html:buildResultRowsWithTotalCount_D("D27", $labels:D27, $labels:D27_SHORT, $D27invalid, "aqd:meteoParams", "", "", "",$errors:WARNING)}
         {html:buildResultRowsWithTotalCount_D("D28", $labels:D28, $labels:D28_SHORT, $D28invalid, "aqd:areaClassification", "", "", "",$errors:ERROR)}
