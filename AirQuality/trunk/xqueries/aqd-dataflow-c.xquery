@@ -578,21 +578,25 @@ let $C19invalid :=
     }
 
 (: C20 :)
-let $C20count :=
+let $C20invalid :=
     try {
         let $rdf := doc("http://dd.eionet.europa.eu/vocabulary/aq/environmentalobjective/rdf")
-        let $rdf :=
+        let $rdf := distinct-values(
             for $x in $rdf//skos:Concept[string-length(prop:exceedanceThreshold) > 0]
-            return $x/prop:relatedPollutant/@rdf:resource || $x/prop:hasObjectiveType/@rdf:resource || $x/prop:hasReportingMetric/@rdf:resource || $x/prop:hasProtectionTarget/@rdf:resource
+            where not($x/prop:hasObjectiveType/@rdf:resource = $vocabulary:OBJECTIVETYPE_VOCABULARY || "MO")
+            return $x/prop:relatedPollutant/@rdf:resource || "#" || $x/prop:hasObjectiveType/@rdf:resource || "#" || $x/prop:hasReportingMetric/@rdf:resource || "#" || $x/prop:hasProtectionTarget/@rdf:resource
+        )
 
-        let $reported :=
-            $docRoot//aqd:AQD_AssessmentRegime/aqd:assessmentThreshold/aqd:AssessmentThreshold/
-                    aqd:environmentalObjective/aqd:EnvironmentalObjective[not(aqd:objectiveType/@xlink:href = $vocabulary:OBJECTIVETYPE_VOCABULARY || "MO")]
+        for $i in $rdf
+            let $tokens := tokenize($i, "#")
+        where count($docRoot//aqd:AQD_AssessmentRegime/aqd:assessmentThreshold/aqd:AssessmentThreshold/
+                aqd:environmentalObjective/aqd:EnvironmentalObjective[concat(../../../../aqd:pollutant/@xlink:href, "#", aqd:objectiveType/@xlink:href, "#", aqd:reportingMetric/@xlink:href, "#", aqd:protectionTarget/@xlink:href) = $i]) = 0
         return
-            <tr count="{count(
-                for $x in $reported
-                where ($x/../../../../aqd:pollutant/@xlink:href || $x/aqd:objectiveType/@xlink:href || $x/aqd:reportingMetric/@xlink:href || $x/aqd:protectionTarget/@xlink:href) = $rdf
-                return 1)}">
+            <tr>
+                <td title="pollutant">{$tokens[1]}</td>
+                <td title="objectiveType">{$tokens[2]}</td>
+                <td title="reportingMetric">{$tokens[3]}</td>
+                <td title="hasProtectionTarget">{$tokens[4]}</td>
             </tr>
 
     } catch * {
@@ -1066,7 +1070,7 @@ return
         {html:buildResultRows("C17", $labels:C17, $labels:C17_SHORT, $C17invalid, "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "",$errors:ERROR)}
         {html:buildResultRows("C18", $labels:C18, $labels:C18_SHORT, $C18invalid, "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "",$errors:ERROR)}
         {html:buildResultRows("C19", $labels:C19, $labels:C19_SHORT, $C19invalid, "aqd:reportingMetric", "All values are valid", " invalid value", "",$errors:WARNING)}
-        {html:buildCountRow2("C20", $labels:C20, $labels:C20_SHORT, $C20count, "", "At least one valid record found", "record", $errors:WARNING)}
+        {html:build2("C20", $labels:C20, $labels:C20_SHORT, $C20invalid, "", "All combinations have been found", "record", "", $errors:WARNING)}
         {html:buildResultRows("C21", $labels:C21, $labels:C21_SHORT, $C21invalid, "aqd:reportingMetric", "All values are valid", " invalid value", "",$errors:WARNING)}
         {html:buildResultRows("C23a", $labels:C23a, $labels:C23a_SHORT, $C23ainvalid, "aqd:AQD_AssesmentRegime", "All values are valid", " invalid value", "",$errors:ERROR)}
         {html:buildResultRows("C23b", $labels:C23b, $labels:C23b_SHORT, $C23binvalid, "aqd:AQD_AssesmentRegime", "All values are valid", " invalid value", "",$errors:WARNING)}
