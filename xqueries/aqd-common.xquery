@@ -56,8 +56,24 @@ declare function common:getCountryCode($url as xs:string) as xs:string {
     return $countryCode
 };
 
+declare function common:checkNamespaces($namespaces as xs:string*, $countryCode as xs:string) as element(tr)* {
+    let $validStatus := "http://dd.eionet.europa.eu/vocabulary/datadictionary/status/valid"
+    let $namespaceUrl := "http://dd.eionet.europa.eu/vocabulary/aq/namespace/"
+    let $vocDoc := doc("http://dd.eionet.europa.eu/vocabulary/aq/namespace/rdf")
 
-declare function common:checkNamespaces($source_url) {
+    let $prefLabel := $vocDoc//skos:Concept[adms:status/@rdf:resource = $validStatus and @rdf:about = concat($namespaceUrl, $countryCode)]/skos:prefLabel[1]
+    let $altLabel := $vocDoc//skos:Concept[adms:status/@rdf:resource = $validStatus and @rdf:about = concat($namespaceUrl, $countryCode)]/skos:altLabel[1]
+    for $i in $namespaces
+    return
+    if (not($i = $prefLabel) and not($i = $altLabel)) then
+        <tr>
+            <td title="base:namespace">{$i}</td>
+        </tr>
+    else
+        ()
+
+};
+declare function common:checkNamespacesFromFile($source_url) {
     let $validStatus := "http://dd.eionet.europa.eu/vocabulary/datadictionary/status/valid"
     let $namespaceUrl := "http://dd.eionet.europa.eu/vocabulary/aq/namespace/"
     let $country := common:getCountryCode($source_url)

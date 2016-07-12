@@ -266,7 +266,7 @@ let $B10table :=
 (: B10.1 :)
 let $B10.1invalid :=
     try {
-        common:checkNamespaces($source_url)
+        common:checkNamespacesFromFile($source_url)
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
