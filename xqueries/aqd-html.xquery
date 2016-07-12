@@ -88,7 +88,7 @@ declare function html:getModalInfo($ruleCode, $longText) as element()* {
     (<span><a class="largeText" data-open="{concat('text-modal-', $ruleCode)}">&#8520;</a></span>,
     <div class="reveal" id="{concat('text-modal-', $ruleCode)}" data-reveal="">
         <h4>{$ruleCode}</h4>
-        <hr/>
+        <hr>&#32;</hr>
         <p>{$longText}</p>
         <button class="close-button" data-close="" aria-label="Close modal" type="button">x</button>
     </div>)
