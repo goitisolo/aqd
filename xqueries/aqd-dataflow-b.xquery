@@ -632,7 +632,7 @@ let $B39binvalid :=
                         if ((($code = "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1") and ($target = "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V")) or
                         (($code = "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/9") and ($target = "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V"))) then
                             0 else 1
-                    else if ($countryCode = "gb") then 0 else 1
+                    else 1
                 else 0
             return
                 <result>
@@ -683,7 +683,7 @@ let $B40invalid :=
     try {
         let $year := xs:integer(substring($docRoot//aqd:AQD_ReportingHeader/aqd:reportingPeriod/gml:TimePeriod/gml:beginPosition, 1, 4))
         let $valid :=
-            if ($year > 2015) then
+            if ($year >= 2015) then
                 "http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/none"
             else
                 dd:getValidConcepts("http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/rdf")
@@ -863,7 +863,7 @@ return
         {html:buildResultRows("B39a", $labels:B39a, <span>{$labels:B39a_SHORT} - {html:buildInfoTable("B39a", $B39aItemsList)}</span>, $B39ainvalid, "aqd:AQD_Zone/am:inspireId/base:Identifier/base:localId", "All values are valid", " invalid value", "", $errors:WARNING)}
         {html:buildResultTable("B39b", $labels:B39b, $labels:B39b_SHORT, $B39binvalid, "aqd:AQD_Zone/am:inspireId/base:Identifier/base:localId", "All values are valid", " missing value", "", $errors:ERROR)}
         {html:buildResultTable("B39c", $labels:B39c, $labels:B39c_SHORT, $B39cinvalid, "aqd:AQD_Zone/am:inspireId/base:Identifier/base:localId", "All values are valid", " invalid value", "", $errors:ERROR)}
-        {html:build2("B40", $labels:B40, $labels:B40_SHORT, $B40invalid, "aqd:timeExtensionExemption", "All values are valid", "record", "", $errors:ERROR)}
+        {html:build2("B40", $labels:B40, $labels:B40_SHORT, $B40invalid, "aqd:timeExtensionExemption", "All values are valid", "record", "", $errors:WARNING)}
         {html:buildResultTable("B41", $labels:B41, $labels:B41_SHORT, $B41invalid, "", "All values are valid", " invalid value", "", $errors:ERROR)}
         {html:buildResultTable("B42", $labels:B42, $labels:B42_SHORT, $B42invalid, "", "All values are valid", " crucial invalid value", "", $errors:ERROR)}
         {html:buildResultTable("B43", $labels:B43, $labels:B43_SHORT, $B43invalid, "", "All values are valid", " crucial invalid value", "", $errors:ERROR)}
