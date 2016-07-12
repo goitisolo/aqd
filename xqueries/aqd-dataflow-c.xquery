@@ -71,6 +71,7 @@ declare function xmlconv:checkReport($source_url as xs:string, $countryCode as x
 let $envelopeUrl := common:getEnvelopeXML($source_url)
 let $docRoot := doc($source_url)
 let $cdrUrl := common:getCdrUrl($countryCode)
+let $cdir := if (contains($source_url, "c_preliminary")) then "c_preliminary/" else "c/"
 let $zonesUrl := concat($cdrUrl, $bDir)
 let $reportingYear := common:getReportingYear($docRoot)
 let $latestZones := query:getLatestEnvelope($zonesUrl, $reportingYear)
@@ -87,7 +88,7 @@ let $allRegimes := query:getAllRegimeIds($namespaces)
 (: C0 :)
 let $C0invalid :=
     try {
-        if (query:deliveryExists($xmlconv:OBLIGATIONS, $countryCode, $reportingYear)) then
+        if (query:deliveryExists($xmlconv:OBLIGATIONS, $countryCode, $cdir, $reportingYear)) then
             <tr>
                 <td title="base:localId">{$docRoot//aqd:AQD_ReportingHeader/aqd:inspireId/base:Identifier/base:namespace/string()}</td>
                 <td title="base:localId">{$docRoot//aqd:AQD_ReportingHeader/aqd:inspireId/base:Identifier/base:localId/string()}</td>
