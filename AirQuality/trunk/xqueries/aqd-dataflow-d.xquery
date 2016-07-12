@@ -317,7 +317,7 @@ let $D7table :=
         let $localId := $docRoot//aqd:AQD_Network/ef:inspireId/base:Identifier[base:namespace = $id]/base:localId
         return
             <tr>
-                <td title="feature">Network(s)</td>
+                <td title="feature">aqd:AQD_Network</td>
                 <td title="base:namespace">{$id}</td>
                 <td title="base:localId">{count($localId)}</td>
             </tr>
@@ -1713,7 +1713,7 @@ return
         {html:buildConcatRow($duplicateaqdInspireIds, "aqd:inspireId - ")}
         {html:buildInfoTR("Specific checks on AQD_Network feature(s) within this XML")}
         {html:buildCountRow("D6", $labels:D6, $labels:D6_SHORT, $D6invalid, (), (), ())}
-        {html:buildResultRows("D7", $labels:D7, $labels:D7_SHORT, $D7table, "", string(count($D7table)), "", "", $errors:ERROR)}
+        {html:buildUnique("D7", $labels:D7, $labels:D7_SHORT, $D7table, "", string(count($D7table)), "namespace", $errors:ERROR)}
         {html:buildResultRows("D7.1", $labels:D7.1, $labels:D7.1_SHORT, $D7.1invalid, "base:Identifier/base:namespace", "All values are valid", " invalid namespaces", "", $errors:ERROR)}
         {html:buildResultRowsWithTotalCount_D("D8", $labels:D8, $labels:D8_SHORT, $D8invalid, "ef:mediaMonitored", "", "", "", $errors:WARNING)}
         {html:buildResultRowsWithTotalCount_D("D9", $labels:D9, $labels:D9_SHORT, $D9invalid, "ef:organisationLevel", "", "", "",$errors:WARNING)}
