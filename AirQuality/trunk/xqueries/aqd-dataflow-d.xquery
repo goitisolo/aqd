@@ -477,7 +477,7 @@ let $D16table :=
 (: D17 aqd:AQD_Station/ef:name shall return a string :)
 let $D17invalid :=
     try {
-        for $x in $docRoot//aqd:AQD_Station[ef:name = ""]
+        for $x in $docRoot//aqd:AQD_Station[string(ef:name) = ""]
         return
             <tr>
                 <td title="base:localId">{string($x/ef:inspireId/base:Identifier/base:localId)}</td>
