@@ -209,7 +209,7 @@ let $C6table :=
 (: C6.1 :)
 let $C6.1invalid :=
     try {
-        common:checkNamespaces($source_url)
+        common:checkNamespacesFromFile($source_url)
     }  catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>

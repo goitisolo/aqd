@@ -341,7 +341,7 @@ let $G9table :=
 (: G9.1 :)
 let $G9.1invalid :=
     try {
-        common:checkNamespaces($source_url)
+        common:checkNamespacesFromFile($source_url)
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>

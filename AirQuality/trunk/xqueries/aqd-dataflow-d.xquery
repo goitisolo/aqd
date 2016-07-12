@@ -331,7 +331,7 @@ let $D7table :=
 (: D7.1 :)
 let $D7.1invalid :=
     try {
-        common:checkNamespaces($source_url)
+        common:checkNamespaces(distinct-values($docRoot//aqd:AQD_Network/ef:inspireId/base:Identifier/base:namespace), $countryCode)
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
@@ -471,6 +471,17 @@ let $D16table :=
             <td title="Error code"> {$err:code}</td>
             <td title="Error description">{$err:description}</td>
             <td></td>
+        </tr>
+    }
+
+(: D16.1 :)
+let $D16.1invalid :=
+    try {
+        common:checkNamespaces(distinct-values($docRoot//aqd:AQD_Station/ef:inspireId/base:Identifier/base:namespace), $countryCode)
+    } catch * {
+        <tr status="failed">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
         </tr>
     }
 
@@ -751,6 +762,17 @@ let $D32table :=
             <td title="Error code"> {$err:code}</td>
             <td title="Error description">{$err:description}</td>
             <td></td>
+        </tr>
+    }
+
+(: D32.1 :)
+let $D32.1invalid :=
+    try {
+        common:checkNamespaces(distinct-values($docRoot//aqd:AQD_SamplingPoint/ef:inspireId/base:Identifier/base:namespace), $countryCode)
+    } catch * {
+        <tr status="failed">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
         </tr>
     }
 
@@ -1225,6 +1247,16 @@ let $D55table :=
             <td></td>
         </tr>
     }
+(: D55.1 :)
+let $D55.1invalid :=
+    try {
+        common:checkNamespaces(distinct-values($docRoot//aqd:AQD_SamplingPointProcess/ef:inspireId/base:Identifier/base:namespace), $countryCode)
+    } catch * {
+        <tr status="failed">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
 
 (: D56 Done by Rait :)
 let $D56invalid :=
@@ -1477,6 +1509,16 @@ let $D72table :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+(: D72.1 :)
+let $D72.1invalid :=
+    try {
+        common:checkNamespaces(distinct-values($docRoot//aqd:AQD_Sample/ef:inspireId/base:Identifier/base:namespace), $countryCode)
+    } catch * {
+        <tr status="failed">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
 
 (: D73 :)
 let $allGmlPoint := $docRoot//aqd:AQD_Sample/sams:shape/gml:Point
@@ -1724,6 +1766,7 @@ return
         {html:buildInfoTR("Specific checks on AQD_Station feature(s) within this XML")}
         {html:buildCountRow("D15", $labels:D15, $labels:D15_SHORT, $D15invalid, "All Ids are unique", (), ())}
         {html:buildResultRows("D16", $labels:D16, $labels:D16_SHORT, $D16table, "", string(count($D16table)), "", "",$errors:ERROR)}
+        {html:build2("D16.1", $labels:D16.1, $labels:D16.1_SHORT, $D16.1invalid, "base:Identifier/base:namespace", "All values are valid", " invalid namespaces", "", $errors:ERROR)}
         {html:buildResultRows("D17", $labels:D17, $labels:D17_SHORT, $D17invalid, "", "All values are valid", "", "",$errors:ERROR)}
         {html:buildResultRows("D18", $labels:D18, $labels:D18_SHORT, $D18invalid, "", "All values are valid", "", "",$errors:WARNING)}
         {html:buildResultRowsWithTotalCount_D("D19", $labels:D19, $labels:D19, $D19invalid, "ef:mediaMonitored", "", "", "",$errors:WARNING)}
@@ -1739,6 +1782,7 @@ return
         {html:buildResultRowsWithTotalCount_D("D30", $labels:D30, $labels:D30_SHORT, $D30invalid, "aqd:dispersionRegional", "", "", "",$errors:WARNING)}
         {html:buildResultRows("D31", $labels:D31, $labels:D31_SHORT, $D31invalid, "", concat(string(count($D31invalid))," errors found.") , "", "",$errors:ERROR)}
         {html:buildResultRows("D32", $labels:D32, $labels:D32_SHORT, $D32table, "", string(count($D32table)), "", "",$errors:ERROR)}
+        {html:build2("D32.1", $labels:D32.1, $labels:D32.1_SHORT, $D32.1invalid, "base:Identifier/base:namespace", "All values are valid", " invalid namespaces", "", $errors:ERROR)}
         {html:buildResultRowsWithTotalCount_D("D33", $labels:D33, $labels:D33_SHORT, $D33invalid, "ef:mediaMonitored", "", "", "",$errors:WARNING)}
         {html:buildResultRows("D34", $labels:D34, $labels:D34_SHORT, $D34invalid, "", "All values are valid", "", "", $errors:ERROR)}
         {html:buildResultRows("D35", $labels:D35, $labels:D35_SHORT, $D35invalid, "aqd:AQD_SamplingPoint/ef:inspireId/base:Identifier/base:localId", "All srsDimension attributes resolve to ""2""", " invalid elements", "",$errors:ERROR)}
@@ -1760,6 +1804,7 @@ return
         {html:buildResultRows("D54", $labels:D54, $labels:D54_SHORT, $D54invalid, "", concat(string(count($D54invalid))," errors found.") , " invalid attribute", "",$errors:ERROR)}
         {html:buildInfoTR("Specific checks on AQD_SamplingPointProcess feature(s) within this XML")}
         {html:buildResultRows("D55", $labels:D55, $labels:D55_SHORT, $D55table, "", string(count($D55table)), "", "","info")}
+        {html:build2("D55.1", $labels:D55.1, $labels:D55.1_SHORT, $D55.1invalid, "base:Identifier/base:namespace", "All values are valid", " invalid namespaces", "", $errors:ERROR)}
         {html:buildResultRowsWithTotalCount_D("D56", $labels:D56, $labels:D56_SHORT, $D56invalid, "aqd:measurementType", "", "", "",$errors:ERROR)}
         {html:buildResultRows("D57", $labels:D57, $labels:D57_SHORT, $D57table, "", concat(string(count($D57table)), " errors found"), "", "", $errors:ERROR)}
         {html:buildResultRows("D58", $labels:D58, $labels:D58_SHORT, $D58table, "", concat(fn:string(count($D58table))," errors found"), " invalid attribute", "",$errors:WARNING)}
@@ -1776,6 +1821,7 @@ return
         {html:buildInfoTR("Specific checks on AQD_Sample feature(s) within this XML")}
         {html:buildResultRows("D71", $labels:D71, $labels:D71_SHORT, $D71invalid, "", concat(string(count($D71invalid))," errors found.") , "", "",$errors:ERROR)}
         {html:buildResultRows("D72", $labels:D72, $labels:D72_SHORT, $D72table, "", string(count($D72table)), "", "",$errors:ERROR)}
+        {html:build2("D72.1", $labels:D72.1, $labels:D72.1_SHORT, $D72.1invalid, "base:Identifier/base:namespace", "All values are valid", " invalid namespaces", "", $errors:ERROR)}
         <!-- TODO: fix D73 to show errlevel if count = 0 - boolean is set in $isInvalidInvalidD73 -->
         {html:buildResultRows("D73", $labels:D73, $labels:D73_SHORT, $D73invalid, "", concat(string(count($D73invalid)), $errMsg73), "", "",$errLevelD73)}
         {html:buildResultRows("D74", $labels:D74, $labels:D74_SHORT, $D74invalid, "aqd:AQD_Sample/@gml:id","All srsDimension attributes are valid"," invalid attribute","",$errors:ERROR)}
