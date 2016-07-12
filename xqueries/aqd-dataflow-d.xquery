@@ -1599,7 +1599,8 @@ let $D76invalid :=
                 ()
             else
                 <tr>
-                    <td title="base:localId">{string($x/ef:inspireId/base:Identifier/base:localId)}</td>
+                    <td title="AQD_Sample">{tokenize($xlink, "/")[last()]}</td>
+                    <td title="AQD_SamplingPoint">{string($x/ef:inspireId/base:Identifier/base:localId)}</td>
                 </tr>
     } catch * {
         <tr status="failed">
