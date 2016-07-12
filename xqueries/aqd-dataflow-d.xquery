@@ -1359,8 +1359,43 @@ let $D63invalid :=
     }
 
 
-(: D67 Jaume Targa :)
-let $D67invalid :=
+(: D67a :)
+let $D67ainvalid :=
+    try {
+        let $allProcNotMatchingCondition67 :=
+            for $proc in $docRoot//aqd:AQD_SamplingPointProcess
+            let $demonstrated := data($proc/aqd:equivalenceDemonstration/aqd:EquivalenceDemonstration/aqd:equivalenceDemonstrated/@xlink:href)
+            let $demonstrationReport := data($proc/aqd:equivalenceDemonstration/aqd:EquivalenceDemonstration/aqd:demonstrationReport)
+            where not(xmlconv:isValidConceptCode($demonstrated, $vocabulary:EQUIVALENCEDEMONSTRATED_VOCABULARY))
+            return concat(data($proc/ompr:inspireId/base:Identifier/base:namespace), '/', data($proc/ompr:inspireId/base:Identifier/base:localId))
+
+        for $invalidTrueUsedAQD67 in $docRoot//aqd:AQD_SamplingPoint
+        let $procIds67 := data($invalidTrueUsedAQD67/ef:observingCapability/ef:ObservingCapability/ef:procedure/@xlink:href)
+        let $aqdUsed67 := $invalidTrueUsedAQD67/aqd:usedAQD = true()
+
+        for $procId67 in $procIds67
+        return
+            if ($aqdUsed67 and not(empty(index-of($allProcNotMatchingCondition67, $procId67)))) then
+                <tr>
+                    <td title="gml:id">{data($invalidTrueUsedAQD67/@gml:id)}</td>
+                    <td title="base:localId">{data($invalidTrueUsedAQD67/ef:inspireId/base:Identifier/base:localId)}</td>
+                    <td title="base:namespace">{data($invalidTrueUsedAQD67/ef:inspireId/base:Identifier/base:namespace)}</td>
+                    <td title="ef:procedure">{$procId67}</td>
+                    <td title="ef:ObservingCapability">{data($invalidTrueUsedAQD67/ef:observingCapability/ef:ObservingCapability/@gml:id)}</td>
+                </tr>
+            else
+                ()
+    } catch * {
+        <tr status="failed">
+            <td title="Error code"> {$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+            <td></td>
+        </tr>
+    }
+
+(: D67b - ./aqd:equivalenceDemonstration/aqd:EquivalenceDemonstration/aqd:equivalenceDemonstrated should resolve to
+ : http://dd.eionet.europa.eu/vocabulary/aq/equivalencedemonstrated/ for all SamplingPointProcess :)
+let $D67binvalid :=
     try {
         let $allProcNotMatchingCondition67 :=
             for $proc in $docRoot//aqd:AQD_SamplingPointProcess
@@ -1795,7 +1830,8 @@ return
                 (), $allInvalid61, "", concat(fn:string(count($allInvalid61))," errors found"), "", "", ())}-->
         {html:buildResultRowsWithTotalCount_D("D63", $labels:D63, $labels:D63_SHORT, $D63invalid, "aqd:detectionLimit", "", "", "",$errors:ERROR)}
         {html:buildInfoTR("Checks on SamplingPointProcess(es) where the xlinked SamplingPoint has aqd:AQD_SamplingPoint/aqd:usedAQD equals TRUE (D67 to D70):")}
-        {html:buildResultRows("D67", $labels:D67, $labels:D67_SHORT, $D67invalid, "", concat(fn:string(count($D67invalid))," errors found"), "", "", $errors:WARNING)}
+        {html:buildResultRows("D67a", $labels:D67a, $labels:D67a_SHORT, $D67ainvalid, "", concat(fn:string(count($D67ainvalid))," errors found"), "", "", $errors:ERROR)}
+        {html:buildResultRows("D67b", $labels:D67b, $labels:D67b_SHORT, $D67binvalid, "", concat(fn:string(count($D67binvalid))," errors found"), "", "", $errors:WARNING)}
         {html:buildResultRows("D68", $labels:D68, $labels:D68_SHORT, $D68invalid, "", concat(fn:string(count($D68invalid))," errors found"), "", "", $errors:WARNING)}
         {html:buildResultRows("D69", $labels:D69, $labels:D69_SHORT, $allInvalidTrueUsedAQD69, "", concat(fn:string(count($allInvalidTrueUsedAQD69))," errors found"), "", "", $errors:WARNING)}
         {html:buildInfoTR("Specific checks on AQD_Sample feature(s) within this XML")}
