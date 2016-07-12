@@ -628,7 +628,11 @@ let $B39binvalid :=
             let $count := count($docRoot//aqd:AQD_Zone/aqd:pollutants/aqd:Pollutant[aqd:pollutantCode/@xlink:href = $code and aqd:protectionTarget/@xlink:href = $target])
             let $warning :=
                 if ($count = 0) then
-                    if ($countryCode = "gb") then 0 else 1
+                    if ($countryCode = "gi") then
+                        if ((($code = "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1") and ($target = "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V")) or
+                        (($code = "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/9") and ($target = "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V"))) then
+                            0 else 1
+                    else if ($countryCode = "gb") then 0 else 1
                 else 0
             return
                 <result>
