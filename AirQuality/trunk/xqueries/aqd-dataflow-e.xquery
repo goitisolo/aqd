@@ -38,7 +38,7 @@ let $cdrUrl := common:getCdrUrl($countryCode)
 (: E0 :)
 let $E0invalid :=
     try {
-        if (query:deliveryExists($xmlconv:OBLIGATIONS, $countryCode, $reportingYear)) then
+        if (query:deliveryExists($xmlconv:OBLIGATIONS, $countryCode, "e/", $reportingYear)) then
             <tr>
                 <td title="base:localId">{$docRoot//aqd:AQD_ReportingHeader/aqd:inspireId/base:Identifier/base:namespace/string()}</td>
                 <td title="base:localId">{$docRoot//aqd:AQD_ReportingHeader/aqd:inspireId/base:Identifier/base:localId/string()}</td>

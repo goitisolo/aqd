@@ -58,7 +58,7 @@ SELECT distinct ?inspireLabel
 };
 
 (: Generic queries :)
-declare function query:deliveryExists($obligations as xs:string*, $countryCode as xs:string, $reportingYear as xs:string) as xs:boolean {
+declare function query:deliveryExists($obligations as xs:string*, $countryCode as xs:string, $dir as xs:string, $reportingYear as xs:string) as xs:boolean {
   let $query :=
       "PREFIX aqd: <http://rod.eionet.europa.eu/schema.rdf#>
        SELECT ?envelope
@@ -69,7 +69,7 @@ declare function query:deliveryExists($obligations as xs:string*, $countryCode a
           aqd:hasFile ?file ;
           aqd:period ?period
           FILTER(str(?obligation) in ('" || string-join($obligations, "','") || "'))
-          FILTER(CONTAINS(str(?envelope), '" || common:getCdrUrl($countryCode) || "'))
+          FILTER(CONTAINS(str(?envelope), '" || common:getCdrUrl($countryCode) || $dir || "'))
           FILTER(STRSTARTS(str(?period), '" || $reportingYear || "'))
        }"
    return count(sparqlx:executeSparqlQuery($query)//sparql:binding[@name = 'envelope']/sparql:uri) > 0
