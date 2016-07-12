@@ -202,46 +202,67 @@
     <B47_SHORT>Zone type must be either Agglomeration or Non-agglomeration </B47_SHORT>
   </B>
   <D>
-    <D1>Total number of environmental monitoring feature types provided within this XML</D1>
-    <D1_SHORT>Total number feature types within this XML Document:</D1_SHORT>
+    <D0>Check if delivery if this is a new delivery or updated delivery (via reporting year) </D0>
+    <D0_SHORT>Checks if this delivery is new or an update (on same reporting year)</D0_SHORT>
+    <D1>Compile &amp; feedback upon the total number of each environmental monitoring feature types included in the delivery</D1>
+    <D1_SHORT>Total number feature types within this XML Document</D1_SHORT>
     <D2>Compile and feedback upon the total number of new records for each environmental monitoring feature types included in the delivery</D2>
-    <D2_SHORT>Total number of new records for each feature type included in the delivery:</D2_SHORT>
-    <D3>Compile and feedback upon the total number of modification to existing for each environmental monitoring feature types included in the delivery</D3>
-    <D3_SHORT>Total number of modifications to existing feature types included in the delivery:</D3_SHORT>
-    <D4>Full list of reported Environmental Monitoring Feature within this XML</D4>
-    <D4_SHORT>Reported Environmental Monitoring Features within this XML Document:</D4_SHORT>
+    <D2_SHORT>Total number of new records for each feature type included in the delivery</D2_SHORT>
+    <D3>Compile and feedback upon the total number of updated environmental monitoring feature types included in the delivery</D3>
+    <D3_SHORT>Total number of existing feature types compared to previous reports</D3_SHORT>
+    <D4>Compile &amp; feedback a list of the unique identifier information for each new record or modification to an environmental monitoring feature type. Feedback report shall include the gml:id attribute, ef:inspireId, aqd:inspireId, ef:name and/or ompr:name elements as available.</D4>
+    <D4_SHORT>Full list of reported Environmental Monitoring Features within this XML Document</D4_SHORT>
     <D5>All gml:id attributes, ef:inspireId and aqd:inspireId elements shall have unique content</D5>
     <D5_SHORT>Id elements must have unique content</D5_SHORT>
     <D6>aqd:AQD_Network/ef:inspireId/base:Identifier/base:localId shall be an unique code for AQD_network and unique within the namespace.</D6>
-    <D6_SHORT>Must be a unique code for the AQD_network.</D6_SHORT>
+    <D6_SHORT>LocalId must be a unique code for the AQD_network.</D6_SHORT>
     <D7>Count the number of unique AQD_Network (via localId) submitted within base:namespace.</D7>
-    <D7_SHORT>The number of unique Ids submitted:</D7_SHORT>
+    <D7_SHORT>List unique namespaces used and count number of Networks used.</D7_SHORT>
+    <D7.1>Check that namespace is registered in vocabulary (http://dd.eionet.europa.eu/vocabulary/aq/namespace/view)</D7.1>
+    <D7.1_SHORT>Check namespace is registered </D7.1_SHORT>
     <D8>The content of aqd:AQD_Network/ef:mediaMonitored shall resolve to any concept inhttp://inspire.ec.europa.eu/codeList/MediaValue/</D8>
     <D8_SHORT>Must conform to a recognised media value. These are: Air, Biota, Landscape, Sediment, Soil/Ground, Waste and Water.</D8_SHORT>
     <D9>The content of aqd:AQD_Network/ef:organisationLevel shall resolve to any concept in http://dd.eionet.europa.eu/vocabulary/aq/organisationallevel/</D9>
     <D9_SHORT>Must conform to a recognised Organisation Level. These are: International, Local, LocalAuthority, Municipality, National and Regional.</D9_SHORT>
     <D10>The content of aqd:AQD_Network/aqd:networkType shall resolve to any concept in http://dd.eionet.europa.eu/vocabulary/aq/networktype/</D10>
-    <D10_SHORT>Must conform to the code 'air' in the Media codelist in the Inspire registry </D10_SHORT>
+    <D10_SHORT>If provide, must conform to a recognised network type in the vocabulary.</D10_SHORT>
     <D11> aqd:AQD_Network/aqd:operationActivityPeriod/gml:TimePeriod/gml:beginPosition shall be less than gml:endPosition</D11>
     <D11_SHORT>Start time must be before End time.</D11_SHORT>
+    <D12>./ef:name shall return a string</D12>
+    <D12_SHORT>Network name must be provided</D12_SHORT>
+    <D13>Information on responsible authority for the network management must be provided</D13>
+    <D13_SHORT>Information on responsible authority for the network management must be provided</D13_SHORT>
     <D14>The content of /aqd:AQD_Network/aqd:aggregationTimeZone attribute shall resolve to a valid code in http://dd.eionet.europa.eu/vocabulary/aq/timezone/</D14>
-    <D14_SHORT>Must conform to a recognised Time Zone: These are UTC (+01 to +06) and (-01 to -06)</D14_SHORT>
+    <D14_SHORT>Must conform to a recognised Time Zone as vocabulary . These are UTC (+01 to +06) and (-01 to -06)</D14_SHORT>
     <D15>aqd:AQD_Station/ef:inspireId/base:Identifier/base:localId shall be an unique code within namespace</D15>
     <D15_SHORT>Station ID must be a unique code.</D15_SHORT>
     <D16>Count the number of unique AQD_Station (via localId) submitted within base:namespace.</D16>
-    <D16_SHORT>The number of unique Stations reported are:</D16_SHORT>
-    <D18>The content of /aqd:AQD_Station/ef:mediaMonitored shall resolve to any concept in http://inspire.ec.europa.eu/codeList/MediaValue/</D18>
-    <D18_SHORT>Must conform to a recognised media value. These are: Air, Biota, Landscape, Sediment, Soil/Ground, Waste and Water.</D18_SHORT>
+    <D16_SHORT>List unique namespaces used and count number of Stations used.</D16_SHORT>
+    <D16.1>Check that namespace is registered in vocabulary (http://dd.eionet.europa.eu/vocabulary/aq/namespace/view)</D16.1>
+    <D16.1_SHORT>Check namespace is registered </D16.1_SHORT>
+    <D17>./ef:name shall return a string</D17>
+    <D17_SHORT>Station name must be provided</D17_SHORT>
+    <D18>./ef:belongsTo shall resolve to a traversable local of global URI to ../AQD_Network</D18>
+    <D18_SHORT>Station must belong to a network</D18_SHORT>
     <D19>The content of /aqd:AQD_Station/ef:mediaMonitored shall resolve to any concept in http://inspire.ec.europa.eu/codeList/MediaValue/</D19>
     <D19_SHORT>Must conform to a recognised media value. These are: Air, Biota, Landscape, Sediment, Soil/Ground, Waste and Water.</D19_SHORT>
-    <D20> ./ef:geometry/gml:Points the srsName attribute shall be a recognisable URN . The following 2 srsNames are expected urn:ogc:def:crs:EPSG::4258 or urn:ogc:def:crs:EPSG::4326</D20>
-    <D20_SHORT>The coordinate reference system for the zones must be defined with a correct uniform resource name and must either be ETRS 1989,  ETRS89/ETRS-LAEA or WGS 84</D20_SHORT>
-    <D21>./ef:geometry/gml:Point/gml:pos the srsDimension attribute shall resolve to "2" to allow the coordinate of the station</D21>
-    <D21_SHORT>The Dimension attribute shall resolve to "2." </D21_SHORT>
-    <D23> Total number aqd:AQD_Station invalid operational activity periods</D23>
+    <D20>The srsName attribute within ./ef:geometry/gml:Point shall be a recognisable URN.  The following 3 srsNames are expected urn:ogc:def:crs:EPSG::3035 or  urn:ogc:def:crs:EPSG::4258 or urn:ogc:def:crs:EPSG::4326</D20>
+    <D20_SHORT>The coordinate reference system for the stations must be defined with a correct uniform resource name</D20_SHORT>
+    <D21>./ef:geometry/gml:Point/gml:pos srsDimension attribute shall resolve to “2” to allow the coordinate of the station.
+
+      ORDER of 2 coordinates MUST BE Latitude &amp; Longitud when providing the accepted srsNames
+    </D21>
+    <D21_SHORT>The Dimension attribute shall resolve to "2"  and  the order must be Latitude &amp; Longitude</D21_SHORT>
+    <D22>./ef:geometry/gml:Point shall resolve to within the geographic boundary or bounding box of the MS.</D22>
+    <D23>List the total number aqd:AQD_Station invalid operational activity periods
+      ./ef:operationActivityPeriod/ef:OperationActivityPeriod/ef:activityTime/gml:TimePeriod/gml:beginPosition shall be less than gml:endPosition.
+    </D23>
     <D23_SHORT>Total number of invalid operational activity periods for the stations</D23_SHORT>
-    <D24>Total number of aqd:AQD_Station which are operational</D24>
+    <D24>List the total number of aqd:AQD_Station which are operational
+      ./ef:operationActivityPeriod/ef:OperationActivityPeriod/ef:activityTime/gml:TimePeriod/gml:endPosition which are unclosed (null) or have an  indeterminatePosition="unknown" attribute
+    </D24>
     <D24_SHORT>Total number of operational Stations</D24_SHORT>
+    <D25>./ef:operationActivityPeriod/ef:OperationActivityPeriod/ef:activityTime/gml:TimePeriod/gml:endPosition with valid content (historical content) shall indicate that the environmental monitoring feature type is no longer operational.</D25>
     <D26>AQD_Station/aqd:EUStationCode shall be an unique code for the station starting with ISO2-country code </D26>
     <D26_SHORT>Station code must be unique, starting with ISO2-country code</D26_SHORT>
     <D27>The content of aqd:AQD_Station/aqd:meteoParams shall resolve to any concept in http://vocab.nerc.ac.uk/collection/P07/current/, http://vocab.nerc.ac.uk/collection/I01/current/, http://dd.eionet.europa.eu/vocabulary/aq/meteoparameter/</D27>
@@ -253,21 +274,35 @@
     <D30>The content of aqd:AQD_Station/aqd:dispersionRegional shall resolve to any concept in http://dd.eionet.europa.eu/vocabulary/aq/dispersionregional/</D30>
     <D30_SHORT>Must use a recognised Regional descriptor: Alpine, Base, Basin-Hilly, Coast-Mount,  Coast-Plane, Hilly, Mount, Mount-Slope, Plane, Valley-Hilly and Valley-Mount.</D30_SHORT>
     <D31>AQD_SamplingPoint/ef:inspireId/base:Identifier/base:localId not unique codes:</D31>
-    <D31_SHORT>Sampling Point local Id are not unique codes:</D31_SHORT>
-    <D32>Count the number of unique AQD_SamplingPoint (via localId) submitted within base:namespace</D32>
-    <D32_SHORT>The number of unique Sampling Points submitted within the XML document.</D32_SHORT>
+    <D31_SHORT>Sampling Point local Id must be unique</D31_SHORT>
+    <D32>Count the number of unique AQD_SamplingPoint (via localId) submitted within base:namespace.</D32>
+    <D32_SHORT>List unique namespaces used and count number of SamplingPoint used.</D32_SHORT>
+    <D32.1>Check that namespace is registered in vocabulary (http://dd.eionet.europa.eu/vocabulary/aq/namespace/view)</D32.1>
+    <D32.1_SHORT>Check namespace is registered </D32.1_SHORT>
     <D33>The content of aqd:AQD_SamplingPoint/ef:mediaMonitored shall resolve to any concept inhttp://dd.eionet.europa.eu/vocabulary/inspire/MediaValue/</D33>
     <D33_SHORT>Must conform to the code 'air' in the Media codelist in the Inspire registry </D33_SHORT>
-    <D34>aqd:AQD_SamplingPoint/am:geometry/gml:Point the srsName attribute shall be a recognisable URN . The following 2 srsNames are expected urn:ogc:def:crs:EPSG::4258 or urn:ogc:def:crs:EPSG::4326</D34>
-    <D34_SHORT>The coordinate reference system for the zones must be defined with a correct uniform resource name and must either be ETRS 1989,  ETRS89/ETRS-LAEA or WGS 84</D34_SHORT>
-    <D35>./ef:geometry/gml:Point/gml:pos the srsDimension attribute shall resolve to "2" to allow the coordinate of the station</D35>
-    <D35_SHORT>The Dimension attribute shall resolve to "2" </D35_SHORT>
+    <D34>aqd:AQD_SamplingPoint/am:geometry/gml:Point the srsName attribute shall be a recognisable URN . The following 2 srsNames are expected urn:ogc:def:crs:EPSG::3035 or urn:ogc:def:crs:EPSG::4258 or urn:ogc:def:crs:EPSG::4326</D34>
+    <D34_SHORT>The coordinate reference system for the zones must be defined with a correct uniform resource name</D34_SHORT>
+    <D35>The srsDimension attribute within ./ef:geometry/gml:Point/gml:pos shall resolve to “2” to allow the x.y-coordinate of the station
+
+      ORDER of 2 coordinates MUST BE Latitude &amp; Longitud when providing the accepted srsNames (see D34)
+    </D35>
+    <D35_SHORT>The Dimension attribute shall resolve to "2"  and  the order must be Latitude &amp; Longitude</D35_SHORT>
     <D36>./ef:geometry/gml:Point/gml:pos shall resolve to within the approximate geographic location of the AQD_Station cited by .aqd:AQD_SamplingPoint ef:broader</D36>
     <D36_SHORT>The sampling point location shall resolve within the approximate location of the AQD_Station</D36_SHORT>
-    <D37>Total number aqd:AQD_SamplingPoint/ef:observingCapability/ef:ObservingCapability/ef:observingTime/gml:TimePeriod/ invalid or overlapping operational activity periods</D37>
+    <D37>.ef:observingCapability/ef:ObservingCapability/ef:observingTime/gml:TimePeriod/gml:beginPosition shall be equal to or less than ./ef:operationalActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod /gml:endPosition
+
+      gml:TimePeriod within the multiple ef:observingCapability MUST NOT overlap which each other
+    </D37>
     <D37_SHORT>Invalid or overlapping operational activity periods</D37_SHORT>
-    <D40>The content of ../ef:observedProperty shall resolve to a valid code withinhttp://dd.eionet.europa.eu/vocabulary/aq/pollutant/</D40>
-    <D40_SHORT>Must be a registered pollutant under </D40_SHORT>
+    <D38>./ef:observingCapability/ef:ObservingCapability/ef:processType shall resolve to http://inspire.ec.europa.eu/codeList/ProcessTypeValue/process
+      (currently resolves to 404 error)
+    </D38>
+    <D39>./ef:observingCapability/ef:ObservingCapability/ef:resultNature element shall resolve to http://inspire.ec.europa.eu/codeList/ResultNatureValue/primary
+      (currently resolves to 404 error)
+    </D39>
+    <D40>The content of ../ef:observedProperty shall resolve to a valid code within http://dd.eionet.europa.eu/vocabulary/aq/pollutant/ and within a unique SamplingPoint, multiple ef:observedProperty may be found. These MUST always resolve to the same code</D40>
+    <D40_SHORT>Pollutant must be a registered under vocabulary and each SamplingPoint must be defined for a unique pollutant under </D40_SHORT>
     <D41>Cross-check with AQD_Sample (./ef:observingCapability/ef:ObservingCapability/ef:featureOfInterest/@xlink shall resolve to a traversable local of global URI to an ../AQD_Sample)</D41>
     <D41_SHORT>Sample shall resolve to a traversable local of global URL.</D41_SHORT>
     <D42>Cross-check with AQD_SamplingPointProcess (./ef:observingCapability/ef:ObservingCapability/ef:procedure/@xlink shall resolve to a traversable local of global URI to ../AQD_SamplingPointProcess)</D42>
@@ -276,55 +311,118 @@
     <D43_SHORT>Station shall resolve to a traversable local of the global URL.</D43_SHORT>
     <D44>Cross-check with AQD_Network (aqd:AQD_SamplingPoint/ef:belongsTo shall resolve to a traversable local of global URI to ../AQD_Network)</D44>
     <D44_SHORT>Network shall resolve to a traversable local of global URL.</D44_SHORT>
-    <D44b>bb
-      Cross-check with AQD_Network (aqd:AQD_Station/ef:belongsTo shall resolve to a traversable local of global URI to ../AQD_Network)</D44b>
+    <D44b>Cross-check with AQD_Network (aqd:AQD_Station/ef:belongsTo shall resolve to a traversable local of global URI to ../AQD_Network)</D44b>
     <D44b_SHORT>Network shall resolve to a traversable local of global URL.</D44b_SHORT>
     <D45> Total number aqd:AQD_SamplingPoint/ef:operationActivityPeriod/ef:OperationActivityPeriod/ef:activityTime/gml:TimePeriod/ invalid operational activity periods</D45>
-    <D45_SHORT>Total number of invalid operational activity periods:</D45_SHORT>
+    <D45_SHORT>Invalid or overlapping operational activity periods</D45_SHORT>
     <D46>Total number of AQD_SamplingPoints which are operational</D46>
     <D46_SHORT>Number of operational sampling points:</D46_SHORT>
+    <D47>./ef:operationActivityPeriod/ef:OperationActivityPeriod/ef:activityTime/gml:TimePeriod/gml:endPosition with valid content (historical content) shall indicate that the environmental monitoring feature type is no longer operational.</D47>
+    <D48>./aqd:assessmentType shall resolve to http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/ via xlink:href</D48>
+    <D49>./aqd:mainEmissionSources shall resolve to http://dd.eionet.europa.eu/vocabulary/aq/emissionsource/  via xlink:href</D49>
     <D50>Total number/aqd:stationClassification which resolve to http://dd.eionet.europa.eu/vocabulary/aq/stationclassification/ via xlink:href</D50>
     <D50_SHORT>Number of Station Classifications conforming to: Background, Industrial and Traffic</D50_SHORT>
     <D51> Number of invalid 3 elements aqd:AQD_SamplingPoint/aqd:environmentalObjective/aqd:EnvironmentalObjective/ combinations:</D51>
     <D51_SHORT>Number of invalid 3 elements in Sampling Point and Environmental Objective combinations:</D51_SHORT>
-    <D52>Number of SamplingPoint(s) declared as usedAQD = TRUE which are not used in any Assessment Regime stored in Content Registry</D52>
-    <D52_SHORT>Number of SamplingPoint(s) registered that are not used in any Assessment Regime stored in Content Registry</D52_SHORT>
     <D53> Number of invalid aqd:AQD_SamplingPoint/aqd:zone xlinks:</D53>
-    <D53_SHORT>Number of invalid xlinks:</D53_SHORT>
+    <D53_SHORT>Number of invalid xlinks to zone(s)</D53_SHORT>
     <D54>aqd:AQD_SamplingPointProcess/ompr:inspireId/base:Identifier/base:localId not unique codes:</D54>
-    <D54_SHORT>Local Id for Sampling Point not unique codes:</D54_SHORT>
+    <D54_SHORT>Local Id for Sampling Point Process must be unique</D54_SHORT>
     <D55>Count the number of unique AQD_SamplingPointProcess (via localId) submitted within base:namespace</D55>
-    <D55_SHORT>The number of unique Sampling Point Processes</D55_SHORT>
-    <D56>./aqd:measurementType shall resolve to http://dd.eionet.europa.eu/vocabulary/aq/measurementtype//[concept]</D56>
+    <D55_SHORT>List unique namespaces used and count number of SamplingPointProcess(es) used.</D55_SHORT>
+    <D55.1>Check that namespace is registered in vocabulary (http://dd.eionet.europa.eu/vocabulary/aq/namespace/view)</D55.1>
+    <D55.1_SHORT>Check namespace is registered </D55.1_SHORT>
+    <D56>./aqd:measurementType shall resolve to http://dd.eionet.europa.eu/vocabulary/aq/measurementtype/[concept]</D56>
     <D56_SHORT>Must conform to a regognised Measurement Type from the eionet data dictionary. These are: Active, Automatic, Passive, Remote and Unknown.</D56_SHORT>
     <D57>If ./aqd:measurementType resolves to ./measurementtype/automatic or ./measurementtype/remote, aqd:measurementMethod shall be included and resolve to any concept in http://dd.eionet.europa.eu/vocabulary/aq/measurementmethod/ AND /aqd:samplingMethod and ./aqd:analyticalTechnique SHALL NOT BE PROVIDED</D57>
-    <D57_SHORT>If Measurement Type is Automatic or Remote and conforms to any of the 31 recognised measurement methods in the eionet data dictionary, then Sampling Method and Technique shall not be provided.</D57_SHORT>
+    <D57_SHORT>If Measurement Type is Automatic or Remote and conforms to any of the recognised measurement methods in the eionet data dictionary, then Sampling Method and Technique shall not be provided.</D57_SHORT>
+    <D58>If ./aqd:measurementType resolves to http://dd.eionet.europa.eu/vocabulary/aq/measurementtype/active
+      or
+      http://dd.eionet.europa.eu/vocabulary/aq/measurementtype/passive
+
+      ./aqd:samplingMethod &amp; ./aqd:analyticalTechnique shall be included
+      AND
+      ./aqd:measurementMethod SHALL NOT BE PROVIDED
+    </D58>
+    <D58_SHORT>If Measurement Type is Active or Passive then Sampling Method and Analytical Technique must be provided. Measurement method shall not be provided.</D58_SHORT>
     <D59>The content of /aqd:AQD_SamplingPointProcess/aqd:analyticalTechnique shall resolve to any concept inhttp://dd.eionet.europa.eu/vocabulary/aq/analyticaltechnique/</D59>
-    <D59_SHORT>Analytcical Technique must use any of the 42 analytcical technique recognised methods in the eionet data dictionary.</D59_SHORT>
+    <D59_SHORT>Analytcical Technique must use any of the analytcical technique recognised methods in the eionet data dictionary.</D59_SHORT>
     <D60a>The content of ./aqd:AQD_SamplingPointProcess/aqd:measurementType shall resolve to any concept in http://dd.eionet.europa.eu/vocabulary/aq/measurementequipment/</D60a>
     <D60a_SHORT>Sampling Process and Measurement Type must use any of the measurement equipment in the eionet data dictionary.</D60a_SHORT>
     <D60b>The content of ./aqd:AQD_SamplingPointProcess/aqd:samplingEquipment shall resolve to any concept in http://dd.eionet.europa.eu/vocabulary/aq/samplingequipment/</D60b>
     <D60b_SHORT>Sampling Process and Equipment must use any of the sampling equipment in the eionet data dictionary.</D60b_SHORT>
+    <D61>If /aqd:AQD_SamplingPointProcess/aqd:measurementMethod/aqd:MeasurementMethod/aqd:otherMeasurementMethod, /aqd:AQD_SamplingPointProcess/aqd:measurementEquipment/aqd:MeasurementEquipment/aqd:otherEquipment, /aqd:AQD_SamplingPointProcess/aqd:samplingMethod/aqd:SamplingMethod/aqd:otherSamplingMethod, /aqd:AQD_SamplingPointProcess/aqd:SamplingEquipment/aqd:SamplingEquipment/aqd:otherEquipment or /aqd:AQD_SamplingPointProcess/aqd:analyticalTechnique/aqd:AnalyticalTechnique/aqd:otherAnalyticalTechnique populated must give a warning to contact helpdesk to add new vocabulary</D61>
+    <D61_SHORT>Please contact IPR helpdesk in order to add new vocabulary for either MeasurementMethods/MeasurementEquipment/SamplingMethod/SamplingEquipment/AnalyticalTecnique</D61_SHORT>
     <D63>Where ./aqd:detectionLimit is resolved uom link resolving to any concept in http://dd.eionet.europa.eu/vocabulary/uom/concentration/ shall be provided</D63>
     <D63_SHORT>If Detection Limit is specified, then a link to a concentration value from the eionet data dictionary must be provided.</D63_SHORT>
-    <D67>SamplingPointProcess(es) with incorrect code for Equivalence demonstration (http://dd.eionet.europa.eu/vocabulary/aq/equivalencedemonstrated/)</D67>
-    <D67_SHORT>Sampling Process was reported with incorrect code for Equivalence demonstration.</D67_SHORT>
+    <D65>./aqd:unit shall resolve to   http://dd.eionet.europa.eu/vocabulary/uom/time/</D65>
+    <D66>./aqd:numUnits shall contain an integer value</D66>
+    <D67a>Where ../AQD_SamplingPoint/aqd:usedAQD is “true”, ./aqd:equivalenceDemonstration/aqd:EquivalenceDemonstration/aqd:equivalenceDemonstrated must resolve to
+      http://dd.eionet.europa.eu/vocabulary/aq/equivalencedemonstrated/</D67a>
+    <D67a_SHORT>Sampling Process was reported with incorrect code for Equivalence demonstration.</D67a_SHORT>
+    <D67b>./aqd:equivalenceDemonstration/aqd:EquivalenceDemonstration/aqd:equivalenceDemonstrated should resolve to
+      http://dd.eionet.europa.eu/vocabulary/aq/equivalencedemonstrated/ for all SamplingPointProcess</D67b>
+    <D67b_SHORT>Sampling Process was reported with incorrect code for Equivalence demonstration.</D67b_SHORT>
     <D68>SamplingPointProcess(es) declared as an equivalent method” i.e. http://dd.eionet.europa.eu/vocabulary/aq/equivalencedemonstrated/yes but /aqd:demonstrationReport not provided.</D68>
     <D68_SHORT>Sampling Process was declared as an equivalent method but the Demonstration Report was not provided.</D68_SHORT>
-    <D69>SamplingPointProcess(es) is missing mandatory document on Traceability and Uncertainty Estimation via aqd:AQD_SamplingPointProcess/aqd:dataQuality/aqd:DataQuality/aqd:documentation.</D69>
-    <D69_SHORT>Sampling Process is missing mandatory document on Traceability and Uncertainty Estimation.</D69_SHORT>
-    <D70>SamplingPointProcess(es) is missing mandatory document on QA/QC via aqd:AQD_SamplingPointProcess/aqd:dataQuality/aqd:DataQuality/aqd:qaReport.</D70>
-    <D70_SHORT>Sampling Process is missing mandatory document on QA/QC.</D70_SHORT>
+    <D69>SamplingPointProcess(es) is missing mandatory document on Traceability and Uncertainty Estimation via aqd:AQD_SamplingPointProcess/aqd:dataQuality/aqd:DataQuality/aqd:documentation OR ./aqd:qaReport</D69>
+    <D69_SHORT>Sampling Process is missing mandatory document on Traceability and Uncertainty Estimation or QA report</D69_SHORT>
     <D71>aqd:AQD_Sample/ompr:inspireId/base:Identifier/base:localId not unique codes:</D71>
     <D71_SHORT>ID codes are not unique.</D71_SHORT>
     <D72>Count the number of unique AQD_Sample (via localId) submitted within base:namespace</D72>
-    <D72_SHORT>The number of unique Samples in the XML Document.</D72_SHORT>
-    <D73>./sams:shape/gml:Point the srsName attribute shall be a recognisable URN . The following 2 srsNames are expected urn:ogc:def:crs:EPSG::4258 or urn:ogc:def:crs:EPSG::4326</D73>
-    <D73_SHORT>The coordinate reference system for the zones must be defined with a correct uniform resource name and must either be ETRS 1989,  ETRS89/ETRS-LAEA or WGS 84</D73_SHORT>
+    <D72_SHORT>List unique namespaces used and count number of Sample(s) used.</D72_SHORT>
+    <D72.1>Check that namespace is registered in vocabulary (http://dd.eionet.europa.eu/vocabulary/aq/namespace/view)</D72.1>
+    <D72.1_SHORT>Check namespace is registered </D72.1_SHORT>
+    <D73>./sams:shape/gml:Point the srsName attribute shall be a recognisable URN . The following 3 srsNames are expected urn:ogc:def:crs:EPSG::3035  or urn:ogc:def:crs:EPSG::4258 or urn:ogc:def:crs:EPSG::4326</D73>
+    <D73_SHORT>The coordinate reference system for the zones must be defined with a correct uniform resource name </D73_SHORT>
     <D74>./sams:shape/gml:Point, the srsDimension attribute shall resolve to “2” to allow the coordinate of the feature of interest</D74>
     <D74_SHORT>The srsDimension attribute must be '2'. </D74_SHORT>
+    <D75>./sams:shape/gml:Point/gml:pos shall resolve to within the approximate geographic location of the sampling point referencing the ../AQD_Sample record via ../aqd:AQD_SamplingPoint/ef:observingCapability/ef:ObservingCapability/ef:featureOfInterest </D75>
+    <D75_SHORT>The Sample should be located near the SamplingPoint</D75_SHORT>
+    <D76>./aqd:builldingDistance shall contain a numerical value, WHERE ../aqd:AQD_SamplingPoint/aqd:relevantEmissions/aqd:RelevantEmissions/aqd:stationClassification = http://dd.eionet.europa.eu/vocabulary/aq/stationclassification/traffic
+      AND ../aqd:AQD_SamplingPoint/ef:observingCapability/ef:ObservingCapability/ef:featureOfInterest is xlinked to this./aqd:AQD_Sample via /aqd:inspireId/base:Identifier/base:localId
+    </D76>
+    <D76_SHORT>Distance to building should be provided if SamplingPoint is classified as Traffic</D76_SHORT>
+    <D77>./aqd:kerbDistance shall contain a numerical value, WHERE ../aqd:AQD_SamplingPoint/aqd:relevantEmissions/aqd:RelevantEmissions/aqd:stationClassification is EQUAL to  http://dd.eionet.europa.eu/vocabulary/aq/stationclassification/traffic AND ../aqd:AQD_SamplingPoint/ef:observingCapability/ef:ObservingCapability/ef:featureOfInterest is xlinked to this./aqd:AQD_Sample via /aqd:inspireId/base:Identifier/base:localId</D77>
+    <D77_SHORT>Distance to kerbside should be provided if SamplingPoint is classified as Traffic</D77_SHORT>
     <D78>./aqd:inletHeight shall contain a numerical value, uom within it shall resolve to http://dd.eionet.europa.eu/vocabulary/uom/length/m</D78>
     <D78_SHORT>Inlet Height must be in meters.</D78_SHORT>
+    <D79>sam:sampledFeature  shall resolve to a traversable local of global URI to an ../AQD_RepresentativeArea
+
+      or a nilReason must be provided like &lt;sam:sampledFeature nilReason="unknown"/>
+
+    </D79>
+    <D80>./aqd:inspireId/base:Identifier/base:localId shall be an unique code for AQD_RepresentativeArea and unique within namespace</D80>
+    <D81>./aqd:InspireId/base:Identifier/base:namespace shall be a unique namespace identifier for the data source (within an annual e-Reporting cycle). The namespace value will be owned by the data provider of the spatial object</D81>
+    <D81.1>Check that namespace is registered in vocabulary (http://dd.eionet.europa.eu/vocabulary/aq/namespace/view)</D81.1>
+    <D82>./sam:sampledFeature shall resolve to http://sweet.jpl.nasa.gov/2.2/realm.owl#Atmosphere</D82>
+    <D83>The srsName attribute within ./sams:shape/gml:Point shall be a recognisable URN.  The following 3 srsNames are expected urn:ogc:def:crs:EPSG::3035 or urn:ogc:def:crs:EPSG::4258 or urn:ogc:def:crs:EPSG::4326
+
+      Alternatives, like http://www.opengis.net/gml/srs/epsg.xml#4258 or EPSG:4258 should be flagged as error
+    </D83>
+    <D84>./sams:shape/gml:Polygon/gml:exterior/gml:LinearRing/gml:posList shall resolve to within the approximate geographic location of the sampling point referencing the</D84>
+    <D85>./sams:shape/gml:Polygon/gml:exterior/gml:LinearRing/gml:posList srsDimension attribute shall resolve to “2” to allow the x &amp;y-coordinate of the feature of interest.
+
+      ORDER of 2 coordinates MUST BE Latitude &amp; Longitud when providing the accepted srsNames (see D81)
+    </D85>
+    <D86>./sams:shape/gml:Polygon/gml:exterior/gml:LinearRing/gml:posList count attribute shall resolve to the sum of x-y coordinate doublets.
+
+      ORDER of 2 coordinates doublets MUST BE Latitude &amp; Longitud when providing the accepted srsNames (see D81)
+    </D86>
+    <D87>./sams:shape/gml:Polygon/gml:exterior/gml:LinearRing/gml:posList shall resolve to the approximate geographic location of the sampling point referencing the</D87>
+    <D91>Each aqd:AQD_Sample reported within the XML shall be xlinked (at least once) via aqd:AQD_SamplingPoint/ef:observingCapability/ef:ObservingCapability/ef:featureOfInterest@xlink</D91>
+    <D91_SHORT>All reported Sample(s) shall be used within at least one SamplingPoint</D91_SHORT>
+    <D92>Each aqd:AQD_SamplingPointProcess reported within the XML shall be xlinked (at least once) via /aqd:AQD_SamplingPoint/ef:observingCapability/ef:ObservingCapability/ef:procedure@xlink</D92>
+    <D92_SHORT>All reported SamplingPointProcess(es) shall be used wihtin at least one SamplingPoint</D92_SHORT>
+    <D93>Each aqd:AQD_Station reported within the XML shall be xlinked (at least once) via aqd:AQD_SamplingPoint/ef:broader@xlink
+
+    </D93>
+    <D93_SHORT>All reported Station(s) shall be used within at least one SamplingPoint</D93_SHORT>
+    <D94>Each aqd:AQD_Netwok reported within the XML shall be xlinked (at least once) via /aqd:AQD_SamplingPoint/ef:belongsTo@xlink
+      or
+      /aqd:AQD_Station/ef:belongsTo@xlink
+    </D94>
+    <D94_SHORT>All reported Networks shall be used within at least one SamplingPoint or one Station</D94_SHORT>
   </D>
   <C>
     <C1>Total number of AQ Assessment Regime feature types</C1>
