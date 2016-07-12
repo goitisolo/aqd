@@ -256,12 +256,13 @@ let $C8invalid :=
 (: C9 - Provides a count of unique pollutants and lists them :)
 let $C9table :=
     try {
-        for $code in $xmlconv:UNIQUE_POLLUTANT_IDS_9
-        let $pollutantLink := fn:concat($vocabulary:POLLUTANT_VOCABULARY, $code)
-        where count($docRoot//aqd:AQD_AssessmentRegime/aqd:pollutant[@xlink:href = $pollutantLink and ..//aqd:objectiveType/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/MO"]) > 0
+        let $pollutants :=
+            for $x in $docRoot//aqd:AQD_AssessmentRegime[aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/MO"]
+            return $x/aqd:pollutant/@xlink:href/string()
+        for $i in distinct-values($pollutants)
         return
             <tr>
-                <td title="pollutant">{$code}</td>
+                <td title="pollutant">{$i}</td>
             </tr>
     }  catch * {
         <tr status="failed">
@@ -1059,7 +1060,7 @@ return
         {html:buildResultRows("C6.1", $labels:C6.1, $labels:C6.1_SHORT, $C6.1invalid, "base:Identifier/base:namespace", "All values are valid", " invalid namespaces", "", $errors:ERROR)}
         {html:buildResultRows("C7", $labels:C7, $labels:C7_SHORT, $C7invalid, "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "",$errors:ERROR)}
         {html:buildResultRows("C8", $labels:C8, $labels:C8_SHORT, xmlconv:buildVocItemRows($vocabulary:POLLUTANT_VOCABULARY, $C8invalid), "", "", " missing pollutant", "", $errors:WARNING)}
-        {html:buildResultRows("C9", $labels:C9, $labels:C9_SHORT, xmlconv:buildVocItemRows($vocabulary:POLLUTANT_VOCABULARY, $C9table), "", string(count($C9table)), "", "", $errors:INFO)}
+        {html:build0("C9", $labels:C9, $labels:C9_SHORT, $C9table, "", string(count($C9table)), "pollutant")}
         {html:buildResultRows("C10", $labels:C10, $labels:C10_SHORT, $C10invalid, "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "",$errors:ERROR)}
         {html:buildResultRows("C11", $labels:C11, $labels:C11_SHORT, $C11invalid, "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "",$errors:ERROR)}
         {html:buildResultRows("C12", $labels:C12, $labels:C12_SHORT, $C12invalid, "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "",$errors:ERROR)}
