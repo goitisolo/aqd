@@ -490,7 +490,7 @@ let $M24invalid :=
 let $M25invalid :=
     try {
         let $allTrueUsedAQD :=
-            for $trueUsedAQD in $docRoot//gml:featureMember/aqd:AQD_Model
+            for $trueUsedAQD in $docRoot//aqd:AQD_Model
             where $trueUsedAQD/aqd:usedAQD = true()
             return $trueUsedAQD
 
@@ -513,7 +513,7 @@ let $M25invalid :=
 (: M26 Amended by Jaume Targa to add nilReason; also updated line 978 to pick $allInvalZoneXlinks :)
 let $M26invalid :=
     try {
-        for $invalidZoneXlinks in $docRoot//gml:featureMember/aqd:AQD_Model/aqd:zone
+        for $invalidZoneXlinks in $docRoot//aqd:AQD_Model/aqd:zone
         where count(sparqlx:executeSparqlQuery(query:getSamplingPointZone($invalidZoneXlinks/@xlink:href))/*) = 0
 
         return if (not($invalidZoneXlinks/@nilReason = "inapplicable")) then
@@ -532,8 +532,8 @@ let $M26invalid :=
 (: M27 - :)
 let $M27invalid :=
     try {
-        let $localModelProcessIds := $docRoot//gml:featureMember/aqd:AQD_ModelProcess/ompr:inspireId/base:Identifier
-        for $idModelProcessCode in $docRoot//gml:featureMember/aqd:AQD_ModelProcess/ompr:inspireId/base:Identifier
+        let $localModelProcessIds := $docRoot//aqd:AQD_ModelProcess/ompr:inspireId/base:Identifier
+        for $idModelProcessCode in $docRoot//aqd:AQD_ModelProcess/ompr:inspireId/base:Identifier
         where
             count(index-of($localModelProcessIds/base:localId, normalize-space($idModelProcessCode/base:localId))) > 1 and
                     count(index-of($localModelProcessIds/base:namespace, normalize-space($idModelProcessCode/base:namespace))) > 1
@@ -606,8 +606,8 @@ let $M39invalid :=
 (: M40 - :)
 let $M40invalid :=
     try {
-        let $localModelAreaIds := $docRoot//gml:featureMember/aqd:AQD_ModelArea/ompr:inspireId/base:Identifier
-        for $idModelAreaCode in $docRoot//gml:featureMember/aqd:AQD_ModelArea/ompr:inspireId/base:Identifier
+        let $localModelAreaIds := $docRoot//aqd:AQD_ModelArea/ompr:inspireId/base:Identifier
+        for $idModelAreaCode in $docRoot//aqd:AQD_ModelArea/ompr:inspireId/base:Identifier
         where
             count(index-of($localModelAreaIds/base:localId, normalize-space($idModelAreaCode/base:localId))) > 1 and
                     count(index-of($localModelAreaIds/base:namespace, normalize-space($idModelAreaCode/base:namespace))) > 1
@@ -696,7 +696,7 @@ declare function xmlconv:checkVocabularyConceptValues($source_url as xs:string, 
             else
                 query:getConceptUrlSparqlB($vocabularyUrl)
         let $crConcepts := sparqlx:executeSparqlQuery($sparql)
-        for $rec in doc($source_url)//gml:featureMember/descendant::*[name()=$featureType]
+        for $rec in doc($source_url)//descendant::*[name()=$featureType]
         for $conceptUrl in $rec/child::*[name() = $element]/@xlink:href
         let $conceptUrl := normalize-space($conceptUrl)
         where string-length($conceptUrl) > 0
@@ -744,7 +744,7 @@ declare function xmlconv:checkVocabularyConceptValues3($source_url as xs:string,
             else
                 query:getConceptUrlSparqlB($vocabularyUrl)
         let $crConcepts := sparqlx:executeSparqlQuery($sparql)
-        for $rec in doc($source_url)//gml:featureMember/descendant::*[name()=$featureType]
+        for $rec in doc($source_url)//descendant::*[name()=$featureType]
         for $conceptUrl in $rec/child::*[name() = $element]
         where  not(xmlconv:isMatchingVocabCode($crConcepts, normalize-space($conceptUrl/@xlink:href)))
         return
@@ -762,7 +762,7 @@ declare function xmlconv:checkVocabularyaqdAnalyticalTechniqueValues($source_url
             else
                 query:getConceptUrlSparqlB($vocabularyUrl)
         let $crConcepts := sparqlx:executeSparqlQuery($sparql)
-        for $rec in doc($source_url)//gml:featureMember/descendant::*[name()=$featureType]
+        for $rec in doc($source_url)//descendant::*[name()=$featureType]
         for $conceptUrl in $rec/child::*[name() = $element]/aqd:AnalyticalTechnique/child::*[name() = $element]/@xlink:href
         let $conceptUrl := normalize-space($conceptUrl)
         where string-length($conceptUrl) > 0
@@ -786,7 +786,7 @@ declare function xmlconv:checkVocabularyConceptEquipmentValues($source_url as xs
             else
                 query:getConceptUrlSparqlB($vocabularyUrl)
         let $crConcepts := sparqlx:executeSparqlQuery($sparql)
-        for $rec in doc($source_url)//gml:featureMember/descendant::*[name()=$featureType]
+        for $rec in doc($source_url)//descendant::*[name()=$featureType]
         for $conceptUrl in $rec/child::*[name() = $element]/*/aqd:equipment/@xlink:href
         let $conceptUrl := normalize-space($conceptUrl)
         where string-length($conceptUrl) > 0
@@ -834,7 +834,7 @@ declare function xmlconv:isMatchingVocabCode($crConcepts as element(sparql:resul
  :)
 declare function xmlconv:proceed($source_url as xs:string, $countryCode as xs:string) {
 
-let $countFeatures := count(doc($source_url)//gml:featureMember/descendant::*[
+let $countFeatures := count(doc($source_url)//descendant::*[
     not(empty(index-of($xmlconv:FEATURE_TYPES, name())))]
     )
 let $result := if ($countFeatures > 0) then xmlconv:checkReport($source_url, $countryCode) else ()
