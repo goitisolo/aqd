@@ -52,8 +52,7 @@ declare function common:getCdrUrl($countryCode as xs:string) as xs:string {
 
 declare function common:getCountryCode($url as xs:string) as xs:string {
     let $envelopeUrl := common:getEnvelopeXML($url)       
-    let $countryCode := if(string-length($envelopeUrl)>0) then lower-case(fn:doc($envelopeUrl)/envelope/countrycode) else ""
-    let $countryCode := if ($countryCode = "gb") then "uk" else if ($countryCode = "gr") then "el" else $countryCode
+    let $countryCode := if (string-length($envelopeUrl) > 0) then lower-case(fn:doc($envelopeUrl)/envelope/countrycode) else ""
     return $countryCode
 };
 
