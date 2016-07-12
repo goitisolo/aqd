@@ -583,7 +583,7 @@ let $C20invalid :=
         let $rdf := doc("http://dd.eionet.europa.eu/vocabulary/aq/environmentalobjective/rdf")
         let $rdf := distinct-values(
             for $x in $rdf//skos:Concept[string-length(prop:exceedanceThreshold) > 0]
-            where not($x/prop:hasObjectiveType/@rdf:resource = $vocabulary:OBJECTIVETYPE_VOCABULARY || "MO")
+            where not($x/prop:hasObjectiveType/@rdf:resource = ($vocabulary:OBJECTIVETYPE_VOCABULARY || "MO", $vocabulary:OBJECTIVETYPE_VOCABULARY || "LVMOT", $vocabulary:OBJECTIVETYPE_VOCABULARY || "LVmaxMOT"))
             return $x/prop:relatedPollutant/@rdf:resource || "#" || $x/prop:hasObjectiveType/@rdf:resource || "#" || $x/prop:hasReportingMetric/@rdf:resource || "#" || $x/prop:hasProtectionTarget/@rdf:resource
         )
 
