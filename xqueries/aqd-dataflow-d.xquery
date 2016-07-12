@@ -806,7 +806,7 @@ let $D34invalid :=
     }
 
 (: D35 :)
-let $D35invalid  :=
+let $D35invalid :=
     try {
         for $x in $docRoot//aqd:AQD_SamplingPoint
         let $invalidOrder :=
@@ -816,7 +816,7 @@ let $D35invalid  :=
             let $long := number($latlongToken[2])
             where ($long > $lat)
             return 1
-        where ($x/ef:geometry/gml:Point/gml:pos/@srsDimension != "2" or $invalidOrder = 1)
+        where (not($countryCode = "fr") and ($x/ef:geometry/gml:Point/gml:pos/@srsDimension != "2" or $invalidOrder = 1))
         return
             <tr>
                 <td title="base:localId">{string($x/ef:inspireId/base:Identifier/base:localId)}</td>
@@ -830,6 +830,11 @@ let $D35invalid  :=
             <td></td>
         </tr>
     }
+let $D35message :=
+    if ($countryCode = "fr") then
+        "Temporary turned off"
+    else
+        "All srsDimension attributes resolve to '2'"
 
 (: D36 :)
 let $D36invalid :=
@@ -1785,7 +1790,7 @@ return
         {html:build2("D32.1", $labels:D32.1, $labels:D32.1_SHORT, $D32.1invalid, "base:Identifier/base:namespace", "All values are valid", " invalid namespaces", "", $errors:ERROR)}
         {html:buildResultRowsWithTotalCount_D("D33", $labels:D33, $labels:D33_SHORT, $D33invalid, "ef:mediaMonitored", "", "", "",$errors:WARNING)}
         {html:buildResultRows("D34", $labels:D34, $labels:D34_SHORT, $D34invalid, "", "All values are valid", "", "", $errors:ERROR)}
-        {html:buildResultRows("D35", $labels:D35, $labels:D35_SHORT, $D35invalid, "aqd:AQD_SamplingPoint/ef:inspireId/base:Identifier/base:localId", "All srsDimension attributes resolve to ""2""", " invalid elements", "",$errors:ERROR)}
+        {html:buildResultRows("D35", $labels:D35, $labels:D35_SHORT, $D35invalid, "aqd:AQD_SamplingPoint/ef:inspireId/base:Identifier/base:localId", $D35message, " invalid elements", "",$errors:ERROR)}
         {html:buildResultRows("D36", $labels:D36, $labels:D36_SHORT, $D36invalid, "aqd:AQD_SamplingPoint/@gml:id", "All attributes are valid", " invalid attribute", "",$errors:WARNING)}
         {html:buildResultRows("D37", $labels:D37, $labels:D37_SHORT, $D37invalid, "", concat(fn:string(count($D37invalid))," errors found"), "", "",$errors:ERROR)}
         {html:buildResultRows("D40", $labels:D40, $labels:D40_SHORT, $D40invalid, "ef:observedProperty", "All values are valid", "invalid pollutant", "",$errors:ERROR)}
