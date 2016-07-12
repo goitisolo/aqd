@@ -1693,9 +1693,9 @@ as element(tr)*{
 
     let $allRecords :=
     if ($parentObject != "") then
-        doc($source_url)//gml:featureMember/descendant::*[name()=$parentObject]/descendant::*[name()=$featureType]
+        doc($source_url)//descendant::*[name()=$parentObject]/descendant::*[name()=$featureType]
     else
-        doc($source_url)//gml:featureMember/descendant::*[name()=$featureType]
+        doc($source_url)//descendant::*[name()=$featureType]
 
     for $rec in $allRecords
     for $conceptUrl in $rec/child::*[name() = $element]/@xlink:href
@@ -1732,9 +1732,9 @@ declare function xmlconv:getCheckedVocabularyConceptValues($source_url as xs:str
 
     let $allRecords :=
         if ($parentObject != "") then
-            doc($source_url)//gml:featureMember/descendant::*[name()=$parentObject]/descendant::*[name()=$featureType]
+            doc($source_url)//descendant::*[name()=$parentObject]/descendant::*[name()=$featureType]
         else
-            doc($source_url)//gml:featureMember/descendant::*[name()=$featureType]
+            doc($source_url)//descendant::*[name()=$featureType]
 
     for $rec in $allRecords
     for $conceptUrl in $rec/child::*[name() = $element]/@xlink:href
