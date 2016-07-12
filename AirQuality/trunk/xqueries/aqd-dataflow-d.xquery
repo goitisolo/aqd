@@ -1074,30 +1074,6 @@ let $D44invalid :=
         </tr>
     }
 
-(: D44b :)
-let $D44binvalid :=
-    try {
-        let $aqdNetworkLocal :=
-            for $z in $docRoot//aqd:AQD_Network
-            let $id := concat(data($z/ef:inspireId/base:Identifier/base:namespace), '/',
-                    data($z/ef:inspireId/base:Identifier/base:localId))
-            return $id
-
-        for $x in $docRoot//aqd:AQD_Station/ef:belongsTo
-        where empty(index-of($aqdNetworkLocal, fn:normalize-space($x/@xlink:href)))
-        return
-            <tr>
-                <td title="aqd:AQD_Station">{data($x/../@gml:id)}</td>
-                <td title="ef:belongsTo">{data(fn:normalize-space($x/@xlink:href))}</td>
-            </tr>
-    }  catch * {
-        <tr status="failed">
-            <td title="Error code"> {$err:code}</td>
-            <td title="Error description">{$err:description}</td>
-            <td></td>
-        </tr>
-    }
-
 (: D45 - Find all period with out end period :)
 let $D45invalid :=
     try {
@@ -1544,8 +1520,8 @@ let $D73invalid :=
         </tr>
     }
 let $isInvalidInvalidD73 := if (count($allGmlPoint) > 0) then fn:true() else fn:false()
-let $errLevelD73 := if (count($allGmlPoint) > 0) then "error" else "warning"
-let $errMsg73  := if (count($allGmlPoint) > 0) then " errors found" else " gml:Point elements found"
+let $errLevelD73 := if (count($allGmlPoint) > 0) then $errors:ERROR else $errors:WARNING
+let $errMsg73 := if (count($allGmlPoint) > 0) then " errors found" else " gml:Point elements found"
 
 (: D74 :)
 let $D74invalid :=
@@ -1795,11 +1771,10 @@ return
         {html:buildResultRows("D40", $labels:D40, $labels:D40_SHORT, $D40invalid, "ef:observedProperty", "All values are valid", "invalid pollutant", "",$errors:ERROR)}
         {html:buildInfoTR("Internal XML cross-checks between AQD_SamplingPoint and AQD_Sample;AQD_SamplingPointProcess;AQD_Station;AQD_Network")}
         {html:buildInfoTR("Please note that the qa might give you warning if different features have been submitted in separate XMLs")}
-        {html:buildResultRows("D41", $labels:D41, $labels:D41_SHORT, $D41invalid,"aqd:AQD_SamplingPoint/@gml:id", "All attributes are valid", " invalid attribute", "",$errors:WARNING)}
-        {html:buildResultRows("D42", $labels:D42, $labels:D42_SHORT, $D42invalid, "aqd:AQD_SamplingPoint/@gml:id", "All attributes are valid", " invalid attribute", "",$errors:WARNING)}
-        {html:buildResultRows("D43", $labels:D43, $labels:D43_SHORT, $D43invalid, "aqd:AQD_SamplingPoint/@gml:id", "All attributes are valid", " invalid attribute", "",$errors:WARNING)}
-        {html:buildResultRows("D44", $labels:D44, $labels:D44_SHORT, $D44invalid, "aqd:AQD_SamplingPoint/@gml:id", "All attributes are valid", " invalid attribute", "",$errors:WARNING)}
-        {html:buildResultRows("D44b", $labels:D44b, $labels:D44b_SHORT, $D44binvalid, "aqd:AQD_Station/@gml:id", "All attributes are valid", " invalid attribute", "",$errors:WARNING)}
+        {html:buildResultRows("D41", $labels:D41, $labels:D41_SHORT, $D41invalid,"aqd:AQD_SamplingPoint/@gml:id", "All attributes are valid", " invalid attribute", "",$errors:ERROR)}
+        {html:buildResultRows("D42", $labels:D42, $labels:D42_SHORT, $D42invalid, "aqd:AQD_SamplingPoint/@gml:id", "All attributes are valid", " invalid attribute", "",$errors:ERROR)}
+        {html:buildResultRows("D43", $labels:D43, $labels:D43_SHORT, $D43invalid, "aqd:AQD_SamplingPoint/@gml:id", "All attributes are valid", " invalid attribute", "",$errors:ERROR)}
+        {html:buildResultRows("D44", $labels:D44, $labels:D44_SHORT, $D44invalid, "aqd:AQD_SamplingPoint/@gml:id", "All attributes are valid", " invalid attribute", "",$errors:ERROR)}
         {html:buildResultRows("D45", $labels:D45, $labels:D45_SHORT, $D45invalid, "", concat(fn:string(count($D45invalid))," errors found"), "", "", $errors:ERROR)}
         {html:buildResultRows("D46", $labels:D46, $labels:D46_SHORT, $D46invalid, "", "", "", "","info")}
         {html:buildResultRows("D50", $labels:D50, $labels:D50_SHORT, $D50invalid, "", concat(fn:string(count($D50invalid))," errors found"), "", "",$errors:ERROR)}
@@ -1826,8 +1801,7 @@ return
         {html:buildResultRows("D71", $labels:D71, $labels:D71_SHORT, $D71invalid, "", concat(string(count($D71invalid))," errors found.") , "", "",$errors:ERROR)}
         {html:buildResultRows("D72", $labels:D72, $labels:D72_SHORT, $D72table, "", string(count($D72table)), "", "",$errors:ERROR)}
         {html:build2("D72.1", $labels:D72.1, $labels:D72.1_SHORT, $D72.1invalid, "base:Identifier/base:namespace", "All values are valid", " invalid namespaces", "", $errors:ERROR)}
-        <!-- TODO: fix D73 to show errlevel if count = 0 - boolean is set in $isInvalidInvalidD73 -->
-        {html:buildResultRows("D73", $labels:D73, $labels:D73_SHORT, $D73invalid, "", concat(string(count($D73invalid)), $errMsg73), "", "",$errLevelD73)}
+        {html:build1("D73", $labels:D73, $labels:D73_SHORT, $D73invalid, "", concat(string(count($D73invalid)), $errMsg73), "", "",$errLevelD73)}
         {html:buildResultRows("D74", $labels:D74, $labels:D74_SHORT, $D74invalid, "aqd:AQD_Sample/@gml:id","All srsDimension attributes are valid"," invalid attribute","",$errors:ERROR)}
         {html:buildResultRows("D75", $labels:D75, $labels:D75_SHORT, $D75invalid, "aqd:AQD_Sample/aqd:inspireId/base:Identifier/base:localId", "All attributes are valid", " invalid attribute","",$errors:WARNING)}
         {html:buildResultRows("D76", $labels:D76, $labels:D76_SHORT, $D76invalid, "aqd:AQD_Sample/aqd:inspireId/base:Identifier/base:localId", "All attributes are valid", " invalid attribute","",$errors:WARNING)}
