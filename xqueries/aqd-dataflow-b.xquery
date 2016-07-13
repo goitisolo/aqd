@@ -842,24 +842,24 @@ return
         {html:buildCountRow("B9", $labels:B9, $labels:B9_SHORT, $B9invalid, (), (), ())}
         {html:buildConcatRow($duplicateAmInspireIds, "Duplicate base:namespace:base:localId - ")}
         {html:buildUnique("B10", $labels:B10, $labels:B10_SHORT, $B10table, "", string(count($B10table)), "record", $errors:ERROR)}
-        {html:buildResultRows_B("B10.1", $labels:B10.1, $labels:B10.1_SHORT, $B10.1invalid, "base:Identifier/base:namespace", "All values are valid", " invalid namespaces", "", $errors:ERROR)}
-        {html:buildResultRows_B("B13", $labels:B13, $labels:B13_SHORT, $B13invalid, "/aqd:AQD_Zone/am:name/gn:GeographicalName/gn:language", "All values are valid", " invalid value", $langSkippedMsg,$errors:WARNING)}
-        {html:buildResultRows_B("B18", $labels:B18, $labels:B18_SHORT, $B18invalid, "aqd:AQD_Zone/@gml:id","All text are valid"," invalid attribute","", $errors:ERROR)}
-        {html:buildResultRows_B("B20", $labels:B20, $labels:B20_SHORT, $B20invalid, "aqd:AQD_Zone/@gml:id","All srsName attributes are valid"," invalid attribute","", $errors:ERROR)}
-        {html:buildResultRows_B("B21", $labels:B21, $labels:B21_SHORT, $B21invalid, "aqd:AQD_Zone/@gml:id", "All srsDimension attributes resolve to ""2""", " invalid attribute", "",$errors:WARNING)}
-        {html:buildResultRows_B("B22", $labels:B22, $labels:B22_SHORT, $B22invalid, "gml:Polygon/@gml:id", "All values are valid", " invalid attribute", "",$errors:ERROR)}
-        {html:buildResultRows_B("B23", $labels:B23, $labels:B23_SHORT, $B23invalid, "gml:Polygon", "All values are valid", " invalid attribute", "",$errors:ERROR)}
-        {html:buildResultRows_B("B24", $labels:B24, $labels:B24_SHORT, $B24invalid, "aqd:AQD_Zone/@gml:id", "All zoneType attributes are valid", " invalid attribute", "",$errors:WARNING)}
-        {html:buildResultRows_B("B25", $labels:B25, $labels:B25_SHORT, $B25invalid, "gml:TimePeriod gml:id", "All positions are valid", " invalid position", "",$errors:ERROR)}
-        {html:buildResultRows_B("B28", $labels:B28, $labels:B28_SHORT, $B28invalid, "gml:id", "All LifespanVersion values are valid", " invalid value", "",$errors:ERROR)}
-        {html:buildResultRows_B("B31", $labels:B31, $labels:B31_SHORT, $B31invalid, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "",$errors:WARNING)}
-        {html:buildResultRows_B("B32", $labels:B32, $labels:B32_SHORT, $B32invalid, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "",$errors:WARNING)}
-        {html:buildResultRows_B("B33", $labels:B33, $labels:B33_SHORT, $B33invalid, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "",$errors:WARNING)}
+        {html:build2("B10.1", $labels:B10.1, $labels:B10.1_SHORT, $B10.1invalid, "base:Identifier/base:namespace", "All values are valid", " invalid namespaces", "", $errors:ERROR)}
+        {html:build2("B13", $labels:B13, $labels:B13_SHORT, $B13invalid, "/aqd:AQD_Zone/am:name/gn:GeographicalName/gn:language", "All values are valid", " invalid value", $langSkippedMsg,$errors:WARNING)}
+        {html:build2("B18", $labels:B18, $labels:B18_SHORT, $B18invalid, "aqd:AQD_Zone/@gml:id","All text are valid"," invalid attribute","", $errors:ERROR)}
+        {html:build2("B20", $labels:B20, $labels:B20_SHORT, $B20invalid, "aqd:AQD_Zone/@gml:id","All srsName attributes are valid"," invalid attribute","", $errors:ERROR)}
+        {html:build2("B21", $labels:B21, $labels:B21_SHORT, $B21invalid, "aqd:AQD_Zone/@gml:id", "All srsDimension attributes resolve to ""2""", " invalid attribute", "",$errors:WARNING)}
+        {html:build2("B22", $labels:B22, $labels:B22_SHORT, $B22invalid, "gml:Polygon/@gml:id", "All values are valid", " invalid attribute", "",$errors:ERROR)}
+        {html:build2("B23", $labels:B23, $labels:B23_SHORT, $B23invalid, "gml:Polygon", "All values are valid", " invalid attribute", "",$errors:ERROR)}
+        {html:build2("B24", $labels:B24, $labels:B24_SHORT, $B24invalid, "aqd:AQD_Zone/@gml:id", "All zoneType attributes are valid", " invalid attribute", "",$errors:WARNING)}
+        {html:build2("B25", $labels:B25, $labels:B25_SHORT, $B25invalid, "gml:TimePeriod gml:id", "All positions are valid", " invalid position", "",$errors:ERROR)}
+        {html:build2("B28", $labels:B28, $labels:B28_SHORT, $B28invalid, "gml:id", "All LifespanVersion values are valid", " invalid value", "",$errors:ERROR)}
+        {html:build2("B31", $labels:B31, $labels:B31_SHORT, $B31invalid, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "",$errors:WARNING)}
+        {html:build2("B32", $labels:B32, $labels:B32_SHORT, $B32invalid, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "",$errors:WARNING)}
+        {html:build2("B33", $labels:B33, $labels:B33_SHORT, $B33invalid, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "",$errors:WARNING)}
         {html:buildCountRow("B35", $labels:B35, $labels:B35_SHORT, $countB35duplicates, (), (), ())}
         {html:buildConcatRow($dublicateAmNamespaceAndaqdZoneCodeIds, "Duplicate base:namespace:aqd:zoneCode - ")}
-        {html:buildResultRows_B("B36", $labels:B36, $labels:B36_SHORT, $B36invalid, "aqd:AQD_Zone/am:inspireId/base:Identifier/base:localId", "All values are valid", " invalid value", "", $errors:ERROR)}
-        {html:buildResultRows_B("B37", $labels:B37, $labels:B37_SHORT, $B37invalid, "aqd:AQD_Zone/am:inspireId/base:Identifier/base:localId", "All values are valid", " invalid value", "",$errors:WARNING)}
-        {html:buildResultRows_B("B38", $labels:B38, $labels:B38_SHORT, $B38invalid, "aqd:AQD_Zone/am:inspireId/base:Identifier/base:localId", "All values are valid", " invalid value", "", $errors:ERROR)}
+        {html:build2("B36", $labels:B36, $labels:B36_SHORT, $B36invalid, "aqd:AQD_Zone/am:inspireId/base:Identifier/base:localId", "All values are valid", " invalid value", "", $errors:ERROR)}
+        {html:build2("B37", $labels:B37, $labels:B37_SHORT, $B37invalid, "aqd:AQD_Zone/am:inspireId/base:Identifier/base:localId", "All values are valid", " invalid value", "",$errors:WARNING)}
+        {html:build2("B38", $labels:B38, $labels:B38_SHORT, $B38invalid, "aqd:AQD_Zone/am:inspireId/base:Identifier/base:localId", "All values are valid", " invalid value", "", $errors:ERROR)}
         {html:buildResultRows("B39a", $labels:B39a, <span>{$labels:B39a_SHORT} - {html:buildInfoTable("B39a", $B39aItemsList)}</span>, $B39ainvalid, "aqd:AQD_Zone/am:inspireId/base:Identifier/base:localId", "All values are valid", " invalid value", "", $errors:WARNING)}
         {html:buildResultTable("B39b", $labels:B39b, $labels:B39b_SHORT, $B39binvalid, "aqd:AQD_Zone/am:inspireId/base:Identifier/base:localId", "All values are valid", " missing value", "", $errors:ERROR)}
         {html:buildResultTable("B39c", $labels:B39c, $labels:B39c_SHORT, $B39cinvalid, "aqd:AQD_Zone/am:inspireId/base:Identifier/base:localId", "All values are valid", " invalid value", "", $errors:ERROR)}
@@ -868,7 +868,7 @@ return
         {html:buildResultTable("B42", $labels:B42, $labels:B42_SHORT, $B42invalid, "", "All values are valid", " crucial invalid value", "", $errors:ERROR)}
         {html:buildResultTable("B43", $labels:B43, $labels:B43_SHORT, $B43invalid, "", "All values are valid", " crucial invalid value", "", $errors:ERROR)}
         {html:buildResultRows("B45", $labels:B45, $labels:B45_SHORT, $B45invalid, "aqd:AQD_Zone/am:inspireId/base:Identifier/base:localId", "All values are valid", " invalid value", "",$errors:WARNING)}
-        {html:buildResultRows_B("B46", $labels:B46, $labels:B46_SHORT, $B46invalid, "aqd:AQD_Zone/am:inspireId/base:Identifier/base:localId", "All values are valid", " invalid value", "", $errors:ERROR)}
+        {html:build2("B46", $labels:B46, $labels:B46_SHORT, $B46invalid, "aqd:AQD_Zone/am:inspireId/base:Identifier/base:localId", "All values are valid", " invalid value", "", $errors:ERROR)}
         {xmlconv:buildResultRowsWithTotalCount("B47", $labels:B47, $labels:B47_SHORT, $B47invalid, "aqd:reportingMetric", "", "", "")}
     </table>
 };
