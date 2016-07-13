@@ -1590,13 +1590,12 @@ let $D75invalid :=
         let $samplingLong := if ($samplingLong castable as xs:decimal) then xs:decimal($samplingLong) else 0.00
         let $samplingLat := if ($samplingLat castable as xs:decimal) then xs:decimal($samplingLat) else 0.00
 
+        where (abs($samplingLong - $sampleLong) > $approximity or abs($samplingLat - $sampleLat) > $approximity)
         return
-            if (abs($samplingLong - $sampleLong) > $approximity or abs($samplingLat - $sampleLat) > $approximity) then
-                <tr>
-                    <td title="base:localId">{string($x/../ef:inspireId/base:Identifier/string(base:localId))}</td>
-                </tr>
-            else
-                ()
+            <tr>
+                <td title="aqd:AQD_Sample">{string($xlink)}</td>
+                <td title="aqd:AQD_SamplingPoint">{string($x/../ef:inspireId/base:Identifier/string(base:localId))}</td>
+            </tr>
     } catch * {
         <tr status="failed">
             <td title="Error code"> {$err:code}</td>
