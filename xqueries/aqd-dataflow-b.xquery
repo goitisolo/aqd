@@ -401,7 +401,7 @@ let $B23errorLevel :=
          return
              <tr>
                 <td title="aqd:AQD_Zone">{string($x/../am:inspireId/base:Identifier/base:localId)}</td>
-                <td title="zoneType">{string(@xlink:href)}</td>
+                <td title="zoneType">{string($x/@xlink:href)}</td>
              </tr>
      } catch * {
          <tr status="failed">
