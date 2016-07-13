@@ -1828,7 +1828,7 @@ return
         {html:buildResultRows("D71", $labels:D71, $labels:D71_SHORT, $D71invalid, "", concat(string(count($D71invalid))," errors found.") , "", "",$errors:ERROR)}
         {html:buildUnique("D72", $labels:D72, $labels:D72_SHORT, $D72table, "", string(count($D72table)), "namespace", $errors:ERROR)}
         {html:build2("D72.1", $labels:D72.1, $labels:D72.1_SHORT, $D72.1invalid, "base:Identifier/base:namespace", "All values are valid", " invalid namespaces", "", $errors:ERROR)}
-        {html:build1("D73", $labels:D73, $labels:D73_SHORT, $D73invalid, "", concat(string(count($D73invalid)), $errMsg73), "", "",$errLevelD73)}
+        {html:build2("D73", $labels:D73, $labels:D73_SHORT, $D73invalid, "", concat(string(count($D73invalid)), $errMsg73), "", "",$errLevelD73)}
         {html:buildResultRows("D74", $labels:D74, $labels:D74_SHORT, $D74invalid, "aqd:AQD_Sample/@gml:id","All srsDimension attributes are valid"," invalid attribute","",$errors:ERROR)}
         {html:buildResultRows("D75", $labels:D75, $labels:D75_SHORT, $D75invalid, "aqd:AQD_Sample/aqd:inspireId/base:Identifier/base:localId", "All attributes are valid", " invalid attribute","",$errors:WARNING)}
         {html:buildResultRows("D76", $labels:D76, $labels:D76_SHORT, $D76invalid, "aqd:AQD_Sample/aqd:inspireId/base:Identifier/base:localId", "All attributes are valid", " invalid attribute","",$errors:WARNING)}
