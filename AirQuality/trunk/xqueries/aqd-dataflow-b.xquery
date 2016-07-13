@@ -339,7 +339,7 @@ let $B21invalid  :=
             <tr>
                 <td title="aqd:AQD_Zone">{string($x/../../../../../am:inspireId/base:Identifier/base:localId)}</td>
                 <td title="Polygon">{string($x/../../../@gml:id)}</td>
-                <td title="srsDimension">{string(@srsDimension)}</td>
+                <td title="srsDimension">{string($x/@srsDimension)}</td>
             </tr>
     } catch * {
         <tr status="failed">
