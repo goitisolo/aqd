@@ -493,11 +493,12 @@ let $G14table :=
             for $x in $G14resultBC
             let $vsName := string($x/pollutantName)
             let $vsCode := string($x/pollutantCode)
-            let $countB := xs:integer($x/countB)
-            let $countC := xs:integer($x/countC)
-            let $countG := xs:integer($G14ResultG[pollutantName = $vsName]/count)
+            let $countB := number($x/countB)
+            let $countC := number($x/countC)
+            let $countG := number($G14ResultG[pollutantName = $vsName]/count)
             return
-                if ($countG > $countC) then $errors:ERROR
+                if ((string($countB), string($countC), string($countG)) = "NaN") then $errors:ERROR
+                else if ($countG > $countC) then $errors:ERROR
                 else if ($countC > $countG) then $errors:WARNING
                 else ()
         let $errorClass :=
