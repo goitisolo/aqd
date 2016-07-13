@@ -886,10 +886,11 @@ let $C31table :=
                 else if ($countB > $countC) then $errors:WARNING
                 else ()
         let $errorClass :=
-            if ($errorTmp = $errors:ERROR) then $errors:ERROR
+            if (empty($C31ResultB)) then $errors:ERROR
+            else if ($errorTmp = $errors:ERROR) then $errors:ERROR
             else if ($errorTmp = $errors:WARNING) then $errors:WARNING
             else $errors:INFO
-            for $x in $C31ResultC
+        for $x in $C31ResultC
             let $vsName := string($x/pollutantName)
             let $vsCode := string($x/pollutantCode)
             let $countC := string($x/count)
