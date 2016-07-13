@@ -1123,15 +1123,17 @@ let $D46invalid :=
         </tr>
     }
 
-(:D50 :)
+(: D50 :)
 let $D50invalid :=
     try {
-        for $allLinks in $docRoot//aqd:AQD_SamplingPoint
-        where not(substring($allLinks/aqd:relevantEmissions/aqd:RelevantEmissions/aqd:stationClassification/@xlink:href, 1, fn:string-length("http://dd.eionet.europa.eu/vocabulary/aq/stationclassification")) = "http://dd.eionet.europa.eu/vocabulary/aq/stationclassification")
+        let $rdf := doc("http://dd.eionet.europa.eu/vocabulary/aq/stationclassification/rdf")
+        let $all := data($rdf//skos:Concept[adms:status/@rdf:resource="http://dd.eionet.europa.eu/vocabulary/datadictionary/status/valid"]/@rdf:about)
+
+        for $x in $docRoot//aqd:AQD_SamplingPoint[not(aqd:relevantEmissions/aqd:RelevantEmissions/aqd:stationClassification/@xlink:href = $all)]
         return
             <tr>
-                <td title="gml:id">{data($allLinks/@gml:id)}</td>
-                <td title="xlink:href">{data($allLinks/aqd:relevantEmissions/aqd:RelevantEmissions/aqd:stationClassification/@xlink:href)}</td>
+                <td title="aqd:AQD_SamplingPoint">{data($x/ef:inspireId/base:Identifier/base:localId)}</td>
+                <td title="xlink:href">{data($x/aqd:relevantEmissions/aqd:RelevantEmissions/aqd:stationClassification/@xlink:href)}</td>
             </tr>
     }  catch * {
         <tr status="failed">
@@ -1801,7 +1803,7 @@ return
         {html:buildResultRows("D44", $labels:D44, $labels:D44_SHORT, $D44invalid, "aqd:AQD_SamplingPoint/@gml:id", "All attributes are valid", " invalid attribute", "",$errors:ERROR)}
         {html:buildResultRows("D45", $labels:D45, $labels:D45_SHORT, $D45invalid, "", concat(fn:string(count($D45invalid))," errors found"), "", "", $errors:ERROR)}
         {html:buildResultRows("D46", $labels:D46, $labels:D46_SHORT, $D46invalid, "", "", "", "","info")}
-        {html:buildResultRows("D50", $labels:D50, $labels:D50_SHORT, $D50invalid, "", concat(fn:string(count($D50invalid))," errors found"), "", "",$errors:ERROR)}
+        {html:build2("D50", $labels:D50, $labels:D50_SHORT, $D50invalid, "", concat(fn:string(count($D50invalid))," errors found"), "", "",$errors:ERROR)}
         {html:buildResultRows("D51", $labels:D51, $labels:D51_SHORT, $D51invalid, "", concat(fn:string(count($D51invalid))," errors found"), " invalid attribute", "", $errors:WARNING)}
         {html:buildResultRows("D53", $labels:D53, $labels:D53_SHORT, $D53invalid, "", concat(fn:string(count($D53invalid))," errors found"), " invalid attribute", "", $errors:ERROR)}
         {html:buildResultRows("D54", $labels:D54, $labels:D54_SHORT, $D54invalid, "", concat(string(count($D54invalid))," errors found.") , " invalid attribute", "",$errors:ERROR)}
