@@ -28,6 +28,10 @@ declare function sparqlx:executeSimpleSparqlQuery($sparql as xs:string) as eleme
         fn:doc($uri)//sparql:results
 };
 
+(:TODO: Function to replace all SPARQL Calls :)
+declare function sparqlx:run($sparql as xs:string) as element(sparql:result)* {
+    doc("http://cr.eionet.europa.eu/sparql?query=" || encode-for-uri($sparql) || "&amp;format=application/xml")//sparql:result
+};
 (:~
  : Get the SPARQL endpoint URL.
  : @param $sparql SPARQL query.

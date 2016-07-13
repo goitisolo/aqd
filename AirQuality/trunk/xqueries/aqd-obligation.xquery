@@ -89,7 +89,6 @@ declare function xmlconv:proceed($source_url as xs:string) {
         else
             ()
 
-	(: TODO: Catch fatal errors from obligation-dependent tests, handle them as BLOCKERs :)
 	let $messages := ($resultB, $resultC, $resultD, $resultE, $resultG, $resultM)
 	let $errorString := normalize-space(string-join($messages//p[@class='error'], ' || '))
     let $warningString := normalize-space(string-join($messages//p[@class='warning'], ' || '))

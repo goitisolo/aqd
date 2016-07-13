@@ -487,7 +487,7 @@ aqr:inspireNamespace ?Namespace .
 ?polltargetURI aqr:pollutantCode ?pollURI .
 ?pollURI rdfs:label ?Pollutant .
 FILTER regex(?pollURI,'') .
-FILTER STRSTARTS(str(?Namespace),'", $countryCode, "') .
+FILTER STRSTARTS(str(?Namespace),'", upper-case($countryCode), "') .
 }")
 };
 
@@ -558,7 +558,7 @@ WHERE {
 
 ?pollURI rdfs:label ?Pollutant .
 
-FILTER STRSTARTS(str(?Namespace),'" || $countryCode || "') .
+FILTER STRSTARTS(str(?Namespace),'" || fn:upper-case($countryCode) || "') .
 FILTER regex(?pollURI, '') .
 
 } ORDER BY ?Namespace ?ReportingYear ?Pollutant"
