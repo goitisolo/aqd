@@ -83,6 +83,8 @@ let $B2table :=
         return
             <tr>
                 <td title="base:localId">{$zone/am:inspireId/base:Identifier/base:localId/string()}</td>
+                <td title="zoneName">{data($zone/am:name/gn:GeographicalName/gn:spelling/gn:SpellingOfName/gn:text)}</td>
+                <td title="zoneCode">{data($zone/aqd:zoneCode)}</td>
                 <td title="aqd:predecessor">{if (empty($zone/aqd:predecessor)) then "not specified" else $zone/aqd:predecessor/aqd:AQD_Zone/@gml:id}</td>
             </tr>
     } catch * {
@@ -101,11 +103,13 @@ let $B2errorLevel :=
 let $B3table :=
     try {
         for $zone in $docRoot//aqd:AQD_Zone
-        let $id := $zone/am:inspireId/base:Identifier/base:namespace || "/" || $zone/am:inspireId/base:Identifier/base:localId
+            let $id := $zone/am:inspireId/base:Identifier/base:namespace || "/" || $zone/am:inspireId/base:Identifier/base:localId
         where ($knownZones = $id)
         return
             <tr>
                 <td title="base:localId">{$zone/am:inspireId/base:Identifier/base:localId/string()}</td>
+                <td title="zoneName">{data($zone/am:name/gn:GeographicalName/gn:spelling/gn:SpellingOfName/gn:text)}</td>
+                <td title="zoneCode">{data($zone/aqd:zoneCode)}</td>
                 <td title="aqd:predecessor">{if (empty($zone/aqd:predecessor)) then "not specified" else $zone/aqd:predecessor/aqd:AQD_Zone/@gml:id}</td>
             </tr>
     } catch * {
