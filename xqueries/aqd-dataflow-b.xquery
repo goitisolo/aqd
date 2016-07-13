@@ -297,7 +297,11 @@ let $langSkippedMsg := ""
 (: B18 :)
 let $B18invalid :=
     try {
-        $docRoot//aqd:AQD_Zone[string-length(am:name/gn:GeographicalName/gn:spelling/gn:SpellingOfName/gn:text)=0]/@gml:id
+        for $x in $docRoot//aqd:AQD_Zone[string(am:name/gn:GeographicalName/gn:spelling/gn:SpellingOfName/gn:text) = ""]
+        return
+            <tr>
+                <td title="aqd:AQD_Zone">{string($x/am:inspireId/base:Identifier/base:localId)}</td>
+            </tr>
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
@@ -309,13 +313,17 @@ let $B18invalid :=
 let $B20invalid :=
     try {
         let $validSrsNames := ("urn:ogc:def:crs:EPSG::3035", "urn:ogc:def:crs:EPSG::4326", "urn:ogc:def:crs:EPSG::4258")
-        let $invalidPolygonName := distinct-values($docRoot//aqd:AQD_Zone[count(am:geometry/gml:Polygon) > 0 and not(am:geometry/gml:Polygon/@srsName = $validSrsNames)]/@gml:id)
-        let $invalidPointName := distinct-values($docRoot//aqd:AQD_Zone[count(am:geometry/gml:Point) > 0 and not(am:geometry/gml:Point/@srsName = $validSrsNames)]/@gml:id)
-        let $invalidMultiPointName := distinct-values($docRoot//aqd:AQD_Zone[count(am:geometry/gml:MultiPoint) > 0 and not(am:geometry/gml:MultiPoint/@srsName = $validSrsNames)]/@gml:id)
-        let $invalidMultiSurfaceName := distinct-values($docRoot//aqd:AQD_Zone[count(am:geometry/gml:MultiSurface) > 0 and not(am:geometry/gml:MultiSurface/@srsName = $validSrsNames)]/@gml:id)
-        let $invalidGridName := distinct-values($docRoot//aqd:AQD_Zone[count(am:geometry/gml:Grid) > 0 and not(am:geometry/gml:Grid/@srsName = $validSrsNames)]/@gml:id)
-        let $invalidRectifiedGridName := distinct-values($docRoot//aqd:AQD_Zone[count(am:geometry/gml:RectifiedGrid) > 0 and not(am:geometry/gml:RectifiedGrid/@srsName = $validSrsNames)]/@gml:id)
-        return distinct-values(($invalidPolygonName, $invalidMultiPointName, $invalidPointName, $invalidMultiSurfaceName, $invalidGridName, $invalidRectifiedGridName))
+        let $invalidPolygonName := distinct-values($docRoot//aqd:AQD_Zone[count(am:geometry/gml:Polygon) > 0 and not(am:geometry/gml:Polygon/@srsName = $validSrsNames)]/am:inspireId/base:Identifier/base:localId)
+        let $invalidPointName := distinct-values($docRoot//aqd:AQD_Zone[count(am:geometry/gml:Point) > 0 and not(am:geometry/gml:Point/@srsName = $validSrsNames)]/am:inspireId/base:Identifier/base:localId)
+        let $invalidMultiPointName := distinct-values($docRoot//aqd:AQD_Zone[count(am:geometry/gml:MultiPoint) > 0 and not(am:geometry/gml:MultiPoint/@srsName = $validSrsNames)]/am:inspireId/base:Identifier/base:localId)
+        let $invalidMultiSurfaceName := distinct-values($docRoot//aqd:AQD_Zone[count(am:geometry/gml:MultiSurface) > 0 and not(am:geometry/gml:MultiSurface/@srsName = $validSrsNames)]/am:inspireId/base:Identifier/base:localId)
+        let $invalidGridName := distinct-values($docRoot//aqd:AQD_Zone[count(am:geometry/gml:Grid) > 0 and not(am:geometry/gml:Grid/@srsName = $validSrsNames)]/am:inspireId/base:Identifier/base:localId)
+        let $invalidRectifiedGridName := distinct-values($docRoot//aqd:AQD_Zone[count(am:geometry/gml:RectifiedGrid) > 0 and not(am:geometry/gml:RectifiedGrid/@srsName = $validSrsNames)]/am:inspireId/base:Identifier/base:localId)
+        for $x in distinct-values(($invalidPolygonName, $invalidMultiPointName, $invalidPointName, $invalidMultiSurfaceName, $invalidGridName, $invalidRectifiedGridName))
+        return
+            <tr>
+                <td title="aqd:AQD_Zone">{string($x)}</td>
+            </tr>
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
@@ -326,8 +334,13 @@ let $B20invalid :=
 (: B21 :)
 let $B21invalid  :=
     try {
-        distinct-values($docRoot//aqd:AQD_Zone/am:geometry/gml:MultiSurface/gml:surfaceMember/gml:Polygon/gml:exterior/gml:LinearRing/gml:posList[@srsDimension != "2"]/
-        concat(../../../../../@gml:id, ": srsDimension=", @srsDimension))
+        for $x in $docRoot//aqd:AQD_Zone/am:geometry/gml:MultiSurface/gml:surfaceMember/gml:Polygon/gml:exterior/gml:LinearRing/gml:posList[@srsDimension != "2"]
+        return
+            <tr>
+                <td title="aqd:AQD_Zone">{string($x/../../../../../am:inspireId/base:Identifier/base:localId)}</td>
+                <td title="Polygon">{string($x/../../../@gml:id)}</td>
+                <td title="srsDimension">{string(@srsDimension)}</td>
+            </tr>
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
@@ -340,7 +353,11 @@ let $B22invalid :=
     try {
         for $posList in $docRoot//gml:posList
         let $posListCount := count(fn:tokenize(normalize-space($posList), "\s+")) mod 2
-        return if (not(empty($posList)) and $posListCount gt 0) then $posList/ancestor::*[@gml:id][1]/@gml:id else ()
+        where (not(empty($posList)) and $posListCount > 0)
+        return
+            <tr>
+                <td title="Polygon">{string($posList/../../../@gml:id)}</td>
+            </tr>
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
@@ -358,7 +375,11 @@ let $B23invalid :=
         let $latlongToken := fn:tokenize(normalize-space($latLong), "\s+")
         let $lat := number($latlongToken[1])
         let $long := number($latlongToken[2])
-        return if ($long > $lat) then concat($latLong/ancestor::*[@gml:id][1]/@gml:id, ":first vertex:", $lat, " ", $long) else ()
+        where ($long > $lat)
+        return
+            <tr>
+                <td title="">{string($latLong/../../../@gml:id) || ":first vertex:" || $lat || " " || $long}</td>
+            </tr>
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
@@ -370,8 +391,12 @@ let $B23invalid :=
 (: ./am:zoneType value shall resolve to http://inspire.ec.europa.eu/codeList/ZoneTypeCode/airQualityManagementZone :)
  let $B24invalid  :=
      try {
-         distinct-values($docRoot//aqd:AQD_Zone/am:zoneType[@xlink:href != $xmlconv:AQ_MANAGEMENET_ZONE]/
-         concat(../@gml:id, ": zoneType=", @xlink:href))
+         for $x in $docRoot//aqd:AQD_Zone/am:zoneType[@xlink:href != $xmlconv:AQ_MANAGEMENET_ZONE]
+         return
+             <tr>
+                <td title="aqd:AQD_Zone">{string($x/../am:inspireId/base:Identifier/base:localId)}</td>
+                <td title="zoneType">{string(@xlink:href)}</td>
+             </tr>
      } catch * {
          <tr status="failed">
              <td title="Error code">{$err:code}</td>
@@ -390,13 +415,14 @@ let $B23invalid :=
          let $endDate := substring(normalize-space($timePeriod/gml:endPosition), 1, 10)
          let $beginPosition := if ($beginDate castable as xs:date) then xs:date($beginDate) else ()
          let $endPosition := if ($endDate castable as xs:date) then xs:date($endDate) else ()
+         where (not(empty($beginPosition)) and not(empty($endPosition)) and $beginPosition > $endPosition)
          return
          (:  concat($timePeriod/../../@gml:id, ": gml:beginPosition=", $beginPosition, ": gml:endPosition=", $endPosition) :)
-
-             if (not(empty($beginPosition)) and not(empty($endPosition)) and $beginPosition > $endPosition) then
-                 concat($timePeriod/../../@gml:id, ": gml:beginPosition=", $beginPosition, ": gml:endPosition=", $endPosition)
-             else
-                 ()
+            <tr>
+                <td title="aqd:AQD_Zone">{string($timePeriod/../../am:inspireId/base:Identifier/base:localId)}</td>
+                <td title="gml:beginPosition">{$beginPosition}</td>
+                <td title="gml:endPosition">{$endPosition}</td>
+            </tr>
      } catch * {
          <tr status="failed">
              <td title="Error code">{$err:code}</td>
@@ -408,18 +434,18 @@ let $B23invalid :=
 If an am:endLifespanVersion exists its value shall be greater than the am:beginLifespanVersion :)
 let $B28invalid :=
     try {
-        for $rec in $docRoot//aqd:AQD_Zone
-        let $beginDate := substring(normalize-space($rec/am:beginLifespanVersion), 1, 10)
-        let $endDate := substring(normalize-space($rec/am:endLifespanVersion), 1, 10)
+        for $x in $docRoot//aqd:AQD_Zone
+        let $beginDate := substring(normalize-space($x/am:beginLifespanVersion), 1, 10)
+        let $endDate := substring(normalize-space($x/am:endLifespanVersion), 1, 10)
         let $beginPeriod := if ($beginDate castable as xs:date) then xs:date($beginDate) else ()
         let $endPeriod := if ($endDate castable as xs:date) then xs:date($endDate) else ()
-
+        where ((not(empty($beginPeriod)) and not(empty($endPeriod)) and $beginPeriod > $endPeriod) or empty($beginPeriod))
         return
-            if ((not(empty($beginPeriod)) and not(empty($endPeriod)) and $beginPeriod > $endPeriod) or empty($beginPeriod)) then
-                concat($rec/@gml:id, ": am:beginLifespanVersion=", data($rec/am:beginLifespanVersion),
-                        if (not(empty($endPeriod))) then concat(": am:endLifespanVersion=", data($rec/am:endLifespanVersion)) else "")
-            else
-                ()
+            <tr>
+                <td title="aqd:AQD_Zone">{string($x/am:inspireId/base:Identifier/base:localId)}</td>
+                <td title="am:beginLifespanVersion">{data($x/am:beginLifespanVersion)}</td>
+                <td title="am:endLifespanVersion">{data($x/am:endLifespanVersion)}</td>
+            </tr>
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
@@ -430,8 +456,13 @@ let $B28invalid :=
 (: B31 :)
 let $B31invalid :=
     try {
-        distinct-values($docRoot//aqd:AQD_Zone/am:legalBasis/base2:LegislationCitation[normalize-space(base2:name) != "2011/850/EC"]/
-        concat(../../@gml:id, ": base2:name=", if (string-length(base2:name) > 20) then concat(substring(base2:name, 1, 20), "...") else base2:name))
+        for $x in $docRoot//aqd:AQD_Zone/am:legalBasis/base2:LegislationCitation[normalize-space(base2:name) != "2011/850/EC"]
+        let $base2 := if (string-length($x/base2:name) > 20) then concat(substring($x/base2:name, 1, 20), "...") else $x/base2:name
+        return
+            <tr>
+                <td title="aqd:AQD_Zone">{string($x/../../am:inspireId/base:Identifier/base:localId)}</td>
+                <td title="base2:name">{string($base2)}</td>
+            </tr>
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
@@ -441,8 +472,13 @@ let $B31invalid :=
 (: B32 :)
 let $B32invalid :=
     try {
-        distinct-values($docRoot//aqd:AQD_Zone/am:legalBasis/base2:LegislationCitation[normalize-space(base2:date) != "2011-12-12"]/
-        concat(../../@gml:id, ": base2:date=", if (string-length(base2:date) > 20) then concat(substring(base2:date, 1, 20), "...") else base2:date))
+        for $x in $docRoot//aqd:AQD_Zone/am:legalBasis/base2:LegislationCitation[normalize-space(base2:date) != "2011-12-12"]
+        let $base2 := if (string-length($x/base2:date) > 20) then concat(substring($x/base2:date, 1, 20), "...") else $x/base2:date
+        return
+            <tr>
+                <td title="aqd:AQD_Zone">{string($x/../../am:inspireId/base:Identifier/base:localId)}</td>
+                <td title="base2:date">{string($base2)}</td>
+            </tr>
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
@@ -453,8 +489,13 @@ let $B32invalid :=
 (: B33 :)
 let $B33invalid :=
     try {
-        distinct-values($docRoot//aqd:AQD_Zone/am:legalBasis/base2:LegislationCitation[normalize-space(base2:link) != "http://rod.eionet.europa.eu/instruments/650"]/
-        concat(../../@gml:id, ": base2:link=", if (string-length(base2:link) > 40) then concat(substring(base2:link, 1, 40), "...") else base2:link))
+        for $x in $docRoot//aqd:AQD_Zone/am:legalBasis/base2:LegislationCitation[normalize-space(base2:link) != "http://rod.eionet.europa.eu/instruments/650"]
+        let $base2 := if (string-length($x/base2:link) > 40) then concat(substring($x/base2:link, 1, 40), "...") else $x/base2:link
+        return
+            <tr>
+                <td title="aqd:AQD_Zone">{string($x/../../am:inspireId/base:Identifier/base:localId)}</td>
+                <td title="base2:link">{string($base2)}</td>
+            </tr>
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
@@ -485,8 +526,13 @@ let $countB35duplicates :=
 (: B36 :)
 let $B36invalid :=
     try {
-        distinct-values($docRoot//aqd:AQD_Zone[not(count(aqd:residentPopulation)>0 and aqd:residentPopulation castable as xs:integer and number(aqd:residentPopulation) >= 0)]/
-        concat(@gml:id, ": aqd:residentPopulation=", if (string-length(aqd:residentPopulation) = 0) then "missing" else aqd:residentPopulation))
+        for $x in $docRoot//aqd:AQD_Zone[not(count(aqd:residentPopulation)>0 and aqd:residentPopulation castable as xs:integer and number(aqd:residentPopulation) >= 0)]
+        let $residentPopulation := if (string-length(aqd:residentPopulation) = 0) then "missing" else aqd:residentPopulation
+        return
+            <tr>
+                <td title="aqd:AQD_Zone">{string($x/am:inspireId/base:Identifier/base:localId)}</td>
+                <td title="aqd:residentPopulation">{string($residentPopulation)}</td>
+            </tr>
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
@@ -497,11 +543,13 @@ let $B36invalid :=
 (: B37 - ./aqd:residentPopulationYear/gml:TimeInstant/gml:timePosition shall cite the year in which the resident population was estimated in yyyy format :)
 let $B37invalid :=
     try {
-        for $zone in $docRoot//aqd:AQD_Zone
+        for $x in $docRoot//aqd:AQD_Zone
+        where (xmlconv:isInvalidYear(data($x/aqd:residentPopulationYear/gml:TimeInstant/gml:timePosition)))
         return
-            if (xmlconv:isInvalidYear(data($zone/aqd:residentPopulationYear/gml:TimeInstant/gml:timePosition))) then
-                concat($zone/@gml:id, ": gml:timePosition=", data($zone/aqd:residentPopulationYear/gml:TimeInstant/gml:timePosition))
-            else ()
+            <tr>
+                <td title="aqd:AQD_Zone">{string($x/am:inspireId/base:Identifier/base:localId)}</td>
+                <td title="gml:timePosition">{data($x/aqd:residentPopulationYear/gml:TimeInstant/gml:timePosition)}</td>
+            </tr>
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
@@ -512,8 +560,13 @@ let $B37invalid :=
 (: B38 :)
 let $B38invalid :=
     try {
-        distinct-values($docRoot//aqd:AQD_Zone[not(count(aqd:area)>0 and number(aqd:area) and number(aqd:area) > 0)]/
-        concat(@gml:id, ": aqd:area=", if (string-length(aqd:area) = 0) then "missing" else aqd:area))
+        for $x in $docRoot//aqd:AQD_Zone[not(count(aqd:area)>0 and number(aqd:area) and number(aqd:area) > 0)]
+        let $area := if (string-length(aqd:area) = 0) then "missing" else aqd:area
+        return
+            <tr>
+                <td title="aqd:AQD_Zone">{string($x/am:inspireId/base:Identifier/base:localId)}</td>
+                <td title="aqd:area">{data($area)}</td>
+            </tr>
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
