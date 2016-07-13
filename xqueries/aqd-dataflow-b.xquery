@@ -378,7 +378,8 @@ let $B23invalid :=
         where ($long > $lat)
         return
             <tr>
-                <td title="">{string($latLong/../../../@gml:id) || ":first vertex:" || $lat || " " || $long}</td>
+                <td title="Polygon">{string($latLong/../../../@gml:id)}</td>
+                <td title="First vertex">{string($lat) || string($long)}</td>
             </tr>
     } catch * {
         <tr status="failed">
