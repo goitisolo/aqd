@@ -567,7 +567,7 @@ let $B37invalid :=
 let $B38invalid :=
     try {
         for $x in $docRoot//aqd:AQD_Zone[not(count(aqd:area)>0 and number(aqd:area) and number(aqd:area) > 0)]
-        let $area := if (string-length(aqd:area) = 0) then "missing" else aqd:area
+        let $area := if (string-length($x/aqd:area) = 0) then "missing" else $x/aqd:area
         return
             <tr>
                 <td title="aqd:AQD_Zone">{string($x/am:inspireId/base:Identifier/base:localId)}</td>
