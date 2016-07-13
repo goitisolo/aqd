@@ -1149,28 +1149,24 @@ let $D51invalid :=
     try {
         let $environmentalObjectiveCombinations := doc("http://dd.eionet.europa.eu/vocabulary/aq/environmentalobjective/rdf")
         for $x in $docRoot//aqd:AQD_SamplingPoint/aqd:environmentalObjective/aqd:EnvironmentalObjective
-            let $pollutant := string($x/../../ef:observingCapability/ef:ObservingCapability/ef:observedProperty/@xlink:href)
-            let $objectiveType := string($x/aqd:objectiveType/@xlink:href)
-            let $reportingMetric := string($x/aqd:reportingMetric/@xlink:href)
-            let $protectionTarget := string($x/aqd:protectionTarget/@xlink:href)
+            let $pollutant := data($x/../../ef:observingCapability/ef:ObservingCapability/ef:observedProperty/@xlink:href)
+            let $objectiveType := data($x/aqd:objectiveType/@xlink:href)
+            let $reportingMetric := data($x/aqd:reportingMetric/@xlink:href)
+            let $protectionTarget := data($x/aqd:protectionTarget/@xlink:href)
+        where (not($environmentalObjectiveCombinations//skos:Concept[prop:relatedPollutant/@rdf:resource = $pollutant and prop:hasProtectionTarget/@rdf:resource = $protectionTarget
+                and prop:hasObjectiveType/@rdf:resource = $objectiveType and prop:hasReportingMetric/@rdf:resource = $reportingMetric]))
         return
-            if (not($environmentalObjectiveCombinations//skos:Concept[prop:relatedPollutant/@rdf:resource = $pollutant and prop:hasProtectionTarget/@rdf:resource = $protectionTarget
-                    and prop:hasObjectiveType/@rdf:resource = $objectiveType and prop:hasReportingMetric/@rdf:resource = $reportingMetric]))
-            then
-                <tr>
-                    <td title="base:localId">{string($x/../../ef:inspireId/base:Identifier/base:localId)}</td>
-                    <td title="ef:observedProperty">{string($x/../../ef:observingCapability/ef:ObservingCapability/ef:observedProperty/@xlink:href)}</td>
-                    <td title="aqd:objectiveType">{string($x/aqd:objectiveType/@xlink:href)}</td>
-                    <td title="aqd:reportingMetric">{string($x/aqd:reportingMetric/@xlink:href)}</td>
-                    <td title="aqd:protectionTarget">{string($x/aqd:protectionTarget/@xlink:href)}</td>
-                </tr>
-            else
-                ()
+            <tr>
+                <td title="base:localId">{data($x/../../ef:inspireId/base:Identifier/base:localId)}</td>
+                <td title="ef:observedProperty">{data($x/../../ef:observingCapability/ef:ObservingCapability/ef:observedProperty/@xlink:href)}</td>
+                <td title="aqd:objectiveType">{data($x/aqd:objectiveType/@xlink:href)}</td>
+                <td title="aqd:reportingMetric">{data($x/aqd:reportingMetric/@xlink:href)}</td>
+                <td title="aqd:protectionTarget">{data($x/aqd:protectionTarget/@xlink:href)}</td>
+            </tr>
     } catch * {
         <tr status="failed">
-            <td title="Error code"> {$err:code}</td>
+            <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
-            <td></td>
         </tr>
     }
 

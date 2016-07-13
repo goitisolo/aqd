@@ -201,6 +201,507 @@
       http://dd.eionet.europa.eu/vocabulary/aq/zonetype/agg </B47>
     <B47_SHORT>Zone type must be either Agglomeration or Non-agglomeration </B47_SHORT>
   </B>
+  <C>
+    <C0>Check if delivery if this is a new delivery or updated delivery (via reporting year) </C0>
+    <C0_SHORT>Checks if this delivery is new or an update (on same reporting year)</C0_SHORT>
+    <C1>Compile &amp; feedback upon the total number of AQ Assessment Regime feature types included in the delivery</C1>
+    <C1_SHORT>Number of Assessment Regimes reported</C1_SHORT>
+    <C2>Compile &amp; feedback upon the total number of new records for AQ Assessment Regime feature types included in the delivery. Feedback report shall include the gml:id attribute, base:localId, aqd:versionId, base:namespace, aqd:zone, aqd:pollutant, aqd:protectionTarget</C2>
+    <C2_SHORT>Number of new Assessment Regimes compared to previous report</C2_SHORT>
+    <C3>Compile &amp; feedback upon the total number of modifications to previously reported AQ Assessment Regime feature types included in the delivery. Feedback report shall include the gml:id attribute, base:localId, base:namespace, aqd:versionId, aqd:zone, aqd:pollutant, aqd:protectionTarget</C3>
+    <C3_SHORT>Number of existing Assessment Regimes compared to previous report</C3_SHORT>
+    <C4>All gml:id attributes shall have unique content within the document or namespace</C4>
+    <C4_SHORT>gml:id must be unique within the XML document</C4_SHORT>
+    <C5>./aqd:inspireId/base:Identifier/base:localId shall be an unique code for the assessment regime.</C5>
+    <C5_SHORT>Local Id shall be unique for the assessment regime.</C5_SHORT>
+    <C6>./aqd:inspireId/base:Identifier/base:namespace List base:namespace and count the number of base:localId assigned to each base:namespace.</C6>
+    <C6_SHORT>List unique namespaces used and count number of elements</C6_SHORT>
+    <C6.1>Check that namespace is registered in vocabulary (http://dd.eionet.europa.eu/vocabulary/aq/namespace/view)</C6.1>
+    <C6.1_SHORT>Check namespace is registered </C6.1_SHORT>
+    <C7>Each of the number of /aqd:AQD_AssessmentRegime records shall contain 1 ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmental Objective records per /aqd:AQD_AssessmentRegime element</C7>
+    <C7_SHORT>Each Assessment Regime shall have one Environmental Objective element</C7_SHORT>
+    <C8>./aqd:pollutant xlink:href attribute may resolve to one of   http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1
+      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/7 http://dd.eionet.europa.eu/vocabulary/aq/pollutant/8
+      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/9 http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5  http://dd.eionet.europa.eu/vocabulary/aq/pollutant/6001 http://dd.eionet.europa.eu/vocabulary/aq/pollutant/10  http://dd.eionet.europa.eu/vocabulary/aq/pollutant/20  http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5012  http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5014 http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5015
+      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5018  http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5029
+    </C8>
+    <C8_SHORT>Assessment regimes must be reported all expected pollutants</C8_SHORT>
+    <C9>Count on unique pollutants when Assessment regime(s)'s aqd:objectiveType xlink:href attribute resolve to http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/MO</C9>
+    <C9_SHORT>Count number of Assessment Regimes for pollutants with Monitoring Objetive</C9_SHORT>
+    <C10>Where ./aqd:pollutant resolves to
+      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1
+      the 3 elements within ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/
+      may only resolve to the following combinations
+
+      aqd:objectiveType xlink:href attribute shall resolve to one of
+      http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV
+      aqd:reportingMetric xlink:href attribute shall resolve to one of
+      http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/hrsAbove
+      aqd:protectionTarget xlink:href attribute shall resolve to one of
+      http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H
+      or
+      aqd:objectiveType xlink:href attribute shall resolve to one of
+      http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV
+      aqd:reportingMetric xlink:href attribute shall resolve to one of
+      http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/daysAbove
+      aqd:protectionTarget xlink:href attribute shall resolve to one of
+      http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H
+      or
+      aqd:objectiveType xlink:href attribute shall resolve to one of
+      http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/ALT
+      aqd:reportingMetric xlink:href attribute shall resolve to one of
+      http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/3hAbove
+      aqd:protectionTarget xlink:href attribute shall resolve to one of
+      http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H
+      or
+      aqd:objectiveType xlink:href attribute shall resolve to one of
+      http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/CL
+      aqd:reportingMetric xlink:href attribute shall resolve to one of
+      http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean
+      aqd:protectionTarget xlink:href attribute shall resolve to one of
+      http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V
+
+      or
+      aqd:objectiveType xlink:href attribute shall resolve to one of
+      http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/CL
+      aqd:reportingMetric xlink:href attribute shall resolve to one of
+      http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/wMean
+      aqd:protectionTarget xlink:href attribute shall resolve to one of
+      http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V
+    </C10>
+    <C10_SHORT>When the pollutant is SO2 then the environmental objective should include one of the following combinations:
+
+      The number of hours in exceedence in a calendar year is above the Limit Value for Health.
+      or
+      The number of days in exceedence in a calendar year is above the Limit Value for Health.
+      or
+      The Crtical Level for Vegetation is above the average.
+      or
+      The Alert Threshold for Health is over 3 hours in exceedence.</C10_SHORT>
+    <C11>Where ./aqd:pollutant resolves to
+      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/7
+      the 3 elements within ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/
+      may only resolve to the following combinations
+
+      aqd:objectiveType xlink:href attribute shall resolve to one of
+      http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/TV
+      aqd:reportingMetric xlink:href attribute shall resolve to one of
+      http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/daysAbove-3yr
+      aqd:protectionTarget xlink:href attribute shall resolve to one of
+      http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H
+      or
+      aqd:objectiveType xlink:href attribute shall resolve to one of
+      http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LTO
+      aqd:reportingMetric xlink:href attribute shall resolve to one of
+      http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/daysAbove
+      aqd:protectionTarget xlink:href attribute shall resolve to one of
+      http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H
+      or
+      aqd:objectiveType xlink:href attribute shall resolve to one of
+      http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/TV
+      aqd:reportingMetric xlink:href attribute shall resolve to one of
+      http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/AOT40c-5yr
+      aqd:protectionTarget xlink:href attribute shall resolve to one of
+      http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V
+      or
+      aqd:objectiveType xlink:href attribute shall resolve to one of
+      http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LTO
+      aqd:reportingMetric xlink:href attribute shall resolve to one of
+      http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/AOT40c
+      aqd:protectionTarget xlink:href attribute shall resolve to one of
+      http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V
+      or
+      aqd:objectiveType xlink:href attribute shall resolve to one of
+      http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/INT
+      aqd:reportingMetric xlink:href attribute shall resolve to one of
+      http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/hrsAbove
+      aqd:protectionTarget xlink:href attribute shall resolve to one of
+      http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H
+      or
+      aqd:objectiveType xlink:href attribute shall resolve to one of
+      http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/ALT
+      aqd:reportingMetric xlink:href attribute shall resolve to one of
+      http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/hrsAbove
+      aqd:protectionTarget xlink:href attribute shall resolve to one of
+      http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H
+    </C11>
+    <C11_SHORT>When the pollutant is O3 then the environmental objective should include one of the following combinations:
+      The Target Value for Health is the Days in exceedance averaged over 3 calendar years.
+      Or
+      The Long Term Objective for Health is the Days in exceedance in a calendar year
+      Or
+      The Target Value for Vegatation is averaged over 5 years.
+      Or
+      AOT40c applies to the Long Term Objective for Vegetation.
+      Or
+      Exceeds the Information Threshhold for Health for the calendar year.
+      Or
+      Exceeds the Alert Threshold for Health in a calendar year.</C11_SHORT>
+    <C12>Where ./aqd:pollutant resolves to
+      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/8
+      the 3 elements within ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/
+      may only resolve to the following combinations
+
+      aqd:objectiveType xlink:href attribute shall resolve to one of
+      http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV
+      aqd:reportingMetric xlink:href attribute shall resolve to one of
+      http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/hoursAbove
+      aqd:protectionTarget xlink:href attribute shall resolve to one of
+      http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H
+      or
+      aqd:objectiveType xlink:href attribute shall resolve to one of
+      http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV
+      aqd:reportingMetric xlink:href attribute shall resolve to one of
+      http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean
+      aqd:protectionTarget xlink:href attribute shall resolve to one of
+      http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H
+      or
+      aqd:objectiveType xlink:href attribute shall resolve to one of
+      http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LVMOT
+      aqd:reportingMetric xlink:href attribute shall resolve to one of
+      http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean
+      aqd:protectionTarget xlink:href attribute shall resolve to one of
+      http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H
+      or
+      aqd:objectiveType xlink:href attribute shall resolve to one of
+      http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LVMOT
+      aqd:reportingMetric xlink:href attribute shall resolve to one of
+      http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/hrsAbove
+      aqd:protectionTarget xlink:href attribute shall resolve to one of
+      http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H
+      or
+      aqd:objectiveType xlink:href attribute shall resolve to one of
+      http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/ALT
+      aqd:reportingMetric xlink:href attribute shall resolve to one of
+      http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/3hAbove
+      aqd:protectionTarget xlink:href attribute shall resolve to one of
+      http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H
+      or
+      aqd:objectiveType xlink:href attribute shall resolve to one of
+      http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LVmaxMOT
+      aqd:reportingMetric xlink:href attribute shall resolve to one of
+      http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean
+      aqd:protectionTarget xlink:href attribute shall resolve to one of
+      http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H
+      or
+      aqd:objectiveType xlink:href attribute shall resolve to one of
+      http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LVmaxMOT
+      aqd:reportingMetric xlink:href attribute shall resolve to one of
+      http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/hrsAbove
+      aqd:protectionTarget xlink:href attribute shall resolve to one of
+      http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H
+    </C12>
+    <C12_SHORT>When the pollutant is NO2 then the environmental objective should include one of the following combinations:
+      Limit Value &amp; Hours in Exceedence for the calendar year for Health
+      Or
+      Limit value &amp; Average for Health
+      Or
+      Limit value plus applicable margin of tolerance &amp; Average for Health
+      Or
+      Limit value plus applicable margin of tolerance &amp; Exceedence for the calendar year for Health
+      Or
+      Alert threshold &amp; Three consecutive hours in exceedance for Health
+      Or
+      Limit value plus maximum margin of tolerance &amp; Average for Health
+      Or
+      Limit value plus maximum margin of tolerance &amp; Number of hours in exceedance in a calendar year for Health</C12_SHORT>
+    <C13>Where ./aqd:pollutant resolves to
+      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/9
+      the 3 elements within ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/
+      may only resolve to the following combinations
+
+      http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/CL
+      aqd:reportingMetric xlink:href attribute shall resolve to one of
+      http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean
+      aqd:protectionTarget xlink:href attribute shall resolve to one of
+      http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V
+      or
+      aqd:objectiveType xlink:href attribute shall resolve to one of
+      http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/MO
+      aqd:reportingMetric xlink:href attribute shall resolve to one of
+      http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/NA
+      aqd:protectionTarget xlink:href attribute shall resolve to one of
+      http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/NA
+    </C13>
+    <C13_SHORT>If NOX, then the Environmental Objective should have the combination:
+      Critical Level &amp; Annual Mean for Vegetation</C13_SHORT>
+    <C14>Where ./aqd:pollutant resolves to
+      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5
+      the 3 elements within ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/
+      may only resolve to the following combinations
+
+      aqd:objectiveType xlink:href attribute shall resolve to one of
+      http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV
+      aqd:reportingMetric xlink:href attribute shall resolve to one of
+      http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/daysAbove
+      aqd:protectionTarget xlink:href attribute shall resolve to one of
+      http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H
+      or
+      http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV
+      aqd:reportingMetric xlink:href attribute shall resolve to one of
+      http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean
+      aqd:protectionTarget xlink:href attribute shall resolve to one of
+      http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H
+    </C14>
+    <C14_SHORT>If PM10, then the Environmental Objective should include one of the combinations:
+      Limit Value &amp; Days in exceedance in a calendar year for Health
+      Or
+      Limit Value &amp; Annual Mean for Health</C14_SHORT>
+    <C15>Where ./aqd:pollutant resolves to
+      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/6001
+      the 3 elements within ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/
+      may only resolve to the following combinations
+
+      aqd:objectiveType xlink:href attribute shall resolve to one of
+      http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/ECO
+      aqd:reportingMetric xlink:href attribute shall resolve to one of
+      http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/AEI
+      aqd:protectionTarget xlink:href attribute shall resolve to one of
+      http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H
+      or
+      aqd:objectiveType xlink:href attribute shall resolve to one of
+      http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV
+      aqd:reportingMetric xlink:href attribute shall resolve to one of
+      http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean
+      aqd:protectionTarget xlink:href attribute shall resolve to one of
+      http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H
+      or
+      aqd:objectiveType xlink:href attribute shall resolve to one of
+      http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/TV
+      aqd:reportingMetric xlink:href attribute shall resolve to one of
+      http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean
+      aqd:protectionTarget xlink:href attribute shall resolve to one of
+      http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H
+
+      or
+      aqd:objectiveType xlink:href attribute shall resolve to one of
+      http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LVMOT
+      aqd:reportingMetric xlink:href attribute shall resolve to one of
+      http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean
+      aqd:protectionTarget xlink:href attribute shall resolve to one of
+      http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H
+      or
+      aqd:objectiveType xlink:href attribute shall resolve to one of
+      http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV
+      aqd:reportingMetric xlink:href attribute shall resolve to one of
+      http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean
+      aqd:protectionTarget xlink:href attribute shall resolve to one of
+      http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H-S1
+      or
+      aqd:objectiveType xlink:href attribute shall resolve to one of
+      http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV
+      aqd:reportingMetric xlink:href attribute shall resolve to one of
+      http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean
+      aqd:protectionTarget xlink:href attribute shall resolve to one of
+      http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H-S2
+      or
+      aqd:objectiveType xlink:href attribute shall resolve to one of
+      http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/MO
+      aqd:reportingMetric xlink:href attribute shall resolve to one of
+      http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/NA
+      aqd:protectionTarget xlink:href attribute shall resolve to one of
+      http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/NA
+    </C15>
+    <C15_SHORT>If PM2.5, then the Environmental Objective should include one of the combinations:
+      Exposure Cocentration &amp; Average Exposure Indicator for Health
+      Or
+      Limit Value &amp; Annual Mean for Health
+      Or
+      Target Value &amp; Annual Mean for Health
+      Or
+      Limit value plus applicable margin of tolerance &amp; Annual Mean for Health
+      Or
+      Limit value plus applicable margin of tolerance &amp; Annual Mean for Health Stage 1
+      Or
+      Limit Value &amp; Annual Mean for Health Stage 1
+      Or
+      Limit Value &amp; Annual Mean for Health Stage 2
+      Or
+      Monitorng Objective and Environmental Objective are Not Applicable</C15_SHORT>
+    <C16>Where ./aqd:pollutant resolves to http://dd.eionet.europa.eu/vocabulary/aq/pollutant/10 the 3 elements within ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/may only resolve to the following combinations
+      Hide combinations
+      aqd:objectiveType xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV aqd:reportingMetric xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/daysAbove aqd:protectionTarget xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H</C16>
+    <C16_SHORT>If CO, then the Environmental Objective combination should be:
+      Limit Value &amp; Days in exceedance in a calendar year for Health</C16_SHORT>
+    <C17>Where ./aqd:pollutant resolves to http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5012 or http://dd.eionet.europa.eu/vocabulary/aq/pollutant/20 the 3 elements within ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/may only resolve to the following combinations
+      Hide combinations
+      aqd:objectiveType xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV aqd:reportingMetric xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean aqd:protectionTarget xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H
+
+      or
+
+      aqd:objectiveType xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/MO aqd:reportingMetric xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/NA aqd:protectionTarget xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/NA</C17>
+    <C17_SHORT>If Pb in PM10, then the Environmental Objective should include one of the combinations:
+      Limit Value &amp; Annual Mean for Health
+      Or
+      Monitoring Objective and Environmental Objective are Not Applicable</C17_SHORT>
+    <C18>Where ./aqd:pollutant resolves to http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5014 or http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5018 or http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5015 or http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5029 the 3 elements within ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/may only resolve to the following combinations
+      Hide combinations
+      aqd:objectiveType xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/TV aqd:reportingMetric xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean aqd:protectionTarget xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H
+
+      or
+
+      aqd:objectiveType xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/MO aqd:reportingMetric xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/NA aqd:protectionTarget xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/NA</C18>
+    <C18_SHORT>If Cd in PM10, Ni in PM10, As in PM10 or BaP in PM10,  then the Environmental Objective should include one of the combinations:
+      Target Value &amp; Annual Mean for Health
+      Or
+      Monitorng Objective and Environmental Objective are Not Applicable</C18_SHORT>
+    <C19>The 3 elements within ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/ may only resolve to the following combination aqd:objectiveType xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/MO aqd:reportingMetric xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/NA aqd:protectionTarget xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/NA where http://dd.eionet.europa.eu/vocabulary/aq/pollutant/ that must be one of
+      Hide items
+      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1045
+      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1046
+      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1047
+      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1771
+      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1772
+      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1629
+      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1659
+      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1657
+      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1668
+      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1631
+      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/2012
+      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/2014
+      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/2015
+      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/2018
+      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/7013
+      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/4013
+      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/4813
+      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/653
+      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5013
+      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5610
+      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5617
+      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5759
+      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5626
+      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5655
+      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5763
+      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/7029
+      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/611
+      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/618
+      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/760
+      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/627
+      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/656
+      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/7419
+      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/428
+      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/430
+      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/432
+      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/503
+      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/505
+      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/394
+      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/447
+      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/6005
+      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/6006
+      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/6007
+      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/24
+      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/486
+      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/316
+      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/6008
+      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/6009
+      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/451
+      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/443
+      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/441
+      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/475
+      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/449
+      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/21
+      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/431
+      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/464
+      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/482
+      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/6011
+      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/6012
+      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/32
+      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/25</C19>
+    <C19_SHORT>For a selected number of pollutants (according to Decision), check that Environmental Objective combination is MO / NA / NA</C19_SHORT>
+    <C20>Provide any missing combination of Pollutant/EnvironmentalObjective according to vocabulary http://dd.eionet.europa.eu/vocabulary/aq/environmentalobjective/ (Exceptions: when ObjectiveType = .../MO + .../LVMOT + .../LVmaxMOT &amp;those combinations when "Exceedance threshold" within the vocabulary is populated)</C20>
+    <C20_SHORT>List any missing combination of pollutant/EnvironmentalObjetive</C20_SHORT>
+    <C21>Assess correctness of /aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:exceedanceAttainment depending on combination aqd:pollutant + aqd:objectiveType + aqd:reportingMetric + aqd:protectionTarget against vocabulary http://dd.eionet.europa.eu/vocabulary/aq/environmentalobjective/</C21>
+    <C21_SHORT>Check Assessment Threshold according to the allowed combination</C21_SHORT>
+    <C23a>./aqd:assessmentMethods/aqd:AssessmentMethods/aqd:assessmentType xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/[concept]Current options in the codelist are:http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/fixed http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/model http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/indicative http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/objective</C23a>
+    <C23a_SHORT>The assessement type shall be either "Fixed Measurement," "modelling," "Indicative Measurement"or "Objective Estiamtion."</C23a_SHORT>
+    <C23b>./aqd:assessmentMethods/aqd:AssessmentMethods/aqd:assessmentTypeDescription resolve to a text description of Assessment Type</C23b>
+    <C23b_SHORT>A textual description of assessment type is expected</C23b_SHORT>
+    <C24>The assessment methods referenced by ./aqd:assessmentMethods/aqd:AssessmentMethods/aqd:modelAssessmentMetadata  xlink:href attribute shall resolve to a traversable link to an assessment method /aqd:AQD_Model reported under cdr.eionet.europa.eu/ZZ/eu/aqd/d/…
+
+      (The href is made using “namespace”/”localId”)
+    </C24>
+    <C24_SHORT>This check is performed under “Check xlink references”</C24_SHORT>
+    <C25>The assessment methods referenced by
+      ./aqd:assessmentMethods/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata xlink:href attribute shall resolve to a traversable link to an assessment method /aqd:AQD_SamplingPoint reported under cdr.eionet.europa.eu/ZZ/eu/aqd/d/…
+
+      (The href is made using “namespace”/”localId”)
+
+    </C25>
+    <C25_SHORT>This check is performed under “Check xlink references”</C25_SHORT>
+    <C26>The assessment methods referenced by ./aqd:assessmentMethods/aqd:AssessmentMethods/aqd:modelAssessmentMeta data or ./aqd:assessmentMethods/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata xlink:href attribute shall contain one element /aqd:AQD_Model/ef:observingCapability/ef:ObservingCapability/ef:observingTime/gml:TimePeriod/gml:endPosition or /aqd:AQD_SamplingPoint/ef:observingCapability/ef:ObservingCapability/ef:observingTime/gml:TimePeriod/gml:endPosition that is operational within the aqd:reportingPeriod included in the ReportingHead</C26>
+    <C26_SHORT>Any assessment method used under Assessment must be operionational within the Reporting Period</C26_SHORT>
+    <C27>The number of unique zones cited by /aqd:AQD_AssessmentRegime  shall be EQUAL to the number of unique zones in ./aqd:AQD_Zone for the same ReportingYear</C27>
+    <C27_SHORT>The number of zones must be the same as cited in the AssessmentRegime (for the same Reporting Year)</C27_SHORT>
+    <C28>The lifecycle information of ./aqd:zone xlink:href shall be current,
+      /aqd:AQD_Zone/am:designationPeriod/gml:TimePeriod/gml:endPosition shall be greater than the begin position of the aqd:reportingPeriod included in the ReportingHeader
+
+      If endPosition is indeterminate (i.e.&lt;gml:endPosition indeterminatePosition="unknown"/>)
+      /aqd:AQD_Zone/am:designationPeriod/gml:TimePeriod/gml:beginPosition shall NOT be greater than the begin position of the aqd:reportingPeriod included in the ReportingHeader
+    </C28>
+    <C28_SHORT>Start and End time shall be within the Reporting Period</C28_SHORT>
+    <C29> aqd:zone xlink:href attribute shall resolve to a traversable link to an AQ zone in /aqd:AQD_Zone reported under cdr.eionet.europa.eu/ZZ/eu/aqd/b/... The ./aqd:pollutant and ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget within the Assessment Regime shall equal one combination /aqd:AQD_Zone/aqd:pollutants/aqd:Pollutant/aqd:pollutantCode and /aqd:AQD_Zone/aqd:pollutants/aqd:Pollutant/aqd:protectionTarget within the linked zone aqd:AQD_Zone/aqd:pollutantsException : Where ./aqd:pollutant resolves to http://dd.eionet.europa.eu/vocabulary/aq/pollutant/6001 ./aqd:zone xlink:href attribute MAY resolve to &lt;aqd:zone nilReason='inapplicable'/></C29>
+    <C29_SHORT>Pollutant, Assessment Threshold and Environmental Objective shall equal one combination, except where
+      where Particulate Matter &lt; 2.5 µm, which is not applicable.</C29_SHORT>
+    <C31>COUNT number zone-pollutant-target comibantion to match those in dataset B for the same reporting Year
+      ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget + ./aqd:pollutant + /aqd:zone combinations shall reconcile to corresponding information within /aqd:AQD_Zone/aqd:pollutants/aqd:Pollutant/aqd:protectionTarget ,  /aqd:AQD_Zone/aqd:pollutants/aqd:Pollutant/aqd:pollutantCode + /aqd:AQD_Zone/am:inspireId/base:Identifier/base:localId
+
+
+
+      Sulphur dioxide (1) + health        B vs C
+      Sulphur dioxide (1) + vegetation       B vs C
+      Ozone (7) + health       B vs C
+      Ozone (7) + vegetation       B vs C
+      Nitrogen dioxide (8) + health       B vs C
+      Nitrogen oxides (9) + vegetation       B vs C
+      Particulate matter &lt; 10 µm (5) + health       B vs C
+      Particulate matter &lt; 2.5 µm (6001) + health       B vs C
+      Carbon monoxide (10) + health       B vs C
+      Benzene (20) + health       B vs C  Lead in PM10 (5012) + health       B vs C
+      Arsenic in PM10 (5018) + health       B vs C
+      Cadmium in PM10 (5014) + health       B vs C
+      Nickel in PM10 (5015) + health       B vs C
+      Benzo(a)pyrene in PM10 (5029) + health       B vs C
+    </C31>
+    <C31_SHORT>COUNT number zone-pollutant-target comibantion to match those in dataset B for the same reporting Year</C31_SHORT>
+    <C32>./aqd:assessmentMethods/aqd:AssessmentMethods/aqd:assessmentType shall be compared with the /aqd:AQD_SamplingPoint/aqd:assessmentType for assessment method cited by ./aqd:assessmentMethods/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata xlink:href attribute
+      and/or
+      /aqd:AQD_Model/aqd:assessmentType for assessment method cited by ./aqd:assessmentMethods/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata xlink:href attribute
+
+      The following combinations are allowed:
+      Within AssessmentRegime Within SamplingPoint or Model Status
+      fixed fixed OK
+      indicative indicative/fixed OK
+      model model OK
+      objective  objective OK
+      fixed indicative/model/objective WRONG
+      indicative fixed/model/objective WRONG
+      model fixed/indicative/objective WRONG
+      objective fixed/indicative/model OK
+
+    </C32>
+    <C32_SHORT>Check Assessment Type of Asssessment Methods compared to assessmentType within Assessment Regime</C32_SHORT>
+    <C33>The lifecycle information of ./aqd:assessmentMethods/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata xlink:href shall be current, /AQD_SamplingPoint/ef:operationActivityPeriod/gml:endPosition shall be operational within the aqd:reportingPeriod included in the ReportingHeader </C33>
+    <C33_SHORT>If the Asseement Metadata lifecycle information is current, then the Operational Activity End Time shall be within ReportingPeriod</C33_SHORT>
+    <C35>/aqd:AQD_SamplingPoint/aqd:usedAQD or /aqd:AQD_ModelType/aqd:used shall EQUAL “true” for all ./aqd:assessmentMethods/aqd:AssessmentMethods/aqd:*AssessmentMetadata xlink:href citations</C35>
+    <C35_SHORT>If a sampling point or a model is used in any Assessment Regime, it has to be described as TRUE for AQ Directive use</C35_SHORT>
+    <C36>Where ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget xlink:href attribute resolves to http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V the AQD_Station linked to shall resolve the following attribute /aqd:AQD_Station/aqd:areaClassification xlink:href to http://dd.eionet.europa.eu/vocabulary/aq/areaclassification/rural
+
+      Please note that  /aqd:AQD_AssessmentRegime does not link directly to /aqd:AQD_Station (The link is done via aqd:AQD_SamplingPoint): aqd:AQD_AssessmentRegime /aqd:assessmentMethods/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata attribute xlinks to aqd:AQD_SamplingPoint.
+      aqd:AQD_SamplingPoint links to aqd:AQD_SamplingPoint via aqd:AQD_SamplingPoint/ef:broader resulting in
+
+      aqd:AQD_AssessmentRegime /aqd:assessmentMethods/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata/ aqd:AQD_SamplingPoint/ef:broader/aqd:AQD_Station/aqd:areaClassification
+    </C36>
+    <C37>There shall be only 1 record per MS where ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmental Objective/aqd:EnvironmentalObjective/aqd:reportingMetric xlink:href attribute resolves to http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/AEI</C37>
+    <C37_SHORT>Where the assessment threshold is  Average Exposure Indicator, there can be only 1 record.</C37_SHORT>
+    <C38>Where./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric xlink:href attribute resolves to http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/AEI the /aqd:AQD_SamplingPoint/aqd:relevantEmissions/aqd:RelevantEmissions/aqd:stationClassification xlink:href attribute shall resolve to http://dd.eionet.europa.eu/vocabulary/aq/stationclassification/background for all aqd:AQD_SamplingPoint linked via aqd:AQD_AssessmentRegime/aqd:assessmentMethods/aqd:AssessmentMethods /aqd:samplingPointAssessmentMetadata citations</C38>
+    <C38_SHORT>The cited stations under the Assessment Regime for the Average Exposure Indicator should be classified as Background, </C38_SHORT>
+    <C40>The total number of /aqd:assessmentMethods/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata and /aqd:assessmentMethods/aqd:AssessmentMethods/aqd:modelAssessmentMetadata citations within a MS (delivery) shall be GREATER THAN OR EQUAL to 1 where ./aqd:pollutant xlink:href attribute resolves to</C40>
+    <C40_SHORT>All Assessment Regimes should be linked to at least one Assessment Method (either SamplingPoint or Model/ObjectiveEstimation)</C40_SHORT>
+    <C41>gml:timePosition MUST be provided and must be  equal or greater than (aqd:reportingPeriod – 5 yeasr ) included in the ReportingHeader</C41>
+    <C41_SHORT>The year of the latest Classification report must be within the last 5 years according to CAFÉ Directive</C41_SHORT>
+    <C42>Free text shall be provided including at least 1 valid URL</C42>
+    <C42_SHORT>A valid url must be provided linking to the latest Classification Report</C42_SHORT>
+  </C>
   <D>
     <D0>Check if delivery if this is a new delivery or updated delivery (via reporting year) </D0>
     <D0_SHORT>Checks if this delivery is new or an update (on same reporting year)</D0_SHORT>
@@ -424,323 +925,4 @@
     </D94>
     <D94_SHORT>All reported Networks shall be used within at least one SamplingPoint or one Station</D94_SHORT>
   </D>
-  <C>
-    <C1>Total number of AQ Assessment Regime feature types</C1>
-    <C1_SHORT>Total number of feature types is</C1_SHORT>
-    <C4>All gml:id attributes shall have unique content within the document or namespace</C4>
-    <C4_SHORT>All Id attributes must have unique content within the XML document</C4_SHORT>
-    <C5>./aqd:inspireId/base:Identifier/base:localId shall be an unique code for the assessment regime.</C5>
-    <C5_SHORT>Local Id shall be unique for the assessment regime.</C5_SHORT>
-    <C6>./aqd:inspireId/base:Identifier/base:namespace List base:namespace and count the number of base:localId assigned to each base:namespace.</C6>
-    <C6_SHORT>LocalId must be a unique</C6_SHORT>
-    <C7>Each of the number of /aqd:AQD_AssessmentRegime records shall contain 1 ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmental Objective records per /aqd:AQD_AssessmentRegime element</C7>
-    <C7_SHORT>Each Assessment Regime shall have one Environmental Objective element</C7_SHORT>
-    <C8>Assessment regimes reported for all expected pollutants</C8>
-    <C8_SHORT>Assessment regimes reported for all expected pollutants</C8_SHORT>
-    <C9>Assessment regime(s) not found for the following pollutant(s):</C9>
-    <C9_SHORT>For the following pollutants there are missing assessment regimes:</C9_SHORT>
-    <C10>Where ./aqd:pollutant resolves to http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1 the 3 elements within ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/may only resolve to the following combinations
-      Hide combinations
-      aqd:objectiveType xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV aqd:reportingMetric xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/hrsAbove aqd:protectionTarget xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H
-
-      or
-
-      aqd:objectiveType xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV aqd:reportingMetric xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/daysAbove aqd:protectionTarget xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H
-
-      or
-
-      aqd:objectiveType xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/CL aqd:reportingMetric xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean aqd:protectionTarget xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V
-
-      or
-
-      aqd:objectiveType xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/CL aqd:reportingMetric xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/wMean aqd:protectionTarget xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V
-
-      or
-
-      aqd:objectiveType xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/ALT aqd:reportingMetric xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/3hAbove aqd:protectionTarget xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H</C10>
-    <C10_SHORT>When the pollutant is SO2 then the environmental objective should include one of the following combinations:
-
-      The number of hours in exceedence in a calendar year is above the Limit Value for Health.
-      or
-      The number of days in exceedence in a calendar year is above the Limit Value for Health.
-      or
-      The Crtical Level for Vegetation is above the average.
-      or
-      The Alert Threshold for Health is over 3 hours in exceedence.</C10_SHORT>
-    <C11>Where ./aqd:pollutant resolves to http://dd.eionet.europa.eu/vocabulary/aq/pollutant/7 the 3 elements within ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/may only resolve to the following combinations
-      Hide combinations
-      aqd:objectiveType xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/TV aqd:reportingMetric xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/daysAbove-3yr aqd:protectionTarget xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H
-
-      or
-
-      aqd:objectiveType xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LTO aqd:reportingMetric xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/daysAbove aqd:protectionTarget xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H
-
-      or
-
-      or aqd:objectiveType xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/TV aqd:reportingMetric xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/AOT40c-5yr aqd:protectionTarget xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V
-
-      or
-
-      aqd:objectiveType xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LTO aqd:reportingMetric xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/AOT40c aqd:protectionTarget xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V
-
-      or
-
-      aqd:objectiveType xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/INT aqd:reportingMetric xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/hrsAbove aqd:protectionTarget xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H
-
-      or
-
-      aqd:objectiveType xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/ALT aqd:reportingMetric xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/hrsAbove aqd:protectionTarget xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H</C11>
-    <C11_SHORT>When the pollutant is O3 then the environmental objective should include one of the following combinations:
-      The Target Value for Health is the Days in exceedance averaged over 3 calendar years.
-      Or
-      The Long Term Objective for Health is the Days in exceedance in a calendar year
-      Or
-      The Target Value for Vegatation is averaged over 5 years.
-      Or
-      AOT40c applies to the Long Term Objective for Vegetation.
-      Or
-      Exceeds the Information Threshhold for Health for the calendar year.
-      Or
-      Exceeds the Alert Threshold for Health in a calendar year.</C11_SHORT>
-    <C12>Where ./aqd:pollutant resolves to http://dd.eionet.europa.eu/vocabulary/aq/pollutant/8 the22 3 elements within ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/may only resolve to the following combinations
-      Hide combinations
-      aqd:objectiveType xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/objective type/LV aqd:reportingMetric xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/hrsAbove aqd:protectionTarget xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H
-
-      or
-
-      http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV aqd:reportingMetric xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/a Mean aqd:protectionTarget xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H
-
-      or
-
-      aqd:objectiveType xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LVMOT aqd:reportingMetric xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean aqd:protectionTarget xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H
-
-      or
-
-      aqd:objectiveType xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LVMOT aqd:reportingMetric xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/hoursAbove aqd:protectionTarget xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H
-
-      or
-
-      aqd:objectiveType xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/ALT aqd:reportingMetric xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/3hAbove aqd:protectionTarget xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H
-
-      or
-
-      aqd:objectiveType xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LVmaxMOT aqd:reportingMetric xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean aqd:protectionTarget xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H
-
-      or
-
-      aqd:objectiveType xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LVmaxMOT aqd:reportingMetric xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/hrsAbove aqd:protectionTarget xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H</C12>
-    <C12_SHORT>When the pollutant is NO2 then the environmental objective should include one of the following combinations:
-      Limit Value &amp; Hours in Exceedence for the calendar year for Health
-      Or
-      Limit value &amp; Average for Health
-      Or
-      Limit value plus applicable margin of tolerance &amp; Average for Health
-      Or
-      Limit value plus applicable margin of tolerance &amp; Exceedence for the calendar year for Health
-      Or
-      Alert threshold &amp; Three consecutive hours in exceedance for Health
-      Or
-      Limit value plus maximum margin of tolerance &amp; Average for Health
-      Or
-      Limit value plus maximum margin of tolerance &amp; Number of hours in exceedance in a calendar year for Health</C12_SHORT>
-    <C13>Where ./aqd:pollutant resolves to http://dd.eionet.europa.eu/vocabulary/aq/pollutant/9 the 3 elements within ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/may only resolve to the following combinations
-
-      aqd:objectiveType xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/CL aqd:reportingMetric xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean aqd:protectionTarget xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V</C13>
-    <C13_SHORT>If NOX, then the Environmental Objective should have the combination:
-      Critical Level &amp; Annual Mean for Vegetation</C13_SHORT>
-    <C14>Where ./aqd:pollutant resolves to http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5 the 3 elements within ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/may only resolve to the following combinations
-      Hide combinations
-      aqd:objectiveType xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV aqd:reportingMetric xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/daysAbove aqd:protectionTarget xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H
-
-      or
-
-      http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV aqd:reportingMetric xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean aqd:protectionTarget xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H</C14>
-    <C14_SHORT>If PM10, then the Environmental Objective should include one of the combinations:
-      Limit Value &amp; Days in exceedance in a calendar year for Health
-      Or
-      Limit Value &amp; Annual Mean for Health</C14_SHORT>
-    <C15>Where ./aqd:pollutant resolves to http://dd.eionet.europa.eu/vocabulary/aq/pollutant/6001 the 3 elements within ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/may only resolve to the following combinations
-      Hide combinations
-      aqd:objectiveType xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/ECO aqd:reportingMetric xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/AEI aqd:protectionTarget xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H
-
-      or
-
-      aqd:objectiveType xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV aqd:reportingMetric xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean aqd:protectionTarget xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H
-
-      or
-
-      aqd:objectiveType xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/TV aqd:reportingMetric xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean aqd:protectionTarget xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H
-
-      or
-
-      aqd:objectiveType xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LVMOT aqd:reportingMetric xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean aqd:protectionTarget xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H
-
-      or
-
-      aqd:objectiveType xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LVMOT aqd:reportingMetric xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean aqd:protectionTarget xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H-S1
-
-      or
-
-      aqd:objectiveType xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV aqd:reportingMetric xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean aqd:protectionTarget xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H-S1
-
-      or
-
-      aqd:objectiveType xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV aqd:reportingMetric xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean aqd:protectionTarget xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H-S2
-
-      or
-
-      aqd:objectiveType xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/MO aqd:reportingMetric xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/NA aqd:protectionTarget xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/NA</C15>
-    <C15_SHORT>If PM2.5, then the Environmental Objective should include one of the combinations:
-      Exposure Cocentration &amp; Average Exposure Indicator for Health
-      Or
-      Limit Value &amp; Annual Mean for Health
-      Or
-      Target Value &amp; Annual Mean for Health
-      Or
-      Limit value plus applicable margin of tolerance &amp; Annual Mean for Health
-      Or
-      Limit value plus applicable margin of tolerance &amp; Annual Mean for Health Stage 1
-      Or
-      Limit Value &amp; Annual Mean for Health Stage 1
-      Or
-      Limit Value &amp; Annual Mean for Health Stage 2
-      Or
-      Monitorng Objective and Environmental Objective are Not Applicable</C15_SHORT>
-    <C16>Where ./aqd:pollutant resolves to http://dd.eionet.europa.eu/vocabulary/aq/pollutant/10 the 3 elements within ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/may only resolve to the following combinations
-      Hide combinations
-      aqd:objectiveType xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV aqd:reportingMetric xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/daysAbove aqd:protectionTarget xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H</C16>
-    <C16_SHORT>If CO, then the Environmental Objective combination should be:
-      Limit Value &amp; Days in exceedance in a calendar year for Health</C16_SHORT>
-    <C17>Where ./aqd:pollutant resolves to http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5012 or http://dd.eionet.europa.eu/vocabulary/aq/pollutant/20 the 3 elements within ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/may only resolve to the following combinations
-      Hide combinations
-      aqd:objectiveType xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV aqd:reportingMetric xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean aqd:protectionTarget xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H
-
-      or
-
-      aqd:objectiveType xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/MO aqd:reportingMetric xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/NA aqd:protectionTarget xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/NA</C17>
-    <C17_SHORT>If Pb in PM10, then the Environmental Objective should include one of the combinations:
-      Limit Value &amp; Annual Mean for Health
-      Or
-      Monitoring Objective and Environmental Objective are Not Applicable</C17_SHORT>
-    <C18>Where ./aqd:pollutant resolves to http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5014 or http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5018 or http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5015 or http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5029 the 3 elements within ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/may only resolve to the following combinations
-      Hide combinations
-      aqd:objectiveType xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/TV aqd:reportingMetric xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean aqd:protectionTarget xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H
-
-      or
-
-      aqd:objectiveType xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/MO aqd:reportingMetric xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/NA aqd:protectionTarget xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/NA</C18>
-    <C18_SHORT>If Cd in PM10, Ni in PM10, As in PM10 or BaP in PM10,  then the Environmental Objective should include one of the combinations:
-      Target Value &amp; Annual Mean for Health
-      Or
-      Monitorng Objective and Environmental Objective are Not Applicable</C18_SHORT>
-    <C19>The 3 elements within ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/ may only resolve to the following combination aqd:objectiveType xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/MO aqd:reportingMetric xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean aqd:protectionTarget xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/NA where http://dd.eionet.europa.eu/vocabulary/aq/pollutant/ that must be one of
-      Hide items
-      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1045
-      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1046
-      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1047
-      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1771
-      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1772
-      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1629
-      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1659
-      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1657
-      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1668
-      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1631
-      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/2012
-      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/2014
-      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/2015
-      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/2018
-      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/7013
-      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/4013
-      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/4813
-      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/653
-      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5013
-      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5610
-      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5617
-      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5759
-      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5626
-      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5655
-      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5763
-      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/7029
-      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/611
-      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/618
-      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/760
-      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/627
-      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/656
-      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/7419
-      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/428
-      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/430
-      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/432
-      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/503
-      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/505
-      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/394
-      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/447
-      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/6005
-      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/6006
-      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/6007
-      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/24
-      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/486
-      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/316
-      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/6008
-      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/6009
-      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/451
-      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/443
-      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/441
-      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/475
-      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/449
-      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/21
-      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/431
-      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/464
-      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/482
-      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/6011
-      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/6012
-      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/32
-      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/25</C19>
-    <C20>Where ./aqd:pollutant resolves to http://dd.eionet.europa.eu/vocabulary/aq/pollutant/7 and ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType xlink:href attribute resolve to http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LTO ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:exceedanceAttainment xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/assessmentthresholdexceedance/aboveLTO http://dd.eionet.europa.eu/vocabulary/aq/assessmentthresholdexceedance/belowLTO</C20>
-    <C20_SHORT>Where the pollutant is ozone and objective type is Long term objective (LTO) then the
-      the observed  pollution  levels (exceedanceAttainment)  shall either be:
-      - Above the long-term objective
-      - Below the long-term objective  </C20_SHORT>
-    <C21>./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:exceedanceAttainment xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/assessmentthresholdexceedance/aboveUAT http://dd.eionet.europa.eu/vocabulary/aq/assessmentthresholdexceedance/belowLAT http://dd.eionet.europa.eu/vocabulary/aq/assessmentthresholdexceedance/LAT-UAT where http://dd.eionet.europa.eu/vocabulary/aq/pollutant/ that must be one of
-      Hide items
-      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1
-      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/8
-      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/9
-      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/10
-      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5
-      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/6001
-      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5014
-      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5018
-      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5015
-      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5029
-      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5012
-      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/20</C21>
-    <C21_SHORT>IF the Assessment Threshold is Above the Upper Assessment Threshold, or Below the Lower Assessment Threshold, or Between the upper and lower threshold (LAT-UAT), on 3 or more occasions during the 5 previous years, then there must be an AQ Pollutant from the following list. SO3, NO2, NOX, CO, PM10, PM2.5, Cd in PM10, As in PM10, Ni in PM10,  BaP in PM10, Pb in PM10, C6H6</C21_SHORT>
-    <C22> Where ./aqd:pollutant resolves to the list in C9 ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:exceedanceAttainment xlink:href attribute shall resolve to http://dd.eionet.europa.eu/vocabulary/aq/assessmentthresholdexceedance/NA</C22>
-    <C22_SHORT>If pollutant belongs to the list of missing pollutants from C9, then the assessment threshold is not applicable.</C22_SHORT>
-    <C23>./aqd:assessmentMethods/aqd:AssessmentMethods/aqd:assessmentType xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/[concept]Current options in the codelist are:http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/fixed http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/model http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/indicative http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/objective</C23>
-    <C23_SHORT>The assessement type shall be either "Fixed Measurement," "modelling," "Indicative Measurement"or "Objective Estiamtion."</C23_SHORT>
-    <C24>This check is performed under “Check xlink references”</C24>
-    <C24_SHORT>This check is performed under “Check xlink references”</C24_SHORT>
-    <C25>This check is performed under “Check xlink references”</C25>
-    <C25_SHORT>This check is performed under “Check xlink references”</C25_SHORT>
-    <C26>The assessment methods referenced by ./aqd:assessmentMethods/aqd:AssessmentMethods/aqd:modelAssessmentMeta data or ./aqd:assessmentMethods/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata xlink:href attribute shall contain one element /aqd:AQD_Model/ef:observingCapability/ef:ObservingCapability/ef:observingTime/gml:TimePeriod/gml:endPosition or /aqd:AQD_SamplingPoint/ef:observingCapability/ef:ObservingCapability/ef:observingTime/gml:TimePeriod/gml:endPosition that is operational within the aqd:reportingPeriod included in the ReportingHead</C26>
-    <C26_SHORT>End Time for the Assessment period must be within the Reporting Period</C26_SHORT>
-    <C27>The number of unique zones cited by /aqd:AQD_AssessmentRegime (7) shall be EQUAL to the number of unique zones in ./aqd:AQD_Zone </C27>
-    <C27_SHORT>The number of zones must be the same as cited in the AssessmentRegime</C27_SHORT>
-    <C28>The lifecycle information of ./aqd:zone xlink:href shall be current, /aqd:AQD_Zone/am:beginLifespanVersion AND /aqd:AQD_Zone/am:designationPeriod/gml:TimePeriod/gml:endPosition shall be operational within the aqd:reportingPeriod included in the ReportingHead</C28>
-    <C28_SHORT>Start and End time shall be within the Reporting Period</C28_SHORT>
-    <C29> aqd:zone xlink:href attribute shall resolve to a traversable link to an AQ zone in /aqd:AQD_Zone reported under cdr.eionet.europa.eu/ZZ/eu/aqd/b/... The ./aqd:pollutant and ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget within the Assessment Regime shall equal one combination /aqd:AQD_Zone/aqd:pollutants/aqd:Pollutant/aqd:pollutantCode and /aqd:AQD_Zone/aqd:pollutants/aqd:Pollutant/aqd:protectionTarget within the linked zone aqd:AQD_Zone/aqd:pollutantsException : Where ./aqd:pollutant resolves to http://dd.eionet.europa.eu/vocabulary/aq/pollutant/6001 ./aqd:zone xlink:href attribute MAY resolve to &lt;aqd:zone nilReason='inapplicable'/></C29>
-    <C29_SHORT>Pollutant, Assessment Threshold and Environmental Objective shall equal one combination, except where
-      where Particulate Matter &lt; 2.5 µm, which is not applicable.</C29_SHORT>
-    <C32>./aqd:assessmentMethods/aqd:AssessmentMethods/aqd:assessmentType shall be compared with the /aqd:AQD_SamplingPoint/aqd:assessmentType for assessment method cited by ./aqd:assessmentMethods/aqd:AssessmentMethods/aqd:samplingPoint Assessm entMetadata xlink:href attribute and/ or /aqd:AQD_Model /aqd:assessmentType for assessment method cited by ./aqd:assessmentMet hods/aqd:AssessmentMethods/aqd:samplingPoint Assessm entMetadata xlink:href attribute</C32>
-    <C33>If The lifecycle information of ./aqd:assessmentMethods/aqd:AssessmentMethods/aqd:*AssessmentMetadata xlink:href shall be current, then /AQD_SamplingPoint/aqd:operationActivityPeriod/gml:endPosition or /AQD_ModelType/aqd:operationActivityPeriod/gml:endPosition shall be equal to “9999-12-31 23:59:59Z” or nulled (blank)</C33>
-    <C33_SHORT>If the Asseement Metadata lifecycle information is current, then the Operational Activity End Time is equal to 9999-12-31 23:59:59Z or nulled (blank)</C33_SHORT>
-    <C35>/aqd:AQD_SamplingPoint/aqd:usedAQD or /aqd:AQD_ModelType/aqd:used shall EQUAL “true” for all ./aqd:assessmentMethods/aqd:AssessmentMethods/aqd:*AssessmentMetadata xlink:href citations</C35>
-    <C37>There shall be only 1 record per MS where ./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmental Objective/aqd:EnvironmentalObjective/aqd:reportingMetric xlink:href attribute resolves to http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/AEI</C37>
-    <C37_SHORT>Where the assessment threshold is  Average Exposure Indicator, there can be only 1 record.</C37_SHORT>
-    <C38>Where./aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric xlink:href attribute resolves to http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/AEI the /aqd:AQD_SamplingPoint/aqd:relevantEmissions/aqd:RelevantEmissions/aqd:stationClassification xlink:href attribute shall resolve to http://dd.eionet.europa.eu/vocabulary/aq/stationclassification/background for all aqd:AQD_SamplingPoint linked via aqd:AQD_AssessmentRegime/aqd:assessmentMethods/aqd:AssessmentMethods /aqd:samplingPointAssessmentMetadata citations</C38>
-    <C38_SHORT>Where the Station classification is Background, the Average Exposure Indicator for the assessment threshold and Environmental Objective is provided by citations.</C38_SHORT>
-    <C40>The total number of /aqd:assessmentMethods/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata and /aqd:assessmentMethods/aqd:AssessmentMethods/aqd:modelAssessmentMetadata citations within a MS (delivery) shall be GREATER THAN OR EQUAL to 1 where ./aqd:pollutant xlink:href attribute resolves to</C40>
-    <C40_SHORT>Within a delivery, the number of Assessment Metadata citations must be equal to, or greater, than the number of pollutants.</C40_SHORT>
-  </C>
 </labels>
