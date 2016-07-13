@@ -1649,7 +1649,8 @@ let $D77invalid :=
                 ()
             else
                 <tr>
-                    <td title="base:localId">{string($x/ef:inspireId/base:Identifier/base:localId)}</td>
+                    <td title="aqd:AQD_Sample">{string($xlink)}</td>
+                    <td title="aqd:AQD_SamplingPoint">{string($x/ef:inspireId/base:Identifier/base:localId)}</td>
                 </tr>
     } catch * {
         <tr status="failed">

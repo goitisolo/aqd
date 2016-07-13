@@ -354,33 +354,6 @@ declare %private function html:buildGeneric($ruleCode as xs:string, $longText, $
 
 };
 
-declare function html:buildResultRows_B($ruleCode as xs:string, $longText, $text, $invalidValues as xs:string*, $valueHeading as xs:string, $validMsg as xs:string, $invalidMsg as xs:string, $skippedMsg, $errorLevel as xs:string) as element(tr)*{
-    let $countInvalidValues := count($invalidValues)
-    let $bulletType := if (string-length($skippedMsg) > 0) then "skipped" else if ($countInvalidValues = 0) then "info" else $errorLevel
-    let $result :=
-        (
-            <tr>
-                <td class="bullet">{html:getBullet($ruleCode, $bulletType)}</td>
-                <th colspan="2">{$text} {html:getModalInfo($ruleCode, $longText)}</th>
-                <td class="largeText">{
-                    if (string-length($skippedMsg) > 0) then
-                        $skippedMsg
-                    else if ($countInvalidValues = 0) then
-                        $validMsg
-                    else
-                        concat($countInvalidValues, $invalidMsg, substring("s ", number(not($countInvalidValues > 1)) * 2) ,"found") }</td>
-            </tr>,
-            if ($countInvalidValues > 0) then
-                <tr>
-                    <td colspan="2">{ $valueHeading} - </td>
-                    <td>{ string-join($invalidValues, ", ")}</td>
-                </tr>
-            else
-                ()
-        )
-    return $result
-};
-
 declare function html:buildResultTable($ruleCode as xs:string, $longText, $text, $records as element(tr)*, $valueHeading as xs:string*, $validMsg as xs:string, $invalidMsg as xs:string, $skippedMsg, $errorLevel as xs:string) as element(tr)* {
     let $countInvalidValues := count($records)
     let $bulletType := if (string-length($skippedMsg) > 0) then "skipped" else if ($countInvalidValues = 0) then "info" else $errorLevel
