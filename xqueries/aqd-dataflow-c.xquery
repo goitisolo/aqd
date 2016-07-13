@@ -843,36 +843,70 @@ let $C28invalid :=
     }
 
 (: C31 :)
-let $C31ResultB :=
-    for $i in sparqlx:executeSparqlQuery(query:getC31($countryCode))
-    where ($i/sparql:binding[@name = "ReportingYear"]/string(sparql:literal) = $reportingYear)
-    return
-        <result>
-            <pollutantName>{string($i/sparql:binding[@name = "Pollutant"]/sparql:literal)}</pollutantName>
-            <count>{
-                let $x := string($i/sparql:binding[@name = "countOnB"]/sparql:literal)
-                return if ($x castable as xs:integer) then xs:integer($x) else 0
-            }</count>
-        </result>
+let $C31table :=
+    try {
+        let $C31ResultB :=
+            for $i in sparqlx:run(query:getC31($countryCode))
+            where ($i/sparql:binding[@name = "ReportingYear"]/string(sparql:literal) = $reportingYear)
+            return
+                <result>
+                    <pollutantName>{string($i/sparql:binding[@name = "Pollutant"]/sparql:literal)}</pollutantName>
+                    <count>{
+                        let $x := string($i/sparql:binding[@name = "countOnB"]/sparql:literal)
+                        return if ($x castable as xs:integer) then xs:integer($x) else 0
+                    }</count>
+                </result>
 
-let $C31tmp :=
-        for $x in $docRoot//aqd:AQD_AssessmentRegime/aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/
-                aqd:EnvironmentalObjective/aqd:protectionTarget[not(../string(aqd:objectiveType/@xlink:href) = ("http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/MO",
-                "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/ECO"))]
-        let $pollutant := $x/../../../../../aqd:pollutant/@xlink:href
-        let $zone := $x/../../../../../aqd:zone/@xlink:href
-        let $protectiontarget := $x/@xlink:href
-        let $key := string-join(($zone, $pollutant, $protectiontarget), "#")
-        group by $pollutant
+        let $C31tmp :=
+            for $x in $docRoot//aqd:AQD_AssessmentRegime/aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/
+                    aqd:EnvironmentalObjective/aqd:protectionTarget[not(../string(aqd:objectiveType/@xlink:href) = ("http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/MO",
+                    "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/ECO"))]
+            let $pollutant := $x/../../../../../aqd:pollutant/@xlink:href
+            let $zone := $x/../../../../../aqd:zone/@xlink:href
+            let $protectiontarget := $x/@xlink:href
+            let $key := string-join(($zone, $pollutant, $protectiontarget), "#")
+            group by $pollutant
+            return
+                <result>
+                    <pollutantName>{dd:getNameFromPollutantCode($pollutant)}</pollutantName>
+                    <pollutantCode>{tokenize($pollutant, "/")[last()]}</pollutantCode>
+                    <count>{count(distinct-values($key))}</count>
+                </result>
+        let $C31ResultC := filter:filterByName($C31tmp, "pollutantCode", (
+            "1", "7", "8", "9", "5", "6001", "10", "20", "5012", "5018", "5014", "5015", "5029"
+        ))
+        let $errorTmp :=
+            for $x in $C31ResultC
+            let $vsName := string($x/pollutantName)
+            let $vsCode := string($x/pollutantCode)
+            let $countC := xs:integer($x/count)
+            let $countB := xs:integer($C31ResultB[pollutantName = $vsName]/count)
+            return
+                if ($countC > $countB) then $errors:ERROR
+                else if ($countB > $countC) then $errors:WARNING
+                else ()
+        let $errorClass :=
+            if ($errorTmp = $errors:ERROR) then $errors:ERROR
+            else if ($errorTmp = $errors:WARNING) then $errors:WARNING
+            else $errors:INFO
+            for $x in $C31ResultC
+            let $vsName := string($x/pollutantName)
+            let $vsCode := string($x/pollutantCode)
+            let $countC := string($x/count)
+            let $countB := string($C31ResultB[pollutantName = $vsName]/count)
         return
-            <result>
-                <pollutantName>{dd:getNameFromPollutantCode($pollutant)}</pollutantName>
-                <pollutantCode>{tokenize($pollutant, "/")[last()]}</pollutantCode>
-                <count>{count(distinct-values($key))}</count>
-            </result>
-let $C31ResultC := filter:filterByName($C31tmp, "pollutantCode", (
-    "1","7","8","9","5", "6001", "10", "20", "5012", "5018", "5014", "5015", "5029"
-))
+            <tr class="{$errorClass}">
+                <td title="Pollutant Name">{$vsName}</td>
+                <td title="Pollutant Code">{$vsCode}</td>
+                <td title="Count C">{$countC}</td>
+                <td title="Count B">{$countB}</td>
+            </tr>
+    } catch * {
+        <tr status="failed">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
 
 (: C32 - :)
 let $C32table :=
@@ -1116,7 +1150,7 @@ return
         {html:buildResultTable("C27", labels:interpolate($labels:C27, ($countZoneIds2, $countZoneIds1)), $labels:C27_SHORT, $C27table, "Count of unique zones matches", "", " not unique zone",  "", $errors:WARNING)}
         {html:buildResultRows("C28", $labels:C28, $labels:C28_SHORT, $C28invalid, "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "",$errors:ERROR)}
         {html:buildResultTable("C29", $labels:C29, $labels:C29_SHORT,  $C29invalid, "", "All values are valid", " invalid value", "",$errors:WARNING)}
-        {html:buildResultC31("C31", $C31ResultC, $C31ResultB)}
+        {html:build2("C31", $labels:C31, $labels:C31_SHORT, $C31table, "", "", "record", "", errors:getMaxError($C31table))}
         {html:buildResultTable("C32", $labels:C32, $labels:C32_SHORT, $C32table, "All valid", " invalid value",  "", "", $errors:WARNING)}
         {html:buildResultRows("C33", $labels:C33, $labels:C33_SHORT, $C33invalid, "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "",$errors:WARNING)}
         {html:buildResultRows("C35", $labels:C35, $labels:C35_SHORT, $C35invalid, "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "",$errors:WARNING)}
