@@ -455,38 +455,76 @@ let $G13binvalid :=
     }
 
 (: G14 - COUNT number zone-pollutant-target comibantion to match those in dataset B and dataset C for the same reporting Year & compare it with Attainment. :)
-let $G14resultBC :=
-    for $i in sparqlx:executeSparqlQuery(query:getG14($countryCode))
-    where ($i/sparql:binding[@name = "ReportingYear"]/string(sparql:literal) = $reportingYear)
-    return
-        <result>
-            <pollutantName>{string($i/sparql:binding[@name = "Pollutant"]/sparql:literal)}</pollutantName>
-            <countB>{
-                let $x := string($i/sparql:binding[@name = "countOnB"]/sparql:literal)
-                return if ($x castable as xs:integer) then xs:integer($x) else 0
-            }</countB>
-            <countC>{
-                let $x := string($i/sparql:binding[@name = "countOnC"]/sparql:literal)
-                return if ($x castable as xs:integer) then xs:integer($x) else 0
-            }</countC>
-        </result>
-let $G14tmp :=
-    for $x in $docRoot//aqd:AQD_Attainment/aqd:environmentalObjective/aqd:EnvironmentalObjective/
-            aqd:protectionTarget[not(../string(aqd:objectiveType/@xlink:href) = ("http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/MO", "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/ECO"))]
-    let $pollutant := $x/../../../aqd:pollutant/@xlink:href
-    let $zone := $x/../../../aqd:zone/@xlink:href
-    let $protectiontarget := $x/@xlink:href
-    let $key := string-join(($zone, $pollutant, $protectiontarget), "#")
-    group by $pollutant
-    return
-        <result>
-            <pollutantName>{dd:getNameFromPollutantCode($pollutant)}</pollutantName>
-            <pollutantCode>{tokenize($pollutant, "/")[last()]}</pollutantCode>
-            <count>{count(distinct-values($key))}</count>
-        </result>
-let $G14ResultG := filter:filterByName($G14tmp, "pollutantCode", (
-    "1","7","8","9","5", "6001", "10", "20", "5012", "5018", "5014", "5015", "5029"
-))
+let $G14table :=
+    try {
+        let $G14resultBC :=
+            for $i in sparqlx:executeSparqlQuery(query:getG14($countryCode))
+            where ($i/sparql:binding[@name = "ReportingYear"]/string(sparql:literal) = $reportingYear)
+            return
+                <result>
+                    <pollutantName>{string($i/sparql:binding[@name = "Pollutant"]/sparql:literal)}</pollutantName>
+                    <countB>{
+                        let $x := string($i/sparql:binding[@name = "countOnB"]/sparql:literal)
+                        return if ($x castable as xs:integer) then xs:integer($x) else 0
+                    }</countB>
+                    <countC>{
+                        let $x := string($i/sparql:binding[@name = "countOnC"]/sparql:literal)
+                        return if ($x castable as xs:integer) then xs:integer($x) else 0
+                    }</countC>
+                </result>
+        let $G14tmp :=
+            for $x in $docRoot//aqd:AQD_Attainment/aqd:environmentalObjective/aqd:EnvironmentalObjective/
+                    aqd:protectionTarget[not(../string(aqd:objectiveType/@xlink:href) = ("http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/MO", "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/ECO"))]
+            let $pollutant := $x/../../../aqd:pollutant/@xlink:href
+            let $zone := $x/../../../aqd:zone/@xlink:href
+            let $protectiontarget := $x/@xlink:href
+            let $key := string-join(($zone, $pollutant, $protectiontarget), "#")
+            group by $pollutant
+            return
+                <result>
+                    <pollutantName>{dd:getNameFromPollutantCode($pollutant)}</pollutantName>
+                    <pollutantCode>{tokenize($pollutant, "/")[last()]}</pollutantCode>
+                    <count>{count(distinct-values($key))}</count>
+                </result>
+        let $G14ResultG := filter:filterByName($G14tmp, "pollutantCode", (
+            "1", "7", "8", "9", "5", "6001", "10", "20", "5012", "5018", "5014", "5015", "5029"
+        ))
+        let $errorTmp :=
+            for $x in $G14resultBC
+            let $vsName := string($x/pollutantName)
+            let $vsCode := string($x/pollutantCode)
+            let $countB := xs:integer($x/countB)
+            let $countC := xs:integer($x/countC)
+            let $countG := xs:integer($G14ResultG[pollutantName = $vsName]/count)
+            return
+                if ($countG > $countC) then $errors:ERROR
+                else if ($countC > $countG) then $errors:WARNING
+                else ()
+        let $errorClass :=
+            if ($errorTmp = $errors:ERROR) then $errors:ERROR
+            else if ($errorTmp = $errors:WARNING) then $errors:WARNING
+            else $errors:INFO
+
+        for $x in $G14resultBC
+            let $vsName := string($x/pollutantName)
+            let $vsCode := string($x/pollutantCode)
+            let $countB := string($x/countB)
+            let $countC := string($x/countC)
+            let $countG := string($G14ResultG[pollutantName = $vsName]/count)
+            return
+                <tr class="{$errorClass}">
+                    <td title="Pollutant Name">{$vsName}</td>
+                    <td title="Pollutant Code">{$vsCode}</td>
+                    <td title="Count B">{$countB}</td>
+                    <td title="Count C">{$countC}</td>
+                    <td title="Count G">{$countG}</td>
+                </tr>
+    } catch * {
+        <tr status="failed">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
 
 (: G14.1 :)
 let $G14.1invalid :=
@@ -1553,7 +1591,7 @@ return
                 $G12invalid, "base:namespace", "All values are valid", " invalid value", "", $errors:ERROR)}
         {html:buildResultRows("G13", $labels:G13, $labels:G13_SHORT, $G13invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
         {html:buildResultRows("G13b", $labels:G13b, $labels:G13b_SHORT, $G13binvalid, "base:namespace", "All values are valid", " invalid value", "",$errors:WARNING)}
-        {html:buildResultG14("G14", $labels:G14, $labels:G14_SHORT, $G14resultBC, $G14ResultG)}
+        {html:build2("G14", $labels:G14, $labels:G14_SHORT, $G14table, "", "", "record", "", errors:getMaxError($G14table))}
         {html:build2("G14.1", $labels:G14.1, $labels:G14.1_SHORT, $G14.1invalid, "", "All assessment regimes are reported", " missing assessment regime", "", $errors:WARNING)}
         {html:buildResultRows("G15", $labels:G15, $labels:G15_SHORT, $G15invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
         {html:buildResultRows("G17", $labels:G17, $labels:G17_SHORT, $G17invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
