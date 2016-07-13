@@ -924,12 +924,12 @@ return
         {html:build2("B37", $labels:B37, $labels:B37_SHORT, $B37invalid, "aqd:AQD_Zone/am:inspireId/base:Identifier/base:localId", "All values are valid", " invalid value", "",$errors:WARNING)}
         {html:build2("B38", $labels:B38, $labels:B38_SHORT, $B38invalid, "aqd:AQD_Zone/am:inspireId/base:Identifier/base:localId", "All values are valid", " invalid value", "", $errors:ERROR)}
         {html:buildResultRows("B39a", $labels:B39a, <span>{$labels:B39a_SHORT} - {html:buildInfoTable("B39a", $B39aItemsList)}</span>, $B39ainvalid, "aqd:AQD_Zone/am:inspireId/base:Identifier/base:localId", "All values are valid", " invalid value", "", $errors:WARNING)}
-        {html:buildResultTable("B39b", $labels:B39b, $labels:B39b_SHORT, $B39binvalid, "aqd:AQD_Zone/am:inspireId/base:Identifier/base:localId", "All values are valid", " missing value", "", $errors:ERROR)}
-        {html:buildResultTable("B39c", $labels:B39c, $labels:B39c_SHORT, $B39cinvalid, "aqd:AQD_Zone/am:inspireId/base:Identifier/base:localId", "All values are valid", " invalid value", "", $errors:ERROR)}
+        {html:build2("B39b", $labels:B39b, $labels:B39b_SHORT, $B39binvalid, "aqd:AQD_Zone/am:inspireId/base:Identifier/base:localId", "All values are valid", " missing value", "", $errors:ERROR)}
+        {html:build2("B39c", $labels:B39c, $labels:B39c_SHORT, $B39cinvalid, "aqd:AQD_Zone/am:inspireId/base:Identifier/base:localId", "All values are valid", " invalid value", "", $errors:ERROR)}
         {html:build2("B40", $labels:B40, $labels:B40_SHORT, $B40invalid, "aqd:timeExtensionExemption", "All values are valid", "record", "", $errors:WARNING)}
-        {html:buildResultTable("B41", $labels:B41, $labels:B41_SHORT, $B41invalid, "", "All values are valid", " invalid value", "", $errors:ERROR)}
-        {html:buildResultTable("B42", $labels:B42, $labels:B42_SHORT, $B42invalid, "", "All values are valid", " crucial invalid value", "", $errors:ERROR)}
-        {html:buildResultTable("B43", $labels:B43, $labels:B43_SHORT, $B43invalid, "", "All values are valid", " crucial invalid value", "", $errors:ERROR)}
+        {html:build2("B41", $labels:B41, $labels:B41_SHORT, $B41invalid, "", "All values are valid", " invalid value", "", $errors:ERROR)}
+        {html:build2("B42", $labels:B42, $labels:B42_SHORT, $B42invalid, "", "All values are valid", " crucial invalid value", "", $errors:ERROR)}
+        {html:build2("B43", $labels:B43, $labels:B43_SHORT, $B43invalid, "", "All values are valid", " crucial invalid value", "", $errors:ERROR)}
         {html:buildResultRows("B45", $labels:B45, $labels:B45_SHORT, $B45invalid, "aqd:AQD_Zone/am:inspireId/base:Identifier/base:localId", "All values are valid", " invalid value", "",$errors:WARNING)}
         {html:build2("B46", $labels:B46, $labels:B46_SHORT, $B46invalid, "aqd:AQD_Zone/am:inspireId/base:Identifier/base:localId", "All values are valid", " invalid value", "", $errors:ERROR)}
         {xmlconv:buildResultRowsWithTotalCount("B47", $labels:B47, $labels:B47_SHORT, $B47invalid, "aqd:reportingMetric", "", "", "")}
