@@ -94,6 +94,9 @@ let $samplingPointAssessmentMetadata :=
             for $i in $results
             return concat($i/sparql:binding[@name='metadataNamespace']/sparql:literal,"/", $i/sparql:binding[@name='metadataId']/sparql:literal)
     )
+let $namespaces := distinct-values($docRoot//base:namespace)
+let $allAttainments := query:getAllAttainmentIds2($namespaces)
+
 (: G0 :)
 let $G0invalid :=
     try {
@@ -156,15 +159,14 @@ let $G2table :=
         </tr>
     }
 let $G2errorLevel :=
-    if (empty($G0invalid)) then
-        if (count($G2table) = $countAttainments) then
-            $errors:INFO
-        else
+    if (empty($G0invalid) and count(
+        for $x in $docRoot//aqd:AQD_Attainment
+            let $id := $x/aqd:inspireId/base:Identifier/base:namespace || "/" || $x/aqd:inspireId/base:Identifier/base:localId
+        where ($allAttainments = $id)
+        return 1) > 0) then
             $errors:ERROR
-    else
-        $errors:INFO
-
-
+        else
+            $errors:INFO
 
 (: G3 - :)
 let $G3table :=
@@ -190,7 +192,7 @@ let $G3table :=
         </tr>
     }
 let $G3errorLevel :=
-    if (count($G3table) = $countAttainments) then
+    if (exists($G0invalid) and count($G3table) = 0)  then
         $errors:ERROR
     else
         $errors:INFO

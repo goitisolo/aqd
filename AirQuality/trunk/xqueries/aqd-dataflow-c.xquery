@@ -84,13 +84,14 @@ let $countZoneIds2 := count(distinct-values($docRoot//aqd:AQD_AssessmentRegime/a
 let $latestCenvelope := query:getLatestEnvelope($cdrUrl || "c/", $reportingYear)
 let $knownRegimes := if (exists($latestCenvelope)) then query:getLatestRegimeIds($latestCenvelope) else ()
 let $allRegimes := query:getAllRegimeIds($namespaces)
+let $countRegimes := count($docRoot//aqd:AQD_AssessmentRegime)
 
 (: C0 :)
 let $C0invalid :=
     try {
         if (query:deliveryExists($xmlconv:OBLIGATIONS, $countryCode, $cdir, $reportingYear)) then
             <tr>
-                <td title="base:localId">{$docRoot//aqd:AQD_ReportingHeader/aqd:inspireId/base:Identifier/base:namespace/string()}</td>
+                <td title="base:namespace">{$docRoot//aqd:AQD_ReportingHeader/aqd:inspireId/base:Identifier/base:namespace/string()}</td>
                 <td title="base:localId">{$docRoot//aqd:AQD_ReportingHeader/aqd:inspireId/base:Identifier/base:localId/string()}</td>
             </tr>
         else
@@ -144,12 +145,40 @@ let $C2table :=
         </tr>
     }
 let $C2errorLevel :=
-    if (count(
+    if (empty($C0invalid) and count(
         for $x in $docRoot//aqd:AQD_AssessmentRegime
         let $id := $x/aqd:inspireId/base:Identifier/base:namespace || "/" || $x/aqd:inspireId/base:Identifier/base:localId
         where ($allRegimes = $id)
         return 1) > 0) then
             $errors:ERROR
+    else
+        $errors:INFO
+
+(: C3 :)
+let $C3table :=
+    try {
+        for $x in $docRoot//aqd:AQD_AssessmentRegime
+        let $id := $x/aqd:inspireId/base:Identifier/base:namespace || "/" || $x/aqd:inspireId/base:Identifier/base:localId
+        where ($knownRegimes = $id)
+        return
+            <tr>
+                <td title="gml:id">{data($x/@gml:id)}</td>
+                <td title="base:localId">{data($x/aqd:inspireId/base:Identifier/base:localId)}</td>
+                <td title="base:versionId">{data($x/aqd:inspireId/base:Identifier/base:versionId)}</td>
+                <td title="base:namespace">{data($x/aqd:inspireId/base:Identifier/base:namespace)}</td>
+                <td title="aqd:zone">{common:checkLink(data($x/aqd:zone/@xlink:href))}</td>
+                <td title="aqd:pollutant">{common:checkLink(data($x/aqd:pollutant/@xlink:href))}</td>
+                <td title="aqd:protectionTarget">{common:checkLink(data($x/aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/@xlink:href))}</td>
+            </tr>
+    } catch * {
+        <tr status="failed">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
+let $C3errorLevel :=
+    if (exists($C0invalid) and count($C3table) = 0) then
+        $errors:ERROR
     else
         $errors:INFO
 
@@ -1059,6 +1088,7 @@ return
         {html:buildExists("C0", $labels:C0, $labels:C0_SHORT, $C0invalid, "New Delivery", "Updated Delivery", $errors:WARNING)}
         {html:build1("C1", $labels:C1, $labels:C1_SHORT, $C1table, "", string(count($C1table)), "", "", $errors:ERROR)}
         {html:buildSimple("C2", $labels:C2, $labels:C2_SHORT, $C2table, "", "record", $C2errorLevel)}
+        {html:buildSimple("C3", $labels:C3, $labels:C3_SHORT, $C3table, "", "record", $C3errorLevel)}
         {html:buildResultRows("C4", $labels:C4, $labels:C4_SHORT, $C4invalid, "@gml:id", "No duplicates found", " duplicate", "",$errors:ERROR)}
         {html:buildResultRows("C5", $labels:C5, $labels:C5_SHORT, $C5invalid, "base:localId", "No duplicates found", " duplicate", "",$errors:ERROR)}
         {html:buildResultRows("C6", $labels:C6, $labels:C6_SHORT, $C6table, "", string(count($C6table)), "", "",$errors:INFO)}
