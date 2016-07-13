@@ -38,6 +38,7 @@ declare namespace sams="http://www.opengis.net/samplingSpatial/2.0";
 declare namespace skos="http://www.w3.org/2004/02/skos/core#";
 declare namespace prop="http://dd.eionet.europa.eu/property/";
 declare namespace rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#";
+declare namespace adms="http://www.w3.org/ns/adms#";
 
 declare variable $xmlconv:ISO2_CODES as xs:string* := ("AL", "AD", "AT","BA","BE","BG","CH","CY","CZ","DE","DK","DZ","EE","EG","ES","FI",
     "FR","GB","GR","HR","HU","IE","IL","IS","IT","JO","LB","LI","LT","LU","LV","MA","ME","MK","MT","NL","NO","PL","PS","PT",
@@ -1362,29 +1363,23 @@ let $D63invalid :=
 (: D67a :)
 let $D67ainvalid :=
     try {
-        let $allProcNotMatchingCondition67 :=
-            for $proc in $docRoot//aqd:AQD_SamplingPointProcess
-            let $demonstrated := data($proc/aqd:equivalenceDemonstration/aqd:EquivalenceDemonstration/aqd:equivalenceDemonstrated/@xlink:href)
-            let $demonstrationReport := data($proc/aqd:equivalenceDemonstration/aqd:EquivalenceDemonstration/aqd:demonstrationReport)
-            where not(xmlconv:isValidConceptCode($demonstrated, $vocabulary:EQUIVALENCEDEMONSTRATED_VOCABULARY))
-            return concat(data($proc/ompr:inspireId/base:Identifier/base:namespace), '/', data($proc/ompr:inspireId/base:Identifier/base:localId))
+        let $rdf := doc("http://dd.eionet.europa.eu/vocabulary/aq/equivalencedemonstrated/rdf")
+        let $all := data($rdf//skos:Concept[adms:status/@rdf:resource = "http://dd.eionet.europa.eu/vocabulary/datadictionary/status/valid"]/@rdf:about)
+        let $wrongSPP :=
+            for $x in $docRoot//aqd:AQD_SamplingPointProcess[not(string(aqd:equivalenceDemonstration/aqd:EquivalenceDemonstration/aqd:equivalenceDemonstrated/@xlink:href) = $all)]
+            return string($x/ompr:inspireId/base:Identifier/base:namespace) || '/' || string($x/ompr:inspireId/base:Identifier/base:localId)
 
-        for $invalidTrueUsedAQD67 in $docRoot//aqd:AQD_SamplingPoint
-        let $procIds67 := data($invalidTrueUsedAQD67/ef:observingCapability/ef:ObservingCapability/ef:procedure/@xlink:href)
-        let $aqdUsed67 := $invalidTrueUsedAQD67/aqd:usedAQD = true()
-
-        for $procId67 in $procIds67
+        for $x in $docRoot//aqd:AQD_SamplingPoint[aqd:usedAQD = "true"]
+        let $xlink := data($x/ef:observingCapability/ef:ObservingCapability/ef:procedure/@xlink:href)
+        where ($xlink = $wrongSPP)
         return
-            if ($aqdUsed67 and not(empty(index-of($allProcNotMatchingCondition67, $procId67)))) then
-                <tr>
-                    <td title="gml:id">{data($invalidTrueUsedAQD67/@gml:id)}</td>
-                    <td title="base:localId">{data($invalidTrueUsedAQD67/ef:inspireId/base:Identifier/base:localId)}</td>
-                    <td title="base:namespace">{data($invalidTrueUsedAQD67/ef:inspireId/base:Identifier/base:namespace)}</td>
-                    <td title="ef:procedure">{$procId67}</td>
-                    <td title="ef:ObservingCapability">{data($invalidTrueUsedAQD67/ef:observingCapability/ef:ObservingCapability/@gml:id)}</td>
-                </tr>
-            else
-                ()
+            <tr>
+                <td title="gml:id">{data($x/@gml:id)}</td>
+                <td title="base:localId">{data($x/ef:inspireId/base:Identifier/base:localId)}</td>
+                <td title="base:namespace">{data($x/ef:inspireId/base:Identifier/base:namespace)}</td>
+                <td title="ef:procedure">{$xlink}</td>
+                <td title="ef:ObservingCapability">{data($x/ef:observingCapability/ef:ObservingCapability/@gml:id)}</td>
+            </tr>
     } catch * {
         <tr status="failed">
             <td title="Error code"> {$err:code}</td>
@@ -1397,29 +1392,23 @@ let $D67ainvalid :=
  : http://dd.eionet.europa.eu/vocabulary/aq/equivalencedemonstrated/ for all SamplingPointProcess :)
 let $D67binvalid :=
     try {
-        let $allProcNotMatchingCondition67 :=
-            for $proc in $docRoot//aqd:AQD_SamplingPointProcess
-            let $demonstrated := data($proc/aqd:equivalenceDemonstration/aqd:EquivalenceDemonstration/aqd:equivalenceDemonstrated/@xlink:href)
-            let $demonstrationReport := data($proc/aqd:equivalenceDemonstration/aqd:EquivalenceDemonstration/aqd:demonstrationReport)
-            where not(xmlconv:isValidConceptCode($demonstrated, $vocabulary:EQUIVALENCEDEMONSTRATED_VOCABULARY))
-            return concat(data($proc/ompr:inspireId/base:Identifier/base:namespace), '/', data($proc/ompr:inspireId/base:Identifier/base:localId))
+        let $rdf := doc("http://dd.eionet.europa.eu/vocabulary/aq/equivalencedemonstrated/rdf")
+        let $all := data($rdf//skos:Concept[adms:status/@rdf:resource = "http://dd.eionet.europa.eu/vocabulary/datadictionary/status/valid"]/@rdf:about)
+        let $wrongSPP :=
+            for $x in $docRoot//aqd:AQD_SamplingPointProcess[not(string(aqd:equivalenceDemonstration/aqd:EquivalenceDemonstration/aqd:equivalenceDemonstrated/@xlink:href) = $all)]
+            return string($x/ompr:inspireId/base:Identifier/base:namespace) || '/' || string($x/ompr:inspireId/base:Identifier/base:localId)
 
-        for $invalidTrueUsedAQD67 in $docRoot//aqd:AQD_SamplingPoint
-        let $procIds67 := data($invalidTrueUsedAQD67/ef:observingCapability/ef:ObservingCapability/ef:procedure/@xlink:href)
-        let $aqdUsed67 := $invalidTrueUsedAQD67/aqd:usedAQD = true()
-
-        for $procId67 in $procIds67
+        for $x in $docRoot//aqd:AQD_SamplingPoint
+        let $xlink := data($x/ef:observingCapability/ef:ObservingCapability/ef:procedure/@xlink:href)
+        where ($xlink = $wrongSPP)
         return
-            if ($aqdUsed67 and not(empty(index-of($allProcNotMatchingCondition67, $procId67)))) then
                 <tr>
-                    <td title="gml:id">{data($invalidTrueUsedAQD67/@gml:id)}</td>
-                    <td title="base:localId">{data($invalidTrueUsedAQD67/ef:inspireId/base:Identifier/base:localId)}</td>
-                    <td title="base:namespace">{data($invalidTrueUsedAQD67/ef:inspireId/base:Identifier/base:namespace)}</td>
-                    <td title="ef:procedure">{$procId67}</td>
-                    <td title="ef:ObservingCapability">{data($invalidTrueUsedAQD67/ef:observingCapability/ef:ObservingCapability/@gml:id)}</td>
+                    <td title="gml:id">{data($x/@gml:id)}</td>
+                    <td title="base:localId">{data($x/ef:inspireId/base:Identifier/base:localId)}</td>
+                    <td title="base:namespace">{data($x/ef:inspireId/base:Identifier/base:namespace)}</td>
+                    <td title="ef:procedure">{$xlink}</td>
+                    <td title="ef:ObservingCapability">{data($x/ef:observingCapability/ef:ObservingCapability/@gml:id)}</td>
                 </tr>
-            else
-                ()
     } catch * {
         <tr status="failed">
             <td title="Error code"> {$err:code}</td>
