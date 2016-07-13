@@ -636,14 +636,15 @@ let $C21invalid :=
 (: C23a :)
 let $C23ainvalid :=
     try {
-        for $aqdAssessment in $docRoot//aqd:AQD_AssessmentRegime[count(aqd:assessmentMethods/aqd:AssessmentMethods/aqd:assessmentType/@xlink:href) > 0]/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:assessmentType
-        where $aqdAssessment/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/fixed"
-                and $aqdAssessment/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/model"
-                and $aqdAssessment/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/indicative"
-                and $aqdAssessment/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/objective"
+        for $x in $docRoot//aqd:AQD_AssessmentRegime[count(aqd:assessmentMethods/aqd:AssessmentMethods/aqd:assessmentType/@xlink:href) > 0]/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:assessmentType
+        where $x/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/fixed"
+                and $x/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/model"
+                and $x/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/indicative"
+                and $x/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/objective"
         return
             <tr>
-                <td title="base:localId">{string($aqdAssessment/../../../aqd:inspireId/base:Identifier/base:localId)}</td>
+                <td title="base:localId">{string($x/../../../aqd:inspireId/base:Identifier/base:localId)}</td>
+                <td title="aqd:assessmentType">{data($x/@xlink:href)}</td>
             </tr>
     } catch * {
         <tr status="failed">
@@ -655,10 +656,13 @@ let $C23ainvalid :=
 (: C23B - Warning :)
 let $C23binvalid :=
     try {
-        for $i in $docRoot//aqd:AQD_AssessmentRegime[count(aqd:assessmentMethods/aqd:AssessmentMethods/aqd:assessmentType/@xlink:href) > 0]/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:assessmentTypeDescription[string() = ""]/../../../@gml:id
+        for $x in $docRoot//aqd:AQD_AssessmentRegime[count(aqd:assessmentMethods/aqd:AssessmentMethods/aqd:assessmentType/@xlink:href) > 0]
+        where data($x/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:assessmentTypeDescription) = ""
         return
             <tr>
-                <td title="@gml:id">{$i}</td>
+                <td title="base:localId">{string($x/aqd:inspireId/base:Identifier/base:localId)}</td>
+                <td title="aqd:assessmentType">{data($x/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:assessmentType/@xlink:href)}</td>
+                <td title="aqd:assessmentTypeDescription">{data($x/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:assessmentTypeDescription)}</td>
             </tr>
     } catch * {
         <tr status="failed">
