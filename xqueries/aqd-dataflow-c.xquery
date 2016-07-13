@@ -1148,12 +1148,12 @@ return
         {html:buildResultRows("C23b", $labels:C23b, $labels:C23b_SHORT, $C23binvalid, "aqd:AQD_AssesmentRegime", "All values are valid", " invalid value", "",$errors:WARNING)}
         {html:buildResultRows("C24", $labels:C24, $labels:C24_SHORT, (), "", "", " ", "",$errors:WARNING)}
         {html:buildResultRows("C25", $labels:C25, $labels:C25_SHORT, (), "", "", " ", "",$errors:WARNING)}
-        {html:buildResultTable("C26", $labels:C26, $labels:C26_SHORT, $C26table, "", "All values are valid", " invalid value", "",$errors:WARNING)}
-        {html:buildResultTable("C27", labels:interpolate($labels:C27, ($countZoneIds2, $countZoneIds1)), $labels:C27_SHORT, $C27table, "Count of unique zones matches", "", " not unique zone",  "", $errors:WARNING)}
+        {html:build2("C26", $labels:C26, $labels:C26_SHORT, $C26table, "", "All values are valid", " invalid value", "",$errors:WARNING)}
+        {html:build2("C27", labels:interpolate($labels:C27, ($countZoneIds2, $countZoneIds1)), $labels:C27_SHORT, $C27table, "Count of unique zones matches", "", " not unique zone",  "", $errors:WARNING)}
         {html:buildResultRows("C28", $labels:C28, $labels:C28_SHORT, $C28invalid, "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "",$errors:ERROR)}
-        {html:buildResultTable("C29", $labels:C29, $labels:C29_SHORT,  $C29invalid, "", "All values are valid", " invalid value", "",$errors:WARNING)}
+        {html:build2("C29", $labels:C29, $labels:C29_SHORT,  $C29invalid, "", "All values are valid", " invalid value", "",$errors:WARNING)}
         {html:build2("C31", $labels:C31, $labels:C31_SHORT, $C31table, "", "", "record", "", errors:getMaxError($C31table))}
-        {html:buildResultTable("C32", $labels:C32, $labels:C32_SHORT, $C32table, "All valid", " invalid value",  "", "", $errors:WARNING)}
+        {html:build2("C32", $labels:C32, $labels:C32_SHORT, $C32table, "", "All values are valid", " invalid value",  "", $errors:WARNING)}
         {html:buildResultRows("C33", $labels:C33, $labels:C33_SHORT, $C33invalid, "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "",$errors:WARNING)}
         {html:buildResultRows("C35", $labels:C35, $labels:C35_SHORT, $C35invalid, "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "",$errors:WARNING)}
         {html:buildResultRows("C37", $labels:C37, $labels:C37_SHORT, $C37invalid, "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "",$errors:WARNING)}

@@ -354,47 +354,6 @@ declare %private function html:buildGeneric($ruleCode as xs:string, $longText, $
 
 };
 
-declare function html:buildResultTable($ruleCode as xs:string, $longText, $text, $records as element(tr)*, $valueHeading as xs:string*, $validMsg as xs:string, $invalidMsg as xs:string, $skippedMsg, $errorLevel as xs:string) as element(tr)* {
-    let $countInvalidValues := count($records)
-    let $bulletType := if (string-length($skippedMsg) > 0) then "skipped" else if ($countInvalidValues = 0) then "info" else $errorLevel
-    let $result :=
-        (
-            <tr>
-                <td class="bullet">{ html:getBullet($ruleCode, $bulletType) }</td>
-                <th colspan="2">{ $text } {html:getModalInfo($ruleCode, $longText)}</th>
-                <td><span class="largeText">{
-                    if (string-length($skippedMsg) > 0) then
-                        $skippedMsg
-                    else if ($countInvalidValues = 0) then
-                        $validMsg
-                    else
-                        concat($countInvalidValues, $invalidMsg, substring("s ", number(not($countInvalidValues > 1)) * 2) ," found") }
-                </span>{
-                    if ($countInvalidValues > 0 or count($records)>0) then
-                        <a id='feedbackLink-{$ruleCode}' href='javascript:toggle("feedbackRow","feedbackLink", "{$ruleCode}")' style="padding-left:10px;">{$labels:SHOWRECORDS}</a>
-                    else
-                        ()
-                }
-                </td>
-            </tr>,
-            if (count($records)>0) then
-                <tr>
-                    <td></td>
-                    <td colspan="3">
-                        <table class="datatable" id="feedbackRow-{$ruleCode}">
-                            <tr>{
-                                for $th in $records[1]//td return <th>{ data($th/@title) }</th>
-                            }</tr>
-                            {$records}
-                        </table>
-                    </td>
-                </tr>
-            else
-                ()
-        )
-    return $result
-
-};
 declare function html:buildResultsSimpleRow($ruleCode as xs:string, $longText, $text, $count, $errorLevel) {
     let $bulletType := $errorLevel
     return
