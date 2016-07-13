@@ -290,6 +290,7 @@ declare function html:build9($ruleCode as xs:string, $longText, $text, $records 
             $validMsg
     return html:buildGeneric($ruleCode, $longText, $text, $records, $message, $unit, $bulletType)
 };
+(: TODO: maybe remove :)
 declare function html:build7($ruleCode as xs:string, $longText, $text, $records as element(tr)*, $valueHeading as xs:string, $validMsg as xs:string, $unit as xs:string, $skippedMsg, $errorLevel as xs:string) as element(tr)* {
     let $countRecords := count($records)
     let $countInvalid := count($records/@valid = "false")

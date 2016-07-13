@@ -686,7 +686,7 @@ let $M43invalid :=
         {html:buildConcatRow($duplicateamInspireIds, "am:inspireId - ")}
         {html:buildConcatRow($duplicateaqdInspireIds, "aqd:inspireId - ")}
         {html:buildCountRow("M6", $labels:M6, $labels:M6_SHORT, $M6invalid, (), (), ())}
-        {html:buildResultRows("M7", $labels:M7, $labels:M7_SHORT, $M7table, "", string(count($M7table)), "", "",$errors:ERROR)}
+        {html:buildUnique("M7", $labels:M7, $labels:M7_SHORT, $M7table, "", string(count($M7table)), "namespace", $errors:ERROR)}
         {html:buildResultRows("M7.1", $labels:M7.1, $labels:M7.1_SHORT, $M7.1invalid, "base:Identifier/base:namespace", "All values are valid", " invalid namespaces", "", $errors:ERROR)}
         {html:buildResultRows("M12", $labels:M12, $labels:M12_SHORT, $M12invalid, "aqd:AQD_Model/@gml:id","All srsName attributes are valid"," invalid attribute","",$errors:ERROR)}
         {html:buildResultRows("M15", $labels:M15, $labels:M15_SHORT, $M15invalid, "", concat(fn:string(count($M15invalid))," errors found"), "", "",$errors:ERROR)}
@@ -697,12 +697,12 @@ let $M43invalid :=
         {html:buildResultRows("M25", $labels:M25, $labels:M25_SHORT, $M25invalid, "", concat(fn:string(count($M25invalid))," errors found"), "", "",$errors:WARNING)}
         {html:buildResultRows("M26", $labels:M26, $labels:M26_SHORT, $M26invalid, "", concat(fn:string(count($M26invalid))," errors found"), "", "",$errors:ERROR)}
         {html:buildResultRows("M27", $labels:M27, $labels:M27_SHORT, $M27invalid, "", concat(string(count($M27invalid))," errors found.") , "", "",$errors:ERROR)}
-        {html:buildResultRows("M28", $labels:M28, $labels:M28_SHORT, $M28table, "", string(count($M28table)), "", "",$errors:ERROR)}
+        {html:buildUnique("M28", $labels:M28, $labels:M28_SHORT, $M28table, "", string(count($M28table)), "namespace", $errors:ERROR)}
         {html:buildResultRows("M28.1", $labels:M28.1, $labels:M28.1_SHORT, $M28.1invalid, "base:Identifier/base:namespace", "All values are valid", " invalid namespaces", "", $errors:ERROR)}
         {html:buildResultRows("M29", $labels:M29, $labels:M29_SHORT, $M29invalid, "aqd:AQD_ModelProcess/@gml:id","All attributes are valid"," invalid attribute", "",$errors:ERROR)}
         {html:buildResultRows("M39", $labels:M39, $labels:M39_SHORT, $M39invalid, "aqd:AQD_ModelProcess/@gml:id","All attributes are valid"," invalid attribute", "",$errors:ERROR)}
         {html:buildResultRows("M40", $labels:M40, $labels:M40_SHORT, $M40invalid, "", concat(string(count($M40invalid))," errors found.") , "", "",$errors:ERROR)}
-        {html:buildResultRows("M41", $labels:M41, $labels:M41_SHORT, $M41table, "", string(count($M41table)), "", "",$errors:ERROR)}
+        {html:buildUnique("M41", $labels:M41, $labels:M41_SHORT, $M41table, "", string(count($M41table)), "namespace", $errors:ERROR)}
         {html:buildResultRows("M41.1", $labels:M41.1, $labels:M41.1_SHORT, $M41.1invalid, "base:Identifier/base:namespace", "All values are valid", " invalid namespaces", "", $errors:ERROR)}
         {html:buildResultRows("M43", $labels:M43, $labels:M43_SHORT, $M43invalid, "aqd:AQD_ModelArea/@gml:id","All srsDimension attributes are valid"," invalid attribute", "",$errors:ERROR)}
     </table>
