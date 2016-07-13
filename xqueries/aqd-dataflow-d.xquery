@@ -118,11 +118,11 @@ let $D2table :=
             for $featureType at $pos in $xmlconv:FEATURE_TYPES
                 let $count := count(
                 for $x in $docRoot//descendant::*[name()=$featureType]
-                    let $inspireId := $x/ef:inspireId/base:Identifier/base:namespace/string() || "/" || $x/ef:inspireId/base:Identifier/base:localId/string()
+                    let $inspireId := $x//base:Identifier/base:namespace/string() || "/" || $x//base:Identifier/base:localId/string()
                 where ($inspireId = "/" or not($knownFeatures = $inspireId))
                 return
                     <tr>
-                        <td title="base:localId">{$x/ef:inspireId/base:Identifier/base:localId/string()}</td>
+                        <td title="base:localId">{$x//base:Identifier/base:localId/string()}</td>
                     </tr>)
             return map:entry($xmlconv:FEATURE_TYPES[$pos], $count)
         ))
@@ -167,17 +167,18 @@ let $D2errorLevel :=
 (: D3 - :)
 let $D3table :=
     try {
+        let $featureTypes := remove($xmlconv:FEATURE_TYPES, index-of($xmlconv:FEATURE_TYPES, "aqd:AQD_RepresentativeArea"))
         let $all := map:merge((
-            for $featureType at $pos in $xmlconv:FEATURE_TYPES
+            for $featureType at $pos in $featureTypes
             let $count := count(
                     for $x in $docRoot//descendant::*[name()=$featureType]
-                    let $inspireId := $x/ef:inspireId/base:Identifier/base:namespace/string() || "/" || $x/ef:inspireId/base:Identifier/base:localId/string()
+                    let $inspireId := $x//base:Identifier/base:namespace/string() || "/" || $x//base:Identifier/base:localId/string()
                     where ($knownFeatures = $inspireId)
                     return
                         <tr>
-                            <td title="base:localId">{$x/ef:inspireId/base:Identifier/base:localId/string()}</td>
+                            <td title="base:localId">{$x//base:Identifier/base:localId/string()}</td>
                         </tr>)
-            return map:entry($xmlconv:FEATURE_TYPES[$pos], $count)
+            return map:entry($featureTypes[$pos], $count)
         ))
         return
             map:for-each($all, function($name, $count) {
