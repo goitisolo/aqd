@@ -794,7 +794,7 @@ let $C29invalid :=
                     ()
         let $combinations := if (fn:string-length($countryCode) = 2) then sparqlx:executeSparqlQuery(query:getPollutantCodeAndProtectionTarge($cdrUrl, $bDir)) else ()
         let $validRows :=
-            for $rec in combinations
+            for $rec in $combinations
             return
                 concat(data($rec//sparql:binding[@name = 'inspireLabel']/sparql:literal), "#", data($rec//sparql:binding[@name = 'pollutantCode']/sparql:uri), "#", data($rec//sparql:binding[@name = 'protectionTarget']/sparql:uri))
         let $validRows := distinct-values($validRows)
