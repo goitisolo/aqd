@@ -879,10 +879,11 @@ let $C31table :=
             for $x in $C31ResultC
             let $vsName := string($x/pollutantName)
             let $vsCode := string($x/pollutantCode)
-            let $countC := xs:integer($x/count)
-            let $countB := xs:integer($C31ResultB[pollutantName = $vsName]/count)
+            let $countC := number($x/count)
+            let $countB := number($C31ResultB[pollutantName = $vsName]/count)
             return
-                if ($countC > $countB) then $errors:ERROR
+                if ((string($countC), string($countB)) = "NaN") then $errors:ERROR
+                else if ($countC > $countB) then $errors:ERROR
                 else if ($countB > $countC) then $errors:WARNING
                 else ()
         let $errorClass :=
