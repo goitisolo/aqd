@@ -528,7 +528,7 @@ let $countB35duplicates :=
 let $B36invalid :=
     try {
         for $x in $docRoot//aqd:AQD_Zone[not(count(aqd:residentPopulation)>0 and aqd:residentPopulation castable as xs:integer and number(aqd:residentPopulation) >= 0)]
-        let $residentPopulation := if (string-length(aqd:residentPopulation) = 0) then "missing" else aqd:residentPopulation
+        let $residentPopulation := if (string-length($x/aqd:residentPopulation) = 0) then "missing" else $x/aqd:residentPopulation
         return
             <tr>
                 <td title="aqd:AQD_Zone">{string($x/am:inspireId/base:Identifier/base:localId)}</td>
