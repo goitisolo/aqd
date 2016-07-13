@@ -337,7 +337,7 @@ let $B21invalid  :=
         for $x in $docRoot//aqd:AQD_Zone/am:geometry/gml:MultiSurface/gml:surfaceMember/gml:Polygon/gml:exterior/gml:LinearRing/gml:posList[@srsDimension != "2"]
         return
             <tr>
-                <td title="aqd:AQD_Zone">{string($x/../../../../../am:inspireId/base:Identifier/base:localId)}</td>
+                <td title="aqd:AQD_Zone">{string($x/../../../../../../../am:inspireId/base:Identifier/base:localId)}</td>
                 <td title="Polygon">{string($x/../../../@gml:id)}</td>
                 <td title="srsDimension">{string($x/@srsDimension)}</td>
             </tr>
