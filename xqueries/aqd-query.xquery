@@ -376,7 +376,7 @@ limit 1")
   return $result
 };
 
-declare function query:getLatestRegimeIds($latestEnvelopeUrl as xs:string) as xs:string? {
+declare function query:getLatestRegimeIds($latestEnvelopeUrl as xs:string) as xs:string* {
   let $query := "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
    PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
    PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
@@ -387,9 +387,9 @@ declare function query:getLatestRegimeIds($latestEnvelopeUrl as xs:string) as xs
         ?regime a aqd:AQD_AssessmentRegime ;
         aqd:inspireId ?inspireId .
         ?inspireId rdfs:label ?inspireLabel .
-   FILTER (CONTAINS(str(?zone), '" || $latestEnvelopeUrl || "'))
+   FILTER (CONTAINS(str(?regime), '" || $latestEnvelopeUrl || "'))
   }"
-  return data(doc(sparqlx:executeSparqlQuery($query))//sparql:binding[@name='inspireLabel']/sparql:literal)
+  return data(sparqlx:executeSparqlQuery($query)//sparql:binding[@name='inspireLabel']/sparql:literal)
 };
 
 declare function query:getAllRegimeIds($namespaces as xs:string*) as xs:string* {
@@ -401,6 +401,22 @@ declare function query:getAllRegimeIds($namespaces as xs:string*) as xs:string* 
    SELECT *
    WHERE {
         ?regime a aqd:AQD_AssessmentRegime ;
+        aqd:inspireId ?inspireId .
+        ?inspireId rdfs:label ?inspireLabel .
+        ?inspireId aqd:namespace ?namespace
+        FILTER(str(?namespace) in ('" || string-join($namespaces, "','") || "'))
+  }"
+  return data(sparqlx:executeSparqlQuery($query)//sparql:binding[@name='inspireLabel']/sparql:literal)
+};
+declare function query:getAllAttainmentIds2($namespaces as xs:string*) as xs:string* {
+  let $query := "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+   PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
+   PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+   PREFIX aq: <http://reference.eionet.europa.eu/aq/ontology/>
+
+   SELECT *
+   WHERE {
+        ?attainment a aqd:AQD_Attainment ;
         aqd:inspireId ?inspireId .
         ?inspireId rdfs:label ?inspireLabel .
         ?inspireId aqd:namespace ?namespace
