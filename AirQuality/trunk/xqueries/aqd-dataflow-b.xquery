@@ -841,7 +841,7 @@ return
         {html:buildConcatRow($duplicateaqdInspireIds, "aqd:inspireId - ")}
         {html:buildCountRow("B9", $labels:B9, $labels:B9_SHORT, $B9invalid, (), (), ())}
         {html:buildConcatRow($duplicateAmInspireIds, "Duplicate base:namespace:base:localId - ")}
-        {html:build0("B10", $labels:B10, $labels:B10_SHORT, $B10table, "", string(count($B10table)), "record")}
+        {html:buildUnique("B10", $labels:B10, $labels:B10_SHORT, $B10table, "", string(count($B10table)), "record", $errors:ERROR)}
         {html:buildResultRows_B("B10.1", $labels:B10.1, $labels:B10.1_SHORT, $B10.1invalid, "base:Identifier/base:namespace", "All values are valid", " invalid namespaces", "", $errors:ERROR)}
         {html:buildResultRows_B("B13", $labels:B13, $labels:B13_SHORT, $B13invalid, "/aqd:AQD_Zone/am:name/gn:GeographicalName/gn:language", "All values are valid", " invalid value", $langSkippedMsg,$errors:WARNING)}
         {html:buildResultRows_B("B18", $labels:B18, $labels:B18_SHORT, $B18invalid, "aqd:AQD_Zone/@gml:id","All text are valid"," invalid attribute","", $errors:ERROR)}
