@@ -212,11 +212,13 @@ let $E8invalid :=
 let $E10invalid :=
     try {
         let $all := dd:getValidConcepts("http://dd.eionet.europa.eu/vocabulary/aq/pollutant/rdf")
-        for $x in $docRoot//om:OM_Observation/om:observedProperty/@xlink:href
-        where not($x = $all)
+        for $x in $docRoot//om:OM_Observation/om:observedProperty
+        where not($x/@xlink:href = $all)
         return
             <tr>
-                <td title="@gml:id">{string($x/../../@gml:id)}</td>
+                <td title="@gml:id">{string($x/../@gml:id)}</td>
+                <td title="om:value">{string($x/../om:parameter/om:NamedValue[om:name/@xlink:href ="http://dd.eionet.europa.eu/vocabulary/aq/processparameter/SamplingPoint"]/om:value/@xlink:href)}</td>
+                <td title="om:observedProperty">{string($x/@xlink:href)}</td>
             </tr>
     } catch * {
         <tr status="failed">
