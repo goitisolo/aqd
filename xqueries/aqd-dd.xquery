@@ -38,3 +38,8 @@ declare function dd:getValidPollutants() as xs:string* {
 declare function dd:getValidConcepts($url as xs:string) as xs:string* {    
     data(doc($url)//skos:Concept[adms:status/@rdf:resource = $dd:VALIDRESOURCE]/@rdf:about)
 };
+
+(: Lower case version :)
+declare function dd:getValidConceptsLC($url as xs:string) as xs:string* {
+    data(doc($url)//skos:Concept[adms:status/@rdf:resource = $dd:VALIDRESOURCE]/lower-case(@rdf:about))
+};
