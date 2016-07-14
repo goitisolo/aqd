@@ -431,7 +431,7 @@ let $E26invalid :=
 
 return
     <table class="maintable hover">
-        {html:buildExists("E0", $labels:E0, $labels:E0_SHORT, $E0invalid, "New Delivery", "Updated Delivery", $errors:WARNING)}
+        {html:buildExists("E0", $labels:E0, $labels:E0_SHORT, $E0invalid, "New Delivery for " || $reportingYear, "Updated Delivery for " || $reportingYear, $errors:WARNING)}
         {html:buildCountRow0("E01", $labels:E01, $labels:E01_SHORT, $E01count, "", "record", $errors:INFO)}
         {html:build2("E1", $labels:E1, $labels:E1_SHORT, $E1invalid, "", "All records are valid", "record", "", $errors:ERROR)}
         {html:build2("E2", $labels:E2, $labels:E2_SHORT, $E2invalid, "", "All records are valid", "record", "", $errors:ERROR)}

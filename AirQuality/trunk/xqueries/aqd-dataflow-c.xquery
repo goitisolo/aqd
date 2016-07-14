@@ -1121,7 +1121,7 @@ let $C42invalid :=
 
 return
     <table class="maintable hover">
-        {html:buildExists("C0", $labels:C0, $labels:C0_SHORT, $C0invalid, "New Delivery", "Updated Delivery", $errors:WARNING)}
+        {html:buildExists("C0", $labels:C0, $labels:C0_SHORT, $C0invalid, "New Delivery for " || $reportingYear, "Updated Delivery for " || $reportingYear, $errors:WARNING)}
         {html:build1("C1", $labels:C1, $labels:C1_SHORT, $C1table, "", string(count($C1table)), "", "", $errors:ERROR)}
         {html:buildSimple("C2", $labels:C2, $labels:C2_SHORT, $C2table, "", "record", $C2errorLevel)}
         {html:buildSimple("C3", $labels:C3, $labels:C3_SHORT, $C3table, "", "record", $C3errorLevel)}

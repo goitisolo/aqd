@@ -676,7 +676,7 @@ let $M43invalid :=
 
     return
     <table class="maintable hover">
-        {html:buildExists("M0", $labels:M0, $labels:M0_SHORT, $M0invalid, "New Delivery", "Updated Delivery", $errors:WARNING)}
+        {html:buildExists("M0", $labels:M0, $labels:M0_SHORT, $M0invalid, "New Delivery for " || $reportingYear, "Updated Delivery for " || $reportingYear, $errors:WARNING)}
         {html:buildResultRows("M1", $labels:M1, $labels:M1_SHORT, $M1table, "", string(sum($countFeatureTypes)), "", "",$errors:ERROR)}
         {html:buildResultRows("M2", $labels:M2, $labels:M2_SHORT, (), "", string(count($M2table)), "", "",$errors:ERROR)}
         {html:buildResultRows("M3", $labels:M3, $labels:M3_SHORT, (), "", string(count($M3table)), "", "",$errors:ERROR)}

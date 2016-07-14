@@ -1761,7 +1761,7 @@ let $D94invalid :=
 
 return
     <table class="maintable hover">
-        {html:buildExists("D0", $labels:D0, $labels:D0_SHORT, $D0invalid, "New Delivery", "Updated Delivery", $errors:WARNING)}
+        {html:buildExists("D0", $labels:D0, $labels:D0_SHORT, $D0invalid, "New Delivery for " || $reportingYear, "Updated Delivery for " || $reportingYear, $errors:WARNING)}
         {html:build1("D1", $labels:D1, $labels:D1_SHORT, $D1table, "", $D1sum, "", "",$errors:ERROR)}
         {html:buildSimple("D2", $labels:D2, $labels:D2_SHORT, $D2table, "", "feature type", $D2errorLevel)}
         {html:buildSimple("D3", $labels:D3, $labels:D3_SHORT, $D3table, $D3count, "feature type", $D3errorLevel)}
