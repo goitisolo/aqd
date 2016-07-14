@@ -1580,16 +1580,9 @@ return
         {html:buildResultRows("G8", $labels:G8, $labels:G8_SHORT, $G8invalid, "base:localId", "No duplicate values found", " duplicate value", "",$errors:ERROR)}
         {html:buildUnique("G9", $labels:G9, $labels:G9_SHORT, $G9table, "", string(count($G9table)), "namespace", $errors:ERROR)}
         {html:buildResultRows("G9.1", $labels:G9.1, $labels:G9.1_SHORT, $G9.1invalid, "base:Identifier/base:namespace", "All values are valid", " invalid namespaces", "", $errors:ERROR)}
-        {html:buildResultRowsWithTotalCount_G("G10", <span>The content of /aqd:AQD_Attainment/aqd:pollutant xlink:xref shall resolve to a pollutant in
-            <a href="{ $vocabulary:POLLUTANT_VOCABULARY }">{ $vocabulary:POLLUTANT_VOCABULARY }</a> that must be one of
-            {xmlconv:buildVocItemsList("G10", $vocabulary:POLLUTANT_VOCABULARY, $xmlconv:VALID_POLLUTANT_IDS)}
-            </span>, $labels:PLACEHOLDER, $G10invalid, "aqd:pollutant", "", "", "", $errors:ERROR)}
-        {html:buildResultRows("G11", <span>WHERE ./aqd:pollutant xlink:href attribute EQUALs  <a href="{ $vocabulary:POLLUTANT_VOCABULARY }">{ $vocabulary:POLLUTANT_VOCABULARY }</a> that must be one of
-            {xmlconv:buildVocItemsList("G11", $vocabulary:POLLUTANT_VOCABULARY, $xmlconv:VALID_POLLUTANT_IDS_11)} ./aqd:exceedanceDescriptionBase may occur</span>, $labels:PLACEHOLDER,
-            $G11invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
-        {html:buildResultRows("G12", <span>WHERE ./aqd:pollutant xlink:href attribute EQUALs  <a href="{ $vocabulary:POLLUTANT_VOCABULARY }">{ $vocabulary:POLLUTANT_VOCABULARY }</a> that must be one of
-            {xmlconv:buildVocItemsList("G12", $vocabulary:POLLUTANT_VOCABULARY, $xmlconv:VALID_POLLUTANT_IDS_11)} ./aqd:exceedanceDescriptionAdjustment may occur</span>, $labels:PLACEHOLDER,
-                $G12invalid, "base:namespace", "All values are valid", " invalid value", "", $errors:ERROR)}
+        {html:buildResultRowsWithTotalCount_G("G10", $labels:G10, $labels:G10_SHORT, $G10invalid, "aqd:pollutant", "", "", "", $errors:ERROR)}
+        {html:buildResultRows("G11", $labels:G11, $labels:G11_SHORT, $G11invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
+        {html:buildResultRows("G12", $labels:G12, $labels:G12_SHORT, $G12invalid, "base:namespace", "All values are valid", " invalid value", "", $errors:ERROR)}
         {html:buildResultRows("G13", $labels:G13, $labels:G13_SHORT, $G13invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
         {html:buildResultRows("G13b", $labels:G13b, $labels:G13b_SHORT, $G13binvalid, "base:namespace", "All values are valid", " invalid value", "",$errors:WARNING)}
         {html:build2("G14", $labels:G14, $labels:G14_SHORT, $G14table, "", "", "record", "", errors:getMaxError($G14table))}
@@ -1597,67 +1590,22 @@ return
         {html:buildResultRows("G15", $labels:G15, $labels:G15_SHORT, $G15invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
         {html:buildResultRows("G17", $labels:G17, $labels:G17_SHORT, $G17invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
         {html:buildResultRows("G18", $labels:G18, $labels:G18_SHORT, $G18invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
-        {html:buildResultRowsWithTotalCount_G("G19", <span>./aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType xlink:href attribute shall resolve to one of
-            <a href="{ $vocabulary:OBJECTIVETYPE_VOCABULARY }">{ $vocabulary:OBJECTIVETYPE_VOCABULARY }</a>
-            Allowed items: {xmlconv:buildVocItemsList("G19", $vocabulary:OBJECTIVETYPE_VOCABULARY, $xmlconv:VALID_OBJECTIVETYPE_IDS_19)}</span>, $labels:PLACEHOLDER, $G19invalid, "aqd:objectivetype", "", "", "",$errors:ERROR)}
-        {html:buildResultRowsWithTotalCount_G("G20", <span>The content of ./aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:EnvironmentalObjective/aqd:reportingMetric shall resolve to a valid concept in
-            <a href="{ $vocabulary:REPMETRIC_VOCABULARY }">{ $vocabulary:REPMETRIC_VOCABULARY }</a> that must be one of
-            {xmlconv:buildVocItemsList("G20", $vocabulary:REPMETRIC_VOCABULARY, $xmlconv:VALID_REPMETRIC_IDS_20)}</span>, $labels:PLACEHOLDER, $G20invalid, "aqd:reportingMetric", "", "", "",$errors:ERROR)}
+        {html:buildResultRowsWithTotalCount_G("G19", $labels:G19, $labels:G19_SHORT, $G19invalid, "aqd:objectivetype", "", "", "",$errors:ERROR)}
+        {html:buildResultRowsWithTotalCount_G("G20", $labels:G20, $labels:G20_SHORT, $G20invalid, "aqd:reportingMetric", "", "", "",$errors:ERROR)}
         {html:buildResultRows("G21", $labels:G21, $labels:G21_SHORT, $G21invalid, "", "No invalid objective types for Vegetation found", " invalid value", "",$errors:ERROR)}
         {html:buildResultRows("G22", $labels:G22, $labels:G22_SHORT, $G22invalid, "", "No invalid objective types for Health found", " invalid value", "",$errors:ERROR)}
-        {html:buildResultRows("G23", <span>WHERE ./aqd:pollutant xlink:href attribute resolves to http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1 ./aqd:EnvironmentalObjective/aqd:reportingMetric shall resolve to a valid concept in
-            <a href="{ $vocabulary:REPMETRIC_VOCABULARY }">{ $vocabulary:REPMETRIC_VOCABULARY }</a> that must be one of
-            {xmlconv:buildVocItemsList("G23", $vocabulary:REPMETRIC_VOCABULARY, $xmlconv:VALID_REPMETRIC_IDS_23)}</span>, $labels:PLACEHOLDER,
-                $G23invalid, "aqd:reportingMetric", "All values are valid", " invalid value", "",$errors:ERROR)}
-        {html:buildResultRows("G24", <span>WHERE ./aqd:pollutant xlink:href attribute resolves to http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5 ./aqd:EnvironmentalObjective/aqd:reportingMetric shall resolve to a valid concept in
-            <a href="{ $vocabulary:REPMETRIC_VOCABULARY }">{ $vocabulary:REPMETRIC_VOCABULARY }</a> that must be one ofS
-            {xmlconv:buildVocItemsList("G24", $vocabulary:REPMETRIC_VOCABULARY, $xmlconv:VALID_REPMETRIC_IDS_24)}</span>, $labels:PLACEHOLDER,
-                $G24invalid, "aqd:reportingMetric", "All values are valid", " invalid value", "",$errors:ERROR)}
-        {html:buildResultRows("G25", <span>WHERE ./aqd:pollutant xlink:href attribute resolves to http://dd.eionet.europa.eu/vocabulary/aq/pollutant/6001 ./aqd:EnvironmentalObjective/aqd:reportingMetric shall resolve to a valid concept in
-            <a href="{ $vocabulary:REPMETRIC_VOCABULARY }">{ $vocabulary:REPMETRIC_VOCABULARY }</a> that must be one of
-            {xmlconv:buildVocItemsList("G25", $vocabulary:REPMETRIC_VOCABULARY, $xmlconv:VALID_REPMETRIC_IDS_25)}</span>, $labels:PLACEHOLDER,
-                $G25invalid, "aqd:reportingMetric", "All values are valid", " invalid value", "",$errors:ERROR)}
-        {html:buildResultRows("G26", <span>WHERE ./aqd:pollutant xlink:href attribute resolves to http://dd.eionet.europa.eu/vocabulary/aq/pollutant/10 ./aqd:EnvironmentalObjective/aqd:reportingMetric shall resolve to a valid concept in
-            <a href="{ $vocabulary:REPMETRIC_VOCABULARY }">{ $vocabulary:REPMETRIC_VOCABULARY }</a> that must be one of
-            {xmlconv:buildVocItemsList("G26", $vocabulary:REPMETRIC_VOCABULARY, $xmlconv:VALID_REPMETRIC_IDS_26)}</span>, $labels:PLACEHOLDER,
-                $G26invalid, "aqd:reportingMetric", "All values are valid", " invalid value", "",$errors:ERROR)}
-        {html:buildResultRows("G27", <span>./aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget xlink:href attribute shall NOT EQUAL http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V and
-            <a href="{ $vocabulary:POLLUTANT_VOCABULARY }">{ $vocabulary:POLLUTANT_VOCABULARY }</a> that must be one of
-            {xmlconv:buildVocItemsList("G27", $vocabulary:POLLUTANT_VOCABULARY, $xmlconv:VALID_POLLUTANT_IDS_27)}</span>, $labels:PLACEHOLDER,
-                $G27invalid, "aqd:reportingMetric", "All values are valid", " invalid value", "",$errors:ERROR)}
-        {html:buildResultRowsWithTotalCount_G("G28", <span>./aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType xlink:href attribute shall resolve to one of
-            <a href="{ $vocabulary:OBJECTIVETYPE_VOCABULARY }">{ $vocabulary:OBJECTIVETYPE_VOCABULARY }</a>
-            Allowed items: {xmlconv:buildVocItemsList("G28", $vocabulary:OBJECTIVETYPE_VOCABULARY, $xmlconv:VALID_OBJECTIVETYPE_IDS_28)}</span>, $labels:PLACEHOLDER, $G28invalid, "aqd:objectivetype", "", "", "",$errors:ERROR)}
-        {html:buildResultRowsWithTotalCount_G("G29", <span>The content of ./aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:EnvironmentalObjective/aqd:reportingMetric shall resolve to a valid concept in
-            <a href="{ $vocabulary:REPMETRIC_VOCABULARY }">{ $vocabulary:REPMETRIC_VOCABULARY }</a> that must be one of
-            {xmlconv:buildVocItemsList("G29", $vocabulary:REPMETRIC_VOCABULARY, $xmlconv:VALID_REPMETRIC_IDS_29)}</span>, $labels:PLACEHOLDER, $G29invalid, "aqd:reportingMetric", "", "", "",$errors:ERROR)}
+        {html:buildResultRows("G23", $labels:G23, $labels:G23_SHORT, $G23invalid, "aqd:reportingMetric", "All values are valid", " invalid value", "",$errors:ERROR)}
+        {html:buildResultRows("G24", $labels:G24, $labels:G24_SHORT, $G24invalid, "aqd:reportingMetric", "All values are valid", " invalid value", "",$errors:ERROR)}
+        {html:buildResultRows("G25", $labels:G25, $labels:G25_SHORT, $G25invalid, "aqd:reportingMetric", "All values are valid", " invalid value", "",$errors:ERROR)}
+        {html:buildResultRows("G26", $labels:G26, $labels:G26_SHORT, $G26invalid, "aqd:reportingMetric", "All values are valid", " invalid value", "",$errors:ERROR)}
+        {html:buildResultRows("G27", $labels:G27, $labels:G27_SHORT, $G27invalid, "aqd:reportingMetric", "All values are valid", " invalid value", "",$errors:ERROR)}
+        {html:buildResultRowsWithTotalCount_G("G28", $labels:G28, $labels:G28_SHORT, $G28invalid, "aqd:objectivetype", "", "", "",$errors:ERROR)}
+        {html:buildResultRowsWithTotalCount_G("G29", $labels:G29, $labels:G29_SHORT, $G29invalid, "aqd:reportingMetric", "", "", "",$errors:ERROR)}
         {html:buildResultRows("G30", $labels:G30, $labels:G30_SHORT, $G30invalid, "", "No invalid objective types for Vegetation found", " invalid", "",$errors:ERROR)}
-        {html:buildResultRows("G31", <span>The content of ./aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget xlink:href attribute shall EQUAL
-            http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V and /aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric xlink:href attribute on shall resolve to a valid concept in
-            <a href="{ $vocabulary:REPMETRIC_VOCABULARY }">{ $vocabulary:REPMETRIC_VOCABULARY }</a> that must be one of
-        {xmlconv:buildVocItemsList("G31", $vocabulary:REPMETRIC_VOCABULARY, $xmlconv:VALID_REPMETRIC_IDS_31)}</span>, $labels:PLACEHOLDER,
-                $G31invalid, "aqd:reportingMetric", "", "", "",$errors:ERROR)}
-        {html:buildResultRows("G32", <span>The content of ./aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget xlink:href attribute shall EQUAL
-            http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H AND /aqd:polluntant is NOT EQUAL to
-            http://dd.eionet.europa.eu/vocabulary/aq/pollutant/6001 where ./aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType  xlink:href attribute on shall resolve to a valid concept in
-            <a href="{ $vocabulary:OBJECTIVETYPE_VOCABULARY }">{ $vocabulary:OBJECTIVETYPE_VOCABULARY }</a> that must be one of
-            {xmlconv:buildVocItemsList("G32", $vocabulary:OBJECTIVETYPE_VOCABULARY, $xmlconv:VALID_OBJECTIVETYPE_IDS_32)}</span>, $labels:PLACEHOLDER,
-                $G32invalid, "aqd:reportingMetric",  "All values are valid", " invalid value", "",$errors:ERROR)}
-        {html:buildResultRows("G33", <span>./aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType/xlink:href  attribute   EQUALS
-                http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV
-                and the content of ./aqd:pollutant is EQUAL to http://dd.eionet.europa.eu/vocabulary/aq/pollutant/6001
-            ./aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget xlink:href attribute EQUALS
-            http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H-S1
-            http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H-S2
-            http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H
-
-            </span>, $labels:PLACEHOLDER,
-                $G33invalid, "aqd:reportingMetric", "All values are valid", " invalid value", "",$errors:ERROR)}
-
-        {html:buildResultRowsWithTotalCount_G("G38", <span>The content of /aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:areaClassification xlink:xref shall resolve to a areaClassification in
-            <a href="{ $vocabulary:AREA_CLASSIFICATION_VOCABULARY}">{ $vocabulary:AREA_CLASSIFICATION_VOCABULARY}</a> that must be one of
-            {xmlconv:buildVocItemsList("G38", $vocabulary:AREA_CLASSIFICATION_VOCABULARY, $xmlconv:VALID_AREACLASSIFICATION_IDS_52)}
-        </span>, $labels:PLACEHOLDER, $G38invalid, "aqd:areaClassification", "", "", "",$errors:ERROR)}
+        {html:buildResultRows("G31", $labels:G31, $labels:G31_SHORT, $G31invalid, "aqd:reportingMetric", "", "", "",$errors:ERROR)}
+        {html:buildResultRows("G32", $labels:G32, $labels:G32_SHORT, $G32invalid, "aqd:reportingMetric",  "All values are valid", " invalid value", "",$errors:ERROR)}
+        {html:buildResultRows("G33", $labels:G33, $labels:G33_SHORT, $G33invalid, "aqd:reportingMetric", "All values are valid", " invalid value", "",$errors:ERROR)}
+        {html:buildResultRowsWithTotalCount_G("G38", $labels:G38, $labels:G38_SHORT, $G38invalid, "aqd:areaClassification", "", "", "",$errors:ERROR)}
         {html:buildResultRows("G39", $labels:G39, $labels:G39_SHORT, $G39invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
         {html:buildResultRows("G40", $labels:G40, $labels:G40_SHORT, $G40invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
         {html:buildResultRows("G41", $labels:G41, $labels:G41_SHORT, $G41invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
@@ -1666,10 +1614,7 @@ return
         {html:build2("G45", $labels:G45, $labels:G45_SHORT, $G45invalid, "", "All values are valid", " invalid value", "", $errors:ERROR)}
         {html:build2("G46", $labels:G46, $labels:G46_SHORT, $G46invalid, "", "All values are valid", " invalid value", "", $errors:WARNING)}
         {html:buildResultRows("G47", $labels:G47, $labels:G47_SHORT, $G47invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
-        {html:buildResultRowsWithTotalCount_G("G52", <span>The content of /aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:areaClassification xlink:xref shall resolve to a areaClassification in
-            <a href="{ $vocabulary:AREA_CLASSIFICATION_VOCABULARY}">{ $vocabulary:AREA_CLASSIFICATION_VOCABULARY}</a> that must be one of
-            {xmlconv:buildVocItemsList("G52", $vocabulary:AREA_CLASSIFICATION_VOCABULARY, $xmlconv:VALID_AREACLASSIFICATION_IDS_52)}
-        </span>, $labels:PLACEHOLDER, $G52invalid, "aqd:areaClassification", "", "", "", $errors:ERROR)}
+        {html:buildResultRowsWithTotalCount_G("G52", $labels:G52, $labels:G52_SHORT, $G52invalid, "aqd:areaClassification", "", "", "", $errors:ERROR)}
         {html:buildResultRows("G53", $labels:G53, $labels:G53_SHORT, $G53invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
         {html:buildResultRows("G54", $labels:G54, $labels:G54_SHORT, $G54invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
         {html:buildResultRows("G55", $labels:G55, $labels:G55_SHORT, $G55invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
@@ -1677,28 +1622,16 @@ return
         {html:build2("G58", $labels:G58, $labels:G58_SHORT, $G58invalid, "", "All values are valid", " invalid value", "", $errors:ERROR)}
         {html:build2("G59", $labels:G59, $labels:G59_SHORT, $G59invalid, "", "All values are valid", " invalid value", "", $errors:ERROR)}
         {html:build2("G60", $labels:G60, $labels:G60_SHORT, $G60invalid, "", "All values are valid", " invalid value", "", $errors:WARNING)}
-        {html:buildResultRowsWithTotalCount_G("G61", <span>The content of /aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:adjustmentType xlink:xref shall resolve to a adjustmentType in
-            <a href="{ $vocabulary:ADJUSTMENTTYPE_VOCABULARY}">{ $vocabulary:ADJUSTMENTTYPE_VOCABULARY}</a> that must be one of
-            {xmlconv:buildVocItemsList("G61", $vocabulary:ADJUSTMENTTYPE_VOCABULARY, $xmlconv:VALID_ADJUSTMENTTYPE_IDS)}
-        </span>, $labels:PLACEHOLDER, $G61invalid, "aqd:areaClassification", "", "", "",$errors:ERROR)}
-        {html:buildResultRowsWithTotalCount_G("G62", <span>The content of /aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:adjustmenSource xlink:xref shall resolve to a adjustmenSource in
-            <a href="{ $vocabulary:ADJUSTMENTSOURCE_VOCABULARY}">{ $vocabulary:ADJUSTMENTSOURCE_VOCABULARY}</a> that must be one of
-            {xmlconv:buildVocItemsList("G62", $vocabulary:ADJUSTMENTSOURCE_VOCABULARY, $xmlconv:VALID_ADJUSTMENTSOURCE_IDS)}
-        </span>, $labels:PLACEHOLDER, $G62invalid, "aqd:areaClassification", "", "", "",$errors:ERROR)}
-        {html:buildResultRowsWithTotalCount_G("G63", <span>The content of ./aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:assessmentMethod/aqd:AssessmentMethods/aqd:assessmentType shall resolve to
-            <a href="{  $vocabulary:ASSESSMENTTYPE_VOCABULARY}">{  $vocabulary:ASSESSMENTTYPE_VOCABULARY}</a> that must be one of
-            {xmlconv:buildVocItemsList("G63",  $vocabulary:ASSESSMENTTYPE_VOCABULARY, $xmlconv:VALID_ASSESSMENTTYPE_IDS)}
-        </span>, $labels:PLACEHOLDER, $G63invalid, "aqd:areaClassification", "", "", "",$errors:ERROR)}
+        {html:buildResultRowsWithTotalCount_G("G61", $labels:G61, $labels:G61_SHORT, $G61invalid, "aqd:areaClassification", "", "", "",$errors:ERROR)}
+        {html:buildResultRowsWithTotalCount_G("G62", $labels:G62, $labels:G62_SHORT, $G62invalid, "aqd:areaClassification", "", "", "",$errors:ERROR)}
+        {html:buildResultRowsWithTotalCount_G("G63", $labels:G63, $labels:G63_SHORT, $G63invalid, "aqd:areaClassification", "", "", "",$errors:ERROR)}
         {html:buildResultRows("G64", $labels:G64, $labels:G64_SHORT, $G64invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
         {html:buildResultRows("G65", $labels:G65, $labels:G65_SHORT, $G65invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
         {html:buildResultRows("G66", $labels:G66, $labels:G66_SHORT, $G66invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
         {html:buildResultRows("G67", $labels:G67, $labels:G67_SHORT, $G67invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
         {html:buildResultRows("G70", $labels:G70, $labels:G70_SHORT, $G70invalid, "base:namespace", "All values are valid", " invalid value", "", $errors:ERROR)}
         {html:buildResultRows("G71", $labels:G71, $labels:G71_SHORT, $G71invalid, "base:namespace", "All values are valid", " invalid value", "", $errors:ERROR)}
-        {html:buildResultRowsWithTotalCount_G("G72", <span>The content of /aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:areaClassification  xlink:xref shall resolve to a areaClassification in
-            <a href="{ $vocabulary:AREA_CLASSIFICATION_VOCABULARY}">{ $vocabulary:AREA_CLASSIFICATION_VOCABULARY}</a> that must be one of
-            {xmlconv:buildVocItemsList("G72", $vocabulary:AREA_CLASSIFICATION_VOCABULARY, $xmlconv:VALID_AREACLASSIFICATION_IDS_52)}
-        </span>, $labels:PLACEHOLDER, $G72invalid, "aqd:areaClassification", "", "", "",$errors:ERROR)}
+        {html:buildResultRowsWithTotalCount_G("G72", $labels:G72, $labels:G72_SHORT, $G72invalid, "aqd:areaClassification", "", "", "",$errors:ERROR)}
         {html:buildResultRows("G73", $labels:G73, $labels:G73_SHORT, $G73invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
         {html:buildResultRows("G74", $labels:G74, $labels:G74_SHORT, $modelUsed_74, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
         {html:buildResultRows("G75", $labels:G75, $labels:G75_SHORT, $G75invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
