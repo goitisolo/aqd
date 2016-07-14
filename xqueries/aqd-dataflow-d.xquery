@@ -55,10 +55,6 @@ let $docRoot := doc($source_url)
 let $reportingYear := common:getReportingYear($docRoot)
 
 (: COMMON variables used in many QCs :)
-let $countFeatureTypes :=
-    for $featureType in $xmlconv:FEATURE_TYPES
-    return
-        count($docRoot//descendant::*[name()=$featureType])
 let $countFeatureTypesMap :=
     map:merge((
     for $featureType in $xmlconv:FEATURE_TYPES
@@ -94,15 +90,20 @@ let $D0invalid :=
         </tr>
     }
 
+let $D1sum := string(sum(
+    for $featureType in $xmlconv:FEATURE_TYPES
+    return
+        count($docRoot//descendant::*[name()=$featureType])))
 (: D1 :)
 let $D1table :=
     try {
         for $featureType at $pos in $xmlconv:FEATURE_TYPES
-        where $countFeatureTypes[$pos] > 0
+        order by $featureType descending
+        where map:get($countFeatureTypesMap, $featureType) > 0
         return
             <tr>
                 <td title="Feature type">{$featureType}</td>
-                <td title="Total number">{$countFeatureTypes[$pos]}</td>
+                <td title="Total number">{map:get($countFeatureTypesMap, $featureType)}</td>
             </tr>
     } catch * {
         <tr status="failed">
@@ -202,6 +203,13 @@ let $D3errorLevel :=
     } catch * {
         $errors:FAILED
     }
+let $D3count :=
+    try {
+        string(sum($D3table/td[2]/count))
+    } catch * {
+        "0"
+    }
+
 
 (: D4 :)
 let $D4table :=
@@ -1754,9 +1762,9 @@ let $D94invalid :=
 return
     <table class="maintable hover">
         {html:buildExists("D0", $labels:D0, $labels:D0_SHORT, $D0invalid, "New Delivery", "Updated Delivery", $errors:WARNING)}
-        {html:build1("D1", $labels:D1, $labels:D1_SHORT, $D1table, "", string(sum($countFeatureTypes)), "", "",$errors:ERROR)}
+        {html:build1("D1", $labels:D1, $labels:D1_SHORT, $D1table, "", $D1sum, "", "",$errors:ERROR)}
         {html:buildSimple("D2", $labels:D2, $labels:D2_SHORT, $D2table, "", "feature type", $D2errorLevel)}
-        {html:buildSimple("D3", $labels:D3, $labels:D3_SHORT, $D3table, "", "feature type", $D3errorLevel)}
+        {html:buildSimple("D3", $labels:D3, $labels:D3_SHORT, $D3table, $D3count, "feature type", $D3errorLevel)}
         {html:build1("D4", $labels:D4, $labels:D4_SHORT, $D4table, string(count($D4table)), "", "", "",$errors:ERROR)}
         {html:buildCountRow("D5", $labels:D5, $labels:D5_SHORT, $D5invalid, (), "duplicate", ())}
         {html:buildConcatRow($duplicateGmlIds, "aqd:AQD_Model/@gml:id - ")}
