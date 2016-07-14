@@ -158,7 +158,7 @@ let $E6invalid :=
         let $parameters := $docRoot//om:OM_Observation/om:parameter/om:NamedValue
         for $x in $parameters[om:name/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/processparameter/SamplingPoint"]
             let $name := $x/om:name/@xlink:href/string()
-            let $value := $x/om:value/string()
+            let $value := $x/om:value/@xlink:href/string()
         where ($value = "" or not($value = $all))
         return
             <tr>
