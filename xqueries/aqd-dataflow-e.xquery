@@ -387,6 +387,9 @@ let $E21invalid :=
         return
             <tr>
                 <td title="@gml:id">{string($x/../../../../@gml:id)}</td>
+                <td title="@decimalSeparator">{string($x/@decimalSeparator)}</td>
+                <td title="@tokenSeparator">{string($x/@tokenSeparator)}</td>
+                <td title="@blockSeparator">{string($x/@blockSeparator)}</td>
             </tr>
     }
     catch * {
