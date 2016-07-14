@@ -11,6 +11,12 @@ declare namespace aqd = "http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0";
 declare namespace gml = "http://www.opengis.net/gml/3.2";
 
 declare variable $common:SOURCE_URL_PARAM := "source_url=";
+
+(: Lower case equals string :)
+declare function common:equalsLC($value as xs:string, $target as xs:string) {
+    lower-case($value) = lower-case($target)
+};
+
 (:~
  : Get the cleaned URL without authorisation info
  : @param $url URL of the source XML file

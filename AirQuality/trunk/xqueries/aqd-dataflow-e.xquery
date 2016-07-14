@@ -343,10 +343,10 @@ let $E18invalid :=
 (: E19 :)
 let $E19invalid :=
     try {
-        let $obs := dd:getValidConcepts("http://dd.eionet.europa.eu/vocabulary/aq/primaryObservation/rdf")
-        let $cons := dd:getValidConcepts("http://dd.eionet.europa.eu/vocabulary/uom/concentration/rdf")
+        let $obs := dd:getValidConceptsLC("http://dd.eionet.europa.eu/vocabulary/aq/primaryObservation/rdf")
+        let $cons := dd:getValidConceptsLC("http://dd.eionet.europa.eu/vocabulary/uom/concentration/rdf")
         for $x in $docRoot//om:OM_Observation/om:result/swe:DataArray/swe:elementType/swe:DataRecord/swe:field[@name = "Value"
-                and (not(swe:Quantity/@definition = $obs) or not(swe:Quantity/swe:uom/@xlink:href = $cons))]
+                and (not(swe:Quantity/lower-case(@definition) = $obs) or not(swe:Quantity/swe:uom/lower-case(@xlink:href) = $cons))]
         return
             <tr>
                 <td title="@gml:id">{string($x/../../../../../@gml:id)}</td>
