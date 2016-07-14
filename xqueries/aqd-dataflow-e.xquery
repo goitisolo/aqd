@@ -253,7 +253,6 @@ let $E11invalid :=
         </tr>
     }
 
-
 (: E12 :)
 let $E12invalid :=
     try {
@@ -265,6 +264,8 @@ let $E12invalid :=
         return
             <tr>
                 <td title="@gml:id">{$x/@gml:id/string()}</td>
+                <td title="om:featureOfInterest">{$featureOfInterest}</td>
+                <td title="om:observedProperty">{string($x/om:observedProperty/@xlink:href)}</td>
             </tr>
     } catch * {
         <tr status="failed">
@@ -272,6 +273,7 @@ let $E12invalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+
 (: E15 :)
 let $E15invalid :=
     try {
