@@ -361,9 +361,9 @@ let $E20invalid :=
     try {
         let $all := $docRoot//om:result/swe:DataArray/swe:elementType/swe:DataRecord/swe:field[@name="DataCapture"]
         for $x in $all
-        let $def := $x/swe:Category/@definition/string()
-        let $uom := $x/swe:Category/swe:uom/@xlink:href/string()
-        where (not($def =  "http://dd.eionet.europa.eu/vocabulary/aq/primaryObservation/dc") or not($uom = "http://dd.eionet.europa.eu/vocabulary/uom/statistics/percentage"))
+        let $def := $x/swe:Quantity/@definition/string()
+        let $uom := $x/swe:Quantity/swe:uom/@xlink:href/string()
+        where (not($def = "http://dd.eionet.europa.eu/vocabulary/aq/primaryObservation/dc") or not($uom = "http://dd.eionet.europa.eu/vocabulary/uom/statistics/percentage"))
         return
             <tr>
                 <td title="@gml:id">{string($x/../../../../../@gml:id)}</td>
@@ -405,7 +405,7 @@ let $E26invalid :=
             $x/sparql:binding[@name="featureOfInterest"]/sparql:uri/string() || $x/sparql:binding[@name="observedProperty"]/sparql:uri/string()
 
         for $x in $docRoot//om:OM_Observation
-            let $samplingPoint := $x/om:parameter/om:NamedValue[om:name/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/processparameter/SamplingPoint"]/om:value/tokenize(., "/")[last()]
+            let $samplingPoint := $x/om:parameter/om:NamedValue[om:name/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/processparameter/SamplingPoint"]/om:value/@xlink:href/tokenize(., "/")[last()]
             let $procedure := "http://reference.eionet.europa.eu/aq/" || $x/om:procedure/@xlink:href/string()
             let $featureOfInterest := "http://reference.eionet.europa.eu/aq/" || $x/om:featureOfInterest/@xlink:href/string()
             let $observedProperty := $x/om:observedProperty/@xlink:href/string()
@@ -476,7 +476,7 @@ declare function xmlconv:proceed($source_url as xs:string, $countryCode as xs:st
             </div>
 return
     <div>
-        <h2>Check air quality zones - Dataflow B</h2>
+        <h2>Check air quality zones - Dataflow E</h2>
         {$html}
     </div>
 };
