@@ -241,6 +241,8 @@ let $E11invalid :=
         return
             <tr>
                 <td title="@gml:id">{$x/@gml:id/string()}</td>
+                <td title="om:value">{string($x/om:parameter/om:NamedValue[om:name/@xlink:href ="http://dd.eionet.europa.eu/vocabulary/aq/processparameter/SamplingPoint"]/om:value/@xlink:href)}</td>
+                <td title="om:observedProperty">{$observedProperty}</td>
             </tr>
     } catch * {
         <tr status="failed">
