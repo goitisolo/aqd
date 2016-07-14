@@ -925,4 +925,98 @@
     </D94>
     <D94_SHORT>All reported Networks shall be used within at least one SamplingPoint or one Station</D94_SHORT>
   </D>
+  <E>
+    <E01>Compile &amp; feedback upon the total number of observations included in the delivery</E01>
+    <E01_SHORT>Total number Observations within this XML Document</E01_SHORT>
+    <E1>/om:OM_Observation gml:id attribute shall be unique code for the group of observations enclosed by /OM_Observation within the delivery.
+      Please note that the om:OM_Observation do not have INSPIRE ID like all other elments with namespace &amp; localId
+    </E1>
+    <E1_SHORT>GML identifier for om:OM_Observation attribute shall be unique code
+    </E1_SHORT>
+    <E2>./om:phenomenonTime/gml:TimePeriod/gml:beginPosition shall be LESS THAN ./om:phenomenonTime/gml:TimePeriod/gml:endPosition.</E2>
+    <E2_SHORT>Start time must be less than end time (phenomenonTime)</E2_SHORT>
+    <E3>./om:resultTime/gml:TimeInstant/gml:timePosition shall be GREATER THAN ./om:phenomenonTime/gml:TimePeriod/gml:endPosition</E3>
+    <E3_SHORT>Start time must be less than end time (resultTime)</E3_SHORT>
+    <E4>All om:OM_Observation/ must provide a valid /om:procedure xlink (can not be empty)
+      &amp;
+      ./om:procedure xlink:href attribute shall resolve to a traversable link process configuration in Data flow D: /aqd:AQD_SamplingPointProcess/ompr:inspireld/base:Identifier/base:localId
+    </E4>
+    <E4_SHORT>Observation must link to a valid AQD_SamplingPointProcess in dataflow D (via om:procedure)</E4_SHORT>
+    <E5>OM observations shall contain several om:parameters to further define the observations.
+      ./om:parameter/om:NamedValue/om:name xlink:href attribute shall resolve to a traversable link to http://dd.eionet.europa.eu/vocabulary/aq/processparameter/
+
+      A valid delivery MUST provide an om:parameter with om:name xlink:href to
+      http://dd.eionet.europa.eu/vocabulary/aq/processparameter/SamplingPoint
+    </E5>
+    <E5_SHORT>Observation must provide a link to SamplingPoint</E5_SHORT>
+    <E6>If ./om:parameter/om:NamedValue/om:name xlink:href  resolves to http://dd.eionet.europa.eu/vocabulary/aq/processparameter/SamplingPoint
+      /om:parameter/om:NamedValue/om:value xlink:href attribute shall resolve to a traversable link to a unique AQD_SamplingPoint (“namespace/localId” of the object)
+    </E6>
+    <E6_SHORT>Observation must link to a valid AQD_SamplingPoint in dataflow D (via om:parameter/...)</E6_SHORT>
+    <E7>
+      OM observations shall contain several om:parameters to further define the observations.
+      ./om:parameter/om:NamedValue/om:name xlink:href attribute shall resolve to a traversable link to http://dd.eionet.europa.eu/vocabulary/aq/processparameter/
+
+      A valid delivery SHOULD provide  an om:parameter with om:name xlink:href to
+      http://dd.eionet.europa.eu/vocabulary/aq/processparameter/AssessmentType
+
+    </E7>
+    <E7_SHORT>Observation should provide link to Assessment Type</E7_SHORT>
+    <E8>If ./om:parameter/om:NamedValue/om:name links to http://dd.eionet.europa.eu/vocabulary/aq/processparameter/AssessmentType /om:parameter/om:NamedValue/om:value xlink:href attribute shall resolve to  valid code for http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/</E8>
+    <E8_SHORT>Observation must provide a correct link to AssessmentType vocabulary</E8_SHORT>
+    <E9>If ./om:parameter/om:NamedValue/om:name xlink:href  resolves to http://dd.eionet.europa.eu/vocabulary/aq/processparameter/Station /om:parameter/om:NamedValue/om:value xlink:href attribute shall resolve to a traversable link to a unique AQD_Station (“namespace/localId” of the object)</E9>
+    <E10>/om:observedProperty xlink:href attribute shall resolve to a traversable link to http://dd.eionet.europa.eu/vocabulary/aq/pollutant/</E10>
+    <E10_SHORT>Pollutant must be a registered under vocabulary </E10_SHORT>
+    <E11>The pollutant xlinked via /om:observedProperty must match the pollutant code declared via /aqd:AQD_SamplingPoint/ef:observingCapability/ef:ObservingCapability/ef:observedProperty  (See E6 on linkages between the Observations &amp; the SamplingPoint)</E11>
+    <E11_SHORT>The pollutant for the observation must match the pollutant of the SamplingPoint</E11_SHORT>
+    <E12>All om:OM_Observation/ must provide a valid /om:featureOfInterest xlink (can not be empty)&amp;  /om:featureOfInterest xlink:href attribute shall resolve to a traversable link to /aqd:AQD_Sample/ompr:inspireld/base:Identifier/base:localId</E12>
+    <E12_SHORT>Observation must link to a valid AQD_Sample in dataflow D (via om:featureOfInterest)</E12_SHORT>
+    <E13>The temporal envelopes of ./om:phenomenonTime/gml:TimePeriod/gml:beginPosition shall reconcile with /aqd:AQD_SamplingPoint/ef:operationalActivityPeriod/ef:OperationalActivityPeriod associated with the citations via /om:parameter/om:value xlink:href attribute AND /aqd:AQD_SamplingPoint/ef:observingCapability/ef:ObservingCapability/ef:observingTime/gml:TimePeriod/ associated with /aqd:AQD_SamplingPoint/ef:observingCapability/ef:ObservingCapability/ef:procedure the citations via /om:procedure xlink:href attribute</E13>
+    <E14>./om:result/swe:DataArray/swe:elementCount/swe:Count/swe:value shall resolve to the count of observations in /om:result/swe:DataArray/swe:values</E14>
+    <E15>IF ./om:result/swe:DataArray/swe:elementType/swe:DataRecord/swe:field name="startTime" attribute THEN swe:Time definition=http://www.opengis.net/def/property/OGC/0/SamplingTime swe:uom xlink:href=http://www.opengis.net/def/uom/ISO-8601/0/Gregorian</E15>
+    <E15_SHORT>Check valid definition for startTime</E15_SHORT>
+    <E16>IF ./om:result/swe:DataArray/swe:elementType/swe:DataRecord/swe:field name="endTime" attribute THEN swe:Time definition=http://www.opengis.net/def/property/OGC/0/SamplingTime swe:uom xlink:href=http://www.opengis.net/def/uom/ISO-8601/0/Gregorian</E16>
+    <E16_SHORT>Check valid definition for endTime</E16_SHORT>
+    <E17>IF ./om:result/swe:DataArray/swe:elementType/swe:DataRecord/swe:field name="validity" attribute THEN swe:Category definition is defined by http://dd.eionet.europa.eu/vocabularies/aq/observationvalidity</E17>
+    <E17_SHORT>Check valid definition for observation validity</E17_SHORT>
+    <E18>IF ./om:result/swe:DataArray/swe:elementType/swe:DataRecord/swe:field name="verification" attribute THEN swe:Category definition is defined by http://dd.eionet.europa.eu/vocabularies/aq/observationverification</E18>
+    <E18_SHORT>Check valid definition for observation verification</E18_SHORT>
+    <E19>IF ./om:result/swe:DataArray/swe:elementType/swe:DataRecord/swe:field name="Value" attribute THEN swe:Quantity definition is defined by http://dd.eionet.europa.eu/vocabulary/aq/primaryObservation/[code] &amp; the swe:uom resolves to an xlink tohttp://dd.eionet.europa.eu/vocabulary/uom/concentration/[code]</E19>
+    <E19_SHORT>Check valid definition for the observation values (primaryObservation code &amp; concentration)</E19_SHORT>
+    <E20>A fifth element might be included. IF ./om:result/swe:DataArray/swe:elementType/swe:DataRecord/swe:field name="DataCapture" attribute THEN swe:Category definition is defined by http://dd.eionet.europa.eu/vocabulary/aq/primaryObservation/dc &amp; the swe:uom resolves to an xlink to http://dd.eionet.europa.eu/vocabulary/uom/statistics/percentage</E20>
+    <E20_SHORT>Check valid definition for the data coverage element (if provided)</E20_SHORT>
+    <E21>/om:result/swe:DataArray/swe:encoding/swe:TextEncoding shall resolve to decimalSeparator="." tokenSeparator="," blockSeparator="@@"</E21>
+    <E21_SHORT>Check valid TextEncoding (decimalSeparator="." tokenSeparator="," blockSeparator="@@")</E21_SHORT>
+    <E22>If the observations are defined as primaryObservations via the &lt;swe:field name=”Value”>, the difference between the StartTime and EndTime of the observations must be in accordance to the primaryObservation provided</E22>
+    <E22_SHORT>If the observations are defined as primaryObservations via the &lt;swe:field name=”Value”>, the difference between the StartTime and EndTime of the observations must be in accordance to the primaryObservation provided</E22_SHORT>
+    <E23>The results element declared as swe:field name="Validity" must only use the codes (flags) provided via http://dd.eionet.europa.eu/vocabularies/aq/observationvalidity</E23>
+    <E23_SHORT>Check all validity codes within swe:values correspon to vocabulary (…/aq/observationvalidity)</E23_SHORT>
+    <E24>The results element declared as swe:field name="Verification" must only use the codes (flags) provided via http://dd.eionet.europa.eu/vocabulary/aq/observationverification/</E24>
+    <E24_SHORT>Check all verificaiton codes within swe:values correspon to vocabulary (…/aq/observationverification)</E24_SHORT>
+    <E25>The temporal envelopes of the swe:values (reported via starTime and EndTime) shall reconcile with ./om:phenomenonTime/gml:TimePeriod/gml:beginPosition</E25>
+    <E25_SHORT>The temporal envelopes of the swe:values (reported via starTime and EndTime) shall reconcile with ./om:phenomenonTime/gml:TimePeriod/gml:beginPosition</E25_SHORT>
+    <E26>Check valid “constellation”:
+      The combination of SamplingPoint, SamplingPointProcess, Sample and Pollutant must be valid compared to latest Assessment Methods (D) reported
+
+      /om:parameter/om:NamedValue/om:value xlink:href attribute
+      when
+      /om:parameter/om:NamedValue/om:name xlink:href  resolves to http://dd.eionet.europa.eu/vocabulary/aq/processparameter/SamplingPoint
+      +
+      /om:procedure xlink:href attribute
+      +
+      /om:featureOfInterest xlink:href attribute
+      +
+      om:observedProperty xlink:href attribute
+
+      must be found in latest metadata (D) as
+      /aqd:AQD_SamplingPoint/ef:inspireId/base:localId (note xlink above include “namespace”)
+      +
+      /aqd:AQD_SamplingPoint/ef:observingCapability/ef:ObservingCapability/ef:procedure
+      +
+      /aqd:AQD_SamplingPoint/ef:observingCapability/ef:ObservingCapability/ef:featureOfInterest
+      +
+      /aqd:AQD_SamplingPoint/ef:observingCapability/ef:ObservingCapability/ef:observedProperty
+    </E26>
+    <E26_SHORT>The combination of SamplingPoint, SamplingPointProcess, Sample and Pollutant must be valid compared to latest Assessment Methods (D) reported</E26_SHORT>
+  </E>
 </labels>
