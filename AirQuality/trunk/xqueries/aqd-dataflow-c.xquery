@@ -700,6 +700,16 @@ let $C23binvalid :=
         </tr>
     }
 
+let $C24invalid :=
+    <tr>
+        <td title="Status">Failed</td>
+        <td title="Reason">Not implemented yet</td>
+    </tr>
+let $C25invalid :=
+    <tr>
+        <td title="Status">Failed</td>
+        <td title="Reason">Not implemented yet</td>
+    </tr>
 (: C26 - :)
 let $C26table :=
     try {
@@ -1146,8 +1156,8 @@ return
         {html:buildResultRows("C21", $labels:C21, $labels:C21_SHORT, $C21invalid, "aqd:reportingMetric", "All values are valid", " invalid value", "",$errors:WARNING)}
         {html:buildResultRows("C23a", $labels:C23a, $labels:C23a_SHORT, $C23ainvalid, "aqd:AQD_AssesmentRegime", "All values are valid", " invalid value", "",$errors:ERROR)}
         {html:buildResultRows("C23b", $labels:C23b, $labels:C23b_SHORT, $C23binvalid, "aqd:AQD_AssesmentRegime", "All values are valid", " invalid value", "",$errors:WARNING)}
-        {html:buildResultRows("C24", $labels:C24, $labels:C24_SHORT, (), "", "", " ", "",$errors:WARNING)}
-        {html:buildResultRows("C25", $labels:C25, $labels:C25_SHORT, (), "", "", " ", "",$errors:WARNING)}
+        {html:buildResultRows("C24", $labels:C24, $labels:C24_SHORT, $C24invalid, "", "All values are valid", "", "", $errors:WARNING)}
+        {html:buildResultRows("C25", $labels:C25, $labels:C25_SHORT, $C25invalid, "", "All values are valid", " ", "",$errors:WARNING)}
         {html:build2("C26", $labels:C26, $labels:C26_SHORT, $C26table, "", "All values are valid", " invalid value", "",$errors:WARNING)}
         {html:build2("C27", labels:interpolate($labels:C27, ($countZoneIds2, $countZoneIds1)), $labels:C27_SHORT, $C27table, "Count of unique zones matches", "", " not unique zone",  "", $errors:WARNING)}
         {html:buildResultRows("C28", $labels:C28, $labels:C28_SHORT, $C28invalid, "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "",$errors:ERROR)}
