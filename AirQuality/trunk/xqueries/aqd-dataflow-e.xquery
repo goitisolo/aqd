@@ -303,7 +303,7 @@ let $E16invalid :=
 let $E17invalid :=
     try {
         for $x in $docRoot//om:OM_Observation/om:result/swe:DataArray/swe:elementType/swe:DataRecord/swe:field[@name="Validity"
-                and not(swe:Category/@definition = "http://dd.eionet.europa.eu/vocabularies/aq/observationvalidity")]
+                and not(swe:Category/@definition = "http://dd.eionet.europa.eu/vocabulary/aq/observationvalidity")]
         return
             <tr>
                 <td title="@gml:id">{string($x/../../../../../@gml:id)}</td>
@@ -319,11 +319,12 @@ let $E17invalid :=
 let $E18invalid :=
     try {
         for $x in $docRoot//om:OM_Observation/om:result/swe:DataArray/swe:elementType/swe:DataRecord/swe:field[@name = "Verification"
-                and not(swe:Category/@definition = "http://dd.eionet.europa.eu/vocabularies/aq/observationverification")]
+                and not(swe:Category/@definition = "http://dd.eionet.europa.eu/vocabulary/aq/observationverification")]
         return
             <tr>
                 <td title="@gml:id">{string($x/../../../../../@gml:id)}</td>
-                <td title="swe:Category">{string($x/swe:Category/@definition)}</td></tr>
+                <td title="swe:Category">{string($x/swe:Category/@definition)}</td>
+            </tr>
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
