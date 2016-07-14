@@ -1569,7 +1569,7 @@ let $G86invalid :=
 
 return
     <table class="maintable hover">
-        {html:buildExists("G0", $labels:G0, $labels:G0_SHORT, $G0invalid, "New Delivery", "Updated Delivery", $errors:WARNING)}
+        {html:buildExists("G0", $labels:G0, $labels:G0_SHORT, $G0invalid, "New Delivery for " || $reportingYear, "Updated Delivery for " || $reportingYear, $errors:WARNING)}
         {html:build1("G1", $labels:G1, $labels:G1_SHORT, $tblAllAttainments, "", string($countAttainments), "", "",$errors:ERROR)}
         {html:buildSimple("G2", $labels:G2, $labels:G2_SHORT, $G2table, "", "", $G2errorLevel)}
         {html:buildSimple("G3", $labels:G3, $labels:G3_SHORT, $G3table, "", "", $G3errorLevel)}
