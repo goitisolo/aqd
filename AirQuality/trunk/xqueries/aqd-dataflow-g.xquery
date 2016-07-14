@@ -1573,8 +1573,8 @@ return
         {html:build1("G1", $labels:G1, $labels:G1_SHORT, $tblAllAttainments, "", string($countAttainments), "", "",$errors:ERROR)}
         {html:buildSimple("G2", $labels:G2, $labels:G2_SHORT, $G2table, "", "", $G2errorLevel)}
         {html:buildSimple("G3", $labels:G3, $labels:G3_SHORT, $G3table, "", "", $G3errorLevel)}
-        {html:buildResultRows("G4", $labels:G4, $labels:G4_SHORT, $G4table, "", string(count($G4table)), " ", "",$errors:ERROR)}
-        {html:buildResultRows("G5", $labels:G5, $labels:G5_SHORT, $G5table, "", string(count($G5table)), " exceedance", "", $errors:ERROR)}
+        {html:build1("G4", $labels:G4, $labels:G4_SHORT, $G4table, "", string(count($G4table)), " ", "",$errors:ERROR)}
+        {html:build1("G5", $labels:G5, $labels:G5_SHORT, $G5table, "", string(count($G5table)), " exceedance", "", $errors:WARNING)}
         {html:buildResultRows("G6", $labels:G6, $labels:G6_SHORT, $G6table, "", string(count($G6table)), " attainment", "",$errors:ERROR)}
         {html:buildResultRows("G7", $labels:G7, $labels:G7_SHORT, $G7invalid, "", "No duplicates found", " duplicate", "", $errors:ERROR)}
         {html:buildResultRows("G8", $labels:G8, $labels:G8_SHORT, $G8invalid, "base:localId", "No duplicate values found", " duplicate value", "",$errors:ERROR)}
