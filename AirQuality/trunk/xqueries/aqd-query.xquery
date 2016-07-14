@@ -404,6 +404,7 @@ declare function query:getAllRegimeIds($namespaces as xs:string*) as xs:string* 
         aqd:inspireId ?inspireId .
         ?inspireId rdfs:label ?inspireLabel .
         ?inspireId aqd:namespace ?namespace
+        FILTER(NOT(CONTAINS(str(?regime), 'c_preliminary')))
         FILTER(str(?namespace) in ('" || string-join($namespaces, "','") || "'))
   }"
   return data(sparqlx:executeSparqlQuery($query)//sparql:binding[@name='inspireLabel']/sparql:literal)
