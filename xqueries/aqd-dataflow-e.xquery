@@ -200,6 +200,7 @@ let $E8invalid :=
         return
             <tr>
                 <td title="@gml:id">{string($x/../../@gml:id)}</td>
+                <td title="om:value">{$value}</td>
             </tr>
     }
     catch * {
@@ -208,6 +209,7 @@ let $E8invalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+
 (: E10 - /om:observedProperty xlink:href attribute shall resolve to a traversable link to http://dd.eionet.europa.eu/vocabulary/aq/pollutant/ :)
 let $E10invalid :=
     try {
