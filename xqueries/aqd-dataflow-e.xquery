@@ -76,6 +76,7 @@ let $E1invalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+
 (:E2 - /om:phenomenonTime/gml:TimePeriod/gml:beginPosition shall be LESS THAN ./om:phenomenonTime/gml:TimePeriod/gml:endPosition. -:)
 let $E2invalid :=
     try {
@@ -83,7 +84,7 @@ let $E2invalid :=
         for $x in $all
             let $begin := xs:dateTime($x/gml:beginPosition)
             let $end := xs:dateTime($x/gml:endPosition)
-        where ($end < $begin)
+        where ($end <= $begin)
         return
             <tr>
                 <td title="@gml:id">{string($x/../../@gml:id)}</td>
