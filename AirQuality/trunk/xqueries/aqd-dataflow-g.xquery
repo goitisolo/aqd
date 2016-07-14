@@ -579,7 +579,9 @@ let $G17invalid :=
         where exists($zones) and exists($pollutants) and ($zone = $zones) and not($pollutant = $pollutants)
         return
             <tr>
-                <td title="base:localId">{$x/aqd:inspireId/base:Identifier/base:localId/string()}</td>
+                <td title="aqd:AQD_Attainment">{$x/aqd:inspireId/base:Identifier/base:localId/string()}</td>
+                <td title="aqd:AQD_Zone">{$zone}</td>
+                <td title="Pollutant">{data($x/aqd:pollutant/@xlink:href)}</td>
             </tr>
     } catch * {
         <tr status="failed">
