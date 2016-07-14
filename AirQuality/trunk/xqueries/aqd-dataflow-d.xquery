@@ -1548,11 +1548,16 @@ let $errMsg73 := if (count($allGmlPoint) > 0) then " errors found" else " gml:Po
 (: D74 :)
 let $D74invalid :=
     try {
-        let $D74tmp := distinct-values($docRoot//aqd:AQD_Sample/sams:shape/gml:Point[@srsDimension != "2"]/concat(../@gml:id, ": srsDimension=", @srsDimension))
-        for $i in $D74tmp
+        let $all := distinct-values(
+            for $x in $docRoot//aqd:AQD_Sample/sams:shape/gml:Point[@srsDimension != "2"]
+            return $x/../../aqd:inspireId/base:Identifier/base:localId/string() || "#" || $x/@gml:id || "#" || $x/@srsDimension
+        )
+        for $i in $all
         return
             <tr>
-                <td title="dimension">{string($i)}</td>
+                <td title="aqd:AQD_Sample">{tokenize($i, "#")[1]}</td>
+                <td title="gml:Point">{tokenize($i, "#")[2]}</td>
+                <td title="srsDimension">{tokenize($i, "#")[3]}</td>
             </tr>
     } catch * {
         <tr status="failed">
