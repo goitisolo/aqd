@@ -592,13 +592,18 @@ let $G17invalid :=
 let $G18invalid :=
     try {
         let $localId :=  if (fn:string-length($countryCode) = 2) then distinct-values(data(sparqlx:executeSparqlQuery(query:getTimeExtensionExemption($cdrUrl))//sparql:binding[@name='localId']/sparql:literal)) else ""
-        for $x in $docRoot//aqd:AQD_Attainment[aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType/@xlink:href]
-        let $objectiveType := data($x/aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType/@xlink:href)
+        for $x in $docRoot//aqd:AQD_Attainment[aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription]
+        let $objectiveType := data($x/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType/@xlink:href)
+        let $reportingMetric := data($x/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric/@xlink:href)
+        let $protectionTarget := data($x/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/@xlink:href)
         let $zone := data($x/aqd:zone/@xlink:href)
         where exists($localId) and ($zone = $localId) and ($objectiveType != "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LVmaxMOT")
         return
             <tr>
-                <td title="base:localId">{$x/../../../../../aqd:inspireId/base:Identifier/base:localId/string()}</td>
+                <td title="aqd:AQD_Attainment">{$x/aqd:inspireId/base:Identifier/base:localId/string()}</td>
+                <td title="aqd:objectiveType">{$objectiveType}</td>
+                <td title="aqd:reportingMetric">{$reportingMetric}</td>
+                <td title="aqd:protectionTarget">{$protectionTarget}</td>
             </tr>
     } catch * {
         <tr status="failed">
