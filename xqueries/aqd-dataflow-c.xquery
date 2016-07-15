@@ -686,12 +686,12 @@ let $C23ainvalid :=
 let $C23binvalid :=
     try {
         for $x in $docRoot//aqd:AQD_AssessmentRegime[count(aqd:assessmentMethods/aqd:AssessmentMethods/aqd:assessmentType/@xlink:href) > 0]
-        where data($x/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:assessmentTypeDescription) = ""
+        let $desc := $x/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:assessmentTypeDescription
+        where empty($desc) or data($desc = "")
         return
             <tr>
                 <td title="base:localId">{string($x/aqd:inspireId/base:Identifier/base:localId)}</td>
                 <td title="aqd:assessmentType">{data($x/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:assessmentType/@xlink:href)}</td>
-                <td title="aqd:assessmentTypeDescription">{data($x/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:assessmentTypeDescription)}</td>
             </tr>
     } catch * {
         <tr status="failed">
