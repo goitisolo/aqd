@@ -1667,7 +1667,7 @@ as element(tr)*{
             xmlconv:getCollectionConceptUrlSparql($vocabularyUrl)
         else
             xmlconv:getConceptUrlSparql($vocabularyUrl)
-    let $crConcepts := sparqlx:executeSimpleSparqlQuery($sparql)
+    let $crConcepts := sparqlx:run($sparql)
 
     let $allRecords :=
     if ($parentObject != "") then
@@ -1706,7 +1706,7 @@ declare function xmlconv:getCheckedVocabularyConceptValues($source_url as xs:str
             xmlconv:getCollectionConceptUrlSparql($vocabularyUrl)
         else
             xmlconv:getConceptUrlSparql($vocabularyUrl)
-    let $crConcepts := sparqlx:executeSimpleSparqlQuery($sparql)
+    let $crConcepts := sparqlx:run($sparql)
 
     let $allRecords :=
         if ($parentObject != "") then
@@ -1757,8 +1757,8 @@ declare function xmlconv:getCollectionConceptUrlSparql($collection as xs:string)
     }")
 };
 
-declare function xmlconv:isMatchingVocabCode($crConcepts as element(sparql:results), $concept as xs:string) as xs:boolean {
-    count($crConcepts//sparql:result/sparql:binding[@name="concepturl" and sparql:uri=$concept]) > 0
+declare function xmlconv:isMatchingVocabCode($crConcepts as element(sparql:result)*, $concept as xs:string) as xs:boolean {
+    count($crConcepts/sparql:binding[@name="concepturl" and sparql:uri=$concept]) > 0
 };
 
 

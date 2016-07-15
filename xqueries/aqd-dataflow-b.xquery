@@ -52,7 +52,7 @@ let $nameSpaces := distinct-values($docRoot//base:namespace)
 let $zonesNamespaces := distinct-values($docRoot//aqd:AQD_Zone/am:inspireId/base:Identifier/base:namespace)
 
 (: Generic variables :)
-let $knownZones := distinct-values(data(sparqlx:executeSimpleSparqlQuery(query:getAllZoneIds($nameSpaces))//sparql:binding[@name = 'inspireLabel']/sparql:literal))
+let $knownZones := distinct-values(data(sparqlx:run(query:getAllZoneIds($nameSpaces))//sparql:binding[@name = 'inspireLabel']/sparql:literal))
 
 (: B0 :)
 let $B0invalid :=
@@ -281,7 +281,7 @@ let $B10.1invalid :=
 (: B13 :)
 let $B13invalid :=
     try {
-        let $langCodes := distinct-values(data(sparqlx:executeSimpleSparqlQuery(query:getLangCodesSparql())//sparql:binding[@name='code']/sparql:literal))
+        let $langCodes := distinct-values(data(sparqlx:run(query:getLangCodesSparql())//sparql:binding[@name='code']/sparql:literal))
 
         return distinct-values($docRoot//aqd:AQD_Zone/am:name/gn:GeographicalName[string-length(normalize-space(gn:language)) > 0 and
                     empty(
@@ -959,7 +959,7 @@ as element(tr)*{
             query:getCollectionConceptUrlSparql($vocabularyUrl)
         else
             query:getConceptUrlSparqlB($vocabularyUrl)
-    let $crConcepts := sparqlx:executeSimpleSparqlQuery($sparql)
+    let $crConcepts := sparqlx:run($sparql)
 
     let $allRecords :=
     if ($parentObject != "") then
@@ -991,10 +991,10 @@ declare function xmlconv:isValidLimitedValue($conceptUrl as xs:string, $vocabula
 };
 
 
-declare function xmlconv:isMatchingVocabCode($crConcepts as element(sparql:results), $concept as xs:string)
+declare function xmlconv:isMatchingVocabCode($crConcepts as element(sparql:result)*, $concept as xs:string)
 as xs:boolean
 {
-    count($crConcepts//sparql:result/sparql:binding[@name="concepturl" and sparql:uri=$concept]) > 0
+    count($crConcepts/sparql:binding[@name="concepturl" and sparql:uri=$concept]) > 0
 };
 
 declare function xmlconv:isInvalidYear($value as xs:string?) {

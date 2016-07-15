@@ -12,26 +12,15 @@ declare namespace sparql = "http://www.w3.org/2005/sparql-results#";
 (:~ declare Content Registry SPARQL endpoint :)
 declare variable $sparqlx:CR_SPARQL_URL := "http://cr.eionet.europa.eu/sparql";
 
-(: ======================================================================
- :              SPARQL HELPER methods
- : ======================================================================
- :)
-(:~ Function executes given SPARQL query and returns result elements in SPARQL result format.
- : URL parameters will be correctly encoded.
- : @param $sparql SPARQL query.
- : @return sparql:results element containing zero or more sparql:result subelements in SPARQL result format.
- :)
-declare function sparqlx:executeSimpleSparqlQuery($sparql as xs:string) as element(sparql:results) {
-    let $uri := sparqlx:getSparqlEndpointUrl($sparql, "xml")
-
-    return
-        fn:doc($uri)//sparql:results
-};
-
 (:TODO: Function to replace all SPARQL Calls :)
 declare function sparqlx:run($sparql as xs:string) as element(sparql:result)* {
     doc("http://cr.eionet.europa.eu/sparql?query=" || encode-for-uri($sparql) || "&amp;format=application/xml")//sparql:result
 };
+(:TODO remove it after we refactor all :)
+declare function sparqlx:executeSparqlQuery($sparql as xs:string) as element(sparql:result)* {
+    doc("http://cr.eionet.europa.eu/sparql?query=" || encode-for-uri($sparql) || "&amp;format=application/xml")//sparql:result
+};
+
 (:~
  : Get the SPARQL endpoint URL.
  : @param $sparql SPARQL query.
@@ -39,7 +28,7 @@ declare function sparqlx:run($sparql as xs:string) as element(sparql:result)* {
  : @param $inference use inference when executing sparql query.
  : @return link to sparql endpoint
  :)
-declare function sparqlx:getSparqlEndpointUrl($sparql as xs:string, $format as xs:string) as xs:string {
+declare function sparqlx:getSparqlEndpointUrlz($sparql as xs:string, $format as xs:string) as xs:string {
     let $sparql := fn:encode-for-uri(fn:normalize-space($sparql))
     let $resultFormat :=
         if ($format = "xml") then
@@ -63,16 +52,16 @@ declare function sparqlx:toCountSparql($sparql as xs:string) as xs:string {
 
 declare function sparqlx:countsSparqlResults($sparql as xs:string) as xs:integer {
     let $countingSparql := sparqlx:toCountSparql($sparql)
-    let $endpoint := sparqlx:executeSimpleSparqlQuery($countingSparql)
+    let $endpoint := sparqlx:run($countingSparql)
 
     (: Counting all results:)
-    let $count :=  $countingSparql
-    let $isCountAvailable := string-length($count) > 0 and doc-available(sparqlx:getSparqlEndpointUrl($count, "xml"))
-    let $countResult := if($isCountAvailable) then (data($endpoint//sparql:binding[@name='callret-0']/sparql:literal)) else 0
+    let $count := $countingSparql
+    let $countResult := data($endpoint//sparql:binding[@name='callret-0']/sparql:literal)
     return $countResult[1]
 };
 
-declare function sparqlx:executeSparqlQuery($sparql as xs:string) as element(sparql:result)* {
+(: TODO: Probably deprecated, seems useful, but might better be removed :)
+declare function sparqlx:executeSparqlQueryOld($sparql as xs:string) as element(sparql:result)* {
     let $limit := number(2000)
     let $countResult := sparqlx:countsSparqlResults($sparql)
 
@@ -84,8 +73,8 @@ declare function sparqlx:executeSparqlQuery($sparql as xs:string) as element(spa
         for $r in (1 to  xs:integer(number($divCountResult)))
         let $offset := if ($r > 1) then string(((number($r)-1) * $limit)) else "0"
         let $resultXml := sparqlx:setLimitAndOffset($sparql,xs:string($limit), $offset)
-        let $isResultsAvailable := string-length($resultXml) > 0 and doc-available(sparqlx:getSparqlEndpointUrl($resultXml, "xml"))
-        let $result := if($isResultsAvailable) then sparqlx:executeSimpleSparqlQuery($resultXml)//sparql:result else ()
+        let $isResultsAvailable := string-length($resultXml) > 0 and doc-available(sparqlx:getSparqlEndpointUrlz($resultXml, "xml"))
+        let $result := if($isResultsAvailable) then sparqlx:run($resultXml) else ()
         return $result
 
     return  $allResults
@@ -102,10 +91,8 @@ declare function sparqlx:setLimitAndOffset($sparql as xs:string, $limit as xs:st
  : @param $sparql SPARQL query.
  : @return sparql:results element containing zero or more sparql:result subelements in SPARQL result format.
  :)
-declare function sparqlx:executeSparqlEndpoint_D($sparql as xs:string)
-as element(sparql:results)
-{
-    let $uri := sparqlx:getSparqlEndpointUrl($sparql, "xml")
+declare function sparqlx:executeSparqlEndpoint_D($sparql as xs:string) as element(sparql:results) {
+    let $uri := sparqlx:getSparqlEndpointUrlz($sparql, "xml")
 
     return
         if(doc-available($uri))then
