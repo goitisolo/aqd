@@ -379,7 +379,7 @@ let $B23invalid :=
         let $latlongToken := fn:tokenize(normalize-space($latLong), "\s+")
         let $lat := number($latlongToken[1])
         let $long := number($latlongToken[2])
-        where ($long > $lat)
+        where (not($countryCode = "fr") and ($long > $lat))
         return
             <tr>
                 <td title="Polygon">{string($latLong/../../../@gml:id)}</td>
@@ -391,11 +391,11 @@ let $B23invalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
-let $B23errorLevel :=
+let $B23message :=
     if ($countryCode = "fr") then
-        $errors:INFO
+        "Temporary turned off"
     else
-        $errors:ERROR
+        "All values are valid"
 
 (: B24 :)
 (: ./am:zoneType value shall resolve to http://inspire.ec.europa.eu/codeList/ZoneTypeCode/airQualityManagementZone :)
@@ -911,7 +911,7 @@ return
         {html:build2("B20", $labels:B20, $labels:B20_SHORT, $B20invalid, "aqd:AQD_Zone/@gml:id","All srsName attributes are valid"," invalid attribute","", $errors:ERROR)}
         {html:build2("B21", $labels:B21, $labels:B21_SHORT, $B21invalid, "aqd:AQD_Zone/@gml:id", "All srsDimension attributes resolve to ""2""", " invalid attribute", "",$errors:WARNING)}
         {html:build2("B22", $labels:B22, $labels:B22_SHORT, $B22invalid, "gml:Polygon/@gml:id", "All values are valid", " invalid attribute", "",$errors:ERROR)}
-        {html:build2("B23", $labels:B23, $labels:B23_SHORT, $B23invalid, "gml:Polygon", "All values are valid", " invalid attribute", "", $B23errorLevel)}
+        {html:build2("B23", $labels:B23, $labels:B23_SHORT, $B23invalid, "gml:Polygon", $B23message, " invalid attribute", "", $errors:ERROR)}
         {html:build2("B24", $labels:B24, $labels:B24_SHORT, $B24invalid, "aqd:AQD_Zone/@gml:id", "All zoneType attributes are valid", " invalid attribute", "",$errors:WARNING)}
         {html:build2("B25", $labels:B25, $labels:B25_SHORT, $B25invalid, "gml:TimePeriod gml:id", "All positions are valid", " invalid position", "",$errors:ERROR)}
         {html:build2("B28", $labels:B28, $labels:B28_SHORT, $B28invalid, "gml:id", "All LifespanVersion values are valid", " invalid value", "",$errors:ERROR)}
