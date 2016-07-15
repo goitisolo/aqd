@@ -205,9 +205,9 @@ let $D3errorLevel :=
     }
 let $D3count :=
     try {
-        string(sum($D3table/td[2]/count))
+        string(sum($D3table/td[2]))
     } catch * {
-        "0"
+        "NaN"
     }
 
 
