@@ -157,7 +157,7 @@
     <B39b_SHORT>List missing Pollutant/ProtectionTarget combination(s)</B39b_SHORT>
     <B39c>Combination in B39a can not be repeated within individual AQD:Zone </B39c>
     <B39c_SHORT>List any individual zone with Pollutant/ProtectionTarget combination repeated</B39c_SHORT>
-    <B40>IF aqd:reportingPeriod included in the ReportingHeader is equal or greater thant year 2015, ./aqd:timeExtensionExemption must resolve to http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/none
+    <B40>IF aqd:reportingPeriod included in the ReportingHeader is equal or greater than year 2015, ./aqd:timeExtensionExemption must resolve to http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/none
 
       Only 1 entry is allowed.
 
