@@ -530,7 +530,8 @@ let $G14table :=
 (: G14.1 :)
 let $G14.1invalid :=
     try {
-        let $all := sparqlx:executeSparqlQuery(query:getAssessmentRegimeIds($cdrUrl))//sparql:binding[@name="inspireLabel"]/sparql:literal/string()
+        let $latestEnvelope := query:getLatestEnvelope($cdrUrl || "c/", $reportingYear)
+        let $all := query:getLatestRegimeIds($latestEnvelope)
         let $allLocal := data($docRoot//aqd:AQD_Attainment/aqd:assessment/@xlink:href)
         for $x in $all
         where (not($x = $allLocal))
