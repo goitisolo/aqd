@@ -1019,4 +1019,474 @@
     </E26>
     <E26_SHORT>The combination of SamplingPoint, SamplingPointProcess, Sample and Pollutant must be valid compared to latest Assessment Methods (D) reported</E26_SHORT>
   </E>
+  <G>
+    <G0>Check if delivery if this is a new delivery or updated delivery (via reporting year) </G0>
+    <G0_SHORT>Checks if this delivery is new or an update (on same reporting year)</G0_SHORT>
+    <G1>Compile &amp; feedback upon the total number of attainment records included in the delivery</G1>
+    <G1_SHORT>Total number of attainment statements</G1_SHORT>
+    <G2>Compile &amp; feedback upon the total number of new attainment records included in the delivery. &lt;b>ERROR will be returned if XML is a new delivery and localId are not new compared to previous deliveries.&lt;/b></G2>
+    <G2_SHORT>Total number of new attainment statements</G2_SHORT>
+    <G3>Compile &amp; feedback upon the total number of updated attainment records included in the delivery. &lt;b>ERROR will be returned if XML is an update and ALL localId (100%) are different to previous delivery (for the same YEAR).&lt;/b></G3>
+    <G3_SHORT>Total number of changed attainment statements</G3_SHORT>
+    <G4>Compile &amp; feedback a list of the unique identifier information for all attainment records included in the delivery. Feedback report shall include the gml:id attribute, ./aqd:inspireId, ./aqd:pollutant, ./aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType, ./aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric, ./aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget, ./aqd:zone, /aqd:assessment elements as available.</G4>
+    <G4_SHORT>List of unique identifier information for all attainment records</G4_SHORT>
+    <G5>Compile &amp; feedback a list of the exceedances situations when aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedance is TRUE</G5>
+    <G5_SHORT>List number of final exceedances (TRUE)</G5_SHORT>
+    <G6>Compile &amp; feedback a list of attainment records that have been assessed against the objectiveType for zones with time extensions ./aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType/@xlink:href – “LVmaxMOT” link via ./aqd:zone to /aqd:AQD_Zone record &amp; present the /aqd:AQD_Zone/aqd:timeExtensionExemption info. Feedback report shall include ./aqd:inspireId, ./aqd:pollutant, ./aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType, ./aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric, ./aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget, ./aqd:zone, ./aqd:pollutant, /aqd:AQD_Zone/aqd:timeExtensionExemption</G6>
+    <G6_SHORT>List number of attainment records with a time extension</G6_SHORT>
+    <G7>All gml:id attributes, ef:inspireId and aqd:inspireId elements shall have unique content</G7>
+    <G7_SHORT>All gml ID attributes shall have unique code</G7_SHORT>
+    <G8>./aqd:inspireId/base:Identifier/base:localId must be unique code for the attainment records </G8>
+    <G8_SHORT>Local Id must be unique for the attainment records</G8_SHORT>
+    <G9> ./aqd:inspireId/base:Identifier/base:namespace List base:namespace and count the number of base:localId assigned to each base:namespace.</G9>
+    <G9_SHORT>List unique namespaces used and count number of elements</G9_SHORT>
+    <G9.1>Check that namespace is registered in vocabulary (http://dd.eionet.europa.eu/vocabulary/aq/namespace/view)</G9.1>
+    <G9.1_SHORT>Check namespace is registered </G9.1_SHORT>
+    <G10>The content of ./aqd:pollutant xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1
+      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/7 http://dd.eionet.europa.eu/vocabulary/aq/pollutant/8
+      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/9 http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5  http://dd.eionet.europa.eu/vocabulary/aq/pollutant/6001 http://dd.eionet.europa.eu/vocabulary/aq/pollutant/10  http://dd.eionet.europa.eu/vocabulary/aq/pollutant/20  http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5012  http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5014 http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5015
+      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5018  http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5029
+    </G10>
+    <G10_SHORT>The Attainment Pollutant  must be one of the following: SO2, 03, NO2, NOX, PM10, PM2.5, CO, Pb in PM10,
+      Cd in PM10, Ni in PM10, As in PM10, BaP in PM10</G10_SHORT>
+    <G11>Element ./aqd:exceedanceDescriptionBase may only be used
+      WHERE
+      ./aqd:pollutant xlink:href attribute EQUALs
+      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1
+      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5  http://dd.eionet.europa.eu/vocabulary/aq/pollutant/6001
+      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/10
+    </G11>
+    <G11_SHORT>Exceedance Description Base is only expected for the following pollutants: SO2, PM10, PM2.5, CO</G11_SHORT>
+    <G12>Element ./aqd:exceedanceDescriptionAdjustment can only be used
+      WHERE
+      ./aqd:pollutant xlink:href attribute EQUALs
+      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1
+      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5  http://dd.eionet.europa.eu/vocabulary/aq/pollutant/6001
+      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/10
+    </G12>
+    <G12_SHORT>Exceedance Description Adjustment is only expected for the following pollutants: SO2, PM10, PM2.5, CO</G12_SHORT>
+    <G13>./aqd:assessment xlink:href attribute shall resolve to a valid assessment regime within /aqd:AQD_AssessmentRegime
+      AND
+      /aqd:AQD_AssessmentRegime/aqd:pollutant, /aqd:AQD_AssessmentRegime/aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective
+      EQUAL to
+      ./aqd:pollutant
+      ./aqd:exceedanceDescription_Final/aqd:ExceedanceDescription/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType
+    </G13>
+    <G13_SHORT>Attainment must link to a valid assessment regime with matching Pollutant and Objective Type</G13_SHORT>
+    <G13b>aqd:AQD_Attainment/aqd:pollutant
+      aqd:AQD_Attainment/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType
+      aqd:AQD_Attainment/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric
+      aqd:AQD_Attainment/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget
+
+      should correspond with
+      aqd:AQD_AssessmentRegime/aqd:pollutant
+      aqd:AQD_AssessmentRegime/aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType
+      aqd:AQD_AssessmentRegime/aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric
+      aqd:AQD_AssessmentRegime/aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget
+    </G13b>
+    <G13b_SHORT>Attainment should link to a valid assessment regime with matching Pollutant/Objective Type/ReportingMetric/ProtectionTarget/</G13b_SHORT>
+    <G14>COUNT number zone-pollutant-target comibantion to match those in dataset B and dataset C for the same reporting Year &amp; compare it with Attainment.
+
+      aqd:AQD_Attainment/aqd:pollutant xlink + aqd:AQD_Attainment/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget + aqd:AQD_Attainment/aqd:zone
+      .aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget
+      + ./aqd:pollutant
+      + /aqd:zone
+      combinations shall reconcile to corresponding information within /aqd:AQD_Zone/aqd:pollutants/aqd:Pollutant/aqd:protectionTarget ,  /aqd:AQD_Zone/aqd:pollutants/aqd:Pollutant/aqd:pollutantCode + /aqd:AQD_Zone/am:inspireId/base:Identifier/base:localId
+    </G14>
+    <G14_SHORT>COUNT number zone-pollutant-target comibantion to match those in dataset B and dataset C for the same reporting Year</G14_SHORT>
+    <G14b>For the same reporting year, all the /aqd:AQD_AssessmentRegime reported under dataflow C, must be xlinked once at /aqd:AQD_Attainment /aqd:assessment xlink:href attribute</G14b>
+    <G14b_SHORT>All the /aqd:AQD_AssessmentRegime reported under latest dataflow C must be xlinked once at one Attainment (with exception of /MO)</G14b_SHORT>
+    <G15>The subject of ./aqd:zone xlink:href attribute shall resolve to a valid AQ zone with /aqd:AQD_Zone</G15>
+    <G15_SHORT>Must be a valid AQ Zone.</G15_SHORT>
+    <G16>The subject of the ./aqd:zone xlink:href attribute shall contain /aqd:AQD_Zone/am:designationPeriod/gml:TimePeriod/gml:endPosition that is unclosed </G16>
+    <G17>The subject of the ./aqd: zone xlink:href attribute shall contain a /aqd:AQD_Zone/aqd:pollutant EQUAL to ./aqd:pollutan</G17>
+    <G17_SHORT>Link zones must contain same pollutant as the Attainment</G17_SHORT>
+    <G18>The subject of the ./aqd: zone xlink:href attribute shall contain a /aqd:AQD_Zone/aqd:timeExtensionExemption shall NOT EQUAL http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/none WHERE ./aqd:exceedanceDescription_Final/aqd:ExceedanceDescription/aqd:environmentalObj ective/aqd:EnvironmentalObjective/aqd:objectiveType xlink:href attribute EQUALs http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LVmaxMOT</G18>
+    <G18_SHORT>Any attatinment for LVmaxMOT should link to a zone with a time extension</G18_SHORT>
+    <G19>./aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType xlink:href attribute shall resolve to one of
+      http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/TV
+      http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LVMOT
+      http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LVmaxMOT http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/CL http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LTO http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/ECO
+      http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/INT
+      http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/ALT
+    </G19>
+    <G19_SHORT>Objective Type must use one of the following:
+      TV
+      LV
+      CL
+      LVMOT
+      LVmaxMOT
+      INT
+      ALT
+      LTO
+      ECO</G19_SHORT>
+    <G20>The content of ./aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:EnvironmentalObjective/aqd:reportingMetric shall resolve to a valid concept in http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/ that must be one of
+
+      http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/3hAbove
+      http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean
+      http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/wMean
+      http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/hrsAbove
+      http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/daysAbove
+      http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/daysAbove-3yr
+      http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/maxd8hrMean
+      http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/AOT40c
+      http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/AOT40c-5yr
+      http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/AEI</G20>
+    <G20_SHORT>The Exceedence description must use an approved reporting metric, These are:
+      Three consecutive hours in exceedance
+      Annual mean / average
+      Winter Mean
+      Hours in exceedance in a calendar year
+      Days in exceedance in a calendar year
+      Days in exceedance averaged over 3 calendar years
+      Accumulated Ozone Exposure
+      Accumulated Ozone Exposure averaged over 5 years
+      Average Exposure Indicator</G20_SHORT>
+    <G21>If ./aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType xlink:href attribute EQUALS http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/CL (Critical) ./aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget xlink:href attribute has to be http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V (Vegetation)</G21>
+    <G21_SHORT>If the ObjectiveType is Critic Level, then the Protection Target must be Vegation</G21_SHORT>
+    <G22>If the Exceedance Description has a Target or Limit Value, then the Protection Target must be Health.</G22>
+    <G23>WHERE./aqd:pollutant xlink:href attribute resolves to http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1
+      ./aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/daysAbove http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/hrsAbove
+      http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/wMean
+      http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean
+      http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/3hAbove
+    </G23>
+    <G23_SHORT>If SO2, then the Environmental Objective must be one of the following:
+      Three consecutive hours in exceedance
+      Annual mean / average
+      Winter Mean
+      Hours in exceedance in a calendar year
+      Days in exceedance in a calendar year</G23_SHORT>
+    <G24>WHERE ./aqd:pollutant xlink:href attribute resolves to http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5 ./aqd:EnvironmentalObjective/aqd:reportingMetric shall resolve to a valid concept in http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/ that must be one ofS
+      Hide items
+      http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean
+      http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/daysAbove</G24>
+    <G24_SHORT>If PM10 , then the Environmental Objective must be one of the following:
+      Annual mean / average
+      Hours in exceedance in a calendar year</G24_SHORT>
+    <G25>WHERE./aqd:pollutant xlink:href attribute resolves to http://dd.eionet.europa.eu/vocabulary/aq/pollutant/6001
+      ./aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean
+      http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/AEI
+    </G25>
+    <G25_SHORT>If PM12.5, then the reporting metric must be one of the following:
+      Annual Mean
+      Average Exposure Indicator</G25_SHORT>
+    <G26>WHERE ./aqd:pollutant xlink:href attribute resolves to http://dd.eionet.europa.eu/vocabulary/aq/pollutant/10 ./aqd:EnvironmentalObjective/aqd:reportingMetric shall resolve to a valid concept in http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/ that must be one of
+      Hide items
+      http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/daysAbove</G26>
+    <G26_SHORT>If CO, then the reporting metric is "Days in exceedance in a calendar year."</G26_SHORT>
+    <G27>WHERE./aqd:pollutant xlink:href attribute resolves to http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5 http://dd.eionet.europa.eu/vocabulary/aq/pollutant/8 http://dd.eionet.europa.eu/vocabulary/aq/pollutant/6001 http://dd.eionet.europa.eu/vocabulary/aq/pollutant/10  http://dd.eionet.europa.eu/vocabulary/aq/pollutant/20  http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5012  http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5014 http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5015
+      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5018  http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5029
+      ./aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget xlink:href attribute shall NOT EQUAL http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V
+    </G27>
+    <G27_SHORT>If protection target is not Vegetation, then the pollutant must be one of the following:
+      PM10
+      NO2
+      PM2.5
+      CO
+      Benzene
+      Pb in PM10
+      Cd in PM10
+      Ni in PM10
+      As in PM10
+      BaP in PM10
+    </G27_SHORT>
+    <G28>/aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/ Allowed items:
+      Hide items
+      http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/TV
+      http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV
+      http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/CL
+      http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LTO
+      http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/ECO
+      http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LVmaxMOT
+      http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LVMOT
+      http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/INT
+      http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/ALT</G28>
+    <G28_SHORT>Environmental Objective type must be one of the following:
+
+      Target Value (TV)
+      Limit Value (LV)
+      Critical level (CL)
+      Long term objective (LTO)
+      Exposure concentration obligation (ECO)
+      Limit value plus maximum margin of tolerance
+      Limit value plus applicable margin of tolerance (LVMOT)
+      Information Threshold (INT)
+      Alert threshold (ALT)</G28_SHORT>
+    <G29>The content of ./aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:EnvironmentalObjective/aqd:reportingMetric shall resolve to a valid concept in http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/ that must be one of
+      Hide items
+      http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/3hAbove
+      http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean
+      http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/wMean
+      http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/hrsAbove
+      http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/daysAbove
+      http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/daysAbove-3yr
+      http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/maxd8hrMean
+      http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/AOT40c
+      http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/AOT40c-5yr
+      http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/AEI</G29>
+    <G29_SHORT>The Environmental Objective Reporting Metric must be one of the following:
+      Three consecutive hours in exceedance
+      Annual mean / average
+      Winter Mean
+      Hours in exceedance in a calendar year
+      Days in exceedance in a calendar year
+      Days in exceedance averaged over 3 calendar years
+      maxd8hrMean
+      AOT40 vegetation protection
+      AOT40 vegetation protection averaged over 5 years
+      Average Exposure Indicator</G29_SHORT>
+    <G30>If ./aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType xlink:href attribute EQUALS http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/CL (Critical level) ./aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget xlink:href attribute has to be http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V (Vegetation)</G30>
+    <G30_SHORT>If Critical Level, the Environemental Protection Target must be Vegetation.</G30_SHORT>
+    <G31>WHERE
+      ./aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric xlink:href attribute EQUALS
+      http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/AOT40c
+      http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/AOT40c-5yr
+      ./aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget xlink:href attribute shall EQUAL http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V
+    </G31>
+    <G31_SHORT>If Protection Target is Vegation, then Reporting Metric shall be:
+      AOT40 vegetation protection
+      or
+      AOT40 vegetation protection averaged over 5 years</G31_SHORT>
+    <G32>WHERE
+      ./aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType xlink:href attribute EQUALS
+      http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/TV http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LVmaxMOT
+      AND /aqd:polluntant is NOT EQUAL to either
+      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/6001 and http://dd.eionet.europa.eu/vocabulary/aq/pollutant/7
+      ./aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget xlink:href attribute EQUALS http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H
+    </G32>
+    <G32_SHORT>If Protection Target is Health and pollutant is NOT PM2.5, then the Reporting Metric shall be one of the following:
+      Target Value (TV)
+      Limit Value (LV)
+      Limit value plus maximum margin of tolerance</G32_SHORT>
+    <G33>WHERE
+      ./aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType xlink:href attribute EQUALS
+      http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV
+      AND ./aqd:polluntant is EQUAL to
+      http://dd.eionet.europa.eu/vocabulary/aq/pollutant/6001
+      ./aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget xlink:href attribute EQUALS
+      http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H
+      http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H-S1
+      http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H-S2
+    </G33>
+    <G33_SHORT>If the pollutant is PM2.5 and the protection target is Health (Stage 1) or Health, then the reporting metric shall be Limit Value.</G33_SHORT>
+    <G34>All occurrences of the srsDimension attribute in
+      ./aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:spatialExtent
+      shall EQUAL “2”
+    </G34>
+    <G35>All occurrences of the srsName attribute in
+      ./aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:spatialExtent
+      shall resolve to a valid spatial reference system URN or URI
+    </G35>
+    <G36>/aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:surfaceArea uom attribute shall resolve to http://dd.eionet.europa.eu/vocabulary/uom/area/km2 </G36>
+    <G37>/aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:roadLength uom attribute shall be http://dd.eionet.europa.eu/vocabulary/uom/length/km </G37>
+    <G38>The content of /aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:areaClassification xlink:xref shall resolve to a areaClassification in http://dd.eionet.europa.eu/vocabulary/aq/areaclassification/ that must be one of
+      Hide items
+      http://dd.eionet.europa.eu/vocabulary/aq/areaclassification/rural
+      http://dd.eionet.europa.eu/vocabulary/aq/areaclassification/rural-nearcity
+      http://dd.eionet.europa.eu/vocabulary/aq/areaclassification/rural-regional
+      http://dd.eionet.europa.eu/vocabulary/aq/areaclassification/rural-remote
+      http://dd.eionet.europa.eu/vocabulary/aq/areaclassification/urban
+      http://dd.eionet.europa.eu/vocabulary/aq/areaclassification/suburban</G38>
+    <G38_SHORT>Classification type must be one of the following:
+      rural
+      rural-nearcity
+      rural-regional
+      rural-remote
+      urban
+      suburban</G38_SHORT>
+    <G39>./aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:modelUsed xlink:href attribute shall resolve to a model description in /aqd:AQD_Model</G39>
+    <G39_SHORT>The exceeding AQ_Model shall resolve to a traversable local of global URL.</G39_SHORT>
+    <G40>The subject of ./aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:modelUsed xlink:href attribute shall be found in /aqd:AQD_AssessmentRegime/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:modelAssessmentMetadata xlink:href attribute for the AQD_AssessmentRegime record cited by ./aqd:assessment  </G40>
+    <G40_SHORT>The exceeding AQ_Model must be included in the corresponding AssessmentRegime</G40_SHORT>
+    <G41>./aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:stationUsed xlink:href attribute shall resolve to a sampling point description in /aqd:AQD_SamplingPoint</G41>
+    <G41_SHORT>The exceeding SamplingPoint shall resolve to a traversable local of global URL.</G41_SHORT>
+    <G42>The subject of ./aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:stationlUsed xlink:href attribute shall be found in /aqd:AQD_AssessmentRegime/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata xlink:href attribute for the AQD_AssessmentRegime record cited by ./aqd:assessment  </G42>
+    <G42_SHORT>The exceeding SamplingPoint must be included in the corresponding AssessmentRegime</G42_SHORT>
+    <G43>./aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:exceedanceExposure/aqd:ExceedanceExposure/aqd:referenceYear/gml:TimeInstant/gml:timePosition shall specify a year in yyyy format.</G43>
+    <G44>./aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:exceedance shall EQUAL “true” or “false”</G44>
+    <G44_SHORT>Baseline exceedance must be TRUE or FALSE (if provided)</G44_SHORT>
+    <G45>If ./aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:exceedance is TRUE EITHER
+      ./aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:numericalExceedance
+      OR
+      ./aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:numberExceedances
+      must be provided AS an integer number</G45>
+    <G45_SHORT>If baseline exceedance is TRUE numericalExceedance or numberExceedances must be provided</G45_SHORT>
+    <G46>If ./aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:exceedance is FALSE EITHER
+      ./aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:numericalExceedance
+      OR
+      ./aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:numberExceedances
+      must be provided AS an integer number
+    </G46>
+    <G46_SHORT>If baseline exceedance is FALSE the provision of numericalExceedance or numberExceedances is useful</G46_SHORT>
+    <G47> ./aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:adjustmentType xlink:href attribute shall resolve to http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/noneApplied</G47>
+    <G47_SHORT>Deduction is not allowed when providing Baseline Exceedance</G47_SHORT>
+    <G48>All occurrences of the srsDimension attribute in
+      ./aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:spatialExtent
+      shall EQUAL “2”
+    </G48>
+    <G49>All occurrences of the srsName attribute in
+      ./aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:spatialExtent
+      shall resolve to a valid spatial reference system URN or URI
+    </G49>
+    <G50>/aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:surfaceArea uom attribute shall resolve to http://dd.eionet.europa.eu/vocabulary/uom/area/km2 </G50>
+    <G51>/aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:roadLength uom attribute shall be http://dd.eionet.europa.eu/vocabulary/uom/length/km </G51>
+    <G52>The content of /aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:areaClassification xlink:xref shall resolve to a areaClassification in http://dd.eionet.europa.eu/vocabulary/aq/areaclassification/ that must be one of
+      Hide items
+      http://dd.eionet.europa.eu/vocabulary/aq/areaclassification/rural
+      http://dd.eionet.europa.eu/vocabulary/aq/areaclassification/rural-nearcity
+      http://dd.eionet.europa.eu/vocabulary/aq/areaclassification/rural-regional
+      http://dd.eionet.europa.eu/vocabulary/aq/areaclassification/rural-remote
+      http://dd.eionet.europa.eu/vocabulary/aq/areaclassification/urban
+      http://dd.eionet.europa.eu/vocabulary/aq/areaclassification/suburban</G52>
+    <G52_SHORT>If provided unde Adjustment Exceedance, area classification must be one of the following:
+      rural
+      rural-nearcity
+      rural-regional
+      rural-remote
+      urban
+      suburban</G52_SHORT>
+    <G53>./aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:modelUsed xlink:href attribute shall resolve to a model description in aqd:AQD_Model</G53>
+    <G53_SHORT>The exceeding AQ_Model shall resolve to a traversable local of global URL.</G53_SHORT>
+    <G54>The subject of ./aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:modelUsed xlink:href attribute shall be found in /aqd:AQD_AssessmentRegime/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:modelAssessmentMetadata xlink:href attribute for the AQD_AssessmentRegime record cited by ./aqd:assessment  </G54>
+    <G54_SHORT>The exceeding AQ_Model must be included in the corresponding AssessmentRegime</G54_SHORT>
+    <G55> ./aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:stationUsed xlink:href attribute shall resolve to a sampling point description in /aqd:AQD_SamplingPoint</G55>
+    <G55_SHORT>The exceeding SamplingPoint shall resolve to a traversable local of global URL.</G55_SHORT>
+    <G56>The subject of ./aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:stationlUsed xlink:href attribute shall be found in /aqd:AQD_AssessmentRegime/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata xlink:href attribute for the AQD_AssessmentRegime record cited by ./aqd:assessment  </G56>
+    <G56_SHORT>The exceeding SamplingPoint must be included in the corresponding AssessmentRegime</G56_SHORT>
+    <G57>./aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:exceedanceExposure/aqd:ExceedanceExposure/aqd:referenceYear/gml:TimeInstant/gml:timePosition shall specify a year in yyyy format.</G57>
+    <G58>./aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:exceedance shall EQUAL “true” or “false”</G58>
+    <G58_SHORT>Adjusment exceedance must be TRUE or FALSE</G58_SHORT>
+    <G59>./aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:numericalExceedance shall be an integer number</G59>
+    <G59_SHORT>If adjustment exceedance is TRUE numericalExceedance or numberExceedances must be provided</G59_SHORT>
+    <G60>./aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:numberExceedances shall be an integer number</G60>
+    <G60_SHORT>If adjustment exceedance is FALSE the provision of numericalExceedance or numberExceedances is useful</G60_SHORT>
+    <G61>The content of /aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:adjustmentType xlink:xref shall resolve to a adjustmentType in http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/ that must be one of
+      Hide items
+      http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/nsCorrection
+      http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/wssCorrection</G61>
+    <G61_SHORT>The Adjustment Method type shall be 'Natural source correction' or 'Winter-sanding or -salting correction'</G61_SHORT>
+    <G62>The content of /aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:adjustmenSource xlink:xref shall resolve to a adjustmenSource in http://dd.eionet.europa.eu/vocabulary/aq/adjustmentsourcetype/ that must be one of
+      Hide items
+      http://dd.eionet.europa.eu/vocabulary/aq/adjustmentsourcetype/A1
+      http://dd.eionet.europa.eu/vocabulary/aq/adjustmentsourcetype/A2
+      http://dd.eionet.europa.eu/vocabulary/aq/adjustmentsourcetype/B
+      http://dd.eionet.europa.eu/vocabulary/aq/adjustmentsourcetype/B1
+      http://dd.eionet.europa.eu/vocabulary/aq/adjustmentsourcetype/B2
+      http://dd.eionet.europa.eu/vocabulary/aq/adjustmentsourcetype/C1
+      http://dd.eionet.europa.eu/vocabulary/aq/adjustmentsourcetype/C2
+      http://dd.eionet.europa.eu/vocabulary/aq/adjustmentsourcetype/D1
+      http://dd.eionet.europa.eu/vocabulary/aq/adjustmentsourcetype/D2
+      http://dd.eionet.europa.eu/vocabulary/aq/adjustmentsourcetype/E1
+      http://dd.eionet.europa.eu/vocabulary/aq/adjustmentsourcetype/E2
+      http://dd.eionet.europa.eu/vocabulary/aq/adjustmentsourcetype/F1
+      http://dd.eionet.europa.eu/vocabulary/aq/adjustmentsourcetype/F2
+      http://dd.eionet.europa.eu/vocabulary/aq/adjustmentsourcetype/G1
+      http://dd.eionet.europa.eu/vocabulary/aq/adjustmentsourcetype/G2
+      http://dd.eionet.europa.eu/vocabulary/aq/adjustmentsourcetype/H</G62>
+    <G62_SHORT>The Adjustment Source Type must be one of the registered vocabulary.</G62_SHORT>
+    <G63> The content of ./aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:assessmentMethod/aqd:AssessmentMethods/aqd:assessmentType shall resolve to http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/ that must be one of
+      Hide items
+      http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/fixed
+      http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/model
+      http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/indicative
+      http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/objective</G63>
+    <G63_SHORT>Assessment Type must be one of the following: fixed, model, indicative or objective estimation</G63_SHORT>
+    <G64>/aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:assessmentMethod/aqd:AssessmentMethods/aqd:modelAssessmentMetadata xlink:href attribute shall resolve to a model description in aqd:AQD_Model for NS/WSS correction</G64>
+    <G64_SHORT>Exceedance Description Deduction Assessment Method attribute must use a model description for AQD_Model for NS/WSS correction</G64_SHORT>
+    <G65>The subject of ./aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:assessmentMethod/aqd:AssessmentMethods/aqd:modelAssessmentMetadata xlink:href attribute shall be found in /aqd:AQD_AssessmentRegime/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:modelAssessmentMetadata xlink:href attribute for the AQD_AssessmentRegime record cited by ./aqd:assessment  </G65>
+    <G65_SHORT>Assessment Methods attribute shall be found in the Assessment Metadata</G65_SHORT>
+    <G66> ./aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:assessmentMethod/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadat xlink:href attribute shall resolve to a sampling point description in /aqd:AQD_SamplingPoint for NS/WSS correction</G66>
+    <G66_SHORT>Exceedance Description Adjustment must use a sampling point description in AQD_SamplingPoint for NS/WSS correction</G66_SHORT>
+    <G67>The subject of ./aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:assessmentMethod/aqd:AssessmentMethods/aqd: samplingPointAssessmentMetadata xlink:href attribute shall be found in /aqd:AQD_AssessmentRegime/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata xlink:href attribute for the AQD_AssessmentRegime record cited by ./aqd:assessment  </G67>
+    <G67_SHORT>Sampling point Exceedance Adjustment Method must be in the AQD:samplingPointAssessmentMetadata</G67_SHORT>
+    <G68>All occurrences of the srsDimension attribute in
+      ./aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:spatialExtent
+      shall EQUAL “2”
+    </G68>
+    <G69>All occurrences of the srsName attribute in
+      ./aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:spatialExtent
+      shall resolve to a valid spatial reference system URN or URI
+    </G69>
+    <G70>/aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:surfaceArea uom attribute shall resolve to http://dd.eionet.europa.eu/vocabulary/uom/area/km2</G70>
+    <G70_SHORT>Exceedence area uom attribute must be in Square kilometers.</G70_SHORT>
+    <G71> /aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:roadLength uom attribute shall be http://dd.eionet.europa.eu/vocabulary/uom/length/km</G71>
+    <G71_SHORT>Road Length attribute must be in kilometers.</G71_SHORT>
+    <G72>The content of /aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:areaClassification xlink:xref shall resolve to a areaClassification in http://dd.eionet.europa.eu/vocabulary/aq/areaclassification/ that must be one of
+      Hide items
+      http://dd.eionet.europa.eu/vocabulary/aq/areaclassification/rural
+      http://dd.eionet.europa.eu/vocabulary/aq/areaclassification/rural-nearcity
+      http://dd.eionet.europa.eu/vocabulary/aq/areaclassification/rural-regional
+      http://dd.eionet.europa.eu/vocabulary/aq/areaclassification/rural-remote
+      http://dd.eionet.europa.eu/vocabulary/aq/areaclassification/urban
+      http://dd.eionet.europa.eu/vocabulary/aq/areaclassification/suburban</G72>
+    <G72_SHORT>Area Classification must be one of the following:
+      rural
+      rural-nearcity
+      rural-regional
+      rural-remote
+      urban
+      suburban</G72_SHORT>
+    <G73>./aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:modelUsed xlink:href attribute shall resolve to a model description in /aqd:AQD_Model</G73>
+    <G73_SHORT>The exceeding AQ_Model shall resolve to a traversable local of global URL.</G73_SHORT>
+    <G74>The subject of ./aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:modelUsed xlink:href attribute shall be found in /aqd:AQD_AssessmentRegime/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:modelAssessmentMetadata xlink:href attribute for the AQD_AssessmentRegime record cited by ./aqd:assessment  </G74>
+    <G74_SHORT>The exceeding AQ_Model must be included in the corresponding AssessmentRegime</G74_SHORT>
+    <G75>./aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:stationUsed xlink:href attribute shall resolve to a sampling point description in /aqd:AQD_SamplingPoint</G75>
+    <G75_SHORT>The exceeding SamplingPoint shall resolve to a traversable local of global URL.</G75_SHORT>
+    <G76>The subject of ./aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:stationlUsed xlink:href attribute shall be found in /aqd:AQD_AssessmentRegime/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata xlink:href attribute for the AQD_AssessmentRegime record cited by ./aqd:assessment  </G76>
+    <G76_SHORT>The exceeding SamplingPoint must be included in the corresponding AssessmentRegime</G76_SHORT>
+    <G77>./aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedanceExposure/aqd:ExceedanceExposure/aqd:referenceYear/gml:TimeInstant/gml:timePosition shall specify a year in yyyy format.</G77>
+    <G78>./aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedance shall EQUAL “true” or “false”</G78>
+    <G78_SHORT>Final Exceedance must be TRUE or FALSE</G78_SHORT>
+    <G79>./aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:numericalExceedance shall be an integer number</G79>
+    <G79_SHORT>If Final exceedance is TRUE numericalExceedance or numberExceedances must be provided</G79_SHORT>
+    <G80>./aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:numberExceedances shall be an integer number</G80>
+    <G80_SHORT>If Final exceedance is FALSE the provision of numericalExceedance or numberExceedances is useful</G80_SHORT>
+    <G81>./aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:adjustmentType xlink:href attribute shall resolve to http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/fullyCorrected</G81>
+    <G81_SHORT>Exceedance Description Adjustment Method must be 'Fully corrected.'</G81_SHORT>
+    <G82>WHERE ./aqd:exceedanceDescriptionAdjustment class DOES NOT exists in the AQD_Attainment record
+      ./aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:adjustmentType xlink:href attribute shall resolve to
+      http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/noneApplied http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/noneApplicable http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/fullyCorrected
+    </G82>
+    <G83>WHERE
+      ./aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedance shall EQUAL “true”
+      ./aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:spatalExtent OR
+      ./aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:administrativeUnit
+      shall be populated
+
+    </G83>
+    <G84>WHERE
+      ./aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedance shall EQUAL “true”
+      ./aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:surfaceArea OR
+      ./aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:roadLength
+      shall be populated
+
+    </G84>
+    <G84_SHORT>If exceedance is TRUE, information on surface are or road lenght shall be provided</G84_SHORT>
+    <G85>WHERE
+      ./aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedance shall EQUAL “true”
+      ./aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:stationUsed OR
+      ./aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:modelUsed shall be populated
+
+    </G85>
+    <G85_SHORT>If exceedance is TRUE, a link to the exceeding SamplingPoint(s) and/or Model(s) must be provided [at least one]</G85_SHORT>
+    <G86>If, aqd:stationUsed and/or aqd:modelUsed are populated, these must be valid elements
+
+      stationUsed must link To SamplingPoint via namespace/localid
+      modelUsed must link to AQD_Model via namespace/ localid
+
+    </G86>
+    <G86_SHORT>If SamplingPoint(s) and/or Model(s) are provided, these must be valid</G86_SHORT>
+    <G87>WHERE
+      ./aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedance shall EQUAL “true”
+      /aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedanceExposure/aqd:ExceedanceExposure/aqd:populationExposed shall be populated
+
+    </G87>
+    <G87_SHORT>If exceedance is TRUE, information on population exposed must be provided</G87_SHORT>
+    <G88>WHERE
+      ./aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedance shall EQUAL “true”
+      /aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedanceExposure/aqd:ExceedanceExposure/aqd:ecosystemAreaExposed shall be populated
+    </G88>
+    <G88_SHORT>If exceedance is TRUE, information on area exposed must be provided</G88_SHORT>
+  </G>
 </labels>
