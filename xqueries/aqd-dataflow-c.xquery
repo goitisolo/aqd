@@ -685,13 +685,14 @@ let $C23ainvalid :=
 (: C23B - Warning :)
 let $C23binvalid :=
     try {
-        for $x in $docRoot//aqd:AQD_AssessmentRegime[count(aqd:assessmentMethods/aqd:AssessmentMethods/aqd:assessmentType/@xlink:href) > 0]
-        let $desc := $x/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:assessmentTypeDescription
+        for $x in $docRoot//aqd:AQD_AssessmentRegime/aqd:assessmentMethods/aqd:AssessmentMethods
+            let $type := $x/aqd:assessmentType/@xlink:href
+            let $desc := $x/aqd:assessmentTypeDescription
         where empty($desc) or data($desc = "")
         return
             <tr>
-                <td title="base:localId">{string($x/aqd:inspireId/base:Identifier/base:localId)}</td>
-                <td title="aqd:assessmentType">{data($x/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:assessmentType/@xlink:href)}</td>
+                <td title="base:localId">{string($x/../../aqd:inspireId/base:Identifier/base:localId)}</td>
+                <td title="aqd:assessmentType">{data($type)}</td>
             </tr>
     } catch * {
         <tr status="failed">
