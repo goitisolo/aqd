@@ -99,6 +99,8 @@ let $E2invalid :=
         return
             <tr>
                 <td title="@gml:id">{string($x/../../@gml:id)}</td>
+                <td title="gml:beginPosition">{string($x/gml:beginPosition)}</td>
+                <td title="gml:endPosition">{string($x/gml:endPosition)}</td>
             </tr>
     }
     catch * {
