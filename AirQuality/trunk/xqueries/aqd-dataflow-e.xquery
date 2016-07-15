@@ -53,11 +53,22 @@ let $E0invalid :=
     }
 
 (: E01 :)
-let $E01count :=
+let $E01table :=
     try {
-        count($docRoot//om:OM_Observation)
+        for $x in $docRoot//om:OM_Observation
+            let $samplingPoint := $x/om:parameter/om:NamedValue[om:name/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/processparameter/SamplingPoint"]/om:value/concat(@xlink:href/tokenize(., "/")[last()], tokenize(., "/")[last()])
+            let $observedProperty := $x/om:observedProperty/@xlink:href/string()
+        return
+            <tr>
+                <td title="gml:id">{data($x/@gml:id)}</td>
+                <td title="aqd:AQD_SamplingPoint">{$samplingPoint}</td>
+                <td title="Pollutant">{$observedProperty}</td>
+            </tr>
     } catch * {
-        0
+        <tr status="failed">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
     }
 
 (: E1 - /om:OM_Observation gml:id attribute shall be unique code for the group of observations enclosed by /OM_Observation within the delivery. :)
@@ -436,7 +447,7 @@ let $E26invalid :=
 return
     <table class="maintable hover">
         {html:buildExists("E0", $labels:E0, $labels:E0_SHORT, $E0invalid, "New Delivery for " || $reportingYear, "Updated Delivery for " || $reportingYear, $errors:WARNING)}
-        {html:buildCountRow0("E01", $labels:E01, $labels:E01_SHORT, $E01count, "", "record", $errors:INFO)}
+        {html:build1("E01", $labels:E01, $labels:E01_SHORT, $E01table, "", string(count($E01table)), "record", "", $errors:INFO)}
         {html:build2("E1", $labels:E1, $labels:E1_SHORT, $E1invalid, "", "All records are valid", "record", "", $errors:ERROR)}
         {html:build2("E2", $labels:E2, $labels:E2_SHORT, $E2invalid, "", "All records are valid", "record", "", $errors:ERROR)}
         {html:build2("E3", $labels:E3, $labels:E3_SHORT, $E3invalid, "", "All records are valid", "record", "", $errors:ERROR)}
