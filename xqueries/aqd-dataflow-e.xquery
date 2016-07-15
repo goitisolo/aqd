@@ -411,7 +411,7 @@ let $E26invalid :=
             $x/sparql:binding[@name="featureOfInterest"]/sparql:uri/string() || $x/sparql:binding[@name="observedProperty"]/sparql:uri/string()
 
         for $x in $docRoot//om:OM_Observation
-            let $samplingPoint := $x/om:parameter/om:NamedValue[om:name/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/processparameter/SamplingPoint"]/om:value/@xlink:href/tokenize(., "/")[last()]
+            let $samplingPoint := $x/om:parameter/om:NamedValue[om:name/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/processparameter/SamplingPoint"]/om:value/concat(@xlink:href/tokenize(., "/")[last()], tokenize(., "/")[last()])
             let $procedure := "http://reference.eionet.europa.eu/aq/" || $x/om:procedure/@xlink:href/string()
             let $featureOfInterest := "http://reference.eionet.europa.eu/aq/" || $x/om:featureOfInterest/@xlink:href/string()
             let $observedProperty := $x/om:observedProperty/@xlink:href/string()
@@ -419,7 +419,11 @@ let $E26invalid :=
         where not($concat = $resultsConcat)
         return
             <tr>
-                <td title="base:localId">{string($x/@gml:id)}</td>
+                <td title="om:OM_Observation">{string($x/@gml:id)}</td>
+                <td title="aqd:AQD_SamplingPoint">{string($samplingPoint)}</td>
+                <td title="aqd:AQD_SamplingPointProcess">{$procedure}</td>
+                <td title="aqd:AQD_Sample">{$featureOfInterest}</td>
+                <td title="Pollutant">{$observedProperty}</td>
             </tr>
     }
     catch * {
