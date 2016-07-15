@@ -549,17 +549,13 @@ let $G14.1invalid :=
 (: G15 :)
 let $G15invalid :=
     try {
-        let $resultXml := if (fn:string-length($countryCode) = 2) then query:getZoneLocallD($cdrUrl) else ""
-        let $isZoneLocallDCodesAvailable := string-length($resultXml) > 0 and doc-available(sparqlx:getSparqlEndpointUrl($resultXml, "xml"))
-        let $zoneLocallD := if($isZoneLocallDCodesAvailable) then distinct-values(data(sparqlx:executeSparqlQuery($resultXml)//sparql:binding[@name='inspireLabel']/sparql:literal)) else ""
-        let $isZoneLocallDCodesAvailable := count($resultXml) > 0
-        for $x in $docRoot//aqd:AQD_Attainment/aqd:zone
-        where $isZoneLocallDCodesAvailable and not($x/@nilReason = "inapplicable") and (empty(index-of($zoneLocallD, $x/fn:normalize-space(@xlink:href))))
+        let $zoneLocallD := distinct-values(data(sparqlx:executeSparqlQuery(query:getZoneLocallD($cdrUrl))//sparql:binding[@name='inspireLabel']/sparql:literal))
+        for $x in $docRoot//aqd:AQD_Attainment[not(aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric/@xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/AEI")]/aqd:zone
+        where not($x/@nilReason = "inapplicable") and (not($zoneLocallD = $x/@xlink:href))
         return
             <tr>
-                <td title="Feature type">{"aqd:AQD_Attainment"}</td>
-                <td title="gml:id">{data($x/../@gml:id)}</td>
-                <td title="aqd:zone">{data($x/fn:normalize-space(@xlink:href))}</td>
+                <td title="aqd:AQD_Attainment">{data($x/../aqd:inspireId/base:Identifier/base:localId)}</td>
+                <td title="aqd:zone">{data($x/@xlink:href)}</td>
             </tr>
     } catch * {
         <tr status="failed">
