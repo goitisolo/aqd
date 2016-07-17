@@ -464,32 +464,33 @@ as xs:string
     }")
 };
 
-declare function query:getC31($countryCode as xs:string) as xs:string {
-  concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX aqr: <http://reference.eionet.europa.eu/aq/ontology/>
-PREFIX aq: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
-PREFIX aqdd: <http://dd.eionet.europa.eu/property/>
+declare function query:getC31($zonesUrl as xs:string) as xs:string {
+  "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+  PREFIX aq: <http://reference.eionet.europa.eu/aq/ontology/>
+  PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
 
-SELECT DISTINCT
-?Namespace
-(year(xsd:dateTime(?reportingBegin)) as ?ReportingYear)
-?Pollutant
-count(distinct bif:concat(str(?Zone), str(?pollURI), str(?ProtectionTarget))) AS ?countOnB
+  SELECT DISTINCT
+  ?Namespace
+  (year(xsd:dateTime(?beginPosition)) as ?ReportingYear)
+  ?Pollutant
+  count(distinct bif:concat(str(?Zone), str(?pollURI), str(?ProtectionTarget))) AS ?countOnB
 
-WHERE {
+  WHERE {
 
-?zoneURI a aqr:Zone;
-aqr:zoneCode ?Zone;
-aqr:pollutants ?polltargetURI;
-aqr:reportingBegin ?reportingBegin ;
-aqr:inspireNamespace ?Namespace .
+  ?zoneURI a aqd:AQD_Zone;
+  aqd:zoneCode ?Zone;
+  aqd:pollutants ?polltargetURI;
+  aqd:inspireId ?inspireId;
+  aqd:designationPeriod ?designationPeriod .
+  ?designationPeriod aqd:beginPosition ?beginPosition .
+  ?inspireId aqd:namespace ?Namespace .
 
-?polltargetURI aqr:protectionTarget ?ProtectionTarget .
-?polltargetURI aqr:pollutantCode ?pollURI .
-?pollURI rdfs:label ?Pollutant .
-FILTER regex(?pollURI,'') .
-FILTER STRSTARTS(str(?Namespace),'", upper-case($countryCode), "') .
-}")
+  ?polltargetURI aqd:protectionTarget ?ProtectionTarget .
+  ?polltargetURI aqd:pollutantCode ?pollURI .
+  ?pollURI rdfs:label ?Pollutant .
+  FILTER regex(?pollURI,'') .
+  FILTER CONTAINS(str(?zoneURI),'" || $zonesUrl || "') .
+  }"
 };
 
 (: TODO REMOVE ORDER BY :)

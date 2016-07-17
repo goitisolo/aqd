@@ -65,12 +65,13 @@ declare variable $xmlconv:VALID_POLLUTANT_IDS_40 as xs:string* := ($xmlconv:MAND
 declare variable $xmlconv:VALID_POLLUTANT_IDS_21 as xs:string* := ("1","8","9","10","5","6001","5014","5018","5015","5029","5012","20");
 declare variable $xmlconv:OBLIGATIONS as xs:string* := ("http://rod.eionet.europa.eu/obligations/671", "http://rod.eionet.europa.eu/obligations/694");
 (: Rule implementations :)
-declare function xmlconv:checkReport($source_url as xs:string, $countryCode as xs:string, $bDir as xs:string) as element(table) {
+declare function xmlconv:checkReport($source_url as xs:string, $countryCode as xs:string) as element(table) {
 
 (: SETUP COMMON VARIABLES :)
 let $envelopeUrl := common:getEnvelopeXML($source_url)
 let $docRoot := doc($source_url)
 let $cdrUrl := common:getCdrUrl($countryCode)
+let $bDir := if (contains($source_url, "c_preliminary")) then "b_preliminary/" else "b/"
 let $cdir := if (contains($source_url, "c_preliminary")) then "c_preliminary/" else "c/"
 let $zonesUrl := concat($cdrUrl, $bDir)
 let $reportingYear := common:getReportingYear($docRoot)
@@ -857,7 +858,7 @@ let $C28invalid :=
 let $C31table :=
     try {
         let $C31ResultB :=
-            for $i in sparqlx:run(query:getC31($countryCode))
+            for $i in sparqlx:run(query:getC31($zonesUrl))
             where ($i/sparql:binding[@name = "ReportingYear"]/string(sparql:literal) = $reportingYear)
             return
                 <result>
@@ -1233,9 +1234,8 @@ declare function xmlconv:buildVocItemRows($vocabularyUrl as xs:string, $codes as
 declare function xmlconv:proceed($source_url as xs:string, $countryCode as xs:string) {
 
 let $doc := doc($source_url)
-let $bDir := if (contains($source_url, "c_preliminary")) then "b_preliminary/" else "b/"
 let $countZones := count($doc//aqd:AQD_AssessmentRegime)
-let $result := if ($countZones > 0) then xmlconv:checkReport($source_url, $countryCode, $bDir) else ()
+let $result := if ($countZones > 0) then xmlconv:checkReport($source_url, $countryCode) else ()
 
 return
     <div>
