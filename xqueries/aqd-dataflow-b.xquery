@@ -533,7 +533,7 @@ let $B36invalid :=
 let $B37invalid :=
     try {
         for $x in $docRoot//aqd:AQD_Zone
-        where (xmlconv:isInvalidYear(data($x/aqd:residentPopulationYear/gml:TimeInstant/gml:timePosition)))
+        where (common:isInvalidYear(data($x/aqd:residentPopulationYear/gml:TimeInstant/gml:timePosition)))
         return
             <tr>
                 <td title="aqd:AQD_Zone">{string($x/am:inspireId/base:Identifier/base:localId)}</td>
@@ -859,7 +859,14 @@ let $B46invalid :=
 (: B47 :)
 let $B47invalid :=
     try {
-        xmlconv:checkVocabularyConceptValues($source_url, "", "aqd:AQD_Zone", "aqd:aqdZoneType", $vocabulary:ZONETYPE_VOCABULARY, (), "")
+        let $all := dd:getValidConcepts($vocabulary:ZONETYPE_VOCABULARY || "rdf")
+        for $x in $docRoot//aqd:aqdZoneType
+        where not($x/@xlink:href = $all)
+        return
+            <tr>
+                <td title="aqd:AQD_Zone">{string($x/../am:inspireId/base:Identifier/base:localId)}</td>
+                <td title="aqd:aqdZoneType">{data($x/@xlink:href)}</td>
+            </tr>
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
@@ -909,80 +916,10 @@ return
         {html:build2("B43", $labels:B43, $labels:B43_SHORT, $B43invalid, "", "All values are valid", " crucial invalid value", "", $errors:ERROR)}
         {html:buildResultRows("B45", $labels:B45, $labels:B45_SHORT, $B45invalid, "aqd:AQD_Zone/am:inspireId/base:Identifier/base:localId", "All values are valid", " invalid value", "",$errors:WARNING)}
         {html:build2("B46", $labels:B46, $labels:B46_SHORT, $B46invalid, "aqd:AQD_Zone/am:inspireId/base:Identifier/base:localId", "All values are valid", " invalid value", "", $errors:ERROR)}
-        {xmlconv:buildResultRowsWithTotalCount("B47", $labels:B47, $labels:B47_SHORT, $B47invalid, "aqd:reportingMetric", "", "", "")}
+        {html:build2("B47", $labels:B47, $labels:B47_SHORT, $B47invalid, "aqd:reportingMetric", "All values are valid", "invalid value", "", $errors:WARNING)}
     </table>
 };
 
-declare function xmlconv:buildResultRowsWithTotalCount($ruleCode as xs:string, $longText, $text, $records as element(tr)*,
-        $valueHeading as xs:string, $validMsg as xs:string, $invalidMsg as xs:string, $skippedMsg)
-as element(tr)*{
-
-    let $countCheckedRecords := count($records)
-    let $invalidValues := $records[./@isvalid = "false"]
-
-    let $skippedMsg := if ($countCheckedRecords = 0) then "No values found to check" else ""
-    let $invalidMsg := if (count($invalidValues) > 0) then concat(" invalid value", substring("s ", number(not(count($invalidValues) > 1)) * 2), " found out of ", $countCheckedRecords, " checked") else ""
-    let $validMsg := if (count($invalidValues) = 0) then concat("Checked ", $countCheckedRecords, " value", substring("s", number(not($countCheckedRecords > 1)) * 2), ", all valid") else ""
-
-    return
-        html:buildResultRows($ruleCode, $longText, $text, $invalidValues, $valueHeading, $validMsg, $invalidMsg, $skippedMsg, $errors:ERROR)
-};
-
-declare function xmlconv:checkVocabularyConceptValues($source_url as xs:string, $parentObject as xs:string, $featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string, $limitedIds as xs:string*, $vocabularyType as xs:string)
-as element(tr)*{
-
-    let $sparql :=
-        if ($vocabularyType = "collection") then
-            query:getCollectionConceptUrlSparql($vocabularyUrl)
-        else
-            query:getConceptUrlSparqlB($vocabularyUrl)
-    let $crConcepts := sparqlx:run($sparql)
-
-    let $allRecords :=
-    if ($parentObject != "") then
-        doc($source_url)//descendant::*[name()=$parentObject]/descendant::*[name()=$featureType]
-    else
-        doc($source_url)//descendant::*[name()=$featureType]
-
-    for $rec in $allRecords
-    for $conceptUrl in $rec/child::*[name() = $element]/@xlink:href
-    let $conceptUrl := normalize-space($conceptUrl)
-
-    where string-length($conceptUrl) > 0
-
-    return
-        <tr isvalid="{ xmlconv:isMatchingVocabCode($crConcepts, $conceptUrl) and xmlconv:isValidLimitedValue($conceptUrl, $vocabularyUrl, $limitedIds) }">
-            <td title="gml:id">{data($rec/@gml:id)}</td>
-            <td title="{ $element }" style="color:red">{$conceptUrl}</td>
-        </tr>
-
-};
-
-
-declare function xmlconv:isValidLimitedValue($conceptUrl as xs:string, $vocabularyUrl as xs:string, $limitedIds as xs:string*) as xs:boolean {
-    let $limitedUrls :=
-        for $id in $limitedIds
-        return concat($vocabularyUrl, $id)
-    return
-        empty($limitedIds) or not(empty(index-of($limitedUrls, $conceptUrl)))
-};
-
-
-declare function xmlconv:isMatchingVocabCode($crConcepts as element(sparql:result)*, $concept as xs:string)
-as xs:boolean
-{
-    count($crConcepts/sparql:binding[@name="concepturl" and sparql:uri=$concept]) > 0
-};
-
-declare function xmlconv:isInvalidYear($value as xs:string?) {
-    let $year := if (empty($value)) then ()
-    else
-        if ($value castable as xs:integer) then xs:integer($value) else ()
-
-    return
-        if ((empty($year) and empty($value)) or (not(empty($year)) and $year > 1800 and $year < 9999)) then fn:false() else fn:true()
-
-};
 (:
  : ======================================================================
  : Main function
