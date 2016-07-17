@@ -37,31 +37,6 @@ declare namespace xlink = "http://www.w3.org/1999/xlink";
 declare variable $xmlconv:ISO2_CODES as xs:string* := ("AL","AT","BA","BE","BG","CH","CY","CZ","DE","DK","DZ","EE","EG","ES","FI",
     "FR","GB","GR","HR","HU","IE","IL","IS","IT","JO","LB","LI","LT","LU","LV","MA","ME","MK","MT","NL","NO","PL","PS","PT",
      "RO","RS","SE","SI","SK","TN","TR","XK","UK");
-declare variable $xmlconv:VALID_POLLUTANT_IDS as xs:string* := ("1", "7", "8", "9", "5", "6001", "10","20", "5012", "5014", "5015", "5018", "5029");
-declare variable $xmlconv:VALID_POLLUTANT_IDS_11 as xs:string* := ("1", "5", "6001", "10");
-declare variable $xmlconv:VALID_POLLUTANT_IDS_27 as xs:string* := ("5", "8", "6001", "10","20", "5012", "5014", "5015", "5018", "5029");
-declare variable $xmlconv:VALID_REPMETRIC_IDS_20 as xs:string* := ("3hAbove", "aMean", "wMean", "hrsAbove", "daysAbove", "daysAbove-3yr", "maxd8hrMean","AOT40c", "AOT40c-5yr", "AEI");
-declare variable $xmlconv:VALID_REPMETRIC_IDS_23 as xs:string* := ("3hAbove", "aMean", "wMean", "hrsAbove", "daysAbove");
-
-declare variable $xmlconv:VALID_REPMETRIC_IDS_29 as xs:string* := ("3hAbove", "aMean", "wMean", "hrsAbove", "daysAbove","daysAbove-3yr", "maxd8hrMean", "AOT40c", "AOT40c-5yr", "AEI");
-declare variable $xmlconv:VALID_REPMETRIC_IDS_24 as xs:string* := ("aMean", "daysAbove");
-declare variable $xmlconv:VALID_REPMETRIC_IDS_25 as xs:string* := ("aMean", "AEI");
-declare variable $xmlconv:VALID_REPMETRIC_IDS_26 as xs:string* := ("daysAbove");
-declare variable $xmlconv:VALID_REPMETRIC_IDS_31 as xs:string* := ("AOT40c", "AOT40c-5yr");
-declare variable $xmlconv:VALID_AREACLASSIFICATION_IDS as xs:string* := ("1", "2", "3", "4", "5", "6");
-declare variable $xmlconv:VALID_AREACLASSIFICATION_IDS_52 as xs:string* := ("rural","rural-nearcity","rural-regional","rural-remote","urban","suburban");
-declare variable $xmlconv:VALID_OBJECTIVETYPE_IDS as xs:string* := ("TV", "LV", "CL","LTO","ECO","LVmaxMOT","INT","ALT");
-declare variable $xmlconv:VALID_OBJECTIVETYPE_IDS_19 as xs:string* := ("TV", "LV", "CL", "LVMOT","LVmaxMOT","INT","ALT", "LTO", "ECO");
-
-declare variable $xmlconv:VALID_OBJECTIVETYPE_IDS_28 as xs:string* := ("TV", "LV", "CL","LTO","ECO","LVmaxMOT", "LVMOT", "INT", "ALT");
-declare variable $xmlconv:VALID_OBJECTIVETYPE_IDS_32 as xs:string* := ("TV", "LV","LVmaxMOT");
-declare variable $xmlconv:VALID_OBJECTIVETYPE_IDS_33 as xs:string* := ("LV");
-declare variable $xmlconv:VALID_ADJUSTMENTTYPE_IDS as xs:string* := ("nsCorrection","wssCorrection");
-declare variable $xmlconv:VALID_ADJUSTMENTSOURCE_IDS as xs:string* := ("A1","A2","B","B1","B2","C1","C2","D1","D2","E1","E2","F1","F2","G1","G2","H");
-declare variable $xmlconv:VALID_ASSESSMENTTYPE_IDS as xs:string* := ("fixed","model","indicative","objective");
-declare variable $xmlconv:VALID_PROTECTIONTARGET_IDS as xs:string* := ("H-S1","H-S2");
-
-declare variable $xmlconv:ADJUSTMENTTYPES as xs:string* := ("http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/noneApplied","http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/noneApplicable", "http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/fullyCorrected");
 declare variable $xmlconv:OBLIGATIONS as xs:string* := ("http://rod.eionet.europa.eu/obligations/679");
 
 (: Rule implementations :)
@@ -354,7 +329,18 @@ let $G9.1invalid :=
 (: G10 pollutant codes :)
 let $G10invalid :=
     try {
-        xmlconv:isinvalidDDConceptLimited($source_url, "", "aqd:AQD_Attainment", "aqd:pollutant", $vocabulary:POLLUTANT_VOCABULARY, $xmlconv:VALID_POLLUTANT_IDS)
+        let $valid := ($vocabulary:POLLUTANT_VOCABULARY || "1", $vocabulary:POLLUTANT_VOCABULARY || "7", $vocabulary:POLLUTANT_VOCABULARY || "8", $vocabulary:POLLUTANT_VOCABULARY || "9", $vocabulary:POLLUTANT_VOCABULARY || "5",
+        $vocabulary:POLLUTANT_VOCABULARY || "6001", $vocabulary:POLLUTANT_VOCABULARY || "10", $vocabulary:POLLUTANT_VOCABULARY || "20", $vocabulary:POLLUTANT_VOCABULARY ||  "5012",
+        $vocabulary:POLLUTANT_VOCABULARY || "5014", $vocabulary:POLLUTANT_VOCABULARY || "5015", $vocabulary:POLLUTANT_VOCABULARY || "5018", $vocabulary:POLLUTANT_VOCABULARY || "5029")
+        for $x in $docRoot//aqd:AQD_Attainment/aqd:pollutant
+        where not($x/@xlink:href = $valid)
+        return
+            <tr>
+                <td title="aqd:AQD_Attainment">{$x/../aqd:inspireId/base:Identifier/base:localId/string()}</td>
+                <td title="aqd:objectiveType">{data($x/../aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType/@xlink:href)}</td>
+                <td title="aqd:reportingMetric">{data($x/../aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric/@xlink:href)}</td>
+                <td title="aqd:protectionTarget">{data($x/../aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/@xlink:href)}</td>
+            </tr>
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
@@ -365,14 +351,13 @@ let $G10invalid :=
 (: G11 :)
 let $G11invalid :=
     try {
-        for $exceedanceDescriptionBase in $docRoot//aqd:AQD_Attainment/aqd:pollutant
-        let $pollutantXlinkG11 := fn:substring-after(data($exceedanceDescriptionBase/fn:normalize-space(@xlink:href)), "pollutant/")
-        where empty(index-of(('1', '5', '6001', '10'), $pollutantXlinkG11)) and exists($exceedanceDescriptionBase/../aqd:exceedanceDescriptionBase)
+        let $valid := ($vocabulary:POLLUTANT_VOCABULARY || "1", $vocabulary:POLLUTANT_VOCABULARY || "5", $vocabulary:POLLUTANT_VOCABULARY || "6001", $vocabulary:POLLUTANT_VOCABULARY || "10")
+        for $x in $docRoot//aqd:AQD_Attainment/aqd:pollutant
+        where not($x/@xlink:href = $valid) and exists($x/../aqd:exceedanceDescriptionBase)
         return
             <tr>
-                <td title="Feature type">{"aqd:AQD_Attainment"}</td>
-                <td title="gml:id">{data($exceedanceDescriptionBase/../@gml:id)}</td>
-                <td title="aqd:pollutant">{data($exceedanceDescriptionBase/fn:normalize-space(@xlink:href))}</td>
+                <td title="aqd:AQD_Attainment">{$x/../aqd:inspireId/base:Identifier/base:localId/string()}</td>
+                <td title="aqd:pollutant">{data($x/@xlink:href)}</td>
             </tr>
     } catch * {
         <tr status="failed">
@@ -384,14 +369,13 @@ let $G11invalid :=
 (: G12 :)
 let $G12invalid :=
     try {
-        for $exceedanceDescriptionAdjustment in $docRoot//aqd:AQD_Attainment/aqd:pollutant
-        let $pollutantXlinkG12 := fn:substring-after(data($exceedanceDescriptionAdjustment/fn:normalize-space(@xlink:href)), "pollutant/")
-        where empty(index-of(('1', '5', '6001', '10'), $pollutantXlinkG12)) and (exists($exceedanceDescriptionAdjustment/../aqd:exceedanceDescriptionAdjustment))
+        for $x in $docRoot//aqd:AQD_Attainment/aqd:pollutant
+        let $pollutantXlinkG12 := fn:substring-after(data($x/fn:normalize-space(@xlink:href)), "pollutant/")
+        where empty(index-of(('1', '5', '6001', '10'), $pollutantXlinkG12)) and (exists($x/../aqd:exceedanceDescriptionAdjustment))
         return
             <tr>
-                <td title="Feature type">{"aqd:AQD_Attainment"}</td>
-                <td title="gml:id">{data($exceedanceDescriptionAdjustment/../@gml:id)}</td>
-                <td title="aqd:pollutant">{data($exceedanceDescriptionAdjustment/fn:normalize-space(@xlink:href))}</td>
+                <td title="aqd:AQD_Attainment">{data($x/../aqd:inspireId/base:Identifier/base:localId)}</td>
+                <td title="aqd:pollutant">{data($x/fn:normalize-space(@xlink:href))}</td>
             </tr>
     } catch * {
         <tr status="failed">
@@ -415,8 +399,7 @@ let $G13invalid :=
         where (not($xlink = $inspireLabels) or (not($concat = $remoteConcats)))
         return
             <tr>
-                <td title="Feature type">{"aqd:AQD_Attainment"}</td>
-                <td title="gml:id">{data($x/@gml:id)}</td>
+                <td title="aqd:AQD_Attainment">{data($x/aqd:inspireId/base:Identifier/base:localId)}</td>
                 <td title="aqd:assessment">{data($x/aqd:assessment/@xlink:href)}</td>
             </tr>
     } catch * {
@@ -442,8 +425,7 @@ let $G13binvalid :=
         where (not($xlink = $inspireLabels) or (not($concat = $remoteConcats)))
         return
             <tr>
-                <td title="Feature type">{"aqd:AQD_Attainment"}</td>
-                <td title="gml:id">{data($x/@gml:id)}</td>
+                <td title="aqd:AQD_Attainment">{data($x/aqd:inspireId/base:Identifier/base:localId)}</td>
                 <td title="aqd:assessment">{data($x/aqd:assessment/@xlink:href)}</td>
             </tr>
     } catch * {
@@ -615,7 +597,18 @@ let $G18invalid :=
 (: G19 .//aqd:ExceedanceDescription/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType xlink:href attribute shall resolve to one of :)
 let $G19invalid :=
     try {
-        xmlconv:isinvalidDDConceptLimited($source_url, "", "aqd:EnvironmentalObjective", "aqd:objectiveType", $vocabulary:OBJECTIVETYPE_VOCABULARY, $xmlconv:VALID_OBJECTIVETYPE_IDS_19)
+        let $valid := ($vocabulary:OBJECTIVETYPE_VOCABULARY || "TV", $vocabulary:OBJECTIVETYPE_VOCABULARY || "LV",$vocabulary:OBJECTIVETYPE_VOCABULARY || "CL",
+        $vocabulary:OBJECTIVETYPE_VOCABULARY || "LVMOT", $vocabulary:OBJECTIVETYPE_VOCABULARY || "LVmaxMOT", $vocabulary:OBJECTIVETYPE_VOCABULARY || "INT",
+        $vocabulary:OBJECTIVETYPE_VOCABULARY || "ALT", $vocabulary:OBJECTIVETYPE_VOCABULARY || "LTO", $vocabulary:OBJECTIVETYPE_VOCABULARY || "ECO")
+        for $x in $docRoot//aqd:environmentalObjective/aqd:EnvironmentalObjective
+        where not($x/aqd:objectiveType/@xlink:href = $valid)
+        return
+            <tr>
+                <td title="aqd:AQD_Attainment">{$x/../../aqd:inspireId/base:Identifier/base:localId/string()}</td>
+                <td title="aqd:objectiveType">{data($x/aqd:objectiveType)}</td>
+                <td title="aqd:reportingMetric">{data($x/aqd:reportingMetric)}</td>
+                <td title="aqd:protectionTarget">{data($x/aqd:protectionTarget)}</td>
+            </tr>
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
@@ -627,15 +620,24 @@ let $G19invalid :=
 ... :)
 let $G20invalid :=
     try {
-        xmlconv:isinvalidDDConceptLimited($source_url, "", "aqd:EnvironmentalObjective", "aqd:reportingMetric",
-                $vocabulary:REPMETRIC_VOCABULARY, $xmlconv:VALID_REPMETRIC_IDS_20)
+        let $valid := ($vocabulary:REPMETRIC_VOCABULARY || "3hAbove", $vocabulary:REPMETRIC_VOCABULARY || "aMean", $vocabulary:REPMETRIC_VOCABULARY || "wMean",
+        $vocabulary:REPMETRIC_VOCABULARY || "hrsAbove", $vocabulary:REPMETRIC_VOCABULARY || "daysAbove", $vocabulary:REPMETRIC_VOCABULARY || "daysAbove-3yr",
+        $vocabulary:REPMETRIC_VOCABULARY || "maxd8hrMean", $vocabulary:REPMETRIC_VOCABULARY || "AOT40c", $vocabulary:REPMETRIC_VOCABULARY || "AOT40c-5yr", $vocabulary:REPMETRIC_VOCABULARY || "AEI")
+        for $x in $docRoot//aqd:environmentalObjective/aqd:EnvironmentalObjective
+        where not($x/aqd:reportingMetric/@xlink:href = $valid)
+        return
+            <tr>
+                <td title="aqd:AQD_Attainment">{$x/../../aqd:inspireId/base:Identifier/base:localId/string()}</td>
+                <td title="aqd:objectiveType">{data($x/aqd:objectiveType)}</td>
+                <td title="aqd:reportingMetric">{data($x/aqd:reportingMetric)}</td>
+                <td title="aqd:protectionTarget">{data($x/aqd:protectionTarget)}</td>
+            </tr>
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
         </tr>
     }
-
 
 (: G21 WHERE ./aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType xlink:href attribute
 EQUALS http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/CL ./aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget xlink:href attribute
@@ -648,9 +650,10 @@ let $G21invalid :=
                     and $obj/aqd:objectiveType/@xlink:href = 'http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/CL'
         return
             <tr>
-                <td title="gml:id">{data($obj/../../@gml:id)}</td>
-                <td title="aqd:protectionTarget">{data($obj/aqd:protectionTarget/@xlink:href)}</td>
+                <td title="aqd:AQD_Attainment">{$obj/../../aqd:inspireId/base:Identifier/base:localId/string()}</td>
                 <td title="aqd:objectiveType">{data($obj/aqd:objectiveType/@xlink:href)}</td>
+                <td title="aqd:reportingMetric">{data($obj/aqd:reportingMetric/@xlink:href)}</td>
+                <td title="aqd:protectionTarget">{data($obj/aqd:protectionTarget/@xlink:href)}</td>
             </tr>
     } catch * {
         <tr status="failed">
@@ -671,9 +674,10 @@ let $G22invalid :=
         where $isInvalid
         return
             <tr>
-                <td title="gml:id">{data($obj/../../@gml:id)}</td>
-                <td title="aqd:protectionTarget">{data($obj/aqd:protectionTarget/@xlink:href)}</td>
+                <td title="aqd:AQD_Attainment">{$obj/../../aqd:inspireId/base:Identifier/base:localId/string()}</td>
                 <td title="aqd:objectiveType">{data($obj/aqd:objectiveType/@xlink:href)}</td>
+                <td title="aqd:reportingMetric">{data($obj/aqd:reportingMetric/@xlink:href)}</td>
+                <td title="aqd:protectionTarget">{data($obj/aqd:protectionTarget/@xlink:href)}</td>
             </tr>
     } catch * {
         <tr status="failed">
@@ -690,7 +694,10 @@ let $G23invalid :=
         where empty(index-of(data($x/aqd:pollutant/fn:normalize-space(@xlink:href)), "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1")) = false() and (empty(index-of(('daysAbove', 'hrsAbove', 'wMean', 'aMean', '3hAbove'), $reportingXlink)))
         return
             <tr>
-                <td title="base:localId">{$x/aqd:inspireId/base:Identifier/base:localId/string()}</td>
+                <td title="aqd:AQD_Attainment">{$x/aqd:inspireId/base:Identifier/base:localId/string()}</td>
+                <td title="aqd:objectiveType">{data($x/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType/@xlink:href)}</td>
+                <td title="aqd:reportingMetric">{data($x/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric/@xlink:href)}</td>
+                <td title="aqd:protectionTarget">{data($x/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/@xlink:href)}</td>
             </tr>
     } catch * {
         <tr status="failed">
@@ -706,7 +713,10 @@ let $G24invalid :=
         where empty(index-of(data($x/aqd:pollutant/fn:normalize-space(@xlink:href)), "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5")) = false() and (empty(index-of(('daysAbove', 'aMean'), $reportingXlink)))
         return
             <tr>
-                <td title="base:localId">{$x/aqd:inspireId/base:Identifier/base:localId/string()}</td>
+                <td title="aqd:AQD_Attainment">{$x/aqd:inspireId/base:Identifier/base:localId/string()}</td>
+                <td title="aqd:objectiveType">{data($x/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType/@xlink:href)}</td>
+                <td title="aqd:reportingMetric">{data($x/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric/@xlink:href)}</td>
+                <td title="aqd:protectionTarget">{data($x/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/@xlink:href)}</td>
             </tr>
     } catch * {
         <tr status="failed">
@@ -714,20 +724,6 @@ let $G24invalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
-(: G25 /aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:surfaceArea uom attribute shall be “km2”
-let $invalidSurfaceAreas :=
-    for $obj in $docRoot//aqd:AQD_Attainment
-    let $uom := $obj//aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:surfaceArea/@uom
-    where not(empty($uom)) and lower-case(data($uom)) != 'km2'
-    return $obj
-
-let $tblInvalidSurfaceAreas :=
-   for $rec in $invalidSurfaceAreas
-   return
-        <tr>
-            <td title="gml:id">{data($rec/@gml:id)}</td>
-            <td title="aqd:protectionTarget">{data($rec/aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:surfaceArea/@uom)}</td>
-        </tr> :)
 
 (: G25 :)
 let $G25invalid :=
@@ -738,7 +734,10 @@ let $G25invalid :=
                 (empty(index-of(('aMean'), $reportingXlink)) and empty(index-of(('AEI'), $reportingXlink)))
         return
             <tr>
-                <td title="base:localId">{$x/aqd:inspireId/base:Identifier/base:localId/string()}</td>
+                <td title="aqd:AQD_Attainment">{$x/aqd:inspireId/base:Identifier/base:localId/string()}</td>
+                <td title="aqd:objectiveType">{data($x/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType/@xlink:href)}</td>
+                <td title="aqd:reportingMetric">{data($x/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric/@xlink:href)}</td>
+                <td title="aqd:protectionTarget">{data($x/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/@xlink:href)}</td>
             </tr>
     }  catch * {
         <tr status="failed">
@@ -750,14 +749,16 @@ let $G25invalid :=
 (: G26 :)
 let $G26invalid :=
     try {
-        for $aqdReportingMetricG26 in $docRoot//aqd:AQD_Attainment
-        let $reportingXlink := fn:substring-after(data($aqdReportingMetricG26/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric/fn:normalize-space(@xlink:href)), "reportingmetric/")
-        where empty(index-of(data($aqdReportingMetricG26/aqd:pollutant/fn:normalize-space(@xlink:href)), "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/10")) = false() and (empty(index-of(('daysAbove'), $reportingXlink)))
+        for $x in $docRoot//aqd:AQD_Attainment
+        let $reportingXlink := fn:substring-after(data($x/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric/fn:normalize-space(@xlink:href)), "reportingmetric/")
+        where empty(index-of(data($x/aqd:pollutant/fn:normalize-space(@xlink:href)), "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/10")) = false() and (empty(index-of(('daysAbove'), $reportingXlink)))
         return
             <tr>
-                <td title="Feature type">{"aqd:AQD_Attainment"}</td>
-                <td title="gml:id">{data($aqdReportingMetricG26/@gml:id)}</td>
-                <td title="aqd:pollutant">{data($aqdReportingMetricG26/aqd:pollutant/fn:normalize-space(@xlink:href))}</td>
+                <td title="aqd:AQD_Attainment">{$x/aqd:inspireId/base:Identifier/base:localId/string()}</td>
+                <td title="aqd:objectiveType">{data($x/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType/@xlink:href)}</td>
+                <td title="aqd:reportingMetric">{data($x/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric/@xlink:href)}</td>
+                <td title="aqd:protectionTarget">{data($x/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/@xlink:href)}</td>
+                <td title="aqd:pollutant">{data($x/aqd:pollutant/fn:normalize-space(@xlink:href))}</td>
             </tr>
     }  catch * {
         <tr status="failed">
@@ -769,23 +770,25 @@ let $G26invalid :=
 (: G27 :)
 let $G27invalid :=
     try {
-        for $aqdReportingMetricG27 in $docRoot//aqd:AQD_Attainment
-        let $reportingXlink := fn:substring-after(data($aqdReportingMetricG27/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/fn:normalize-space(@xlink:href)), "protectiontarget/")
-        where (empty(index-of("V", $reportingXlink)) = false()) and ($aqdReportingMetricG27/aqd:pollutant/fn:normalize-space(@xlink:href) = "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/10"
-                or $aqdReportingMetricG27/aqd:pollutant/fn:normalize-space(@xlink:href) = "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/6001"
-                or $aqdReportingMetricG27/aqd:pollutant/fn:normalize-space(@xlink:href) = "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5"
-                or $aqdReportingMetricG27/aqd:pollutant/fn:normalize-space(@xlink:href) = "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/8"
-                or $aqdReportingMetricG27/aqd:pollutant/fn:normalize-space(@xlink:href) = "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/20"
-                or $aqdReportingMetricG27/aqd:pollutant/fn:normalize-space(@xlink:href) = "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5012"
-                or $aqdReportingMetricG27/aqd:pollutant/fn:normalize-space(@xlink:href) = "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5014"
-                or $aqdReportingMetricG27/aqd:pollutant/fn:normalize-space(@xlink:href) = "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5015"
-                or $aqdReportingMetricG27/aqd:pollutant/fn:normalize-space(@xlink:href) = "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5018"
-                or $aqdReportingMetricG27/aqd:pollutant/fn:normalize-space(@xlink:href) = "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5029")
+        for $x in $docRoot//aqd:AQD_Attainment
+        let $reportingXlink := fn:substring-after(data($x/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/fn:normalize-space(@xlink:href)), "protectiontarget/")
+        where (empty(index-of("V", $reportingXlink)) = false()) and ($x/aqd:pollutant/fn:normalize-space(@xlink:href) = "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/10"
+                or $x/aqd:pollutant/fn:normalize-space(@xlink:href) = "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/6001"
+                or $x/aqd:pollutant/fn:normalize-space(@xlink:href) = "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5"
+                or $x/aqd:pollutant/fn:normalize-space(@xlink:href) = "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/8"
+                or $x/aqd:pollutant/fn:normalize-space(@xlink:href) = "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/20"
+                or $x/aqd:pollutant/fn:normalize-space(@xlink:href) = "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5012"
+                or $x/aqd:pollutant/fn:normalize-space(@xlink:href) = "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5014"
+                or $x/aqd:pollutant/fn:normalize-space(@xlink:href) = "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5015"
+                or $x/aqd:pollutant/fn:normalize-space(@xlink:href) = "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5018"
+                or $x/aqd:pollutant/fn:normalize-space(@xlink:href) = "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5029")
         return
             <tr>
-                <td title="Feature type">{"aqd:AQD_Attainment"}</td>
-                <td title="gml:id">{data($aqdReportingMetricG27/@gml:id)}</td>
-                <td title="aqd:pollutant">{data($aqdReportingMetricG27/aqd:pollutant/fn:normalize-space(@xlink:href))}</td>
+                <td title="aqd:AQD_Attainment">{$x/aqd:inspireId/base:Identifier/base:localId/string()}</td>
+                <td title="aqd:objectiveType">{data($x/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType/@xlink:href)}</td>
+                <td title="aqd:reportingMetric">{data($x/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric/@xlink:href)}</td>
+                <td title="aqd:protectionTarget">{data($x/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/@xlink:href)}</td>
+                <td title="aqd:pollutant">{data($x/aqd:pollutant/fn:normalize-space(@xlink:href))}</td>
             </tr>
     }  catch * {
         <tr status="failed">
@@ -797,7 +800,18 @@ let $G27invalid :=
 (: G28  :)
 let $G28invalid :=
     try {
-        xmlconv:isinvalidDDConceptLimited($source_url, "", "aqd:EnvironmentalObjective", "aqd:objectiveType", $vocabulary:OBJECTIVETYPE_VOCABULARY, $xmlconv:VALID_OBJECTIVETYPE_IDS_28)
+        let $valid := ($vocabulary:OBJECTIVETYPE_VOCABULARY || "TV", $vocabulary:OBJECTIVETYPE_VOCABULARY || "LV", $vocabulary:OBJECTIVETYPE_VOCABULARY || "CL", $vocabulary:OBJECTIVETYPE_VOCABULARY || "LTO",
+        $vocabulary:OBJECTIVETYPE_VOCABULARY || "ECO",$vocabulary:OBJECTIVETYPE_VOCABULARY || "LVmaxMOT",$vocabulary:OBJECTIVETYPE_VOCABULARY || "LVMOT", $vocabulary:OBJECTIVETYPE_VOCABULARY || "INT",
+        $vocabulary:OBJECTIVETYPE_VOCABULARY || "ALT")
+        for $x in $docRoot//aqd:environmentalObjective/aqd:EnvironmentalObjective
+        where not($x/aqd:objectiveType/@xlink:href = $valid)
+        return
+            <tr>
+                <td title="aqd:AQD_Attainment">{$x/../../aqd:inspireId/base:Identifier/base:localId/string()}</td>
+                <td title="aqd:objectiveType">{data($x/aqd:objectiveType)}</td>
+                <td title="aqd:reportingMetric">{data($x/aqd:reportingMetric)}</td>
+                <td title="aqd:protectionTarget">{data($x/aqd:protectionTarget)}</td>
+            </tr>
     }  catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
@@ -808,7 +822,18 @@ let $G28invalid :=
 (: G29 :)
 let $G29invalid :=
     try {
-        xmlconv:isinvalidDDConceptLimited($source_url, "", "aqd:EnvironmentalObjective", "aqd:reportingMetric", $vocabulary:REPMETRIC_VOCABULARY, $xmlconv:VALID_REPMETRIC_IDS_29)
+        let $valid := ($vocabulary:REPMETRIC_VOCABULARY || "3hAbove", $vocabulary:REPMETRIC_VOCABULARY || "aMean", $vocabulary:REPMETRIC_VOCABULARY || "wMean", $vocabulary:REPMETRIC_VOCABULARY || "hrsAbove",
+        $vocabulary:REPMETRIC_VOCABULARY || "daysAbove", $vocabulary:REPMETRIC_VOCABULARY || "daysAbove-3yr", $vocabulary:REPMETRIC_VOCABULARY || "maxd8hrMean",
+        $vocabulary:REPMETRIC_VOCABULARY || "AOT40c", $vocabulary:REPMETRIC_VOCABULARY || "AOT40c-5yr", $vocabulary:REPMETRIC_VOCABULARY || "AEI")
+        for $x in $docRoot//aqd:environmentalObjective/aqd:EnvironmentalObjective
+        where not($x/aqd:reportingMetric/@xlink:href = $valid)
+        return
+            <tr>
+                <td title="aqd:AQD_Attainment">{$x/../../aqd:inspireId/base:Identifier/base:localId/string()}</td>
+                <td title="aqd:objectiveType">{data($x/aqd:objectiveType)}</td>
+                <td title="aqd:reportingMetric">{data($x/aqd:reportingMetric)}</td>
+                <td title="aqd:protectionTarget">{data($x/aqd:protectionTarget)}</td>
+            </tr>
     }  catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
@@ -825,9 +850,10 @@ let $G30invalid :=
                     and $obj/aqd:objectiveType/@xlink:href = 'http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/CL'
         return
             <tr>
-                <td title="gml:id">{data($obj/../../@gml:id)}</td>
-                <td title="aqd:protectionTarget">{data($obj/aqd:protectionTarget/@xlink:href)}</td>
+                <td title="aqd:AQD_Attainment">{$obj/../../aqd:inspireId/base:Identifier/base:localId/string()}</td>
                 <td title="aqd:objectiveType">{data($obj/aqd:objectiveType/@xlink:href)}</td>
+                <td title="aqd:reportingMetric">{data($obj/aqd:reportingMetric/@xlink:href)}</td>
+                <td title="aqd:protectionTarget">{data($obj/aqd:protectionTarget/@xlink:href)}</td>
             </tr>
     }  catch * {
         <tr status="failed">
@@ -846,7 +872,7 @@ let $G31invalid :=
         where $isInvalid
         return
             <tr>
-                <td title="gml:id">{data($obj/../../@gml:id)}</td>
+                <td title="aqd:AQD_Attainment">{$obj/../../aqd:inspireId/base:Identifier/base:localId/string()}</td>
                 <td title="aqd:protectionTarget">{data($obj/aqd:protectionTarget/@xlink:href)}</td>
                 <td title="aqd:objectiveType">{data($obj/aqd:objectiveType/@xlink:href)}</td>
                 <td title="aqd:reportingMetric">{data($obj/aqd:reportingMetric/@xlink:href)}</td>
@@ -872,9 +898,10 @@ let $G32invalid :=
         where $isInvalid
         return
             <tr>
-                <td title="gml:id">{data($obj/../../@gml:id)}</td>
-                <td title="aqd:protectionTarget">{data($obj/aqd:protectionTarget/@xlink:href)}</td>
+                <td title="aqd:AQD_Attainment">{$obj/../../aqd:inspireId/base:Identifier/base:localId/string()}</td>
                 <td title="aqd:objectiveType">{data($obj/aqd:objectiveType/@xlink:href)}</td>
+                <td title="aqd:reportingMetric">{data($obj/aqd:reportingMetric/@xlink:href)}</td>
+                <td title="aqd:protectionTarget">{data($obj/aqd:protectionTarget/@xlink:href)}</td>
             </tr>
     }  catch * {
         <tr status="failed">
@@ -897,9 +924,10 @@ let $G33invalid :=
         where $isInvalid
         return
             <tr>
-                <td title="gml:id">{data($obj/../../@gml:id)}</td>
-                <td title="aqd:protectionTarget">{data($obj/aqd:protectionTarget/@xlink:href)}</td>
+                <td title="aqd:AQD_Attainment">{$obj/../../aqd:inspireId/base:Identifier/base:localId/string()}</td>
                 <td title="aqd:objectiveType">{data($obj/aqd:objectiveType/@xlink:href)}</td>
+                <td title="aqd:reportingMetric">{data($obj/aqd:reportingMetric/@xlink:href)}</td>
+                <td title="aqd:protectionTarget">{data($obj/aqd:protectionTarget/@xlink:href)}</td>
             </tr>
     }  catch * {
         <tr status="failed">
@@ -911,7 +939,17 @@ let $G33invalid :=
 (: G38 :)
 let $G38invalid :=
     try {
-        xmlconv:isinvalidDDConceptLimited($source_url, "aqd:exceedanceDescriptionBase", "aqd:ExceedanceArea", "aqd:areaClassification",  $vocabulary:AREA_CLASSIFICATION_VOCABULARY, $xmlconv:VALID_AREACLASSIFICATION_IDS_52)
+        let $valid := ($vocabulary:AREA_CLASSIFICATION_VOCABULARY || "rural", $vocabulary:AREA_CLASSIFICATION_VOCABULARY || "rural-nearcity", $vocabulary:AREA_CLASSIFICATION_VOCABULARY || "rural-regional",
+        $vocabulary:AREA_CLASSIFICATION_VOCABULARY || "rural-remote",$vocabulary:AREA_CLASSIFICATION_VOCABULARY || "urban", $vocabulary:AREA_CLASSIFICATION_VOCABULARY || "suburban")
+        for $x in $docRoot//aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:areaClassification
+        where not($x/@xlink:href = $valid)
+        return
+            <tr>
+                <td title="aqd:AQD_Attainment">{$x/../../aqd:inspireId/base:Identifier/base:localId/string()}</td>
+                <td title="aqd:objectiveType">{data($x/aqd:objectiveType)}</td>
+                <td title="aqd:reportingMetric">{data($x/aqd:reportingMetric)}</td>
+                <td title="aqd:protectionTarget">{data($x/aqd:protectionTarget)}</td>
+            </tr>
     }  catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
@@ -1063,7 +1101,17 @@ let $G47invalid :=
 (: G52 :)
 let $G52invalid :=
     try {
-        xmlconv:isinvalidDDConceptLimited($source_url, "aqd:exceedanceDescriptionAdjustment", "aqd:ExceedanceArea", "aqd:areaClassification",  $vocabulary:AREA_CLASSIFICATION_VOCABULARY, $xmlconv:VALID_AREACLASSIFICATION_IDS_52)
+        let $valid := ($vocabulary:AREA_CLASSIFICATION_VOCABULARY || "rural", $vocabulary:AREA_CLASSIFICATION_VOCABULARY || "rural-nearcity", $vocabulary:AREA_CLASSIFICATION_VOCABULARY || "rural-regional",
+        $vocabulary:AREA_CLASSIFICATION_VOCABULARY || "rural-remote",$vocabulary:AREA_CLASSIFICATION_VOCABULARY || "urban", $vocabulary:AREA_CLASSIFICATION_VOCABULARY || "suburban")
+        for $x in $docRoot//aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:areaClassification
+        where not($x/@xlink:href = $valid)
+        return
+            <tr>
+                <td title="aqd:AQD_Attainment">{$x/../../aqd:inspireId/base:Identifier/base:localId/string()}</td>
+                <td title="aqd:objectiveType">{data($x/aqd:objectiveType)}</td>
+                <td title="aqd:reportingMetric">{data($x/aqd:reportingMetric)}</td>
+                <td title="aqd:protectionTarget">{data($x/aqd:protectionTarget)}</td>
+            </tr>
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
@@ -1219,7 +1267,16 @@ let $G60invalid :=
 (: G61 :)
 let $G61invalid :=
     try {
-        xmlconv:isinvalidDDConceptLimited($source_url, "aqd:exceedanceDescriptionAdjustment", "aqd:AdjustmentMethod", "aqd:adjustmentType", $vocabulary:ADJUSTMENTTYPE_VOCABULARY, $xmlconv:VALID_ADJUSTMENTTYPE_IDS)
+        let $valid := ($vocabulary:ADJUSTMENTTYPE_VOCABULARY || "nsCorrection", $vocabulary:ADJUSTMENTTYPE_VOCABULARY || "wssCorrection")
+        for $x in $docRoot//aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:adjustmentType
+        where not($x/@xlink:href = $valid)
+        return
+            <tr>
+                <td title="aqd:AQD_Attainment">{$x/../../aqd:inspireId/base:Identifier/base:localId/string()}</td>
+                <td title="aqd:objectiveType">{data($x/aqd:objectiveType)}</td>
+                <td title="aqd:reportingMetric">{data($x/aqd:reportingMetric)}</td>
+                <td title="aqd:protectionTarget">{data($x/aqd:protectionTarget)}</td>
+            </tr>
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
@@ -1230,7 +1287,19 @@ let $G61invalid :=
 (: G62 - :)
 let $G62invalid :=
     try {
-        xmlconv:isinvalidDDConceptLimited($source_url, "aqd:exceedanceDescriptionAdjustment", "aqd:AdjustmentMethod", "aqd:adjustmentSource", $vocabulary:ADJUSTMENTSOURCE_VOCABULARY, $xmlconv:VALID_ADJUSTMENTSOURCE_IDS)
+        let $valid := ($vocabulary:ADJUSTMENTSOURCE_VOCABULARY || "A1", $vocabulary:ADJUSTMENTSOURCE_VOCABULARY || "A2", $vocabulary:ADJUSTMENTSOURCE_VOCABULARY || "B", $vocabulary:ADJUSTMENTSOURCE_VOCABULARY || "B1",
+        $vocabulary:ADJUSTMENTSOURCE_VOCABULARY || "B2", $vocabulary:ADJUSTMENTSOURCE_VOCABULARY || "C1", $vocabulary:ADJUSTMENTSOURCE_VOCABULARY || "C2", $vocabulary:ADJUSTMENTSOURCE_VOCABULARY || "D1",
+        $vocabulary:ADJUSTMENTSOURCE_VOCABULARY || "D2", $vocabulary:ADJUSTMENTSOURCE_VOCABULARY || "E1", $vocabulary:ADJUSTMENTSOURCE_VOCABULARY || "E2", $vocabulary:ADJUSTMENTSOURCE_VOCABULARY || "F1",
+        $vocabulary:ADJUSTMENTSOURCE_VOCABULARY || "F2", $vocabulary:ADJUSTMENTSOURCE_VOCABULARY || "G1", $vocabulary:ADJUSTMENTSOURCE_VOCABULARY || "G2", $vocabulary:ADJUSTMENTSOURCE_VOCABULARY || "H")
+        for $x in $docRoot//aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:adjustmentSource
+        where not($x/@xlink:href = $valid)
+        return
+            <tr>
+                <td title="aqd:AQD_Attainment">{$x/../../aqd:inspireId/base:Identifier/base:localId/string()}</td>
+                <td title="aqd:objectiveType">{data($x/aqd:objectiveType)}</td>
+                <td title="aqd:reportingMetric">{data($x/aqd:reportingMetric)}</td>
+                <td title="aqd:protectionTarget">{data($x/aqd:protectionTarget)}</td>
+            </tr>
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
@@ -1241,7 +1310,16 @@ let $G62invalid :=
 (: G63 :)
 let $G63invalid :=
     try {
-        xmlconv:isinvalidDDConceptLimited($source_url, "aqd:exceedanceDescriptionAdjustment", "aqd:AssessmentMethods", "aqd:assessmentType", $vocabulary:ASSESSMENTTYPE_VOCABULARY, $xmlconv:VALID_ASSESSMENTTYPE_IDS)
+        let $valid := ($vocabulary:ADJUSTMENTTYPE_VOCABULARY || "fixed", $vocabulary:ADJUSTMENTTYPE_VOCABULARY || "model", $vocabulary:ADJUSTMENTTYPE_VOCABULARY || "indicative", $vocabulary:ADJUSTMENTTYPE_VOCABULARY || "objective")
+        for $x in $docRoot//aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:assessmentMethod/aqd:AssessmentMethods/aqd:assessmentType
+        where not($x/@xlink:href = $valid)
+        return
+            <tr>
+                <td title="aqd:AQD_Attainment">{$x/../../aqd:inspireId/base:Identifier/base:localId/string()}</td>
+                <td title="aqd:objectiveType">{data($x/aqd:objectiveType)}</td>
+                <td title="aqd:reportingMetric">{data($x/aqd:reportingMetric)}</td>
+                <td title="aqd:protectionTarget">{data($x/aqd:protectionTarget)}</td>
+            </tr>
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
@@ -1252,17 +1330,16 @@ let $G63invalid :=
 (: G64 :)
 let $G64invalid :=
     try {
-        let $model := if (fn:string-length($countryCode) = 2) then distinct-values(data(sparqlx:executeSparqlQuery(query:getModel($cdrUrl))//concat(sparql:binding[@name='namespace']/sparql:literal,"/",sparql:binding[@name='localId']/sparql:literal))) else ()
-        let $isModelAvailable := count($model) > 0
+        let $types := ($vocabulary:ADJUSTMENTTYPE_VOCABULARY || "nsCorrection", $vocabulary:ADJUSTMENTTYPE_VOCABULARY || "wssCorrection")
+        let $valid := distinct-values(data(sparqlx:executeSparqlQuery(query:getModel($cdrUrl))//sparql:binding[@name='inspireLabel']))
 
-        for $r in xmlconv:getValidDDConceptLimited($source_url, "aqd:exceedanceDescriptionAdjustment", "aqd:AdjustmentMethod", "aqd:adjustmentType", $vocabulary:ADJUSTMENTTYPE_VOCABULARY, $xmlconv:VALID_ADJUSTMENTTYPE_IDS)
-        let $root := $r/../../../../. (: aqd:AQD_Attainment :)
-        let $meta := $root/aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:assessmentMethod/aqd:AssessmentMethods/aqd:modelAssessmentMetadata
-        where ((empty(index-of($model, $meta/fn:normalize-space(@xlink:href))))) and $isModelAvailable and string-length($meta/fn:normalize-space(@xlink:href))
+        for $x in $docRoot//aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:adjustmentType[@xlink:href = $types]
+        let $meta := data($x/../aqd:assessmentMethod/aqd:AssessmentMethods/aqd:modelAssessmentMetadata/@xlink:href)
+        where not($meta = $valid)
         return
             <tr>
-                <td title="gml:id">{data($root/@gml:id)}</td>
-                <td title="aqd:modelAssessmentMetadata">{data($meta/@xlink:href)}</td>
+                <td title="aqd:AQD_Attainment">{$x/../../../../../aqd:inspireId/base:Identifier/base:localId/string()}</td>
+                <td title="aqd:modelAssessmentMetadata">{data($meta)}</td>
             </tr>
     } catch * {
         <tr status="failed">
@@ -1293,14 +1370,14 @@ let $G65invalid :=
 (: G66 :)
 let $G66invalid :=
     try {
-        for $r in xmlconv:getValidDDConceptLimited($source_url, "aqd:exceedanceDescriG66ptionAdjustment", "aqd:AdjustmentMethod", "aqd:adjustmentType", $vocabulary:ADJUSTMENTTYPE_VOCABULARY, $xmlconv:VALID_ADJUSTMENTTYPE_IDS)
-        let $root := $r/../../../../. (: aqd:AQD_Attainment :)
-        let $meta := $root//aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:assessmentMethod/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata
-        where (empty(index-of($samplingPointlD, $meta/fn:normalize-space(@xlink:href)))) and $isSamplingPointAvailable and string-length($meta/fn:normalize-space(@xlink:href))
+        let $types := ($vocabulary:ADJUSTMENTTYPE_VOCABULARY || "nsCorrection", $vocabulary:ADJUSTMENTTYPE_VOCABULARY || "wssCorrection")
+        for $x in $docRoot//aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:adjustmentType[@xlink:href = $types]
+        let $meta := data($x/../aqd:assessmentMethod/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata/@xlink:href)
+        where not($meta = $samplingPointlD)
         return
             <tr>
-                <td title="gml:id">{data($root/@gml:id)}</td>
-                <td title="aqd:modelAssessmentMetadata">{data($meta/@xlink:href)}</td>
+                <td title="aqd:AQD_Attainment">{$x/../../../../../aqd:inspireId/base:Identifier/base:localId/string()}</td>
+                <td title="aqd:modelAssessmentMetadata">{data($meta)}</td>
             </tr>
     } catch * {
         <tr status="failed">
@@ -1312,12 +1389,12 @@ let $G66invalid :=
 (: G67 - :)
 let $G67invalid :=
     try {
-        for $r in $validAssessment/../aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:assessmentMethod/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata[not(@xlink:href = $samplingPointAssessmentMetadata)]
+        for $x in $validAssessment/../aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:assessmentMethod/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata[not(@xlink:href = $samplingPointAssessmentMetadata)]
         return
             <tr>
-                <td title="gml:id">{data($r/../../../../../../../@gml:id)}</td>
-                <td title="aqd:assessment">{data($r/../../../../../../../aqd:assessment/fn:normalize-space(@xlink:href))}</td>
-                <td title="aqd:samplingPointAssessmentMetadata">{data($r/fn:normalize-space(@xlink:href))}</td>
+                <td title="aqd:AQD_Attainment">{$x/../../../../../../../aqd:inspireId/base:Identifier/base:localId/string()}</td>
+                <td title="aqd:assessment">{data($x/../../../../../../../aqd:assessment/fn:normalize-space(@xlink:href))}</td>
+                <td title="aqd:samplingPointAssessmentMetadata">{data($x/fn:normalize-space(@xlink:href))}</td>
             </tr>
     } catch * {
         <tr status="failed">
@@ -1359,7 +1436,17 @@ let $G71invalid :=
 (: G72 :)
 let $G72invalid :=
     try {
-        xmlconv:isinvalidDDConceptLimited($source_url, "aqd:exceedanceDescriptionFinal", "aqd:ExceedanceArea",  "aqd:areaClassification",  $vocabulary:AREA_CLASSIFICATION_VOCABULARY, $xmlconv:VALID_AREACLASSIFICATION_IDS_52)
+        let $valid := ($vocabulary:AREA_CLASSIFICATION_VOCABULARY || "rural", $vocabulary:AREA_CLASSIFICATION_VOCABULARY || "rural-nearcity", $vocabulary:AREA_CLASSIFICATION_VOCABULARY ||"rural-regional",
+        $vocabulary:AREA_CLASSIFICATION_VOCABULARY || "rural-remote", $vocabulary:AREA_CLASSIFICATION_VOCABULARY || "urban", $vocabulary:AREA_CLASSIFICATION_VOCABULARY || "suburban")
+        for $x in $docRoot//aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:areaClassification
+        where not($x/@xlink:href = $valid)
+        return
+            <tr>
+                <td title="aqd:AQD_Attainment">{$x/../../aqd:inspireId/base:Identifier/base:localId/string()}</td>
+                <td title="aqd:objectiveType">{data($x/aqd:objectiveType)}</td>
+                <td title="aqd:reportingMetric">{data($x/aqd:reportingMetric)}</td>
+                <td title="aqd:protectionTarget">{data($x/aqd:protectionTarget)}</td>
+            </tr>
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
@@ -1510,7 +1597,8 @@ let $G81invalid :=
 (: G82 - :)
 let $G82invalid :=
     try {
-        for $r in $docRoot//aqd:AQD_Attainment//aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:adjustmentType[@xlink:href = $xmlconv:ADJUSTMENTTYPES]
+        let $valid := ("http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/noneApplied","http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/noneApplicable", "http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/fullyCorrected")
+        for $r in $docRoot//aqd:AQD_Attainment//aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:adjustmentType[@xlink:href = $valid]
         return
             <tr>
                 <td title="gml:id">{data($r/../../../../../@gml:id)}</td>
@@ -1650,122 +1738,6 @@ return
     </table>
 };
 
-declare function xmlconv:checkVocabularyConceptValues($source_url as xs:string, $parentObject as xs:string, $featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string, $limitedIds as xs:string*)
-as element(tr)*{
-    xmlconv:checkVocabularyConceptValues($source_url, $parentObject, $featureType, $element, $vocabularyUrl, $limitedIds, "")
-};
-
-declare function xmlconv:checkVocabularyConceptValues($source_url as xs:string, $parentObject, $featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string) as element(tr)* {
-    xmlconv:checkVocabularyConceptValues($source_url, $parentObject, $featureType, $element, $vocabularyUrl, (), "")
-};
-
-declare function xmlconv:checkVocabularyConceptValues($source_url as xs:string, $parentObject as xs:string, $featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string, $limitedIds as xs:string*, $vocabularyType as xs:string)
-as element(tr)*{
-
-    let $sparql :=
-        if ($vocabularyType = "collection") then
-            xmlconv:getCollectionConceptUrlSparql($vocabularyUrl)
-        else
-            xmlconv:getConceptUrlSparql($vocabularyUrl)
-    let $crConcepts := sparqlx:run($sparql)
-
-    let $allRecords :=
-    if ($parentObject != "") then
-        doc($source_url)//descendant::*[name()=$parentObject]/descendant::*[name()=$featureType]
-    else
-        doc($source_url)//descendant::*[name()=$featureType]
-
-    for $rec in $allRecords
-    for $conceptUrl in $rec/child::*[name() = $element]/@xlink:href
-    let $conceptUrl := normalize-space($conceptUrl)
-
-    where string-length($conceptUrl) > 0
-
-    return
-        <tr isvalid="{ xmlconv:isMatchingVocabCode($crConcepts, $conceptUrl) and xmlconv:isValidLimitedValue($conceptUrl, $vocabularyUrl, $limitedIds) }">
-            <td title="Feature type">{ $featureType }</td>
-            <td title="gml:id">{data($rec/@gml:id)}</td>
-            <td title="base:localId">{data($rec/aqd:inspireId/base:Identifier/base:localId)}</td>
-            <td title="aqd:name">{data($rec/aqd:name)}</td>
-            <td title="{ $element }" style="color:red">{$conceptUrl}</td>
-        </tr>
-
-};
-declare function xmlconv:getCheckedVocabularyConceptValues($source_url as xs:string, $parentObject as xs:string, $featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string, $limitedIds as xs:string*)
-{
-     xmlconv:getCheckedVocabularyConceptValues($source_url, $parentObject, $featureType, $element, $vocabularyUrl, $limitedIds, "")
-};
-
-
-
-declare function xmlconv:getCheckedVocabularyConceptValues($source_url as xs:string, $parentObject as xs:string, $featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string, $limitedIds as xs:string*, $vocabularyType as xs:string)
-{
-
-    let $sparql :=
-        if ($vocabularyType = "collection") then
-            xmlconv:getCollectionConceptUrlSparql($vocabularyUrl)
-        else
-            xmlconv:getConceptUrlSparql($vocabularyUrl)
-    let $crConcepts := sparqlx:run($sparql)
-
-    let $allRecords :=
-        if ($parentObject != "") then
-            doc($source_url)//descendant::*[name()=$parentObject]/descendant::*[name()=$featureType]
-        else
-            doc($source_url)//descendant::*[name()=$featureType]
-
-    for $rec in $allRecords
-    for $conceptUrl in $rec/child::*[name() = $element]/@xlink:href
-    let $conceptUrl := normalize-space($conceptUrl)
-        where string-length($conceptUrl) > 0
-    return
-        $rec
-
-
-};
-
-declare function xmlconv:getValidDDConceptLimited($source_url as xs:string, $parentObject as xs:string, $featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string, $allowedIds as xs:string*) {
-    xmlconv:getCheckedVocabularyConceptValues($source_url, $parentObject, $featureType, $element, $vocabularyUrl, $allowedIds)
-};
-
-declare function xmlconv:isValidLimitedValue($conceptUrl as xs:string, $vocabularyUrl as xs:string, $limitedIds as xs:string*) as xs:boolean {
-    let $limitedUrls :=
-        for $id in $limitedIds
-        return concat($vocabularyUrl, $id)
-
-    return
-        empty($limitedIds) or not(empty(index-of($limitedUrls, $conceptUrl)))
-};
-
-declare function xmlconv:getConceptUrlSparql($scheme as xs:string) as xs:string {
-    concat("PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
-    SELECT ?concepturl ?label
-    WHERE {
-      ?concepturl skos:inScheme <", $scheme, ">;
-                  skos:prefLabel ?label
-    }")
-};
-
-declare function xmlconv:getCollectionConceptUrlSparql($collection as xs:string) as xs:string {
-    concat("PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
-    SELECT ?concepturl
-    WHERE {
-        GRAPH <", $collection, "> {
-            <", $collection, "> skos:member ?concepturl .
-            ?concepturl a skos:Concept
-        }
-    }")
-};
-
-declare function xmlconv:isMatchingVocabCode($crConcepts as element(sparql:result)*, $concept as xs:string) as xs:boolean {
-    count($crConcepts/sparql:binding[@name="concepturl" and sparql:uri=$concept]) > 0
-};
-
-
-declare function xmlconv:isinvalidDDConceptLimited($source_url as xs:string, $parentObject as xs:string, $featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string, $allowedIds as xs:string*)
-as element(tr)* {
-    xmlconv:checkVocabularyConceptValues($source_url, $parentObject, $featureType, $element, $vocabularyUrl, $allowedIds)
-};
 
 declare function xmlconv:buildVocItemsList($ruleId as xs:string, $vocabularyUrl as xs:string, $ids as xs:string*)
 as element(div) {
