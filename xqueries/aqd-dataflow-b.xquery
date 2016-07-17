@@ -185,7 +185,7 @@ let $B7table :=
         </tr>
     }
 
-(: B8 :)
+(: B9 :)
 (:TODO: ADD TRY CATCH :)
 let $gmlIds := $docRoot//aqd:AQD_Zone/lower-case(normalize-space(@gml:id))
 let $duplicateGmlIds := distinct-values(
@@ -227,28 +227,7 @@ let $duplicateaqdInspireIds := distinct-values(
 let $countGmlIdDuplicates := count($duplicateGmlIds)
 let $countamInspireIdDuplicates := count($duplicateamInspireIds)
 let $countaqdInspireIdDuplicates := count($duplicateaqdInspireIds)
-let $B8invalid := $countGmlIdDuplicates + $countamInspireIdDuplicates + $countaqdInspireIdDuplicates
-
-(: B9 The base:localId needs to be unique within namespace.  :)
-let $duplicateAmInspireIds := distinct-values(
-        for $identifier in $docRoot//aqd:AQD_Zone/am:inspireId/base:Identifier
-        where string-length(normalize-space($identifier/base:localId)) > 0 and count(index-of($amInspireIds,
-                concat(lower-case(normalize-space($identifier/base:namespace)), '##', lower-case(normalize-space($identifier/base:localId))))) > 1
-        return
-            concat(normalize-space($identifier/base:namespace), ':', normalize-space($identifier/base:localId))
-)
-let $B9invalid :=
-    try {
-        let $amInspireIds := $docRoot//aqd:AQD_Zone/am:inspireId/base:Identifier/concat(lower-case(normalize-space(base:namespace)), '##',
-                lower-case(normalize-space(base:localId)))
-        let $countAmInspireIdDuplicates := count($duplicateAmInspireIds)
-        return $countAmInspireIdDuplicates
-    } catch * {
-        <tr status="failed">
-            <td title="Error code">{$err:code}</td>
-            <td title="Error description">{$err:description}</td>
-        </tr>
-    }
+let $B9invalid := $countGmlIdDuplicates + $countamInspireIdDuplicates + $countaqdInspireIdDuplicates
 
 (: B10 :)
 let $B10table :=
@@ -898,12 +877,10 @@ return
         {html:buildResultsSimpleRow("B6a", $labels:B6a, $labels:B6a_SHORT, $countZonesWithAmGeometry, $errors:INFO)}
         {html:buildResultsSimpleRow("B6b", $labels:B6b, $labels:B6b_SHORT, $countZonesWithLAU, $errors:INFO )}
         {html:build0("B7", $labels:B7, $labels:B7_SHORT, $B7table, "", string(count($B7table)), "record")}
-        {html:buildCountRow("B8", $labels:B8, $labels:B8_SHORT, $B8invalid, (), "duplicate", $errors:WARNING)}
         {html:buildConcatRow($duplicateGmlIds, "aqd:AQD_Zone/@gml:id - ")}
         {html:buildConcatRow($duplicateamInspireIds, "am:inspireId - ")}
         {html:buildConcatRow($duplicateaqdInspireIds, "aqd:inspireId - ")}
-        {html:buildCountRow("B9", $labels:B9, $labels:B9_SHORT, $B9invalid, (), (), ())}
-        {html:buildConcatRow($duplicateAmInspireIds, "Duplicate base:namespace:base:localId - ")}
+        {html:buildCountRow("B9", $labels:B9, $labels:B9_SHORT, $B9invalid, (), "duplicate", $errors:ERROR)}
         {html:buildUnique("B10", $labels:B10, $labels:B10_SHORT, $B10table, "", string(count($B10table)), "record", $errors:ERROR)}
         {html:build2("B10.1", $labels:B10.1, $labels:B10.1_SHORT, $B10.1invalid, "base:Identifier/base:namespace", "All values are valid", " invalid namespaces", "", $errors:ERROR)}
         {html:build2("B13", $labels:B13, $labels:B13_SHORT, $B13invalid, "/aqd:AQD_Zone/am:name/gn:GeographicalName/gn:language", "All values are valid", " invalid value", $langSkippedMsg,$errors:WARNING)}
