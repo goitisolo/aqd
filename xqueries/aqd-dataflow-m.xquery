@@ -18,6 +18,7 @@ import module namespace common = "aqd-common" at "aqd-common.xquery";
 import module namespace sparqlx = "aqd-sparql" at "aqd-sparql.xquery";
 import module namespace labels = "aqd-labels" at "aqd-labels.xquery";
 import module namespace html = "aqd-html" at "aqd-html.xquery";
+import module namespace dd = "aqd-dd" at "aqd-dd.xquery";
 import module namespace vocabulary = "aqd-vocabulary" at "aqd-vocabulary.xquery";
 import module namespace query = "aqd-query" at "aqd-query.xquery";
 import module namespace errors = "aqd-errors" at "aqd-errors.xquery";
@@ -293,9 +294,17 @@ let $M15invalid :=
     }
 
 (: M18 :)
+let $M18count := count($docRoot//aqd:AQD_Model/ef:observingCapability/ef:ObservingCapability/ef:observedProperty)
 let $M18invalid :=
     try {
-        xmlconv:checkVocabularyConceptValues($source_url, "ef:ObservingCapability", "ef:observedProperty", $vocabulary:POLLUTANT_VOCABULARY)
+        let $valid := dd:getValidConcepts($vocabulary:POLLUTANT_VOCABULARY || "rdf")
+        for $x in $docRoot//aqd:AQD_Model/ef:observingCapability/ef:ObservingCapability/ef:observedProperty
+        where not($x/@xlink:href = $valid)
+        return
+            <tr>
+                <td title="aqd:AQD_Model">{data($x/../../../ef:inspireId/base:Identifier/base:localId)}</td>
+                <td title="ef:observedProperty">{data($x/@xlink:href)}</td>
+            </tr>
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
@@ -690,7 +699,7 @@ let $M43invalid :=
         {html:buildResultRows("M7.1", $labels:M7.1, $labels:M7.1_SHORT, $M7.1invalid, "base:Identifier/base:namespace", "All values are valid", " invalid namespaces", "", $errors:ERROR)}
         {html:buildResultRows("M12", $labels:M12, $labels:M12_SHORT, $M12invalid, "aqd:AQD_Model/@gml:id","All srsName attributes are valid"," invalid attribute","",$errors:ERROR)}
         {html:buildResultRows("M15", $labels:M15, $labels:M15_SHORT, $M15invalid, "", concat(fn:string(count($M15invalid))," errors found"), "", "",$errors:ERROR)}
-        {html:buildResultRowsWithTotalCount_M("M18", $labels:M18, $labels:M18_SHORT, $M18invalid, "ef:observedProperty", "", "", "", $errors:ERROR)}
+        {html:build2("M18", $labels:M18, $labels:M18_SHORT, $M18invalid, "ef:observedProperty", "All values are valid", "record", "", $errors:ERROR)}
         {html:buildResultRows("M19", $labels:M19, $labels:M19_SHORT, $M19invalid,"aqd:AQD_Model/@gml:id", "All attributes is invalid", " invalid attribute", "",$errors:WARNING)}
         {html:buildResultRows("M23", $labels:M23, $labels:M23_SHORT, $M23invalid, "", concat(fn:string(count($M23invalid))," errors found"), "", "",$errors:ERROR)}
         {html:buildResultRows("M24", $labels:M24, $labels:M24_SHORT, $M24invalid, "", concat(fn:string(count($M24invalid))," errors found"), "", "",$errors:ERROR)}
@@ -706,149 +715,6 @@ let $M43invalid :=
         {html:buildResultRows("M41.1", $labels:M41.1, $labels:M41.1_SHORT, $M41.1invalid, "base:Identifier/base:namespace", "All values are valid", " invalid namespaces", "", $errors:ERROR)}
         {html:buildResultRows("M43", $labels:M43, $labels:M43_SHORT, $M43invalid, "aqd:AQD_ModelArea/@gml:id","All srsDimension attributes are valid"," invalid attribute", "",$errors:ERROR)}
     </table>
-};
-
-declare function xmlconv:checkVocabularyConceptValues($source_url as xs:string, $featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string) as element(tr)* {
-    xmlconv:checkVocabularyConceptValues($source_url, $featureType, $element, $vocabularyUrl, "")
-};
-
-declare function xmlconv:checkVocabularyConceptValues($source_url as xs:string, $featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string, $vocabularyType as xs:string) as element(tr)* {
-    if (doc-available($source_url)) then
-        let $sparql :=
-            if ($vocabularyType = "collection") then
-                query:getCollectionConceptUrlSparql($vocabularyUrl)
-            else
-                query:getConceptUrlSparqlB($vocabularyUrl)
-        let $crConcepts := sparqlx:executeSparqlQuery($sparql)
-        for $rec in doc($source_url)//descendant::*[name()=$featureType]
-        for $conceptUrl in $rec/child::*[name() = $element]/@xlink:href
-        let $conceptUrl := normalize-space($conceptUrl)
-        where string-length($conceptUrl) > 0
-
-        return
-            <tr isvalid="{xmlconv:isMatchingVocabCode($crConcepts, $conceptUrl)}">
-                <td title="Feature type">{ $featureType }</td>
-                <td title="gml:id">{data($rec/@gml:id)}</td>
-                <td title="ef:name">{data($rec/ef:name)}</td>
-                <td title="{$element}" style="color:red">{$conceptUrl}</td>
-            </tr>
-        else
-            ()
-};
-
-declare function xmlconv:checkVocabularyConceptValues2($source_url as xs:string, $concept , $featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string, $vocabularyType as xs:string) as element(tr)* {
-    if (doc-available($source_url)) then
-        let $sparql :=
-            if ($vocabularyType = "collection") then
-                query:getCollectionConceptUrlSparql($vocabularyUrl)
-            else
-                query:getConceptUrlSparqlB($vocabularyUrl)
-        let $crConcepts := sparqlx:executeSparqlQuery($sparql)
-        for $rec in $concept/ancestor::*[name()=$featureType]
-        for $conceptUrl in $concept
-        let $conceptUrl := normalize-space($conceptUrl)
-        where string-length($conceptUrl) > 0
-
-        return
-            <tr isvalid="{ xmlconv:isMatchingVocabCode($crConcepts, $conceptUrl) }">
-                <td title="Feature type">{ $featureType }</td>
-                <td title="gml:id">{data($rec/@gml:id)}</td>
-                <td title="ef:name">{data($rec/ef:name)}</td>
-                <td title="{ $element }" style="color:red">{$conceptUrl}</td>
-            </tr>
-        else
-            ()
-};
-
-declare function xmlconv:checkVocabularyConceptValues3($source_url as xs:string, $featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string, $vocabularyType as xs:string) {
-    if (doc-available($source_url)) then
-        let $sparql :=
-            if ($vocabularyType = "collection") then
-                query:getCollectionConceptUrlSparql($vocabularyUrl)
-            else
-                query:getConceptUrlSparqlB($vocabularyUrl)
-        let $crConcepts := sparqlx:executeSparqlQuery($sparql)
-        for $rec in doc($source_url)//descendant::*[name()=$featureType]
-        for $conceptUrl in $rec/child::*[name() = $element]
-        where  not(xmlconv:isMatchingVocabCode($crConcepts, normalize-space($conceptUrl/@xlink:href)))
-        return
-            $conceptUrl
-        else
-            ()
-};
-
-
-declare function xmlconv:checkVocabularyaqdAnalyticalTechniqueValues($source_url as xs:string, $featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string, $vocabularyType as xs:string) as element(tr)* {
-    if(doc-available($source_url)) then
-        let $sparql :=
-            if ($vocabularyType = "collection") then
-                query:getCollectionConceptUrlSparql($vocabularyUrl)
-            else
-                query:getConceptUrlSparqlB($vocabularyUrl)
-        let $crConcepts := sparqlx:executeSparqlQuery($sparql)
-        for $rec in doc($source_url)//descendant::*[name()=$featureType]
-        for $conceptUrl in $rec/child::*[name() = $element]/aqd:AnalyticalTechnique/child::*[name() = $element]/@xlink:href
-        let $conceptUrl := normalize-space($conceptUrl)
-        where string-length($conceptUrl) > 0
-        return
-            <tr isvalid="{ xmlconv:isMatchingVocabCode($crConcepts, $conceptUrl) }">
-                <td title="Feature type">{ $featureType }</td>
-                <td title="gml:id">{data($rec/@gml:id)}</td>
-                <td title="ef:name">{data($rec/ef:name)}</td>
-                <td title="{ $element }" style="color:red">{$conceptUrl}</td>
-            </tr>
-        else
-            ()
-};
-
-
-declare function xmlconv:checkVocabularyConceptEquipmentValues($source_url as xs:string,  $featureType as xs:string, $element as xs:string, $vocabularyUrl as xs:string, $vocabularyType as xs:string) as element(tr)* {
-    if (doc-available($source_url)) then
-        let $sparql :=
-            if ($vocabularyType = "collection") then
-                query:getCollectionConceptUrlSparql($vocabularyUrl)
-            else
-                query:getConceptUrlSparqlB($vocabularyUrl)
-        let $crConcepts := sparqlx:executeSparqlQuery($sparql)
-        for $rec in doc($source_url)//descendant::*[name()=$featureType]
-        for $conceptUrl in $rec/child::*[name() = $element]/*/aqd:equipment/@xlink:href
-        let $conceptUrl := normalize-space($conceptUrl)
-        where string-length($conceptUrl) > 0
-        return
-            <tr isvalid="{ xmlconv:isMatchingVocabCode($crConcepts, $conceptUrl) }">
-                <td title="Feature type">{ $featureType }</td>
-                <td title="gml:id">{data($rec/@gml:id)}</td>
-                <td title="ef:name">{data($rec/ef:name)}</td>
-                <td title="{ $element }" style="color:red">{$conceptUrl}</td>
-            </tr>
-    else
-        ()
-};
-declare function xmlconv:checkMeasurementMethodLinkValues($source_url as xs:string,  $concept,$featureType as xs:string,  $vocabularyUrl as xs:string, $vocabularyType as xs:string) as element(tr)* {
-    if (doc-available($source_url)) then
-        let $sparql :=
-            if ($vocabularyType = "collection") then
-                query:getCollectionConceptUrlSparql($vocabularyUrl)
-            else
-                query:getConceptUrlSparqlB($vocabularyUrl)
-        let $crConcepts := sparqlx:executeSparqlQuery($sparql)
-        for $conceptUrl in $concept/../../aqd:measurementMethod/aqd:MeasurementMethod/aqd:measurementMethod/@xlink:href
-            let $measurementMethodStyle := if(xmlconv:isMatchingVocabCode($crConcepts, $conceptUrl))then "" else "color:red"
-            let $analyticalTechniqueStyle := if(count($conceptUrl/../../../../*[name(.) = "aqd:analyticalTechnique"])=0)then "" else "color:red"
-            let $samplingMethod := if(count($conceptUrl/../../../../*[name(.) = "aqd:samplingMethod"])=0)then "" else "color:red"
-        return
-            <tr isvalid="{ xmlconv:isMatchingVocabCode($crConcepts, $conceptUrl) and count($conceptUrl/../../../../*[name(.) = "aqd:analyticalTechnique"])=0  and count($conceptUrl/../../../../*[name(.) = "aqd:samplingMethod"])=0}">
-                <td title="gml:id">{data($conceptUrl/../../../../@gml:id)}</td>
-                <td style="{$measurementMethodStyle}" title="{name($conceptUrl/..)}" >{data($conceptUrl)}</td>
-                <td style="{$analyticalTechniqueStyle}" title=" aqd:analyticalTechnique " >{if(count($conceptUrl/../../../../*[name(.) = "aqd:analyticalTechnique"])=0)then "Valid." else "Error, shall not be provided."}</td>
-                <td style="{$samplingMethod}" title=" aqd:samplingMethod " >{if(count($conceptUrl/../../../../*[name(.) = "aqd:samplingMethod"])=0)then "Valid." else "Error, shall not be provided."}</td>
-            </tr>
-    else
-        ()
-};
-
-declare function xmlconv:isMatchingVocabCode($crConcepts as element(sparql:result)*, $concept as xs:string) as xs:boolean {
-    count($crConcepts/sparql:binding[@name="concepturl" and sparql:uri=$concept]) > 0
 };
 
 (:
