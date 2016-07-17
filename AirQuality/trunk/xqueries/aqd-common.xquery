@@ -201,3 +201,13 @@ declare function common:getHashValue($hash as xs:string*, $key as xs:string, $se
 declare function common:includesURL($x as xs:string) {
     contains($x, "http://") or contains($x, "https://")
 };
+
+declare function common:isInvalidYear($value as xs:string?) {
+    let $year := if (empty($value)) then ()
+    else
+        if ($value castable as xs:integer) then xs:integer($value) else ()
+
+    return
+        if ((empty($year) and empty($value)) or (not(empty($year)) and $year > 1800 and $year < 9999)) then fn:false() else fn:true()
+
+};
