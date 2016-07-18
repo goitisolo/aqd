@@ -11,6 +11,23 @@ import module namespace sparqlx = "aqd-sparql" at "aqd-sparql.xquery";
 import module namespace common = "aqd-common" at "aqd-common.xquery";
 declare namespace sparql = "http://www.w3.org/2005/sparql-results#";
 
+
+(: Normal InspireId Fetch - This should be the default:)
+declare function query:getZones($url as xs:string) as xs:string {
+  "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+  PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
+  PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+  PREFIX aq: <http://reference.eionet.europa.eu/aq/ontology/>
+
+  SELECT ?inspireLabel
+  WHERE {
+      ?zone a aqd:AQD_Zone ;
+      aqd:inspireId ?inspireId .
+      ?inspireId rdfs:label ?inspireLabel .
+  FILTER (CONTAINS(str(?zone), '" || $url || "'))
+  }"
+};
+
 (: Feature Types queries - These queries return all ids of the specified feature type :)
 declare function query:getAllZoneIds($namespaces as xs:string*) as xs:string {
   "PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
@@ -441,24 +458,6 @@ declare function query:getAllAttainmentIds2($namespaces as xs:string*) as xs:str
         FILTER(str(?namespace) in ('" || string-join($namespaces, "','") || "'))
   }"
   return data(sparqlx:executeSparqlQuery($query)//sparql:binding[@name='inspireLabel']/sparql:literal)
-};
-
-(: TODO REMOVE OR FIX :)
-declare function query:getInspireId($latestZonesUrl as xs:string) as xs:string {
-  concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
-PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
-PREFIX aq: <http://reference.eionet.europa.eu/aq/ontology/>
-
-  SELECT ?zone ?inspireId ?inspireLabel ?reportingYear
-   WHERE {
-        ?zone a aqd:AQD_Zone ;
-        aqd:inspireId ?inspireId .
-        ?inspireId rdfs:label ?inspireLabel .
-        ?zone aqd:residentPopulationYear ?yearElement .
-        ?yearElement rdfs:label ?reportingYear
-   FILTER (CONTAINS(str(?zone), '", $latestZonesUrl, "'))
-  }")
 };
 
 (: TODO REMOVE OR FIX :)

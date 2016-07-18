@@ -75,10 +75,10 @@ let $bDir := if (contains($source_url, "c_preliminary")) then "b_preliminary/" e
 let $cdir := if (contains($source_url, "c_preliminary")) then "c_preliminary/" else "c/"
 let $zonesUrl := concat($cdrUrl, $bDir)
 let $reportingYear := common:getReportingYear($docRoot)
-let $latestZones := query:getLatestEnvelopeByYear($zonesUrl, $reportingYear)
+let $latestEnvelopeB := query:getLatestEnvelopeByYear($zonesUrl, $reportingYear)
 let $namespaces := distinct-values($docRoot//base:namespace)
 
-let $zoneIds := if ((fn:string-length($countryCode) = 2) and exists($latestZones)) then distinct-values(data(sparqlx:executeSparqlQuery(query:getInspireId($latestZones))//sparql:binding[@name = 'inspireLabel']/sparql:literal)) else ()
+let $zoneIds := if ((fn:string-length($countryCode) = 2) and exists($latestEnvelopeB)) then distinct-values(data(sparqlx:executeSparqlQuery(query:getZones($latestEnvelopeB))//sparql:binding[@name = 'inspireLabel']/sparql:literal)) else ()
 let $countZoneIds1 := count($zoneIds)
 let $countZoneIds2 := count(distinct-values($docRoot//aqd:AQD_AssessmentRegime/aqd:zone/@xlink:href))
 
