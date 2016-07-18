@@ -82,10 +82,10 @@ let $zoneIds := if ((fn:string-length($countryCode) = 2) and exists($latestZones
 let $countZoneIds1 := count($zoneIds)
 let $countZoneIds2 := count(distinct-values($docRoot//aqd:AQD_AssessmentRegime/aqd:zone/@xlink:href))
 
-let $latestBenvelope := query:getLatestEnvelopeS($cdrUrl || "b/")
-let $latestCenvelope := query:getLatestEnvelopeByYear($cdrUrl || "c/", $reportingYear)
+let $latestenvelopeB := query:getLatestEnvelopeS($cdrUrl || "b/")
+let $latestenvelopeC := query:getLatestEnvelopeByYear($cdrUrl || "c/", $reportingYear)
 let $latestMenvelope := query:getLatestEnvelopeS($cdrUrl || "d/")
-let $knownRegimes := if (exists($latestCenvelope)) then query:getLatestRegimeIds($latestCenvelope) else ()
+let $knownRegimes := if (exists($latestenvelopeC)) then query:getLatestRegimeIds($latestenvelopeC) else ()
 let $allRegimes := query:getAllRegimeIds($namespaces)
 let $countRegimes := count($docRoot//aqd:AQD_AssessmentRegime)
 
@@ -878,7 +878,7 @@ let $C28invalid :=
 let $C31table :=
     try {
         let $C31ResultB :=
-            for $i in sparqlx:run(query:getC31($latestBenvelope))
+            for $i in sparqlx:run(query:getC31($latestenvelopeB))
             return
                 <result>
                     <pollutantName>{string($i/sparql:binding[@name = "Pollutant"]/sparql:literal)}</pollutantName>

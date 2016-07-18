@@ -508,78 +508,58 @@ declare function query:getC31($cdrUrl as xs:string) as xs:string {
   }"
 };
 
-(: TODO REMOVE ORDER BY :)
-declare function query:getG14($countryCode as xs:string) as xs:string {
+declare function query:getG14($envelopeB as xs:string, $envelopeC as xs:string) as xs:string {
   "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX aqr: <http://reference.eionet.europa.eu/aq/ontology/>
-PREFIX aq: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
-PREFIX aqdd: <http://dd.eionet.europa.eu/property/>
+PREFIX aq: <http://reference.eionet.europa.eu/aq/ontology/>
+PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+PREFIX prop: <http://dd.eionet.europa.eu/property/>
 
-SELECT DISTINCT
-?Namespace
-?Pollutant
-?ReportingYear
-?countOnB
-?countOnC
+  SELECT *
 
-WHERE {
+  WHERE {{
+  SELECT DISTINCT
+  ?Pollutant
+  ?ProtectionTarget
+  ?countOnB
+  ?countOnC
 
-{
+  WHERE {{
+  SELECT DISTINCT
+  ?Pollutant
+  ?ProtectionTarget
+  count(distinct bif:concat(str(?Zone), str(?pollURI), str(?ProtectionTarget))) AS ?countOnB
 
-SELECT DISTINCT
-?Namespace
-(year(?reportingBegin) as ?ReportingYear)
-?pollURI
-?countOnB
-?countOnC
+  WHERE {
+    ?zoneURI a aqd:AQD_Zone;
+       aqd:zoneCode ?Zone;
+       aqd:pollutants ?polltargetURI;
+       aqd:inspireId ?inspireId .
+       ?inspireId aqd:namespace ?Namespace .
+       ?polltargetURI aqd:protectionTarget ?ProtectionTarget .
+       ?polltargetURI aqd:pollutantCode ?pollURI .
+       ?pollURI rdfs:label ?Pollutant
+  FILTER CONTAINS(str(?zoneURI),'" || $envelopeB || "') .
+  }}
+  {
+  SELECT DISTINCT
+  ?Pollutant
+  ?ProtectionTarget
+  count(distinct bif:concat(str(?Zone), str(?pollURI), str(?ProtectionTarget))) AS ?countOnC
 
-WHERE {
-
-{
-SELECT DISTINCT
-?Namespace
-?pollURI
-count(distinct bif:concat(str(?Zone), str(?pollURI), str(?ProtectionTarget))) AS ?countOnB
-
-WHERE {
-
-  ?zoneURI a aqr:Zone;
-           aqr:zoneCode ?Zone;
-           aqr:pollutants ?polltargetURI;
-           aqr:inspireNamespace ?Namespace .
-
-?polltargetURI aqr:protectionTarget ?ProtectionTarget .
-?polltargetURI aqr:pollutantCode ?pollURI .
-
-} }
-{
-SELECT DISTINCT
-?Namespace
-?reportingBegin
-?pollURI
-count(distinct bif:concat(str(?Zone), str(?pollURI), str(?ProtectionTarget))) AS ?countOnC
-
-WHERE {
-
-  ?areURI a aqr:AssessmentRegime;
-           aqr:zone ?Zone;
-           aqr:reportingBegin ?reportingBegin ;
-           aqr:pollutant ?pollURI;
-           aqr:assessmentThreshold ?areThre ;
-           aqr:inspireNamespace ?Namespace .
-
-?areThre aqr:protectionTarget ?ProtectionTarget .
-
-} }
-
-}}
-
-?pollURI rdfs:label ?Pollutant .
-
-FILTER STRSTARTS(str(?Namespace),'" || fn:upper-case($countryCode) || "') .
-FILTER regex(?pollURI, '') .
-
-} ORDER BY ?Namespace ?ReportingYear ?Pollutant"
+  WHERE {
+    ?areURI a aqd:AQD_AssessmentRegime;
+       aqd:zone ?Zone;
+       aqd:pollutant ?pollURI;
+       aqd:assessmentThreshold ?areThre ;
+       aqd:inspireId ?inspireId .
+       ?inspireId aqd:namespace ?Namespace .
+       ?areThre aqd:environmentalObjective ?envObj .
+       ?envObj aqd:protectionTarget ?ProtectionTarget .
+       ?pollURI rdfs:label ?Pollutant .
+  FILTER CONTAINS(str(?areURI),'" || $envelopeC || "') .
+  }}
+  }}
+  }"
 };
 
 (: D :)

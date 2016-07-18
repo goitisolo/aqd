@@ -226,7 +226,7 @@ let $E8invalid :=
     try {
         let $valid := dd:getValidConcepts($vocabulary:ASSESSMENTTYPE_VOCABULARY || "rdf")
         for $x in $docRoot//om:OM_Observation/om:parameter/om:NamedValue[om:name/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/processparameter/AssessmentType"]
-        where not($x/om:value/@xlink:href = $validCodes)
+        where not($x/om:value/@xlink:href = $valid)
         return
             <tr>
                 <td title="@gml:id">{string($x/../../@gml:id)}</td>
