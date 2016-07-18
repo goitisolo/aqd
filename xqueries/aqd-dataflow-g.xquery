@@ -47,6 +47,9 @@ let $docRoot := doc($source_url)
 let $cdrUrl := common:getCdrUrl($countryCode)
 let $reportingYear := common:getReportingYear($docRoot)
 
+let $latestEnvelopeB := query:getLatestEnvelopeS($cdrUrl || "b/")
+let $latestEnvelopeC := query:getLatestEnvelopeS($cdrUrl || "c/")
+
 (: GLOBAL variables needed for all checks :)
 let $knownAttainments := distinct-values(data(sparqlx:executeSparqlQuery(query:getAllAttainmentIds($cdrUrl))//sparql:binding[@name='inspireLabel']/sparql:literal))
 let $assessmentRegimeIds := distinct-values(data(sparqlx:executeSparqlQuery(query:getAssessmentRegimeIdsC($cdrUrl))//sparql:binding[@name='inspireLabel']/sparql:literal))
@@ -440,11 +443,11 @@ let $G13binvalid :=
 let $G14table :=
     try {
         let $G14resultBC :=
-            for $i in sparqlx:executeSparqlQuery(query:getG14($countryCode))
-            where ($i/sparql:binding[@name = "ReportingYear"]/string(sparql:literal) = $reportingYear)
+            for $i in sparqlx:executeSparqlQuery(query:getG14($latestEnvelopeB, $latestEnvelopeC))
             return
                 <result>
                     <pollutantName>{string($i/sparql:binding[@name = "Pollutant"]/sparql:literal)}</pollutantName>
+                    <protectionTarget>{string($i/sparql:binding[@name = "ProtectionTarget"]/sparql:uri)}</protectionTarget>
                     <countB>{
                         let $x := string($i/sparql:binding[@name = "countOnB"]/sparql:literal)
                         return if ($x castable as xs:integer) then xs:integer($x) else 0
@@ -457,15 +460,16 @@ let $G14table :=
         let $G14tmp :=
             for $x in $docRoot//aqd:AQD_Attainment/aqd:environmentalObjective/aqd:EnvironmentalObjective/
                     aqd:protectionTarget[not(../string(aqd:objectiveType/@xlink:href) = ("http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/MO", "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/ECO"))]
-            let $pollutant := $x/../../../aqd:pollutant/@xlink:href
-            let $zone := $x/../../../aqd:zone/@xlink:href
-            let $protectiontarget := $x/@xlink:href
-            let $key := string-join(($zone, $pollutant, $protectiontarget), "#")
-            group by $pollutant
+            let $pollutant := string($x/../../../aqd:pollutant/@xlink:href)
+            let $zone := string($x/../../../aqd:zone/@xlink:href)
+            let $protectionTarget := string($x/@xlink:href)
+            let $key := string-join(($zone, $pollutant, $protectionTarget), "#")
+            group by $pollutant, $protectionTarget
             return
                 <result>
                     <pollutantName>{dd:getNameFromPollutantCode($pollutant)}</pollutantName>
                     <pollutantCode>{tokenize($pollutant, "/")[last()]}</pollutantCode>
+                    <protectionTarget>{$protectionTarget}</protectionTarget>
                     <count>{count(distinct-values($key))}</count>
                 </result>
         let $G14ResultG := filter:filterByName($G14tmp, "pollutantCode", (
@@ -475,6 +479,7 @@ let $G14table :=
             for $x in $G14resultBC
             let $vsName := string($x/pollutantName)
             let $vsCode := string($x/pollutantCode)
+            let $protectionTarget := string($x/protectionTarget)
             let $countB := number($x/countB)
             let $countC := number($x/countC)
             let $countG := number($G14ResultG[pollutantName = $vsName]/count)
@@ -491,9 +496,10 @@ let $G14table :=
         for $x in $G14resultBC
             let $vsName := string($x/pollutantName)
             let $vsCode := string($x/pollutantCode)
+            let $protectionTarget := string($x/protectionTarget)
             let $countB := string($x/countB)
             let $countC := string($x/countC)
-            let $countG := string($G14ResultG[pollutantName = $vsName]/count)
+            let $countG := string($G14ResultG[pollutantName = $vsName and protectionTarget = $protectionTarget]/count)
             return
                 <tr class="{$errorClass}">
                     <td title="Pollutant Name">{$vsName}</td>
