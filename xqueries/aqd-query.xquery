@@ -481,19 +481,17 @@ as xs:string
     }")
 };
 
-declare function query:getC31($zonesUrl as xs:string) as xs:string {
+declare function query:getC31($cdrUrl as xs:string) as xs:string {
   "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
   PREFIX aq: <http://reference.eionet.europa.eu/aq/ontology/>
   PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
 
   SELECT DISTINCT
-  ?Namespace
-  (year(xsd:dateTime(?beginPosition)) as ?ReportingYear)
   ?Pollutant
+  ?ProtectionTarget
   count(distinct bif:concat(str(?Zone), str(?pollURI), str(?ProtectionTarget))) AS ?countOnB
 
   WHERE {
-
   ?zoneURI a aqd:AQD_Zone;
   aqd:zoneCode ?Zone;
   aqd:pollutants ?polltargetURI;
@@ -506,7 +504,7 @@ declare function query:getC31($zonesUrl as xs:string) as xs:string {
   ?polltargetURI aqd:pollutantCode ?pollURI .
   ?pollURI rdfs:label ?Pollutant .
   FILTER regex(?pollURI,'') .
-  FILTER CONTAINS(str(?zoneURI),'" || $zonesUrl || "') .
+  FILTER CONTAINS(str(?zoneURI),'" || $cdrUrl || "') .
   }"
 };
 

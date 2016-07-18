@@ -82,6 +82,7 @@ let $zoneIds := if ((fn:string-length($countryCode) = 2) and exists($latestZones
 let $countZoneIds1 := count($zoneIds)
 let $countZoneIds2 := count(distinct-values($docRoot//aqd:AQD_AssessmentRegime/aqd:zone/@xlink:href))
 
+let $latestBenvelope := query:getLatestEnvelopeS($cdrUrl || "b/")
 let $latestCenvelope := query:getLatestEnvelopeByYear($cdrUrl || "c/", $reportingYear)
 let $latestMenvelope := query:getLatestEnvelopeS($cdrUrl || "d/")
 let $knownRegimes := if (exists($latestCenvelope)) then query:getLatestRegimeIds($latestCenvelope) else ()
@@ -877,11 +878,11 @@ let $C28invalid :=
 let $C31table :=
     try {
         let $C31ResultB :=
-            for $i in sparqlx:run(query:getC31($zonesUrl))
-            where ($i/sparql:binding[@name = "ReportingYear"]/string(sparql:literal) = $reportingYear)
+            for $i in sparqlx:run(query:getC31($latestBenvelope))
             return
                 <result>
                     <pollutantName>{string($i/sparql:binding[@name = "Pollutant"]/sparql:literal)}</pollutantName>
+                    <protectionTarget>{string($i/sparql:binding[@name = "ProtectionTarget"]/sparql:uri)}</protectionTarget>
                     <count>{
                         let $x := string($i/sparql:binding[@name = "countOnB"]/sparql:literal)
                         return if ($x castable as xs:integer) then xs:integer($x) else 0
@@ -892,15 +893,16 @@ let $C31table :=
             for $x in $docRoot//aqd:AQD_AssessmentRegime/aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/
                     aqd:EnvironmentalObjective/aqd:protectionTarget[not(../string(aqd:objectiveType/@xlink:href) = ("http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/MO",
                     "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/ECO"))]
-            let $pollutant := $x/../../../../../aqd:pollutant/@xlink:href
-            let $zone := $x/../../../../../aqd:zone/@xlink:href
-            let $protectiontarget := $x/@xlink:href
-            let $key := string-join(($zone, $pollutant, $protectiontarget), "#")
-            group by $pollutant
+            let $pollutant := string($x/../../../../../aqd:pollutant/@xlink:href)
+            let $zone := string($x/../../../../../aqd:zone/@xlink:href)
+            let $protectionTarget := string($x/@xlink:href)
+            let $key := string-join(($zone, $pollutant, $protectionTarget), "#")
+            group by $pollutant, $protectionTarget
             return
                 <result>
                     <pollutantName>{dd:getNameFromPollutantCode($pollutant)}</pollutantName>
                     <pollutantCode>{tokenize($pollutant, "/")[last()]}</pollutantCode>
+                    <protectionTarget>{$protectionTarget}</protectionTarget>
                     <count>{count(distinct-values($key))}</count>
                 </result>
         let $C31ResultC := filter:filterByName($C31tmp, "pollutantCode", (
@@ -910,8 +912,9 @@ let $C31table :=
             for $x in $C31ResultC
             let $vsName := string($x/pollutantName)
             let $vsCode := string($x/pollutantCode)
+            let $protectionTarget := string($x/protectionTarget)
             let $countC := number($x/count)
-            let $countB := number($C31ResultB[pollutantName = $vsName]/count)
+            let $countB := number($C31ResultB[pollutantName = $vsName and protectionTarget = $protectionTarget]/count)
             return
                 if ((string($countC), string($countB)) = "NaN") then $errors:ERROR
                 else if ($countC > $countB) then $errors:ERROR
@@ -925,12 +928,15 @@ let $C31table :=
         for $x in $C31ResultC
             let $vsName := string($x/pollutantName)
             let $vsCode := string($x/pollutantCode)
+            let $protectionTarget := string($x/protectionTarget)
             let $countC := string($x/count)
-            let $countB := string($C31ResultB[pollutantName = $vsName]/count)
+            let $countB := string($C31ResultB[pollutantName = $vsName and protectionTarget = $protectionTarget]/count)
+        order by $vsName
         return
             <tr class="{$errorClass}">
                 <td title="Pollutant Name">{$vsName}</td>
                 <td title="Pollutant Code">{$vsCode}</td>
+                <td title="Protection Target">{$protectionTarget}</td>
                 <td title="Count C">{$countC}</td>
                 <td title="Count B">{$countB}</td>
             </tr>
