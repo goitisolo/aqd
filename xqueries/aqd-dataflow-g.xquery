@@ -512,7 +512,7 @@ let $G14table :=
 (: G14.1 :)
 let $G14.1invalid :=
     try {
-        let $latestEnvelope := query:getLatestEnvelope($cdrUrl || "c/", $reportingYear)
+        let $latestEnvelope := query:getLatestEnvelopeByYear($cdrUrl || "c/", $reportingYear)
         let $all := query:getLatestRegimeIds($latestEnvelope)
         let $allLocal := data($docRoot//aqd:AQD_Attainment/aqd:assessment/@xlink:href)
         for $x in $all
