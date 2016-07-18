@@ -21,6 +21,7 @@ import module namespace labels = "aqd-labels" at "aqd-labels.xquery";
 import module namespace vocabulary = "aqd-vocabulary" at "aqd-vocabulary.xquery";
 import module namespace query = "aqd-query" at "aqd-query.xquery";
 import module namespace errors = "aqd-errors" at "aqd-errors.xquery";
+import module namespace filter = "aqd-filter" at "aqd-filter.xquery";
 import module namespace dd = "aqd-dd" at "aqd-dd.xquery";
 
 declare namespace aqd = "http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0";
@@ -180,6 +181,52 @@ let $B7table :=
                 <td title="aqd:pollutantCode">{common:checkLink($pollutant)}</td>
                 <td title="aqd:protectionTarget">{common:checkLink($protTarget)}</td>
             </tr>
+    } catch * {
+        <tr status="failed">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
+(: B8 :)
+let $B8table :=
+    try {
+        let $B8tmp :=
+            for $x in $docRoot//aqd:AQD_Zone/aqd:pollutants/aqd:Pollutant
+            let $pollutant := string($x/aqd:pollutantCode/@xlink:href)
+            let $zone := string($x/../../am:inspireId/base:Identifier/base:localId)
+            let $protectionTarget := string($x/aqd:protectionTarget/@xlink:href)
+            let $key := string-join(($zone, $pollutant, $protectionTarget), "#")
+            group by $pollutant, $protectionTarget
+            return
+                <result>
+                    <pollutantName>{dd:getNameFromPollutantCode($pollutant)}</pollutantName>
+                    <pollutantCode>{tokenize($pollutant, "/")[last()]}</pollutantCode>
+                    <protectionTarget>{$protectionTarget}</protectionTarget>
+                    <count>{count(distinct-values($key))}</count>
+                </result>
+        let $C31ResultC := filter:filterByName($B8tmp, "pollutantCode", (
+            "1", "7", "8", "9", "5", "6001", "10", "20", "5012", "5018", "5014", "5015", "5029"
+        ))
+        for $x in ("1", "7", "8", "9", "5", "6001", "10", "20", "5012", "5018", "5014", "5015", "5029")
+            for $i in ($vocabulary:PROTECTIONTARGET_VOCABULARY || "H", $vocabulary:PROTECTIONTARGET_VOCABULARY || "V")
+            let $elem := $B8tmp[pollutantCode = $x and protectionTarget = $i]
+            let $count := string($elem/count)
+            let $vsName := dd:getNameFromPollutantCode($x)
+            let $vsCode := string($vocabulary:POLLUTANT_VOCABULARY || $x)
+            let $protectionTarget := string($vocabulary:PROTECTIONTARGET_VOCABULARY || $i)
+            let $errorClass :=
+                if ($count = "" or $count = "NaN" or $count = "0") then
+                    $errors:ERROR
+                else
+                    ()
+            order by $vsName
+            return
+                <tr class="{$errorClass}">
+                    <td title="Pollutant Name">{$vsName}</td>
+                    <td title="Pollutant Code">{$vsCode}</td>
+                    <td title="Protection Target">{$protectionTarget}</td>
+                    <td title="Count">{$count}</td>
+                </tr>
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
@@ -886,6 +933,7 @@ return
         {html:buildResultsSimpleRow("B6a", $labels:B6a, $labels:B6a_SHORT, $countZonesWithAmGeometry, $errors:INFO)}
         {html:buildResultsSimpleRow("B6b", $labels:B6b, $labels:B6b_SHORT, $countZonesWithLAU, $errors:INFO )}
         {html:build0("B7", $labels:B7, $labels:B7_SHORT, $B7table, "", string(count($B7table)), "record")}
+        {html:build2("B8", $labels:B8, $labels:B8_SHORT, $B8table, "", "", "record", "", errors:getMaxError($B8table))}
         {html:buildConcatRow($duplicateGmlIds, "aqd:AQD_Zone/@gml:id - ")}
         {html:buildConcatRow($duplicateamInspireIds, "am:inspireId - ")}
         {html:buildConcatRow($duplicateaqdInspireIds, "aqd:inspireId - ")}
