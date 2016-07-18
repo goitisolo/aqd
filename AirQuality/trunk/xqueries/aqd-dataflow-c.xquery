@@ -705,7 +705,7 @@ let $C23binvalid :=
 
 let $C24invalid :=
     try {
-        let $valid := sparqlx:run(query:getG86Models($latestMenvelope))/sparql:binding[@name='inspireLabel']
+        let $valid := data(sparqlx:run(query:getG86Models($latestMenvelope))/sparql:binding[@name='inspireLabel']/sparql:literal)
         for $x in $docRoot//aqd:AQD_AssessmentRegime/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:modelAssessmentMetadata
         where not($x/@xlink:href = $valid)
         return
@@ -722,7 +722,7 @@ let $C24invalid :=
     }
 
 let $C25invalid :=
-    let $valid := sparqlx:run(query:getG86Stations($latestMenvelope))/sparql:binding[@name='inspireLabel']
+    let $valid := data(sparqlx:run(query:getG86Stations($latestMenvelope))/sparql:binding[@name='inspireLabel']/sparql:literal)
     for $x in $docRoot//aqd:AQD_AssessmentRegime/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata
     where not($x/@xlink:href = $valid)
     return
