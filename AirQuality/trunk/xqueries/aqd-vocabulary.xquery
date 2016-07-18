@@ -35,3 +35,4 @@ declare variable $vocabulary:ASSESSMENTTYPE_VOCABULARY as xs:string := "http://d
 declare variable $vocabulary:PROTECTIONTARGET_VOCABULARY as xs:string := "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/";
 declare variable $vocabulary:METEO_PARAMS_VOCABULARY_M := "http://vocab.nerc.ac.uk/collection/P07/current/";
 declare variable $vocabulary:ZONETYPE_VOCABULARY as xs:string := "http://dd.eionet.europa.eu/vocabulary/aq/zonetype/";
+declare variable $vocabulary:PROCESS_PARAMETER as xs:string := "http://dd.eionet.europa.eu/vocabulary/aq/processparameter/";

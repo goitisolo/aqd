@@ -12,6 +12,7 @@ import module namespace html = "aqd-html" at "aqd-html.xquery";
 import module namespace errors = "aqd-errors" at "aqd-errors.xquery";
 import module namespace labels = "aqd-labels" at "aqd-labels.xquery";
 import module namespace dd = "aqd-dd" at "aqd-dd.xquery";
+import module namespace vocabulary = "aqd-vocabulary" at "aqd-vocabulary.xquery";
 import module namespace query = "aqd-query" at "aqd-query.xquery";
 import module namespace sparqlx = "aqd-sparql" at "aqd-sparql.xquery";
 
@@ -149,20 +150,28 @@ let $E4invalid :=
 (: E5 - A valid delivery MUST provide an om:parameter with om:name/@xlink:href to http://dd.eionet.europa.eu/vocabulary/aq/processparameter/SamplingPoint :)
 let $E5invalid :=
     try {
-        let $all := $docRoot//om:OM_Observation
-        for $x in $all
-        let $xlinks := data($x/om:parameter/om:NamedValue/om:name/@xlink:href)
-        where not("http://dd.eionet.europa.eu/vocabulary/aq/processparameter/SamplingPoint" = $xlinks)
+        let $valid := dd:getValidConcepts($vocabulary:PROCESS_PARAMETER || "rdf")
+        let $result := for $x in $docRoot//om:OM_Observation/om:parameter/om:NamedValue/om:name
+        where not($x/@xlink:href = $valid)
         return
             <tr>
                 <td title="@gml:id">{string($x/@gml:id)}</td>
             </tr>
+        return insert-before($result, 1,
+            if (not($docRoot//om:OM_Observation/om:parameter/om:NamedValue/om:name/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/processparameter/SamplingPoint")) then
+                <tr>
+                    <td title="@gml:id">Delivery</td>
+                    <td title="Description">No parameter found using SamplingPoint</td>
+                </tr>
+            else
+                ())
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+
 (: E6 :)
 let $E6invalid :=
     try {
@@ -185,17 +194,25 @@ let $E6invalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
-(: E7 - A valid delivery SHOULD provide an om:parameter with om:name/@xlink:href to http://dd.eionet.europa.eu/vocabulary/aq/processparameter/AssessmentType :)
+(: E7 :)
 let $E7invalid :=
     try {
-        let $all := $docRoot//om:OM_Observation
-        for $x in $all
-            let $xlinks := data($x/om:parameter/om:NamedValue/om:name/@xlink:href)
-        where not("http://dd.eionet.europa.eu/vocabulary/aq/processparameter/AssessmentType" = $xlinks)
-        return
-            <tr>
-                <td title="@gml:id">{string($x/@gml:id)}</td>
-            </tr>
+        let $valid := dd:getValidConcepts($vocabulary:PROCESS_PARAMETER || "rdf")
+        let $result :=
+            for $x in $docRoot//om:OM_Observation/om:parameter/om:NamedValue/om:name
+            where not($x/@xlink:href = $valid)
+            return
+                <tr>
+                    <td title="@gml:id">{string($x/@gml:id)}</td>
+                </tr>
+        return insert-before($result, 1,
+            if (not($docRoot//om:OM_Observation/om:parameter/om:NamedValue/om:name/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/processparameter/AssessmentType")) then
+                <tr>
+                    <td title="@gml:id">Delivery</td>
+                    <td title="Description">No parameter found using AssessmentType</td>
+                </tr>
+            else
+                ())
     }
     catch * {
         <tr status="failed">
@@ -203,18 +220,17 @@ let $E7invalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+
 (: E8 :)
 let $E8invalid :=
     try {
-        let $all := $docRoot//om:OM_Observation/om:parameter/om:NamedValue[om:name/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/processparameter/AssessmentType"]
-        let $validCodes := dd:getValidConcepts("http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/rdf")
-        for $x in $all
-            let $value := string($x/om:value/@xlink:href)
-        where not($value = $validCodes)
+        let $valid := dd:getValidConcepts($vocabulary:ASSESSMENTTYPE_VOCABULARY || "rdf")
+        for $x in $docRoot//om:OM_Observation/om:parameter/om:NamedValue[om:name/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/processparameter/AssessmentType"]
+        where not($x/om:value/@xlink:href = $validCodes)
         return
             <tr>
                 <td title="@gml:id">{string($x/../../@gml:id)}</td>
-                <td title="om:value">{$value}</td>
+                <td title="om:value">{data($x/om:value/@xlink:href)}</td>
             </tr>
     }
     catch * {
