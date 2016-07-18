@@ -46,13 +46,15 @@ declare function xmlconv:checkReport($source_url as xs:string, $countryCode as x
 
 let $envelopeUrl := common:getEnvelopeXML($source_url)
 let $docRoot := doc($source_url)
+let $cdrUrl := common:getCdrUrl($countryCode)
 let $bdir := if (contains($source_url, "b_preliminary")) then "b_preliminary/" else "b/"
 let $reportingYear := common:getReportingYear($docRoot)
+let $latestEnvelopeB := query:getLatestEnvelopeS($cdrUrl || $bdir)
 let $nameSpaces := distinct-values($docRoot//base:namespace)
 let $zonesNamespaces := distinct-values($docRoot//aqd:AQD_Zone/am:inspireId/base:Identifier/base:namespace)
 
 (: Generic variables :)
-let $knownZones := distinct-values(data(sparqlx:run(query:getAllZoneIds($nameSpaces))//sparql:binding[@name = 'inspireLabel']/sparql:literal))
+let $knownZones := distinct-values(data(sparqlx:run(query:getZones($latestEnvelopeB))//sparql:binding[@name = 'inspireLabel']/sparql:literal))
 
 (: B0 :)
 let $B0invalid :=
