@@ -49,7 +49,7 @@ let $docRoot := doc($source_url)
 let $cdrUrl := common:getCdrUrl($countryCode)
 let $bdir := if (contains($source_url, "b_preliminary")) then "b_preliminary/" else "b/"
 let $reportingYear := common:getReportingYear($docRoot)
-let $latestEnvelopeB := query:getLatestEnvelopeS($cdrUrl || $bdir)
+let $latestEnvelopeB := query:getLatestEnvelopeByYear($cdrUrl || $bdir, $reportingYear)
 let $nameSpaces := distinct-values($docRoot//base:namespace)
 let $zonesNamespaces := distinct-values($docRoot//aqd:AQD_Zone/am:inspireId/base:Identifier/base:namespace)
 
