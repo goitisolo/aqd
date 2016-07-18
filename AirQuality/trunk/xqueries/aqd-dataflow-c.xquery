@@ -75,14 +75,15 @@ let $bDir := if (contains($source_url, "c_preliminary")) then "b_preliminary/" e
 let $cdir := if (contains($source_url, "c_preliminary")) then "c_preliminary/" else "c/"
 let $zonesUrl := concat($cdrUrl, $bDir)
 let $reportingYear := common:getReportingYear($docRoot)
-let $latestZones := query:getLatestEnvelope($zonesUrl, $reportingYear)
+let $latestZones := query:getLatestEnvelopeByYear($zonesUrl, $reportingYear)
 let $namespaces := distinct-values($docRoot//base:namespace)
 
 let $zoneIds := if ((fn:string-length($countryCode) = 2) and exists($latestZones)) then distinct-values(data(sparqlx:executeSparqlQuery(query:getInspireId($latestZones))//sparql:binding[@name = 'inspireLabel']/sparql:literal)) else ()
 let $countZoneIds1 := count($zoneIds)
 let $countZoneIds2 := count(distinct-values($docRoot//aqd:AQD_AssessmentRegime/aqd:zone/@xlink:href))
 
-let $latestCenvelope := query:getLatestEnvelope($cdrUrl || "c/", $reportingYear)
+let $latestCenvelope := query:getLatestEnvelopeByYear($cdrUrl || "c/", $reportingYear)
+let $latestMenvelope := query:getLatestEnvelopeS($cdrUrl || "d/")
 let $knownRegimes := if (exists($latestCenvelope)) then query:getLatestRegimeIds($latestCenvelope) else ()
 let $allRegimes := query:getAllRegimeIds($namespaces)
 let $countRegimes := count($docRoot//aqd:AQD_AssessmentRegime)
@@ -703,15 +704,33 @@ let $C23binvalid :=
     }
 
 let $C24invalid :=
-    <tr>
-        <td title="Status">Failed</td>
-        <td title="Reason">Not implemented yet</td>
-    </tr>
+    try {
+        let $valid := sparqlx:run(query:getG86Models($latestMenvelope))/sparql:binding[@name='inspireLabel']
+        for $x in $docRoot//aqd:AQD_AssessmentRegime/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:modelAssessmentMetadata
+        where not($x/@xlink:href = $valid)
+        return
+            <tr>
+                <td title="aqd:AQD_AssessmentRegime">{string($x/../../../aqd:inspireId/base:Identifier/base:localId)}</td>
+                <td title="aqd:modelAssessmentMetadata">{data($x/@xlink:href)}</td>
+            </tr>
+
+    } catch * {
+        <tr status="failed">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
+
 let $C25invalid :=
-    <tr>
-        <td title="Status">Failed</td>
-        <td title="Reason">Not implemented yet</td>
-    </tr>
+    let $valid := sparqlx:run(query:getG86Stations($latestMenvelope))/sparql:binding[@name='inspireLabel']
+    for $x in $docRoot//aqd:AQD_AssessmentRegime/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata
+    where not($x/@xlink:href = $valid)
+    return
+        <tr>
+            <td title="aqd:AQD_AssessmentRegime">{string($x/../../../aqd:inspireId/base:Identifier/base:localId)}</td>
+            <td title="aqd:samplingPointAssessmentMetadata">{data($x/@xlink:href)}</td>
+        </tr>
+
 (: C26 - :)
 let $C26table :=
     try {
@@ -1158,8 +1177,8 @@ return
         {html:buildResultRows("C21", $labels:C21, $labels:C21_SHORT, $C21invalid, "aqd:reportingMetric", "All values are valid", " invalid value", "",$errors:WARNING)}
         {html:buildResultRows("C23a", $labels:C23a, $labels:C23a_SHORT, $C23ainvalid, "aqd:AQD_AssesmentRegime", "All values are valid", " invalid value", "",$errors:ERROR)}
         {html:buildResultRows("C23b", $labels:C23b, $labels:C23b_SHORT, $C23binvalid, "aqd:AQD_AssesmentRegime", "All values are valid", " invalid value", "",$errors:WARNING)}
-        {html:buildResultRows("C24", $labels:C24, $labels:C24_SHORT, $C24invalid, "", "All values are valid", "", "", $errors:WARNING)}
-        {html:buildResultRows("C25", $labels:C25, $labels:C25_SHORT, $C25invalid, "", "All values are valid", " ", "",$errors:WARNING)}
+        {html:build2("C24", $labels:C24, $labels:C24_SHORT, $C24invalid, "", "All values are valid", "", "", $errors:WARNING)}
+        {html:build2("C25", $labels:C25, $labels:C25_SHORT, $C25invalid, "", "All values are valid", " ", "",$errors:WARNING)}
         {html:build2("C26", $labels:C26, $labels:C26_SHORT, $C26table, "", "All values are valid", " invalid value", "",$errors:WARNING)}
         {html:build2("C27", labels:interpolate($labels:C27, ($countZoneIds2, $countZoneIds1)), $labels:C27_SHORT, $C27table, "Count of unique zones matches", "", " not unique zone",  "", $errors:WARNING)}
         {html:buildResultRows("C28", $labels:C28, $labels:C28_SHORT, $C28invalid, "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "",$errors:ERROR)}

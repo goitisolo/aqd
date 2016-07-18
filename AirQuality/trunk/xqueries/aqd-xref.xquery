@@ -44,7 +44,7 @@ as xs:string
 
 declare function xmlconv:validateCode($elems, $scheme as xs:string) as element(div)* {
     let $sparql := xmlconv:getConceptUrlSparql($scheme)
-    let $crConcepts := sparqlx:executeSimpleSparqlQuery($sparql)
+    let $crConcepts := sparqlx:run($sparql)
 
     for $polCodeElem in $elems
     let $polCode := normalize-space($polCodeElem)
@@ -237,11 +237,11 @@ declare function xmlconv:getReferencedEnvelope($obligation as xs:string, $locali
         }
         ORDER BY desc(?released)")
 
-    let $envelopes := sparqlx:executeSimpleSparqlQuery($sparql)
+    let $results := sparqlx:run($sparql)
 
     let $envelopeUrl :=
-        if (count($envelopes//sparql:result) > 0 ) then
-            $envelopes//sparql:result[1]/sparql:binding[@name="envelope"]/sparql:uri
+        if (count($results) > 0 ) then
+            $results[1]/sparql:binding[@name="envelope"]/sparql:uri
         else
             ""
     return
@@ -275,9 +275,9 @@ WHERE {
     ?type IN (", string-join($prefixedTypes, ','), "))
 }")
 
-    let $featureTypes := sparqlx:executeSimpleSparqlQuery($sparql)
+    let $featureTypes := sparqlx:run($sparql)
     return
-        $featureTypes//sparql:result/sparql:binding[@name="id"]/sparql:literal
+        $featureTypes//sparql:binding[@name="id"]/sparql:literal
 };
 declare function xmlconv:checkCrosslinkReferences() {
     let $envelopeXml := doc(common:getEnvelopeXML($source_url))
@@ -288,26 +288,6 @@ declare function xmlconv:checkCrosslinkReferences() {
             <a href="{ $dataflowDEnvelopeUrl }">Dataflow D delivery.</a>
         else
             <span style="color:blue">Dataflow D delivery (not found)!</span>
-
-    (: c24 :)
-    let $modelAssessmentMetadataLinks := doc($source_url)//aqd:AQD_AssessmentRegime/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:modelAssessmentMetadata/@xlink:href
-    let $modelAssessmentMetadataResult := xmlconv:checkDataflowDReferences(
-        $dataflowDEnvelopeUrl,
-        <span>C24 - the assessment methods shall resolve to a traversable link to an assessment method /aqd:AQD_Model reported under {
-            if (count($modelAssessmentMetadataLinks)>0 ) then $dataflowDEnvelopeLink else "Dataflow D."}</span>,
-        $modelAssessmentMetadataLinks,
-        ("Model", "SamplingPoint"),
-        "/aqd:AQD_AssessmentRegime/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:modelAssessmentMetadata")
-
-    (: c25 :)
-    let $samplingPointAssessmentMetadatLinks := doc($source_url)//aqd:AQD_AssessmentRegime/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata/@xlink:href
-    let $samplingPointAssessmentMetadatResult := xmlconv:checkDataflowDReferences(
-        $dataflowDEnvelopeUrl,
-        <span>C25 - the assessment methods shall resolve to a traversable link to an assessment method /aqd:AQD_SamplingPoint reported under {
-            if (count($modelAssessmentMetadataLinks)>0 ) then $dataflowDEnvelopeLink else "Dataflow D."}</span>,
-        $samplingPointAssessmentMetadatLinks,
-        ("SamplingPoint"),
-        "/aqd:AQD_AssessmentRegime/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata")
 
     (: e5 :)
     let $omProcedureLinks := doc($source_url)//om:OM_Observation/om:procedure/@xlink:href
@@ -341,8 +321,7 @@ declare function xmlconv:checkCrosslinkReferences() {
         "/om:OM_Observation/om:featureOfInterest")
 
     return
-        ( $modelAssessmentMetadataResult,
-        $samplingPointAssessmentMetadatResult,
+        (
         $omProcedureResult,
         $omNameResult,
         $omFeatureOfInterestResult)
