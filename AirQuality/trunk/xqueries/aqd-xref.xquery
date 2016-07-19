@@ -57,8 +57,8 @@ declare function xmlconv:validateCode($elems, $scheme as xs:string) as element(d
 };
 
 
-declare function xmlconv:isMatchingVocabCode($crConcepts as element(sparql:results), $polCode as xs:string) as xs:boolean {
-    count($crConcepts//sparql:result/sparql:binding[@name="concepturl" and sparql:uri=$polCode])>0
+declare function xmlconv:isMatchingVocabCode($crConcepts as element(sparql:result)*, $polCode as xs:string) as xs:boolean {
+    count($crConcepts/sparql:binding[@name="concepturl" and sparql:uri=$polCode])>0
 };
 
 declare function xmlconv:getVocabularyMapping(){
