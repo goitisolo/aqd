@@ -43,3 +43,7 @@ declare function dd:getValidConcepts($url as xs:string) as xs:string* {
 declare function dd:getValidConceptsLC($url as xs:string) as xs:string* {
     data(doc($url)//skos:Concept[adms:status/@rdf:resource = $dd:VALIDRESOURCE]/lower-case(@rdf:about))
 };
+
+declare function dd:getRecommendedUnit($pollutant as xs:string) as xs:string* {
+    data(doc($vocabulary:POLLUTANT_VOCABULARY || "rdf")//skos:Concept[@rdf:about = $pollutant and adms:status/@rdf:resource = $dd:VALIDRESOURCE]/prop:recommendedUnit/@rdf:resource)
+};
