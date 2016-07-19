@@ -1430,6 +1430,32 @@ let $D60binvalid :=
         </tr>
     }
 
+(: D61 :)
+let $D61invalid :=
+    try {
+        for $x in $docRoot//aqd:AQD_SamplingPointProcess
+        let $analyticalTechnique := $x/aqd:analyticalTechnique/aqd:AnalyticalTechnique/aqd:otherAnalyticalTechnique
+        let $otherMeasurementMethod := $x/aqd:measurementMethod/aqd:MeasurementMethod/aqd:otherMeasurementMethod
+        let $measurementEquipment := $x/aqd:measurementEquipment/aqd:MeasurementEquipment/aqd:otherEquipment
+        let $otherSamplingMethod := $x/aqd:samplingMethod/aqd:SamplingMethod/aqd:otherSamplingMethod
+        let $samplingEquipment := $x/aqd:SamplingEquipment/aqd:SamplingEquipment/aqd:otherEquipment
+        where not(empty(($analyticalTechnique, $otherMeasurementMethod, $measurementEquipment, $otherSamplingMethod, $samplingEquipment)))
+        return
+            <tr>
+                <td title="aqd:AQD_SamplingPointProcess">{data($x/ompr:inspireId/base:Identifier/base:localId)}</td>
+                <td title="aqd:otherAnalyticalTechnique">{data($analyticalTechnique)}</td>
+                <td title="aqd:otherMeasurementMethod">{data($otherMeasurementMethod)}</td>
+                <td title="aqd:MeasurementEquipment">{data($measurementEquipment)}</td>
+                <td title="aqd:otherSamplingMethod">{data($otherSamplingMethod)}</td>
+                <td title="aqd:SamplingEquipment">{data($samplingEquipment)}</td>
+            </tr>
+    } catch * {
+        <tr status="failed">
+            <td title="Error code"> {$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+            <td></td>
+        </tr>
+    }
 (: D63 :)
 (: TODO CHECK IF THIS IS DEPRECATED :)
 let $D63invalid :=
@@ -1907,6 +1933,7 @@ return
         {html:buildResultRowsWithTotalCount_D("D59", $labels:D59, $labels:D59_SHORT, $D59invalid, "aqd:analyticalTechnique", "", "", "",$errors:ERROR)}
         {html:buildResultRowsWithTotalCount_D("D60a", $labels:D60a, $labels:D60a_SHORT, $D60ainvalid, "aqd:measurementEquipment", "", "", "",$errors:ERROR)}
         {html:buildResultRowsWithTotalCount_D("D60b", $labels:D60b, $labels:D60b_SHORT, $D60binvalid, "aqd:samplingEquipment", "", "", "",$errors:ERROR)}
+        {html:build2("D61", $labels:D61, $labels:D61_SHORT, $D61invalid, "", "All values are valid", "record", "", $errors:WARNING)}
         <!--{xmlconv:buildResultRows("D61", "Total number ./aqd:dataQuality/aqd:DataQuality/aqd:detectionLimit witch does not contain an integer, fixed point or floating point number ",
                 (), $allInvalid61, "", concat(fn:string(count($allInvalid61))," errors found"), "", "", ())}-->
         {html:buildResultRowsWithTotalCount_D("D63", $labels:D63, $labels:D63_SHORT, $D63invalid, "aqd:detectionLimit", "", "", "",$errors:ERROR)}
