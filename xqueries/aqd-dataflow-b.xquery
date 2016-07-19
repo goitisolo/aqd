@@ -35,7 +35,6 @@ declare namespace sparql = "http://www.w3.org/2005/sparql-results#";
 declare namespace xlink = "http://www.w3.org/1999/xlink";
 declare namespace ompr = "http://inspire.ec.europa.eu/schemas/ompr/2.0";
 
-declare variable $xmlconv:AQ_MANAGEMENET_ZONE := "http://inspire.ec.europa.eu/codeList/ZoneTypeCode/airQualityManagementZone";
 declare variable $xmlconv:invalidCount as xs:integer := 0;
 declare variable $xmlconv:ISO2_CODES as xs:string* := ("AL","AT","BA","BE","BG","CH","CY","CZ","DE","DK","DZ","EE","EG","ES","FI",
     "FR","GB","GR","HR","HU","IE","IL","IS","IT","JO","LB","LI","LT","LU","LV","MA","ME","MK","MT","NL","NO","PL","PS","PT",
@@ -424,11 +423,11 @@ let $B23message :=
     else
         "All values are valid"
 
-(: B24 :)
-(: ./am:zoneType value shall resolve to http://inspire.ec.europa.eu/codeList/ZoneTypeCode/airQualityManagementZone :)
+(: B24 - ./am:zoneType value shall resolve to http://inspire.ec.europa.eu/codeList/ZoneTypeCode/airQualityManagementZone :)
  let $B24invalid  :=
      try {
-         for $x in $docRoot//aqd:AQD_Zone/am:zoneType[@xlink:href != $xmlconv:AQ_MANAGEMENET_ZONE]
+         for $x in $docRoot//aqd:AQD_Zone/am:zoneType
+         where not($x/@xlink:href = $vocabulary:AQ_MANAGEMENET_ZONE) and not($x/@xlink:href = $vocabulary:AQ_MANAGEMENET_ZONE_LC)
          return
              <tr>
                 <td title="aqd:AQD_Zone">{string($x/../am:inspireId/base:Identifier/base:localId)}</td>
@@ -490,6 +489,23 @@ let $B28invalid :=
         </tr>
     }
 
+(: B30 :)
+let $B30invalid :=
+    try {
+        for $x in $docRoot//am:environmentalDomain
+        where not(starts-with($x/@xlink:href, $vocabulary:MEDIA_VALUE_VOCABULARY_BASE_URI) or starts-with($x/@xlink:href, $vocabulary:MEDIA_VALUE_VOCABULARY_BASE_URI_UC))
+        return
+            <tr>
+                <td title="aqd:AQD_Zone">{string($x/../am:inspireId/base:Identifier/base:localId)}</td>
+                <td title="am:environmentalDomain">{data($x/@xlink:href)}</td>
+            </tr>
+    } catch * {
+        <tr status="failed">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
+
 (: B31 :)
 let $B31invalid :=
     try {
@@ -532,6 +548,22 @@ let $B33invalid :=
             <tr>
                 <td title="aqd:AQD_Zone">{string($x/../../am:inspireId/base:Identifier/base:localId)}</td>
                 <td title="base2:link">{string($base2)}</td>
+            </tr>
+    } catch * {
+        <tr status="failed">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
+(: B34 :)
+let $B34invalid :=
+    try {
+        for $x in $docRoot//base2:level
+        where not(starts-with($x/@xlink:href, $vocabulary:LEGISLATION_LEVEL) or starts-with($x/@xlink:href, $vocabulary:LEGISLATION_LEVEL_LC))
+        return
+            <tr>
+                <td title="aqd:AQD_Zone">{string($x/../../../am:inspireId/base:Identifier/base:localId)}</td>
+                <td title="base2:level">{string($x/@xlink:href)}</td>
             </tr>
     } catch * {
         <tr status="failed">
@@ -948,9 +980,11 @@ return
         {html:build2("B24", $labels:B24, $labels:B24_SHORT, $B24invalid, "aqd:AQD_Zone/@gml:id", "All zoneType attributes are valid", " invalid attribute", "",$errors:WARNING)}
         {html:build2("B25", $labels:B25, $labels:B25_SHORT, $B25invalid, "gml:TimePeriod gml:id", "All positions are valid", " invalid position", "",$errors:ERROR)}
         {html:build2("B28", $labels:B28, $labels:B28_SHORT, $B28invalid, "gml:id", "All LifespanVersion values are valid", " invalid value", "",$errors:ERROR)}
+        {html:build2("B30", $labels:B30, $labels:B30_SHORT, $B30invalid, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "",$errors:WARNING)}
         {html:build2("B31", $labels:B31, $labels:B31_SHORT, $B31invalid, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "",$errors:WARNING)}
         {html:build2("B32", $labels:B32, $labels:B32_SHORT, $B32invalid, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "",$errors:WARNING)}
         {html:build2("B33", $labels:B33, $labels:B33_SHORT, $B33invalid, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "",$errors:WARNING)}
+        {html:build2("B34", $labels:B34, $labels:B34_SHORT, $B34invalid, "aqd:AQD_Zone/@gml:id", "All values are valid", " invalid value", "",$errors:WARNING)}
         {html:buildCountRow("B35", $labels:B35, $labels:B35_SHORT, $countB35duplicates, (), (), ())}
         {html:buildConcatRow($dublicateAmNamespaceAndaqdZoneCodeIds, "Duplicate base:namespace:aqd:zoneCode - ")}
         {html:build2("B36", $labels:B36, $labels:B36_SHORT, $B36invalid, "aqd:AQD_Zone/am:inspireId/base:Identifier/base:localId", "All values are valid", " invalid value", "", $errors:ERROR)}

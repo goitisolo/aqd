@@ -8,7 +8,12 @@ xquery version "3.0";
 
 module namespace vocabulary = "aqd-vocabulary";
 
+declare variable $vocabulary:AQ_MANAGEMENET_ZONE := "http://inspire.ec.europa.eu/codeList/ZoneTypeCode/airQualityManagementZone";
+declare variable $vocabulary:AQ_MANAGEMENET_ZONE_LC := "http://inspire.ec.europa.eu/codelist/ZoneTypeCode/airQualityManagementZone";
+declare variable $vocabulary:LEGISLATION_LEVEL := "http://inspire.ec.europa.eu/codeList/LegislationLevelValue/";
+declare variable $vocabulary:LEGISLATION_LEVEL_LC := "http://inspire.ec.europa.eu/codelist/LegislationLevelValue/";
 declare variable $vocabulary:MEDIA_VALUE_VOCABULARY_BASE_URI := "http://inspire.ec.europa.eu/codelist/MediaValue/";
+declare variable $vocabulary:MEDIA_VALUE_VOCABULARY_BASE_URI_UC := "http://inspire.ec.europa.eu/codeList/MediaValue/";
 declare variable $vocabulary:MEDIA_VALUE_VOCABULARY := "http://dd.eionet.europa.eu/vocabulary/inspire/MediaValue/";
 declare variable $vocabulary:ORGANISATIONAL_LEVEL_VOCABULARY := "http://dd.eionet.europa.eu/vocabulary/aq/organisationallevel/";
 declare variable $vocabulary:NETWORK_TYPE_VOCABULARY := "http://dd.eionet.europa.eu/vocabulary/aq/networktype/";
