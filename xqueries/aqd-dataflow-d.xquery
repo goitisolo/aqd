@@ -1177,7 +1177,23 @@ let $D46invalid :=
             <td></td>
         </tr>
     }
-
+(: D48 :)
+let $D48invalid :=
+    try {
+        let $valid := dd:getValidConcepts($vocabulary:ASSESSMENTTYPE_VOCABULARY || "rdf")
+        for $x in $docRoot//aqd:assessmentType
+        where not($x/@xlink:href = $valid)
+        return
+            <tr>
+                <td title="{$x/../name()}">{data($x/..//base:Identifier/base:localId)}</td>
+                <td title="aqd:assessmentType">{data($x/@xlink:href)}</td>
+            </tr>
+    }  catch * {
+        <tr status="failed">
+            <td title="Error code"> {$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
 (: D50 :)
 let $D50invalid :=
     try {
@@ -1473,6 +1489,23 @@ let $D63invalid :=
         </tr>
     }
 
+(: D65 :)
+let $D65invalid :=
+    try {
+        let $valid := dd:getValidConcepts($vocabulary:UOM_TIME || "rdf")
+        for $x in $docRoot//aqd:unit
+        where not($x/@xlink:href = $valid)
+        return
+            <tr>
+                <td title="{$x/../../../name()}">{data($x/../../..//base:Identifier/base:localId)}</td>
+                <td title="aqd:unit">{data($x/@xlink:href)}</td>
+            </tr>
+    } catch * {
+        <tr status="failed">
+            <td title="Error code"> {$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
 
 (: D67a :)
 let $D67ainvalid :=
@@ -1920,6 +1953,7 @@ return
         {html:buildResultRows("D44", $labels:D44, $labels:D44_SHORT, $D44invalid, "aqd:AQD_SamplingPoint/@gml:id", "All attributes are valid", " invalid attribute", "",$errors:ERROR)}
         {html:buildResultRows("D45", $labels:D45, $labels:D45_SHORT, $D45invalid, "", concat(fn:string(count($D45invalid))," errors found"), "", "", $errors:ERROR)}
         {html:buildResultRows("D46", $labels:D46, $labels:D46_SHORT, $D46invalid, "", "", "", "","info")}
+        {html:build2("D48", $labels:D48, $labels:D48_SHORT, $D48invalid, "", "All values are valid", "record", "", $errors:WARNING)}
         {html:build2("D50", $labels:D50, $labels:D50_SHORT, $D50invalid, "", concat(fn:string(count($D50invalid))," errors found"), "", "",$errors:ERROR)}
         {html:buildResultRows("D51", $labels:D51, $labels:D51_SHORT, $D51invalid, "", concat(fn:string(count($D51invalid))," errors found"), " invalid attribute", "", $errors:WARNING)}
         {html:buildResultRows("D53", $labels:D53, $labels:D53_SHORT, $D53invalid, "", concat(fn:string(count($D53invalid))," errors found"), " invalid attribute", "", $errors:ERROR)}
@@ -1938,6 +1972,7 @@ return
                 (), $allInvalid61, "", concat(fn:string(count($allInvalid61))," errors found"), "", "", ())}-->
         {html:buildResultRowsWithTotalCount_D("D63", $labels:D63, $labels:D63_SHORT, $D63invalid, "aqd:detectionLimit", "", "", "",$errors:ERROR)}
         {html:buildInfoTR("Checks on SamplingPointProcess(es) where the xlinked SamplingPoint has aqd:AQD_SamplingPoint/aqd:usedAQD equals TRUE (D67 to D70):")}
+        {html:build2("D65", $labels:D65, $labels:D65_SHORT, $D65invalid, "", "All values are valid", "record", "", $errors:WARNING)}
         {html:buildResultRows("D67a", $labels:D67a, $labels:D67a_SHORT, $D67ainvalid, "", concat(fn:string(count($D67ainvalid))," errors found"), "", "", $errors:ERROR)}
         {html:buildResultRows("D67b", $labels:D67b, $labels:D67b_SHORT, $D67binvalid, "", concat(fn:string(count($D67binvalid))," errors found"), "", "", $errors:WARNING)}
         {html:buildResultRows("D68", $labels:D68, $labels:D68_SHORT, $D68invalid, "", concat(fn:string(count($D68invalid))," errors found"), "", "", $errors:WARNING)}
