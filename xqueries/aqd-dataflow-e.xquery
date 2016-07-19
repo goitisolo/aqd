@@ -388,6 +388,28 @@ let $E19invalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+(: E19b :)
+let $E19binvalid :=
+    try {
+        for $x in $docRoot//om:OM_Observation
+        let $pollutant := string($x/om:observedProperty/@xlink:href)
+        let $value := string($x//swe:field[@name = 'Value']/swe:Quantity/swe:uom/@xlink:href)
+        let $recommended := dd:getRecommendedUnit(string($x/@xlink:href))
+        where not($value = $recommended)
+        return
+            <tr>
+                <td title="om:OM_Observation">{data($x/../../../@gml:id)}</td>
+                <td title="Pollutant">{$pollutant}</td>
+                <td title="Recommended Unit">{$recommended}</td>
+                <td title="swe:uom">{$value}</td>
+            </tr>
+    } catch * {
+        <tr status="failed">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
+
 (: E20 :)
 let $E20invalid :=
     try {
@@ -482,6 +504,7 @@ return
         {html:build2("E17", $labels:E17, $labels:E17_SHORT, $E17invalid, "", "All records are valid", "record", "", $errors:ERROR)}
         {html:build2("E18", $labels:E18, $labels:E18_SHORT, $E18invalid, "", "All records are valid", "record", "", $errors:ERROR)}
         {html:build2("E19", $labels:E19, $labels:E19_SHORT, $E19invalid, "", "All records are valid", "record", "", $errors:ERROR)}
+        {html:build2("E19b", $labels:E19b, $labels:E19b_SHORT, $E19binvalid, "", "All records are valid", "record", "", $errors:WARNING)}
         {html:build2("E20", $labels:E20, $labels:E20_SHORT, $E20invalid, "", "All records are valid", "record", "", $errors:ERROR)}
         {html:build2("E21", $labels:E21, $labels:E21_SHORT, $E21invalid, "", "All records are valid", "record", "", $errors:WARNING)}
         {html:build2("E26", $labels:E26, $labels:E26_SHORT, $E26invalid, "", "All records are valid", "record", "", $errors:ERROR)}
