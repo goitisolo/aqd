@@ -213,7 +213,6 @@ let $B8table :=
             let $count := string($elem/count)
             let $vsName := dd:getNameFromPollutantCode($x)
             let $vsCode := string($vocabulary:POLLUTANT_VOCABULARY || $x)
-            let $protectionTarget := string($vocabulary:PROTECTIONTARGET_VOCABULARY || $i)
             let $errorClass :=
                 if ($count = "" or $count = "NaN" or $count = "0") then
                     $errors:ERROR
@@ -224,7 +223,7 @@ let $B8table :=
                 <tr class="{$errorClass}">
                     <td title="Pollutant Name">{$vsName}</td>
                     <td title="Pollutant Code">{$vsCode}</td>
-                    <td title="Protection Target">{$protectionTarget}</td>
+                    <td title="Protection Target">{$i}</td>
                     <td title="Count">{$count}</td>
                 </tr>
     } catch * {
