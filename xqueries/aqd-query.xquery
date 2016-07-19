@@ -13,7 +13,7 @@ declare namespace sparql = "http://www.w3.org/2005/sparql-results#";
 
 
 (: Normal InspireId Fetch - This should be the default:)
-declare function query:getZones($url as xs:string) as xs:string {
+declare function query:getZones($url as xs:string?) as xs:string {  
   "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
   PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
   PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
@@ -25,7 +25,7 @@ declare function query:getZones($url as xs:string) as xs:string {
       aqd:inspireId ?inspireId .
       ?inspireId rdfs:label ?inspireLabel .
   FILTER (CONTAINS(str(?zone), '" || $url || "'))
-  }"
+  }"   
 };
 
 (: Feature Types queries - These queries return all ids of the specified feature type :)
