@@ -192,7 +192,7 @@ declare function html:buildExists($ruleCode as xs:string, $longText, $text, $rec
 };
 declare function html:buildXML($ruleCode as xs:string, $longText, $text, $records as element(tr)*, $validMessage as xs:string, $invalidMessage as xs:string, $errorLevel as xs:string) {
     let $countRecords := count($records)
-    let $ruleCode := "X" || string(random:double() * 100)
+    let $ruleCode := "XML"(: || string(random:double() * 100):)
     let $errorClass :=
         if ($countRecords > 0) then
             $errorLevel
