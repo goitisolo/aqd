@@ -153,21 +153,12 @@ let $E4invalid :=
 (: E5 - A valid delivery MUST provide an om:parameter with om:name/@xlink:href to http://dd.eionet.europa.eu/vocabulary/aq/processparameter/SamplingPoint :)
 let $E5invalid :=
     try {
-        let $valid := dd:getValidConcepts($vocabulary:PROCESS_PARAMETER || "rdf")
-        let $result := for $x in $docRoot//om:OM_Observation/om:parameter/om:NamedValue/om:name
-        where not($x/@xlink:href = $valid)
+        for $x in $docRoot//om:OM_Observation
+        where not($x/om:parameter/om:NamedValue/om:name/@xlink:href = $vocabulary:PROCESS_PARAMETER || "SamplingPoint")
         return
-            <tr>
-                <td title="@gml:id">{string($x/@gml:id)}</td>
-            </tr>
-        return insert-before($result, 1,
-            if (not($docRoot//om:OM_Observation/om:parameter/om:NamedValue/om:name/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/processparameter/SamplingPoint")) then
-                <tr>
-                    <td title="@gml:id">Delivery</td>
-                    <td title="Description">No parameter found using SamplingPoint</td>
-                </tr>
-            else
-                ())
+        <tr>
+            <td title="@gml:id">{string($x/@gml:id)}</td>
+        </tr>
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
@@ -200,22 +191,12 @@ let $E6invalid :=
 (: E7 :)
 let $E7invalid :=
     try {
-        let $valid := dd:getValidConcepts($vocabulary:PROCESS_PARAMETER || "rdf")
-        let $result :=
-            for $x in $docRoot//om:OM_Observation/om:parameter/om:NamedValue/om:name
-            where not($x/@xlink:href = $valid)
-            return
-                <tr>
-                    <td title="@gml:id">{string($x/@gml:id)}</td>
-                </tr>
-        return insert-before($result, 1,
-            if (not($docRoot//om:OM_Observation/om:parameter/om:NamedValue/om:name/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/processparameter/AssessmentType")) then
-                <tr>
-                    <td title="@gml:id">Delivery</td>
-                    <td title="Description">No parameter found using AssessmentType</td>
-                </tr>
-            else
-                ())
+        for $x in $docRoot//om:OM_Observation
+        where not($x/om:parameter/om:NamedValue/om:name/@xlink:href = $vocabulary:PROCESS_PARAMETER || "AssessmentType")
+        return
+            <tr>
+                <td title="@gml:id">{string($x/@gml:id)}</td>
+            </tr>
     }
     catch * {
         <tr status="failed">
@@ -237,6 +218,25 @@ let $E8invalid :=
             </tr>
     }
     catch * {
+        <tr status="failed">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
+
+(: E9 :)
+(: TODO Check ticket for implementation :)
+let $E9invalid :=
+    try {
+        let $valid := dd:getValidConcepts($vocabulary:PROCESS_PARAMETER || "rdf")
+        for $x in $docRoot//om:OM_Observation/om:parameter/om:NamedValue/om:name
+        where not($x/@xlink:href = $valid)
+        return
+            <tr>
+                <td title="@gml:id">{string($x/../../../@gml:id)}</td>
+                <td title="om:name">{data($x/@xlink:href)}</td>
+            </tr>
+    } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
@@ -500,6 +500,7 @@ return
         {html:build2("E6", $labels:E6, $labels:E6_SHORT, $E6invalid, "", "All records are valid", "record", "", $errors:ERROR)}
         {html:build2("E7", $labels:E7, $labels:E7_SHORT, $E7invalid, "", "All records are valid", "record", "", $errors:WARNING)}
         {html:build2("E8", $labels:E8, $labels:E8_SHORT, $E8invalid, "", "All records are valid", "record", "", $errors:WARNING)}
+        {html:build2("E9", $labels:E9, $labels:E9_SHORT, $E9invalid, "", "All records are valid", "record", "", $errors:WARNING)}
         {html:build2("E10", $labels:E10, $labels:E10_SHORT, $E10invalid, "", "All records are valid", "record", "", $errors:ERROR)}
         {html:build2("E11", $labels:E11, $labels:E11_SHORT, $E11invalid, "", "All records are valid", "record", "", $errors:ERROR)}
         {html:build2("E12", $labels:E12, $labels:E12_SHORT, $E12invalid, "", "All records are valid", "record", "", $errors:ERROR)}
