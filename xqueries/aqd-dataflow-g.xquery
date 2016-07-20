@@ -478,23 +478,6 @@ let $G14table :=
         let $G14ResultG := filter:filterByName($G14tmp, "pollutantCode", (
             "1", "7", "8", "9", "5", "6001", "10", "20", "5012", "5018", "5014", "5015", "5029"
         ))
-        let $errorTmp :=
-            for $x in $G14resultBC
-            let $vsName := string($x/pollutantName)
-            let $vsCode := string($x/pollutantCode)
-            let $protectionTarget := string($x/protectionTarget)
-            let $countB := number($x/countB)
-            let $countC := number($x/countC)
-            let $countG := number($G14ResultG[pollutantName = $vsName]/count)
-            return
-                if ((string($countB), string($countC), string($countG)) = "NaN") then $errors:ERROR
-                else if ($countG > $countC) then $errors:ERROR
-                else if ($countC > $countG) then $errors:WARNING
-                else ()
-        let $errorClass :=
-            if ($errorTmp = $errors:ERROR) then $errors:ERROR
-            else if ($errorTmp = $errors:WARNING) then $errors:WARNING
-            else $errors:INFO
 
         for $x in $G14resultBC
             let $vsName := string($x/pollutantName)
@@ -503,6 +486,11 @@ let $G14table :=
             let $countB := string($x/countB)
             let $countC := string($x/countC)
             let $countG := string($G14ResultG[pollutantName = $vsName and protectionTarget = $protectionTarget]/count)
+            let $errorClass :=
+                if ((string($countB), string($countC), string($countG)) = "NaN") then $errors:ERROR
+                else if ($countG > $countC) then $errors:ERROR
+                else if ($countC > $countG) then $errors:WARNING
+                else $errors:INFO
             return
                 <tr class="{$errorClass}">
                     <td title="Pollutant Name">{$vsName}</td>

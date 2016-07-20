@@ -517,15 +517,8 @@ PREFIX prop: <http://dd.eionet.europa.eu/property/>
 
   WHERE {{
   SELECT DISTINCT
-  ?Pollutant
-  ?ProtectionTarget
-  ?countOnB
-  ?countOnC
-
-  WHERE {{
-  SELECT DISTINCT
-  ?Pollutant
-  ?ProtectionTarget
+  str(?Pollutant) as ?Pollutant
+  str(?ProtectionTarget) as ?ProtectionTarget
   count(distinct bif:concat(str(?Zone), str(?pollURI), str(?ProtectionTarget))) AS ?countOnB
 
   WHERE {
@@ -541,8 +534,8 @@ PREFIX prop: <http://dd.eionet.europa.eu/property/>
   }}
   {
   SELECT DISTINCT
-  ?Pollutant
-  ?ProtectionTarget
+  str(?Pollutant) as ?Pollutant
+  str(?ProtectionTarget) as ?ProtectionTarget
   count(distinct bif:concat(str(?Zone), str(?pollURI), str(?ProtectionTarget))) AS ?countOnC
 
   WHERE {
@@ -556,7 +549,6 @@ PREFIX prop: <http://dd.eionet.europa.eu/property/>
        ?envObj aqd:protectionTarget ?ProtectionTarget .
        ?pollURI rdfs:label ?Pollutant .
   FILTER CONTAINS(str(?areURI),'" || $envelopeC || "') .
-  }}
   }}
   }"
 };
