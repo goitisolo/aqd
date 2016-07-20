@@ -668,6 +668,23 @@ let $C21invalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+(: C22 :)
+let $C22invalid :=
+    try {
+        let $valid := dd:getValidConcepts($vocabulary:POLLUTANT_VOCABULARY || "rdf")
+        for $x in $docRoot//aqd:pollutant
+        where not($x/@xlink:href = $valid)
+        return
+            <tr>
+                <td title="aqd:AQD_AssessmentRegime">{data($x/../aqd:inspireId/base:Identifier/base:localId)}</td>
+                <td title="aqd:pollutant">{data($x/@xlink:href)}</td>
+            </tr>
+    } catch * {
+        <tr status="failed">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
 
 (: C23a :)
 let $C23ainvalid :=
@@ -1186,6 +1203,7 @@ return
         {html:buildResultRows("C19", $labels:C19, $labels:C19_SHORT, $C19invalid, "aqd:reportingMetric", "All values are valid", " invalid value", "",$errors:WARNING)}
         {html:build2("C20", $labels:C20, $labels:C20_SHORT, $C20invalid, "", "All combinations have been found", "record", "", $errors:WARNING)}
         {html:buildResultRows("C21", $labels:C21, $labels:C21_SHORT, $C21invalid, "aqd:reportingMetric", "All values are valid", " invalid value", "",$errors:WARNING)}
+        {html:buildResultRows("C22", $labels:C22, $labels:C22_SHORT, $C22invalid, "aqd:pollutant", "All values are valid", " invalid value", "",$errors:ERROR)}
         {html:buildResultRows("C23a", $labels:C23a, $labels:C23a_SHORT, $C23ainvalid, "aqd:AQD_AssesmentRegime", "All values are valid", " invalid value", "",$errors:ERROR)}
         {html:buildResultRows("C23b", $labels:C23b, $labels:C23b_SHORT, $C23binvalid, "aqd:AQD_AssesmentRegime", "All values are valid", " invalid value", "",$errors:WARNING)}
         {html:build2("C24", $labels:C24, $labels:C24_SHORT, $C24invalid, "", "All values are valid", "", "", $errors:ERROR)}
