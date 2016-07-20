@@ -1483,7 +1483,7 @@ let $D62invalid :=
         return
             <tr>
                 <td title="{$x/../../../name()}">{data($x/../../../ompr:inspireId/base:Identifier/base:localId)}</td>
-                <td title="ompr:name">{data($x/../../../ompr:inspireId/base:Identifier/base:localId)}</td>
+                <td title="ompr:name">{data($x/@xlink:href)}</td>
             </tr>
     } catch * {
         <tr status="failed">
