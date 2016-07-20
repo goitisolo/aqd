@@ -929,29 +929,17 @@ let $C31table :=
         let $C31ResultC := filter:filterByName($C31tmp, "pollutantCode", (
             "1", "7", "8", "9", "5", "6001", "10", "20", "5012", "5018", "5014", "5015", "5029"
         ))
-        let $errorTmp :=
-            for $x in $C31ResultC
-            let $vsName := string($x/pollutantName)
-            let $vsCode := string($x/pollutantCode)
-            let $protectionTarget := string($x/protectionTarget)
-            let $countC := number($x/count)
-            let $countB := number($C31ResultB[pollutantName = $vsName and protectionTarget = $protectionTarget]/count)
-            return
-                if ((string($countC), string($countB)) = "NaN") then $errors:ERROR
-                else if ($countC > $countB) then $errors:ERROR
-                else if ($countB > $countC) then $errors:WARNING
-                else ()
-        let $errorClass :=
-            if (empty($C31ResultB)) then $errors:ERROR
-            else if ($errorTmp = $errors:ERROR) then $errors:ERROR
-            else if ($errorTmp = $errors:WARNING) then $errors:WARNING
-            else $errors:INFO
         for $x in $C31ResultC
             let $vsName := string($x/pollutantName)
             let $vsCode := string($x/pollutantCode)
             let $protectionTarget := string($x/protectionTarget)
             let $countC := string($x/count)
             let $countB := string($C31ResultB[pollutantName = $vsName and protectionTarget = $protectionTarget]/count)
+            let $errorClass :=
+                if ((string($countC), string($countB)) = "NaN") then $errors:ERROR
+                else if ($countC > $countB) then $errors:ERROR
+                else if ($countB > $countC) then $errors:WARNING
+                else $errors:INFO
         order by $vsName
         return
             <tr class="{$errorClass}">

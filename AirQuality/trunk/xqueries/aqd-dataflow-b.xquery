@@ -1024,7 +1024,7 @@ return
         <h2>Check air quality zones - Dataflow B</h2>
         {
         if ( $countZones = 0) then
-            <p>No aqd:Zone elements found from this XML.</p>
+            <p>No aqd:AQD_Zone elements found in this XML.</p>
         else
             <div>
                 {
