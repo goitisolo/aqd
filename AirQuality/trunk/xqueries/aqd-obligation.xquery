@@ -29,6 +29,8 @@ import module namespace dfM = "http://converters.eionet.europa.eu/dataflowM" at 
 import module namespace dfE = "http://converters.eionet.europa.eu/dataflowE" at "aqd-dataflow-e.xquery";
 import module namespace common = "aqd-common" at "aqd-common.xquery";
 import module namespace html = "aqd-html" at "aqd-html.xquery";
+import module namespace schemax = "aqd-schema" at "aqd-schema.xquery";
+import module namespace errors = "aqd-errors" at "aqd-errors.xquery";
 
 declare namespace xmlconv = "http://converters.eionet.europa.eu";
 declare option output:method "html";
@@ -53,6 +55,7 @@ declare function xmlconv:proceed($source_url as xs:string) {
     let $envelopeUrl := common:getEnvelopeXML($source_url)
     let $obligations := if(string-length($envelopeUrl)>0) then fn:doc($envelopeUrl)/envelope/obligation else ()
     let $countryCode := common:getCountryCode($source_url)
+
 
     let $validObligations := common:getSublist($obligations,
             ($xmlconv:B_OBLIGATIONS, $xmlconv:C_OBLIGATIONS, $xmlconv:D_OBLIGATIONS, $xmlconv:G_OBLIGATIONS, $xmlconv:M_OBLIGATIONS, $xmlconv:E_OBLIGATIONS))
@@ -89,9 +92,10 @@ declare function xmlconv:proceed($source_url as xs:string) {
         else
             ()
 
-	let $messages := ($resultB, $resultC, $resultD, $resultE, $resultG, $resultM)
-	let $errorString := normalize-space(string-join($messages//p[@class='error'], ' || '))
+    let $messages := ($resultB, $resultC, $resultD, $resultE, $resultG, $resultM)
+    let $errorString := normalize-space(string-join($messages//p[@class='error'], ' || '))
     let $warningString := normalize-space(string-join($messages//p[@class='warning'], ' || '))
+
 
 	let $errorLevel :=
 		if ($errorString) then

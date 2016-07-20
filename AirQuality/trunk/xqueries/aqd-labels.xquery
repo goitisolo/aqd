@@ -14,6 +14,8 @@ declare variable $labels:SHOWERRORS := "Show Errors";
 declare variable $labels:SHOWCOMBINATIONS := "Show Combinations";
 
 (: QC Labels :)
+declare variable $labels:XML := labels:getLabel("XML", "VALIDATION");
+declare variable $labels:XML_SHORT := labels:getLabel("XML", "VALIDATION_SHORT");
 declare variable $labels:B0 := labels:getLabel("B", "B0");
 declare variable $labels:B0_SHORT :=  labels:getLabel("B", "B0_SHORT");
 declare variable $labels:B1 := labels:getLabel("B", "B1");

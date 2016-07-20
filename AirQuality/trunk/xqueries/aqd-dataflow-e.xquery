@@ -15,6 +15,7 @@ import module namespace dd = "aqd-dd" at "aqd-dd.xquery";
 import module namespace vocabulary = "aqd-vocabulary" at "aqd-vocabulary.xquery";
 import module namespace query = "aqd-query" at "aqd-query.xquery";
 import module namespace sparqlx = "aqd-sparql" at "aqd-sparql.xquery";
+import module namespace schemax = "aqd-schema" at "aqd-schema.xquery";
 
 declare namespace aqd = "http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0";
 declare namespace gml = "http://www.opengis.net/gml/3.2";
@@ -36,6 +37,8 @@ let $docRoot := doc($source_url)
 let $reportingYear := common:getReportingYear($docRoot)
 let $cdrUrl := common:getCdrUrl($countryCode)
 
+(: INFO: XML Validation check. This adds delay to the running scripts :)
+let $validationResult := schemax:validateXmlSchema($source_url)
 (: E0 :)
 let $E0invalid :=
     try {
@@ -486,6 +489,7 @@ let $E26invalid :=
 
 return
     <table class="maintable hover">
+        {html:buildXML("XML", $labels:XML, $labels:XML_SHORT, $validationResult, "This XML passed validation.", "This XML file did NOT pass the XML validation", $errors:ERROR)}
         {html:buildExists("E0", $labels:E0, $labels:E0_SHORT, $E0invalid, "New Delivery for " || $reportingYear, "Updated Delivery for " || $reportingYear, $errors:WARNING)}
         {html:build1("E01", $labels:E01, $labels:E01_SHORT, $E01table, "", string(count($E01table)), "record", "", $errors:INFO)}
         {html:build2("E1", $labels:E1, $labels:E1_SHORT, $E1invalid, "", "All records are valid", "record", "", $errors:ERROR)}

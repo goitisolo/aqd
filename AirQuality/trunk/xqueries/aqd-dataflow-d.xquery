@@ -23,6 +23,7 @@ import module namespace dd = "aqd-dd" at "aqd-dd.xquery";
 import module namespace geox = "aqd-geo" at "aqd-geo.xquery";
 import module namespace query = "aqd-query" at "aqd-query.xquery";
 import module namespace errors = "aqd-errors" at "aqd-errors.xquery";
+import module namespace schemax = "aqd-schema" at "aqd-schema.xquery";
 
 declare namespace aqd = "http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0";
 declare namespace gml = "http://www.opengis.net/gml/3.2";
@@ -74,6 +75,8 @@ let $networkNamespaces := distinct-values($docRoot//aqd:AQD_Network/ef:inspireId
 let $sampleNamespaces := distinct-values($docRoot//aqd:AQD_Sample/aqd:inspireId/base:Identifier/base:namespace)
 let $stationNamespaces := distinct-values($docRoot//aqd:AQD_Station/ef:inspireId/base:Identifier/base:namespace)
 
+(: INFO: XML Validation check. This adds delay to the running scripts :)
+let $validationResult := schemax:validateXmlSchema($source_url)
 (: D0 :)
 let $D0invalid :=
     try {
@@ -1921,6 +1924,7 @@ let $D94invalid :=
 
 return
     <table class="maintable hover">
+        {html:buildXML("XML", $labels:XML, $labels:XML_SHORT, $validationResult, "This XML passed validation.", "This XML file did NOT pass the XML validation", $errors:ERROR)}
         {html:buildExists("D0", $labels:D0, $labels:D0_SHORT, $D0invalid, "New Delivery for " || $reportingYear, "Updated Delivery for " || $reportingYear, $errors:WARNING)}
         {html:build1("D1", $labels:D1, $labels:D1_SHORT, $D1table, "", $D1sum, "", "",$errors:ERROR)}
         {html:buildSimple("D2", $labels:D2, $labels:D2_SHORT, $D2table, "", "feature type", $D2errorLevel)}

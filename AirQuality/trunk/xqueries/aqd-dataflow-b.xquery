@@ -23,6 +23,7 @@ import module namespace query = "aqd-query" at "aqd-query.xquery";
 import module namespace errors = "aqd-errors" at "aqd-errors.xquery";
 import module namespace filter = "aqd-filter" at "aqd-filter.xquery";
 import module namespace dd = "aqd-dd" at "aqd-dd.xquery";
+import module namespace schemax = "aqd-schema" at "aqd-schema.xquery";
 
 declare namespace aqd = "http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0";
 declare namespace gml = "http://www.opengis.net/gml/3.2";
@@ -52,6 +53,9 @@ let $reportingYear := common:getReportingYear($docRoot)
 let $latestEnvelopeB := query:getLatestEnvelopeByYear($cdrUrl || $bdir, $reportingYear)
 let $nameSpaces := distinct-values($docRoot//base:namespace)
 let $zonesNamespaces := distinct-values($docRoot//aqd:AQD_Zone/am:inspireId/base:Identifier/base:namespace)
+
+(: INFO: XML Validation check. This adds delay to the running scripts :)
+let $validationResult := schemax:validateXmlSchema($source_url)
 
 (: Generic variables :)
 let $knownZones := distinct-values(data(sparqlx:run(query:getZones($latestEnvelopeB))//sparql:binding[@name = 'inspireLabel']/sparql:literal))
@@ -956,6 +960,7 @@ let $B47invalid :=
 
 return
     <table class="maintable hover">
+        {html:buildXML("XML", $labels:XML, $labels:XML_SHORT, $validationResult, "This XML passed validation.", "This XML file did NOT pass the XML validation", $errors:ERROR)}
         {html:buildExists("B0", $labels:B0, $labels:B0_SHORT, $B0invalid, "New Delivery for " || $reportingYear, "Updated Delivery for " || $reportingYear, $errors:WARNING)}
         {html:buildCountRow0("B1", $labels:B1, $labels:B1_SHORT, $countZones, "", "record", $errors:INFO)}
         {html:buildSimple("B2", $labels:B2, $labels:B2_SHORT, $B2table, "", "record", $B2errorLevel)}
@@ -1029,8 +1034,8 @@ return
                         <p>This XML file passed all crucial checks.</p>
                 }
                 {
-                    if ($result//div/@class = 'warning') then
-                        <p class="warning" style="color:orange"><strong>This XML file generated warnings during the following check(s): {string-join($result//div[@class = 'warning'], ',')}</strong></p>
+                    if ($result//div/@class = $errors:WARNING) then
+                        <p class="warning" style="color:orange"><strong>This XML file generated warnings during the following check(s): {string-join($result//div[@class = $errors:WARNING], ',')}</strong></p>
                     else
                         ()
                 }
