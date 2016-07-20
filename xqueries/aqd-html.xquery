@@ -45,6 +45,12 @@ declare function html:getCSS() as element(style) {
             display:none;
             border:0px;
         }
+        .datatable > tbody > tr.warning {
+            color:red;
+        }
+        .datatable > tbody > tr.error {
+            color:red;
+        }
         .datatable > tbody > tr {
             font-size: 0.9em;
             color:#666666;
