@@ -23,6 +23,7 @@ import module namespace dd = "aqd-dd" at "aqd-dd.xquery";
 import module namespace filter = "aqd-filter" at "aqd-filter.xquery";
 import module namespace query = "aqd-query" at "aqd-query.xquery";
 import module namespace errors = "aqd-errors" at "aqd-errors.xquery";
+import module namespace schemax = "aqd-schema" at "aqd-schema.xquery";
 
 declare namespace aqd = "http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0";
 declare namespace gml = "http://www.opengis.net/gml/3.2";
@@ -88,6 +89,9 @@ let $latestMenvelope := query:getLatestEnvelopeS($cdrUrl || "d/")
 let $knownRegimes := if (exists($latestenvelopeC)) then query:getLatestRegimeIds($latestenvelopeC) else ()
 let $allRegimes := query:getAllRegimeIds($namespaces)
 let $countRegimes := count($docRoot//aqd:AQD_AssessmentRegime)
+
+(: INFO: XML Validation check. This adds delay to the running scripts :)
+let $validationResult := schemax:validateXmlSchema($source_url)
 
 (: C0 :)
 let $C0invalid :=
@@ -1158,6 +1162,7 @@ let $C42invalid :=
 
 return
     <table class="maintable hover">
+        {html:buildXML("XML", $labels:XML, $labels:XML_SHORT, $validationResult, "This XML passed validation.", "This XML file did NOT pass the XML validation", $errors:ERROR)}
         {html:buildExists("C0", $labels:C0, $labels:C0_SHORT, $C0invalid, "New Delivery for " || $reportingYear, "Updated Delivery for " || $reportingYear, $errors:WARNING)}
         {html:build1("C1", $labels:C1, $labels:C1_SHORT, $C1table, "", string(count($C1table)), "", "", $errors:ERROR)}
         {html:buildSimple("C2", $labels:C2, $labels:C2_SHORT, $C2table, "", "record", $C2errorLevel)}

@@ -23,6 +23,7 @@ import module namespace query = "aqd-query" at "aqd-query.xquery";
 import module namespace errors = "aqd-errors" at "aqd-errors.xquery";
 import module namespace dd = "aqd-dd" at "aqd-dd.xquery";
 import module namespace filter = "aqd-filter" at "aqd-filter.xquery";
+import module namespace schemax = "aqd-schema" at "aqd-schema.xquery";
 
 declare namespace aqd = "http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0";
 declare namespace gml = "http://www.opengis.net/gml/3.2";
@@ -75,6 +76,8 @@ let $samplingPointAssessmentMetadata :=
 let $namespaces := distinct-values($docRoot//base:namespace)
 let $allAttainments := query:getAllAttainmentIds2($namespaces)
 
+(: INFO: XML Validation check. This adds delay to the running scripts :)
+let $validationResult := schemax:validateXmlSchema($source_url)
 (: G0 :)
 let $G0invalid :=
     try {
@@ -1667,6 +1670,7 @@ let $G86invalid :=
 
 return
     <table class="maintable hover">
+        {html:buildXML("XML", $labels:XML, $labels:XML_SHORT, $validationResult, "This XML passed validation.", "This XML file did NOT pass the XML validation", $errors:ERROR)}
         {html:buildExists("G0", $labels:G0, $labels:G0_SHORT, $G0invalid, "New Delivery for " || $reportingYear, "Updated Delivery for " || $reportingYear, $errors:WARNING)}
         {html:build1("G1", $labels:G1, $labels:G1_SHORT, $tblAllAttainments, "", string($countAttainments), "", "",$errors:ERROR)}
         {html:buildSimple("G2", $labels:G2, $labels:G2_SHORT, $G2table, "", "", $G2errorLevel)}

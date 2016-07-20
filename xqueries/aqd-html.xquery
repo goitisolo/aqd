@@ -190,6 +190,49 @@ declare function html:buildExists($ruleCode as xs:string, $longText, $text, $rec
 
     return $result
 };
+declare function html:buildXML($ruleCode as xs:string, $longText, $text, $records as element(tr)*, $validMessage as xs:string, $invalidMessage as xs:string, $errorLevel as xs:string) {
+    let $countRecords := count($records)
+    let $ruleCode := "X" || string(random:double() * 100)
+    let $errorClass :=
+        if ($countRecords > 0) then
+            $errorLevel
+        else
+            $errors:INFO
+    let $message :=
+        if ($countRecords > 0) then
+            $invalidMessage
+        else
+            $validMessage
+    let $result :=
+            (
+                <tr>
+                    <td class="bullet">{html:getBullet($ruleCode, $errorClass)}</td>
+                    <th colspan="2">{$text} {html:getModalInfo($ruleCode, $longText)}</th>
+                    <td><span class="largeText">{$message}</span>{
+                        if ($countRecords > 0 or count($records)>0) then
+                            <a id='feedbackLink-{$ruleCode}' href='javascript:toggle("feedbackRow","feedbackLink", "{$ruleCode}")'>{$labels:SHOWRECORDS}</a>
+                        else
+                            ()
+                    }
+                    </td>
+                </tr>,
+                if (count($records) > 0) then
+                    <tr>
+                        <td></td>
+                        <td colspan="3">
+                            <table class="datatable" id="feedbackRow-{$ruleCode}">
+                                <tr>{
+                                    for $th in $records[1]//td return <th>{ data($th/@title) }</th>
+                                }</tr>
+                                {$records}
+                            </table>
+                        </td>
+                    </tr>
+                else
+                    ()
+            )
+    return $result
+};
 declare function html:buildSimple($ruleCode as xs:string, $longText, $text, $records as element(tr)*, $message as xs:string, $unit as xs:string, $errorLevel as xs:string) {
     let $countRecords := count($records)
     let $message :=
