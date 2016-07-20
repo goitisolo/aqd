@@ -38,6 +38,7 @@ declare namespace sams="http://www.opengis.net/samplingSpatial/2.0";
 declare namespace skos="http://www.w3.org/2004/02/skos/core#";
 declare namespace prop="http://dd.eionet.europa.eu/property/";
 declare namespace rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#";
+declare namespace om="http://www.opengis.net/om/2.0";
 declare namespace adms="http://www.w3.org/ns/adms#";
 
 declare variable $xmlconv:ISO2_CODES as xs:string* := ("AL", "AD", "AT","BA","BE","BG","CH","CY","CZ","DE","DK","DZ","EE","EG","ES","FI",
@@ -1472,6 +1473,25 @@ let $D61invalid :=
             <td></td>
         </tr>
     }
+
+(: D62 :)
+let $D62invalid :=
+    try {
+        let $valid := dd:getValidConcepts($vocabulary:PROCESS_PARAMETER || "rdf")
+        for $x in $docRoot//ompr:name
+        where not($x/@xlink:href = $valid)
+        return
+            <tr>
+                <td title="{$x/../../../name()}">{data($x/../../../ompr:inspireId/base:Identifier/base:localId)}</td>
+                <td title="ompr:name">{data($x/../../../ompr:inspireId/base:Identifier/base:localId)}</td>
+            </tr>
+    } catch * {
+        <tr status="failed">
+            <td title="Error code"> {$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
+
 (: D63 :)
 (: TODO CHECK IF THIS IS DEPRECATED :)
 let $D63invalid :=
@@ -1968,6 +1988,7 @@ return
         {html:buildResultRowsWithTotalCount_D("D60a", $labels:D60a, $labels:D60a_SHORT, $D60ainvalid, "aqd:measurementEquipment", "", "", "",$errors:ERROR)}
         {html:buildResultRowsWithTotalCount_D("D60b", $labels:D60b, $labels:D60b_SHORT, $D60binvalid, "aqd:samplingEquipment", "", "", "",$errors:ERROR)}
         {html:build2("D61", $labels:D61, $labels:D61_SHORT, $D61invalid, "", "All values are valid", "record", "", $errors:WARNING)}
+        {html:build2("D62", $labels:D62, $labels:D62_SHORT, $D62invalid, "", "All values are valid", "record", "", $errors:WARNING)}
         <!--{xmlconv:buildResultRows("D61", "Total number ./aqd:dataQuality/aqd:DataQuality/aqd:detectionLimit witch does not contain an integer, fixed point or floating point number ",
                 (), $allInvalid61, "", concat(fn:string(count($allInvalid61))," errors found"), "", "", ())}-->
         {html:buildResultRowsWithTotalCount_D("D63", $labels:D63, $labels:D63_SHORT, $D63invalid, "aqd:detectionLimit", "", "", "",$errors:ERROR)}
