@@ -37,6 +37,7 @@ declare namespace xlink = "http://www.w3.org/1999/xlink";
 declare namespace skos="http://www.w3.org/2004/02/skos/core#";
 declare namespace rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#";
 declare namespace prop="http://dd.eionet.europa.eu/property/";
+declare namespace adms="http://www.w3.org/ns/adms#";
 
 declare variable $xmlconv:ISO2_CODES as xs:string* := ("AL","AT","BA","BE","BG","CH","CY","CZ","DE","DK","DZ","EE","EG","ES","FI",
     "FR","GB","GR","HR","HU","IE","IL","IS","IT","JO","LB","LI","LT","LU","LV","MA","ME","MK","MT","NL","NO","PL","PS","PT",
@@ -307,37 +308,26 @@ let $C9table :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
-
 (: C10 :)
 let $C10invalid :=
     try {
-        for $aqdPollutantC10 in $docRoot//aqd:AQD_AssessmentRegime[count(aqd:pollutant) > 0 and aqd:pollutant/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1"]/aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective
-        where (($aqdPollutantC10/aqd:objectiveType/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV")
-                or ($aqdPollutantC10/aqd:reportingMetric/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/hrsAbove")
-                or ($aqdPollutantC10/aqd:protectionTarget/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"))
-                and
-                (($aqdPollutantC10/aqd:objectiveType/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV")
-                        or ($aqdPollutantC10/aqd:reportingMetric/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/daysAbove")
-                        or ($aqdPollutantC10/aqd:protectionTarget/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"))
-                and
-                (($aqdPollutantC10/aqd:objectiveType/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/CL")
-                        or ($aqdPollutantC10/aqd:reportingMetric/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean")
-                        or ($aqdPollutantC10/aqd:protectionTarget/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V"))
-                and
-                (($aqdPollutantC10/aqd:objectiveType/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/CL")
-                        or ($aqdPollutantC10/aqd:reportingMetric/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/wMean")
-                        or ($aqdPollutantC10/aqd:protectionTarget/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V"))
-        (: Please add following combination: aqd:objectiveType xlink:href attribute shall resolve to one of
-http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/ALT aqd:reportingMetric xlink:href attribute shall resolve to one of
-http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/3hAbove aqd:protectionTarget xlink:href attribute shall resolve to one of  http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H
-:)
-                and
-                (($aqdPollutantC10/aqd:objectiveType/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/ALT")
-                        or ($aqdPollutantC10/aqd:reportingMetric/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/3hAbove")
-                        or ($aqdPollutantC10/aqd:protectionTarget/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"))
+        let $all :=
+            for $x in doc($vocabulary:ENVIRONMENTALOBJECTIVE || "rdf")//skos:Concept[adms:status/@rdf:resource = $dd:VALIDRESOURCE]
+            return $x/prop:relatedPollutant/@rdf:resource || "#" || $x/prop:hasObjectiveType/@rdf:resource || "#" || $x/prop:hasReportingMetric/@rdf:resource || "#" || $x/prop:hasProtectionTarget/@rdf:resource
+
+        for $x in $docRoot//aqd:AQD_AssessmentRegime
+        let $pollutant := $x/aqd:pollutant/@xlink:href
+        let $objectiveType := $x/aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType/@xlink:href
+        let $reportingMetric := $x/aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric/@xlink:href
+        let $protectionTarget := $x/aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/@xlink:href
+        let $combination := $pollutant || "#" || $objectiveType || "#" || $reportingMetric || "#" || $protectionTarget
+        where not($combination = $all)
         return
             <tr>
-                <td title="base:localId">{string($aqdPollutantC10/../../../../aqd:inspireId/base:Identifier/base:localId)}</td>
+                <td title="aqd:AQD_AssessmentRegime">{data($x/aqd:inspireId/base:Identifier/base:localId)}</td>
+                <td title="Pollutant">{data($pollutant)}</td>
+                <td title="ReportingMetric">{data($reportingMetric)}</td>
+                <td title="ProtectionTarget">{data($protectionTarget)}</td>
             </tr>
     }  catch * {
         <tr status="failed">
@@ -345,280 +335,10 @@ http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/3hAbove aqd:protectionT
             <td title="Error description">{$err:description}</td>
         </tr>
     }
-
-(: C11 :)
-let $C11invalid :=
-    try {
-        for $aqdPollutantC11 in $docRoot//aqd:AQD_AssessmentRegime[count(aqd:pollutant) > 0 and aqd:pollutant/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/7"]/aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective
-        where (($aqdPollutantC11/aqd:objectiveType/fn:normalize-space(@xlink:href) != "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/TV")
-                or ($aqdPollutantC11/aqd:reportingMetric/fn:normalize-space(@xlink:href) != "http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/daysAbove-3yr")
-                or ($aqdPollutantC11/aqd:protectionTarget/fn:normalize-space(@xlink:href) != "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"))
-                and
-                (($aqdPollutantC11/aqd:objectiveType/fn:normalize-space(@xlink:href) != "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LTO")
-                        or ($aqdPollutantC11/aqd:reportingMetric/fn:normalize-space(@xlink:href) != "http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/daysAbove")
-                        or ($aqdPollutantC11/aqd:protectionTarget/fn:normalize-space(@xlink:href) != "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"))
-                and
-                (($aqdPollutantC11/aqd:objectiveType/fn:normalize-space(@xlink:href) != "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/TV")
-                        or ($aqdPollutantC11/aqd:reportingMetric/fn:normalize-space(@xlink:href) != "http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/AOT40c-5yr")
-                        or ($aqdPollutantC11/aqd:protectionTarget/fn:normalize-space(@xlink:href) != "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V"))
-                and
-                (($aqdPollutantC11/aqd:objectiveType/fn:normalize-space(@xlink:href) != "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LTO")
-                        or ($aqdPollutantC11/aqd:reportingMetric/fn:normalize-space(@xlink:href) != "http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/AOT40c")
-                        or ($aqdPollutantC11/aqd:protectionTarget/fn:normalize-space(@xlink:href) != "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V"))
-        (: 2 additional combinations based on #21117 :)
-                and
-                (($aqdPollutantC11/aqd:objectiveType/fn:normalize-space(@xlink:href) != "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/INT")
-                        or ($aqdPollutantC11/aqd:reportingMetric/fn:normalize-space(@xlink:href) != "http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/hrsAbove")
-                        or ($aqdPollutantC11/aqd:protectionTarget/fn:normalize-space(@xlink:href) != "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"))
-                and
-                (($aqdPollutantC11/aqd:objectiveType/fn:normalize-space(@xlink:href) != "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/ALT")
-                        or ($aqdPollutantC11/aqd:reportingMetric/fn:normalize-space(@xlink:href) != "http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/hrsAbove")
-                        or ($aqdPollutantC11/aqd:protectionTarget/fn:normalize-space(@xlink:href) != "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"))
-        return
-            <tr>
-                <td title="base:localId">{string($aqdPollutantC11/../../../../aqd:inspireId/base:Identifier/base:localId)}</td>
-            </tr>
-    }  catch * {
-        <tr status="failed">
-            <td title="Error code">{$err:code}</td>
-            <td title="Error description">{$err:description}</td>
-        </tr>
-    }
-
-(: C12 :)
-let $C12invalid :=
-    try {
-        for $aqdPollutantC12 in $docRoot//aqd:AQD_AssessmentRegime[count(aqd:pollutant) > 0 and aqd:pollutant/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/8"]/aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective
-        where (($aqdPollutantC12/aqd:objectiveType/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV")
-                or ($aqdPollutantC12/aqd:reportingMetric/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/hrsAbove")
-                or ($aqdPollutantC12/aqd:protectionTarget/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"))
-                and
-                (($aqdPollutantC12/aqd:objectiveType/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV")
-                        or ($aqdPollutantC12/aqd:reportingMetric/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean")
-                        or ($aqdPollutantC12/aqd:protectionTarget/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"))
-
-        (: 3 additional based on #21117 :)
-                and
-                (($aqdPollutantC12/aqd:objectiveType/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LVMOT")
-                        or ($aqdPollutantC12/aqd:reportingMetric/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean")
-                        or ($aqdPollutantC12/aqd:protectionTarget/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"))
-                and
-                (($aqdPollutantC12/aqd:objectiveType/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LVMOT")
-                        or ($aqdPollutantC12/aqd:reportingMetric/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/hrsAbove")
-                        or ($aqdPollutantC12/aqd:protectionTarget/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"))
-                and
-                (($aqdPollutantC12/aqd:objectiveType/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/ALT")
-                        or ($aqdPollutantC12/aqd:reportingMetric/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/3hAbove")
-                        or ($aqdPollutantC12/aqd:protectionTarget/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"))
-
-                and
-                (($aqdPollutantC12/aqd:objectiveType/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LVmaxMOT")
-                        or ($aqdPollutantC12/aqd:reportingMetric/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean")
-                        or ($aqdPollutantC12/aqd:protectionTarget/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"))
-                and
-                (($aqdPollutantC12/aqd:objectiveType/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LVmaxMOT")
-                        or ($aqdPollutantC12/aqd:reportingMetric/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/hrsAbove")
-                        or ($aqdPollutantC12/aqd:protectionTarget/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"))
-        return
-            <tr>
-                <td title="base:localId">{string($aqdPollutantC12/../../../../aqd:inspireId/base:Identifier/base:localId)}</td>
-            </tr>
-    }  catch * {
-        <tr status="failed">
-            <td title="Error code">{$err:code}</td>
-            <td title="Error description">{$err:description}</td>
-        </tr>
-    }
-
-(: C13 :)
-let $C13invalid :=
-    try {
-        for $aqdPollutantC13 in $docRoot//aqd:AQD_AssessmentRegime[count(aqd:pollutant) > 0 and aqd:pollutant/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/9"]/aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective
-        where (($aqdPollutantC13/aqd:objectiveType/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/CL")
-                or ($aqdPollutantC13/aqd:reportingMetric/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean")
-                or ($aqdPollutantC13/aqd:protectionTarget/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V"))
-                and
-                (($aqdPollutantC13/aqd:objectiveType/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/MO")
-                        or ($aqdPollutantC13/aqd:reportingMetric/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/NA")
-                        or ($aqdPollutantC13/aqd:protectionTarget/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/NA"))
-
-        return
-            <tr>
-                <td title="base:localId">{string($aqdPollutantC13/../../../../aqd:inspireId/base:Identifier/base:localId)}</td>
-            </tr>
-    }  catch * {
-        <tr status="failed">
-            <td title="Error code">{$err:code}</td>
-            <td title="Error description">{$err:description}</td>
-        </tr>
-    }
-
-
-(: C14 :)
-let $C14invalid :=
-    try {
-        for $aqdPollutantC14 in $docRoot//aqd:AQD_AssessmentRegime[count(aqd:pollutant) > 0 and aqd:pollutant/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5"]/aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective
-        where (($aqdPollutantC14/aqd:objectiveType/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV")
-                or ($aqdPollutantC14/aqd:reportingMetric/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/daysAbove")
-                or ($aqdPollutantC14/aqd:protectionTarget/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"))
-                and
-                (($aqdPollutantC14/aqd:objectiveType/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV")
-                        or ($aqdPollutantC14/aqd:reportingMetric/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean")
-                        or ($aqdPollutantC14/aqd:protectionTarget/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"))
-        return
-            <tr>
-                <td title="base:localId">{string($aqdPollutantC14/../../../../aqd:inspireId/base:Identifier/base:localId)}</td>
-            </tr>
-    }  catch * {
-        <tr status="failed">
-            <td title="Error code">{$err:code}</td>
-            <td title="Error description">{$err:description}</td>
-        </tr>
-    }
-
-(: C15 :)
-let $C15invalid :=
-    try {
-        for $aqdPollutantC15 in $docRoot//aqd:AQD_AssessmentRegime[count(aqd:pollutant) > 0 and aqd:pollutant/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/6001"]/aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective
-        where (($aqdPollutantC15/aqd:objectiveType/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/ECO")
-                or ($aqdPollutantC15/aqd:reportingMetric/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/AEI")
-                or ($aqdPollutantC15/aqd:protectionTarget/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"))
-                and
-                (($aqdPollutantC15/aqd:objectiveType/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV")
-                        or ($aqdPollutantC15/aqd:reportingMetric/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean")
-                        or ($aqdPollutantC15/aqd:protectionTarget/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"))
-        (: 2 additional in #21117 :)
-                and
-                (($aqdPollutantC15/aqd:objectiveType/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/TV")
-                        or ($aqdPollutantC15/aqd:reportingMetric/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean")
-                        or ($aqdPollutantC15/aqd:protectionTarget/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"))
-                and
-                (($aqdPollutantC15/aqd:objectiveType/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LVMOT")
-                        or ($aqdPollutantC15/aqd:reportingMetric/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean")
-                        or ($aqdPollutantC15/aqd:protectionTarget/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"))
-
-                and
-                (($aqdPollutantC15/aqd:objectiveType/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LVMOT")
-                        or ($aqdPollutantC15/aqd:reportingMetric/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean")
-                        or ($aqdPollutantC15/aqd:protectionTarget/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H-S1"))
-
-                and
-                (($aqdPollutantC15/aqd:objectiveType/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV")
-                        or ($aqdPollutantC15/aqd:reportingMetric/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean")
-                        or ($aqdPollutantC15/aqd:protectionTarget/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H-S1"))
-
-                and
-                (($aqdPollutantC15/aqd:objectiveType/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV")
-                        or ($aqdPollutantC15/aqd:reportingMetric/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean")
-                        or ($aqdPollutantC15/aqd:protectionTarget/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H-S2"))
-        (: another addition by JT :)
-                and
-                (($aqdPollutantC15/aqd:objectiveType/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/MO")
-                        or ($aqdPollutantC15/aqd:reportingMetric/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/NA")
-                        or ($aqdPollutantC15/aqd:protectionTarget/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/NA"))
-        return
-            <tr>
-                <td title="base:localId">{string($aqdPollutantC15/../../../../aqd:inspireId/base:Identifier/base:localId)}</td>
-            </tr>
-    }  catch * {
-        <tr status="failed">
-            <td title="Error code">{$err:code}</td>
-            <td title="Error description">{$err:description}</td>
-        </tr>
-    }
-
-
-(: C16 :)
-let $C16invalid :=
-    try {
-        for $aqdPollutantC16 in $docRoot//aqd:AQD_AssessmentRegime[count(aqd:pollutant) > 0 and aqd:pollutant/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/10"]/aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective
-        where ($aqdPollutantC16/aqd:objectiveType/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV")
-                or ($aqdPollutantC16/aqd:reportingMetric/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/daysAbove")
-                or ($aqdPollutantC16/aqd:protectionTarget/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H")
-        return
-            <tr>
-                <td title="base:localId">{string($aqdPollutantC16/../../../../aqd:inspireId/base:Identifier/base:localId)}</td>
-            </tr>
-    }  catch * {
-        <tr status="failed">
-            <td title="Error code">{$err:code}</td>
-            <td title="Error description">{$err:description}</td>
-        </tr>
-    }
-
-(: C17 :)
-let $C17invalid :=
-    try {
-        for $aqdPollutantC17 in $docRoot//aqd:AQD_AssessmentRegime[count(aqd:pollutant) > 0 and aqd:pollutant/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5012" or aqd:pollutant/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/20"]/aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective
-        where (($aqdPollutantC17/aqd:objectiveType/fn:normalize-space(@xlink:href) != "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV")
-                or ($aqdPollutantC17/aqd:reportingMetric/fn:normalize-space(@xlink:href) != "http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean")
-                or ($aqdPollutantC17/aqd:protectionTarget/fn:normalize-space(@xlink:href) != "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"))
-                and
-                (($aqdPollutantC17/aqd:objectiveType/fn:normalize-space(@xlink:href) != "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/MO")
-                        or ($aqdPollutantC17/aqd:reportingMetric/fn:normalize-space(@xlink:href) != "http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/NA")
-                        or ($aqdPollutantC17/aqd:protectionTarget/fn:normalize-space(@xlink:href) != "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/NA"))
-
-        return
-            <tr>
-                <td title="base:localId">{string($aqdPollutantC17/../../../../aqd:inspireId/base:Identifier/base:localId)}</td>
-            </tr>
-    }  catch * {
-        <tr status="failed">
-            <td title="Error code">{$err:code}</td>
-            <td title="Error description">{$err:description}</td>
-        </tr>
-    }
-
-(: C18 :)
-let $C18invalid :=
-    try {
-        for $aqdPollutantC18 in $docRoot//aqd:AQD_AssessmentRegime[count(aqd:pollutant) > 0 and aqd:pollutant/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5014" or aqd:pollutant/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5018"
-                or aqd:pollutant/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5015" or aqd:pollutant/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5029"]/aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective
-        where (($aqdPollutantC18/aqd:objectiveType/fn:normalize-space(@xlink:href) != "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/TV")
-                or ($aqdPollutantC18/aqd:reportingMetric/fn:normalize-space(@xlink:href) != "http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/aMean")
-                or ($aqdPollutantC18/aqd:protectionTarget/fn:normalize-space(@xlink:href) != "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H"))
-                and
-                (($aqdPollutantC18/aqd:objectiveType/fn:normalize-space(@xlink:href) != "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/MO")
-                        or ($aqdPollutantC18/aqd:reportingMetric/fn:normalize-space(@xlink:href) != "http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/NA")
-                        or ($aqdPollutantC18/aqd:protectionTarget/fn:normalize-space(@xlink:href) != "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/NA"))
-
-        return
-            <tr>
-                <td title="base:localId">{string($aqdPollutantC18/../../../../aqd:inspireId/base:Identifier/base:localId)}</td>
-            </tr>
-    }  catch * {
-        <tr status="failed">
-            <td title="Error code">{$err:code}</td>
-            <td title="Error description">{$err:description}</td>
-        </tr>
-    }
-
-(: C19 :)
-let $C19invalid :=
-    try {
-        for $aqdPollutantC19 in $docRoot//aqd:AQD_AssessmentRegime/aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective
-        let $pollutantXlinkC19 := fn:substring-after(data($aqdPollutantC19/../../../../aqd:pollutant/@xlink:href), "pollutant/")
-        where empty(index-of(('1045', '1046', '1047', '1771', '1772', '1629', '1659', '1657', '1668', '1631', '2012', '2014', '2015', '2018', '7013', '4013', '4813', '653', '5013', '5610', '5617',
-        '5759', '5626', '5655', '5763', '7029', '611', '618', '760', '627', '656', '7419', '428', '430', '432', '503', '505', '394', '447', '6005', '6006', '6007', '24', '486', '316', '6008', '6009',
-        '451', '443', '316', '441', '475', '449', '21', '431', '464', '482', '6011', '6012', '32', '25'), $pollutantXlinkC19)) = false() and
-                (($aqdPollutantC19/aqd:objectiveType/fn:normalize-space(@xlink:href) != "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/MO")
-                        or ($aqdPollutantC19/aqd:reportingMetric/fn:normalize-space(@xlink:href) != "http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/NA")
-                        or ($aqdPollutantC19/aqd:protectionTarget/fn:normalize-space(@xlink:href) != "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/NA"))
-        return
-            <tr>
-                <td title="base:localId">{string($aqdPollutantC19/../../../../aqd:inspireId/base:Identifier/base:localId)}</td>
-            </tr>
-    }  catch * {
-        <tr status="failed">
-            <td title="Error code">{$err:code}</td>
-            <td title="Error description">{$err:description}</td>
-        </tr>
-    }
-
 (: C20 :)
 let $C20invalid :=
     try {
-        let $rdf := doc("http://dd.eionet.europa.eu/vocabulary/aq/environmentalobjective/rdf")
+        let $rdf := doc($vocabulary:ENVIRONMENTALOBJECTIVE || "rdf")
         let $rdf := distinct-values(
             for $x in $rdf//skos:Concept[string-length(prop:exceedanceThreshold) > 0]
             where not($x/prop:hasObjectiveType/@rdf:resource = ($vocabulary:OBJECTIVETYPE_VOCABULARY || "MO", $vocabulary:OBJECTIVETYPE_VOCABULARY || "LVMOT", $vocabulary:OBJECTIVETYPE_VOCABULARY || "LVmaxMOT"))
@@ -1172,43 +892,34 @@ return
         {html:build1("C1", $labels:C1, $labels:C1_SHORT, $C1table, "", string(count($C1table)), "", "", $errors:ERROR)}
         {html:buildSimple("C2", $labels:C2, $labels:C2_SHORT, $C2table, "", "record", $C2errorLevel)}
         {html:buildSimple("C3", $labels:C3, $labels:C3_SHORT, $C3table, "", "record", $C3errorLevel)}
-        {html:buildResultRows("C4", $labels:C4, $labels:C4_SHORT, $C4invalid, "@gml:id", "No duplicates found", " duplicate", "",$errors:ERROR)}
-        {html:buildResultRows("C5", $labels:C5, $labels:C5_SHORT, $C5invalid, "base:localId", "No duplicates found", " duplicate", "",$errors:ERROR)}
-        {html:buildResultRows("C6", $labels:C6, $labels:C6_SHORT, $C6table, "", string(count($C6table)), "", "",$errors:INFO)}
-        {html:buildResultRows("C6.1", $labels:C6.1, $labels:C6.1_SHORT, $C6.1invalid, "base:Identifier/base:namespace", "All values are valid", " invalid namespaces", "", $errors:ERROR)}
-        {html:buildResultRows("C7", $labels:C7, $labels:C7_SHORT, $C7invalid, "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "",$errors:ERROR)}
-        {html:buildResultRows("C8", $labels:C8, $labels:C8_SHORT, $C8invalid, "", "All values are valid", " missing pollutant", "", $errors:ERROR)}
+        {html:build2("C4", $labels:C4, $labels:C4_SHORT, $C4invalid, "@gml:id", "No duplicates found", " duplicate", "",$errors:ERROR)}
+        {html:build2("C5", $labels:C5, $labels:C5_SHORT, $C5invalid, "base:localId", "No duplicates found", " duplicate", "",$errors:ERROR)}
+        {html:build2("C6", $labels:C6, $labels:C6_SHORT, $C6table, "", string(count($C6table)), "", "",$errors:INFO)}
+        {html:build2("C6.1", $labels:C6.1, $labels:C6.1_SHORT, $C6.1invalid, "base:Identifier/base:namespace", "All values are valid", " invalid namespaces", "", $errors:ERROR)}
+        {html:build2("C7", $labels:C7, $labels:C7_SHORT, $C7invalid, "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "",$errors:ERROR)}
+        {html:build2("C8", $labels:C8, $labels:C8_SHORT, $C8invalid, "", "All values are valid", " missing pollutant", "", $errors:ERROR)}
         {html:build0("C9", $labels:C9, $labels:C9_SHORT, $C9table, "", string(count($C9table)), "pollutant")}
-        {html:buildResultRows("C10", $labels:C10, $labels:C10_SHORT, $C10invalid, "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "",$errors:ERROR)}
-        {html:buildResultRows("C11", $labels:C11, $labels:C11_SHORT, $C11invalid, "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "",$errors:ERROR)}
-        {html:buildResultRows("C12", $labels:C12, $labels:C12_SHORT, $C12invalid, "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "",$errors:ERROR)}
-        {html:buildResultRows("C13", $labels:C13, $labels:C13_SHORT, $C13invalid, "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "",$errors:ERROR)}
-        {html:buildResultRows("C14", $labels:C14, $labels:C14_SHORT, $C14invalid, "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "",$errors:ERROR)}
-        {html:buildResultRows("C15", $labels:C15, $labels:C15_SHORT, $C15invalid, "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "",$errors:ERROR)}
-        {html:buildResultRows("C16", $labels:C16, $labels:C16_SHORT, $C16invalid, "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "",$errors:ERROR)}
-        {html:buildResultRows("C17", $labels:C17, $labels:C17_SHORT, $C17invalid, "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "",$errors:ERROR)}
-        {html:buildResultRows("C18", $labels:C18, $labels:C18_SHORT, $C18invalid, "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "",$errors:ERROR)}
-        {html:buildResultRows("C19", $labels:C19, $labels:C19_SHORT, $C19invalid, "aqd:reportingMetric", "All values are valid", " invalid value", "",$errors:WARNING)}
+        {html:build2("C10", $labels:C10, $labels:C10_SHORT, $C10invalid, "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "",$errors:ERROR)}
         {html:build2("C20", $labels:C20, $labels:C20_SHORT, $C20invalid, "", "All combinations have been found", "record", "", $errors:WARNING)}
-        {html:buildResultRows("C21", $labels:C21, $labels:C21_SHORT, $C21invalid, "aqd:reportingMetric", "All values are valid", " invalid value", "",$errors:WARNING)}
-        {html:buildResultRows("C22", $labels:C22, $labels:C22_SHORT, $C22invalid, "aqd:pollutant", "All values are valid", " invalid value", "",$errors:ERROR)}
-        {html:buildResultRows("C23a", $labels:C23a, $labels:C23a_SHORT, $C23ainvalid, "aqd:AQD_AssesmentRegime", "All values are valid", " invalid value", "",$errors:ERROR)}
-        {html:buildResultRows("C23b", $labels:C23b, $labels:C23b_SHORT, $C23binvalid, "aqd:AQD_AssesmentRegime", "All values are valid", " invalid value", "",$errors:WARNING)}
+        {html:build2("C21", $labels:C21, $labels:C21_SHORT, $C21invalid, "aqd:reportingMetric", "All values are valid", " invalid value", "",$errors:WARNING)}
+        {html:build2("C22", $labels:C22, $labels:C22_SHORT, $C22invalid, "aqd:pollutant", "All values are valid", " invalid value", "",$errors:ERROR)}
+        {html:build2("C23a", $labels:C23a, $labels:C23a_SHORT, $C23ainvalid, "aqd:AQD_AssesmentRegime", "All values are valid", " invalid value", "",$errors:ERROR)}
+        {html:build2("C23b", $labels:C23b, $labels:C23b_SHORT, $C23binvalid, "aqd:AQD_AssesmentRegime", "All values are valid", " invalid value", "",$errors:WARNING)}
         {html:build2("C24", $labels:C24, $labels:C24_SHORT, $C24invalid, "", "All values are valid", "", "", $errors:ERROR)}
         {html:build2("C25", $labels:C25, $labels:C25_SHORT, $C25invalid, "", "All values are valid", " ", "",$errors:ERROR)}
         {html:build2("C26", $labels:C26, $labels:C26_SHORT, $C26table, "", "All values are valid", " invalid value", "",$errors:WARNING)}
         {html:build2("C27", labels:interpolate($labels:C27, ($countZoneIds2, $countZoneIds1)), $labels:C27_SHORT, $C27table, "Count of unique zones matches", "", " not unique zone",  "", $errors:WARNING)}
-        {html:buildResultRows("C28", $labels:C28, $labels:C28_SHORT, $C28invalid, "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "",$errors:ERROR)}
+        {html:build2("C28", $labels:C28, $labels:C28_SHORT, $C28invalid, "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "",$errors:ERROR)}
         {html:build2("C29", $labels:C29, $labels:C29_SHORT,  $C29invalid, "", "All values are valid", " invalid value", "",$errors:WARNING)}
         {html:build2("C31", $labels:C31, $labels:C31_SHORT, $C31table, "", "", "record", "", errors:getMaxError($C31table))}
         {html:build2("C32", $labels:C32, $labels:C32_SHORT, $C32table, "", "All values are valid", " invalid value",  "", $errors:WARNING)}
-        {html:buildResultRows("C33", $labels:C33, $labels:C33_SHORT, $C33invalid, "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "",$errors:WARNING)}
-        {html:buildResultRows("C35", $labels:C35, $labels:C35_SHORT, $C35invalid, "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "",$errors:WARNING)}
-        {html:buildResultRows("C37", $labels:C37, $labels:C37_SHORT, $C37invalid, "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "",$errors:WARNING)}
-        {html:buildResultRows("C38", $labels:C38, $labels:C38_SHORT, $C38invalid, "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "",$errors:WARNING)}
-        {html:buildResultRows("C40", $labels:C40, $labels:C40_SHORT, $C40invalid, "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "",$errors:WARNING)}
-        {html:buildResultRows("C41", $labels:C41, $labels:C41_SHORT, $C41invalid, "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "",$errors:WARNING)}
-        {html:buildResultRows("C42", $labels:C42, $labels:C42_SHORT, $C42invalid, "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "",$errors:WARNING)}
+        {html:build2("C33", $labels:C33, $labels:C33_SHORT, $C33invalid, "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "",$errors:WARNING)}
+        {html:build2("C35", $labels:C35, $labels:C35_SHORT, $C35invalid, "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "",$errors:WARNING)}
+        {html:build2("C37", $labels:C37, $labels:C37_SHORT, $C37invalid, "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "",$errors:WARNING)}
+        {html:build2("C38", $labels:C38, $labels:C38_SHORT, $C38invalid, "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "",$errors:WARNING)}
+        {html:build2("C40", $labels:C40, $labels:C40_SHORT, $C40invalid, "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "",$errors:WARNING)}
+        {html:build2("C41", $labels:C41, $labels:C41_SHORT, $C41invalid, "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "",$errors:WARNING)}
+        {html:build2("C42", $labels:C42, $labels:C42_SHORT, $C42invalid, "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "",$errors:WARNING)}
     </table>
 };
 
