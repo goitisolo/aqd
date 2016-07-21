@@ -397,11 +397,11 @@ let $E19binvalid :=
         for $x in $docRoot//om:OM_Observation
         let $pollutant := string($x/om:observedProperty/@xlink:href)
         let $value := string($x//swe:field[@name = 'Value']/swe:Quantity/swe:uom/@xlink:href)
-        let $recommended := dd:getRecommendedUnit(string($x/@xlink:href))
+        let $recommended := dd:getRecommendedUnit($pollutant)
         where not($value = $recommended)
         return
             <tr>
-                <td title="om:OM_Observation">{data($x/../../../@gml:id)}</td>
+                <td title="om:OM_Observation">{data($x/@gml:id)}</td>
                 <td title="Pollutant">{$pollutant}</td>
                 <td title="Recommended Unit">{$recommended}</td>
                 <td title="swe:uom">{$value}</td>
