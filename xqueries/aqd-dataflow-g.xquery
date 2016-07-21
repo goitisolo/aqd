@@ -34,6 +34,9 @@ declare namespace base = "http://inspire.ec.europa.eu/schemas/base/3.3";
 declare namespace base2 = "http://inspire.ec.europa.eu/schemas/base2/1.0";
 declare namespace sparql = "http://www.w3.org/2005/sparql-results#";
 declare namespace xlink = "http://www.w3.org/1999/xlink";
+declare namespace skos="http://www.w3.org/2004/02/skos/core#";
+declare namespace prop="http://dd.eionet.europa.eu/property/";
+declare namespace rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#";
 
 declare variable $xmlconv:ISO2_CODES as xs:string* := ("AL","AT","BA","BE","BG","CH","CY","CZ","DE","DK","DZ","EE","EG","ES","FI",
     "FR","GB","GR","HR","HU","IE","IL","IS","IT","JO","LB","LI","LT","LU","LV","MA","ME","MK","MT","NL","NO","PL","PS","PT",
@@ -656,22 +659,23 @@ let $G21invalid :=
         </tr>
     }
 
-(: 22 :)
+(: G22 :)
 let $G22invalid :=
     try {
-        for $obj in $docRoot//aqd:environmentalObjective/aqd:EnvironmentalObjective
-        let $isInvalid :=
-            ($obj/aqd:protectionTarget/@xlink:href != 'http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H'
-                    and $obj/aqd:protectionTarget/@xlink:href != 'http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H-S1'
-                    and $obj/aqd:protectionTarget/@xlink:href != 'http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H-S2')
-                    and ($obj/aqd:objectiveType/@xlink:href = 'http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV')
-        where $isInvalid
+        let $environmentalObjectiveCombinations := doc("http://dd.eionet.europa.eu/vocabulary/aq/environmentalobjective/rdf")
+        for $x in $docRoot//aqd:environmentalObjective/aqd:EnvironmentalObjective
+        let $objectiveType := data($x/aqd:objectiveType/@xlink:href)
+        let $reportingMetric := data($x/aqd:reportingMetric/@xlink:href)
+        let $protectionTarget := data($x/aqd:protectionTarget/@xlink:href)
+        where (not($environmentalObjectiveCombinations//skos:Concept[prop:hasProtectionTarget/@rdf:resource = $protectionTarget
+                and prop:hasObjectiveType/@rdf:resource = $objectiveType and prop:hasReportingMetric/@rdf:resource = $reportingMetric]))
         return
             <tr>
-                <td title="aqd:AQD_Attainment">{$obj/../../aqd:inspireId/base:Identifier/base:localId/string()}</td>
-                <td title="aqd:objectiveType">{data($obj/aqd:objectiveType/@xlink:href)}</td>
-                <td title="aqd:reportingMetric">{data($obj/aqd:reportingMetric/@xlink:href)}</td>
-                <td title="aqd:protectionTarget">{data($obj/aqd:protectionTarget/@xlink:href)}</td>
+                <td title="aqd:AQD_Attainment">{data($x/../../aqd:inspireId/base:Identifier/base:localId)}</td>
+                <td title="aqd:pollutant">{data($x/../../aqd:pollutant/@xlink:href)}</td>
+                <td title="aqd:objectiveType">{data($x/aqd:objectiveType/@xlink:href)}</td>
+                <td title="aqd:reportingMetric">{data($x/aqd:reportingMetric/@xlink:href)}</td>
+                <td title="aqd:protectionTarget">{data($x/aqd:protectionTarget/@xlink:href)}</td>
             </tr>
     } catch * {
         <tr status="failed">
@@ -1680,7 +1684,7 @@ return
         {html:buildResultRowsWithTotalCount_G("G19", $labels:G19, $labels:G19_SHORT, $G19invalid, "aqd:objectivetype", "", "", "",$errors:ERROR)}
         {html:buildResultRowsWithTotalCount_G("G20", $labels:G20, $labels:G20_SHORT, $G20invalid, "aqd:reportingMetric", "", "", "",$errors:ERROR)}
         {html:buildResultRows("G21", $labels:G21, $labels:G21_SHORT, $G21invalid, "", "No invalid protection target types found", " invalid value", "",$errors:ERROR)}
-        {html:buildResultRows("G22", $labels:G22, $labels:G22_SHORT, $G22invalid, "", "No invalid objective types for Health found", " invalid value", "",$errors:ERROR)}
+        {html:build2("G22", $labels:G22, $labels:G22_SHORT, $G22invalid, "", "No invalid objective types for Health found", " invalid value", "",$errors:ERROR)}
         {html:buildResultRows("G23", $labels:G23, $labels:G23_SHORT, $G23invalid, "aqd:reportingMetric", "All values are valid", " invalid value", "",$errors:ERROR)}
         {html:buildResultRows("G24", $labels:G24, $labels:G24_SHORT, $G24invalid, "aqd:reportingMetric", "All values are valid", " invalid value", "",$errors:ERROR)}
         {html:buildResultRows("G25", $labels:G25, $labels:G25_SHORT, $G25invalid, "aqd:reportingMetric", "All values are valid", " invalid value", "",$errors:ERROR)}
