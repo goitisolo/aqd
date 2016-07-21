@@ -1440,6 +1440,7 @@ return
         {html:build2("G20", $labels:G20, $labels:G20_SHORT, $G20invalid, "aqd:reportingMetric", "All values are valid", "", "",$errors:ERROR)}
         {html:build2("G21", $labels:G21, $labels:G21_SHORT, $G21invalid, "", "No invalid protection target types found", " invalid value", "",$errors:ERROR)}
         {html:build2("G22", $labels:G22, $labels:G22_SHORT, $G22invalid, "", "No invalid objective types for Health found", " invalid value", "",$errors:ERROR)}
+        {html:buildInfoTR("Specific checks on aqd:exceedanceDescriptionBase")}
         {html:build2("G38", $labels:G38, $labels:G38_SHORT, $G38invalid, "aqd:areaClassification", "All values are valid", "", "",$errors:ERROR)}
         {html:build2("G39", $labels:G39, $labels:G39_SHORT, $G39invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
         {html:build2("G40", $labels:G40, $labels:G40_SHORT, $G40invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
@@ -1449,6 +1450,7 @@ return
         {html:build2("G45", $labels:G45, $labels:G45_SHORT, $G45invalid, "", "All values are valid", " invalid value", "", $errors:ERROR)}
         {html:build2("G46", $labels:G46, $labels:G46_SHORT, $G46invalid, "", "All values are valid", " invalid value", "", $errors:WARNING)}
         {html:build2("G47", $labels:G47, $labels:G47_SHORT, $G47invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
+        {html:buildInfoTR("Specific checks on aqd:exceedanceDescriptionAdjustment")}
         {html:build2("G52", $labels:G52, $labels:G52_SHORT, $G52invalid, "aqd:areaClassification", "", "", "", $errors:ERROR)}
         {html:build2("G53", $labels:G53, $labels:G53_SHORT, $G53invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
         {html:build2("G54", $labels:G54, $labels:G54_SHORT, $G54invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
@@ -1464,6 +1466,7 @@ return
         {html:build2("G65", $labels:G65, $labels:G65_SHORT, $G65invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
         {html:build2("G66", $labels:G66, $labels:G66_SHORT, $G66invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
         {html:build2("G67", $labels:G67, $labels:G67_SHORT, $G67invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
+        {html:buildInfoTR("Specific checks on aqd:exceedanceDescriptionFinal")}
         {html:build2("G70", $labels:G70, $labels:G70_SHORT, $G70invalid, "base:namespace", "All values are valid", " invalid value", "", $errors:ERROR)}
         {html:build2("G71", $labels:G71, $labels:G71_SHORT, $G71invalid, "base:namespace", "All values are valid", " invalid value", "", $errors:ERROR)}
         {html:build2("G72", $labels:G72, $labels:G72_SHORT, $G72invalid, "aqd:areaClassification", "All values are valid", "", "",$errors:ERROR)}
