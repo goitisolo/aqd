@@ -51,6 +51,7 @@ let $docRoot := doc($source_url)
 let $cdrUrl := common:getCdrUrl($countryCode)
 let $reportingYear := common:getReportingYear($docRoot)
 
+let $latestEnvelopeByYearB := query:getLatestEnvelopeByYear($cdrUrl || "b/", $reportingYear)
 let $latestEnvelopeB := query:getLatestEnvelopeS($cdrUrl || "b/")
 let $latestEnvelopeC := query:getLatestEnvelopeS($cdrUrl || "c/")
 
@@ -531,13 +532,17 @@ let $G14.1invalid :=
 (: G15 :)
 let $G15invalid :=
     try {
-        let $zoneLocallD := distinct-values(data(sparqlx:executeSparqlQuery(query:getZoneLocallD($cdrUrl))//sparql:binding[@name='inspireLabel']/sparql:literal))
-        for $x in $docRoot//aqd:AQD_Attainment[not(aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric/@xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/AEI")]/aqd:zone
-        where not($x/@nilReason = "inapplicable") and (not($zoneLocallD = $x/@xlink:href))
+        let $exceptions := (($vocabulary:POLLUTANT_VOCABULARY || "6001" || $vocabulary:REPMETRIC_VOCABULARY || "AEI"))
+        let $valid := distinct-values(data(sparqlx:executeSparqlQuery(query:getZones($latestEnvelopeByYearB))//sparql:binding[@name='inspireLabel']/sparql:literal))
+        for $x in $docRoot//aqd:AQD_Attainment
+        let $pollutant := data($x/aqd:pollutant/@xlink:href)
+        let $reportingMetric := data($x/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric/@xlink:href)
+        let $zone := $x/aqd:zone
+        where not(($pollutant || $reportingMetric = $exceptions and $zone/@nilReason = "inapplicable")) and not($zone/@xlink:href = $valid)
         return
             <tr>
-                <td title="aqd:AQD_Attainment">{data($x/../aqd:inspireId/base:Identifier/base:localId)}</td>
-                <td title="aqd:zone">{data($x/@xlink:href)}</td>
+                <td title="aqd:AQD_Attainment">{data($x/aqd:inspireId/base:Identifier/base:localId)}</td>
+                <td title="aqd:zone">{data($zone/@xlink:href)}</td>
             </tr>
     } catch * {
         <tr status="failed">
