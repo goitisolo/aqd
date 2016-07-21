@@ -15,6 +15,10 @@ declare variable $schemax:IGNORED := ("cvc-elt.1: Cannot find the declaration of
 "cvc-elt.4.2: Cannot resolve 'gco:RecordType_Type' to a type definition for element 'gco:Record'.",
 "cvc-elt.4.2: Cannot resolve 'ns:DataArrayType' to a type definition for element 'om:result'.",
 "cvc-elt.4.2: Cannot resolve 'ns:ReferenceType' to a type definition for element 'om:value'.");
+declare variable $schemax:IGNORED_NEW := ("cvc-elt.1.a: Cannot find the declaration of element 'gml:FeatureCollection'.",
+"cvc-elt.4.2.a: Cannot resolve 'gco:RecordType_Type' to a type definition for element 'gco:Record'.",
+"cvc-elt.4.2.a: Cannot resolve 'ns:DataArrayType' to a type definition for element 'om:result'.",
+"cvc-elt.4.2.a: Cannot resolve 'ns:ReferenceType' to a type definition for element 'om:value'.");
 
 declare function schemax:validateXmlSchema($source_url as xs:string) {
     let $successfulResult := <div class="feedbacktext">
@@ -26,7 +30,7 @@ declare function schemax:validateXmlSchema($source_url as xs:string) {
     let $validationResult := validate:xsd-report(doc($source_url))
     let $finalResult :=
         for $node in $validationResult/message
-        where not($node = $schemax:IGNORED)
+        where not($node = $schemax:IGNORED) and not($node = $schemax:IGNORED_NEW)
         return
             <tr>
                 <td title="Status">{string($node/@level)}</td>
