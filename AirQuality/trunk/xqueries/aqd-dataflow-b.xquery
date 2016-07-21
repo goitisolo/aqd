@@ -57,9 +57,6 @@ let $zonesNamespaces := distinct-values($docRoot//aqd:AQD_Zone/am:inspireId/base
 (: INFO: XML Validation check. This adds delay to the running scripts :)
 let $validationResult := schemax:validateXmlSchema($source_url)
 
-(: Generic variables :)
-let $knownZones := distinct-values(data(sparqlx:run(query:getZones($latestEnvelopeB))//sparql:binding[@name = 'inspireLabel']/sparql:literal))
-
 (: B0 :)
 let $B0invalid :=
     try {
@@ -76,6 +73,13 @@ let $B0invalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+
+(: Generic variables :)
+let $knownZones :=
+    if ($B0invalid) then
+        distinct-values(data(sparqlx:run(query:getZones($latestEnvelopeB))//sparql:binding[@name = 'inspireLabel']/sparql:literal))
+    else
+        distinct-values(data(sparqlx:run(query:getZones(query:getLatestEnvelopeByYear($cdrUrl || $bdir, $reportingYear - 1)))//sparql:binding[@name = 'inspireLabel']/sparql:literal))
 
 (: B1 :)
 let $countZones := count($docRoot//aqd:AQD_Zone)
