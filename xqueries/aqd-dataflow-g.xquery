@@ -497,7 +497,7 @@ let $G14table :=
                     else $errors:INFO
         return
             <tr class="{$errorClass}">
-                <td title="Pollutant Name">{$vsName || "(" || $G14ResultG[pollutantName = $vsName and protectionTarget = $protectionTarget]/pollutantCode || ")"}</td>
+                <td title="Pollutant Name">{$vsName || " (" || $G14ResultG[pollutantName = $vsName and protectionTarget = $protectionTarget]/pollutantCode || ")"}</td>
                 <td title="Protection Target">{$protectionTarget}</td>
                 <td title="Count B">{$countB}</td>
                 <td title="Count C">{$countC}</td>
