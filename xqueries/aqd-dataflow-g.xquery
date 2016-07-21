@@ -1426,7 +1426,7 @@ return
         {html:build2("G8", $labels:G8, $labels:G8_SHORT, $G8invalid, "base:localId", "No duplicate values found", " duplicate value", "",$errors:ERROR)}
         {html:buildUnique("G9", $labels:G9, $labels:G9_SHORT, $G9table, "", string(count($G9table)), "namespace", $errors:ERROR)}
         {html:build2("G9.1", $labels:G9.1, $labels:G9.1_SHORT, $G9.1invalid, "base:Identifier/base:namespace", "All values are valid", " invalid namespaces", "", $errors:ERROR)}
-        {html:build2("G10", $labels:G10, $labels:G10_SHORT, $G10invalid, "aqd:pollutant", "", "", "", $errors:ERROR)}
+        {html:build2("G10", $labels:G10, $labels:G10_SHORT, $G10invalid, "aqd:pollutant", "All values are valid", "", "", $errors:ERROR)}
         {html:build2("G11", $labels:G11, $labels:G11_SHORT, $G11invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
         {html:build2("G12", $labels:G12, $labels:G12_SHORT, $G12invalid, "base:namespace", "All values are valid", " invalid value", "", $errors:ERROR)}
         {html:build2("G13", $labels:G13, $labels:G13_SHORT, $G13invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
@@ -1436,11 +1436,11 @@ return
         {html:build2("G15", $labels:G15, $labels:G15_SHORT, $G15invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
         {html:build2("G17", $labels:G17, $labels:G17_SHORT, $G17invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
         {html:build2("G18", $labels:G18, $labels:G18_SHORT, $G18invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
-        {html:build2("G19", $labels:G19, $labels:G19_SHORT, $G19invalid, "aqd:objectivetype", "", "", "",$errors:ERROR)}
-        {html:build2("G20", $labels:G20, $labels:G20_SHORT, $G20invalid, "aqd:reportingMetric", "", "", "",$errors:ERROR)}
+        {html:build2("G19", $labels:G19, $labels:G19_SHORT, $G19invalid, "aqd:objectivetype", "All values are valid", "", "",$errors:ERROR)}
+        {html:build2("G20", $labels:G20, $labels:G20_SHORT, $G20invalid, "aqd:reportingMetric", "All values are valid", "", "",$errors:ERROR)}
         {html:build2("G21", $labels:G21, $labels:G21_SHORT, $G21invalid, "", "No invalid protection target types found", " invalid value", "",$errors:ERROR)}
         {html:build2("G22", $labels:G22, $labels:G22_SHORT, $G22invalid, "", "No invalid objective types for Health found", " invalid value", "",$errors:ERROR)}
-        {html:build2("G38", $labels:G38, $labels:G38_SHORT, $G38invalid, "aqd:areaClassification", "", "", "",$errors:ERROR)}
+        {html:build2("G38", $labels:G38, $labels:G38_SHORT, $G38invalid, "aqd:areaClassification", "All values are valid", "", "",$errors:ERROR)}
         {html:build2("G39", $labels:G39, $labels:G39_SHORT, $G39invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
         {html:build2("G40", $labels:G40, $labels:G40_SHORT, $G40invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
         {html:build2("G41", $labels:G41, $labels:G41_SHORT, $G41invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
@@ -1457,16 +1457,16 @@ return
         {html:build2("G58", $labels:G58, $labels:G58_SHORT, $G58invalid, "", "All values are valid", " invalid value", "", $errors:ERROR)}
         {html:build2("G59", $labels:G59, $labels:G59_SHORT, $G59invalid, "", "All values are valid", " invalid value", "", $errors:ERROR)}
         {html:build2("G60", $labels:G60, $labels:G60_SHORT, $G60invalid, "", "All values are valid", " invalid value", "", $errors:WARNING)}
-        {html:build2("G61", $labels:G61, $labels:G61_SHORT, $G61invalid, "aqd:areaClassification", "", "", "",$errors:ERROR)}
-        {html:build2("G62", $labels:G62, $labels:G62_SHORT, $G62invalid, "aqd:areaClassification", "", "", "",$errors:ERROR)}
-        {html:build2("G63", $labels:G63, $labels:G63_SHORT, $G63invalid, "aqd:areaClassification", "", "", "",$errors:ERROR)}
+        {html:build2("G61", $labels:G61, $labels:G61_SHORT, $G61invalid, "aqd:areaClassification", "All values are valid", "", "",$errors:ERROR)}
+        {html:build2("G62", $labels:G62, $labels:G62_SHORT, $G62invalid, "aqd:areaClassification", "All values are valid", "", "",$errors:ERROR)}
+        {html:build2("G63", $labels:G63, $labels:G63_SHORT, $G63invalid, "aqd:areaClassification", "All values are valid", "", "",$errors:ERROR)}
         {html:build2("G64", $labels:G64, $labels:G64_SHORT, $G64invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
         {html:build2("G65", $labels:G65, $labels:G65_SHORT, $G65invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
         {html:build2("G66", $labels:G66, $labels:G66_SHORT, $G66invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
         {html:build2("G67", $labels:G67, $labels:G67_SHORT, $G67invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
         {html:build2("G70", $labels:G70, $labels:G70_SHORT, $G70invalid, "base:namespace", "All values are valid", " invalid value", "", $errors:ERROR)}
         {html:build2("G71", $labels:G71, $labels:G71_SHORT, $G71invalid, "base:namespace", "All values are valid", " invalid value", "", $errors:ERROR)}
-        {html:build2("G72", $labels:G72, $labels:G72_SHORT, $G72invalid, "aqd:areaClassification", "", "", "",$errors:ERROR)}
+        {html:build2("G72", $labels:G72, $labels:G72_SHORT, $G72invalid, "aqd:areaClassification", "All values are valid", "", "",$errors:ERROR)}
         {html:build2("G73", $labels:G73, $labels:G73_SHORT, $G73invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
         {html:build2("G74", $labels:G74, $labels:G74_SHORT, $modelUsed_74, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
         {html:build2("G75", $labels:G75, $labels:G75_SHORT, $G75invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
