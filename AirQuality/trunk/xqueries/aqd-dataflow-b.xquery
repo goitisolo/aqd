@@ -79,7 +79,7 @@ let $knownZones :=
     if ($B0invalid) then
         distinct-values(data(sparqlx:run(query:getZones($latestEnvelopeB))//sparql:binding[@name = 'inspireLabel']/sparql:literal))
     else
-        distinct-values(data(sparqlx:run(query:getZones(query:getLatestEnvelopeByYear($cdrUrl || $bdir, $reportingYear - 1)))//sparql:binding[@name = 'inspireLabel']/sparql:literal))
+        distinct-values(data(sparqlx:run(query:getZones(query:getLatestEnvelopeByYear($cdrUrl || $bdir, number($reportingYear) - 1)))//sparql:binding[@name = 'inspireLabel']/sparql:literal))
 
 (: B1 :)
 let $countZones := count($docRoot//aqd:AQD_Zone)
