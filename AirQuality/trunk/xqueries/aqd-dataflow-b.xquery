@@ -235,7 +235,7 @@ let $B8table :=
                 if ($count = "" or $count = "NaN" or $count = "0") then
                     $errors:ERROR
                 else
-                    ()
+                    $errors:INFO
             order by $vsName
             return
                 <tr class="{$errorClass}">
