@@ -207,15 +207,30 @@ let $B8table :=
                     <protectionTarget>{$protectionTarget}</protectionTarget>
                     <count>{count(distinct-values($key))}</count>
                 </result>
-        let $C31ResultC := filter:filterByName($B8tmp, "pollutantCode", (
-            "1", "7", "8", "9", "5", "6001", "10", "20", "5012", "5018", "5014", "5015", "5029"
-        ))
-        for $x in ("1", "7", "8", "9", "5", "6001", "10", "20", "5012", "5018", "5014", "5015", "5029")
-            for $i in ($vocabulary:PROTECTIONTARGET_VOCABULARY || "H", $vocabulary:PROTECTIONTARGET_VOCABULARY || "V")
-            let $elem := $B8tmp[pollutantCode = $x and protectionTarget = $i]
+        let $combinations :=
+            <combinations>
+                <combination pollutant="1" protectionTarget="H"/><combination pollutant="1" protectionTarget="V"/>
+                <combination pollutant="7" protectionTarget="H"/><combination pollutant="7" protectionTarget="V"/>
+                <combination pollutant="8" protectionTarget="H"/>
+                <combination pollutant="9" protectionTarget="V"/>
+                <combination pollutant="5" protectionTarget="H"/>
+                <combination pollutant="6001" protectionTarget="H"/>
+                <combination pollutant="10" protectionTarget="H"/>
+                <combination pollutant="20" protectionTarget="H"/>
+                <combination pollutant="5012" protectionTarget="H"/>
+                <combination pollutant="5018" protectionTarget="H"/>
+                <combination pollutant="5014" protectionTarget="H"/>
+                <combination pollutant="5015" protectionTarget="H"/>
+                <combination pollutant="5029" protectionTarget="H"/>
+            </combinations>
+
+        for $x in $combinations/combination
+            let $pollutant := $x/@pollutant
+            let $protectionTarget := $vocabulary:PROTECTIONTARGET_VOCABULARY || $x/@protectionTarget
+            let $elem := $B8tmp[pollutantCode = $pollutant and protectionTarget = $protectionTarget]
             let $count := string($elem/count)
-            let $vsName := dd:getNameFromPollutantCode($x)
-            let $vsCode := string($vocabulary:POLLUTANT_VOCABULARY || $x)
+            let $vsName := dd:getNameFromPollutantCode($pollutant)
+            let $vsCode := string($vocabulary:POLLUTANT_VOCABULARY || $pollutant)
             let $errorClass :=
                 if ($count = "" or $count = "NaN" or $count = "0") then
                     $errors:ERROR
@@ -226,7 +241,7 @@ let $B8table :=
                 <tr class="{$errorClass}">
                     <td title="Pollutant Name">{$vsName}</td>
                     <td title="Pollutant Code">{$vsCode}</td>
-                    <td title="Protection Target">{$i}</td>
+                    <td title="Protection Target">{$protectionTarget}</td>
                     <td title="Count">{$count}</td>
                 </tr>
     } catch * {
