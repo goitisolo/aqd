@@ -35,6 +35,11 @@ declare function html:getCSS() as element(style) {
         .maintable > tbody > tr {
             border-top:1px solid #666666;
         }
+        .maintable > tbody > tr > th.separator {
+            font-size: 1.1em;
+            text-align:center;
+            color:#666666;
+        }
         .aaaa {
             padding-left:10px;
         }
@@ -117,7 +122,7 @@ declare function html:getBullet($text as xs:string, $level as xs:string) as elem
 
 declare function html:buildInfoTR($text as xs:string) as element(tr) {
     <tr>
-        <th colspan="4">{$text}</th>
+        <th class="separator" colspan="4">{$text}</th>
     </tr>
 };
 
