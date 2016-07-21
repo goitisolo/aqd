@@ -453,7 +453,7 @@ let $G14table :=
             return
                 <result>
                     <pollutantName>{string($i/sparql:binding[@name = "Pollutant"]/sparql:literal)}</pollutantName>
-                    <protectionTarget>{string($i/sparql:binding[@name = "ProtectionTarget"]/sparql:uri)}</protectionTarget>
+                    <protectionTarget>{string($i/sparql:binding[@name = "ProtectionTarget"]/sparql:literal)}</protectionTarget>
                     <countB>{
                         let $x := string($i/sparql:binding[@name = "countOnB"]/sparql:literal)
                         return if ($x castable as xs:integer) then xs:integer($x) else 0
