@@ -238,47 +238,58 @@ let $B8table :=
 
 (: B9 :)
 (:TODO: ADD TRY CATCH :)
-let $gmlIds := $docRoot//aqd:AQD_Zone/lower-case(normalize-space(@gml:id))
-let $duplicateGmlIds := distinct-values(
+let $all1 := $docRoot//aqd:AQD_Zone/lower-case(@gml:id)
+let $part1 := distinct-values(
     for $id in $docRoot//aqd:AQD_Zone/@gml:id
-    where string-length(normalize-space($id)) > 0 and count(index-of($gmlIds, lower-case(normalize-space($id)))) > 1
+    where string-length($id) > 0 and count(index-of($all1, lower-case($id))) > 1
     return
         $id
     )
-let $amInspireIds := for $id in $docRoot//aqd:AQD_Zone/am:inspireId
-                     return
-                        lower-case(concat("[", normalize-space($id/base:Identifier/base:localId), ", ", normalize-space($id/base:Identifier/base:namespace),
-                            ", ", normalize-space($id/base:Identifier/base:versionId), "]"))
-let $duplicateamInspireIds := distinct-values(
+let $part1 :=
+    for $x in $part1
+    return
+        <tr>
+            <td title="Duplicate records">@gml:id [{$x}]</td>
+        </tr>
+
+let $all2 :=
     for $id in $docRoot//aqd:AQD_Zone/am:inspireId
-    let $key :=
-        concat("[", normalize-space($id/base:Identifier/base:localId), ", ", normalize-space($id/base:Identifier/base:namespace),
-            ", ", normalize-space($id/base:Identifier/base:versionId), "]")
-    where string-length(normalize-space($id/base:Identifier/base:localId)) > 0 and count(index-of($amInspireIds, lower-case($key))) > 1
+    return lower-case("[" || $id/base:Identifier/base:localId || ", " || $id/base:Identifier/base:namespace || ", " || $id/base:Identifier/base:versionId || "]")
+let $part2 := distinct-values(
+    for $id in $docRoot//aqd:AQD_Zone/am:inspireId
+    let $key := "[" || $id/base:Identifier/base:localId || ", " || $id/base:Identifier/base:namespace || ", " || $id/base:Identifier/base:versionId || "]"
+    where string-length($id/base:Identifier/base:localId) > 0 and count(index-of($all2, lower-case($key))) > 1
     return
         $key
     )
+let $part2 :=
+    for $x in $part2
+    return
+        <tr>
+            <td title="Duplicate records">am:inspireId {$x}</td>
+        </tr>
 
-
-let $aqdInspireIds := for $id in $docRoot//aqd:AQD_Zone/aqd:inspireId
-                     return
-                        lower-case(concat("[", normalize-space($id/base:Identifier/base:localId), ", ", normalize-space($id/base:Identifier/base:namespace),
-                            ", ", normalize-space($id/base:Identifier/base:versionId), "]"))
-let $duplicateaqdInspireIds := distinct-values(
+let $all3 :=
     for $id in $docRoot//aqd:AQD_Zone/aqd:inspireId
-    let $key :=
-        concat("[", normalize-space($id/base:Identifier/base:localId), ", ", normalize-space($id/base:Identifier/base:namespace),
-            ", ", normalize-space($id/base:Identifier/base:versionId), "]")
-    where  string-length(normalize-space($id/base:Identifier/base:localId)) > 0 and count(index-of($aqdInspireIds, lower-case($key))) > 1
+    return lower-case("[" || $id/base:Identifier/base:localId || ", " || $id/base:Identifier/base:namespace || ", " || $id/base:Identifier/base:versionId || "]")
+let $part3 := distinct-values(
+    for $id in $docRoot//aqd:AQD_Zone/aqd:inspireId
+    let $key := "[" || $id/base:Identifier/base:localId || ", " || $id/base:Identifier/base:namespace || ", " || $id/base:Identifier/base:versionId || "]"
+    where  string-length(normalize-space($id/base:Identifier/base:localId)) > 0 and count(index-of($all3, lower-case($key))) > 1
     return
         $key
     )
+let $part3 :=
+    for $x in $part3
+    return
+        <tr>
+            <td title="Duplicate records">aqd:inspireId {$x}</td>
+        </tr>
 
-
-let $countGmlIdDuplicates := count($duplicateGmlIds)
-let $countamInspireIdDuplicates := count($duplicateamInspireIds)
-let $countaqdInspireIdDuplicates := count($duplicateaqdInspireIds)
-let $B9invalid := $countGmlIdDuplicates + $countamInspireIdDuplicates + $countaqdInspireIdDuplicates
+let $countGmlIdDuplicates := count($part1)
+let $countamInspireIdDuplicates := count($part2)
+let $countaqdInspireIdDuplicates := count($part3)
+let $B9invalid := ($part1, $part2, $part3)
 
 (: B10 :)
 let $B10table :=
@@ -970,10 +981,7 @@ return
         {html:buildResultsSimpleRow("B6b", $labels:B6b, $labels:B6b_SHORT, $countZonesWithLAU, $errors:INFO )}
         {html:build0("B7", $labels:B7, $labels:B7_SHORT, $B7table, "", string(count($B7table)), "record")}
         {html:build2("B8", $labels:B8, $labels:B8_SHORT, $B8table, "", "", "record", "", errors:getMaxError($B8table))}
-        {html:buildConcatRow($duplicateGmlIds, "aqd:AQD_Zone/@gml:id - ")}
-        {html:buildConcatRow($duplicateamInspireIds, "am:inspireId - ")}
-        {html:buildConcatRow($duplicateaqdInspireIds, "aqd:inspireId - ")}
-        {html:buildCountRow("B9", $labels:B9, $labels:B9_SHORT, $B9invalid, (), "duplicate", $errors:ERROR)}
+        {html:build2("B9", $labels:B9, $labels:B9_SHORT, $B9invalid, "", "All values are valid", "record", "", $errors:ERROR)}
         {html:buildUnique("B10", $labels:B10, $labels:B10_SHORT, $B10table, "", string(count($B10table)), "record", $errors:ERROR)}
         {html:build2("B10.1", $labels:B10.1, $labels:B10.1_SHORT, $B10.1invalid, "base:Identifier/base:namespace", "All values are valid", " invalid namespaces", "", $errors:ERROR)}
         {html:build2("B13", $labels:B13, $labels:B13_SHORT, $B13invalid, "/aqd:AQD_Zone/am:name/gn:GeographicalName/gn:language", "All values are valid", " invalid value", $langSkippedMsg,$errors:WARNING)}
