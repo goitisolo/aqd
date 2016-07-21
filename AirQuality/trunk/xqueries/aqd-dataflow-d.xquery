@@ -1485,7 +1485,7 @@ let $D62invalid :=
         where not($x/@xlink:href = $valid)
         return
             <tr>
-                <td title="{$x/../../../name()}">{data($x/../../../ompr:inspireId/base:Identifier/base:localId)}</td>
+                <td title="aqd:AQD_SamplingPointProcess">{data($x/../../../ompr:inspireId/base:Identifier/base:localId)}</td>
                 <td title="ompr:name">{data($x/@xlink:href)}</td>
             </tr>
     } catch * {
