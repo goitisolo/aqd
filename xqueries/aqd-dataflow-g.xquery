@@ -494,15 +494,15 @@ let $G14table :=
                 if ((string($countB), string($countC), string($countG)) = "NaN") then $errors:ERROR
                 else if ($countG > $countC) then $errors:ERROR
                 else if ($countC > $countG) then $errors:WARNING
-                else $errors:INFO
-            return
-                <tr class="{$errorClass}">
-                    <td title="Pollutant Name">{$vsName}</td>
-                    <td title="Pollutant Code">{$vsCode}</td>
-                    <td title="Count B">{$countB}</td>
-                    <td title="Count C">{$countC}</td>
-                    <td title="Count G">{$countG}</td>
-                </tr>
+                    else $errors:INFO
+        return
+            <tr class="{$errorClass}">
+                <td title="Pollutant Name">{$vsName || "(" || $G14ResultG[pollutantName = $vsName and protectionTarget = $protectionTarget]/pollutantCode || ")"}</td>
+                <td title="Protection Target">{$protectionTarget}</td>
+                <td title="Count B">{$countB}</td>
+                <td title="Count C">{$countC}</td>
+                <td title="Count G">{$countG}</td>
+            </tr>
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
@@ -683,256 +683,6 @@ let $G22invalid :=
                 <td title="aqd:protectionTarget">{data($x/aqd:protectionTarget/@xlink:href)}</td>
             </tr>
     } catch * {
-        <tr status="failed">
-            <td title="Error code">{$err:code}</td>
-            <td title="Error description">{$err:description}</td>
-        </tr>
-    }
-
-(: 23 :)
-let $G23invalid :=
-    try {
-        for $x in $docRoot//aqd:AQD_Attainment
-        let $reportingXlink := fn:substring-after(data($x/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric/fn:normalize-space(@xlink:href)), "reportingmetric/")
-        where empty(index-of(data($x/aqd:pollutant/fn:normalize-space(@xlink:href)), "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1")) = false() and (empty(index-of(('daysAbove', 'hrsAbove', 'wMean', 'aMean', '3hAbove'), $reportingXlink)))
-        return
-            <tr>
-                <td title="aqd:AQD_Attainment">{$x/aqd:inspireId/base:Identifier/base:localId/string()}</td>
-                <td title="aqd:objectiveType">{data($x/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType/@xlink:href)}</td>
-                <td title="aqd:reportingMetric">{data($x/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric/@xlink:href)}</td>
-                <td title="aqd:protectionTarget">{data($x/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/@xlink:href)}</td>
-            </tr>
-    } catch * {
-        <tr status="failed">
-            <td title="Error code">{$err:code}</td>
-            <td title="Error description">{$err:description}</td>
-        </tr>
-    }
-(: 24 :)
-let $G24invalid :=
-    try {
-        for $x in $docRoot//aqd:AQD_Attainment
-        let $reportingXlink := fn:substring-after(data($x/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric/fn:normalize-space(@xlink:href)), "reportingmetric/")
-        where empty(index-of(data($x/aqd:pollutant/fn:normalize-space(@xlink:href)), "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5")) = false() and (empty(index-of(('daysAbove', 'aMean'), $reportingXlink)))
-        return
-            <tr>
-                <td title="aqd:AQD_Attainment">{$x/aqd:inspireId/base:Identifier/base:localId/string()}</td>
-                <td title="aqd:objectiveType">{data($x/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType/@xlink:href)}</td>
-                <td title="aqd:reportingMetric">{data($x/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric/@xlink:href)}</td>
-                <td title="aqd:protectionTarget">{data($x/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/@xlink:href)}</td>
-            </tr>
-    } catch * {
-        <tr status="failed">
-            <td title="Error code">{$err:code}</td>
-            <td title="Error description">{$err:description}</td>
-        </tr>
-    }
-
-(: G25 :)
-let $G25invalid :=
-    try {
-        for $x in $docRoot//aqd:AQD_Attainment
-        let $reportingXlink := fn:substring-after(data($x/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric/fn:normalize-space(@xlink:href)), "reportingmetric/")
-        where empty(index-of(data($x/aqd:pollutant/fn:normalize-space(@xlink:href)), "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/6001")) = false() and
-                (empty(index-of(('aMean'), $reportingXlink)) and empty(index-of(('AEI'), $reportingXlink)))
-        return
-            <tr>
-                <td title="aqd:AQD_Attainment">{$x/aqd:inspireId/base:Identifier/base:localId/string()}</td>
-                <td title="aqd:objectiveType">{data($x/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType/@xlink:href)}</td>
-                <td title="aqd:reportingMetric">{data($x/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric/@xlink:href)}</td>
-                <td title="aqd:protectionTarget">{data($x/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/@xlink:href)}</td>
-            </tr>
-    }  catch * {
-        <tr status="failed">
-            <td title="Error code">{$err:code}</td>
-            <td title="Error description">{$err:description}</td>
-        </tr>
-    }
-
-(: G26 :)
-let $G26invalid :=
-    try {
-        for $x in $docRoot//aqd:AQD_Attainment
-        let $reportingXlink := fn:substring-after(data($x/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric/fn:normalize-space(@xlink:href)), "reportingmetric/")
-        where empty(index-of(data($x/aqd:pollutant/fn:normalize-space(@xlink:href)), "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/10")) = false() and (empty(index-of(('daysAbove'), $reportingXlink)))
-        return
-            <tr>
-                <td title="aqd:AQD_Attainment">{$x/aqd:inspireId/base:Identifier/base:localId/string()}</td>
-                <td title="aqd:objectiveType">{data($x/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType/@xlink:href)}</td>
-                <td title="aqd:reportingMetric">{data($x/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric/@xlink:href)}</td>
-                <td title="aqd:protectionTarget">{data($x/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/@xlink:href)}</td>
-                <td title="aqd:pollutant">{data($x/aqd:pollutant/fn:normalize-space(@xlink:href))}</td>
-            </tr>
-    }  catch * {
-        <tr status="failed">
-            <td title="Error code">{$err:code}</td>
-            <td title="Error description">{$err:description}</td>
-        </tr>
-    }
-
-(: G27 :)
-let $G27invalid :=
-    try {
-        for $x in $docRoot//aqd:AQD_Attainment
-        let $reportingXlink := fn:substring-after(data($x/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/fn:normalize-space(@xlink:href)), "protectiontarget/")
-        where (empty(index-of("V", $reportingXlink)) = false()) and ($x/aqd:pollutant/fn:normalize-space(@xlink:href) = "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/10"
-                or $x/aqd:pollutant/fn:normalize-space(@xlink:href) = "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/6001"
-                or $x/aqd:pollutant/fn:normalize-space(@xlink:href) = "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5"
-                or $x/aqd:pollutant/fn:normalize-space(@xlink:href) = "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/8"
-                or $x/aqd:pollutant/fn:normalize-space(@xlink:href) = "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/20"
-                or $x/aqd:pollutant/fn:normalize-space(@xlink:href) = "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5012"
-                or $x/aqd:pollutant/fn:normalize-space(@xlink:href) = "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5014"
-                or $x/aqd:pollutant/fn:normalize-space(@xlink:href) = "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5015"
-                or $x/aqd:pollutant/fn:normalize-space(@xlink:href) = "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5018"
-                or $x/aqd:pollutant/fn:normalize-space(@xlink:href) = "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5029")
-        return
-            <tr>
-                <td title="aqd:AQD_Attainment">{$x/aqd:inspireId/base:Identifier/base:localId/string()}</td>
-                <td title="aqd:objectiveType">{data($x/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType/@xlink:href)}</td>
-                <td title="aqd:reportingMetric">{data($x/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric/@xlink:href)}</td>
-                <td title="aqd:protectionTarget">{data($x/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/@xlink:href)}</td>
-                <td title="aqd:pollutant">{data($x/aqd:pollutant/fn:normalize-space(@xlink:href))}</td>
-            </tr>
-    }  catch * {
-        <tr status="failed">
-            <td title="Error code">{$err:code}</td>
-            <td title="Error description">{$err:description}</td>
-        </tr>
-    }
-
-(: G28  :)
-let $G28invalid :=
-    try {
-        let $valid := ($vocabulary:OBJECTIVETYPE_VOCABULARY || "TV", $vocabulary:OBJECTIVETYPE_VOCABULARY || "LV", $vocabulary:OBJECTIVETYPE_VOCABULARY || "CL", $vocabulary:OBJECTIVETYPE_VOCABULARY || "LTO",
-        $vocabulary:OBJECTIVETYPE_VOCABULARY || "ECO",$vocabulary:OBJECTIVETYPE_VOCABULARY || "LVmaxMOT",$vocabulary:OBJECTIVETYPE_VOCABULARY || "LVMOT", $vocabulary:OBJECTIVETYPE_VOCABULARY || "INT",
-        $vocabulary:OBJECTIVETYPE_VOCABULARY || "ALT")
-        for $x in $docRoot//aqd:environmentalObjective/aqd:EnvironmentalObjective
-        where not($x/aqd:objectiveType/@xlink:href = $valid)
-        return
-            <tr>
-                <td title="aqd:AQD_Attainment">{$x/../../aqd:inspireId/base:Identifier/base:localId/string()}</td>
-                <td title="aqd:objectiveType">{data($x/aqd:objectiveType)}</td>
-                <td title="aqd:reportingMetric">{data($x/aqd:reportingMetric)}</td>
-                <td title="aqd:protectionTarget">{data($x/aqd:protectionTarget)}</td>
-            </tr>
-    }  catch * {
-        <tr status="failed">
-            <td title="Error code">{$err:code}</td>
-            <td title="Error description">{$err:description}</td>
-        </tr>
-    }
-
-(: G29 :)
-let $G29invalid :=
-    try {
-        let $valid := ($vocabulary:REPMETRIC_VOCABULARY || "3hAbove", $vocabulary:REPMETRIC_VOCABULARY || "aMean", $vocabulary:REPMETRIC_VOCABULARY || "wMean", $vocabulary:REPMETRIC_VOCABULARY || "hrsAbove",
-        $vocabulary:REPMETRIC_VOCABULARY || "daysAbove", $vocabulary:REPMETRIC_VOCABULARY || "daysAbove-3yr", $vocabulary:REPMETRIC_VOCABULARY || "maxd8hrMean",
-        $vocabulary:REPMETRIC_VOCABULARY || "AOT40c", $vocabulary:REPMETRIC_VOCABULARY || "AOT40c-5yr", $vocabulary:REPMETRIC_VOCABULARY || "AEI")
-        for $x in $docRoot//aqd:environmentalObjective/aqd:EnvironmentalObjective
-        where not($x/aqd:reportingMetric/@xlink:href = $valid)
-        return
-            <tr>
-                <td title="aqd:AQD_Attainment">{$x/../../aqd:inspireId/base:Identifier/base:localId/string()}</td>
-                <td title="aqd:objectiveType">{data($x/aqd:objectiveType)}</td>
-                <td title="aqd:reportingMetric">{data($x/aqd:reportingMetric)}</td>
-                <td title="aqd:protectionTarget">{data($x/aqd:protectionTarget)}</td>
-            </tr>
-    }  catch * {
-        <tr status="failed">
-            <td title="Error code">{$err:code}</td>
-            <td title="Error description">{$err:description}</td>
-        </tr>
-    }
-
-(: 30 :)
-let $G30invalid :=
-    try {
-        for $obj in $docRoot//aqd:environmentalObjective/aqd:EnvironmentalObjective
-        where
-            $obj/aqd:protectionTarget/@xlink:href != 'http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V'
-                    and $obj/aqd:objectiveType/@xlink:href = 'http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/CL'
-        return
-            <tr>
-                <td title="aqd:AQD_Attainment">{$obj/../../aqd:inspireId/base:Identifier/base:localId/string()}</td>
-                <td title="aqd:objectiveType">{data($obj/aqd:objectiveType/@xlink:href)}</td>
-                <td title="aqd:reportingMetric">{data($obj/aqd:reportingMetric/@xlink:href)}</td>
-                <td title="aqd:protectionTarget">{data($obj/aqd:protectionTarget/@xlink:href)}</td>
-            </tr>
-    }  catch * {
-        <tr status="failed">
-            <td title="Error code">{$err:code}</td>
-            <td title="Error description">{$err:description}</td>
-        </tr>
-    }
-(: G31 :)
-let $G31invalid :=
-    try {
-        for $obj in $docRoot//aqd:environmentalObjective/aqd:EnvironmentalObjective
-        let $isInvalid :=
-            $obj/aqd:protectionTarget/@xlink:href != 'http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V'
-                    and ($obj/aqd:reportingMetric/@xlink:href = 'http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/AOT40c'
-                    or $obj/aqd:reportingMetric/@xlink:href = 'http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/AOT40c-5y')
-        where $isInvalid
-        return
-            <tr>
-                <td title="aqd:AQD_Attainment">{$obj/../../aqd:inspireId/base:Identifier/base:localId/string()}</td>
-                <td title="aqd:protectionTarget">{data($obj/aqd:protectionTarget/@xlink:href)}</td>
-                <td title="aqd:objectiveType">{data($obj/aqd:objectiveType/@xlink:href)}</td>
-                <td title="aqd:reportingMetric">{data($obj/aqd:reportingMetric/@xlink:href)}</td>
-            </tr>
-    }  catch * {
-        <tr status="failed">
-            <td title="Error code">{$err:code}</td>
-            <td title="Error description">{$err:description}</td>
-        </tr>
-    }
-
-(: G32 :)
-let $G32invalid :=
-    try {
-        for $obj in $docRoot//aqd:environmentalObjective/aqd:EnvironmentalObjective
-        let $isInvalid :=
-            $obj/aqd:protectionTarget/@xlink:href != 'http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H'
-                    and $obj/../../aqd:pollutant/@xlink:href != 'http://dd.eionet.europa.eu/vocabulary/aq/pollutant/6001'
-                    and $obj/../../aqd:pollutant/@xlink:href != 'http://dd.eionet.europa.eu/vocabulary/aq/pollutant/7'
-                    and ($obj/aqd:objectiveType/@xlink:href = 'http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV'
-                    or $obj/aqd:objectiveType/@xlink:href = 'http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/TV'
-                    or $obj/aqd:objectiveType/@xlink:href = 'http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LVmaxMOT')
-        where $isInvalid
-        return
-            <tr>
-                <td title="aqd:AQD_Attainment">{$obj/../../aqd:inspireId/base:Identifier/base:localId/string()}</td>
-                <td title="aqd:objectiveType">{data($obj/aqd:objectiveType/@xlink:href)}</td>
-                <td title="aqd:reportingMetric">{data($obj/aqd:reportingMetric/@xlink:href)}</td>
-                <td title="aqd:protectionTarget">{data($obj/aqd:protectionTarget/@xlink:href)}</td>
-            </tr>
-    }  catch * {
-        <tr status="failed">
-            <td title="Error code">{$err:code}</td>
-            <td title="Error description">{$err:description}</td>
-        </tr>
-    }
-
-
-(: G33 :)
-let $G33invalid :=
-    try {
-        for $obj in $docRoot//aqd:environmentalObjective/aqd:EnvironmentalObjective
-        let $isInvalid :=
-            $obj/aqd:objectiveType/@xlink:href = 'http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LV'
-                    and $obj/../../aqd:pollutant/@xlink:href = 'http://dd.eionet.europa.eu/vocabulary/aq/pollutant/6001'
-                    and $obj/aqd:protectionTarget/@xlink:href != 'http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H-S1'
-                    and $obj/aqd:protectionTarget/@xlink:href != 'http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H-S2'
-                    and $obj/aqd:protectionTarget/@xlink:href != 'http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H'
-        where $isInvalid
-        return
-            <tr>
-                <td title="aqd:AQD_Attainment">{$obj/../../aqd:inspireId/base:Identifier/base:localId/string()}</td>
-                <td title="aqd:objectiveType">{data($obj/aqd:objectiveType/@xlink:href)}</td>
-                <td title="aqd:reportingMetric">{data($obj/aqd:reportingMetric/@xlink:href)}</td>
-                <td title="aqd:protectionTarget">{data($obj/aqd:protectionTarget/@xlink:href)}</td>
-            </tr>
-    }  catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
@@ -1671,71 +1421,60 @@ return
         {html:buildSimple("G3", $labels:G3, $labels:G3_SHORT, $G3table, "", "", $G3errorLevel)}
         {html:build1("G4", $labels:G4, $labels:G4_SHORT, $G4table, "", string(count($G4table)), " ", "",$errors:ERROR)}
         {html:build1("G5", $labels:G5, $labels:G5_SHORT, $G5table, "", string(count($G5table)), " exceedance", "", $errors:WARNING)}
-        {html:buildResultRows("G6", $labels:G6, $labels:G6_SHORT, $G6table, "", string(count($G6table)), " attainment", "",$errors:ERROR)}
-        {html:buildResultRows("G7", $labels:G7, $labels:G7_SHORT, $G7invalid, "", "No duplicates found", " duplicate", "", $errors:ERROR)}
-        {html:buildResultRows("G8", $labels:G8, $labels:G8_SHORT, $G8invalid, "base:localId", "No duplicate values found", " duplicate value", "",$errors:ERROR)}
+        {html:build2("G6", $labels:G6, $labels:G6_SHORT, $G6table, "", string(count($G6table)), " attainment", "",$errors:ERROR)}
+        {html:build2("G7", $labels:G7, $labels:G7_SHORT, $G7invalid, "", "No duplicates found", " duplicate", "", $errors:ERROR)}
+        {html:build2("G8", $labels:G8, $labels:G8_SHORT, $G8invalid, "base:localId", "No duplicate values found", " duplicate value", "",$errors:ERROR)}
         {html:buildUnique("G9", $labels:G9, $labels:G9_SHORT, $G9table, "", string(count($G9table)), "namespace", $errors:ERROR)}
-        {html:buildResultRows("G9.1", $labels:G9.1, $labels:G9.1_SHORT, $G9.1invalid, "base:Identifier/base:namespace", "All values are valid", " invalid namespaces", "", $errors:ERROR)}
-        {html:buildResultRowsWithTotalCount_G("G10", $labels:G10, $labels:G10_SHORT, $G10invalid, "aqd:pollutant", "", "", "", $errors:ERROR)}
-        {html:buildResultRows("G11", $labels:G11, $labels:G11_SHORT, $G11invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
-        {html:buildResultRows("G12", $labels:G12, $labels:G12_SHORT, $G12invalid, "base:namespace", "All values are valid", " invalid value", "", $errors:ERROR)}
-        {html:buildResultRows("G13", $labels:G13, $labels:G13_SHORT, $G13invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
-        {html:buildResultRows("G13b", $labels:G13b, $labels:G13b_SHORT, $G13binvalid, "base:namespace", "All values are valid", " invalid value", "",$errors:WARNING)}
+        {html:build2("G9.1", $labels:G9.1, $labels:G9.1_SHORT, $G9.1invalid, "base:Identifier/base:namespace", "All values are valid", " invalid namespaces", "", $errors:ERROR)}
+        {html:build2("G10", $labels:G10, $labels:G10_SHORT, $G10invalid, "aqd:pollutant", "", "", "", $errors:ERROR)}
+        {html:build2("G11", $labels:G11, $labels:G11_SHORT, $G11invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
+        {html:build2("G12", $labels:G12, $labels:G12_SHORT, $G12invalid, "base:namespace", "All values are valid", " invalid value", "", $errors:ERROR)}
+        {html:build2("G13", $labels:G13, $labels:G13_SHORT, $G13invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
+        {html:build2("G13b", $labels:G13b, $labels:G13b_SHORT, $G13binvalid, "base:namespace", "All values are valid", " invalid value", "",$errors:WARNING)}
         {html:build2("G14", $labels:G14, $labels:G14_SHORT, $G14table, "", "", "record", "", errors:getMaxError($G14table))}
         {html:build2("G14.1", $labels:G14.1, $labels:G14.1_SHORT, $G14.1invalid, "", "All assessment regimes are reported", " missing assessment regime", "", $errors:WARNING)}
-        {html:buildResultRows("G15", $labels:G15, $labels:G15_SHORT, $G15invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
-        {html:buildResultRows("G17", $labels:G17, $labels:G17_SHORT, $G17invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
-        {html:buildResultRows("G18", $labels:G18, $labels:G18_SHORT, $G18invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
-        {html:buildResultRowsWithTotalCount_G("G19", $labels:G19, $labels:G19_SHORT, $G19invalid, "aqd:objectivetype", "", "", "",$errors:ERROR)}
-        {html:buildResultRowsWithTotalCount_G("G20", $labels:G20, $labels:G20_SHORT, $G20invalid, "aqd:reportingMetric", "", "", "",$errors:ERROR)}
-        {html:buildResultRows("G21", $labels:G21, $labels:G21_SHORT, $G21invalid, "", "No invalid protection target types found", " invalid value", "",$errors:ERROR)}
+        {html:build2("G15", $labels:G15, $labels:G15_SHORT, $G15invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
+        {html:build2("G17", $labels:G17, $labels:G17_SHORT, $G17invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
+        {html:build2("G18", $labels:G18, $labels:G18_SHORT, $G18invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
+        {html:build2("G19", $labels:G19, $labels:G19_SHORT, $G19invalid, "aqd:objectivetype", "", "", "",$errors:ERROR)}
+        {html:build2("G20", $labels:G20, $labels:G20_SHORT, $G20invalid, "aqd:reportingMetric", "", "", "",$errors:ERROR)}
+        {html:build2("G21", $labels:G21, $labels:G21_SHORT, $G21invalid, "", "No invalid protection target types found", " invalid value", "",$errors:ERROR)}
         {html:build2("G22", $labels:G22, $labels:G22_SHORT, $G22invalid, "", "No invalid objective types for Health found", " invalid value", "",$errors:ERROR)}
-        {html:buildResultRows("G23", $labels:G23, $labels:G23_SHORT, $G23invalid, "aqd:reportingMetric", "All values are valid", " invalid value", "",$errors:ERROR)}
-        {html:buildResultRows("G24", $labels:G24, $labels:G24_SHORT, $G24invalid, "aqd:reportingMetric", "All values are valid", " invalid value", "",$errors:ERROR)}
-        {html:buildResultRows("G25", $labels:G25, $labels:G25_SHORT, $G25invalid, "aqd:reportingMetric", "All values are valid", " invalid value", "",$errors:ERROR)}
-        {html:buildResultRows("G26", $labels:G26, $labels:G26_SHORT, $G26invalid, "aqd:reportingMetric", "All values are valid", " invalid value", "",$errors:ERROR)}
-        {html:buildResultRows("G27", $labels:G27, $labels:G27_SHORT, $G27invalid, "aqd:reportingMetric", "All values are valid", " invalid value", "",$errors:ERROR)}
-        {html:buildResultRowsWithTotalCount_G("G28", $labels:G28, $labels:G28_SHORT, $G28invalid, "aqd:objectivetype", "", "", "",$errors:ERROR)}
-        {html:buildResultRowsWithTotalCount_G("G29", $labels:G29, $labels:G29_SHORT, $G29invalid, "aqd:reportingMetric", "", "", "",$errors:ERROR)}
-        {html:buildResultRows("G30", $labels:G30, $labels:G30_SHORT, $G30invalid, "", "No invalid objective types for Vegetation found", " invalid", "",$errors:ERROR)}
-        {html:buildResultRows("G31", $labels:G31, $labels:G31_SHORT, $G31invalid, "aqd:reportingMetric", "", "", "",$errors:ERROR)}
-        {html:buildResultRows("G32", $labels:G32, $labels:G32_SHORT, $G32invalid, "aqd:reportingMetric",  "All values are valid", " invalid value", "",$errors:ERROR)}
-        {html:buildResultRows("G33", $labels:G33, $labels:G33_SHORT, $G33invalid, "aqd:reportingMetric", "All values are valid", " invalid value", "",$errors:ERROR)}
-        {html:buildResultRowsWithTotalCount_G("G38", $labels:G38, $labels:G38_SHORT, $G38invalid, "aqd:areaClassification", "", "", "",$errors:ERROR)}
-        {html:buildResultRows("G39", $labels:G39, $labels:G39_SHORT, $G39invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
-        {html:buildResultRows("G40", $labels:G40, $labels:G40_SHORT, $G40invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
-        {html:buildResultRows("G41", $labels:G41, $labels:G41_SHORT, $G41invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
-        {html:buildResultRows("G42", $labels:G42, $labels:G42_SHORT, $G42invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
+        {html:build2("G38", $labels:G38, $labels:G38_SHORT, $G38invalid, "aqd:areaClassification", "", "", "",$errors:ERROR)}
+        {html:build2("G39", $labels:G39, $labels:G39_SHORT, $G39invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
+        {html:build2("G40", $labels:G40, $labels:G40_SHORT, $G40invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
+        {html:build2("G41", $labels:G41, $labels:G41_SHORT, $G41invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
+        {html:build2("G42", $labels:G42, $labels:G42_SHORT, $G42invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
         {html:build2("G44", $labels:G44, $labels:G44_SHORT, $G44invalid, "", "All values are valid", " invalid value", "", $errors:ERROR)}
         {html:build2("G45", $labels:G45, $labels:G45_SHORT, $G45invalid, "", "All values are valid", " invalid value", "", $errors:ERROR)}
         {html:build2("G46", $labels:G46, $labels:G46_SHORT, $G46invalid, "", "All values are valid", " invalid value", "", $errors:WARNING)}
-        {html:buildResultRows("G47", $labels:G47, $labels:G47_SHORT, $G47invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
-        {html:buildResultRowsWithTotalCount_G("G52", $labels:G52, $labels:G52_SHORT, $G52invalid, "aqd:areaClassification", "", "", "", $errors:ERROR)}
-        {html:buildResultRows("G53", $labels:G53, $labels:G53_SHORT, $G53invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
-        {html:buildResultRows("G54", $labels:G54, $labels:G54_SHORT, $G54invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
-        {html:buildResultRows("G55", $labels:G55, $labels:G55_SHORT, $G55invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
-        {html:buildResultRows("G56", $labels:G56, $labels:G56_SHORT, $G56invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
+        {html:build2("G47", $labels:G47, $labels:G47_SHORT, $G47invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
+        {html:build2("G52", $labels:G52, $labels:G52_SHORT, $G52invalid, "aqd:areaClassification", "", "", "", $errors:ERROR)}
+        {html:build2("G53", $labels:G53, $labels:G53_SHORT, $G53invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
+        {html:build2("G54", $labels:G54, $labels:G54_SHORT, $G54invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
+        {html:build2("G55", $labels:G55, $labels:G55_SHORT, $G55invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
+        {html:build2("G56", $labels:G56, $labels:G56_SHORT, $G56invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
         {html:build2("G58", $labels:G58, $labels:G58_SHORT, $G58invalid, "", "All values are valid", " invalid value", "", $errors:ERROR)}
         {html:build2("G59", $labels:G59, $labels:G59_SHORT, $G59invalid, "", "All values are valid", " invalid value", "", $errors:ERROR)}
         {html:build2("G60", $labels:G60, $labels:G60_SHORT, $G60invalid, "", "All values are valid", " invalid value", "", $errors:WARNING)}
-        {html:buildResultRowsWithTotalCount_G("G61", $labels:G61, $labels:G61_SHORT, $G61invalid, "aqd:areaClassification", "", "", "",$errors:ERROR)}
-        {html:buildResultRowsWithTotalCount_G("G62", $labels:G62, $labels:G62_SHORT, $G62invalid, "aqd:areaClassification", "", "", "",$errors:ERROR)}
-        {html:buildResultRowsWithTotalCount_G("G63", $labels:G63, $labels:G63_SHORT, $G63invalid, "aqd:areaClassification", "", "", "",$errors:ERROR)}
-        {html:buildResultRows("G64", $labels:G64, $labels:G64_SHORT, $G64invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
-        {html:buildResultRows("G65", $labels:G65, $labels:G65_SHORT, $G65invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
-        {html:buildResultRows("G66", $labels:G66, $labels:G66_SHORT, $G66invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
-        {html:buildResultRows("G67", $labels:G67, $labels:G67_SHORT, $G67invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
-        {html:buildResultRows("G70", $labels:G70, $labels:G70_SHORT, $G70invalid, "base:namespace", "All values are valid", " invalid value", "", $errors:ERROR)}
-        {html:buildResultRows("G71", $labels:G71, $labels:G71_SHORT, $G71invalid, "base:namespace", "All values are valid", " invalid value", "", $errors:ERROR)}
-        {html:buildResultRowsWithTotalCount_G("G72", $labels:G72, $labels:G72_SHORT, $G72invalid, "aqd:areaClassification", "", "", "",$errors:ERROR)}
-        {html:buildResultRows("G73", $labels:G73, $labels:G73_SHORT, $G73invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
-        {html:buildResultRows("G74", $labels:G74, $labels:G74_SHORT, $modelUsed_74, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
-        {html:buildResultRows("G75", $labels:G75, $labels:G75_SHORT, $G75invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
-        {html:buildResultRows("G76", $labels:G76, $labels:G76_SHORT, $G76invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
+        {html:build2("G61", $labels:G61, $labels:G61_SHORT, $G61invalid, "aqd:areaClassification", "", "", "",$errors:ERROR)}
+        {html:build2("G62", $labels:G62, $labels:G62_SHORT, $G62invalid, "aqd:areaClassification", "", "", "",$errors:ERROR)}
+        {html:build2("G63", $labels:G63, $labels:G63_SHORT, $G63invalid, "aqd:areaClassification", "", "", "",$errors:ERROR)}
+        {html:build2("G64", $labels:G64, $labels:G64_SHORT, $G64invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
+        {html:build2("G65", $labels:G65, $labels:G65_SHORT, $G65invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
+        {html:build2("G66", $labels:G66, $labels:G66_SHORT, $G66invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
+        {html:build2("G67", $labels:G67, $labels:G67_SHORT, $G67invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
+        {html:build2("G70", $labels:G70, $labels:G70_SHORT, $G70invalid, "base:namespace", "All values are valid", " invalid value", "", $errors:ERROR)}
+        {html:build2("G71", $labels:G71, $labels:G71_SHORT, $G71invalid, "base:namespace", "All values are valid", " invalid value", "", $errors:ERROR)}
+        {html:build2("G72", $labels:G72, $labels:G72_SHORT, $G72invalid, "aqd:areaClassification", "", "", "",$errors:ERROR)}
+        {html:build2("G73", $labels:G73, $labels:G73_SHORT, $G73invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
+        {html:build2("G74", $labels:G74, $labels:G74_SHORT, $modelUsed_74, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
+        {html:build2("G75", $labels:G75, $labels:G75_SHORT, $G75invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
+        {html:build2("G76", $labels:G76, $labels:G76_SHORT, $G76invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
         {html:build2("G78", $labels:G78, $labels:G78_SHORT, $G78invalid, "", "All values are valid", " invalid value", "", $errors:ERROR)}
         {html:build2("G79", $labels:G79, $labels:G79_SHORT, $G79invalid, "", "All values are valid", " invalid value", "", $errors:ERROR)}
         {html:build2("G80", $labels:G80, $labels:G80_SHORT, $G80invalid, "", "All values are valid", " invalid value", "", $errors:WARNING)}
-        {html:buildResultRows("G81", $labels:G81, $labels:G81_SHORT, $G81invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
+        {html:build2("G81", $labels:G81, $labels:G81_SHORT, $G81invalid, "base:namespace", "All values are valid", " invalid value", "",$errors:ERROR)}
         {html:build2("G85", $labels:G85, $labels:G85_SHORT, $G85invalid, "", "All values are valid", " invalid value", "", $errors:ERROR)}
         {html:build2("G86", $labels:G86, $labels:G86_SHORT, $G86invalid, "", "All values are valid", " invalid value", "", $errors:ERROR)}
         {$G82invalid}
