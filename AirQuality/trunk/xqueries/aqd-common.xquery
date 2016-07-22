@@ -104,8 +104,12 @@ declare function common:checkNamespacesFromFile($source_url) {
 };
 
 declare function common:getReportingYear($xml as document-node()) as xs:string {
-    let $year := year-from-dateTime($xml//aqd:reportingPeriod/gml:TimePeriod/gml:beginPosition)
-    return if (exists($year) and $year castable as xs:integer) then xs:string($year) else ""
+    let $year1 := year-from-dateTime($xml//aqd:AQD_ReportingHeader/aqd:reportingPeriod/gml:TimePeriod/gml:beginPosition)
+    let $year2 := string($xml//aqd:AQD_ReportingHeader/aqd:reportingPeriod/gml:TimeInstant/gml:timePosition)
+    return
+        if (exists($year1) and $year1 castable as xs:integer) then xs:string($year1)
+        else if (string-length($year2) > 0 and $year2 castable as xs:integer) then $year2
+        else ""
 };
 
 declare function common:containsAny($seq1 as xs:string*, $seq2 as xs:string*) as xs:boolean {

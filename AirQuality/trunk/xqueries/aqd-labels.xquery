@@ -13,6 +13,16 @@ declare variable $labels:SHOWRECORDS := "Show Records";
 declare variable $labels:SHOWERRORS := "Show Errors";
 declare variable $labels:SHOWCOMBINATIONS := "Show Combinations";
 
+(: ENVELOPE QC LABELS :)
+declare variable $labels:ENV1 := "The file cannot be accepted as you did not provide any <strong>aqd:AQD_ReportingHeader</strong> element.";
+declare variable $labels:ENV2 := "Issue with year value of the envelope discovered in relation to this file! The (start) year value must be equal to the year in gml:beginPosition element (in aqd:AQD_ReportingHeader) specified in the XML file and it must be between {$minimumYear} - {$maximumYear}.";
+declare variable $labels:ENV3 := "The file cannot be accepted as you did not provide <strong>{string-join($missingAqdReportingHeaderSubElements, ',')}</strong> element{substring('s ', number(not(count($missingAqdReportingHeaderSubElements) > 1)) * 2)} in aqd:AQD_ReportingHeader element.";
+declare variable $labels:ENV4 := "The file cannot be accepted as you did not provide <strong>{string-join($missingElementsIfAqdChangeIsTrue, ', ')}</strong>
+                element{substring('s ', number(not(count($missingElementsIfAqdChangeIsTrue) > 1)) * 2)} in aqd:AQD_ReportingHeader element although aqd:change='true'.
+                If aqd:change='true', the following information must also be provided: aqd:AQD_ReportingHeader/aqd:changeDescription and aqd:AQD_ReportingHeader/aqd:content";
+declare variable $labels:ENV5 := "The file cannot be accepted as you provided <strong>aqd:content</strong>
+                    in aqd:AQD_ReportingHeader element although aqd:change='false'. If aqd:change='false', aqd:content IS NOT expected.";
+
 (: QC Labels :)
 declare variable $labels:XML := labels:getLabel("XML", "VALIDATION");
 declare variable $labels:XML_SHORT := labels:getLabel("XML", "VALIDATION_SHORT");

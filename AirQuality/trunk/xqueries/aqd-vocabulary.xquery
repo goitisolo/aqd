@@ -8,6 +8,7 @@ xquery version "3.0";
 
 module namespace vocabulary = "aqd-vocabulary";
 
+declare variable $vocabulary:OBLIGATIONS := "http://rod.eionet.europa.eu/obligations/";
 declare variable $vocabulary:UOM_TIME := "http://dd.eionet.europa.eu/vocabulary/uom/time/";
 declare variable $vocabulary:ENVIRONMENTALOBJECTIVE := "http://dd.eionet.europa.eu/vocabulary/aq/environmentalobjective/";
 declare variable $vocabulary:AQ_MANAGEMENET_ZONE := "http://inspire.ec.europa.eu/codeList/ZoneTypeCode/airQualityManagementZone";
