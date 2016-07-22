@@ -961,3 +961,36 @@ declare function query:getG86Stations($cdrUrl as xs:string) as xs:string {
    FILTER(CONTAINS(str(?samplingPoint), '" || $cdrUrl || "'))
    }"
 };
+
+declare function query:getObligationYears() {
+  "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
+PREFIX rod: <http://rod.eionet.europa.eu/schema.rdf#>
+
+SELECT DISTINCT
+?countryCode
+?delivery
+year(?start) as ?ReportingYear
+?obligation
+?obligation_nr
+?deadline
+bif:either(xsd:int(?obligation_nr) < 680,(year(?deadline) - 2),bif:either(xsd:int(?obligation_nr) < 690,(year(?deadline) - 3),(year(?deadline))) ) as ?minimum
+bif:either(xsd:int(?obligation_nr) < 680,(year(?deadline) - 1),bif:either(xsd:int(?obligation_nr) < 690,(year(?deadline) - 2),(year(?deadline)+1)) ) as ?maximum
+
+WHERE {
+?delivery rod:released ?released ;
+           rod:obligation ?obluri ;
+           rod:startOfPeriod ?start ;
+           rod:locality ?locality .
+
+?locality rod:loccode ?countryCode .
+?obluri rod:instrument <http://rod.eionet.europa.eu/instruments/650> ;
+        skos:notation ?obligation_nr ;
+        rod:nextdeadline  ?deadline ;
+        dct:title ?obligation .
+
+FILTER (year(?released) > 2014) .
+
+} ORDER BY ?countryCode ?ReportingYear ?obligation_nr"
+};

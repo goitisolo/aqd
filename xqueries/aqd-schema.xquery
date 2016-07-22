@@ -11,6 +11,8 @@ import module namespace errors = "aqd-errors" at "aqd-errors.xquery";
 import module namespace html = "aqd-html" at "aqd-html.xquery";
 
 declare variable $schemax:INVALIDSTATUS := "invalid";
+declare variable $schemax:SCHEMA := "http://dd.eionet.europa.eu/schemas/id2011850eu-1.0/AirQualityReporting.xsd";
+
 declare variable $schemax:IGNORED := ("cvc-elt.1: Cannot find the declaration of element 'gml:FeatureCollection'.",
 "cvc-elt.4.2: Cannot resolve 'gco:RecordType_Type' to a type definition for element 'gco:Record'.",
 "cvc-elt.4.2: Cannot resolve 'ns:DataArrayType' to a type definition for element 'om:result'.",
