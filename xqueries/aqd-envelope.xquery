@@ -285,9 +285,9 @@ declare function xmlconv:validateEnvelope() as element(div) {
     let $errorCount := count($env1[@class = $errors:ERROR]) + count($env2[@class = $errors:ERROR]) + count($env3//tr[@class = $errors:ERROR])
     let $errorLevel :=
         if ($errorCount = 0) then
-            $errors:INFO
+            "INFO"
         else
-            $errors:BLOCKER
+            "BLOCKER"
 
     let $feedbackMessage :=
         if ($errorCount = 0) then
