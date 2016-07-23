@@ -346,7 +346,8 @@ let $G10invalid :=
         where not($x/@xlink:href = $valid)
         return
             <tr>
-                <td title="aqd:AQD_Attainment">{$x/../aqd:inspireId/base:Identifier/base:localId/string()}</td>
+                <td title="aqd:AQD_Attainment">{data($x/../aqd:inspireId/base:Identifier/base:localId)}</td>
+                <td title="aqd:pollutant">{data($x/@xlink:href)}</td>
                 <td title="aqd:objectiveType">{data($x/../aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType/@xlink:href)}</td>
                 <td title="aqd:reportingMetric">{data($x/../aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric/@xlink:href)}</td>
                 <td title="aqd:protectionTarget">{data($x/../aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/@xlink:href)}</td>
