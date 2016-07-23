@@ -1621,23 +1621,23 @@ let $D68invalid :=
         </tr>
     }
 
-(: D69 Jaume Targa :)
-let $allInvalidTrueUsedAQD69 :=
+(: D69 :)
+let $D69invalid :=
     try {
-        let $allProcNotMatchingCondition69 :=
+        let $all :=
             for $proc in $docRoot//aqd:AQD_SamplingPointProcess
             let $documentation := data($proc/aqd:dataQuality/aqd:DataQuality/aqd:documentation)
             let $qaReport := data($proc/aqd:dataQuality/aqd:DataQuality/aqd:qaReport)
             where (string-length($documentation) = 0) and (string-length($qaReport) = 0)
             return concat(data($proc/ompr:inspireId/base:Identifier/base:namespace), '/' , data($proc/ompr:inspireId/base:Identifier/base:localId))
 
-        for $invalidTrueUsedAQD69 in $docRoot//aqd:AQD_SamplingPoint[aqd:usedAQD = "true" and ef:observingCapability/ef:ObservingCapability/ef:procedure/@xlink:href = $allProcNotMatchingCondition69]
+        for $x in $docRoot//aqd:AQD_SamplingPoint[aqd:usedAQD = "true"]/ef:observingCapability[ef:ObservingCapability/ef:procedure/@xlink:href = $all]
         return
         <tr>
-            <td title="base:localId">{data($invalidTrueUsedAQD69/ef:inspireId/base:Identifier/base:localId)}</td>
-            <td title="base:namespace">{data($invalidTrueUsedAQD69/ef:inspireId/base:Identifier/base:namespace)}</td>
-            <td title="ef:procedure">{string($invalidTrueUsedAQD69/ef:observingCapability/ef:ObservingCapability/ef:procedure/@xlink:href)}</td>
-            <td title="ef:ObservingCapability">{data($invalidTrueUsedAQD69/ef:observingCapability/ef:ObservingCapability/@gml:id)}</td>
+            <td title="base:localId">{data($x/../ef:inspireId/base:Identifier/base:localId)}</td>
+            <td title="base:namespace">{data($x/../ef:inspireId/base:Identifier/base:namespace)}</td>
+            <td title="ef:procedure">{string($x/ef:ObservingCapability/ef:procedure/@xlink:href)}</td>
+            <td title="ef:ObservingCapability">{data($x/ef:ObservingCapability/@gml:id)}</td>
         </tr>
     } catch * {
         <tr status="failed">
@@ -1788,8 +1788,8 @@ let $D76invalid :=
                 let $distance := string($x/aqd:buildingDistance)
                 return map:entry($id, $distance)
             ))
-        for $x in $docRoot//aqd:AQD_SamplingPoint[aqd:relevantEmissions/aqd:RelevantEmissions/aqd:stationClassification/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/stationclassification/traffic"]
-            let $xlink := string($x/ef:observingCapability/ef:ObservingCapability/ef:featureOfInterest/@xlink:href)
+        for $x in $docRoot//aqd:AQD_SamplingPoint[aqd:relevantEmissions/aqd:RelevantEmissions/aqd:stationClassification/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/stationclassification/traffic"]/ef:observingCapability
+            let $xlink := string($x/ef:ObservingCapability/ef:featureOfInterest/@xlink:href)
             let $distance := map:get($sampleDistanceMap, $xlink)
         return
             if ($distance castable as xs:double) then
@@ -1797,7 +1797,7 @@ let $D76invalid :=
             else
                 <tr>
                     <td title="AQD_Sample">{tokenize($xlink, "/")[last()]}</td>
-                    <td title="AQD_SamplingPoint">{string($x/ef:inspireId/base:Identifier/base:localId)}</td>
+                    <td title="AQD_SamplingPoint">{string($x/../ef:inspireId/base:Identifier/base:localId)}</td>
                 </tr>
     } catch * {
         <tr status="failed">
@@ -1816,8 +1816,8 @@ let $D77invalid :=
                     let $distance := string($x/aqd:kerbDistance)
                 return map:entry($id, $distance)
             ))
-        for $x in $docRoot//aqd:AQD_SamplingPoint[aqd:relevantEmissions/aqd:RelevantEmissions/aqd:stationClassification/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/stationclassification/traffic"]
-            let $xlink := string($x/ef:observingCapability/ef:ObservingCapability/ef:featureOfInterest/@xlink:href)
+        for $x in $docRoot//aqd:AQD_SamplingPoint[aqd:relevantEmissions/aqd:RelevantEmissions/aqd:stationClassification/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/stationclassification/traffic"]/ef:observingCapability
+            let $xlink := string($x/ef:ObservingCapability/ef:featureOfInterest/@xlink:href)
             let $distance := map:get($sampleDistanceMap, $xlink)
         return
             if ($distance castable as xs:double) then
@@ -1825,7 +1825,7 @@ let $D77invalid :=
             else
                 <tr>
                     <td title="aqd:AQD_Sample">{string($xlink)}</td>
-                    <td title="aqd:AQD_SamplingPoint">{string($x/ef:inspireId/base:Identifier/base:localId)}</td>
+                    <td title="aqd:AQD_SamplingPoint">{string($x/../ef:inspireId/base:Identifier/base:localId)}</td>
                 </tr>
     } catch * {
         <tr status="failed">
@@ -2000,8 +2000,8 @@ return
         {html:build2("D65", $labels:D65, $labels:D65_SHORT, $D65invalid, "", "All values are valid", "record", "", $errors:WARNING)}
         {html:buildResultRows("D67a", $labels:D67a, $labels:D67a_SHORT, $D67ainvalid, "", concat(fn:string(count($D67ainvalid))," errors found"), "", "", $errors:ERROR)}
         {html:buildResultRows("D67b", $labels:D67b, $labels:D67b_SHORT, $D67binvalid, "", concat(fn:string(count($D67binvalid))," errors found"), "", "", $errors:WARNING)}
-        {html:buildResultRows("D68", $labels:D68, $labels:D68_SHORT, $D68invalid, "", concat(fn:string(count($D68invalid))," errors found"), "", "", $errors:WARNING)}
-        {html:buildResultRows("D69", $labels:D69, $labels:D69_SHORT, $allInvalidTrueUsedAQD69, "", concat(fn:string(count($allInvalidTrueUsedAQD69))," errors found"), "", "", $errors:WARNING)}
+        {html:buildResultRows("D68", $labels:D68, $labels:D68_SHORT, $D68invalid, "", concat(fn:string(count($D68invalid))," errors found"), "record", "", $errors:WARNING)}
+        {html:buildResultRows("D69", $labels:D69, $labels:D69_SHORT, $D69invalid, "", concat(fn:string(count($D69invalid))," errors found"), "record", "", $errors:WARNING)}
         {html:buildInfoTR("Specific checks on AQD_Sample feature(s) within this XML")}
         {html:buildResultRows("D71", $labels:D71, $labels:D71_SHORT, $D71invalid, "", concat(string(count($D71invalid))," errors found.") , "", "",$errors:ERROR)}
         {html:buildUnique("D72", $labels:D72, $labels:D72_SHORT, $D72table, "", string(count($D72table)), "namespace", $errors:ERROR)}
