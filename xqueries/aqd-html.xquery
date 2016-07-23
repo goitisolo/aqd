@@ -101,7 +101,7 @@ declare function html:getModalInfo($ruleCode, $longText) as element()* {
     (<span><a class="largeText" data-open="{concat('text-modal-', $ruleCode)}">&#8520;</a></span>,
     <div class="reveal" id="{concat('text-modal-', $ruleCode)}" data-reveal="">
         <h4>{$ruleCode}</h4>
-        <hr>&#32;</hr>
+        <hr/>
         <p>{$longText}</p>
         <button class="close-button" data-close="" aria-label="Close modal" type="button">x</button>
     </div>)
@@ -256,7 +256,7 @@ declare function html:buildSimple($ruleCode as xs:string, $longText, $text, $rec
         else
             $countRecords || " " || $unit || substring("s ", number(not($countRecords > 1)) * 2) || " found"
     let $bulletType := $errorLevel
-    return html:buildGeneric($ruleCode, $longText, $text, $records, $message, $unit, $bulletType)
+    return html:buildGeneric($ruleCode, $longText, $text, $records, $message, $bulletType)
 };
 declare function html:build0($ruleCode as xs:string, $longText, $text, $records as element(tr)*, $valueHeading as xs:string, $validMsg as xs:string, $unit as xs:string) {
     let $countRecords := count($records)
@@ -271,7 +271,7 @@ declare function html:build0($ruleCode as xs:string, $longText, $text, $records 
         else
             $countRecords || " " || $unit || substring("s ", number(not($countRecords > 1)) * 2) || " found"
 
-        return html:buildGeneric($ruleCode, $longText, $text, $records, $message, $unit, $bulletType)
+        return html:buildGeneric($ruleCode, $longText, $text, $records, $message, $bulletType)
 };
 declare function html:buildUnique($ruleCode as xs:string, $longText, $text, $records as element(tr)*, $valueHeading as xs:string, $validMsg as xs:string, $unit as xs:string, $errorLevel as xs:string) {
     let $countRecords := count($records)
@@ -289,7 +289,7 @@ declare function html:buildUnique($ruleCode as xs:string, $longText, $text, $rec
                 <td><span class="largeText">{$message}</span></td>
             </tr>
         else
-            html:buildGeneric($ruleCode, $longText, $text, $records, $message, $unit, $bulletType)
+            html:buildGeneric($ruleCode, $longText, $text, $records, $message, $bulletType)
 };
 declare function html:build1($ruleCode as xs:string, $longText, $text, $records as element(tr)*, $valueHeading as xs:string, $validMsg as xs:string, $unit as xs:string, $skippedMsg, $errorLevel as xs:string) as element(tr)* {
     let $countRecords := count($records)
@@ -307,7 +307,7 @@ declare function html:build1($ruleCode as xs:string, $longText, $text, $records 
             $validMsg
         else
             $countRecords || " " || $unit || " found"
-    return html:buildGeneric($ruleCode, $longText, $text, $records, $validMsg, $unit, $bulletType)
+    return html:buildGeneric($ruleCode, $longText, $text, $records, $validMsg, $bulletType)
 };
 declare function html:build2($ruleCode as xs:string, $longText, $text, $records as element(tr)*, $valueHeading as xs:string, $validMsg as xs:string, $unit as xs:string, $skippedMsg, $errorLevel as xs:string) as element(tr)* {
     let $countRecords := count($records)
@@ -325,7 +325,17 @@ declare function html:build2($ruleCode as xs:string, $longText, $text, $records 
             $validMsg
         else
             $countRecords || " " || $unit || substring("s ", number(not($countRecords > 1)) * 2) || " found"
-    return html:buildGeneric($ruleCode, $longText, $text, $records, $message, $unit, $bulletType)
+    return html:buildGeneric($ruleCode, $longText, $text, $records, $message, $bulletType)
+};
+declare function html:build3($ruleCode as xs:string, $longText, $text, $records as element(tr)*, $message as xs:string, $errorLevel as xs:string) as element(tr)* {
+    let $countRecords := count($records)
+    let $bulletType := $errorLevel
+    return
+        <tr>
+            <td class="bullet">{html:getBullet($ruleCode, $bulletType)}</td>
+            <th colspan="2">{$text} {html:getModalInfo($ruleCode, $longText)}</th>
+            <td><span class="largeText">{$message}</span></td>
+        </tr>
 };
 declare function html:build9($ruleCode as xs:string, $longText, $text, $records as element(tr)*, $valueHeading as xs:string, $validMsg as xs:string, $unit as xs:string, $skippedMsg, $errorLevel as xs:string) as element(tr)* {
     let $countRecords := count($records)
@@ -344,7 +354,7 @@ declare function html:build9($ruleCode as xs:string, $longText, $text, $records 
             $countInvalid || " " || $unit || substring("s ", number(not($countRecords > 1)) * 2) || " found"
         else
             $validMsg
-    return html:buildGeneric($ruleCode, $longText, $text, $records, $message, $unit, $bulletType)
+    return html:buildGeneric($ruleCode, $longText, $text, $records, $message, $bulletType)
 };
 (: TODO: maybe remove :)
 declare function html:build7($ruleCode as xs:string, $longText, $text, $records as element(tr)*, $valueHeading as xs:string, $validMsg as xs:string, $unit as xs:string, $skippedMsg, $errorLevel as xs:string) as element(tr)* {
@@ -367,7 +377,7 @@ declare function html:build7($ruleCode as xs:string, $longText, $text, $records 
         else
             "unknown error"
 
-    return html:buildGeneric($ruleCode, $longText, $text, $records, $validMsg, $unit, $bulletType)
+    return html:buildGeneric($ruleCode, $longText, $text, $records, $validMsg, $bulletType)
 };
 
 (: Deprecated, remove after migration :)
@@ -376,7 +386,7 @@ declare function html:buildResultRows($ruleCode as xs:string, $longText, $text, 
 };
 
 (: Builds HTML table rows for rules. :)
-declare %private function html:buildGeneric($ruleCode as xs:string, $longText, $text, $records as element(tr)*, $message as xs:string, $unit as xs:string, $bulletType as xs:string) as element(tr)* {
+declare %private function html:buildGeneric($ruleCode as xs:string, $longText, $text, $records as element(tr)*, $message as xs:string, $bulletType as xs:string) as element(tr)* {
     let $countRecords := count($records)
     let $result :=
         (

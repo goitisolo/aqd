@@ -95,21 +95,27 @@ let $countRegimes := count($docRoot//aqd:AQD_AssessmentRegime)
 let $validationResult := schemax:validateXmlSchema($source_url)
 
 (: C0 :)
-let $C0invalid :=
+let $C0table :=
     try {
-        if (query:deliveryExists($xmlconv:OBLIGATIONS, $countryCode, $cdir, $reportingYear)) then
-            <tr>
-                <td title="base:namespace">{$docRoot//aqd:AQD_ReportingHeader/aqd:inspireId/base:Identifier/base:namespace/string()}</td>
-                <td title="base:localId">{$docRoot//aqd:AQD_ReportingHeader/aqd:inspireId/base:Identifier/base:localId/string()}</td>
+        if ($reportingYear = "") then
+            <tr class="{$errors:ERROR}">
+                <td title="Status">Reporting Year is missing.</td>
+            </tr>
+        else if (query:deliveryExists($xmlconv:OBLIGATIONS, $countryCode, $cdir, $reportingYear)) then
+            <tr class="{$errors:WARNING}">
+                <td title="Status">Updating delivery for {$reportingYear}</td>
             </tr>
         else
-            ()
+            <tr class="{$errors:INFO}">
+                <td title="Status">New delivery for {$reportingYear}</td>
+            </tr>
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+let $isNewDelivery := errors:getMaxError($C0table) = $errors:INFO
 
 (: C1 :)
 let $C1table :=
@@ -153,7 +159,7 @@ let $C2table :=
         </tr>
     }
 let $C2errorLevel :=
-    if (empty($C0invalid) and count(
+    if ($isNewDelivery and count(
         for $x in $docRoot//aqd:AQD_AssessmentRegime
         let $id := $x/aqd:inspireId/base:Identifier/base:namespace || "/" || $x/aqd:inspireId/base:Identifier/base:localId
         where ($allRegimes = $id)
@@ -185,7 +191,7 @@ let $C3table :=
         </tr>
     }
 let $C3errorLevel :=
-    if (exists($C0invalid) and count($C3table) = 0) then
+    if (not($isNewDelivery) and count($C3table) = 0) then
         $errors:ERROR
     else
         $errors:INFO
@@ -888,7 +894,7 @@ let $C42invalid :=
 return
     <table class="maintable hover">
         {html:buildXML("XML", $labels:XML, $labels:XML_SHORT, $validationResult, "This XML passed validation.", "This XML file did NOT pass the XML validation", $errors:ERROR)}
-        {html:buildExists("C0", $labels:C0, $labels:C0_SHORT, $C0invalid, "New Delivery for " || $reportingYear, "Updated Delivery for " || $reportingYear, $errors:WARNING)}
+        {html:build3("C0", $labels:C0, $labels:C0_SHORT, $C0table, string($C0table/td), errors:getMaxError($C0table))}
         {html:build1("C1", $labels:C1, $labels:C1_SHORT, $C1table, "", string(count($C1table)), "", "", $errors:ERROR)}
         {html:buildSimple("C2", $labels:C2, $labels:C2_SHORT, $C2table, "", "record", $C2errorLevel)}
         {html:buildSimple("C3", $labels:C3, $labels:C3_SHORT, $C3table, "", "record", $C3errorLevel)}

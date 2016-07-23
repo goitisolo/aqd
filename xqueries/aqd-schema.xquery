@@ -23,12 +23,12 @@ declare variable $schemax:IGNORED_NEW := ("cvc-elt.1.a: Cannot find the declarat
 "cvc-elt.4.2.a: Cannot resolve 'ns:ReferenceType' to a type definition for element 'om:value'.");
 
 declare function schemax:validateXmlSchema($source_url as xs:string) {
-    let $successfulResult := <div class="feedbacktext">
+    (:let $successfulResult := <div class="feedbacktext">
         <span id="feedbackStatus" class="INFO" style="display:none">XML Schema validation passed without errors.</span>
         <span style="display:none"><p>OK</p></span>
         <h2>XML Schema validation</h2>
         <p><span style="background-color: green; font-size: 0.8em; color: white; padding-left:5px;padding-right:5px;margin-right:5px;text-align:center">OK</span>XML Schema validation passed without errors.</p><p>The file was validated against <a href="http://dd.eionet.europa.eu/schemas/id2011850eu-1.0/AirQualityReporting.xsd">http://dd.eionet.europa.eu/schemas/id2011850eu-1.0/AirQualityReporting.xsd</a></p></div>
-
+:)
     let $validationResult := validate:xsd-report(doc($source_url))
     let $finalResult :=
         for $node in $validationResult/message
