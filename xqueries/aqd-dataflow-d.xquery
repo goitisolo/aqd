@@ -248,46 +248,41 @@ let $D4table :=
 
 (: D5 :)
 (: TODO: FIX TRY CATCH :)
-let $gmlIds := $DCombinations/lower-case(normalize-space(@gml:id))
-let $D5tmp := distinct-values(
+let $all1 := $DCombinations/lower-case(normalize-space(@gml:id))
+let $part1 := distinct-values(
         for $id in $DCombinations/@gml:id
-        where string-length(normalize-space($id)) > 0 and count(index-of($gmlIds, lower-case(normalize-space($id)))) > 1
+        where string-length(normalize-space($id)) > 0 and count(index-of($all1, lower-case(normalize-space($id)))) > 1
         return
             $id
 )
-let $duplicateGmlIds :=
-    for $i in $D5tmp
+let $part1 :=
+    for $i in $part1
     return
         <tr>
-            <td title="@gml:id">{$i}</td>
+            <td title="Duplicate records">@gml:id {$i}</td>
         </tr>
-let $efInspireIds := for $id in $DCombinations/ef:inspireId
-return
-    lower-case(concat("[", normalize-space($id/base:Identifier/base:localId), ", ", normalize-space($id/base:Identifier/base:namespace),
-            ", ", normalize-space($id/base:Identifier/base:versionId), "]"))
-let $D5tmp := distinct-values(
+
+let $all2 := for $id in $DCombinations/ef:inspireId
+return lower-case("[" || $id/base:Identifier/base:localId || ", " || $id/base:Identifier/base:namespace || ", " || $id/base:Identifier/base:versionId || "]")
+let $part2 := distinct-values(
         for $id in $DCombinations/ef:inspireId
-        let $key :=
-            concat("[", normalize-space($id/base:Identifier/base:localId), ", ", normalize-space($id/base:Identifier/base:namespace),
-                    ", ", normalize-space($id/base:Identifier/base:versionId), "]")
-        where string-length(normalize-space($id/base:Identifier/base:localId)) > 0 and count(index-of($efInspireIds, lower-case($key))) > 1
+        let $key := "[" || $id/base:Identifier/base:localId || ", " || $id/base:Identifier/base:namespace || ", " || $id/base:Identifier/base:versionId || "]"
+        where string-length(normalize-space($id/base:Identifier/base:localId)) > 0 and count(index-of($all2, lower-case($key))) > 1
         return
             $key
 )
-let $duplicateefInspireIds :=
-    for $i in $D5tmp
+let $part2 :=
+    for $i in $part2
     return
         <tr>
-            <td title="@gml:id">{string($i)}</td>
+            <td title="Duplicate records">ef:inspireId {string($i)}</td>
         </tr>
 
 
-let $aqdInspireIds := for $id in $DCombinations/aqd:inspireId
-return
-    lower-case(concat("[", normalize-space($id/base:Identifier/base:localId), ", ", normalize-space($id/base:Identifier/base:namespace),
-            ", ", normalize-space($id/base:Identifier/base:versionId), "]"))
+let $all3 := for $id in $DCombinations/aqd:inspireId
+return lower-case("[" || $id/base:Identifier/base:localId || ", " || $id/base:Identifier/base:namespace || ", " || $id/base:Identifier/base:versionId || "]")
 
-let $D5tmp := distinct-values(
+let $part3 := distinct-values(
         for $id in $DCombinations/aqd:inspireId
         let $key :=
             concat("[", normalize-space($id/base:Identifier/base:localId), ", ", normalize-space($id/base:Identifier/base:namespace),
@@ -296,18 +291,17 @@ let $D5tmp := distinct-values(
         return
             $key
 )
-let $duplicateaqdInspireIds :=
-    for $i in $D5tmp
+let $part3 :=
+    for $i in $part3
     return
         <tr>
-            <td title="@gml:id">{string($i)}</td>
+            <td title="Duplicate records">aqd:inspireId {string($i)}</td>
         </tr>
 
-
-let $countGmlIdDuplicates := count($duplicateGmlIds)
-let $countefInspireIdDuplicates := count($duplicateefInspireIds)
-let $countaqdInspireIdDuplicates := count($duplicateaqdInspireIds)
-let $D5invalid := $countGmlIdDuplicates + $countefInspireIdDuplicates + $countaqdInspireIdDuplicates
+let $countGmlIdDuplicates := count($part1)
+let $countefInspireIdDuplicates := count($part2)
+let $countaqdInspireIdDuplicates := count($part3)
+let $D5invalid := $part1 + $part2 + $part3
 
 
 (: D6 Done by Rait ./ef:inspireId/base:Identifier/base:localId shall be an unique code for AQD_network and unique within the namespace.:)
@@ -1930,10 +1924,7 @@ return
         {html:buildSimple("D2", $labels:D2, $labels:D2_SHORT, $D2table, "", "feature type", $D2errorLevel)}
         {html:buildSimple("D3", $labels:D3, $labels:D3_SHORT, $D3table, $D3count, "feature type", $D3errorLevel)}
         {html:build1("D4", $labels:D4, $labels:D4_SHORT, $D4table, string(count($D4table)), "", "", "",$errors:ERROR)}
-        {html:buildCountRow("D5", $labels:D5, $labels:D5_SHORT, $D5invalid, (), "duplicate", ())}
-        {html:buildConcatRow($duplicateGmlIds, "aqd:AQD_Model/@gml:id - ")}
-        {html:buildConcatRow($duplicateefInspireIds, "ef:inspireId - ")}
-        {html:buildConcatRow($duplicateaqdInspireIds, "aqd:inspireId - ")}
+        {html:build2("D5", $labels:D5, $labels:D5_SHORT, $D5invalid, "", "All values are valid", "record", "", $errors:ERROR)}
         {html:buildInfoTR("Specific checks on AQD_Network feature(s) within this XML")}
         {html:buildCountRow("D6", $labels:D6, $labels:D6_SHORT, $D6invalid, (), (), ())}
         {html:buildUnique("D7", $labels:D7, $labels:D7_SHORT, $D7table, "", string(count($D7table)), "namespace", $errors:ERROR)}
