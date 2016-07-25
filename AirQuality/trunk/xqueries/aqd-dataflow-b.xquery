@@ -95,7 +95,7 @@ let $B2table :=
                 <td title="base:localId">{$zone/am:inspireId/base:Identifier/base:localId/string()}</td>
                 <td title="zoneName">{data($zone/am:name/gn:GeographicalName/gn:spelling/gn:SpellingOfName/gn:text)}</td>
                 <td title="zoneCode">{data($zone/aqd:zoneCode)}</td>
-                <td title="aqd:predecessor">{if (empty($zone/aqd:predecessor)) then "not specified" else $zone/aqd:predecessor/aqd:AQD_Zone/@gml:id}</td>
+                <td title="aqd:predecessor">{if (empty($zone/aqd:predecessor)) then "not specified" else data($zone/aqd:predecessor/@xlink:href)}</td>
             </tr>
     } catch * {
         <tr status="failed">
@@ -120,7 +120,7 @@ let $B3table :=
                 <td title="base:localId">{$zone/am:inspireId/base:Identifier/base:localId/string()}</td>
                 <td title="zoneName">{data($zone/am:name/gn:GeographicalName/gn:spelling/gn:SpellingOfName/gn:text)}</td>
                 <td title="zoneCode">{data($zone/aqd:zoneCode)}</td>
-                <td title="aqd:predecessor">{if (empty($zone/aqd:predecessor)) then "not specified" else $zone/aqd:predecessor/aqd:AQD_Zone/@gml:id}</td>
+                <td title="aqd:predecessor">{if (empty($zone/aqd:predecessor)) then "not specified" else data($zone/aqd:predecessor/@xlink:href)}</td>
             </tr>
     } catch * {
         <tr status="failed">
