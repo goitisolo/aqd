@@ -82,22 +82,56 @@ let $allAttainments := query:getAllAttainmentIds2($namespaces)
 
 (: INFO: XML Validation check. This adds delay to the running scripts :)
 let $validationResult := schemax:validateXmlSchema($source_url)
-(: G0 :)
-let $G0invalid :=
+
+(: File prefix/namespace check :)
+let $NSinvalid :=
     try {
-        if (query:deliveryExists($xmlconv:OBLIGATIONS, $countryCode, "g/", $reportingYear)) then
-            <tr>
-                <td title="base:localId">{$docRoot//aqd:AQD_ReportingHeader/aqd:inspireId/base:Identifier/base:namespace/string()}</td>
-                <td title="base:localId">{$docRoot//aqd:AQD_ReportingHeader/aqd:inspireId/base:Identifier/base:localId/string()}</td>
-            </tr>
-        else
-            ()
+        let $XQmap := inspect:static-context((), 'namespaces')
+        let $fileMap := map:merge((
+            for $x in in-scope-prefixes($docRoot/*)
+            return map:entry($x, string(namespace-uri-for-prefix($x, $docRoot/*)))))
+
+        return map:for-each($fileMap, function($a, $b) {
+            let $x := map:get($XQmap, $a)
+            return
+                if ($x != "" and not($x = $b)) then
+                    <tr>
+                        <td title="Prefix">{$a}</td>
+                        <td title="File namespace">{$b}</td>
+                        <td title="XQuery namespace">{$x}</td>
+                    </tr>
+                else
+                    ()
+        })
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+
+(: G0 :)
+let $G0table :=
+    try {
+        if ($reportingYear = "") then
+            <tr class="{$errors:ERROR}">
+                <td title="Status">Reporting Year is missing.</td>
+            </tr>
+        else if (query:deliveryExists($xmlconv:OBLIGATIONS, $countryCode, "g/", $reportingYear)) then
+            <tr class="{$errors:WARNING}">
+                <td title="Status">Updating delivery for {$reportingYear}</td>
+            </tr>
+        else
+            <tr class="{$errors:INFO}">
+                <td title="Status">New delivery for {$reportingYear}</td>
+            </tr>
+    } catch * {
+        <tr status="failed">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
+let $isNewDelivery := errors:getMaxError($G0table) = $errors:INFO
 
 (: G1 :)
 let $countAttainments := count($docRoot//aqd:AQD_Attainment)
@@ -144,7 +178,7 @@ let $G2table :=
         </tr>
     }
 let $G2errorLevel :=
-    if (empty($G0invalid) and count(
+    if ($isNewDelivery and count(
         for $x in $docRoot//aqd:AQD_Attainment
             let $id := $x/aqd:inspireId/base:Identifier/base:namespace || "/" || $x/aqd:inspireId/base:Identifier/base:localId
         where ($allAttainments = $id)
@@ -177,7 +211,7 @@ let $G3table :=
         </tr>
     }
 let $G3errorLevel :=
-    if (exists($G0invalid) and count($G3table) = 0)  then
+    if (not($isNewDelivery) and count($G3table) = 0)  then
         $errors:ERROR
     else
         $errors:INFO
@@ -1416,7 +1450,8 @@ let $G86invalid :=
 return
     <table class="maintable hover">
         {html:buildXML("XML", $labels:XML, $labels:XML_SHORT, $validationResult, "This XML passed validation.", "This XML file did NOT pass the XML validation", $errors:ERROR)}
-        {html:buildExists("G0", $labels:G0, $labels:G0_SHORT, $G0invalid, "New Delivery for " || $reportingYear, "Updated Delivery for " || $reportingYear, $errors:WARNING)}
+        {html:build2("NS", $labels:NAMESPACES, $labels:NAMESPACES_SHORT, $NSinvalid, "", "All values are valid", "record", "", $errors:ERROR)}
+        {html:build3("G0", $labels:G0, $labels:G0_SHORT, $G0table, string($G0table/td), errors:getMaxError($G0table))}
         {html:build1("G1", $labels:G1, $labels:G1_SHORT, $tblAllAttainments, "", string($countAttainments), "", "",$errors:ERROR)}
         {html:buildSimple("G2", $labels:G2, $labels:G2_SHORT, $G2table, "", "", $G2errorLevel)}
         {html:buildSimple("G3", $labels:G3, $labels:G3_SHORT, $G3table, "", "", $G3errorLevel)}

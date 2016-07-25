@@ -77,22 +77,57 @@ let $stationNamespaces := distinct-values($docRoot//aqd:AQD_Station/ef:inspireId
 
 (: INFO: XML Validation check. This adds delay to the running scripts :)
 let $validationResult := schemax:validateXmlSchema($source_url)
-(: D0 :)
-let $D0invalid :=
+
+(: File prefix/namespace check :)
+let $NSinvalid :=
     try {
-        if (query:deliveryExists($xmlconv:OBLIGATIONS, $countryCode, "d/", $reportingYear)) then
-            <tr>
-                <td title="base:localId">{$docRoot//aqd:AQD_ReportingHeader/aqd:inspireId/base:Identifier/base:namespace/string()}</td>
-                <td title="base:localId">{$docRoot//aqd:AQD_ReportingHeader/aqd:inspireId/base:Identifier/base:localId/string()}</td>
-            </tr>
-        else
-            ()
+        let $XQmap := inspect:static-context((), 'namespaces')
+        let $fileMap := map:merge((
+            for $x in in-scope-prefixes($docRoot/*)
+            return map:entry($x, string(namespace-uri-for-prefix($x, $docRoot/*)))))
+
+        return map:for-each($fileMap, function($a, $b) {
+            let $x := map:get($XQmap, $a)
+            return
+                if ($x != "" and not($x = $b)) then
+                    <tr>
+                        <td title="Prefix">{$a}</td>
+                        <td title="File namespace">{$b}</td>
+                        <td title="XQuery namespace">{$x}</td>
+                    </tr>
+                else
+                    ()
+        })
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+
+(: D0 :)
+let $D0table :=
+    try {
+        if ($reportingYear = "") then
+            <tr class="{$errors:ERROR}">
+                <td title="Status">Reporting Year is missing.</td>
+            </tr>
+        else if (query:deliveryExists($xmlconv:OBLIGATIONS, $countryCode, "d/", $reportingYear)) then
+            <tr class="{$errors:WARNING}">
+                <td title="Status">Updating delivery for {$reportingYear}</td>
+            </tr>
+        else
+            <tr class="{$errors:INFO}">
+                <td title="Status">New delivery for {$reportingYear}</td>
+            </tr>
+    } catch * {
+        <tr status="failed">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
+let $isNewDelivery := errors:getMaxError($D0table) = $errors:INFO
+
 
 let $D1sum := string(sum(
     for $featureType in $xmlconv:FEATURE_TYPES
@@ -287,7 +322,7 @@ let $part3 := distinct-values(
         let $key :=
             concat("[", normalize-space($id/base:Identifier/base:localId), ", ", normalize-space($id/base:Identifier/base:namespace),
                     ", ", normalize-space($id/base:Identifier/base:versionId), "]")
-        where string-length(normalize-space($id/base:Identifier/base:localId)) > 0 and count(index-of($aqdInspireIds, lower-case($key))) > 1
+        where string-length(normalize-space($id/base:Identifier/base:localId)) > 0 and count(index-of($all3, lower-case($key))) > 1
         return
             $key
 )
@@ -1919,7 +1954,8 @@ let $D94invalid :=
 return
     <table class="maintable hover">
         {html:buildXML("XML", $labels:XML, $labels:XML_SHORT, $validationResult, "This XML passed validation.", "This XML file did NOT pass the XML validation", $errors:ERROR)}
-        {html:buildExists("D0", $labels:D0, $labels:D0_SHORT, $D0invalid, "New Delivery for " || $reportingYear, "Updated Delivery for " || $reportingYear, $errors:WARNING)}
+        {html:build2("NS", $labels:NAMESPACES, $labels:NAMESPACES_SHORT, $NSinvalid, "", "All values are valid", "record", "", $errors:ERROR)}
+        {html:build3("D0", $labels:D0, $labels:D0_SHORT, $D0table, string($D0table/td), errors:getMaxError($D0table))}
         {html:build1("D1", $labels:D1, $labels:D1_SHORT, $D1table, "", $D1sum, "", "",$errors:ERROR)}
         {html:buildSimple("D2", $labels:D2, $labels:D2_SHORT, $D2table, "", "feature type", $D2errorLevel)}
         {html:buildSimple("D3", $labels:D3, $labels:D3_SHORT, $D3table, $D3count, "feature type", $D3errorLevel)}

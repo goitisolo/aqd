@@ -39,22 +39,56 @@ let $cdrUrl := common:getCdrUrl($countryCode)
 
 (: INFO: XML Validation check. This adds delay to the running scripts :)
 let $validationResult := schemax:validateXmlSchema($source_url)
-(: E0 :)
-let $E0invalid :=
+
+(: File prefix/namespace check :)
+let $NSinvalid :=
     try {
-        if (query:deliveryExists($xmlconv:OBLIGATIONS, $countryCode, "e/", $reportingYear)) then
-            <tr>
-                <td title="base:localId">{$docRoot//aqd:AQD_ReportingHeader/aqd:inspireId/base:Identifier/base:namespace/string()}</td>
-                <td title="base:localId">{$docRoot//aqd:AQD_ReportingHeader/aqd:inspireId/base:Identifier/base:localId/string()}</td>
-            </tr>
-        else
-            ()
+        let $XQmap := inspect:static-context((), 'namespaces')
+        let $fileMap := map:merge((
+            for $x in in-scope-prefixes($docRoot/*)
+            return map:entry($x, string(namespace-uri-for-prefix($x, $docRoot/*)))))
+
+        return map:for-each($fileMap, function($a, $b) {
+            let $x := map:get($XQmap, $a)
+            return
+                if ($x != "" and not($x = $b)) then
+                    <tr>
+                        <td title="Prefix">{$a}</td>
+                        <td title="File namespace">{$b}</td>
+                        <td title="XQuery namespace">{$x}</td>
+                    </tr>
+                else
+                    ()
+        })
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+
+(: E0 :)
+let $E0table :=
+    try {
+        if ($reportingYear = "") then
+            <tr class="{$errors:ERROR}">
+                <td title="Status">Reporting Year is missing.</td>
+            </tr>
+        else if (query:deliveryExists($xmlconv:OBLIGATIONS, $countryCode, "e/", $reportingYear)) then
+            <tr class="{$errors:WARNING}">
+                <td title="Status">Updating delivery for {$reportingYear}</td>
+            </tr>
+        else
+            <tr class="{$errors:INFO}">
+                <td title="Status">New delivery for {$reportingYear}</td>
+            </tr>
+    } catch * {
+        <tr status="failed">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
+let $isNewDelivery := errors:getMaxError($E0table) = $errors:INFO
 
 (: E01 :)
 let $E01table :=
@@ -490,7 +524,8 @@ let $E26invalid :=
 return
     <table class="maintable hover">
         {html:buildXML("XML", $labels:XML, $labels:XML_SHORT, $validationResult, "This XML passed validation.", "This XML file did NOT pass the XML validation", $errors:ERROR)}
-        {html:buildExists("E0", $labels:E0, $labels:E0_SHORT, $E0invalid, "New Delivery for " || $reportingYear, "Updated Delivery for " || $reportingYear, $errors:WARNING)}
+        {html:build2("NS", $labels:NAMESPACES, $labels:NAMESPACES_SHORT, $NSinvalid, "", "All values are valid", "record", "", $errors:ERROR)}
+        {html:build3("E0", $labels:E0, $labels:E0_SHORT, $E0table, string($E0table/td), errors:getMaxError($E0table))}
         {html:build1("E01", $labels:E01, $labels:E01_SHORT, $E01table, "", string(count($E01table)), "record", "", $errors:INFO)}
         {html:build2("E1", $labels:E1, $labels:E1_SHORT, $E1invalid, "", "All records are valid", "record", "", $errors:ERROR)}
         {html:build2("E2", $labels:E2, $labels:E2_SHORT, $E2invalid, "", "All records are valid", "record", "", $errors:ERROR)}

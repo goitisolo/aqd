@@ -13,6 +13,10 @@ declare variable $labels:SHOWRECORDS := "Show Records";
 declare variable $labels:SHOWERRORS := "Show Errors";
 declare variable $labels:SHOWCOMBINATIONS := "Show Combinations";
 
+(: GENERIC QC LABELS :)
+declare variable $labels:NAMESPACES := "Prefix/namespaces check";
+declare variable $labels:NAMESPACES_SHORT := "Prefix/namespaces check";
+
 (: ENVELOPE QC LABELS :)
 declare variable $labels:ENV1 := "aqd:AQD_ReportingHeader element must be present.";
 declare variable $labels:ENV2 := "The (start) year value must be equal to the year specified in (aqd:AQD_ReportingHeader) in the XML file and it must be between $1 - $2.";
