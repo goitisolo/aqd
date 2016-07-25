@@ -94,6 +94,33 @@ let $countRegimes := count($docRoot//aqd:AQD_AssessmentRegime)
 (: INFO: XML Validation check. This adds delay to the running scripts :)
 let $validationResult := schemax:validateXmlSchema($source_url)
 
+(: File prefix/namespace check :)
+let $NSinvalid :=
+    try {
+        let $XQmap := inspect:static-context((), 'namespaces')
+        let $fileMap := map:merge((
+            for $x in in-scope-prefixes($docRoot/*)
+            return map:entry($x, string(namespace-uri-for-prefix($x, $docRoot/*)))))
+
+        return map:for-each($fileMap, function($a, $b) {
+            let $x := map:get($XQmap, $a)
+            return
+                if ($x != "" and not($x = $b)) then
+                    <tr>
+                        <td title="Prefix">{$a}</td>
+                        <td title="File namespace">{$b}</td>
+                        <td title="XQuery namespace">{$x}</td>
+                    </tr>
+                else
+                    ()
+        })
+    } catch * {
+        <tr status="failed">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
+
 (: C0 :)
 let $C0table :=
     try {
@@ -894,6 +921,7 @@ let $C42invalid :=
 return
     <table class="maintable hover">
         {html:buildXML("XML", $labels:XML, $labels:XML_SHORT, $validationResult, "This XML passed validation.", "This XML file did NOT pass the XML validation", $errors:ERROR)}
+        {html:build2("NS", $labels:NAMESPACES, $labels:NAMESPACES_SHORT, $NSinvalid, "", "All values are valid", "record", "", $errors:ERROR)}
         {html:build3("C0", $labels:C0, $labels:C0_SHORT, $C0table, string($C0table/td), errors:getMaxError($C0table))}
         {html:build1("C1", $labels:C1, $labels:C1_SHORT, $C1table, "", string(count($C1table)), "", "", $errors:ERROR)}
         {html:buildSimple("C2", $labels:C2, $labels:C2_SHORT, $C2table, "", "record", $C2errorLevel)}

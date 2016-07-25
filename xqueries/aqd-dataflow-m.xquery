@@ -64,6 +64,33 @@ let $MCombinations :=
 (: INFO: XML Validation check. This adds delay to the running scripts :)
 let $validationResult := schemax:validateXmlSchema($source_url)
 
+(: File prefix/namespace check :)
+let $NSinvalid :=
+    try {
+        let $XQmap := inspect:static-context((), 'namespaces')
+        let $fileMap := map:merge((
+            for $x in in-scope-prefixes($docRoot/*)
+            return map:entry($x, string(namespace-uri-for-prefix($x, $docRoot/*)))))
+
+        return map:for-each($fileMap, function($a, $b) {
+            let $x := map:get($XQmap, $a)
+            return
+                if ($x != "" and not($x = $b)) then
+                    <tr>
+                        <td title="Prefix">{$a}</td>
+                        <td title="File namespace">{$b}</td>
+                        <td title="XQuery namespace">{$x}</td>
+                    </tr>
+                else
+                    ()
+        })
+    } catch * {
+        <tr status="failed">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
+
 (: M0 :)
 let $M0table :=
     try {
@@ -76,9 +103,9 @@ let $M0table :=
                 <td title="Status">Updating delivery for {$reportingYear}</td>
             </tr>
         else if (query:deliveryExists($xmlconv:OBLIGATIONS, $countryCode, "d1b/", $reportingYear)) then
-                <tr class="{$errors:WARNING}">
-                    <td title="Status">Updating delivery for {$reportingYear}</td>
-                </tr>
+            <tr class="{$errors:WARNING}">
+                <td title="Status">Updating delivery for {$reportingYear}</td>
+            </tr>
         else
             <tr class="{$errors:INFO}">
                 <td title="Status">New delivery for {$reportingYear}</td>
@@ -568,6 +595,7 @@ let $M43invalid :=
     return
     <table class="maintable hover">
         {html:buildXML("XML", $labels:XML, $labels:XML_SHORT, $validationResult, "This XML passed validation.", "This XML file did NOT pass the XML validation", $errors:ERROR)}
+        {html:build2("NS", $labels:NAMESPACES, $labels:NAMESPACES_SHORT, $NSinvalid, "", "All values are valid", "record", "", $errors:ERROR)}
         {html:build3("M0", $labels:M0, $labels:M0_SHORT, $M0table, string($M0table/td), errors:getMaxError($M0table))}
         {html:build2("M1", $labels:M1, $labels:M1_SHORT, $M1table, "", string(sum($countFeatureTypes)), "record", "",$errors:ERROR)}
         {html:build2("M2", $labels:M2, $labels:M2_SHORT, $M2table, "", string(count($M2table)), "record", "",$errors:ERROR)}
