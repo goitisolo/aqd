@@ -12,4 +12,6 @@ declare variable $source_url as xs:string external;
 declare option output:method "html";
 declare option db:inlinelimit '0';
 
-file:write("C:\Users\dev-gso\Desktop\output.html", obligations:proceed($source_url))
+let $file := "C:\Users\dev-gso\Desktop\output.html"
+let $result := file:write($file, obligations:proceed($source_url))
+return out:format("%s", "XQuery script Completed, please check: " || $file)
