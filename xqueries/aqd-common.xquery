@@ -47,7 +47,7 @@ declare function common:getEnvelopeXML($url as xs:string) as xs:string{
         if(fn:doc-available($ret)) then
             $ret
         else
-            ""    
+            ""
 };
 
 declare function common:getCdrUrl($countryCode as xs:string) as xs:string {

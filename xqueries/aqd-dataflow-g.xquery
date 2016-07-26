@@ -52,8 +52,8 @@ let $cdrUrl := common:getCdrUrl($countryCode)
 let $reportingYear := common:getReportingYear($docRoot)
 
 let $latestEnvelopeByYearB := query:getLatestEnvelopeByYear($cdrUrl || "b/", $reportingYear)
-let $latestEnvelopeB := query:getLatestEnvelopeS($cdrUrl || "b/")
-let $latestEnvelopeC := query:getLatestEnvelopeS($cdrUrl || "c/")
+let $latestEnvelopeB := query:getLatestEnvelope($cdrUrl || "b/")
+let $latestEnvelopeC := query:getLatestEnvelope($cdrUrl || "c/")
 
 (: GLOBAL variables needed for all checks :)
 let $knownAttainments := distinct-values(data(sparqlx:executeSparqlQuery(query:getAllAttainmentIds($cdrUrl))//sparql:binding[@name='inspireLabel']/sparql:literal))

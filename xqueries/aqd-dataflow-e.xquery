@@ -203,7 +203,7 @@ let $E5invalid :=
 (: E6 :)
 let $E6invalid :=
     try {
-        let $latestDfiles := sparqlx:executeSparqlQuery(query:getLatestDEnvelope($cdrUrl))/sparql:binding/sparql:uri/string()
+        let $latestDfiles := query:getEnvelopesByYear($cdrUrl || "d/", $reportingYear)
         let $result := sparqlx:executeSparqlQuery(query:getSamplingPointFromFiles($latestDfiles))
         let $all := $result/sparql:binding[@name = "inspireLabel"]/sparql:literal/string()
         let $parameters := $docRoot//om:OM_Observation/om:parameter/om:NamedValue
@@ -298,7 +298,7 @@ let $E10invalid :=
 (: E11 - The pollutant xlinked via /om:observedProperty must match the pollutant code declared via /aqd:AQD_SamplingPoint/ef:observingCapability/ef:ObservingCapability/ef:observedProperty :)
 let $E11invalid :=
     try {
-        let $latestDfiles := sparqlx:executeSparqlQuery(query:getLatestDEnvelope($cdrUrl))/sparql:binding/sparql:uri/string()
+        let $latestDfiles := query:getEnvelopesByYear($cdrUrl || "/d", $reportingYear)
         let $result := sparqlx:executeSparqlQuery(query:getSamplingPointMetadataFromFiles($latestDfiles))
         let $resultConcat := for $x in $result
         return $x/sparql:binding[@name="featureOfInterest"]/sparql:uri/string() || $x/sparql:binding[@name="observedProperty"]/sparql:uri/string()
@@ -491,7 +491,7 @@ let $E21invalid :=
 (: E26 :)
 let $E26invalid :=
     try {
-        let $latestDfiles := sparqlx:executeSparqlQuery(query:getLatestDEnvelope($cdrUrl))/sparql:binding/sparql:uri/string()
+        let $latestDfiles := query:getEnvelopesByYear($cdrUrl || "d/", $reportingYear)
         let $result := sparqlx:executeSparqlQuery(query:getSamplingPointMetadataFromFiles($latestDfiles))
         let $resultsConcat :=
             for $x in $result

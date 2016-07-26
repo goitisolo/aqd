@@ -21,6 +21,7 @@ xquery version "3.0" encoding "UTF-8";
  : Dataflow G script -
  : Dataflow M script -
  :)
+module namespace obligations = "http://converters.eionet.europa.eu";
 import module namespace dfB = "http://converters.eionet.europa.eu/dataflowB" at "aqd-dataflow-b.xquery";
 import module namespace dfC = "http://converters.eionet.europa.eu/dataflowC" at "aqd-dataflow-c.xquery";
 import module namespace dfD = "http://converters.eionet.europa.eu/dataflowD" at "aqd-dataflow-d.xquery";
@@ -32,62 +33,52 @@ import module namespace html = "aqd-html" at "aqd-html.xquery";
 import module namespace schemax = "aqd-schema" at "aqd-schema.xquery";
 import module namespace errors = "aqd-errors" at "aqd-errors.xquery";
 
-declare namespace xmlconv = "http://converters.eionet.europa.eu";
-declare option output:method "html";
-declare option db:inlinelimit '0';
-(:===================================================================:)
-(: Variable given as an external parameter by the QA service         :)
-(:===================================================================:)
+declare variable $obligations:ROD_PREFIX as xs:string := "http://rod.eionet.europa.eu/obligations/";
+declare variable $obligations:B_OBLIGATIONS as xs:string* := ($obligations:ROD_PREFIX || "670", $obligations:ROD_PREFIX || "693");
+declare variable $obligations:C_OBLIGATIONS as xs:string* := ($obligations:ROD_PREFIX || "671", $obligations:ROD_PREFIX || "694");
+declare variable $obligations:D_OBLIGATIONS as xs:string* := ($obligations:ROD_PREFIX || "672");
+declare variable $obligations:M_OBLIGATIONS as xs:string* := ($obligations:ROD_PREFIX || "672");
+declare variable $obligations:G_OBLIGATIONS as xs:string* := ($obligations:ROD_PREFIX || "679");
+declare variable $obligations:E_OBLIGATIONS as xs:string* := $obligations:ROD_PREFIX || "673";
 
-declare variable $source_url as xs:string external;
-
-declare variable $xmlconv:ROD_PREFIX as xs:string := "http://rod.eionet.europa.eu/obligations/";
-declare variable $xmlconv:B_OBLIGATIONS as xs:string* := (concat($xmlconv:ROD_PREFIX, "670"), concat($xmlconv:ROD_PREFIX, "693"));
-declare variable $xmlconv:C_OBLIGATIONS as xs:string* := (concat($xmlconv:ROD_PREFIX, "671"), concat($xmlconv:ROD_PREFIX, "694"));
-declare variable $xmlconv:D_OBLIGATIONS as xs:string* := (concat($xmlconv:ROD_PREFIX, "672"));
-declare variable $xmlconv:M_OBLIGATIONS as xs:string* := (concat($xmlconv:ROD_PREFIX, "672"));
-declare variable $xmlconv:G_OBLIGATIONS as xs:string* := (concat($xmlconv:ROD_PREFIX, "679"));
-declare variable $xmlconv:E_OBLIGATIONS as xs:string* := $xmlconv:ROD_PREFIX || "673";
-
-declare function xmlconv:proceed($source_url as xs:string) {
+declare function obligations:proceed($source_url as xs:string) {
 
     (: get reporting obligation & country :)
     let $envelopeUrl := common:getEnvelopeXML($source_url)
     let $obligations := if(string-length($envelopeUrl)>0) then fn:doc($envelopeUrl)/envelope/obligation else ()
     let $countryCode := common:getCountryCode($source_url)
 
-
     let $validObligations := common:getSublist($obligations,
-            ($xmlconv:B_OBLIGATIONS, $xmlconv:C_OBLIGATIONS, $xmlconv:D_OBLIGATIONS, $xmlconv:G_OBLIGATIONS, $xmlconv:M_OBLIGATIONS, $xmlconv:E_OBLIGATIONS))
+            ($obligations:B_OBLIGATIONS, $obligations:C_OBLIGATIONS, $obligations:D_OBLIGATIONS, $obligations:G_OBLIGATIONS, $obligations:M_OBLIGATIONS, $obligations:E_OBLIGATIONS))
 
     let $result := ()
     let $resultB :=
-        if (common:containsAny($obligations, $xmlconv:B_OBLIGATIONS)) then
+        if (common:containsAny($obligations, $obligations:B_OBLIGATIONS)) then
             dfB:proceed($source_url, $countryCode)
         else
             ()
     let $resultC :=
-        if (common:containsAny($obligations, $xmlconv:C_OBLIGATIONS)) then
+        if (common:containsAny($obligations, $obligations:C_OBLIGATIONS)) then
             dfC:proceed($source_url, $countryCode)
         else
             ()
     let $resultD :=
-        if (common:containsAny($obligations, $xmlconv:D_OBLIGATIONS)) then
+        if (common:containsAny($obligations, $obligations:D_OBLIGATIONS)) then
             dfD:proceed($source_url, $countryCode)
         else
             ()
     let $resultG :=
-        if (common:containsAny($obligations, $xmlconv:G_OBLIGATIONS)) then
+        if (common:containsAny($obligations, $obligations:G_OBLIGATIONS)) then
             dfG:proceed($source_url, $countryCode)
         else
             ()
     let $resultM :=
-        if (common:containsAny($obligations, $xmlconv:M_OBLIGATIONS)) then
+        if (common:containsAny($obligations, $obligations:M_OBLIGATIONS)) then
             dfM:proceed($source_url, $countryCode)
         else
             ()
     let $resultE :=
-        if (common:containsAny($obligations, $xmlconv:E_OBLIGATIONS)) then
+        if (common:containsAny($obligations, $obligations:E_OBLIGATIONS)) then
             dfE:proceed($source_url, $countryCode)
         else
             ()
@@ -149,4 +140,3 @@ return
         </div>
     </div>
 };
-xmlconv:proceed($source_url)
