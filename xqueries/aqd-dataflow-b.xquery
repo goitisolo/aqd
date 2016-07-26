@@ -111,7 +111,7 @@ let $isNewDelivery := errors:getMaxError($B0table) = $errors:INFO
 (: Generic variables :)
 let $knownZones :=
     if ($isNewDelivery) then
-        distinct-values(data(sparqlx:run(query:getZones(query:getLatestEnvelopeByYear($cdrUrl || $bdir, number($reportingYear) - 1)))//sparql:binding[@name = 'inspireLabel']/sparql:literal))
+        distinct-values(data(sparqlx:run(query:getZones(query:getLatestEnvelopeByYear($cdrUrl || $bdir, string(number($reportingYear) - 1))))//sparql:binding[@name = 'inspireLabel']/sparql:literal))
     else
         distinct-values(data(sparqlx:run(query:getZones($latestEnvelopeB))//sparql:binding[@name = 'inspireLabel']/sparql:literal))
 
