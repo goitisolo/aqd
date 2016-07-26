@@ -995,8 +995,12 @@ let $B46invalid :=
         let $correctLink := common:getEnvelopeXML($source_url)
         return
             if (count(doc($correctLink)/envelope/file[replace(@link, "https://", "http://") = replace($link, "https://", "http://")]) = 0) then
-                concat($link/../@gml:id, ' ', $link)
-            else ()
+                <tr>
+                    <td title="aqd:AQD_Zone">{data($link/../am:inspireId/base:Identifier/base:localId)}</td>
+                    <td title="aqd:shapefileLink">{data($link)}</td>
+                </tr>
+            else
+                ()
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
