@@ -84,9 +84,9 @@ let $zoneIds := if ((fn:string-length($countryCode) = 2) and exists($latestEnvel
 let $countZoneIds1 := count($zoneIds)
 let $countZoneIds2 := count(distinct-values($docRoot//aqd:AQD_AssessmentRegime/aqd:zone/@xlink:href))
 
-let $latestenvelopeB := query:getLatestEnvelopeS($cdrUrl || "b/")
+let $latestenvelopeB := query:getLatestEnvelope($cdrUrl || "b/")
 let $latestenvelopeC := query:getLatestEnvelopeByYear($cdrUrl || "c/", $reportingYear)
-let $latestMenvelope := query:getLatestEnvelopeS($cdrUrl || "d/")
+let $latestMenvelope := query:getLatestEnvelope($cdrUrl || "d/")
 let $knownRegimes := if (exists($latestenvelopeC)) then query:getLatestRegimeIds($latestenvelopeC) else ()
 let $allRegimes := query:getAllRegimeIds($namespaces)
 let $countRegimes := count($docRoot//aqd:AQD_AssessmentRegime)
@@ -512,7 +512,7 @@ let $C26table :=
         let $startDate := substring(data($docRoot//aqd:reportingPeriod/gml:TimePeriod/gml:beginPosition),1,10)
         let $endDate := substring(data($docRoot//aqd:reportingPeriod/gml:TimePeriod/gml:endPosition),1,10)
 
-        let $latestDEnvelopes := distinct-values(data(sparqlx:executeSparqlQuery(query:getLatestDEnvelope($cdrUrl))//sparql:binding[@name='dataset']/sparql:uri))
+        let $latestDEnvelopes := distinct-values(query:getEnvelopesByYear($cdrUrl || "d/", $reportingYear))
         let $modelMethods := if (fn:string-length($countryCode) = 2) then distinct-values(data(sparqlx:executeSparqlQuery(query:getModelEndPosition($latestDEnvelopes, $startDate, $endDate))//sparql:binding[@name='inspireLabel']/sparql:literal)) else ()
         let $sampingPointMethods := if (fn:string-length($countryCode) = 2) then distinct-values(data(sparqlx:executeSparqlQuery(query:getSamplingPointEndPosition($latestDEnvelopes,$startDate,$endDate))//sparql:binding[@name='inspireLabel']/sparql:literal)) else ()
 
