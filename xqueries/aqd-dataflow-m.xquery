@@ -674,6 +674,34 @@ let $M45invalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+(:
+ : M46 - generalized by Hermann
+ : In Europe, lat values tend to be bigger than lon values. We use this observation as a poor farmer's son test to check that in a coordinate value pair,
+ : the lat value comes first, as defined in the GML schema
+:)
+let $M46invalid :=
+    try {
+        for $latLong in $docRoot//gml:posList
+        let $latlongToken := fn:tokenize(normalize-space($latLong), "\s+")
+        let $lat := number($latlongToken[1])
+        let $long := number($latlongToken[2])
+        where (not($countryCode = "fr") and ($long > $lat))
+        return
+            <tr>
+                <td title="Polygon">{string($latLong/../../../@gml:id)}</td>
+                <td title="First vertex">{string($lat) || string($long)}</td>
+            </tr>
+    } catch * {
+        <tr status="failed">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
+let $M46message :=
+    if ($countryCode = "fr") then
+        "Temporary turned off"
+    else
+        "All values are valid"
 
     return
     <table class="maintable hover">
@@ -708,6 +736,7 @@ let $M45invalid :=
         {html:build2("M41.1", $labels:M41.1, $labels:M41.1_SHORT, $M41.1invalid, "base:Identifier/base:namespace", "All values are valid", " invalid namespaces", "", $errors:ERROR)}
         {html:build2("M43", $labels:M43, $labels:M43_SHORT, $M43invalid, "aqd:AQD_ModelArea/@gml:id","All srsDimension attributes are valid"," invalid attribute", "", $errors:ERROR)}
         {html:build2("M45", $labels:M45, $labels:M45_SHORT, $M45invalid, "", "All records are valid", "record", "", $errors:ERROR)}
+        {html:build2("M46", $labels:M46, $labels:M46_SHORT, $M46invalid, "gml:Polygon", $M46message, "record", "", $errors:ERROR)}
     </table>
 };
 
