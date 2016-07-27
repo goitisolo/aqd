@@ -185,7 +185,7 @@ let $M2table :=
 (: M3 - :)
 let $M3table :=
     try {
-        let $featureTypes := remove($xmlconv:FEATURE_TYPES, index-of($xmlconv:FEATURE_TYPES, "aqd:AQD_RepresentativeArea"))
+        let $featureTypes := $xmlconv:FEATURE_TYPES
         for $featureType at $pos in $featureTypes
         let $count := count(
                 for $x in $docRoot//descendant::*[name()=$featureType]
