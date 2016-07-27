@@ -299,6 +299,22 @@ let $M7.1invalid :=
         </tr>
     }
 
+(: M8 aqd:AQD_Model/ef:name shall return a string :)
+let $M8invalid :=
+    try {
+        for $x in $docRoot//aqd:AQD_Model[string(ef:name) = ""]
+        return
+            <tr>
+                <td title="base:localId">{string($x/ef:inspireId/base:Identifier/base:localId)}</td>
+            </tr>
+    }  catch * {
+        <tr status="failed">
+            <td title="Error code"> {$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+            <td></td>
+        </tr>
+    }
+
 (: M12 :)
 let $M12invalid :=
     try {
