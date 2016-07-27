@@ -30,11 +30,20 @@ declare namespace gml = "http://www.opengis.net/gml/3.2";
 declare namespace am = "http://inspire.ec.europa.eu/schemas/am/3.0";
 declare namespace ef = "http://inspire.ec.europa.eu/schemas/ef/3.0";
 declare namespace base = "http://inspire.ec.europa.eu/schemas/base/3.3";
+declare namespace ad = "urn:x-inspire:specification:gmlas:Addresses:3.0";
 declare namespace gn = "urn:x-inspire:specification:gmlas:GeographicalNames:3.0";
 declare namespace base2 = "http://inspire.ec.europa.eu/schemas/base2/1.0";
-declare namespace sparql = "http://www.w3.org/2005/sparql-results#";
 declare namespace xlink = "http://www.w3.org/1999/xlink";
-declare namespace ompr = "http://inspire.ec.europa.eu/schemas/ompr/2.0";
+declare namespace om = "http://www.opengis.net/om/2.0";
+declare namespace swe = "http://www.opengis.net/swe/2.0";
+declare namespace ompr="http://inspire.ec.europa.eu/schemas/ompr/2.0";
+declare namespace sams="http://www.opengis.net/samplingSpatial/2.0";
+declare namespace sam = "http://www.opengis.net/sampling/2.0";
+declare namespace gmd = "http://www.isotc211.org/2005/gmd";
+declare namespace gco = "http://www.isotc211.org/2005/gco";
+
+declare namespace sparql = "http://www.w3.org/2005/sparql-results#";
+
 
 declare variable $xmlconv:invalidCount as xs:integer := 0;
 declare variable $xmlconv:ISO2_CODES as xs:string* := ("AL","AT","BA","BE","BG","CH","CY","CZ","DE","DK","DZ","EE","EG","ES","FI",
@@ -1029,7 +1038,7 @@ let $B47invalid :=
 return
     <table class="maintable hover">
         {html:buildXML("XML", $labels:XML, $labels:XML_SHORT, $validationResult, "This XML passed validation.", "This XML file did NOT pass the XML validation", $errors:ERROR)}
-        {html:build2("NS", $labels:NAMESPACES, $labels:NAMESPACES_SHORT, $NSinvalid, "", "All values are valid", "record", "", $errors:ERROR)}
+        {html:build2("NS", $labels:NAMESPACES, $labels:NAMESPACES_SHORT, $NSinvalid, "", "All values are valid", "record", "", $errors:WARNING)}
         {html:build3("B0", $labels:B0, $labels:B0_SHORT, $B0table, string($B0table/td), errors:getMaxError($B0table))}
         {html:buildCountRow0("B1", $labels:B1, $labels:B1_SHORT, $countZones, "", "record", $errors:INFO)}
         {html:buildSimple("B2", $labels:B2, $labels:B2_SHORT, $B2table, "", "record", $B2errorLevel)}

@@ -30,16 +30,22 @@ declare namespace gml = "http://www.opengis.net/gml/3.2";
 declare namespace am = "http://inspire.ec.europa.eu/schemas/am/3.0";
 declare namespace ef = "http://inspire.ec.europa.eu/schemas/ef/3.0";
 declare namespace base = "http://inspire.ec.europa.eu/schemas/base/3.3";
+declare namespace ad = "urn:x-inspire:specification:gmlas:Addresses:3.0";
 declare namespace gn = "urn:x-inspire:specification:gmlas:GeographicalNames:3.0";
 declare namespace base2 = "http://inspire.ec.europa.eu/schemas/base2/1.0";
-declare namespace sparql = "http://www.w3.org/2005/sparql-results#";
 declare namespace xlink = "http://www.w3.org/1999/xlink";
+declare namespace om = "http://www.opengis.net/om/2.0";
+declare namespace swe = "http://www.opengis.net/swe/2.0";
 declare namespace ompr="http://inspire.ec.europa.eu/schemas/ompr/2.0";
 declare namespace sams="http://www.opengis.net/samplingSpatial/2.0";
+declare namespace sam = "http://www.opengis.net/sampling/2.0";
+declare namespace gmd = "http://www.isotc211.org/2005/gmd";
+declare namespace gco = "http://www.isotc211.org/2005/gco";
+
+declare namespace sparql = "http://www.w3.org/2005/sparql-results#";
 declare namespace skos="http://www.w3.org/2004/02/skos/core#";
 declare namespace prop="http://dd.eionet.europa.eu/property/";
 declare namespace rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#";
-declare namespace om="http://www.opengis.net/om/2.0";
 declare namespace adms="http://www.w3.org/ns/adms#";
 
 declare variable $xmlconv:ISO2_CODES as xs:string* := ("AL", "AD", "AT","BA","BE","BG","CH","CY","CZ","DE","DK","DZ","EE","EG","ES","FI",
@@ -1954,7 +1960,7 @@ let $D94invalid :=
 return
     <table class="maintable hover">
         {html:buildXML("XML", $labels:XML, $labels:XML_SHORT, $validationResult, "This XML passed validation.", "This XML file did NOT pass the XML validation", $errors:ERROR)}
-        {html:build2("NS", $labels:NAMESPACES, $labels:NAMESPACES_SHORT, $NSinvalid, "", "All values are valid", "record", "", $errors:ERROR)}
+        {html:build2("NS", $labels:NAMESPACES, $labels:NAMESPACES_SHORT, $NSinvalid, "", "All values are valid", "record", "", $errors:WARNING)}
         {html:build3("D0", $labels:D0, $labels:D0_SHORT, $D0table, string($D0table/td), errors:getMaxError($D0table))}
         {html:build1("D1", $labels:D1, $labels:D1_SHORT, $D1table, "", $D1sum, "", "",$errors:ERROR)}
         {html:buildSimple("D2", $labels:D2, $labels:D2_SHORT, $D2table, "", "feature type", $D2errorLevel)}
