@@ -658,6 +658,22 @@ let $M43invalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+(: M45 :)
+let $M45invalid :=
+    try {
+        for $posList in $docRoot//gml:posList
+        let $posListCount := count(fn:tokenize(normalize-space($posList), "\s+")) mod 2
+        where (not(empty($posList)) and $posListCount > 0)
+        return
+            <tr>
+                <td title="Polygon">{string($posList/../../../@gml:id)}</td>
+            </tr>
+    } catch * {
+        <tr status="failed">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
 
     return
     <table class="maintable hover">
@@ -691,6 +707,7 @@ let $M43invalid :=
         {html:buildUnique("M41", $labels:M41, $labels:M41_SHORT, $M41table, "", string(count($M41table)), "namespace", $errors:ERROR)}
         {html:build2("M41.1", $labels:M41.1, $labels:M41.1_SHORT, $M41.1invalid, "base:Identifier/base:namespace", "All values are valid", " invalid namespaces", "", $errors:ERROR)}
         {html:build2("M43", $labels:M43, $labels:M43_SHORT, $M43invalid, "aqd:AQD_ModelArea/@gml:id","All srsDimension attributes are valid"," invalid attribute", "", $errors:ERROR)}
+        {html:build2("M45", $labels:M45, $labels:M45_SHORT, $M45invalid, "", "All records are valid", "record", "", $errors:ERROR)}
     </table>
 };
 
