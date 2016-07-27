@@ -751,6 +751,7 @@ let $M46message :=
         {html:build2("M3", $labels:M3, $labels:M3_SHORT, $M3table, "", string(sum($countFeatureTypes)), "record", "", errors:getMaxError($M3table))}
         {html:build2("M4", $labels:M4, $labels:M4_SHORT, $M4table, "", string(count($M4table)), "record", "", $errors:INFO)}
         {html:build2("M5", $labels:M5, $labels:M5_SHORT, $M5invalid,  "", "All values are valid", "record", "", $errors:ERROR)}
+        {html:buildInfoTR("Specific checks on AQD_Models")}
         {html:buildUnique("M7", $labels:M7, $labels:M7_SHORT, $M7table, "", string(count($M7table)), "namespace", $errors:ERROR)}
         {html:build2("M7.1", $labels:M7.1, $labels:M7.1_SHORT, $M7.1invalid, "base:Identifier/base:namespace", "All values are valid", " invalid namespaces", "", $errors:ERROR)}
         {html:build2("M8", $labels:M8, $labels:M8_SHORT, $M8invalid, "", "All values are valid", "record", "", $errors:ERROR)}
@@ -761,6 +762,7 @@ let $M46message :=
         {html:build2("M23", $labels:M23, $labels:M23_SHORT, $M23invalid, "", "All values are valid", "record", "", $errors:ERROR)}
         {html:build2("M24", $labels:M24, $labels:M24_SHORT, $M24invalid, "", "All values are valid", "record", "", $errors:ERROR)}
         {html:build2("M26", $labels:M26, $labels:M26_SHORT, $M26invalid, "", "All values are valid", "record", "", $errors:ERROR)}
+        {html:buildInfoTR("Specific checks on AQD_ModelProcess")}
         {html:build2("M27", $labels:M27, $labels:M27_SHORT, $M27invalid, "", concat(string(count($M27invalid))," errors found.") , "record", "", $errors:ERROR)}
         {html:buildUnique("M28", $labels:M28, $labels:M28_SHORT, $M28table, "", string(count($M28table)), "namespace", $errors:ERROR)}
         {html:build2("M28.1", $labels:M28.1, $labels:M28.1_SHORT, $M28.1invalid, "base:Identifier/base:namespace", "All values are valid", " invalid namespaces", "", $errors:ERROR)}
@@ -769,6 +771,7 @@ let $M46message :=
         {html:build2("M34", $labels:M34, $labels:M34_SHORT, $M34invalid, "","All attributes are valid","record", "", $errors:WARNING)}
         {html:build2("M35", $labels:M35, $labels:M35_SHORT, $M35invalid, "","All attributes are valid","record", "", $errors:ERROR)}
         {html:build2("M39", $labels:M39, $labels:M39_SHORT, $M39invalid, "aqd:AQD_ModelProcess/@gml:id","All attributes are valid"," invalid attribute", "", $errors:ERROR)}
+        {html:buildInfoTR("Specific checks on AQD_ModelArea")}
         {html:build2("M40", $labels:M40, $labels:M40_SHORT, $M40invalid, "", concat(string(count($M40invalid))," errors found.") , "record", "", $errors:ERROR)}
         {html:buildUnique("M41", $labels:M41, $labels:M41_SHORT, $M41table, "", string(count($M41table)), "namespace", $errors:ERROR)}
         {html:build2("M41.1", $labels:M41.1, $labels:M41.1_SHORT, $M41.1invalid, "base:Identifier/base:namespace", "All values are valid", " invalid namespaces", "", $errors:ERROR)}
