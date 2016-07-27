@@ -409,7 +409,15 @@ let $M23invalid :=
 (: M24 :)
 let $M24invalid :=
     try {
-        $docRoot//aqd:AQD_Model/aqd:assessmentType[fn:normalize-space(@xlink:href) != "http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/model" and fn:normalize-space(@xlink:href) != "http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/objective"]/../@gml:id
+        for $x in $docRoot//aqd:AQD_Model/aqd:assessmentType
+        let $xlink := data($x/@xlink:href)
+        where not($xlink = $vocabulary:ASSESSMENTTYPE_VOCABULARY || "model") and not($xlink = $vocabulary:ASSESSMENTTYPE_VOCABULARY || "objective")
+        return
+            <tr>
+                <td title="aqd:AQD_Model">{data($x/../ef:inspireId/base:Identifier/base:localId)}</td>
+                <td title="aqd:assessmentType">{$xlink}</td>
+            </tr>
+
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
@@ -622,7 +630,7 @@ let $M43invalid :=
         {html:build2("M18", $labels:M18, $labels:M18_SHORT, $M18invalid, "ef:observedProperty", "All values are valid", "record", "", $errors:ERROR)}
         {html:build2("M19", $labels:M19, $labels:M19_SHORT, $M19invalid,"", "All values are valid", " invalid attribute", "", $errors:ERROR)}
         {html:build2("M23", $labels:M23, $labels:M23_SHORT, $M23invalid, "", "All values are valid", "record", "",$errors:ERROR)}
-        {html:build2("M24", $labels:M24, $labels:M24_SHORT, $M24invalid, "", concat(fn:string(count($M24invalid))," errors found"), "record", "",$errors:ERROR)}
+        {html:build2("M24", $labels:M24, $labels:M24_SHORT, $M24invalid, "", "All values are valid", "record", "",$errors:ERROR)}
         {html:build2("M25", $labels:M25, $labels:M25_SHORT, $M25invalid, "", concat(fn:string(count($M25invalid))," errors found"), "record", "",$errors:WARNING)}
         {html:build2("M26", $labels:M26, $labels:M26_SHORT, $M26invalid, "", concat(fn:string(count($M26invalid))," errors found"), "record", "",$errors:ERROR)}
         {html:build2("M27", $labels:M27, $labels:M27_SHORT, $M27invalid, "", concat(string(count($M27invalid))," errors found.") , "record", "",$errors:ERROR)}
