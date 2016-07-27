@@ -30,10 +30,19 @@ declare namespace gml = "http://www.opengis.net/gml/3.2";
 declare namespace am = "http://inspire.ec.europa.eu/schemas/am/3.0";
 declare namespace ef = "http://inspire.ec.europa.eu/schemas/ef/3.0";
 declare namespace base = "http://inspire.ec.europa.eu/schemas/base/3.3";
+declare namespace ad = "urn:x-inspire:specification:gmlas:Addresses:3.0";
 declare namespace gn = "urn:x-inspire:specification:gmlas:GeographicalNames:3.0";
 declare namespace base2 = "http://inspire.ec.europa.eu/schemas/base2/1.0";
-declare namespace sparql = "http://www.w3.org/2005/sparql-results#";
 declare namespace xlink = "http://www.w3.org/1999/xlink";
+declare namespace om = "http://www.opengis.net/om/2.0";
+declare namespace swe = "http://www.opengis.net/swe/2.0";
+declare namespace ompr="http://inspire.ec.europa.eu/schemas/ompr/2.0";
+declare namespace sams="http://www.opengis.net/samplingSpatial/2.0";
+declare namespace sam = "http://www.opengis.net/sampling/2.0";
+declare namespace gmd = "http://www.isotc211.org/2005/gmd";
+declare namespace gco = "http://www.isotc211.org/2005/gco";
+
+declare namespace sparql = "http://www.w3.org/2005/sparql-results#";
 declare namespace skos="http://www.w3.org/2004/02/skos/core#";
 declare namespace rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#";
 declare namespace prop="http://dd.eionet.europa.eu/property/";
@@ -921,7 +930,7 @@ let $C42invalid :=
 return
     <table class="maintable hover">
         {html:buildXML("XML", $labels:XML, $labels:XML_SHORT, $validationResult, "This XML passed validation.", "This XML file did NOT pass the XML validation", $errors:ERROR)}
-        {html:build2("NS", $labels:NAMESPACES, $labels:NAMESPACES_SHORT, $NSinvalid, "", "All values are valid", "record", "", $errors:ERROR)}
+        {html:build2("NS", $labels:NAMESPACES, $labels:NAMESPACES_SHORT, $NSinvalid, "", "All values are valid", "record", "", $errors:WARNING)}
         {html:build3("C0", $labels:C0, $labels:C0_SHORT, $C0table, string($C0table/td), errors:getMaxError($C0table))}
         {html:build1("C1", $labels:C1, $labels:C1_SHORT, $C1table, "", string(count($C1table)), "", "", $errors:ERROR)}
         {html:buildSimple("C2", $labels:C2, $labels:C2_SHORT, $C2table, "", "record", $C2errorLevel)}
@@ -955,56 +964,6 @@ return
         {html:build2("C41", $labels:C41, $labels:C41_SHORT, $C41invalid, "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "",$errors:WARNING)}
         {html:build2("C42", $labels:C42, $labels:C42_SHORT, $C42invalid, "aqd:AQD_AssessmentRegime", "All values are valid", " invalid value", "",$errors:WARNING)}
     </table>
-};
-
-declare function xmlconv:buildItemsList($ruleId as xs:string, $vocabularyUrl as xs:string, $ids as xs:string*) as element(div) {
-    let $list :=
-        for $id in $ids
-        let $refUrl := concat($vocabularyUrl, $id)
-        return
-            <p>{ $refUrl }</p>
-
-    return
-        <div>
-            <a id='vocLink-{$ruleId}' href='javascript:toggleItem("vocValuesDiv","vocLink", "{$ruleId}", "combination")'>Show combinations</a>
-            <div id="vocValuesDiv-{$ruleId}" style="display:none">{ $list }</div>
-        </div>
-};
-
-declare function xmlconv:buildVocItemsList($ruleId as xs:string, $vocabularyUrl as xs:string, $ids as xs:string*) as element(div) {
-    let $list :=
-        for $id in $ids
-        let $refUrl := concat($vocabularyUrl, $id)
-        return
-            <li><a href="{ $refUrl }">{ $refUrl } </a></li>
-
-
-    return
-        <div>
-            <a id='vocLink-{$ruleId}' href='javascript:toggleItem("vocValuesDiv","vocLink", "{$ruleId}", "item")'>Show items</a>
-            <div id="vocValuesDiv-{$ruleId}" style="display:none"><ul>{ $list }</ul></div>
-        </div>
-};
-
-declare function xmlconv:buildPollutantResultRows($ruleCode as xs:string,  $records as element(tr)*, $invalidMsg as xs:string, $errorLevel as xs:string) as element(tr)* {
-
-    let $msg :=
-        if (count($records) > 0) then
-            "Assessment regime(s) not found for the following pollutant(s):"
-        else
-            "Assessment regimes reported for all expected pollutants"
-    let $records := xmlconv:buildVocItemRows($vocabulary:POLLUTANT_VOCABULARY, $records)
-    return
-        html:buildResultRows($ruleCode, <span>{$msg}</span>, <span>{$msg}</span>, $records, "", "", " missing pollutant", "",$errors:WARNING)
-};
-
-declare function xmlconv:buildVocItemRows($vocabularyUrl as xs:string, $codes as xs:string*) as element(tr)* {
-    for $code in $codes
-    let $vocLink := concat($vocabularyUrl, $code)
-    return
-        <tr>
-            <td title="Pollutant"><a href="{$vocLink}">{$vocLink}</a></td>
-        </tr>
 };
 
 (:
