@@ -185,25 +185,18 @@ let $M4table :=
     try {
         let $allM4Combinations :=
             for $aqdModel in $MCombinations
-            return concat(data($aqdModel/@gml:id), "#", $aqdModel/ef:inspireId, "#", $aqdModel/ompr:inspireId, "#", $aqdModel/ef:name, "#", $aqdModel/ompr:name)
+            return $aqdModel/ef:inspireId/base:Identifier/base:localId || "#" || $aqdModel/ompr:inspireId/base:Identifier/base:localId || "#" || $aqdModel/aqd:inspireId/base:Identifier/base:localId || "#" || $aqdModel/ef:name || "#" || $aqdModel/ompr:name
 
         let $allM4Combinations := fn:distinct-values($allM4Combinations)
-        for $rec in $allM4Combinations
-        let $modelType := substring-before($rec, "#")
-        let $tmpStr := substring-after($rec, concat($modelType, "#"))
-        let $inspireId := substring-before($tmpStr, "#")
-        let $tmpInspireId := substring-after($tmpStr, concat($inspireId, "#"))
-        let $aqdInspireId := substring-before($tmpInspireId, "#")
-        let $tmpEfName := substring-after($tmpInspireId, concat($aqdInspireId, "#"))
-        let $efName := substring-before($tmpEfName, "#")
-        let $omprName := substring-after($tmpEfName, concat($efName, "#"))
+        for $x in $allM4Combinations
+        let $tokens := tokenize($x, "#")
         return
             <tr>
-                <td title="gml:id">{common:checkLink($modelType)}</td>
-                <td title="ef:inspireId">{common:checkLink($inspireId)}</td>
-                <td title="ompr:inspireId">{common:checkLink($aqdInspireId)}</td>
-                <td title="ef:name">{common:checkLink($efName)}</td>
-                <td title="ompr:name">{common:checkLink($omprName)}</td>
+                <td title="ef:inspireId">{common:checkLink($tokens[1])}</td>
+                <td title="ompr:inspireId">{common:checkLink($tokens[2])}</td>
+                <td title="aqd:inspireId">{common:checkLink($tokens[3])}</td>
+                <td title="ef:name">{common:checkLink($tokens[4])}</td>
+                <td title="ompr:name">{common:checkLink($tokens[5])}</td>
             </tr>
     } catch * {
         <tr status="failed">
@@ -607,7 +600,7 @@ let $M43invalid :=
         {html:build2("M1", $labels:M1, $labels:M1_SHORT, $M1table, "", string(sum($countFeatureTypes)), "record", "",$errors:ERROR)}
         {html:build2("M2", $labels:M2, $labels:M2_SHORT, $M2table, "", string(count($M2table)), "record", "",$errors:ERROR)}
         {html:build2("M3", $labels:M3, $labels:M3_SHORT, $M3table, "", string(count($M3table)), "record", "",$errors:ERROR)}
-        {html:build2("M4", $labels:M4, $labels:M4_SHORT, $M4table, "", string(count($M4table)), "record", "",$errors:ERROR)}
+        {html:build2("M4", $labels:M4, $labels:M4_SHORT, $M4table, "", string(count($M4table)), "record", "", $errors:INFO)}
         {html:build2("M5", $labels:M5, $labels:M5_SHORT, $M5invalid,  "", "All values are valid", "record", "", $errors:ERROR)}
         {html:buildUnique("M7", $labels:M7, $labels:M7_SHORT, $M7table, "", string(count($M7table)), "namespace", $errors:ERROR)}
         {html:build2("M7.1", $labels:M7.1, $labels:M7.1_SHORT, $M7.1invalid, "base:Identifier/base:namespace", "All values are valid", " invalid namespaces", "", $errors:ERROR)}
