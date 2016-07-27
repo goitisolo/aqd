@@ -525,6 +525,20 @@ let $M30invalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+(: M34 :)
+let $M34invalid :=
+    try {
+        for $x in $docRoot//aqd:AQD_ModelProcess[string(aqd:description) = ""]
+        return
+            <tr>
+                <td title="aqd:AQD_ModelProcess">{data($x/ompr:inspireId/base:Identifier/base:localId)}</td>
+            </tr>
+    } catch * {
+        <tr status="failed">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
 
 (: M39 :)
 let $M39invalid :=
@@ -628,6 +642,7 @@ let $M43invalid :=
         {html:build2("M28.1", $labels:M28.1, $labels:M28.1_SHORT, $M28.1invalid, "base:Identifier/base:namespace", "All values are valid", " invalid namespaces", "", $errors:ERROR)}
         {html:build2("M29", $labels:M29, $labels:M29_SHORT, $M29invalid, "aqd:AQD_ModelProcess/@gml:id","All attributes are valid"," invalid attribute", "", $errors:ERROR)}
         {html:build2("M30", $labels:M30, $labels:M30_SHORT, $M30invalid, "","All attributes are valid","record", "", $errors:WARNING)}
+        {html:build2("M34", $labels:M34, $labels:M34_SHORT, $M34invalid, "","All attributes are valid","record", "", $errors:WARNING)}
         {html:build2("M39", $labels:M39, $labels:M39_SHORT, $M39invalid, "aqd:AQD_ModelProcess/@gml:id","All attributes are valid"," invalid attribute", "", $errors:ERROR)}
         {html:build2("M40", $labels:M40, $labels:M40_SHORT, $M40invalid, "", concat(string(count($M40invalid))," errors found.") , "record", "", $errors:ERROR)}
         {html:buildUnique("M41", $labels:M41, $labels:M41_SHORT, $M41table, "", string(count($M41table)), "namespace", $errors:ERROR)}
