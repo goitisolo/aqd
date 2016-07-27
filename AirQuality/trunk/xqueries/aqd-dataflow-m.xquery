@@ -135,9 +135,13 @@ let $countFeatureTypes :=
 let $M1table :=
     try {
         for $featureType at $pos in $xmlconv:FEATURE_TYPES
-        where $countFeatureTypes[$pos] > 0
+        let $errorClass :=
+            if ($countFeatureTypes[$pos] > 0) then
+                $errors:INFO
+            else
+                $errors:WARNING
         return
-            <tr>
+            <tr class="{$errorClass}">
                 <td title="Feature type">{$featureType}</td>
                 <td title="Total number">{$countFeatureTypes[$pos]}</td>
             </tr>
@@ -708,7 +712,7 @@ let $M46message :=
         {html:buildXML("XML", $labels:XML, $labels:XML_SHORT, $validationResult, "This XML passed validation.", "This XML file did NOT pass the XML validation", $errors:ERROR)}
         {html:build2("NS", $labels:NAMESPACES, $labels:NAMESPACES_SHORT, $NSinvalid, "", "All values are valid", "record", "", $errors:WARNING)}
         {html:build3("M0", $labels:M0, $labels:M0_SHORT, $M0table, string($M0table/td), errors:getMaxError($M0table))}
-        {html:build2("M1", $labels:M1, $labels:M1_SHORT, $M1table, "", string(sum($countFeatureTypes)), "record", "",$errors:ERROR)}
+        {html:build1("M1", $labels:M1, $labels:M1_SHORT, $M1table, "", string(sum($countFeatureTypes)), "record", "", errors:getMaxError($M1table))}
         {html:build2("M2", $labels:M2, $labels:M2_SHORT, $M2table, "", string(count($M2table)), "record", "",$errors:ERROR)}
         {html:build2("M3", $labels:M3, $labels:M3_SHORT, $M3table, "", string(count($M3table)), "record", "",$errors:ERROR)}
         {html:build2("M4", $labels:M4, $labels:M4_SHORT, $M4table, "", string(count($M4table)), "record", "", $errors:INFO)}
