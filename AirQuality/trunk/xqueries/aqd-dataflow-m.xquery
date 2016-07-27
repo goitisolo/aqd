@@ -425,30 +425,6 @@ let $M24invalid :=
         </tr>
     }
 
-(: M25 :)
-let $M25invalid :=
-    try {
-        let $allTrueUsedAQD :=
-            for $trueUsedAQD in $docRoot//aqd:AQD_Model
-            where $trueUsedAQD/aqd:usedAQD = true()
-            return $trueUsedAQD
-
-        for $invalidTrueUsedAQD in $allTrueUsedAQD
-        where
-            count(sparqlx:executeSparqlQuery(query:getSamplingPointAssessment($invalidTrueUsedAQD/ef:inspireId/base:Identifier/base:localId, $invalidTrueUsedAQD/ef:inspireId/base:Identifier/base:namespace))/*) = 0
-        return
-            <tr>
-                <td title="gml:id">{data($invalidTrueUsedAQD/@gml:id)}</td>
-                <td title="base:localId">{data($invalidTrueUsedAQD/ef:inspireId/base:Identifier/base:localId)}</td>
-                <td title="base:namespace">{data($invalidTrueUsedAQD/ef:inspireId/base:Identifier/base:namespace)}</td>
-            </tr>
-    } catch * {
-        <tr status="failed">
-            <td title="Error code">{$err:code}</td>
-            <td title="Error description">{$err:description}</td>
-        </tr>
-    }
-
 (: M26 Amended by Jaume Targa to add nilReason; also updated line 978 to pick $allInvalZoneXlinks :)
 let $M26invalid :=
     try {
@@ -626,22 +602,21 @@ let $M43invalid :=
         {html:buildUnique("M7", $labels:M7, $labels:M7_SHORT, $M7table, "", string(count($M7table)), "namespace", $errors:ERROR)}
         {html:build2("M7.1", $labels:M7.1, $labels:M7.1_SHORT, $M7.1invalid, "base:Identifier/base:namespace", "All values are valid", " invalid namespaces", "", $errors:ERROR)}
         {html:build2("M8", $labels:M8, $labels:M8_SHORT, $M8invalid, "", "All values are valid", "record", "", $errors:ERROR)}
-        {html:build2("M15", $labels:M15, $labels:M15_SHORT, $M15invalid, "", concat(fn:string(count($M15invalid))," errors found"), "", "",$errors:ERROR)}
+        {html:build2("M15", $labels:M15, $labels:M15_SHORT, $M15invalid, "", concat(fn:string(count($M15invalid))," errors found"), "", "", $errors:ERROR)}
         {html:build2("M18", $labels:M18, $labels:M18_SHORT, $M18invalid, "ef:observedProperty", "All values are valid", "record", "", $errors:ERROR)}
         {html:build2("M19", $labels:M19, $labels:M19_SHORT, $M19invalid,"", "All values are valid", " invalid attribute", "", $errors:ERROR)}
-        {html:build2("M23", $labels:M23, $labels:M23_SHORT, $M23invalid, "", "All values are valid", "record", "",$errors:ERROR)}
-        {html:build2("M24", $labels:M24, $labels:M24_SHORT, $M24invalid, "", "All values are valid", "record", "",$errors:ERROR)}
-        {html:build2("M25", $labels:M25, $labels:M25_SHORT, $M25invalid, "", concat(fn:string(count($M25invalid))," errors found"), "record", "",$errors:WARNING)}
-        {html:build2("M26", $labels:M26, $labels:M26_SHORT, $M26invalid, "", concat(fn:string(count($M26invalid))," errors found"), "record", "",$errors:ERROR)}
-        {html:build2("M27", $labels:M27, $labels:M27_SHORT, $M27invalid, "", concat(string(count($M27invalid))," errors found.") , "record", "",$errors:ERROR)}
+        {html:build2("M23", $labels:M23, $labels:M23_SHORT, $M23invalid, "", "All values are valid", "record", "", $errors:ERROR)}
+        {html:build2("M24", $labels:M24, $labels:M24_SHORT, $M24invalid, "", "All values are valid", "record", "", $errors:ERROR)}
+        {html:build2("M26", $labels:M26, $labels:M26_SHORT, $M26invalid, "", concat(fn:string(count($M26invalid))," errors found"), "record", "", $errors:ERROR)}
+        {html:build2("M27", $labels:M27, $labels:M27_SHORT, $M27invalid, "", concat(string(count($M27invalid))," errors found.") , "record", "", $errors:ERROR)}
         {html:buildUnique("M28", $labels:M28, $labels:M28_SHORT, $M28table, "", string(count($M28table)), "namespace", $errors:ERROR)}
         {html:build2("M28.1", $labels:M28.1, $labels:M28.1_SHORT, $M28.1invalid, "base:Identifier/base:namespace", "All values are valid", " invalid namespaces", "", $errors:ERROR)}
-        {html:build2("M29", $labels:M29, $labels:M29_SHORT, $M29invalid, "aqd:AQD_ModelProcess/@gml:id","All attributes are valid"," invalid attribute", "",$errors:ERROR)}
-        {html:build2("M39", $labels:M39, $labels:M39_SHORT, $M39invalid, "aqd:AQD_ModelProcess/@gml:id","All attributes are valid"," invalid attribute", "",$errors:ERROR)}
-        {html:build2("M40", $labels:M40, $labels:M40_SHORT, $M40invalid, "", concat(string(count($M40invalid))," errors found.") , "record", "",$errors:ERROR)}
+        {html:build2("M29", $labels:M29, $labels:M29_SHORT, $M29invalid, "aqd:AQD_ModelProcess/@gml:id","All attributes are valid"," invalid attribute", "", $errors:ERROR)}
+        {html:build2("M39", $labels:M39, $labels:M39_SHORT, $M39invalid, "aqd:AQD_ModelProcess/@gml:id","All attributes are valid"," invalid attribute", "", $errors:ERROR)}
+        {html:build2("M40", $labels:M40, $labels:M40_SHORT, $M40invalid, "", concat(string(count($M40invalid))," errors found.") , "record", "", $errors:ERROR)}
         {html:buildUnique("M41", $labels:M41, $labels:M41_SHORT, $M41table, "", string(count($M41table)), "namespace", $errors:ERROR)}
         {html:build2("M41.1", $labels:M41.1, $labels:M41.1_SHORT, $M41.1invalid, "base:Identifier/base:namespace", "All values are valid", " invalid namespaces", "", $errors:ERROR)}
-        {html:build2("M43", $labels:M43, $labels:M43_SHORT, $M43invalid, "aqd:AQD_ModelArea/@gml:id","All srsDimension attributes are valid"," invalid attribute", "",$errors:ERROR)}
+        {html:build2("M43", $labels:M43, $labels:M43_SHORT, $M43invalid, "aqd:AQD_ModelArea/@gml:id","All srsDimension attributes are valid"," invalid attribute", "", $errors:ERROR)}
     </table>
 };
 
