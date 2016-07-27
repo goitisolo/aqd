@@ -341,16 +341,15 @@ let $M15invalid :=
     }
 
 (: M18 :)
-let $M18count := count($docRoot//aqd:AQD_Model/ef:observingCapability/ef:ObservingCapability/ef:observedProperty)
 let $M18invalid :=
     try {
-        let $valid := dd:getValidConcepts($vocabulary:POLLUTANT_VOCABULARY || "rdf")
-        for $x in $docRoot//aqd:AQD_Model/ef:observingCapability/ef:ObservingCapability/ef:observedProperty
-        where not($x/@xlink:href = $valid)
+        for $x in $docRoot//aqd:AQD_Model
+        let $xlink := data($x/ef:observingCapability/ef:ObservingCapability/ef:observedProperty/@xlink:href)
+        where not($xlink = $dd:VALIDPOLLUTANTS) or (count(distinct-values($xlink)) > 1)
         return
             <tr>
-                <td title="aqd:AQD_Model">{data($x/../../../ef:inspireId/base:Identifier/base:localId)}</td>
-                <td title="ef:observedProperty">{data($x/@xlink:href)}</td>
+                <td title="aqd:AQD_Model">{data($x/ef:inspireId/base:Identifier/base:localId)}</td>
+                <td title="ef:observedProperty">{$xlink}</td>
             </tr>
     } catch * {
         <tr status="failed">
