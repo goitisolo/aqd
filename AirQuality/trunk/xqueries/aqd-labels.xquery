@@ -636,6 +636,8 @@ declare variable $labels:M43 := labels:getLabel("M", "M43");
 declare variable $labels:M43_SHORT := labels:getLabel("M", "M43_SHORT");
 declare variable $labels:M45 := labels:getLabel("M", "M45");
 declare variable $labels:M45_SHORT := labels:getLabel("M", "M45_SHORT");
+declare variable $labels:M46 := labels:getLabel("M", "M46");
+declare variable $labels:M46_SHORT := labels:getLabel("M", "M46_SHORT");
 
 declare variable $labels:C6.1 := "Check that namespace is registered in vocabulary";
 declare variable $labels:C6.1_SHORT := "Check that namespace is registered in vocabulary";
