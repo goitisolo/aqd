@@ -152,15 +152,28 @@ let $M1table :=
         </tr>
     }
 
-(: M2 :)
+(: M2 - :)
 let $M2table :=
     try {
-        for $x in $MCombinations
-        let $id := if (empty($x/@gml:id)) then "" else data($x/@gml:id)
-        where empty(index-of($knownFeatures, $id))
+        for $featureType at $pos in $xmlconv:FEATURE_TYPES
+        let $countAll := count($docRoot//descendant::*[name()=$featureType])
+        let $count := count(
+                for $x in $docRoot//descendant::*[name()=$featureType]
+                let $inspireId := $x//base:Identifier/base:namespace/string() || "/" || $x//base:Identifier/base:localId/string()
+                where ($inspireId = "/" or not($knownFeatures = $inspireId))
+                return
+                    <tr>
+                        <td title="base:localId">{$x//base:Identifier/base:localId/string()}</td>
+                    </tr>)
+        let $errorClass :=
+            if ($countAll = $count or $count = 0) then
+                $errors:WARNING
+            else
+                $errors:INFO
         return
-            <tr>
-                <td title="gml:id">{data($x/@gml:id)}</td>
+            <tr class="{$errorClass}">
+                <td title="Feature type">{$featureType}</td>
+                <td title="Total number">{$count}</td>
             </tr>
     } catch * {
         <tr status="failed">
@@ -169,15 +182,28 @@ let $M2table :=
         </tr>
     }
 
-(: M3 :)
+(: M3 - :)
 let $M3table :=
     try {
-        for $x in $MCombinations
-        let $id := if (empty($x/@gml:id)) then "" else data($x/@gml:id)
-        where empty(index-of($knownFeatures, $id)) = false()
+        let $featureTypes := remove($xmlconv:FEATURE_TYPES, index-of($xmlconv:FEATURE_TYPES, "aqd:AQD_RepresentativeArea"))
+        for $featureType at $pos in $featureTypes
+        let $count := count(
+                for $x in $docRoot//descendant::*[name()=$featureType]
+                let $inspireId := $x//base:Identifier/base:namespace/string() || "/" || $x//base:Identifier/base:localId/string()
+                where ($knownFeatures = $inspireId)
+                return
+                    <tr>
+                        <td title="base:localId">{$x//base:Identifier/base:localId/string()}</td>
+                    </tr>)
+        let $errorClass :=
+            if ($count = 0) then
+                $errors:WARNING
+            else
+                $errors:INFO
         return
-            <tr>
-                <td title="gml:id">{data($x/@gml:id)}</td>
+            <tr class="{$errorClass}">
+                <td title="Feature type">{$featureType}</td>
+                <td title="Total number">{$count}</td>
             </tr>
     } catch * {
         <tr status="failed">
@@ -275,7 +301,7 @@ let $part4 :=
             <td title="Duplicate records">aqd:inspireId {$x}</td>
         </tr>
 
-let $M5invalid := $part1 + $part2 + $part3 + $part4
+let $M5invalid := ($part1, $part2, $part3, $part4)
 
 (: M7 :)
 let $M7table :=
@@ -713,8 +739,8 @@ let $M46message :=
         {html:build2("NS", $labels:NAMESPACES, $labels:NAMESPACES_SHORT, $NSinvalid, "", "All values are valid", "record", "", $errors:WARNING)}
         {html:build3("M0", $labels:M0, $labels:M0_SHORT, $M0table, string($M0table/td), errors:getMaxError($M0table))}
         {html:build1("M1", $labels:M1, $labels:M1_SHORT, $M1table, "", string(sum($countFeatureTypes)), "record", "", errors:getMaxError($M1table))}
-        {html:build2("M2", $labels:M2, $labels:M2_SHORT, $M2table, "", string(count($M2table)), "record", "",$errors:ERROR)}
-        {html:build2("M3", $labels:M3, $labels:M3_SHORT, $M3table, "", string(count($M3table)), "record", "",$errors:ERROR)}
+        {html:build2("M2", $labels:M2, $labels:M2_SHORT, $M2table, "", string(sum($countFeatureTypes)), "record", "", errors:getMaxError($M2table))}
+        {html:build2("M3", $labels:M3, $labels:M3_SHORT, $M3table, "", string(sum($countFeatureTypes)), "record", "", errors:getMaxError($M3table))}
         {html:build2("M4", $labels:M4, $labels:M4_SHORT, $M4table, "", string(count($M4table)), "record", "", $errors:INFO)}
         {html:build2("M5", $labels:M5, $labels:M5_SHORT, $M5invalid,  "", "All values are valid", "record", "", $errors:ERROR)}
         {html:buildUnique("M7", $labels:M7, $labels:M7_SHORT, $M7table, "", string(count($M7table)), "namespace", $errors:ERROR)}
