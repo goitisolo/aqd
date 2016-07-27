@@ -238,13 +238,11 @@ let $part2 :=
         </tr>
 
 
-let $all3 := for $id in $MCombinations/ef:inspireId
+let $all3 := for $id in $MCombinations/am:inspireId
 return lower-case("[" || $id/base:Identifier/base:localId || ", " || $id/base:Identifier/base:namespace || ", " || $id/base:Identifier/base:versionId || "]")
 let $part3 := distinct-values(
-        for $id in $MCombinations/ef:inspireId
-        let $key :=
-            concat("[", normalize-space($id/base:Identifier/base:localId), ", ", normalize-space($id/base:Identifier/base:namespace),
-                    ", ", normalize-space($id/base:Identifier/base:versionId), "]")
+        for $id in $MCombinations/am:inspireId
+        let $key := "[" || $id/base:Identifier/base:localId || ", " || $id/base:Identifier/base:namespace || ", " || $id/base:Identifier/base:versionId || "]"
         where  string-length(normalize-space($id/base:Identifier/base:localId)) > 0 and count(index-of($all3, lower-case($key))) > 1
         return
             $key
@@ -253,13 +251,25 @@ let $part3 :=
     for $x in $part3
     return
         <tr>
-            <td title="Duplicate records">ef:inspireId {$x}</td>
+            <td title="Duplicate records">am:inspireId {$x}</td>
+        </tr>
+let $all4 := for $id in $MCombinations/aqd:inspireId
+return lower-case("[" || $id/base:Identifier/base:localId || ", " || $id/base:Identifier/base:namespace || ", " || $id/base:Identifier/base:versionId || "]")
+let $part4 := distinct-values(
+        for $id in $MCombinations/aqd:inspireId
+        let $key := "[" || $id/base:Identifier/base:localId || ", " || $id/base:Identifier/base:namespace || ", " || $id/base:Identifier/base:versionId || "]"
+        where  string-length(normalize-space($id/base:Identifier/base:localId)) > 0 and count(index-of($all3, lower-case($key))) > 1
+        return
+            $key
+)
+let $part4 :=
+    for $x in $part4
+    return
+        <tr>
+            <td title="Duplicate records">aqd:inspireId {$x}</td>
         </tr>
 
-let $countGmlIdDuplicates := count($part1)
-let $countamInspireIdDuplicates := count($part2)
-let $countaqdInspireIdDuplicates := count($part3)
-let $M5invalid := $part1 + $part2 + $part3
+let $M5invalid := $part1 + $part2 + $part3 + $part4
 
 (: M7 :)
 let $M7table :=
