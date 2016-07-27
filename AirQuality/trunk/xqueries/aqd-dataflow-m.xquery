@@ -525,6 +525,7 @@ let $M30invalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+
 (: M34 :)
 let $M34invalid :=
     try {
@@ -532,6 +533,25 @@ let $M34invalid :=
         return
             <tr>
                 <td title="aqd:AQD_ModelProcess">{data($x/ompr:inspireId/base:Identifier/base:localId)}</td>
+            </tr>
+    } catch * {
+        <tr status="failed">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
+
+(: M35 :)
+let $M35invalid :=
+    try {
+        let $valid := dd:getValidConcepts($vocabulary:UOM_TIME || "rdf")
+        for $x in $docRoot//aqd:AQD_ModelProcess
+        let $xlink := data($x/aqd:temporalResolution/aqd:TimeReferences/aqd:unit/@xlink:href)
+        where not($xlink = $valid)
+        return
+            <tr>
+                <td title="aqd:AQD_ModelProcess">{data($x/ompr:inspireId/base:Identifier/base:localId)}</td>
+                <td title="aqd:unit">{$xlink}</td>
             </tr>
     } catch * {
         <tr status="failed">
@@ -643,6 +663,7 @@ let $M43invalid :=
         {html:build2("M29", $labels:M29, $labels:M29_SHORT, $M29invalid, "aqd:AQD_ModelProcess/@gml:id","All attributes are valid"," invalid attribute", "", $errors:ERROR)}
         {html:build2("M30", $labels:M30, $labels:M30_SHORT, $M30invalid, "","All attributes are valid","record", "", $errors:WARNING)}
         {html:build2("M34", $labels:M34, $labels:M34_SHORT, $M34invalid, "","All attributes are valid","record", "", $errors:WARNING)}
+        {html:build2("M35", $labels:M35, $labels:M35_SHORT, $M35invalid, "","All attributes are valid","record", "", $errors:ERROR)}
         {html:build2("M39", $labels:M39, $labels:M39_SHORT, $M39invalid, "aqd:AQD_ModelProcess/@gml:id","All attributes are valid"," invalid attribute", "", $errors:ERROR)}
         {html:build2("M40", $labels:M40, $labels:M40_SHORT, $M40invalid, "", concat(string(count($M40invalid))," errors found.") , "record", "", $errors:ERROR)}
         {html:buildUnique("M41", $labels:M41, $labels:M41_SHORT, $M41table, "", string(count($M41table)), "namespace", $errors:ERROR)}
