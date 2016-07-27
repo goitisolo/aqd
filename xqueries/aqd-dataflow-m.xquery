@@ -315,17 +315,6 @@ let $M8invalid :=
         </tr>
     }
 
-(: M12 :)
-let $M12invalid :=
-    try {
-        distinct-values($docRoot//aqd:AQD_Model[count(ef:geometry) >0 and ef:geometry/@srsName != "urn:ogc:def:crs:EPSG::4258" and ef:geometry/@srsName != "urn:ogc:def:crs:EPSG::4326"]/@gml:id)
-    } catch * {
-        <tr status="failed">
-            <td title="Error code">{$err:code}</td>
-            <td title="Error description">{$err:description}</td>
-        </tr>
-    }
-
 (: M15 :)
 let $M15invalid :=
     try {
@@ -630,7 +619,6 @@ let $M43invalid :=
         {html:build2("M5", $labels:M5, $labels:M5_SHORT, $M5invalid,  "", "All values are valid", "record", "", $errors:ERROR)}
         {html:buildUnique("M7", $labels:M7, $labels:M7_SHORT, $M7table, "", string(count($M7table)), "namespace", $errors:ERROR)}
         {html:build2("M7.1", $labels:M7.1, $labels:M7.1_SHORT, $M7.1invalid, "base:Identifier/base:namespace", "All values are valid", " invalid namespaces", "", $errors:ERROR)}
-        {html:build2("M12", $labels:M12, $labels:M12_SHORT, $M12invalid, "aqd:AQD_Model/@gml:id","All srsName attributes are valid"," invalid attribute","",$errors:ERROR)}
         {html:build2("M15", $labels:M15, $labels:M15_SHORT, $M15invalid, "", concat(fn:string(count($M15invalid))," errors found"), "", "",$errors:ERROR)}
         {html:build2("M18", $labels:M18, $labels:M18_SHORT, $M18invalid, "ef:observedProperty", "All values are valid", "record", "", $errors:ERROR)}
         {html:build2("M19", $labels:M19, $labels:M19_SHORT, $M19invalid,"aqd:AQD_Model/@gml:id", "All attributes is invalid", " invalid attribute", "",$errors:WARNING)}
