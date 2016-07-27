@@ -57,7 +57,9 @@ declare variable $xmlconv:OBLIGATIONS as xs:string* := ("http://rod.eionet.europ
 (: Rule implementations :)
 declare function xmlconv:checkReport($source_url as xs:string, $countryCode as xs:string) as element(table) {
 let $docRoot := doc($source_url)
+let $cdrUrl := common:getCdrUrl($countryCode)
 let $reportingYear := common:getReportingYear($docRoot)
+let $latestEnvelopeB := query:getLatestEnvelope($cdrUrl || "b/")
 let $modelNamespaces := distinct-values($docRoot//aqd:AQD_Model/ef:inspireId/base:Identifier/base:namespace)
 let $modelProcessNamespaces := distinct-values($docRoot//aqd:AQD_ModelProcess/ompr:inspireld/base:Identifier/base:namespace)
 let $modelAreaNamespaces := distinct-values($docRoot//aqd:AQD_ModelArea/aqd:inspireId/base:Identifier/base:namespace)
@@ -425,18 +427,18 @@ let $M24invalid :=
         </tr>
     }
 
-(: M26 Amended by Jaume Targa to add nilReason; also updated line 978 to pick $allInvalZoneXlinks :)
+(: M26 :)
 let $M26invalid :=
     try {
-        for $invalidZoneXlinks in $docRoot//aqd:AQD_Model/aqd:zone
-        where count(sparqlx:executeSparqlQuery(query:getSamplingPointZone($invalidZoneXlinks/@xlink:href))/*) = 0
-
-        return if (not($invalidZoneXlinks/@nilReason = "inapplicable")) then
-            (<tr>
-                <td title="gml:id">{data($invalidZoneXlinks/../@gml:id)}</td>
-                <td title="aqd:zone">{data($invalidZoneXlinks/@xlink:href)}</td>
-            </tr>)
-        else ()
+        let $all := data(sparqlx:run(query:getZones($latestEnvelopeB))//sparql:binding[@name = 'inspireLabel']/sparql:literal)
+        for $x in $docRoot//aqd:AQD_Model/aqd:zone
+        let $xlink := data($x/@xlink:href)
+        where not($x/@nilReason = "inapplicable") and not($xlink = $all)
+        return
+            <tr>
+                <td title="gml:id">{data($x/../ef:inspireId/base:Identifier/base:localId)}</td>
+                <td title="aqd:zone">{$xlink}</td>
+            </tr>
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
@@ -630,6 +632,7 @@ let $M41.1invalid :=
 (: M43 :)
 let $M43invalid :=
     try {
+
         distinct-values($docRoot//aqd:AQD_Sample[count(sams:shape) >0 and sams:shape/@srsName != "urn:ogc:def:crs:EPSG::4258" and sams:shape/@srsName != "urn:ogc:def:crs:EPSG::4326"]/@gml:id)
     } catch * {
         <tr status="failed">
@@ -656,7 +659,7 @@ let $M43invalid :=
         {html:build2("M19", $labels:M19, $labels:M19_SHORT, $M19invalid,"", "All values are valid", " invalid attribute", "", $errors:ERROR)}
         {html:build2("M23", $labels:M23, $labels:M23_SHORT, $M23invalid, "", "All values are valid", "record", "", $errors:ERROR)}
         {html:build2("M24", $labels:M24, $labels:M24_SHORT, $M24invalid, "", "All values are valid", "record", "", $errors:ERROR)}
-        {html:build2("M26", $labels:M26, $labels:M26_SHORT, $M26invalid, "", concat(fn:string(count($M26invalid))," errors found"), "record", "", $errors:ERROR)}
+        {html:build2("M26", $labels:M26, $labels:M26_SHORT, $M26invalid, "", "All values are valid", "record", "", $errors:ERROR)}
         {html:build2("M27", $labels:M27, $labels:M27_SHORT, $M27invalid, "", concat(string(count($M27invalid))," errors found.") , "record", "", $errors:ERROR)}
         {html:buildUnique("M28", $labels:M28, $labels:M28_SHORT, $M28table, "", string(count($M28table)), "namespace", $errors:ERROR)}
         {html:build2("M28.1", $labels:M28.1, $labels:M28.1_SHORT, $M28.1invalid, "base:Identifier/base:namespace", "All values are valid", " invalid namespaces", "", $errors:ERROR)}
