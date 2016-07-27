@@ -361,16 +361,15 @@ let $M18invalid :=
 (: M19 :)
 let $M19invalid :=
     try {
-        let $aqdModelArea :=
-            for $allModelArea in $docRoot//aqd:AQD_ModelArea
-            return $allModelArea/@gml:id
+        let $all := data($docRoot//aqd:AQD_ModelArea/aqd:inspireId/base:Identifier/concat(base:namespace, "/", base:localId))
 
         for $x in $docRoot//aqd:AQD_Model/ef:observingCapability/ef:ObservingCapability/ef:featureOfInterest
-        where empty(index-of($aqdModelArea, fn:normalize-space(fn:substring-after($x/@xlink:href, "/"))))
+        let $xlink := data($x/@xlink:href)
+        where not($xlink = $all)
         return
             <tr>
-                <td title="aqd:AQD_AQD_Model">{data($x/../../../@gml:id)}</td>
-                <td title="ef:featureOfInterest">{data(fn:normalize-space(fn:substring-after($x/@xlink:href, "/")))}</td>
+                <td title="aqd:AQD_Model">{data($x/ef:inspireId/base:Identifier/base:localId)}</td>
+                <td title="ef:featureOfInterest">{$xlink}</td>
             </tr>
     } catch * {
         <tr status="failed">
@@ -621,7 +620,7 @@ let $M43invalid :=
         {html:build2("M8", $labels:M8, $labels:M8_SHORT, $M8invalid, "", "All values are valid", "record", "", $errors:ERROR)}
         {html:build2("M15", $labels:M15, $labels:M15_SHORT, $M15invalid, "", concat(fn:string(count($M15invalid))," errors found"), "", "",$errors:ERROR)}
         {html:build2("M18", $labels:M18, $labels:M18_SHORT, $M18invalid, "ef:observedProperty", "All values are valid", "record", "", $errors:ERROR)}
-        {html:build2("M19", $labels:M19, $labels:M19_SHORT, $M19invalid,"aqd:AQD_Model/@gml:id", "All attributes is invalid", " invalid attribute", "",$errors:WARNING)}
+        {html:build2("M19", $labels:M19, $labels:M19_SHORT, $M19invalid,"", "All values are valid", " invalid attribute", "", $errors:ERROR)}
         {html:build2("M23", $labels:M23, $labels:M23_SHORT, $M23invalid, "", "All values are valid", "record", "",$errors:ERROR)}
         {html:build2("M24", $labels:M24, $labels:M24_SHORT, $M24invalid, "", concat(fn:string(count($M24invalid))," errors found"), "record", "",$errors:ERROR)}
         {html:build2("M25", $labels:M25, $labels:M25_SHORT, $M25invalid, "", concat(fn:string(count($M25invalid))," errors found"), "record", "",$errors:WARNING)}
