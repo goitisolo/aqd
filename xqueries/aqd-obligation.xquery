@@ -33,14 +33,6 @@ import module namespace html = "aqd-html" at "aqd-html.xquery";
 import module namespace schemax = "aqd-schema" at "aqd-schema.xquery";
 import module namespace errors = "aqd-errors" at "aqd-errors.xquery";
 
-declare variable $obligations:ROD_PREFIX as xs:string := "http://rod.eionet.europa.eu/obligations/";
-declare variable $obligations:B_OBLIGATIONS as xs:string* := ($obligations:ROD_PREFIX || "670", $obligations:ROD_PREFIX || "693");
-declare variable $obligations:C_OBLIGATIONS as xs:string* := ($obligations:ROD_PREFIX || "671", $obligations:ROD_PREFIX || "694");
-declare variable $obligations:D_OBLIGATIONS as xs:string* := ($obligations:ROD_PREFIX || "672");
-declare variable $obligations:M_OBLIGATIONS as xs:string* := ($obligations:ROD_PREFIX || "672", $obligations:ROD_PREFIX || "742");
-declare variable $obligations:G_OBLIGATIONS as xs:string* := ($obligations:ROD_PREFIX || "679");
-declare variable $obligations:E_OBLIGATIONS as xs:string* := $obligations:ROD_PREFIX || "673";
-
 declare function obligations:proceed($source_url as xs:string) {
 
     (: get reporting obligation & country :)
@@ -49,36 +41,36 @@ declare function obligations:proceed($source_url as xs:string) {
     let $countryCode := common:getCountryCode($source_url)
 
     let $validObligations := common:getSublist($obligations,
-            ($obligations:B_OBLIGATIONS, $obligations:C_OBLIGATIONS, $obligations:D_OBLIGATIONS, $obligations:G_OBLIGATIONS, $obligations:M_OBLIGATIONS, $obligations:E_OBLIGATIONS))
+            ($dfB:OBLIGATIONS, $dfC:OBLIGATIONS, $dfD:OBLIGATIONS, $dfG:OBLIGATIONS, $dfM:OBLIGATIONS, $dfE:OBLIGATIONS))
 
     let $result := ()
     let $resultB :=
-        if (common:containsAny($obligations, $obligations:B_OBLIGATIONS)) then
+        if (common:containsAny($obligations, $dfB:OBLIGATIONS)) then
             dfB:proceed($source_url, $countryCode)
         else
             ()
     let $resultC :=
-        if (common:containsAny($obligations, $obligations:C_OBLIGATIONS)) then
+        if (common:containsAny($obligations, $dfC:OBLIGATIONS)) then
             dfC:proceed($source_url, $countryCode)
         else
             ()
     let $resultD :=
-        if (common:containsAny($obligations, $obligations:D_OBLIGATIONS)) then
+        if (common:containsAny($obligations, $dfD:OBLIGATIONS)) then
             dfD:proceed($source_url, $countryCode)
         else
             ()
     let $resultG :=
-        if (common:containsAny($obligations, $obligations:G_OBLIGATIONS)) then
+        if (common:containsAny($obligations, $dfG:OBLIGATIONS)) then
             dfG:proceed($source_url, $countryCode)
         else
             ()
     let $resultM :=
-        if (common:containsAny($obligations, $obligations:M_OBLIGATIONS)) then
+        if (common:containsAny($obligations, $dfM:OBLIGATIONS)) then
             dfM:proceed($source_url, $countryCode)
         else
             ()
     let $resultE :=
-        if (common:containsAny($obligations, $obligations:E_OBLIGATIONS)) then
+        if (common:containsAny($obligations, $dfE:OBLIGATIONS)) then
             dfE:proceed($source_url, $countryCode)
         else
             ()

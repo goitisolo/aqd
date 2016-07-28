@@ -36,7 +36,7 @@ declare namespace gco = "http://www.isotc211.org/2005/gco";
 
 declare namespace sparql = "http://www.w3.org/2005/sparql-results#";
 
-declare variable $xmlconv:OBLIGATIONS as xs:string* := ("http://rod.eionet.europa.eu/obligations/673");
+declare variable $xmlconv:OBLIGATIONS as xs:string* := ($vocabulary:ROD_PREFIX || "673");
 declare function xmlconv:checkReport($source_url as xs:string, $countryCode as xs:string) as element(table) {
 
 let $envelopeUrl := common:getEnvelopeXML($source_url)
@@ -572,13 +572,13 @@ declare function xmlconv:proceed($source_url as xs:string, $countryCode as xs:st
             <div>
                 {
                     if ($result//div/@class = 'error') then
-                        <p class="error" style="color:red"><strong>This XML file did NOT pass the following crucial check(s): {string-join($result//div[@class='error'], ',')}</strong></p>
+                        <p class="{$errors:ERROR} bg-error box" style="color:{$errors:COLOR_ERROR}"><strong>This XML file did NOT pass the following crucial check(s): {string-join($result//div[@class='error'], ',')}</strong></p>
                     else
-                        <p>This XML file passed all crucial checks.</p>
+                        <p class="{$errors:INFO} bg-info box" style="color:#0080FF"><strong>This XML file passed all crucial checks.</strong></p>
                 }
                 {
                     if ($result//div/@class = 'warning') then
-                        <p class="warning" style="color:orange"><strong>This XML file generated warnings during the following check(s): {string-join($result//div[@class = 'warning'], ',')}</strong></p>
+                        <p class="{$errors:WARNING} bg-warning box" style="color:{$errors:WARNING}"><strong>This XML file generated warnings during the following check(s): {string-join($result//div[@class = 'warning'], ',')}</strong></p>
                     else
                         ()
                 }

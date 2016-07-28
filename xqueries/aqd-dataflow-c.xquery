@@ -74,7 +74,7 @@ declare variable $xmlconv:VALID_POLLUTANT_IDS_40 as xs:string* := ($xmlconv:MAND
 '451','443','316','441','475','449','21','431','464','482','6011','6012','32','25':)
 
 declare variable $xmlconv:VALID_POLLUTANT_IDS_21 as xs:string* := ("1","8","9","10","5","6001","5014","5018","5015","5029","5012","20");
-declare variable $xmlconv:OBLIGATIONS as xs:string* := ("http://rod.eionet.europa.eu/obligations/671", "http://rod.eionet.europa.eu/obligations/694");
+declare variable $xmlconv:OBLIGATIONS as xs:string* := ($vocabulary:ROD_PREFIX || "671", $vocabulary:ROD_PREFIX || "694");
 (: Rule implementations :)
 declare function xmlconv:checkReport($source_url as xs:string, $countryCode as xs:string) as element(table) {
 
@@ -988,13 +988,13 @@ return
         <div>
             {
                 if ($result//div/@class = 'error') then
-                    <p class="error" style="color:red"><strong>This XML file did NOT pass the following crucial check(s): {string-join($result//div[@class = 'error'], ',')}</strong></p>
+                    <p class="{$errors:ERROR} bg-error box" style="color:{$errors:COLOR_ERROR}"><strong>This XML file did NOT pass the following crucial check(s): {string-join($result//div[@class = 'error'], ',')}</strong></p>
                 else
-                    <p>This XML file passed all crucial checks.</p>
+                    <p class="{$errors:INFO} bg-info box" style="color:#0080FF"><strong>This XML file passed all crucial checks.</strong></p>
             }
             {
                 if ($result//div/@class = 'warning') then
-                    <p class="warning" style="color:orange"><strong>This XML file generated warnings during the following check(s): {string-join($result//div[@class = 'warning'], ',')}</strong></p>
+                    <p class="{$errors:WARNING} bg-warning box" style="color:{$errors:COLOR_WARNING}"><strong>This XML file generated warnings during the following check(s): {string-join($result//div[@class = 'warning'], ',')}</strong></p>
                 else
                     ()
             }
