@@ -2028,6 +2028,7 @@ return
         {html:build2("D60b", $labels:D60b, $labels:D60b_SHORT, $D60binvalid, "aqd:samplingEquipment", "", "", "",$errors:ERROR)}
         {html:build2("D61", $labels:D61, $labels:D61_SHORT, $D61invalid, "", "All values are valid", "record", "", $errors:WARNING)}
         {html:build2("D62", $labels:D62, $labels:D62_SHORT, $D62invalid, "", "All values are valid", "invalid record", "", $errors:WARNING)}
+        {html:deprecated("D63", $labels:D63, $labels:D63_SHORT, $D63invalid, "aqd:detectionLimit", "", "", "",$errors:ERROR)}
         {html:buildInfoTR("Checks on SamplingPointProcess(es) where the xlinked SamplingPoint has aqd:AQD_SamplingPoint/aqd:usedAQD equals TRUE (D67 to D70):")}
         {html:build2("D65", $labels:D65, $labels:D65_SHORT, $D65invalid, "", "All values are valid", "record", "", $errors:WARNING)}
         {html:build2("D67a", $labels:D67a, $labels:D67a_SHORT, $D67ainvalid, "", concat(fn:string(count($D67ainvalid))," errors found"), "", "", $errors:ERROR)}
