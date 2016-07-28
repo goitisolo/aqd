@@ -167,11 +167,11 @@ declare function xmlconv:checkFileReportingHeader($envelope as element(envelope)
             <td></td>
             <td colspan="3">
                 <table class="maintable hover" id="fileLink-{$pos}" style="display:none">
-                    {html:build2("1", $labels:ENV1, $labels:ENV1, $containsAqdReportingHeader, "", "Check passed", "", "", $errors:ERROR)}
-                    {html:build2("2", $labels:ENV2, labels:interpolate($labels:ENV2, ($minimumYear, $maximumYear)), $falseTimePeriod, "", "Check passed", "", "", $errors:ERROR)}
-                    {html:build2("3", $labels:ENV3, $labels:ENV3, $missingAqdReportingHeaderSubElements, "", "Check passed", "", "", $errors:ERROR)}
-                    {html:build2("4", $labels:ENV4, $labels:ENV4, $missingElementsIfAqdChangeIsTrue, "", "Check passed", "", "", $errors:ERROR)}
-                    {html:build2("5", $labels:ENV5, $labels:ENV5, $appearingElementsIfAqdChangeIsFalse, "", "Check passed", "", "", $errors:ERROR)}
+                    {html:build2("1", $labels:ENV1, $labels:ENV1, $containsAqdReportingHeader, "Check passed", "", $errors:ERROR)}
+                    {html:build2("2", $labels:ENV2, labels:interpolate($labels:ENV2, ($minimumYear, $maximumYear)), $falseTimePeriod, "Check passed", "", $errors:ERROR)}
+                    {html:build2("3", $labels:ENV3, $labels:ENV3, $missingAqdReportingHeaderSubElements, "Check passed", "", $errors:ERROR)}
+                    {html:build2("4", $labels:ENV4, $labels:ENV4, $missingElementsIfAqdChangeIsTrue, "Check passed", "", $errors:ERROR)}
+                    {html:build2("5", $labels:ENV5, $labels:ENV5, $appearingElementsIfAqdChangeIsFalse, "Check passed", "", $errors:ERROR)}
                 </table>
             </td>
         </tr>)
