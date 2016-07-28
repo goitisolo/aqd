@@ -2074,5 +2074,5 @@ let $meta := map:merge((
     map:entry("report", <p>This feedback report provides a summary overview of feature types reported and some consistency checks defined in Dataflow D as specified in <a href="http://www.eionet.europa.eu/aqportal/qaqc/">e-reporting QA/QC rules documentation</a>.</p>)
 ))
 return
-
+    html:buildResultDiv($meta, $result)
 };
