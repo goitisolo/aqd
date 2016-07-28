@@ -1259,7 +1259,8 @@ let $D51invalid :=
         let $exceptions := ($vocabulary:OBJECTIVETYPE_VOCABULARY || "MO")
         let $environmentalObjectiveCombinations := doc("http://dd.eionet.europa.eu/vocabulary/aq/environmentalobjective/rdf")
         for $x in $docRoot//aqd:AQD_SamplingPoint/aqd:environmentalObjective/aqd:EnvironmentalObjective
-            let $pollutant := data($x/../../ef:observingCapability/ef:ObservingCapability/ef:observedProperty/@xlink:href)
+            for $z in $x/../../ef:observingCapability/ef:ObservingCapability/ef:observedProperty/@xlink:href
+            let $pollutant := data($z)
             let $objectiveType := data($x/aqd:objectiveType/@xlink:href)
             let $reportingMetric := data($x/aqd:reportingMetric/@xlink:href)
             let $protectionTarget := data($x/aqd:protectionTarget/@xlink:href)
@@ -1267,11 +1268,11 @@ let $D51invalid :=
                 and prop:hasObjectiveType/@rdf:resource = $objectiveType and prop:hasReportingMetric/@rdf:resource = $reportingMetric])
         return
             <tr>
-                <td title="base:localId">{data($x/../../ef:inspireId/base:Identifier/base:localId)}</td>
-                <td title="ef:observedProperty">{data($x/../../ef:observingCapability/ef:ObservingCapability/ef:observedProperty/@xlink:href)}</td>
-                <td title="aqd:objectiveType">{data($x/aqd:objectiveType/@xlink:href)}</td>
-                <td title="aqd:reportingMetric">{data($x/aqd:reportingMetric/@xlink:href)}</td>
-                <td title="aqd:protectionTarget">{data($x/aqd:protectionTarget/@xlink:href)}</td>
+                <td title="aqd:AQD_SamplingPoint">{data($x/../../ef:inspireId/base:Identifier/base:localId)}</td>
+                <td title="ef:observedProperty">{$pollutant}</td>
+                <td title="aqd:objectiveType">{$objectiveType}</td>
+                <td title="aqd:reportingMetric">{$reportingMetric}</td>
+                <td title="aqd:protectionTarget">{$protectionTarget}</td>
             </tr>
     } catch * {
         <tr status="failed">
