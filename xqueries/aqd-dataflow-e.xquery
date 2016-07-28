@@ -578,7 +578,7 @@ declare function xmlconv:proceed($source_url as xs:string, $countryCode as xs:st
                 }
                 {
                     if ($result//div/@class = 'warning') then
-                        <p class="{$errors:WARNING} bg-warning box" style="color:{$errors:WARNING}"><strong>This XML file generated warnings during the following check(s): {string-join($result//div[@class = 'warning'], ',')}</strong></p>
+                        <p class="{$errors:WARNING} bg-warning box" style="color:{$errors:COLOR_WARNING}"><strong>This XML file generated warnings during the following check(s): {string-join($result//div[@class = 'warning'], ',')}</strong></p>
                     else
                         ()
                 }
