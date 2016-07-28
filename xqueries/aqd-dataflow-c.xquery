@@ -387,6 +387,13 @@ let $C20invalid :=
             where not($x/prop:hasObjectiveType/@rdf:resource = ($vocabulary:OBJECTIVETYPE_VOCABULARY || "MO", $vocabulary:OBJECTIVETYPE_VOCABULARY || "LVMOT", $vocabulary:OBJECTIVETYPE_VOCABULARY || "LVmaxMOT"))
             return $x/prop:relatedPollutant/@rdf:resource || "#" || $x/prop:hasObjectiveType/@rdf:resource || "#" || $x/prop:hasReportingMetric/@rdf:resource || "#" || $x/prop:hasProtectionTarget/@rdf:resource
         )
+        let $rdf :=
+            let $exception := $vocabulary:POLLUTANT_VOCABULARY || "6001" || "#" || $vocabulary:OBJECTIVETYPE_VOCABULARY || "TV" || "#" || $vocabulary:REPMETRIC_VOCABULARY || "aMean" || "#" || $vocabulary:PROTECTIONTARGET_VOCABULARY || "H"
+            return
+                if (number($reportingYear) >= 2015 and index-of($rdf, $exception) > 0) then
+                    remove($rdf, index-of($rdf, $exception))
+                else
+                    $rdf
 
         for $i in $rdf
             let $tokens := tokenize($i, "#")
