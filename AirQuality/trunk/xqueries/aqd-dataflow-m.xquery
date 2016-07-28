@@ -770,7 +770,7 @@ let $M46message :=
         {html:build2("M29", $labels:M29, $labels:M29_SHORT, $M29invalid, "aqd:AQD_ModelProcess/@gml:id","All attributes are valid"," invalid attribute", "", $errors:ERROR)}
         {html:build2("M30", $labels:M30, $labels:M30_SHORT, $M30invalid, "","All attributes are valid","record", "", $errors:WARNING)}
         {html:build2("M34", $labels:M34, $labels:M34_SHORT, $M34invalid, "","All attributes are valid","record", "", $errors:WARNING)}
-        {html:build2("M35", $labels:M35, $labels:M35_SHORT, $M35invalid, "","All attributes are valid","record", "", $errors:ERROR)}
+        {html:build2("M35", $labels:M35, $labels:M35_SHORT, $M35invalid, "","All attributes are valid","record", "", $errors:WARNING)}
         {html:build2("M39", $labels:M39, $labels:M39_SHORT, $M39invalid, "aqd:AQD_ModelProcess/@gml:id","All attributes are valid"," invalid attribute", "", $errors:ERROR)}
         {html:buildInfoTR("Specific checks on AQD_ModelArea")}
         {html:build2("M40", $labels:M40, $labels:M40_SHORT, $M40invalid, "", concat(string(count($M40invalid))," errors found.") , "record", "", $errors:ERROR)}
