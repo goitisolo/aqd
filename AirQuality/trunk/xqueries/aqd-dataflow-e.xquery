@@ -533,30 +533,30 @@ let $E26invalid :=
 return
     <table class="maintable hover">
         {html:buildXML("XML", $labels:XML, $labels:XML_SHORT, $validationResult, "This XML passed validation.", "This XML file did NOT pass the XML validation", $errors:ERROR)}
-        {html:build2("NS", $labels:NAMESPACES, $labels:NAMESPACES_SHORT, $NSinvalid, "", "All values are valid", "record", "", $errors:WARNING)}
+        {html:build2("NS", $labels:NAMESPACES, $labels:NAMESPACES_SHORT, $NSinvalid, "All values are valid", "record", $errors:WARNING)}
         {html:build3("E0", $labels:E0, $labels:E0_SHORT, $E0table, string($E0table/td), errors:getMaxError($E0table))}
         {html:build1("E01", $labels:E01, $labels:E01_SHORT, $E01table, "", string(count($E01table)), "record", "", $errors:INFO)}
-        {html:build2("E1", $labels:E1, $labels:E1_SHORT, $E1invalid, "", "All records are valid", "record", "", $errors:ERROR)}
-        {html:build2("E2", $labels:E2, $labels:E2_SHORT, $E2invalid, "", "All records are valid", "record", "", $errors:ERROR)}
-        {html:build2("E3", $labels:E3, $labels:E3_SHORT, $E3invalid, "", "All records are valid", "record", "", $errors:ERROR)}
-        {html:build2("E4", $labels:E4, $labels:E4_SHORT, $E4invalid, "", "All records are valid", "record", "", $errors:ERROR)}
-        {html:build2("E5", $labels:E5, $labels:E5_SHORT, $E5invalid, "", "All records are valid", "record", "", $errors:ERROR)}
-        {html:build2("E6", $labels:E6, $labels:E6_SHORT, $E6invalid, "", "All records are valid", "record", "", $errors:ERROR)}
-        {html:build2("E7", $labels:E7, $labels:E7_SHORT, $E7invalid, "", "All records are valid", "record", "", $errors:WARNING)}
-        {html:build2("E8", $labels:E8, $labels:E8_SHORT, $E8invalid, "", "All records are valid", "record", "", $errors:WARNING)}
-        {html:build2("E9", $labels:E9, $labels:E9_SHORT, $E9invalid, "", "All records are valid", "record", "", $errors:WARNING)}
-        {html:build2("E10", $labels:E10, $labels:E10_SHORT, $E10invalid, "", "All records are valid", "record", "", $errors:ERROR)}
-        {html:build2("E11", $labels:E11, $labels:E11_SHORT, $E11invalid, "", "All records are valid", "record", "", $errors:ERROR)}
-        {html:build2("E12", $labels:E12, $labels:E12_SHORT, $E12invalid, "", "All records are valid", "record", "", $errors:ERROR)}
-        {html:build2("E15", $labels:E15, $labels:E15_SHORT, $E15invalid, "", "All records are valid", "record", "", $errors:ERROR)}
-        {html:build2("E16", $labels:E16, $labels:E16_SHORT, $E16invalid, "", "All records are valid", "record", "", $errors:ERROR)}
-        {html:build2("E17", $labels:E17, $labels:E17_SHORT, $E17invalid, "", "All records are valid", "record", "", $errors:ERROR)}
-        {html:build2("E18", $labels:E18, $labels:E18_SHORT, $E18invalid, "", "All records are valid", "record", "", $errors:ERROR)}
-        {html:build2("E19", $labels:E19, $labels:E19_SHORT, $E19invalid, "", "All records are valid", "record", "", $errors:ERROR)}
-        {html:build2("E19b", $labels:E19b, $labels:E19b_SHORT, $E19binvalid, "", "All records are valid", "record", "", $errors:WARNING)}
-        {html:build2("E20", $labels:E20, $labels:E20_SHORT, $E20invalid, "", "All records are valid", "record", "", $errors:ERROR)}
-        {html:build2("E21", $labels:E21, $labels:E21_SHORT, $E21invalid, "", "All records are valid", "record", "", $errors:WARNING)}
-        {html:build2("E26", $labels:E26, $labels:E26_SHORT, $E26invalid, "", "All records are valid", "record", "", $errors:ERROR)}
+        {html:build2("E1", $labels:E1, $labels:E1_SHORT, $E1invalid, "All records are valid", "record", $errors:ERROR)}
+        {html:build2("E2", $labels:E2, $labels:E2_SHORT, $E2invalid, "All records are valid", "record", $errors:ERROR)}
+        {html:build2("E3", $labels:E3, $labels:E3_SHORT, $E3invalid, "All records are valid", "record", $errors:ERROR)}
+        {html:build2("E4", $labels:E4, $labels:E4_SHORT, $E4invalid, "All records are valid", "record", $errors:ERROR)}
+        {html:build2("E5", $labels:E5, $labels:E5_SHORT, $E5invalid, "All records are valid", "record", $errors:ERROR)}
+        {html:build2("E6", $labels:E6, $labels:E6_SHORT, $E6invalid, "All records are valid", "record", $errors:ERROR)}
+        {html:build2("E7", $labels:E7, $labels:E7_SHORT, $E7invalid, "All records are valid", "record", $errors:WARNING)}
+        {html:build2("E8", $labels:E8, $labels:E8_SHORT, $E8invalid, "All records are valid", "record", $errors:WARNING)}
+        {html:build2("E9", $labels:E9, $labels:E9_SHORT, $E9invalid, "All records are valid", "record", $errors:WARNING)}
+        {html:build2("E10", $labels:E10, $labels:E10_SHORT, $E10invalid, "All records are valid", "record", $errors:ERROR)}
+        {html:build2("E11", $labels:E11, $labels:E11_SHORT, $E11invalid, "All records are valid", "record", $errors:ERROR)}
+        {html:build2("E12", $labels:E12, $labels:E12_SHORT, $E12invalid, "All records are valid", "record", $errors:ERROR)}
+        {html:build2("E15", $labels:E15, $labels:E15_SHORT, $E15invalid, "All records are valid", "record", $errors:ERROR)}
+        {html:build2("E16", $labels:E16, $labels:E16_SHORT, $E16invalid, "All records are valid", "record", $errors:ERROR)}
+        {html:build2("E17", $labels:E17, $labels:E17_SHORT, $E17invalid, "All records are valid", "record", $errors:ERROR)}
+        {html:build2("E18", $labels:E18, $labels:E18_SHORT, $E18invalid, "All records are valid", "record", $errors:ERROR)}
+        {html:build2("E19", $labels:E19, $labels:E19_SHORT, $E19invalid, "All records are valid", "record", $errors:ERROR)}
+        {html:build2("E19b", $labels:E19b, $labels:E19b_SHORT, $E19binvalid, "All records are valid", "record", $errors:WARNING)}
+        {html:build2("E20", $labels:E20, $labels:E20_SHORT, $E20invalid, "All records are valid", "record", $errors:ERROR)}
+        {html:build2("E21", $labels:E21, $labels:E21_SHORT, $E21invalid, "All records are valid", "record", $errors:WARNING)}
+        {html:build2("E26", $labels:E26, $labels:E26_SHORT, $E26invalid, "All records are valid", "record", $errors:ERROR)}
     </table>
 
 };
