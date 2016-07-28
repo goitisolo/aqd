@@ -400,7 +400,7 @@ let $M19invalid :=
         where not($xlink = $all)
         return
             <tr>
-                <td title="aqd:AQD_Model">{data($x/ef:inspireId/base:Identifier/base:localId)}</td>
+                <td title="aqd:AQD_Model">{data($x/../../../ef:inspireId/base:Identifier/base:localId)}</td>
                 <td title="ef:featureOfInterest">{$xlink}</td>
             </tr>
     } catch * {
