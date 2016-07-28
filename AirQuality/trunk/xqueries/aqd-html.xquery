@@ -79,6 +79,23 @@ declare function html:getCSS() as element(style) {
         .largeText {
             font-size:1.3em;
         }
+        .box {
+            padding:10px;
+            border:1px solid rgba(0,0,0,0.5);
+        }
+        .bg-info {
+            background:#A0D3E8;
+        }
+        .bg-error {
+            background:pink;
+        }
+        .bg-warning {
+            background:bisque;
+        }
+        .reveal {
+            width:900px;
+            border: 7px solid #cacaca;
+        }
         ]]>
     </style>
 };

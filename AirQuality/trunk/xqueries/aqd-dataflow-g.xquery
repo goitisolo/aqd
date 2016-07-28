@@ -50,7 +50,7 @@ declare namespace rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#";
 declare variable $xmlconv:ISO2_CODES as xs:string* := ("AL","AT","BA","BE","BG","CH","CY","CZ","DE","DK","DZ","EE","EG","ES","FI",
     "FR","GB","GR","HR","HU","IE","IL","IS","IT","JO","LB","LI","LT","LU","LV","MA","ME","MK","MT","NL","NO","PL","PS","PT",
      "RO","RS","SE","SI","SK","TN","TR","XK","UK");
-declare variable $xmlconv:OBLIGATIONS as xs:string* := ("http://rod.eionet.europa.eu/obligations/679");
+declare variable $xmlconv:OBLIGATIONS as xs:string* := ($vocabulary:ROD_PREFIX || "679");
 
 (: Rule implementations :)
 declare function xmlconv:checkReport($source_url as xs:string, $countryCode as xs:string) as element(table) {
@@ -1568,13 +1568,13 @@ return
         <div>
             {
                 if ($result//div/@class = 'error') then
-                    <p class="error" style="color:red"><strong>This XML file did NOT pass the following crucial check(s): {string-join($result//div[@class='error'], ',')}</strong></p>
+                    <p class="{$errors:ERROR} bg-error box" style="color:{$errors:COLOR_ERROR}"><strong>This XML file did NOT pass the following crucial check(s): {string-join($result//div[@class='error'], ',')}</strong></p>
                 else
-                    <p>This XML file passed all crucial checks.</p>
+                    <p class="{$errors:INFO} bg-info box"><strong>This XML file passed all crucial checks.</strong></p>
             }
             {
                 if ($result//div/@class = 'warning') then
-                    <p class="warning" style="color:orange"><strong>This XML file generated warnings during the following check(s): {string-join($result//div[@class = 'warning'], ',')}</strong></p>
+                    <p class="{$errors:WARNING} bg-warning box" style="color:{$errors:WARNING}"><strong>This XML file generated warnings during the following check(s): {string-join($result//div[@class = 'warning'], ',')}</strong></p>
                 else
                     ()
             }
