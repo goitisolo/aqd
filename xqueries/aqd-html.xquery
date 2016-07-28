@@ -192,6 +192,12 @@ declare function html:javaScriptRoot(){
     return
         <script type="text/javascript">{normalize-space($js)}</script>
 };
+
+declare function html:deprecated($ruleCode as xs:string, $longText, $text, $records as element(tr)*,
+        $valueHeading as xs:string, $validMsg as xs:string, $invalidMsg as xs:string, $skippedMsg, $errorLevel as xs:string)
+as element(tr)*{
+    ()
+};
 declare function html:buildExists($ruleCode as xs:string, $longText, $text, $records as element(tr)*, $validMessage as xs:string, $invalidMessage as xs:string, $errorLevel as xs:string) {
     let $countRecords := count($records)
     let $bulletType :=
@@ -434,51 +440,6 @@ declare function html:buildResultsSimpleRow($ruleCode as xs:string, $longText, $
         <th colspan="2">{$text} {html:getModalInfo($ruleCode, $longText)}</th>
         <td class="largeText">{$count}</td>
     </tr>
-};
-
-declare function html:buildResultRowsWithTotalCount_D($ruleCode as xs:string, $longText, $text, $records as element(tr)*,
-        $valueHeading as xs:string, $validMsg as xs:string, $invalidMsg as xs:string, $skippedMsg, $errorLevel as xs:string)
-as element(tr)*{
-
-    let $countCheckedRecords := count($records)
-    let $invalidValues := $records[./@isvalid = "false"]
-
-    let $skippedMsg := if ($countCheckedRecords = 0) then "No values found to check" else ""
-    let $invalidMsg := if (count($invalidValues) > 0) then concat(" invalid value", substring("s ", number(not(count($invalidValues) > 1)) * 2), " found out of ", $countCheckedRecords, " checked") else ""
-    let $validMsg := if (count($invalidValues) = 0) then concat("Checked ", $countCheckedRecords, " value", substring("s", number(not($countCheckedRecords > 1)) * 2), ", all valid") else ""
-
-    return
-        html:build2($ruleCode, $longText, $text, $invalidValues, $valueHeading, $validMsg, $invalidMsg, $skippedMsg, $errorLevel)
-};
-
-declare function html:buildResultRowsWithTotalCount_G($ruleCode as xs:string, $longText, $text, $records as element(tr)*,
-        $valueHeading as xs:string, $validMsg as xs:string, $invalidMsg as xs:string, $skippedMsg, $errorLevel as xs:string)
-as element(tr)*{
-
-    let $countCheckedRecords := count($records)
-    let $invalidValues := $records[./@isvalid = "false"]
-
-    let $skippedMsg := if ($countCheckedRecords = 0) then "No values found to check" else ""
-    let $invalidMsg := if (count($invalidValues) > 0) then concat(" invalid value", substring("s ", number(not(count($invalidValues) > 1)) * 2), " found out of ", $countCheckedRecords, " checked") else ""
-    let $validMsg := if (count($invalidValues) = 0) then concat("Checked ", $countCheckedRecords, " value", substring("s", number(not($countCheckedRecords > 1)) * 2), ", all valid") else ""
-
-    return
-        html:build2($ruleCode, $longText, $text, $invalidValues, $valueHeading, $validMsg, $invalidMsg, $skippedMsg, $errorLevel)
-};
-
-
-declare function html:buildResultRowsWithTotalCount_M($ruleCode as xs:string, $longText, $text, $records as element(tr)*,
-        $valueHeading as xs:string, $validMsg as xs:string, $invalidMsg as xs:string, $skippedMsg, $errorLevel as xs:string) as element(tr)*{
-
-    let $countCheckedRecords := count($records)
-    let $invalidValues := $records[./@isvalid = "false"]
-
-    let $skippedMsg := if ($countCheckedRecords = 0) then "No values found to check" else ""
-    let $invalidMsg := if (count($invalidValues) > 0) then concat(" invalid value", substring("s ", number(not(count($invalidValues) > 1)) * 2), " found out of ", $countCheckedRecords, " checked") else ""
-    let $validMsg := if (count($invalidValues) = 0) then concat("Checked ", $countCheckedRecords, " value", substring("s", number(not($countCheckedRecords > 1)) * 2), ", all valid") else ""
-
-    return
-        html:build2($ruleCode, $longText, $text, $invalidValues, $valueHeading, $validMsg, $invalidMsg, $skippedMsg,$errorLevel)
 };
 
 declare function html:buildItemsList($ruleId as xs:string, $vocabularyUrl as xs:string, $ids as xs:string*) as element(div) {
