@@ -617,15 +617,19 @@ declare function html:buildResultDiv($meta as map(*), $result as element(table))
             else
                 <div>
                     {
-                        if ($result//div/@class = $errors:ERROR) then
-                            <p class="{$errors:ERROR} bg-error box" style="color:{$errors:COLOR_ERROR}"><strong>This XML file did NOT pass the following crucial check(s): {string-join($result//div[@class=$errors:ERROR], ',')}</strong></p>
+                        if ($result//div/tokenize(@class, "\s+") = $errors:ERROR) then
+                            <p class="{$errors:ERROR} bg-error box" style="color:{$errors:COLOR_ERROR}">
+                                <strong>This XML file did NOT pass the following crucial check(s): {string-join($result//div[tokenize(@class, "\s+") = $errors:ERROR], ',')}</strong>
+                            </p>
                         else
-                            <p class="{$errors:INFO} bg-info box" style="color:#0080FF"><strong>This XML file passed all crucial checks.</strong></p>
+                            <p class="{$errors:INFO} bg-info box" style="color:#0080FF">
+                                <strong>This XML file passed all crucial checks.</strong>
+                            </p>
                     }
                     {
-                        if ($result//div/@class = $errors:WARNING) then
+                        if ($result//div/tokenize(@class, "\s+") = $errors:WARNING) then
                             <p class="{$errors:WARNING} bg-warning box" style="color:{$errors:COLOR_WARNING}">
-                                <strong>This XML file generated warnings during the following check(s): {string-join($result//div[@class = $errors:WARNING], ',')}</strong>
+                                <strong>This XML file generated warnings during the following check(s): {string-join($result//div[tokenize(@class, "\s+") = $errors:WARNING], ',')}</strong>
                             </p>
                         else
                             ()
