@@ -353,6 +353,7 @@ let $C9table :=
 (: C10 :)
 let $C10invalid :=
     try {
+        let $exceptions := ($vocabulary:OBJECTIVETYPE_VOCABULARY || "MO")
         let $all :=
             for $x in doc($vocabulary:ENVIRONMENTALOBJECTIVE || "rdf")//skos:Concept[adms:status/@rdf:resource = $dd:VALIDRESOURCE]
             return $x/prop:relatedPollutant/@rdf:resource || "#" || $x/prop:hasObjectiveType/@rdf:resource || "#" || $x/prop:hasReportingMetric/@rdf:resource || "#" || $x/prop:hasProtectionTarget/@rdf:resource
@@ -363,7 +364,7 @@ let $C10invalid :=
         let $reportingMetric := $x/aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric/@xlink:href
         let $protectionTarget := $x/aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/@xlink:href
         let $combination := $pollutant || "#" || $objectiveType || "#" || $reportingMetric || "#" || $protectionTarget
-        where not($combination = $all)
+        where not($objectiveType = $exceptions) and not($combination = $all)
         return
             <tr>
                 <td title="aqd:AQD_AssessmentRegime">{data($x/aqd:inspireId/base:Identifier/base:localId)}</td>
@@ -409,20 +410,20 @@ let $C20invalid :=
 (: C21 :)
 let $C21invalid :=
     try {
-        let $environmentalObjectiveCombinations :=
-            doc("http://dd.eionet.europa.eu/vocabulary/aq/environmentalobjective/rdf")
+        let $exceptions := ($vocabulary:OBJECTIVETYPE_VOCABULARY || "MO")
+        let $environmentalObjectiveCombinations := doc($vocabulary:ENVIRONMENTALOBJECTIVE || "rdf")
         for $x in $docRoot//aqd:AQD_AssessmentRegime/aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective
         let $pollutant := string($x/../../../../aqd:pollutant/@xlink:href)
         let $objectiveType := string($x/aqd:objectiveType/@xlink:href)
         let $reportingMetric := string($x/aqd:reportingMetric/@xlink:href)
         let $protectionTarget := string($x/aqd:protectionTarget/@xlink:href)
         let $exceedance := string($x/../../aqd:exceedanceAttainment/@xlink:href)
-        where (not($environmentalObjectiveCombinations//skos:Concept[prop:relatedPollutant/@rdf:resource = $pollutant and prop:hasProtectionTarget/@rdf:resource = $protectionTarget
+        where not($objectiveType = $exceptions) and (not($environmentalObjectiveCombinations//skos:Concept[prop:relatedPollutant/@rdf:resource = $pollutant and prop:hasProtectionTarget/@rdf:resource = $protectionTarget
                 and prop:hasObjectiveType/@rdf:resource = $objectiveType and prop:hasReportingMetric/@rdf:resource = $reportingMetric
                 and prop:assessmentThreshold/@rdf:resource = $exceedance]))
         return
             <tr>
-                <td title="base:localId">{string($x/../../../../aqd:inspireId/base:Identifier/base:localId)}</td>
+                <td title="aqd:AQD_AssessmentRegime">{string($x/../../../../aqd:inspireId/base:Identifier/base:localId)}</td>
             </tr>
     } catch * {
         <tr status="failed">

@@ -1256,14 +1256,15 @@ let $D50invalid :=
 (: D51 :)
 let $D51invalid :=
     try {
+        let $exceptions := ($vocabulary:OBJECTIVETYPE_VOCABULARY || "MO")
         let $environmentalObjectiveCombinations := doc("http://dd.eionet.europa.eu/vocabulary/aq/environmentalobjective/rdf")
         for $x in $docRoot//aqd:AQD_SamplingPoint/aqd:environmentalObjective/aqd:EnvironmentalObjective
             let $pollutant := data($x/../../ef:observingCapability/ef:ObservingCapability/ef:observedProperty/@xlink:href)
             let $objectiveType := data($x/aqd:objectiveType/@xlink:href)
             let $reportingMetric := data($x/aqd:reportingMetric/@xlink:href)
             let $protectionTarget := data($x/aqd:protectionTarget/@xlink:href)
-        where (not($environmentalObjectiveCombinations//skos:Concept[prop:relatedPollutant/@rdf:resource = $pollutant and prop:hasProtectionTarget/@rdf:resource = $protectionTarget
-                and prop:hasObjectiveType/@rdf:resource = $objectiveType and prop:hasReportingMetric/@rdf:resource = $reportingMetric]))
+        where not($objectiveType = $exceptions) and not($environmentalObjectiveCombinations//skos:Concept[prop:relatedPollutant/@rdf:resource = $pollutant and prop:hasProtectionTarget/@rdf:resource = $protectionTarget
+                and prop:hasObjectiveType/@rdf:resource = $objectiveType and prop:hasReportingMetric/@rdf:resource = $reportingMetric])
         return
             <tr>
                 <td title="base:localId">{data($x/../../ef:inspireId/base:Identifier/base:localId)}</td>
