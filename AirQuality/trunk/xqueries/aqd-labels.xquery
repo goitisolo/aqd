@@ -642,7 +642,15 @@ declare variable $labels:M46_SHORT := labels:getLabel("M", "M46_SHORT");
 declare variable $labels:C6.1 := "Check that namespace is registered in vocabulary";
 declare variable $labels:C6.1_SHORT := "Check that namespace is registered in vocabulary";
 
-declare variable $labels:DOC := doc("http://converterstest.eionet.europa.eu/xmlfile/aqd-labels.xml");
+declare variable $labels:LABELS_FILE_NAME := "aqd-labels.xml";
+declare variable $labels:DOC :=
+    let $doc := "http://converterstest.eionet.europa.eu/xmlfile/" || $labels:LABELS_FILE_NAME
+    return if (doc-available($doc)) then
+        doc($doc)
+    else if (doc-available($labels:LABELS_FILE_NAME)) then
+        doc($labels:LABELS_FILE_NAME)
+    else <labels xml:lang="en"></labels>;
+
 declare variable $labels:PLACEHOLDER := "LABEL MISSING";
 
 declare function labels:getLabel($section as xs:string, $id as xs:string) as element(span) {

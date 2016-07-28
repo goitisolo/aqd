@@ -1973,9 +1973,9 @@ return
         {html:buildCountRow("D6", $labels:D6, $labels:D6_SHORT, $D6invalid, (), (), ())}
         {html:buildUnique("D7", $labels:D7, $labels:D7_SHORT, $D7table, "", string(count($D7table)), "namespace", $errors:ERROR)}
         {html:build2("D7.1", $labels:D7.1, $labels:D7.1_SHORT, $D7.1invalid, "base:Identifier/base:namespace", "All values are valid", " invalid namespaces", "", $errors:ERROR)}
-        {html:buildResultRowsWithTotalCount_D("D8", $labels:D8, $labels:D8_SHORT, $D8invalid, "ef:mediaMonitored", "", "", "", $errors:WARNING)}
-        {html:buildResultRowsWithTotalCount_D("D9", $labels:D9, $labels:D9_SHORT, $D9invalid, "ef:organisationLevel", "", "", "",$errors:WARNING)}
-        {html:buildResultRowsWithTotalCount_D("D10", $labels:D10, $labels:D10_SHORT, $D10invalid, "aqd:networkType", "", "", "",$errors:WARNING)}
+        {html:build2("D8", $labels:D8, $labels:D8_SHORT, $D8invalid, "ef:mediaMonitored", "", "", "", $errors:WARNING)}
+        {html:build2("D9", $labels:D9, $labels:D9_SHORT, $D9invalid, "ef:organisationLevel", "", "", "",$errors:WARNING)}
+        {html:build2("D10", $labels:D10, $labels:D10_SHORT, $D10invalid, "aqd:networkType", "", "", "",$errors:WARNING)}
         {html:build2("D11", $labels:D11, $labels:D11_SHORT, $D11invalid, "aqd:AQD_Network/@gml:id", "All attributes are valid", " invalid attribute ", "", $errors:ERROR)}
         {html:build2("D12", $labels:D12, $labels:D12_SHORT, $D12invalid, "aqd:AQD_Network/ef:inspireId/base:Identifier/base:localId", "All attributes are valid", " invalid attribute ", "", $errors:WARNING)}
         {html:build2("D14", $labels:D14, $labels:D14_SHORT, $D14invalid, "aqd:aggregationTimeZone", "", "", "",$errors:ERROR)}
@@ -1985,20 +1985,20 @@ return
         {html:build2("D16.1", $labels:D16.1, $labels:D16.1_SHORT, $D16.1invalid, "base:Identifier/base:namespace", "All values are valid", " invalid namespaces", "", $errors:ERROR)}
         {html:build2("D17", $labels:D17, $labels:D17_SHORT, $D17invalid, "", "All values are valid", "", "",$errors:ERROR)}
         {html:build2("D18", $labels:D18, $labels:D18_SHORT, $D18invalid, "", "All values are valid", "", "",$errors:ERROR)}
-        {html:buildResultRowsWithTotalCount_D("D19", $labels:D19, $labels:D19, $D19invalid, "ef:mediaMonitored", "", "", "",$errors:WARNING)}
+        {html:build2("D19", $labels:D19, $labels:D19, $D19invalid, "ef:mediaMonitored", "", "", "",$errors:WARNING)}
         {html:build2("D20", $labels:D20, $labels:D20_SHORT, $D20invalid, "aqd:AQD_Station/ef:inspireId/base:Identifier/base:localId","All smsName attributes are valid"," invalid attribute","", $errors:ERROR)}
         {html:build2("D21", $labels:D21, $labels:D21_SHORT, $invalidPosD21, "aqd:AQD_Zone/@gml:id", "All srsDimension attributes resolve to ""2""", " invalid attribute", "",$errors:ERROR)}
         {html:build2("D23", $labels:D23, $labels:D23_SHORT, $D23invalid, "", fn:string(count($D23invalid)), "", "",$errors:ERROR)}
         {html:build1("D24", $labels:D24, $labels:D24_SHORT, $D24table, "", string(count($D24table)) || "records found", "record", "", $errors:WARNING)}
         {html:build2("D26", $labels:D26, $labels:D26_SHORT, $D26invalid, "", "All station codes are valid", " invalid station codes", "",$errors:ERROR)}
-        {html:buildResultRowsWithTotalCount_D("D27", $labels:D27, $labels:D27_SHORT, $D27invalid, "aqd:meteoParams", "", "", "",$errors:WARNING)}
-        {html:buildResultRowsWithTotalCount_D("D28", $labels:D28, $labels:D28_SHORT, $D28invalid, "aqd:areaClassification", "", "", "",$errors:ERROR)}
-        {html:buildResultRowsWithTotalCount_D("D29", $labels:D29, $labels:D29_SHORT, $D29invalid, "aqd:dispersionLocal", "", "", "",$errors:WARNING)}
-        {html:buildResultRowsWithTotalCount_D("D30", $labels:D30, $labels:D30_SHORT, $D30invalid, "aqd:dispersionRegional", "", "", "",$errors:WARNING)}
+        {html:deprecated("D27", $labels:D27, $labels:D27_SHORT, $D27invalid, "aqd:meteoParams", "", "", "",$errors:WARNING)}
+        {html:build2("D28", $labels:D28, $labels:D28_SHORT, $D28invalid, "aqd:areaClassification", "", "", "",$errors:ERROR)}
+        {html:build2("D29", $labels:D29, $labels:D29_SHORT, $D29invalid, "aqd:dispersionLocal", "", "", "",$errors:WARNING)}
+        {html:build2("D30", $labels:D30, $labels:D30_SHORT, $D30invalid, "aqd:dispersionRegional", "", "", "",$errors:WARNING)}
         {html:build2("D31", $labels:D31, $labels:D31_SHORT, $D31invalid, "", concat(string(count($D31invalid))," errors found.") , "", "",$errors:ERROR)}
         {html:buildUnique("D32", $labels:D32, $labels:D32_SHORT, $D32table, "", string(count($D32table)), "namespace", $errors:ERROR)}
         {html:build2("D32.1", $labels:D32.1, $labels:D32.1_SHORT, $D32.1invalid, "base:Identifier/base:namespace", "All values are valid", " invalid namespaces", "", $errors:ERROR)}
-        {html:buildResultRowsWithTotalCount_D("D33", $labels:D33, $labels:D33_SHORT, $D33invalid, "ef:mediaMonitored", "", "", "",$errors:WARNING)}
+        {html:build2("D33", $labels:D33, $labels:D33_SHORT, $D33invalid, "ef:mediaMonitored", "", "", "",$errors:WARNING)}
         {html:build2("D34", $labels:D34, $labels:D34_SHORT, $D34invalid, "", "All values are valid", "", "", $errors:ERROR)}
         {html:build2("D35", $labels:D35, $labels:D35_SHORT, $D35invalid, "aqd:AQD_SamplingPoint/ef:inspireId/base:Identifier/base:localId", $D35message, " invalid elements", "",$errors:ERROR)}
         {html:build2("D36", $labels:D36, $labels:D36_SHORT, $D36invalid, "aqd:AQD_SamplingPoint/@gml:id", "All attributes are valid", " invalid attribute", "",$errors:WARNING)}
@@ -2020,17 +2020,14 @@ return
         {html:buildInfoTR("Specific checks on AQD_SamplingPointProcess feature(s) within this XML")}
         {html:buildUnique("D55", $labels:D55, $labels:D55_SHORT, $D55table, "", string(count($D55table)), "namespace", $errors:INFO)}
         {html:build2("D55.1", $labels:D55.1, $labels:D55.1_SHORT, $D55.1invalid, "base:Identifier/base:namespace", "All values are valid", " invalid namespaces", "", $errors:ERROR)}
-        {html:buildResultRowsWithTotalCount_D("D56", $labels:D56, $labels:D56_SHORT, $D56invalid, "aqd:measurementType", "", "", "",$errors:ERROR)}
+        {html:build2("D56", $labels:D56, $labels:D56_SHORT, $D56invalid, "aqd:measurementType", "", "", "",$errors:ERROR)}
         {html:build2("D57", $labels:D57, $labels:D57_SHORT, $D57table, "", concat(string(count($D57table)), " errors found"), "", "", $errors:WARNING)}
         {html:build2("D58", $labels:D58, $labels:D58_SHORT, $D58table, "", concat(fn:string(count($D58table))," errors found"), " invalid attribute", "",$errors:WARNING)}
-        {html:buildResultRowsWithTotalCount_D("D59", $labels:D59, $labels:D59_SHORT, $D59invalid, "aqd:analyticalTechnique", "", "", "",$errors:ERROR)}
-        {html:buildResultRowsWithTotalCount_D("D60a", $labels:D60a, $labels:D60a_SHORT, $D60ainvalid, "aqd:measurementEquipment", "", "", "",$errors:ERROR)}
-        {html:buildResultRowsWithTotalCount_D("D60b", $labels:D60b, $labels:D60b_SHORT, $D60binvalid, "aqd:samplingEquipment", "", "", "",$errors:ERROR)}
+        {html:build2("D59", $labels:D59, $labels:D59_SHORT, $D59invalid, "aqd:analyticalTechnique", "", "", "",$errors:ERROR)}
+        {html:build2("D60a", $labels:D60a, $labels:D60a_SHORT, $D60ainvalid, "aqd:measurementEquipment", "", "", "",$errors:ERROR)}
+        {html:build2("D60b", $labels:D60b, $labels:D60b_SHORT, $D60binvalid, "aqd:samplingEquipment", "", "", "",$errors:ERROR)}
         {html:build2("D61", $labels:D61, $labels:D61_SHORT, $D61invalid, "", "All values are valid", "record", "", $errors:WARNING)}
         {html:build2("D62", $labels:D62, $labels:D62_SHORT, $D62invalid, "", "All values are valid", "invalid record", "", $errors:WARNING)}
-        <!--{xmlconv:buildResultRows("D61", "Total number ./aqd:dataQuality/aqd:DataQuality/aqd:detectionLimit witch does not contain an integer, fixed point or floating point number ",
-                (), $allInvalid61, "", concat(fn:string(count($allInvalid61))," errors found"), "", "", ())}-->
-        {html:buildResultRowsWithTotalCount_D("D63", $labels:D63, $labels:D63_SHORT, $D63invalid, "aqd:detectionLimit", "", "", "",$errors:ERROR)}
         {html:buildInfoTR("Checks on SamplingPointProcess(es) where the xlinked SamplingPoint has aqd:AQD_SamplingPoint/aqd:usedAQD equals TRUE (D67 to D70):")}
         {html:build2("D65", $labels:D65, $labels:D65_SHORT, $D65invalid, "", "All values are valid", "record", "", $errors:WARNING)}
         {html:build2("D67a", $labels:D67a, $labels:D67a_SHORT, $D67ainvalid, "", concat(fn:string(count($D67ainvalid))," errors found"), "", "", $errors:ERROR)}
@@ -2051,9 +2048,6 @@ return
         {html:build2("D92", $labels:D92, $labels:D92_SHORT, $D92invalid, "", "All values are valid"," invalid attribute","", $errors:ERROR)}
         {html:build2("D93", $labels:D93, $labels:D93_SHORT, $D93invalid, "", "All values are valid"," invalid attribute","", $errors:ERROR)}
         {html:build2("D94", $labels:D94, $labels:D94_SHORT, $D94invalid, "", "All values are valid"," invalid attribute","", $errors:ERROR)}
-        <!--{xmlconv:buildResultRowsWithTotalCount("D67", <span>The content of ./aqd:AQD_SamplingPoint/aqd:samplingEquipment shall resolve to any concept in
-            <a href="{ $xmlconv:UOM_CONCENTRATION_VOCABULARY }">{ $xmlconv:UOM_CONCENTRATION_VOCABULARY }</a></span>,
-                (), (), "aqd:samplingEquipment", "", "", "",$allInvalid67 )} -->
     </table>
 };
 
