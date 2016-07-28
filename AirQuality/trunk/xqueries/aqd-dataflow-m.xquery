@@ -683,12 +683,12 @@ let $M43invalid :=
     try {
         let $valid := ("urn:ogc:def:crs:EPSG::4258", "urn:ogc:def:crs:EPSG::4326", "urn:ogc:def:crs:EPSG::3035")
         for $x in $docRoot//aqd:AQD_ModelArea[count(sams:shape) > 0]
-        let $srsName := data($x/sams:shape/@srsName)
-        where not($srsName = $valid)
+            for $z in data($x/sams:shape//@srsName)
+        where not($z = $valid)
         return
             <tr>
                 <td title="aqd:AQD_ModelArea">{data($x/aqd:inspireId/base:Identifier/base:localId)}</td>
-                <td title="@srsName">{$srsName}</td>
+                <td title="@srsName">{$z}</td>
             </tr>
     } catch * {
         <tr status="failed">
@@ -776,7 +776,7 @@ let $M46message :=
         {html:build2("M40", $labels:M40, $labels:M40_SHORT, $M40invalid, "", concat(string(count($M40invalid))," errors found.") , "record", "", $errors:ERROR)}
         {html:buildUnique("M41", $labels:M41, $labels:M41_SHORT, $M41table, "", string(count($M41table)), "namespace", $errors:ERROR)}
         {html:build2("M41.1", $labels:M41.1, $labels:M41.1_SHORT, $M41.1invalid, "base:Identifier/base:namespace", "All values are valid", " invalid namespaces", "", $errors:ERROR)}
-        {html:build2("M43", $labels:M43, $labels:M43_SHORT, $M43invalid, "", "All srsDimension attributes are valid","record", "", $errors:ERROR)}
+        {html:build2("M43", $labels:M43, $labels:M43_SHORT, $M43invalid, "", "All records are valid", "record", "", $errors:ERROR)}
         {html:build2("M45", $labels:M45, $labels:M45_SHORT, $M45invalid, "", "All records are valid", "record", "", $errors:ERROR)}
         {html:build2("M46", $labels:M46, $labels:M46_SHORT, $M46invalid, "gml:Polygon", $M46message, "record", "", $errors:ERROR)}
     </table>
