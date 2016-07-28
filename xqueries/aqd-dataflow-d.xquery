@@ -380,8 +380,16 @@ let $D7table :=
 (: D7.1 :)
 let $D7.1invalid :=
     try {
-        common:checkNamespaces(distinct-values($docRoot//aqd:AQD_Network/ef:inspireId/base:Identifier/base:namespace), $countryCode)
-    } catch * {
+        let $vocDoc := doc($vocabulary:NAMESPACE || "rdf")
+        let $prefLabel := $vocDoc//skos:Concept[adms:status/@rdf:resource = $dd:VALIDRESOURCE and @rdf:about = concat($vocabulary:NAMESPACE, $countryCode)]/skos:prefLabel[1]
+        let $altLabel := $vocDoc//skos:Concept[adms:status/@rdf:resource = $dd:VALIDRESOURCE and @rdf:about = concat($vocabulary:NAMESPACE, $countryCode)]/skos:altLabel[1]
+        for $x in distinct-values($docRoot//aqd:AQD_Network/ef:inspireId/base:Identifier/base:namespace)
+        where (not($x = $prefLabel) and not($x = $altLabel))
+        return
+            <tr>
+                <td title="base:namespace">{$x}</td>
+            </tr>
+    }  catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
@@ -546,8 +554,16 @@ let $D16table :=
 (: D16.1 :)
 let $D16.1invalid :=
     try {
-        common:checkNamespaces(distinct-values($docRoot//aqd:AQD_Station/ef:inspireId/base:Identifier/base:namespace), $countryCode)
-    } catch * {
+        let $vocDoc := doc($vocabulary:NAMESPACE || "rdf")
+        let $prefLabel := $vocDoc//skos:Concept[adms:status/@rdf:resource = $dd:VALIDRESOURCE and @rdf:about = concat($vocabulary:NAMESPACE, $countryCode)]/skos:prefLabel[1]
+        let $altLabel := $vocDoc//skos:Concept[adms:status/@rdf:resource = $dd:VALIDRESOURCE and @rdf:about = concat($vocabulary:NAMESPACE, $countryCode)]/skos:altLabel[1]
+        for $x in distinct-values($docRoot//aqd:AQD_Station/ef:inspireId/base:Identifier/base:namespace)
+        where (not($x = $prefLabel) and not($x = $altLabel))
+        return
+            <tr>
+                <td title="base:namespace">{$x}</td>
+            </tr>
+    }  catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
@@ -857,8 +873,16 @@ let $D32table :=
 (: D32.1 :)
 let $D32.1invalid :=
     try {
-        common:checkNamespaces(distinct-values($docRoot//aqd:AQD_SamplingPoint/ef:inspireId/base:Identifier/base:namespace), $countryCode)
-    } catch * {
+        let $vocDoc := doc($vocabulary:NAMESPACE || "rdf")
+        let $prefLabel := $vocDoc//skos:Concept[adms:status/@rdf:resource = $dd:VALIDRESOURCE and @rdf:about = concat($vocabulary:NAMESPACE, $countryCode)]/skos:prefLabel[1]
+        let $altLabel := $vocDoc//skos:Concept[adms:status/@rdf:resource = $dd:VALIDRESOURCE and @rdf:about = concat($vocabulary:NAMESPACE, $countryCode)]/skos:altLabel[1]
+        for $x in distinct-values($docRoot//aqd:AQD_SamplingPoint/ef:inspireId/base:Identifier/base:namespace)
+        where (not($x = $prefLabel) and not($x = $altLabel))
+        return
+            <tr>
+                <td title="base:namespace">{$x}</td>
+            </tr>
+    }  catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
@@ -1342,8 +1366,16 @@ let $D55table :=
 (: D55.1 :)
 let $D55.1invalid :=
     try {
-        common:checkNamespaces(distinct-values($docRoot//aqd:AQD_SamplingPointProcess/ef:inspireId/base:Identifier/base:namespace), $countryCode)
-    } catch * {
+        let $vocDoc := doc($vocabulary:NAMESPACE || "rdf")
+        let $prefLabel := $vocDoc//skos:Concept[adms:status/@rdf:resource = $dd:VALIDRESOURCE and @rdf:about = concat($vocabulary:NAMESPACE, $countryCode)]/skos:prefLabel[1]
+        let $altLabel := $vocDoc//skos:Concept[adms:status/@rdf:resource = $dd:VALIDRESOURCE and @rdf:about = concat($vocabulary:NAMESPACE, $countryCode)]/skos:altLabel[1]
+        for $x in distinct-values($docRoot//aqd:AQD_SamplingPointProcess/ef:inspireId/base:Identifier/base:namespace)
+        where (not($x = $prefLabel) and not($x = $altLabel))
+        return
+            <tr>
+                <td title="base:namespace">{$x}</td>
+            </tr>
+    }  catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
@@ -1723,8 +1755,16 @@ let $D72table :=
 (: D72.1 :)
 let $D72.1invalid :=
     try {
-        common:checkNamespaces(distinct-values($docRoot//aqd:AQD_Sample/ef:inspireId/base:Identifier/base:namespace), $countryCode)
-    } catch * {
+        let $vocDoc := doc($vocabulary:NAMESPACE || "rdf")
+        let $prefLabel := $vocDoc//skos:Concept[adms:status/@rdf:resource = $dd:VALIDRESOURCE and @rdf:about = concat($vocabulary:NAMESPACE, $countryCode)]/skos:prefLabel[1]
+        let $altLabel := $vocDoc//skos:Concept[adms:status/@rdf:resource = $dd:VALIDRESOURCE and @rdf:about = concat($vocabulary:NAMESPACE, $countryCode)]/skos:altLabel[1]
+        for $x in distinct-values($docRoot//aqd:AQD_Sample/ef:inspireId/base:Identifier/base:namespace)
+        where (not($x = $prefLabel) and not($x = $altLabel))
+        return
+            <tr>
+                <td title="base:namespace">{$x}</td>
+            </tr>
+    }  catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>

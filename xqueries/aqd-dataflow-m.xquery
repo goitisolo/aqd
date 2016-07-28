@@ -323,8 +323,16 @@ let $M7table :=
 (: M7.1 :)
 let $M7.1invalid :=
     try {
-        common:checkNamespaces($docRoot//aqd:AQD_Model/ef:inspireId/base:Identifier/base:namespaces, $countryCode)
-    } catch * {
+        let $vocDoc := doc($vocabulary:NAMESPACE || "rdf")
+        let $prefLabel := $vocDoc//skos:Concept[adms:status/@rdf:resource = $dd:VALIDRESOURCE and @rdf:about = concat($vocabulary:NAMESPACE, $countryCode)]/skos:prefLabel[1]
+        let $altLabel := $vocDoc//skos:Concept[adms:status/@rdf:resource = $dd:VALIDRESOURCE and @rdf:about = concat($vocabulary:NAMESPACE, $countryCode)]/skos:altLabel[1]
+        for $x in distinct-values($docRoot//aqd:AQD_Model/ef:inspireId/base:Identifier/base:namespaces)
+        where (not($x = $prefLabel) and not($x = $altLabel))
+        return
+            <tr>
+                <td title="base:namespace">{$x}</td>
+            </tr>
+    }  catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
@@ -536,8 +544,16 @@ let $M28table :=
 (: M28 :)
 let $M28.1invalid :=
     try {
-        common:checkNamespaces($docRoot//aqd:AQD_ModelProcess/ef:inspireId/base:Identifier/base:namespaces, $countryCode)
-    } catch * {
+        let $vocDoc := doc($vocabulary:NAMESPACE || "rdf")
+        let $prefLabel := $vocDoc//skos:Concept[adms:status/@rdf:resource = $dd:VALIDRESOURCE and @rdf:about = concat($vocabulary:NAMESPACE, $countryCode)]/skos:prefLabel[1]
+        let $altLabel := $vocDoc//skos:Concept[adms:status/@rdf:resource = $dd:VALIDRESOURCE and @rdf:about = concat($vocabulary:NAMESPACE, $countryCode)]/skos:altLabel[1]
+        for $x in distinct-values($docRoot//aqd:AQD_ModelProcess/ef:inspireId/base:Identifier/base:namespaces)
+        where (not($x = $prefLabel) and not($x = $altLabel))
+        return
+            <tr>
+                <td title="base:namespace">{$x}</td>
+            </tr>
+    }  catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
@@ -670,8 +686,16 @@ let $M41table :=
 (: M41 :)
 let $M41.1invalid :=
     try {
-        common:checkNamespaces($docRoot//aqd:AQD_ModelArea/ef:inspireId/base:Identifier/base:namespaces, $countryCode)
-    } catch * {
+        let $vocDoc := doc($vocabulary:NAMESPACE || "rdf")
+        let $prefLabel := $vocDoc//skos:Concept[adms:status/@rdf:resource = $dd:VALIDRESOURCE and @rdf:about = concat($vocabulary:NAMESPACE, $countryCode)]/skos:prefLabel[1]
+        let $altLabel := $vocDoc//skos:Concept[adms:status/@rdf:resource = $dd:VALIDRESOURCE and @rdf:about = concat($vocabulary:NAMESPACE, $countryCode)]/skos:altLabel[1]
+        for $x in distinct-values($docRoot//aqd:AQD_ModelArea/ef:inspireId/base:Identifier/base:namespaces)
+        where (not($x = $prefLabel) and not($x = $altLabel))
+        return
+            <tr>
+                <td title="base:namespace">{$x}</td>
+            </tr>
+    }  catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>

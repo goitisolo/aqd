@@ -48,6 +48,7 @@ declare namespace rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#";
 declare namespace prop="http://dd.eionet.europa.eu/property/";
 declare namespace adms="http://www.w3.org/ns/adms#";
 
+
 declare variable $xmlconv:ISO2_CODES as xs:string* := ("AL","AT","BA","BE","BG","CH","CY","CZ","DE","DK","DZ","EE","EG","ES","FI",
     "FR","GB","GR","HR","HU","IE","IL","IS","IT","JO","LB","LI","LT","LU","LV","MA","ME","MK","MT","NL","NO","PL","PS","PT",
      "RO","RS","SE","SI","SK","TN","TR","XK","UK");
@@ -288,7 +289,15 @@ let $C6table :=
 (: C6.1 :)
 let $C6.1invalid :=
     try {
-        common:checkNamespacesFromFile($source_url)
+        let $vocDoc := doc($vocabulary:NAMESPACE || "rdf")
+        let $prefLabel := $vocDoc//skos:Concept[adms:status/@rdf:resource = $dd:VALIDRESOURCE and @rdf:about = concat($vocabulary:NAMESPACE, $countryCode)]/skos:prefLabel[1]
+        let $altLabel := $vocDoc//skos:Concept[adms:status/@rdf:resource = $dd:VALIDRESOURCE and @rdf:about = concat($vocabulary:NAMESPACE, $countryCode)]/skos:altLabel[1]
+        for $x in distinct-values($docRoot//base:namespace)
+        where (not($x = $prefLabel) and not($x = $altLabel))
+        return
+            <tr>
+                <td title="base:namespace">{$x}</td>
+            </tr>
     }  catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>

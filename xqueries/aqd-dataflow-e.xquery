@@ -35,6 +35,10 @@ declare namespace gmd = "http://www.isotc211.org/2005/gmd";
 declare namespace gco = "http://www.isotc211.org/2005/gco";
 
 declare namespace sparql = "http://www.w3.org/2005/sparql-results#";
+declare namespace skos = "http://www.w3.org/2004/02/skos/core#";
+declare namespace adms="http://www.w3.org/ns/adms#";
+declare namespace prop = "http://dd.eionet.europa.eu/property/";
+declare namespace rdf = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
 
 declare variable $xmlconv:OBLIGATIONS as xs:string* := ($vocabulary:ROD_PREFIX || "673");
 declare function xmlconv:checkReport($source_url as xs:string, $countryCode as xs:string) as element(table) {
