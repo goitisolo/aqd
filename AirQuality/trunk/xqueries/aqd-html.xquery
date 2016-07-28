@@ -602,7 +602,7 @@ declare function html:buildCountRow2($ruleCode as xs:string, $longText, $text, $
         </tr> else ())
 };
 
-declare function html:buildResultDiv($meta as map(*), $result as element(table)) {
+declare function html:buildResultDiv($meta as map(*), $result as element(table)?) {
     let $count := map:get($meta, "count")
     let $header := map:get($meta, "header")
     let $dataflow := map:get($meta, "dataflow")
