@@ -321,16 +321,17 @@ limit 1")
 
 (: Returns latest report envelope for this country :)
 declare function query:getLatestEnvelope($cdrUrl as xs:string) as xs:string? {
-  let $query := concat("PREFIX aqd: <http://rod.eionet.europa.eu/schema.rdf#>
-  SELECT *
-   WHERE {
+  let $query :=
+    "PREFIX aqd: <http://rod.eionet.europa.eu/schema.rdf#>
+     SELECT *
+     WHERE {
         ?envelope a aqd:Delivery ;
         aqd:released ?date ;
         aqd:hasFile ?file ;
         aqd:period ?period
-        FILTER(CONTAINS(str(?envelope), '", $cdrUrl, "'))
+        FILTER(CONTAINS(str(?envelope), '" || $cdrUrl || "'))
   } order by desc(?date)
-limit 1")
+limit 1"
   let $result := data(sparqlx:run($query)//sparql:binding[@name='envelope']/sparql:uri)
   return $result
 };
