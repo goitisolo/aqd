@@ -380,11 +380,6 @@ declare function html:build7($ruleCode as xs:string, $longText, $text, $records 
     return html:buildGeneric($ruleCode, $longText, $text, $records, $validMsg, $bulletType)
 };
 
-(: Deprecated, remove after migration :)
-declare function html:buildResultRows($ruleCode as xs:string, $longText, $text, $records as element(tr)*, $valueHeading as xs:string, $validMsg as xs:string, $unit as xs:string, $skippedMsg, $errorLevel as xs:string) as element(tr)* {
-    html:build2($ruleCode, $longText, $text, $records, $valueHeading, $validMsg, $unit, $skippedMsg, $errorLevel)
-};
-
 (: Builds HTML table rows for rules. :)
 declare %private function html:buildGeneric($ruleCode as xs:string, $longText, $text, $records as element(tr)*, $message as xs:string, $bulletType as xs:string) as element(tr)* {
     let $countRecords := count($records)
@@ -472,7 +467,7 @@ declare function html:buildResultRowsWithTotalCount_M($ruleCode as xs:string, $l
     let $validMsg := if (count($invalidValues) = 0) then concat("Checked ", $countCheckedRecords, " value", substring("s", number(not($countCheckedRecords > 1)) * 2), ", all valid") else ""
 
     return
-        html:buildResultRows($ruleCode, $longText, $text, $invalidValues, $valueHeading, $validMsg, $invalidMsg, $skippedMsg,$errorLevel)
+        html:build2($ruleCode, $longText, $text, $invalidValues, $valueHeading, $validMsg, $invalidMsg, $skippedMsg,$errorLevel)
 };
 
 declare function html:buildItemsList($ruleId as xs:string, $vocabularyUrl as xs:string, $ids as xs:string*) as element(div) {
