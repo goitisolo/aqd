@@ -431,6 +431,7 @@ let $M20invalid :=
 (: M23 :)
 let $M23invalid :=
     try {
+        let $exceptions := ($vocabulary:OBJECTIVETYPE_VOCABULARY || "MO")
         let $all :=
             for $x in doc($vocabulary:ENVIRONMENTALOBJECTIVE || "rdf")//skos:Concept[adms:status/@rdf:resource = $dd:VALIDRESOURCE]
             return $x/prop:relatedPollutant/@rdf:resource || "#" || $x/prop:hasObjectiveType/@rdf:resource || "#" || $x/prop:hasReportingMetric/@rdf:resource || "#" || $x/prop:hasProtectionTarget/@rdf:resource
@@ -441,7 +442,7 @@ let $M23invalid :=
         let $reportingMetric := $x/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric/@xlink:href
         let $protectionTarget := $x/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/@xlink:href
         let $combination := $pollutant || "#" || $objectiveType || "#" || $reportingMetric || "#" || $protectionTarget
-        where not($combination = $all)
+        where not($objectiveType = $exceptions) and not($combination = $all)
         return
             <tr>
                 <td title="aqd:AQD_Model">{data($x/aqd:inspireId/base:Identifier/base:localId)}</td>
