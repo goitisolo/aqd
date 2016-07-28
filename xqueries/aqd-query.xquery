@@ -335,7 +335,7 @@ limit 1")
   return $result
 };
 
-declare function query:getEnvelopesByYear($cdrUrl as xs:string, $reportingYear as xs:string) as xs:string? {
+declare function query:getEnvelopesByYear($cdrUrl as xs:string, $reportingYear as xs:string) as xs:string* {
   let $query :=
     "PREFIX aqd: <http://rod.eionet.europa.eu/schema.rdf#>
      SELECT *

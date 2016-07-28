@@ -101,7 +101,7 @@ let $isNewDelivery := errors:getMaxError($E0table) = $errors:INFO
 let $E01table :=
     try {
         for $x in $docRoot//om:OM_Observation
-            let $samplingPoint := $x/om:parameter/om:NamedValue[om:name/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/processparameter/SamplingPoint"]/om:value/concat(@xlink:href/tokenize(., "/")[last()], tokenize(., "/")[last()])
+            let $samplingPoint := tokenize(data($x/om:parameter/om:NamedValue[om:name/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/processparameter/SamplingPoint"]/om:value), "/")[last()]
             let $observedProperty := $x/om:observedProperty/@xlink:href/string()
         return
             <tr>
@@ -177,7 +177,7 @@ let $E3invalid :=
 (: E4 - ./om:procedure xlink:href attribute shall resolve to a traversable link process configuration in Data flow D: /aqd:AQD_SamplingPointProcess/ompr:inspireld/base:Identifier/base:localId:)
 let $E4invalid :=
     try {
-        let $result := sparqlx:executeSparqlQuery(query:getSamplingPointProcess($cdrUrl))
+        let $result := sparqlx:run(query:getSamplingPointProcess($cdrUrl))
         let $all := $result/sparql:binding[@name = "inspireLabel"]/sparql:literal/string()
         let $procedures := $docRoot//om:procedure/@xlink:href/string()
         for $x in $procedures[not(. = $all)]
@@ -211,16 +211,15 @@ let $E5invalid :=
 let $E6invalid :=
     try {
         let $latestDfiles := query:getEnvelopesByYear($cdrUrl || "d/", $reportingYear)
-        let $result := sparqlx:executeSparqlQuery(query:getSamplingPointFromFiles($latestDfiles))
+        let $result := sparqlx:run(query:getSamplingPointFromFiles($latestDfiles))
         let $all := $result/sparql:binding[@name = "inspireLabel"]/sparql:literal/string()
-        let $parameters := $docRoot//om:OM_Observation/om:parameter/om:NamedValue
-        for $x in $parameters[om:name/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/processparameter/SamplingPoint"]
+        for $x in $docRoot//om:OM_Observation/om:parameter/om:NamedValue[om:name/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/processparameter/SamplingPoint"]
             let $name := $x/om:name/@xlink:href/string()
-            let $value := $x/om:value/@xlink:href/string()
+            let $value := data($x/om:value)
         where ($value = "" or not($value = $all))
         return
             <tr>
-                <td title="base:localId">{string($x/../../@gml:id)}</td>
+                <td title="om:OM_Observation">{string($x/../../@gml:id)}</td>
                 <td title="om:value">{$value}</td>
             </tr>
     } catch * {
@@ -251,11 +250,12 @@ let $E8invalid :=
     try {
         let $valid := dd:getValidConcepts($vocabulary:ASSESSMENTTYPE_VOCABULARY || "rdf")
         for $x in $docRoot//om:OM_Observation/om:parameter/om:NamedValue[om:name/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/processparameter/AssessmentType"]
-        where not($x/om:value/@xlink:href = $valid)
+        let $value := data($x/om:value)
+        where not($value = $valid)
         return
             <tr>
-                <td title="@gml:id">{string($x/../../@gml:id)}</td>
-                <td title="om:value">{data($x/om:value/@xlink:href)}</td>
+                <td title="om:OM_Observation">{string($x/../../@gml:id)}</td>
+                <td title="om:value">{$value}</td>
             </tr>
     }
     catch * {
@@ -289,11 +289,12 @@ let $E10invalid :=
     try {
         let $all := dd:getValidConcepts("http://dd.eionet.europa.eu/vocabulary/aq/pollutant/rdf")
         for $x in $docRoot//om:OM_Observation/om:observedProperty
+        let $value := data($x/../om:parameter/om:NamedValue[om:name/@xlink:href ="http://dd.eionet.europa.eu/vocabulary/aq/processparameter/SamplingPoint"]/om:value)
         where not($x/@xlink:href = $all)
         return
             <tr>
-                <td title="@gml:id">{string($x/../@gml:id)}</td>
-                <td title="om:value">{string($x/../om:parameter/om:NamedValue[om:name/@xlink:href ="http://dd.eionet.europa.eu/vocabulary/aq/processparameter/SamplingPoint"]/om:value/@xlink:href)}</td>
+                <td title="om:OM_Observation">{string($x/../@gml:id)}</td>
+                <td title="om:value">{$value}</td>
                 <td title="om:observedProperty">{string($x/@xlink:href)}</td>
             </tr>
     } catch * {
@@ -305,19 +306,20 @@ let $E10invalid :=
 (: E11 - The pollutant xlinked via /om:observedProperty must match the pollutant code declared via /aqd:AQD_SamplingPoint/ef:observingCapability/ef:ObservingCapability/ef:observedProperty :)
 let $E11invalid :=
     try {
-        let $latestDfiles := query:getEnvelopesByYear($cdrUrl || "/d", $reportingYear)
-        let $result := sparqlx:executeSparqlQuery(query:getSamplingPointMetadataFromFiles($latestDfiles))
+        let $latestDfiles := query:getEnvelopesByYear($cdrUrl || "d/", $reportingYear)
+        let $result := sparqlx:run(query:getSamplingPointMetadataFromFiles($latestDfiles))
         let $resultConcat := for $x in $result
         return $x/sparql:binding[@name="featureOfInterest"]/sparql:uri/string() || $x/sparql:binding[@name="observedProperty"]/sparql:uri/string()
         for $x in $docRoot//om:OM_Observation
             let $observedProperty := $x/om:observedProperty/@xlink:href/string()
             let $featureOfInterest := "http://reference.eionet.europa.eu/aq/" || $x/om:featureOfInterest/@xlink:href/string()
             let $concat := $featureOfInterest || $observedProperty
+            let $value := data($x/om:parameter/om:NamedValue[om:name/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/processparameter/SamplingPoint"]/om:value)
         where not($concat = $resultConcat)
         return
             <tr>
                 <td title="@gml:id">{$x/@gml:id/string()}</td>
-                <td title="om:value">{string($x/om:parameter/om:NamedValue[om:name/@xlink:href ="http://dd.eionet.europa.eu/vocabulary/aq/processparameter/SamplingPoint"]/om:value/@xlink:href)}</td>
+                <td title="om:value">{$value}</td>
                 <td title="om:observedProperty">{$observedProperty}</td>
             </tr>
     } catch * {
@@ -330,7 +332,7 @@ let $E11invalid :=
 (: E12 :)
 let $E12invalid :=
     try {
-        let $result := sparqlx:executeSparqlQuery(query:getSamples($cdrUrl))
+        let $result := sparqlx:run(query:getSamples($cdrUrl))
         let $samples := $result/sparql:binding[@name = "localId"]/sparql:literal/string()
         for $x in $docRoot//om:OM_Observation
             let $featureOfInterest := $x/om:featureOfInterest/@xlink:href/tokenize(string(), "/")[last()]
@@ -499,14 +501,14 @@ let $E21invalid :=
 let $E26invalid :=
     try {
         let $latestDfiles := query:getEnvelopesByYear($cdrUrl || "d/", $reportingYear)
-        let $result := sparqlx:executeSparqlQuery(query:getSamplingPointMetadataFromFiles($latestDfiles))
+        let $result := sparqlx:run(query:getSamplingPointMetadataFromFiles($latestDfiles))
         let $resultsConcat :=
             for $x in $result
             return $x/sparql:binding[@name="localId"]/sparql:literal/string() || $x/sparql:binding[@name="procedure"]/sparql:uri/string() ||
             $x/sparql:binding[@name="featureOfInterest"]/sparql:uri/string() || $x/sparql:binding[@name="observedProperty"]/sparql:uri/string()
 
         for $x in $docRoot//om:OM_Observation
-            let $samplingPoint := $x/om:parameter/om:NamedValue[om:name/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/processparameter/SamplingPoint"]/om:value/concat(@xlink:href/tokenize(., "/")[last()], tokenize(., "/")[last()])
+            let $samplingPoint := tokenize(data($x/om:parameter/om:NamedValue[om:name/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/processparameter/SamplingPoint"]/om:value), "/")[last()]
             let $procedure := "http://reference.eionet.europa.eu/aq/" || $x/om:procedure/@xlink:href/string()
             let $featureOfInterest := "http://reference.eionet.europa.eu/aq/" || $x/om:featureOfInterest/@xlink:href/string()
             let $observedProperty := $x/om:observedProperty/@xlink:href/string()
