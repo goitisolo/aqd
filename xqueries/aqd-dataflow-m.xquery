@@ -747,7 +747,7 @@ let $M46message :=
         {html:buildXML("XML", $labels:XML, $labels:XML_SHORT, $validationResult, "This XML passed validation.", "This XML file did NOT pass the XML validation", $errors:ERROR)}
         {html:build2("NS", $labels:NAMESPACES, $labels:NAMESPACES_SHORT, $NSinvalid, "", "All values are valid", "record", "", $errors:WARNING)}
         {html:build3("M0", $labels:M0, $labels:M0_SHORT, $M0table, string($M0table/td), errors:getMaxError($M0table))}
-        {html:build1("M1", $labels:M1, $labels:M1_SHORT, $M1table, "", string(sum($countFeatureTypes)), "record", "", errors:getMaxError($M1table))}
+        {html:build2("M1", $labels:M1, $labels:M1_SHORT, $M1table, "", string(sum($countFeatureTypes)), "record", "", errors:getMaxError($M1table))}
         {html:build2("M2", $labels:M2, $labels:M2_SHORT, $M2table, "", string(sum($countFeatureTypes)), "record", "", errors:getMaxError($M2table))}
         {html:build2("M3", $labels:M3, $labels:M3_SHORT, $M3table, "", string(sum($countFeatureTypes)), "record", "", errors:getMaxError($M3table))}
         {html:build2("M4", $labels:M4, $labels:M4_SHORT, $M4table, "", string(count($M4table)), "record", "", $errors:INFO)}
