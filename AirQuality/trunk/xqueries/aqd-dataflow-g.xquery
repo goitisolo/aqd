@@ -1570,11 +1570,11 @@ return
                 if ($result//div/@class = 'error') then
                     <p class="{$errors:ERROR} bg-error box" style="color:{$errors:COLOR_ERROR}"><strong>This XML file did NOT pass the following crucial check(s): {string-join($result//div[@class='error'], ',')}</strong></p>
                 else
-                    <p class="{$errors:INFO} bg-info box"><strong>This XML file passed all crucial checks.</strong></p>
+                    <p class="{$errors:INFO} bg-info box" style="color:#0080FF"><strong>This XML file passed all crucial checks.</strong></p>
             }
             {
                 if ($result//div/@class = 'warning') then
-                    <p class="{$errors:WARNING} bg-warning box" style="color:{$errors:WARNING}"><strong>This XML file generated warnings during the following check(s): {string-join($result//div[@class = 'warning'], ',')}</strong></p>
+                    <p class="{$errors:WARNING} bg-warning box" style="color:{$errors:COLOR_WARNING}"><strong>This XML file generated warnings during the following check(s): {string-join($result//div[@class = 'warning'], ',')}</strong></p>
                 else
                     ()
             }
