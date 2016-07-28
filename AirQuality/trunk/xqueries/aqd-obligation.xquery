@@ -37,8 +37,8 @@ declare function obligations:proceed($source_url as xs:string) {
 
     (: get reporting obligation & country :)
     let $envelopeUrl := common:getEnvelopeXML($source_url)
-    let $obligations := if(string-length($envelopeUrl)>0) then fn:doc($envelopeUrl)/envelope/obligation else ()
-    let $countryCode := common:getCountryCode($source_url)
+    let $obligations := doc($envelopeUrl)/envelope/obligation
+    let $countryCode := lower-case(doc($envelopeUrl)/envelope/countrycode)
 
     let $validObligations := common:getSublist($obligations,
             ($dfB:OBLIGATIONS, $dfC:OBLIGATIONS, $dfD:OBLIGATIONS, $dfG:OBLIGATIONS, $dfM:OBLIGATIONS, $dfE:OBLIGATIONS))

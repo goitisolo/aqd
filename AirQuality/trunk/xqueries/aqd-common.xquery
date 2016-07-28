@@ -1,6 +1,8 @@
 xquery version "3.0" encoding "UTF-8";
 
 module namespace common = "aqd-common";
+import module namespace vocabulary = "aqd-vocabulary" at "aqd-vocabulary.xquery";
+import module namespace dd = "aqd-dd" at "aqd-dd.xquery";
 
 declare namespace base = "http://inspire.ec.europa.eu/schemas/base/3.3";
 declare namespace skos = "http://www.w3.org/2004/02/skos/core#";
@@ -51,56 +53,19 @@ declare function common:getEnvelopeXML($url as xs:string) as xs:string{
 };
 
 declare function common:getCdrUrl($countryCode as xs:string) as xs:string {
-    let $countryCode := if ($countryCode = "uk") then "gb" else if ($countryCode = "el") then "gr" else $countryCode
-    let $eu := if ($countryCode='gi') then 'eea' else 'eu'
-    return concat("cdr.eionet.europa.eu/",lower-case($countryCode),"/", $eu, "/aqd/")
-};
-
-declare function common:getCountryCode($url as xs:string) as xs:string {
-    let $envelopeUrl := common:getEnvelopeXML($url)       
-    let $countryCode := if (string-length($envelopeUrl) > 0) then lower-case(fn:doc($envelopeUrl)/envelope/countrycode) else ""
-    return $countryCode
-};
-
-declare function common:checkNamespaces($namespaces as xs:string*, $countryCode as xs:string) as element(tr)* {
-    let $validStatus := "http://dd.eionet.europa.eu/vocabulary/datadictionary/status/valid"
-    let $namespaceUrl := "http://dd.eionet.europa.eu/vocabulary/aq/namespace/"
-    let $vocDoc := doc("http://dd.eionet.europa.eu/vocabulary/aq/namespace/rdf")
-
-    let $prefLabel := $vocDoc//skos:Concept[adms:status/@rdf:resource = $validStatus and @rdf:about = concat($namespaceUrl, $countryCode)]/skos:prefLabel[1]
-    let $altLabel := $vocDoc//skos:Concept[adms:status/@rdf:resource = $validStatus and @rdf:about = concat($namespaceUrl, $countryCode)]/skos:altLabel[1]
-    for $i in $namespaces
-    return
-    if (not($i = $prefLabel) and not($i = $altLabel)) then
-        <tr>
-            <td title="base:namespace">{$i}</td>
-        </tr>
-    else
-        ()
-
-};
-declare function common:checkNamespacesFromFile($source_url) {
-    let $validStatus := "http://dd.eionet.europa.eu/vocabulary/datadictionary/status/valid"
-    let $namespaceUrl := "http://dd.eionet.europa.eu/vocabulary/aq/namespace/"
-    let $country := common:getCountryCode($source_url)
-    let $vocDoc := doc("http://dd.eionet.europa.eu/vocabulary/aq/namespace/rdf")
-    
-    let $prefLabel := $vocDoc//skos:Concept[adms:status/@rdf:resource = $validStatus and @rdf:about = concat($namespaceUrl, $country)]/skos:prefLabel[1]
-    let $altLabel := $vocDoc//skos:Concept[adms:status/@rdf:resource = $validStatus and @rdf:about = concat($namespaceUrl, $country)]/skos:altLabel[1]
-    let $invalidNamespaces := distinct-values(
-        for $i in doc($source_url)//base:Identifier/base:namespace/string()
-        return
-          if (not($i = $prefLabel) and not($i = $altLabel)) then
-            $i
-          else
-            ()
-    )
-    for $i in $invalidNamespaces
-    return
-        <tr>
-            <td title="base:namespace">{$i}</td>
-        </tr>
-
+    let $countryCode :=
+        if ($countryCode = "uk") then
+            "gb"
+        else if ($countryCode = "el") then
+            "gr"
+        else
+            $countryCode
+    let $eu :=
+        if ($countryCode='gi') then
+            'eea'
+        else
+            'eu'
+    return "cdr.eionet.europa.eu/" || lower-case($countryCode) || "/" || $eu || "/aqd/"
 };
 
 declare function common:getReportingYear($xml as document-node()) as xs:string {
@@ -150,56 +115,6 @@ declare function common:checkLink($text as xs:string*) as element(span)*{
 
 declare function common:is-a-number( $value as xs:anyAtomicType? ) as xs:boolean {
     string(number($value)) != 'NaN'
-};
-
-(:~
- : Checks if XML element is missing or not.
- : @param $node XML node
- : return Boolean value.
- :)
-declare function common:isMissing($node as node()*) as xs:boolean {
-    if (fn:count($node) = 0) then
-        fn:true()
-    else
-        fn:false()
-};
-(:~
- : Checks if XML element is missing or value is empty.
- : @param $node XML element or value
- : return Boolean value.
- :)
-declare function common:isMissingOrEmpty($node as item()*) as xs:boolean {
-    if (common:isMissing($node)) then
-        fn:true()
-    else
-        common:isEmpty(string-join($node, ""))
-};
-(:~
- : Checks if element value is empty or not.
- : @param $value Element value.
- : @return Boolean value.
- :)
-declare function common:isEmpty($value as xs:string) as xs:boolean {
-    if (fn:empty($value) or fn:string(fn:normalize-space($value)) = "") then
-        fn:true()
-    else
-        fn:false()
-};
-
-declare function common:getHashValue($hash as xs:string*, $key as xs:string) {
-    common:getHashValue($hash, $key, "#")
-};
-
-(: Hash is in format x#y by default :)
-declare function common:getHashValue($hash as xs:string*, $key as xs:string, $separator as xs:string) as xs:string {
-    let $result :=
-        for $hashKeyAndValue in $hash
-        let $hashKey := substring-before($hashKeyAndValue , $separator)
-        let $hashValue := substring-after($hashKeyAndValue , $separator)
-        return
-            if (lower-case($key) = lower-case($hashKey)) then $hashValue else ()
-    let $result := if (empty($result)) then "" else $result[1]
-    return $result
 };
 
 declare function common:includesURL($x as xs:string) {

@@ -43,9 +43,10 @@ declare namespace gmd = "http://www.isotc211.org/2005/gmd";
 declare namespace gco = "http://www.isotc211.org/2005/gco";
 
 declare namespace sparql = "http://www.w3.org/2005/sparql-results#";
-declare namespace skos="http://www.w3.org/2004/02/skos/core#";
-declare namespace prop="http://dd.eionet.europa.eu/property/";
-declare namespace rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#";
+declare namespace skos = "http://www.w3.org/2004/02/skos/core#";
+declare namespace adms="http://www.w3.org/ns/adms#";
+declare namespace prop = "http://dd.eionet.europa.eu/property/";
+declare namespace rdf = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
 
 declare variable $xmlconv:ISO2_CODES as xs:string* := ("AL","AT","BA","BE","BG","CH","CY","CZ","DE","DK","DZ","EE","EG","ES","FI",
     "FR","GB","GR","HR","HU","IE","IL","IS","IT","JO","LB","LI","LT","LU","LV","MA","ME","MK","MT","NL","NO","PL","PS","PT",
@@ -371,8 +372,16 @@ let $G9table :=
 (: G9.1 :)
 let $G9.1invalid :=
     try {
-        common:checkNamespacesFromFile($source_url)
-    } catch * {
+        let $vocDoc := doc($vocabulary:NAMESPACE || "rdf")
+        let $prefLabel := $vocDoc//skos:Concept[adms:status/@rdf:resource = $dd:VALIDRESOURCE and @rdf:about = concat($vocabulary:NAMESPACE, $countryCode)]/skos:prefLabel[1]
+        let $altLabel := $vocDoc//skos:Concept[adms:status/@rdf:resource = $dd:VALIDRESOURCE and @rdf:about = concat($vocabulary:NAMESPACE, $countryCode)]/skos:altLabel[1]
+        for $x in distinct-values($docRoot//base:namespace)
+        where (not($x = $prefLabel) and not($x = $altLabel))
+        return
+            <tr>
+                <td title="base:namespace">{$x}</td>
+            </tr>
+    }  catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
