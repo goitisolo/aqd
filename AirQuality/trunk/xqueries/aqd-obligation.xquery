@@ -37,7 +37,7 @@ declare variable $obligations:ROD_PREFIX as xs:string := "http://rod.eionet.euro
 declare variable $obligations:B_OBLIGATIONS as xs:string* := ($obligations:ROD_PREFIX || "670", $obligations:ROD_PREFIX || "693");
 declare variable $obligations:C_OBLIGATIONS as xs:string* := ($obligations:ROD_PREFIX || "671", $obligations:ROD_PREFIX || "694");
 declare variable $obligations:D_OBLIGATIONS as xs:string* := ($obligations:ROD_PREFIX || "672");
-declare variable $obligations:M_OBLIGATIONS as xs:string* := ($obligations:ROD_PREFIX || "672");
+declare variable $obligations:M_OBLIGATIONS as xs:string* := ($obligations:ROD_PREFIX || "672", $obligations:ROD_PREFIX || "742");
 declare variable $obligations:G_OBLIGATIONS as xs:string* := ($obligations:ROD_PREFIX || "679");
 declare variable $obligations:E_OBLIGATIONS as xs:string* := $obligations:ROD_PREFIX || "673";
 
