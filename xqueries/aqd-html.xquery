@@ -275,7 +275,7 @@ declare function html:buildSimple($ruleCode as xs:string, $longText, $text, $rec
     let $bulletType := $errorLevel
     return html:buildGeneric($ruleCode, $longText, $text, $records, $message, $bulletType)
 };
-declare function html:build0($ruleCode as xs:string, $longText, $text, $records as element(tr)*, $valueHeading as xs:string, $validMsg as xs:string, $unit as xs:string) {
+declare function html:build0($ruleCode as xs:string, $longText, $text, $records as element(tr)*, $unit as xs:string) {
     let $countRecords := count($records)
     let $bulletType :=
         if (count($records) = 0) then
@@ -290,7 +290,7 @@ declare function html:build0($ruleCode as xs:string, $longText, $text, $records 
 
         return html:buildGeneric($ruleCode, $longText, $text, $records, $message, $bulletType)
 };
-declare function html:buildUnique($ruleCode as xs:string, $longText, $text, $records as element(tr)*, $valueHeading as xs:string, $validMsg as xs:string, $unit as xs:string, $errorLevel as xs:string) {
+declare function html:buildUnique($ruleCode as xs:string, $longText, $text, $records as element(tr)*, $unit as xs:string, $errorLevel as xs:string) {
     let $countRecords := count($records)
     let $bulletType :=
         if (count($records) = 1) then
@@ -326,18 +326,21 @@ declare function html:build1($ruleCode as xs:string, $longText, $text, $records 
             $countRecords || " " || $unit || " found"
     return html:buildGeneric($ruleCode, $longText, $text, $records, $validMsg, $bulletType)
 };
-declare function html:build2($ruleCode as xs:string, $longText, $text, $records as element(tr)*, $valueHeading as xs:string, $validMsg as xs:string, $unit as xs:string, $skippedMsg, $errorLevel as xs:string) as element(tr)* {
+declare function html:build2($ruleCode as xs:string, $longText, $text, $records as element(tr)*, $validMsg as xs:string, $unit as xs:string, $errorLevel as xs:string) as element(tr)* {
     let $countRecords := count($records)
+    let $meta := map {}
+    let $skipped := map:get($meta, "status")
+    let $skippedMessage := map:get($meta, "message")
     let $bulletType :=
-        if (string-length($skippedMsg) > 0) then
+        if ($skipped) then
             $errors:SKIPPED
         else if (count($records) = 0) then
             $errors:INFO
         else
             $errorLevel
     let $message :=
-        if (string-length($skippedMsg) > 0) then
-            $skippedMsg
+        if ($skipped) then
+            $skippedMessage
         else if ($countRecords = 0) then
             $validMsg
         else
