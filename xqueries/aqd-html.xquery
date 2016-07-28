@@ -28,20 +28,17 @@ declare function html:getCSS() as element(style) {
             text-align:center;
             width: 5%;
         }
-        .maintable > tbody > tr > th {
+        table.maintable.hover tbody tr th {
             text-align:left;
             width: 75%;
         }
-        .maintable > tbody > tr {
+        table.maintable.hover tbody tr {
             border-top:1px solid #666666;
         }
-        .maintable > tbody > tr > th.separator {
+        table.maintable.hover tbody tr th.separator {
             font-size: 1.1em;
             text-align:center;
             color:#666666;
-        }
-        .aaaa {
-            padding-left:10px;
         }
         .datatable {
             font-size: 0.9em;
@@ -50,26 +47,26 @@ declare function html:getCSS() as element(style) {
             display:none;
             border:0px;
         }
-        .datatable > tbody > tr.warning {
+        .datatable tbody tr.warning {
             font-size: 1.2em;
             color:red;
         }
-        .datatable > tbody > tr.error {
+        .datatable tbody tr.error {
             font-size: 1.2em;
             color:red;
         }
-        .datatable > tbody > tr {
+        .datatable tbody tr {
             font-size: 0.9em;
             color:#666666;
         }
         .smalltable {
             display:none;
         }
-        .smalltable > tbody > tr {
+        .smalltable tbody tr {
              font-size: 0.9em;
              color:grey;
         }
-        .smalltable > tbody > td {
+        .smalltable tbody td {
             font-style:italic;
             vertical-align:top;
         }
@@ -78,9 +75,6 @@ declare function html:getCSS() as element(style) {
             vertical-align:top;
             background-color:#F6F6F6;
             font-weight: bold;
-        }
-        .resultTD {
-
         }
         .largeText {
             font-size:1.3em;
