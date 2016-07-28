@@ -565,29 +565,13 @@ return
 declare function xmlconv:proceed($source_url as xs:string, $countryCode as xs:string) as element(div) {
     let $count := count(doc($source_url)//om:OM_Observation)
     let $result := if ($count > 0) then xmlconv:checkReport($source_url, $countryCode) else ()
-    let $html :=
-        if ($count = 0) then
-            <p>No aqd:Zone elements found from this XML.</p>
-        else
-            <div>
-                {
-                    if ($result//div/@class = 'error') then
-                        <p class="{$errors:ERROR} bg-error box" style="color:{$errors:COLOR_ERROR}"><strong>This XML file did NOT pass the following crucial check(s): {string-join($result//div[@class='error'], ',')}</strong></p>
-                    else
-                        <p class="{$errors:INFO} bg-info box" style="color:#0080FF"><strong>This XML file passed all crucial checks.</strong></p>
-                }
-                {
-                    if ($result//div/@class = 'warning') then
-                        <p class="{$errors:WARNING} bg-warning box" style="color:{$errors:COLOR_WARNING}"><strong>This XML file generated warnings during the following check(s): {string-join($result//div[@class = 'warning'], ',')}</strong></p>
-                    else
-                        ()
-                }
-                <h3>Test results</h3>
-                {$result}
-            </div>
-return
-    <div>
-        <h2>Check air quality zones - Dataflow E</h2>
-        {$html}
-    </div>
+    let $meta := map:merge((
+        map:entry("count", $count),
+        map:entry("header", "Check air quality observations"),
+        map:entry("dataflow", "Dataflow E"),
+        map:entry("zeroCount", <p>No aqd:OM_Observation elements found in this XML.</p>),
+        map:entry("report", <p>This check evaluated the delivery by executing tier-1 tests on air quality observation data in Dataflow E as specified in <a href="http://www.eionet.europa.eu/aqportal/qaqc/">e-reporting QA/QC rules documentation</a>.</p>)
+    ))
+    return
+        html:buildResultDiv($meta, $result)
 };
