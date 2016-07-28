@@ -617,6 +617,13 @@ declare function html:buildResultDiv($meta as map(*), $result as element(table)?
             else
                 <div>
                     {
+                        if ($result//div/tokenize(@class, "\s+") = $errors:FAILED) then
+                            <p class="{$errors:FAILED} bg-failed box" style="color:{$errors:COLOR_FAILED}">
+                                <strong>The following checks have failed to execute: {string-join($result//div[tokenize(@class, "\s+") = $errors:FAILED], ',')}</strong>
+                            </p>
+                        else ()
+                    }
+                    {
                         if ($result//div/tokenize(@class, "\s+") = $errors:ERROR) then
                             <p class="{$errors:ERROR} bg-error box" style="color:{$errors:COLOR_ERROR}">
                                 <strong>This XML file did NOT pass the following crucial check(s): {string-join($result//div[tokenize(@class, "\s+") = $errors:ERROR], ',')}</strong>
