@@ -2064,54 +2064,15 @@ return
  :)
 declare function xmlconv:proceed($source_url as xs:string, $countryCode as xs:string) {
 
-let $countFeatures := count(doc($source_url)//descendant::*[
-    not(empty(index-of($xmlconv:FEATURE_TYPES, name())))]
-    )
+let $countFeatures := count(doc($source_url)//descendant::*[$xmlconv:FEATURE_TYPES = name()])
 let $result := if ($countFeatures > 0) then xmlconv:checkReport($source_url, $countryCode) else ()
-
+let $meta := map:merge((
+    map:entry("count", $countFeatures),
+    map:entry("header", "Check environmental monitoring feature types"),
+    map:entry("dataflow", "Dataflow D"),
+    map:entry("zeroCount", <p>No environmental monitoring feature type elements ({string-join($xmlconv:FEATURE_TYPES, ", ")}) found in this XML.</p>),
+    map:entry("report", <p>This feedback report provides a summary overview of feature types reported and some consistency checks defined in Dataflow D as specified in <a href="http://www.eionet.europa.eu/aqportal/qaqc/">e-reporting QA/QC rules documentation</a>.</p>)
+))
 return
-    <div class="column row">
-        <h2>Check environmental monitoring feature types - Dataflow D</h2>
-        {
-        if ($countFeatures = 0) then
-            <p>No environmental monitoring feature type elements ({string-join($xmlconv:FEATURE_TYPES, ", ")}) found in this XML.</p>
-        else
-        <div>{
-            if ($result//div/@class = 'error') then
-                <div>
-                    <p class="{$errors:ERROR} bg-error box" style="color:{$errors:COLOR_ERROR}"><strong>This XML file did NOT pass the following crucial check(s): {string-join($result//div[@class = 'error'], ',')}</strong></p>
-                    <p style="color:{$errors:COLOR_ERROR}">Please pay attention that QA rules D1-D4 concern all monitoring (measurement) feature types, QA rules D5 - D14 concern AQD_Networks, QA rules D15 - D30 concern AQD_Stations, QA rules D31 - D53 concern AQD_SamplingPoints, QA rules D54 - D70 concern AQD_SamplingPointProcesses, QA rules D71 - D77 concern AQD_Samples, QA rules D78 - D85 concern AQD_RepresentativeAreas.</p>
-                    <p style="color:{$errors:COLOR_ERROR}">Please pay attention that QA rules M1 - M5 concern all monitoring (model) feature types, QA rules M6 - M26 concern AQD_Models, QA rules M27 - M39 concern AQD_ModelProcesses, QA rules M40 - M45 concern AQD_ModelAreas.</p>
-                </div>
-            else
-                <p class="{$errors:INFO} bg-info box" style="color:#0080FF"><strong>This XML file passed all crucial checks.</strong></p>
-            }
-            {
-                if ($result//div/@class = 'warning') then
-                    <div>
-                        <p class="{$errors:WARNING} bg-warning box" style="color:{$errors:COLOR_WARNING}"><strong>This XML file generated warnings during the following check(s): {string-join($result//div[@class = 'warning'], ',')}</strong></p>
-                        <p style="color:grey">Please pay attention that QA rules D1-D4 concern all monitoring (measurement) feature types, QA rules D5 - D14 concern AQD_Networks, QA rules D15 - D30 concern AQD_Stations, QA rules D31 - D53 concern AQD_SamplingPoints, QA rules D54 - D70 concern AQD_SamplingPointProcesses, QA rules D71 - D77 concern AQD_Samples, QA rules D78 - D85 concern AQD_RepresentativeAreas.</p>
-                        <p style="color:grey">Please pay attention that QA rules M1 - M5 concern all monitoring (model) feature types, QA rules M6 - M26 concern AQD_Models, QA rules M27 - M39 concern AQD_ModelProcesses, QA rules M40 - M45 concern AQD_ModelAreas.</p>
-                    </div>
-                else
-                    ()
-            }
-            <p>This feedback report provides a summary overview of feature types reported and some consistency checks defined in Dataflow D as specified in <a href="http://www.eionet.europa.eu/aqportal/qaqc/">e-reporting QA/QC rules documentation</a>.</p>
-            <div><a id='legendLink' href="javascript: showLegend()" style="padding-left:10px;">How to read the test results?</a></div>
-            <fieldset style="font-size: 90%; display:none" id="legend">
-                <legend>How to read the test results</legend>
-                All test results are labeled with coloured bullets. The number in the bullet refers to the rule code. The background colour of the bullets means:
-                <ul style="list-style-type: none;">
-                    <li><div style="width:50px; display:inline-block;margin-left:10px">{html:getBullet('Blue', 'info')}</div> - the data confirms to the rule, but additional feedback could be provided in QA result.</li>
-                    <li><div style="width:50px; display:inline-block;margin-left:10px">{html:getBullet('Red', 'error')}</div> - the crucial check did NOT pass and erroneous records found from the delivery.</li>
-                    <li><div style="width:50px; display:inline-block;margin-left:10px">{html:getBullet('Orange', 'warning')}</div> - the non-crucial check did NOT pass.</li>
-                    <li><div style="width:50px; display:inline-block;margin-left:10px">{html:getBullet('Grey', 'skipped')}</div> - the check was skipped due to no relevant values found to check.</li>
-                </ul>
-                <p>Click on the {$labels:SHOWRECORDS} link to see more details about the test result.</p>
-            </fieldset>
-            <h3>Test results</h3>
-            {$result}
-        </div>
-        }
-    </div>
+
 };

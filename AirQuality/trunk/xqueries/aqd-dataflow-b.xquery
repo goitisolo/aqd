@@ -1082,55 +1082,17 @@ return
         {html:build2("B47", $labels:B47, $labels:B47_SHORT, $B47invalid, "aqd:reportingMetric", "All values are valid", "invalid value", "", $errors:WARNING)}
     </table>
 };
-
-(:
- : ======================================================================
- : Main function
- : ======================================================================
- :)
-
-declare function xmlconv:proceed($source_url as xs:string, $countryCode as xs:string) {
+declare function xmlconv:proceed($source_url as xs:string, $countryCode as xs:string) as element(div) {
 
 let $countZones := count(doc($source_url)//aqd:AQD_Zone)
 let $result := if ($countZones > 0) then xmlconv:checkReport($source_url, $countryCode) else ()
-
+let $meta := map:merge((
+    map:entry("count", $countZones),
+    map:entry("header", "Check air quality zones"),
+    map:entry("dataflow", "Dataflow B"),
+    map:entry("zeroCount", <p>No aqd:AQD_Zone elements found in this XML.</p>),
+    map:entry("report", <p>This check evaluated the delivery by executing tier-1 tests on air quality zones data in Dataflow B as specified in <a href="http://www.eionet.europa.eu/aqportal/qaqc/">e-reporting QA/QC rules documentation</a>.</p>)
+))
 return
-    <div>
-        <h2>Check air quality zones - Dataflow B</h2>
-        {
-        if ( $countZones = 0) then
-            <p>No aqd:AQD_Zone elements found in this XML.</p>
-        else
-            <div>
-                {
-                    if ($result//div/@class = $errors:ERROR) then
-                        <p class="{$errors:ERROR} bg-error box" style="color:{$errors:COLOR_ERROR}"><strong>This XML file did NOT pass the following crucial check(s): {string-join($result//div[@class=$errors:ERROR], ',')}</strong></p>
-                    else
-                        <p class="{$errors:INFO} bg-info box" style="color:#0080FF"><strong>This XML file passed all crucial checks.</strong></p>
-                }
-                {
-                    if ($result//div/@class = $errors:WARNING) then
-                        <p class="{$errors:WARNING} bg-warning box" style="color:{$errors:COLOR_WARNING}"><strong>This XML file generated warnings during the following check(s): {string-join($result//div[@class = $errors:WARNING], ',')}</strong></p>
-                    else
-                        ()
-                }
-                <p>This check evaluated the delivery by executing tier-1 tests on air quality zones data in Dataflow B as specified in <a href="http://www.eionet.europa.eu/aqportal/qaqc/">e-reporting QA/QC rules documentation</a>.</p>
-                <div><a id='legendLink' href="javascript: showLegend()" style="padding-left:10px;">How to read the test results?</a></div>
-                <fieldset style="font-size: 90%; display:none" id="legend">
-                    <legend>How to read the test results</legend>
-                    All test results are labeled with coloured bullets. The number in the bullet reffers to the rule code. The background colour of the bullets means:
-                    <ul style="list-style-type: none;">
-                        <li><div style="width:50px; display:inline-block;margin-left:10px">{html:getBullet('Blue', $errors:INFO)}</div> - the data confirms to the rule, but additional feedback could be provided in QA result.</li>
-                        <li><div style="width:50px; display:inline-block;margin-left:10px">{html:getBullet('Red', $errors:ERROR)}</div> - the crucial check did NOT pass and errenous records found from the delivery.</li>
-                        <li><div style="width:50px; display:inline-block;margin-left:10px">{html:getBullet('Orange', $errors:WARNING)}</div> - the non-crucial check did NOT pass.</li>
-                        <li><div style="width:50px; display:inline-block;margin-left:10px">{html:getBullet('Grey', $errors:SKIPPED)}</div> - the check was skipped due to no relevant values found to check.</li>
-                    </ul>
-                    <p>Click on the "{$labels:SHOWRECORDS}" link to see more details about the test result.</p>
-                </fieldset>
-                <h3>Test results</h3>
-                {$result}
-            </div>
-        }
-    </div>
-
+    html:buildResultDiv($meta, $result)
 };

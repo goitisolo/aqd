@@ -601,3 +601,51 @@ declare function html:buildCountRow2($ruleCode as xs:string, $longText, $text, $
             </td>
         </tr> else ())
 };
+
+declare function html:buildResultDiv($meta as map(*), $result as element(table)) {
+    let $count := map:get($meta, "count")
+    let $header := map:get($meta, "header")
+    let $dataflow := map:get($meta, "dataflow")
+    let $zeroCount := map:get($meta, "zeroCount")
+    let $report := map:get($meta, "report")
+    return
+    <div>
+        <h2>{$header} - {$dataflow}</h2>
+        {
+            if ($count = 0) then
+                $zeroCount
+            else
+                <div>
+                    {
+                        if ($result//div/@class = $errors:ERROR) then
+                            <p class="{$errors:ERROR} bg-error box" style="color:{$errors:COLOR_ERROR}"><strong>This XML file did NOT pass the following crucial check(s): {string-join($result//div[@class=$errors:ERROR], ',')}</strong></p>
+                        else
+                            <p class="{$errors:INFO} bg-info box" style="color:#0080FF"><strong>This XML file passed all crucial checks.</strong></p>
+                    }
+                    {
+                        if ($result//div/@class = $errors:WARNING) then
+                            <p class="{$errors:WARNING} bg-warning box" style="color:{$errors:COLOR_WARNING}">
+                                <strong>This XML file generated warnings during the following check(s): {string-join($result//div[@class = $errors:WARNING], ',')}</strong>
+                            </p>
+                        else
+                            ()
+                    }
+                    {$report}
+                    <div><a id='legendLink' href="javascript: showLegend()" style="padding-left:10px;">How to read the test results?</a></div>
+                    <fieldset style="font-size: 90%; display:none" id="legend">
+                        <legend>How to read the test results</legend>
+                        All test results are labeled with coloured bullets. The number in the bullet reffers to the rule code. The background colour of the bullets means:
+                        <ul style="list-style-type: none;">
+                            <li><div style="width:50px; display:inline-block;margin-left:10px">{html:getBullet('Blue', $errors:INFO)}</div> - the data confirms to the rule, but additional feedback could be provided in QA result.</li>
+                            <li><div style="width:50px; display:inline-block;margin-left:10px">{html:getBullet('Red', $errors:ERROR)}</div> - the crucial check did NOT pass and errenous records found from the delivery.</li>
+                            <li><div style="width:50px; display:inline-block;margin-left:10px">{html:getBullet('Orange', $errors:WARNING)}</div> - the non-crucial check did NOT pass.</li>
+                            <li><div style="width:50px; display:inline-block;margin-left:10px">{html:getBullet('Grey', $errors:SKIPPED)}</div> - the check was skipped due to no relevant values found to check.</li>
+                        </ul>
+                        <p>Click on the "{$labels:SHOWRECORDS}" link to see more details about the test result.</p>
+                    </fieldset>
+                    <h3>Test results</h3>
+                    {$result}
+                </div>
+        }
+    </div>
+};

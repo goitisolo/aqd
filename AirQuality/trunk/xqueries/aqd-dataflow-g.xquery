@@ -1557,43 +1557,13 @@ declare function xmlconv:proceed($source_url as xs:string, $countryCode as xs:st
 
 let $countZones := count(doc($source_url)//aqd:AQD_Attainment)
 let $result := if ($countZones > 0) then xmlconv:checkReport($source_url, $countryCode) else ()
-
+let $meta := map:merge((
+    map:entry("count", $countZones),
+    map:entry("header", "Check air quality attainment of environmental objectives"),
+    map:entry("dataflow", "Dataflow G"),
+    map:entry("zeroCount", <p>No aqd:AQD_Attainment elements found from this XML.</p>),
+    map:entry("report", <p>This check evaluated the delivery by executing the tier-1 tests on air quality assessment regimes data in Dataflow G as specified in <a href="http://www.eionet.europa.eu/aqportal/qaqc/">e-reporting QA/QC rules documentation</a>.</p>)
+))
 return
-    <div>
-        <h2>Check air quality attainment of environmental objectives  - Dataflow G</h2>
-        {
-        if ( $countZones = 0) then
-            <p>No aqd:AQD_Attainment elements found from this XML.</p>
-        else
-        <div>
-            {
-                if ($result//div/@class = 'error') then
-                    <p class="{$errors:ERROR} bg-error box" style="color:{$errors:COLOR_ERROR}"><strong>This XML file did NOT pass the following crucial check(s): {string-join($result//div[@class='error'], ',')}</strong></p>
-                else
-                    <p class="{$errors:INFO} bg-info box" style="color:#0080FF"><strong>This XML file passed all crucial checks.</strong></p>
-            }
-            {
-                if ($result//div/@class = 'warning') then
-                    <p class="{$errors:WARNING} bg-warning box" style="color:{$errors:COLOR_WARNING}"><strong>This XML file generated warnings during the following check(s): {string-join($result//div[@class = 'warning'], ',')}</strong></p>
-                else
-                    ()
-            }
-            <p>This check evaluated the delivery by executing the tier-1 tests on air quality assessment regimes data in Dataflow G as specified in <a href="http://www.eionet.europa.eu/aqportal/qaqc/">e-reporting QA/QC rules documentation</a>.</p>
-            <div><a id='legendLink' href="javascript: showLegend()" style="padding-left:10px;">How to read the test results?</a></div>
-            <fieldset style="font-size: 90%; display:none" id="legend">
-                <legend>How to read the test results</legend>
-                All test results are labeled with coloured bullets. The number in the bullet reffers to the rule code. The background colour of the bullets means:
-                <ul style="list-style-type: none;">
-                    <li><div style="width:50px; display:inline-block;margin-left:10px">{html:getBullet('Blue', 'info')}</div> - the data confirms to the rule, but additional feedback could be provided in QA result.</li>
-                    <li><div style="width:50px; display:inline-block;margin-left:10px">{html:getBullet('Red', 'error')}</div> - the crucial check did NOT pass and errenous records found from the delivery.</li>
-                    <li><div style="width:50px; display:inline-block;margin-left:10px">{html:getBullet('Orange', 'warning')}</div> - the non-crucial check did NOT pass.</li>
-                    <li><div style="width:50px; display:inline-block;margin-left:10px">{html:getBullet('Grey', 'skipped')}</div> - the check was skipped due to no relevant values found to check.</li>
-                </ul>
-                <p>Click on the "Show records" link to see more details about the test result.</p>
-            </fieldset>
-            <h3>Test results</h3>
-            {$result}
-        </div>
-        }
-    </div>
+    html:buildResultDiv($meta, $result)
 };
