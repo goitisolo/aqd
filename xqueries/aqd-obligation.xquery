@@ -76,8 +76,8 @@ declare function obligations:proceed($source_url as xs:string) {
             ()
 
     let $messages := ($resultB, $resultC, $resultD, $resultE, $resultG, $resultM)
-    let $errorString := normalize-space(string-join($messages//p[@class='error'], ' || '))
-    let $warningString := normalize-space(string-join($messages//p[@class='warning'], ' || '))
+    let $errorString := normalize-space(string-join($messages//p[tokenize(@class, "\s+") = $errors:ERROR], ' || '))
+    let $warningString := normalize-space(string-join($messages//p[tokenize(@class, "\s+") = $errors:WARNING], ' || '))
 
 
 	let $errorLevel :=
