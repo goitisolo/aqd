@@ -130,3 +130,9 @@ declare function common:isInvalidYear($value as xs:string?) {
         if ((empty($year) and empty($value)) or (not(empty($year)) and $year > 1800 and $year < 9999)) then fn:false() else fn:true()
 
 };
+declare function common:if-empty($first as item()?, $second as item()?) as item()* {
+    if (not(data($first) = '')) then
+        data($first)
+    else
+        data($second)
+} ;
