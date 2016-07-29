@@ -326,6 +326,7 @@ declare function html:build1($ruleCode as xs:string, $longText, $text, $records 
             $countRecords || " " || $unit || " found"
     return html:buildGeneric($ruleCode, $longText, $text, $records, $validMsg, $bulletType)
 };
+(: TODO add meta argument and skipped element :)
 declare function html:build2($ruleCode as xs:string, $longText, $text, $records as element(tr)*, $validMsg as xs:string, $unit as xs:string, $errorLevel as xs:string) as element(tr)* {
     let $countRecords := count($records)
     let $meta := map {}

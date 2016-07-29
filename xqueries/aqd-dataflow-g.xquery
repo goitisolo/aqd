@@ -87,7 +87,7 @@ let $validAssessment :=
     for $x in $docRoot//aqd:AQD_Attainment/aqd:assessment[@xlink:href = $assessmentRegimeIds]
     return $x
 
-let $latestSamplingPoints := data(sparqlx:run(query:getSamplingPoint($cdrUrl))/sparql:binding[@name="inspireLabel"]/sparql:literal)
+let $latestSamplingPoints := data(sparqlx:run(query:getSamplingPoint($latestEnvelopeD))/sparql:binding[@name="inspireLabel"]/sparql:literal)
 
 let $samplingPointAssessmentMetadata :=
     let $results := sparqlx:run(query:getSamplingPointAssessmentMetadata())
@@ -289,9 +289,10 @@ let $G5table :=
 (: G6 :)
 let $G6table :=
     try {
+        let $errorClass := if (number($reportingYear) >= 2015) then $errors:ERROR else $errors:INFO
         for $rec in $docRoot//aqd:AQD_Attainment[aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LVmaxMOT"]
         return
-            <tr>
+            <tr class="{$errorClass}">
                 <td title="aqd:zone">{common:checkLink(data($rec/aqd:zone/@xlink:href))}</td>
                 <td title="aqd:inspireId">{common:checkLink(data(concat($rec/aqd:inspireId/base:Identifier/base:localId, "/", $rec/aqd:inspireId/base:Identifier/base:namespace)))}</td>
                 <td title="aqd:pollutant">{common:checkLink(data($rec/aqd:pollutant/@xlink:href))}</td>
@@ -1469,7 +1470,7 @@ return
         {html:buildSimple("G3", $labels:G3, $labels:G3_SHORT, $G3table, "", "", $G3errorLevel)}
         {html:build1("G4", $labels:G4, $labels:G4_SHORT, $G4table, "", string(count($G4table)), " ", "", $errors:ERROR)}
         {html:build1("G5", $labels:G5, $labels:G5_SHORT, $G5table, "", string(count($G5table)), " exceedance", "", $errors:WARNING)}
-        {html:build2("G6", $labels:G6, $labels:G6_SHORT, $G6table, "All values are valid", "", $errors:ERROR)}
+        {html:build2("G6", $labels:G6, $labels:G6_SHORT, $G6table, "All values are valid", "record", errors:getMaxError($G6table))}
         {html:build2("G7", $labels:G7, $labels:G7_SHORT, $G7invalid, "No duplicates found", " duplicate", $errors:ERROR)}
         {html:build2("G8", $labels:G8, $labels:G8_SHORT, $G8invalid, "No duplicate values found", " duplicate value", $errors:ERROR)}
         {html:buildUnique("G9", $labels:G9, $labels:G9_SHORT, $G9table, "namespace", $errors:ERROR)}
