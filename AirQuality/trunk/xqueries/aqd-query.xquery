@@ -257,22 +257,6 @@ declare function query:getProtectionTarget($zonesUrl as xs:string) as xs:string 
 }")
 };
 
-declare function query:getSamplingPointInspireLabel($cdrUrl as xs:string) as xs:string {
-  concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-         PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
-         PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
-
-SELECT ?zone ?inspireId ?inspireLabel ?relevantEmissions ?stationClassification
-  WHERE {
-         ?zone a aqd:AQD_SamplingPoint ;
-          aqd:inspireId ?inspireId .
-         ?inspireId rdfs:label ?inspireLabel .
-         ?zone aqd:relevantEmissions ?relevantEmissions .
-         ?relevantEmissions aqd:stationClassification ?stationClassification
-  FILTER (CONTAINS(str(?zone), '", $cdrUrl, "d/') and str(?stationClassification)='http://dd.eionet.europa.eu/vocabulary/aq/stationclassification/background')
-  }")
-};
-
 declare function query:getModelEndPosition($latestDEnvelopes as xs:string*, $startDate as xs:string, $endDate as xs:string) as xs:string {
   let $last := count($latestDEnvelopes)
   let $filters :=
