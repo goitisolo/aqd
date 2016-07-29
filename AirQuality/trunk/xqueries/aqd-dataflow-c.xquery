@@ -86,7 +86,7 @@ let $reportingYear := common:getReportingYear($docRoot)
 let $latestEnvelopeB := query:getLatestEnvelope($zonesUrl, $reportingYear)
 let $namespaces := distinct-values($docRoot//base:namespace)
 
-let $zoneIds := if ((fn:string-length($countryCode) = 2) and exists($latestEnvelopeB)) then distinct-values(data(sparqlx:run(query:getZones($latestEnvelopeB))//sparql:binding[@name = 'inspireLabel']/sparql:literal)) else ()
+let $zoneIds := if ((fn:string-length($countryCode) = 2) and exists($latestEnvelopeB)) then distinct-values(data(sparqlx:run(query:getZone($latestEnvelopeB))//sparql:binding[@name = 'inspireLabel']/sparql:literal)) else ()
 let $countZoneIds1 := count($zoneIds)
 let $countZoneIds2 := count(distinct-values($docRoot//aqd:AQD_AssessmentRegime/aqd:zone/@xlink:href))
 
@@ -95,7 +95,7 @@ let $latestEnvelopeB := query:getLatestEnvelope($cdrUrl || "b/")
 let $latestEnvelopeC := query:getLatestEnvelope($cdrUrl || "c/", $reportingYear)
 let $latestEnvelopeD := query:getLatestEnvelope($cdrUrl || "d/")
 let $latestEnvelopeD1b := query:getLatestEnvelope($cdrUrl || "d1b/", $reportingYear)
-let $knownRegimes := if (exists($latestEnvelopeC)) then query:getLatestRegimeIds($latestEnvelopeC) else ()
+let $knownRegimes := distinct-values(data(sparqlx:run(query:getAssessmentRegime($latestEnvelopeC))/sparql:binding[@name = 'inspireLabel']))
 let $allRegimes := query:getAllRegimeIds($namespaces)
 let $countRegimes := count($docRoot//aqd:AQD_AssessmentRegime)
 
@@ -542,7 +542,7 @@ let $C26table :=
         let $startDate := substring(data($docRoot//aqd:reportingPeriod/gml:TimePeriod/gml:beginPosition),1,10)
         let $endDate := substring(data($docRoot//aqd:reportingPeriod/gml:TimePeriod/gml:endPosition),1,10)
 
-        let $latestDEnvelopes := distinct-values(query:getEnvelopesByYear($cdrUrl || "d/", $reportingYear))
+        let $latestDEnvelopes := distinct-values(query:getEnvelopes($cdrUrl || "d/", $reportingYear))
         let $modelMethods := if (fn:string-length($countryCode) = 2) then distinct-values(data(sparqlx:run(query:getModelEndPosition($latestDEnvelopes, $startDate, $endDate))//sparql:binding[@name='inspireLabel']/sparql:literal)) else ()
         let $sampingPointMethods := if (fn:string-length($countryCode) = 2) then distinct-values(data(sparqlx:run(query:getSamplingPointEndPosition($latestDEnvelopes,$startDate,$endDate))//sparql:binding[@name='inspireLabel']/sparql:literal)) else ()
 
@@ -628,7 +628,7 @@ let $C29invalid :=
                     $zoneId
                 else
                     ()
-        let $combinations := if (fn:string-length($countryCode) = 2) then sparqlx:run(query:getPollutantCodeAndProtectionTarge($cdrUrl, $bDir)) else ()
+        let $combinations := sparqlx:run(query:getPollutantCodeAndProtectionTarge($cdrUrl, $bDir))
         let $validRows :=
             for $rec in $combinations
             return
@@ -742,23 +742,40 @@ let $C31table :=
 (: C32 - :)
 let $C32table :=
     try {
-        let $samplingPointSparqlC32 :=
-            if (fn:string-length($countryCode) = 2) then
-                query:getAssessmentTypeSamplingPoint($cdrUrl)
-            else
-                ""
+        let $query1 :=
+        "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+         PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
+         PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+
+         SELECT ?zone ?inspireId ?inspireLabel ?assessmentType
+         WHERE {
+            ?zone a aqd:AQD_SamplingPoint ;
+            aqd:inspireId ?inspireId .
+            ?inspireId rdfs:label ?inspireLabel .
+            ?zone aqd:assessmentType ?assessmentType
+            FILTER (CONTAINS(str(?zone), '" || $latestEnvelopeD || "'))
+         }"
         let $aqdSamplingPointAssessMEntTypes :=
-            for $i in sparqlx:run($samplingPointSparqlC32)
+            for $i in sparqlx:run($query1)
             let $ii := concat($i/sparql:binding[@name = 'inspireLabel']/sparql:literal, "#", $i/sparql:binding[@name = 'assessmentType']/sparql:uri)
             return $ii
 
-        let $modelSparql :=
-            if (fn:string-length($countryCode) = 2) then
-                query:getAssessmentTypeModel($cdrUrl)
-            else
-                ""
+        let $query2 :=
+        "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+         PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
+         PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+
+         SELECT ?zone ?inspireId ?inspireLabel ?assessmentType
+         WHERE {
+            ?zone a aqd:AQD_Model ;
+            aqd:inspireId ?inspireId .
+            ?inspireId rdfs:label ?inspireLabel .
+            ?zone aqd:assessmentType ?assessmentType
+            FILTER (CONTAINS(str(?zone), '" || $latestEnvelopeD || "'))
+         }"
+
         let $aqdModelAssessMentTypes :=
-            for $i in sparqlx:run($modelSparql)
+            for $i in sparqlx:run($query2)
             let $ii := concat($i/sparql:binding[@name = 'inspireLabel']/sparql:literal, "#", $i/sparql:binding[@name = 'assessmentType']/sparql:uri)
             return $ii
 
@@ -998,11 +1015,6 @@ return
     </table>
 };
 
-(:
- : ======================================================================
- : Main function
- : ======================================================================
- :)
 declare function xmlconv:proceed($source_url as xs:string, $countryCode as xs:string) {
 
 let $countZones := count(doc($source_url)//aqd:AQD_AssessmentRegime)

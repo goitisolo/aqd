@@ -60,6 +60,7 @@ declare variable $xmlconv:OBLIGATIONS as xs:string* := ($vocabulary:ROD_PREFIX |
 declare function xmlconv:checkReport($source_url as xs:string, $countryCode as xs:string) as element(table) {
 
 let $docRoot := doc($source_url)
+let $cdrUrl := common:getCdrUrl($countryCode)
 let $reportingYear := common:getReportingYear($docRoot)
 
 (: COMMON variables used in many QCs :)
@@ -80,6 +81,8 @@ let $SPPnamespaces := distinct-values($docRoot//aqd:AQD_SamplingPointProcess/omp
 let $networkNamespaces := distinct-values($docRoot//aqd:AQD_Network/ef:inspireId/base:Identifier/base:namespace)
 let $sampleNamespaces := distinct-values($docRoot//aqd:AQD_Sample/aqd:inspireId/base:Identifier/base:namespace)
 let $stationNamespaces := distinct-values($docRoot//aqd:AQD_Station/ef:inspireId/base:Identifier/base:namespace)
+
+let $latestEnvelopeB := query:getLatestEnvelope($cdrUrl || "b/")
 
 (: INFO: XML Validation check. This adds delay to the running scripts :)
 let $validationResult := schemax:validateXmlSchema($source_url)
@@ -1305,16 +1308,16 @@ let $D51invalid :=
         </tr>
     }
 
-(: D53 Done by Rait :)
+(: D53 :)
 let $D53invalid :=
     try {
-        for $invalidZoneXlinks in $docRoot//aqd:AQD_SamplingPoint/aqd:zone[not(@nilReason = 'inapplicable')]
-        where
-            count(sparqlx:run(query:getSamplingPointZone(string($invalidZoneXlinks/@xlink:href)))/*) = 0
+        let $zones := distinct-values(data(sparqlx:run(query:getZone($latestEnvelopeB))/sparql:binding[@name = 'inspireLabel']))
+        for $x in $docRoot//aqd:AQD_SamplingPoint/aqd:zone[not(@nilReason = 'inapplicable')]
+        where not($x/@xlink:href = $zones)
         return
             <tr>
-                <td title="base:localId">{data($invalidZoneXlinks/../ef:inspireId/base:Identifier/base:localId)}</td>
-                <td title="aqd:zone">{data($invalidZoneXlinks/@xlink:href)}</td>
+                <td title="aqd:AQD_SamplingPoint">{data($x/../ef:inspireId/base:Identifier/base:localId)}</td>
+                <td title="aqd:zone">{data($x/@xlink:href)}</td>
             </tr>
     } catch * {
         <tr status="failed">

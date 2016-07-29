@@ -487,7 +487,7 @@ let $M24invalid :=
 (: M26 :)
 let $M26invalid :=
     try {
-        let $all := data(sparqlx:run(query:getZones($latestEnvelopeB))//sparql:binding[@name = 'inspireLabel']/sparql:literal)
+        let $all := data(sparqlx:run(query:getZone($latestEnvelopeB))//sparql:binding[@name = 'inspireLabel']/sparql:literal)
         for $x in $docRoot//aqd:AQD_Model/aqd:zone
         let $xlink := data($x/@xlink:href)
         where not($x/@nilReason = "inapplicable") and not($xlink = $all)

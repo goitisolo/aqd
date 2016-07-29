@@ -124,9 +124,9 @@ let $isNewDelivery := errors:getMaxError($B0table) = $errors:INFO
 (: Generic variables :)
 let $knownZones :=
     if ($isNewDelivery) then
-        distinct-values(data(sparqlx:run(query:getZones(query:getLatestEnvelope($cdrUrl || $bdir, string(number($reportingYear) - 1))))//sparql:binding[@name = 'inspireLabel']/sparql:literal))
+        distinct-values(data(sparqlx:run(query:getZone(query:getLatestEnvelope($cdrUrl || $bdir, string(number($reportingYear) - 1))))//sparql:binding[@name = 'inspireLabel']/sparql:literal))
     else
-        distinct-values(data(sparqlx:run(query:getZones($latestEnvelopeB))//sparql:binding[@name = 'inspireLabel']/sparql:literal))
+        distinct-values(data(sparqlx:run(query:getZone($latestEnvelopeB))//sparql:binding[@name = 'inspireLabel']/sparql:literal))
 
 (: B1 :)
 let $countZones := count($docRoot//aqd:AQD_Zone)
@@ -399,10 +399,13 @@ let $B13invalid :=
         let $langSkippedMsg := "The test was skipped - ISO 639-3 and ISO 639-5 language codes are not available in Content Registry."
         let $langCodes := distinct-values(data(sparqlx:run(query:getLangCodesSparql())//sparql:binding[@name='code']/sparql:literal))
 
-        return distinct-values($docRoot//aqd:AQD_Zone/am:name/gn:GeographicalName[string-length(normalize-space(gn:language)) > 0 and
-                    empty(
-                    index-of($langCodes, normalize-space(gn:language)))
-                    and empty(index-of($langCodes, normalize-space(gn:language)))]/gn:language)
+        for $x in $docRoot//aqd:AQD_Zone/am:name/gn:GeographicalName/gn:language
+        where not($x = $langCodes)
+        return
+            <tr>
+                <td title="aqd:AQD_Zone">{data($x/../../../am:inspireId/base:Identifier/base:localId)}</td>
+                <td title="gn:language">{data($x)}</td>
+            </tr>
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
