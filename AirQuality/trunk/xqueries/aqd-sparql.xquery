@@ -12,12 +12,7 @@ declare namespace sparql = "http://www.w3.org/2005/sparql-results#";
 (:~ declare Content Registry SPARQL endpoint :)
 declare variable $sparqlx:CR_SPARQL_URL := "http://cr.eionet.europa.eu/sparql";
 
-(:TODO: Function to replace all SPARQL Calls :)
 declare function sparqlx:run($sparql as xs:string) as element(sparql:result)* {
-    doc("http://cr.eionet.europa.eu/sparql?query=" || encode-for-uri($sparql) || "&amp;format=application/xml")//sparql:result
-};
-(:TODO remove it after we refactor all :)
-declare function sparqlx:executeSparqlQuery($sparql as xs:string) as element(sparql:result)* {
     doc("http://cr.eionet.europa.eu/sparql?query=" || encode-for-uri($sparql) || "&amp;format=application/xml")//sparql:result
 };
 

@@ -59,30 +59,38 @@ declare function xmlconv:checkReport($source_url as xs:string, $countryCode as x
 let $envelopeUrl := common:getEnvelopeXML($source_url)
 let $docRoot := doc($source_url)
 let $cdrUrl := common:getCdrUrl($countryCode)
+let $modelCdrUrl := if ($countryCode = 'gi') then common:getCdrUrl('gb') else $cdrUrl
 let $reportingYear := common:getReportingYear($docRoot)
 
-let $latestEnvelopeByYearB := query:getLatestEnvelopeByYear($cdrUrl || "b/", $reportingYear)
+let $latestEnvelopeByYearB := query:getLatestEnvelope($cdrUrl || "b/", $reportingYear)
 let $latestEnvelopeB := query:getLatestEnvelope($cdrUrl || "b/")
 let $latestEnvelopeC := query:getLatestEnvelope($cdrUrl || "c/")
+let $latestEnvelopeByYearC := query:getLatestEnvelope($cdrUrl || "c/", $reportingYear)
+let $latestEnvelopeD := query:getLatestEnvelope($cdrUrl || "d/")
+let $latestEnvelopeD1b := query:getLatestEnvelope($cdrUrl || "d1b/", $reportingYear)
+
+let $latestModels :=
+    try {
+        let $all := distinct-values(data(sparqlx:run(query:getModel($latestEnvelopeD1b))//sparql:binding[@name = 'inspireLabel']/sparql:literal))
+        return if (empty($all)) then distinct-values(data(sparqlx:run(query:getModel($latestEnvelopeD))//sparql:binding[@name = 'inspireLabel']/sparql:literal)) else $all
+    } catch * {
+        ()
+    }
 
 (: GLOBAL variables needed for all checks :)
-let $knownAttainments := distinct-values(data(sparqlx:executeSparqlQuery(query:getAllAttainmentIds($cdrUrl))//sparql:binding[@name='inspireLabel']/sparql:literal))
-let $assessmentRegimeIds := distinct-values(data(sparqlx:executeSparqlQuery(query:getAssessmentRegimeIdsC($cdrUrl))//sparql:binding[@name='inspireLabel']/sparql:literal))
-let $assessmentMetadataNamespace := distinct-values(data(sparqlx:executeSparqlQuery(query:getAssessmentMethods())//sparql:binding[@name='assessmentMetadataNamespace']/sparql:literal))
-let $assessmentMetadataId := distinct-values(data(sparqlx:executeSparqlQuery(query:getAssessmentMethods())//sparql:binding[@name='assessmentMetadataId']/sparql:literal))
-let $assessmentMetadata := distinct-values(data(sparqlx:executeSparqlQuery(query:getAssessmentMethods())//concat(sparql:binding[@name='assessmentMetadataNamespace']/sparql:literal,"/",sparql:binding[@name='assessmentMetadataId']/sparql:literal)))
+let $knownAttainments := distinct-values(data(sparqlx:run(query:getAllAttainmentIds($cdrUrl))//sparql:binding[@name='inspireLabel']/sparql:literal))
+let $assessmentRegimeIds := distinct-values(data(sparqlx:run(query:getAssessmentRegimeIdsC($cdrUrl))//sparql:binding[@name='inspireLabel']/sparql:literal))
+let $assessmentMetadataNamespace := distinct-values(data(sparqlx:run(query:getAssessmentMethods())//sparql:binding[@name='assessmentMetadataNamespace']/sparql:literal))
+let $assessmentMetadataId := distinct-values(data(sparqlx:run(query:getAssessmentMethods())//sparql:binding[@name='assessmentMetadataId']/sparql:literal))
+let $assessmentMetadata := distinct-values(data(sparqlx:run(query:getAssessmentMethods())//concat(sparql:binding[@name='assessmentMetadataNamespace']/sparql:literal,"/",sparql:binding[@name='assessmentMetadataId']/sparql:literal)))
 let $validAssessment :=
     for $x in $docRoot//aqd:AQD_Attainment/aqd:assessment[@xlink:href = $assessmentRegimeIds]
     return $x
-let $samplingPointlD :=
-    let $results := if (fn:string-length($countryCode) = 2) then sparqlx:executeSparqlQuery(query:getSamplingPoint($cdrUrl)) else ()
-    let $values :=
-        for $i in $results
-        return concat($i/sparql:binding[@name='namespace']/sparql:literal, '/', $i/sparql:binding[@name = 'localId']/sparql:literal)
-    return distinct-values($values)
-let $isSamplingPointAvailable := count($samplingPointlD) > 0
+
+let $latestSamplingPoints := data(sparqlx:run(query:getSamplingPoint($cdrUrl))/sparql:binding[@name="inspireLabel"]/sparql:literal)
+
 let $samplingPointAssessmentMetadata :=
-    let $results := sparqlx:executeSparqlQuery(query:getSamplingPointAssessmentMetadata())
+    let $results := sparqlx:run(query:getSamplingPointAssessmentMetadata())
     return distinct-values(
             for $i in $results
             return concat($i/sparql:binding[@name='metadataNamespace']/sparql:literal,"/", $i/sparql:binding[@name='metadataId']/sparql:literal)
@@ -450,7 +458,7 @@ let $G12invalid :=
 (: G13 - :)
 let $G13invalid :=
     try {
-        let $G13Results := sparqlx:executeSparqlQuery(query:getG13($cdrUrl, $reportingYear))
+        let $G13Results := sparqlx:run(query:getG13($cdrUrl, $reportingYear))
         let $inspireLabels := distinct-values(data($G13Results//sparql:binding[@name='inspireLabel']/sparql:literal))
         let $remoteConcats :=
             for $x in $G13Results
@@ -474,7 +482,7 @@ let $G13invalid :=
     }
 let $G13binvalid :=
     try {
-        let $G13Results := sparqlx:executeSparqlQuery(query:getG13($cdrUrl, $reportingYear))
+        let $G13Results := sparqlx:run(query:getG13($cdrUrl, $reportingYear))
         let $inspireLabels := distinct-values(data($G13Results//sparql:binding[@name='inspireLabel']/sparql:literal))
         let $remoteConcats :=
             for $x in $G13Results
@@ -503,7 +511,7 @@ let $G13binvalid :=
 let $G14table :=
     try {
         let $G14resultBC :=
-            for $i in sparqlx:executeSparqlQuery(query:getG14($latestEnvelopeB, $latestEnvelopeC))
+            for $i in sparqlx:run(query:getG14($latestEnvelopeB, $latestEnvelopeC))
             return
                 <result>
                     <pollutantName>{string($i/sparql:binding[@name = "Pollutant"]/sparql:literal)}</pollutantName>
@@ -563,11 +571,10 @@ let $G14table :=
         </tr>
     }
 
-(: G14.1 :)
-let $G14.1invalid :=
+(: G14b :)
+let $G14binvalid :=
     try {
-        let $latestEnvelope := query:getLatestEnvelopeByYear($cdrUrl || "c/", $reportingYear)
-        let $all := query:getLatestRegimeIds($latestEnvelope)
+        let $all := query:getLatestRegimeIds($latestEnvelopeByYearC)
         let $allLocal := data($docRoot//aqd:AQD_Attainment/aqd:assessment/@xlink:href)
         for $x in $all
         where (not($x = $allLocal))
@@ -586,7 +593,7 @@ let $G14.1invalid :=
 let $G15invalid :=
     try {
         let $exceptions := (($vocabulary:POLLUTANT_VOCABULARY || "6001" || $vocabulary:REPMETRIC_VOCABULARY || "AEI"))
-        let $valid := distinct-values(data(sparqlx:executeSparqlQuery(query:getZones($latestEnvelopeByYearB))//sparql:binding[@name='inspireLabel']/sparql:literal))
+        let $valid := distinct-values(data(sparqlx:run(query:getZones($latestEnvelopeByYearB))//sparql:binding[@name='inspireLabel']/sparql:literal))
         for $x in $docRoot//aqd:AQD_Attainment
         let $pollutant := data($x/aqd:pollutant/@xlink:href)
         let $reportingMetric := data($x/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric/@xlink:href)
@@ -607,8 +614,8 @@ let $G15invalid :=
 (: G17 :)
 let $G17invalid :=
     try {
-        let $zones := if (fn:string-length($countryCode) = 2) then distinct-values(data(sparqlx:executeSparqlQuery(query:getZoneLocallD($cdrUrl))//sparql:binding[@name='inspireLabel']/sparql:literal)) else ()
-        let $pollutants := if (fn:string-length($countryCode) = 2) then distinct-values(data(sparqlx:executeSparqlQuery(query:getPollutantlD($cdrUrl))//sparql:binding[@name='key']/sparql:literal)) else ()
+        let $zones := if (fn:string-length($countryCode) = 2) then distinct-values(data(sparqlx:run(query:getZoneLocallD($cdrUrl))//sparql:binding[@name='inspireLabel']/sparql:literal)) else ()
+        let $pollutants := if (fn:string-length($countryCode) = 2) then distinct-values(data(sparqlx:run(query:getPollutantlD($cdrUrl))//sparql:binding[@name='key']/sparql:literal)) else ()
 
         for $x in $docRoot//aqd:AQD_Attainment[aqd:zone/@xlink:href]
         let $zone := data($x/aqd:zone/@xlink:href)
@@ -631,7 +638,7 @@ let $G17invalid :=
 (: G18 :)
 let $G18invalid :=
     try {
-        let $localId :=  if (fn:string-length($countryCode) = 2) then distinct-values(data(sparqlx:executeSparqlQuery(query:getTimeExtensionExemption($cdrUrl))//sparql:binding[@name='localId']/sparql:literal)) else ""
+        let $localId :=  if (fn:string-length($countryCode) = 2) then distinct-values(data(sparqlx:run(query:getTimeExtensionExemption($cdrUrl))//sparql:binding[@name='localId']/sparql:literal)) else ""
         for $x in $docRoot//aqd:AQD_Attainment[aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription]
         let $objectiveType := data($x/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType/@xlink:href)
         let $reportingMetric := data($x/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric/@xlink:href)
@@ -766,11 +773,8 @@ let $G38invalid :=
 (: G39 :)
 let $G39invalid :=
     try {
-        let $modelCdrUrl := if ($countryCode = 'gi') then common:getCdrUrl('gb') else $cdrUrl
-        let $modelLocallD := if (fn:string-length($countryCode) = 2) then distinct-values(data(sparqlx:executeSparqlQuery(query:getModel($modelCdrUrl))//concat(sparql:binding[@name='namespace']/sparql:literal,"/",sparql:binding[@name='localId']/sparql:literal))) else ()
-
         for $x in $docRoot//aqd:AQD_Attainment/aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:modelUsed
-        where exists($modelLocallD) and (empty(index-of($modelLocallD, $x/fn:normalize-space(@xlink:href))))
+        where (not($x/@xlink:href = $latestModels))
         return
             <tr>
                 <td title="Feature type">{"aqd:AQD_Attainment"}</td>
@@ -805,8 +809,7 @@ let $G40invalid  :=
 (: G41 - :)
 let $G41invalid :=
     try {
-        for $r in $docRoot//aqd:AQD_Attainment/aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:stationUsed[not(@xlink:href = $samplingPointlD)]
-        where $isSamplingPointAvailable
+        for $r in $docRoot//aqd:AQD_Attainment/aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:stationUsed[not(@xlink:href = $latestSamplingPoints)]
         return
             <tr>
                 <td title="gml:id">{data($r/../../../../../../../@gml:id)}</td>
@@ -928,11 +931,7 @@ let $G52invalid :=
 (: G53 :)
 let $G53invalid :=
     try {
-        let $model := if (fn:string-length($countryCode) = 2) then distinct-values(data(sparqlx:executeSparqlQuery(query:getModel($cdrUrl))//concat(sparql:binding[@name='namespace']/sparql:literal,"/",sparql:binding[@name='localId']/sparql:literal))) else ()
-        let $isModelAvailable := count($model) > 0
-
-        for $r in $docRoot//aqd:AQD_Attainment/aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:modelUsed[not(@xlink:href = $model)]
-        where $isModelAvailable
+        for $r in $docRoot//aqd:AQD_Attainment/aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:modelUsed[not(@xlink:href = $latestModels)]
         return
             <tr>
                 <td title="gml:id">{data($r/../../../../../../../@gml:id)}</td>
@@ -965,8 +964,7 @@ let $G54invalid :=
 (: G55 :)
 let $G55invalid :=
     try {
-        for $r in $docRoot//aqd:AQD_Attainment/aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:stationUsed[not(@xlink:href = $samplingPointlD)]
-        where $isSamplingPointAvailable
+        for $r in $docRoot//aqd:AQD_Attainment/aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:stationUsed[not(@xlink:href = $latestSamplingPoints)]
         return
             <tr>
                 <td title="gml:id">{data($r/../../../../../../../@gml:id)}</td>
@@ -1116,7 +1114,7 @@ let $G62invalid :=
 (: G63 :)
 let $G63invalid :=
     try {
-        let $valid := ($vocabulary:ADJUSTMENTTYPE_VOCABULARY || "fixed", $vocabulary:ADJUSTMENTTYPE_VOCABULARY || "model", $vocabulary:ADJUSTMENTTYPE_VOCABULARY || "indicative", $vocabulary:ADJUSTMENTTYPE_VOCABULARY || "objective")
+        let $valid := ($vocabulary:ASSESSMENTTYPE_VOCABULARY || "fixed", $vocabulary:ASSESSMENTTYPE_VOCABULARY || "model", $vocabulary:ASSESSMENTTYPE_VOCABULARY || "indicative", $vocabulary:ASSESSMENTTYPE_VOCABULARY || "objective")
         for $x in $docRoot//aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:assessmentMethod/aqd:AssessmentMethods/aqd:assessmentType
         where not($x/@xlink:href = $valid)
         return
@@ -1137,15 +1135,15 @@ let $G63invalid :=
 let $G64invalid :=
     try {
         let $types := ($vocabulary:ADJUSTMENTTYPE_VOCABULARY || "nsCorrection", $vocabulary:ADJUSTMENTTYPE_VOCABULARY || "wssCorrection")
-        let $valid := distinct-values(data(sparqlx:executeSparqlQuery(query:getModel($cdrUrl))//sparql:binding[@name='inspireLabel']))
-
         for $x in $docRoot//aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:adjustmentType[@xlink:href = $types]
-        let $meta := data($x/../aqd:assessmentMethod/aqd:AssessmentMethods/aqd:modelAssessmentMetadata/@xlink:href)
-        where not($meta = $valid)
+        let $model := data($x/../aqd:assessmentMethod/aqd:AssessmentMethods/aqd:modelAssessmentMetadata/@xlink:href)
+        let $samplingPoint := data($x/../aqd:assessmentMethod/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata/@xlink:href)
+        where not($model) and not($samplingPoint)
         return
             <tr>
                 <td title="aqd:AQD_Attainment">{$x/../../../../../aqd:inspireId/base:Identifier/base:localId/string()}</td>
-                <td title="aqd:modelAssessmentMetadata">{data($meta)}</td>
+                <td title="aqd:modelAssessmentMetadata">{$model}</td>
+                <td title="aqd:samplingPointAssessmentMetadata">{$samplingPoint}</td>
             </tr>
     } catch * {
         <tr status="failed">
@@ -1154,17 +1152,19 @@ let $G64invalid :=
         </tr>
     }
 
-
 (: G65 :)
 let $G65invalid :=
     try {
-        for $r in $validAssessment/../aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:assessmentMethod/aqd:AssessmentMethods/aqd:modelAssessmentMetadata[not(@xlink:href = $assessmentMetadata)]
-        where exists($assessmentMetadata)
+        let $types := ($vocabulary:ADJUSTMENTTYPE_VOCABULARY || "nsCorrection", $vocabulary:ADJUSTMENTTYPE_VOCABULARY || "wssCorrection")
+        for $x in $docRoot//aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:adjustmentType[@xlink:href = $types]
+        let $model := data($x/../aqd:assessmentMethod/aqd:AssessmentMethods/aqd:modelAssessmentMetadata/@xlink:href)
+        let $samplingPoint := data($x/../aqd:assessmentMethod/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata/@xlink:href)
+        where not($model = $latestModels) and not($samplingPoint = $latestSamplingPoints)
         return
             <tr>
-                <td title="gml:id">{data($r/../../../../../../../@gml:id)}</td>
-                <td title="aqd:assessment">{data($r/../../../../../../../aqd:assessment/fn:normalize-space(@xlink:href))}</td>
-                <td title="aqd:stationlUsed">{data($r/fn:normalize-space(@xlink:href))}</td>
+                <td title="aqd:AQD_Attainment">{$x/../../../../../aqd:inspireId/base:Identifier/base:localId/string()}</td>
+                <td title="aqd:modelAssessmentMetadata">{$model}</td>
+                <td title="aqd:samplingPointAssessmentMetadata">{$samplingPoint}</td>
             </tr>
     } catch * {
         <tr status="failed">
@@ -1176,14 +1176,13 @@ let $G65invalid :=
 (: G66 :)
 let $G66invalid :=
     try {
-        let $types := ($vocabulary:ADJUSTMENTTYPE_VOCABULARY || "nsCorrection", $vocabulary:ADJUSTMENTTYPE_VOCABULARY || "wssCorrection")
-        for $x in $docRoot//aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:adjustmentType[@xlink:href = $types]
-        let $meta := data($x/../aqd:assessmentMethod/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata/@xlink:href)
-        where not($meta = $samplingPointlD)
+        for $r in $validAssessment/../aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:assessmentMethod/aqd:AssessmentMethods/aqd:modelAssessmentMetadata[not(@xlink:href = $assessmentMetadata)]
+        where exists($assessmentMetadata)
         return
             <tr>
-                <td title="aqd:AQD_Attainment">{$x/../../../../../aqd:inspireId/base:Identifier/base:localId/string()}</td>
-                <td title="aqd:modelAssessmentMetadata">{data($meta)}</td>
+                <td title="gml:id">{data($r/../../../../../../../@gml:id)}</td>
+                <td title="aqd:assessment">{data($r/../../../../../../../aqd:assessment/fn:normalize-space(@xlink:href))}</td>
+                <td title="aqd:stationlUsed">{data($r/fn:normalize-space(@xlink:href))}</td>
             </tr>
     } catch * {
         <tr status="failed">
@@ -1263,11 +1262,8 @@ let $G72invalid :=
 (: G73 :)
 let $G73invalid :=
     try {
-        let $modelCdrUrl := if ($countryCode = 'gi') then common:getCdrUrl('gb') else $cdrUrl
-        let $modelLocallD := if (fn:string-length($countryCode) = 2) then distinct-values(data(sparqlx:executeSparqlQuery(query:getModel($modelCdrUrl))//concat(sparql:binding[@name='namespace']/sparql:literal,"/",sparql:binding[@name='localId']/sparql:literal))) else ()
-
         for $x in $docRoot//aqd:AQD_Attainment/aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:modelUsed
-        where exists($modelLocallD) and (empty(index-of($modelLocallD, $x/fn:normalize-space(@xlink:href))))
+        where not($x/@xlink:href = $latestModels)
         return
             <tr>
                 <td title="Feature type">{"aqd:AQD_Attainment"}</td>
@@ -1302,7 +1298,7 @@ let $modelUsed_74  :=
 let $G75invalid  :=
     try {
         for $r in $docRoot//aqd:AQD_Attainment//aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:stationUsed
-        where exists($samplingPointlD) and (empty(index-of($samplingPointlD, $r/fn:normalize-space(@xlink:href))))
+        where not($r/@xlink:href = $latestSamplingPoints)
         return
             <tr>
                 <td title="gml:id">{data($r/../../../../../../../@gml:id)}</td>
@@ -1440,16 +1436,14 @@ let $G85invalid :=
 (: G86 :)
 let $G86invalid :=
     try {
-        let $stations := sparqlx:executeSparqlQuery(query:getG86Stations($cdrUrl))/sparql:binding[@name="inspireLabel"]/sparql:literal/string()
-        let $models := sparqlx:executeSparqlQuery(query:getG86Models($cdrUrl))/sparql:binding[@name="inspireLabel"]/sparql:literal/string()
         for $x in $docRoot//aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea[aqd:stationUsed/@xlink:href or aqd:modelUsed/@xlink:href]
         let $stationErrors :=
             for $i in data($x/aqd:stationUsed/@xlink:href)
-            where (not($i = $stations))
+            where (not($i = $latestSamplingPoints))
             return 1
         let $modelErrors :=
             for $i in data($x/aqd:modelUsed/@xlink:href)
-            where (not($i = $models))
+            where (not($i = $latestModels))
             return 1
         where (count($stationErrors) >0 or count($modelErrors) >0)
         return
@@ -1486,7 +1480,7 @@ return
         {html:build2("G13", $labels:G13, $labels:G13_SHORT, $G13invalid, "All values are valid", " invalid value", $errors:ERROR)}
         {html:build2("G13b", $labels:G13b, $labels:G13b_SHORT, $G13binvalid, "All values are valid", " invalid value", $errors:WARNING)}
         {html:build2("G14", $labels:G14, $labels:G14_SHORT, $G14table, "All values are valid", "record", errors:getMaxError($G14table))}
-        {html:build2("G14.1", $labels:G14.1, $labels:G14.1_SHORT, $G14.1invalid, "All assessment regimes are reported", " missing assessment regime", $errors:WARNING)}
+        {html:build2("G14b", $labels:G14b, $labels:G14b_SHORT, $G14binvalid, "All assessment regimes are reported", " missing assessment regime", $errors:WARNING)}
         {html:build2("G15", $labels:G15, $labels:G15_SHORT, $G15invalid, "All values are valid", " invalid value", $errors:ERROR)}
         {html:build2("G17", $labels:G17, $labels:G17_SHORT, $G17invalid, "All values are valid", " invalid value", $errors:ERROR)}
         {html:build2("G18", $labels:G18, $labels:G18_SHORT, $G18invalid, "All values are valid", " invalid value", $errors:ERROR)}

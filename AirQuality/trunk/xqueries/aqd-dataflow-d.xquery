@@ -74,7 +74,7 @@ let $DCombinations :=
     return
         doc($source_url)//descendant::*[name()=$featureType]
 let $namespaces := distinct-values($docRoot//base:namespace)
-let $knownFeatures := distinct-values(data(sparqlx:executeSparqlQuery(query:getAllFeatureIds($xmlconv:FEATURE_TYPES, $namespaces))//sparql:binding[@name='inspireLabel']/sparql:literal))
+let $knownFeatures := distinct-values(data(sparqlx:run(query:getAllFeatureIds($xmlconv:FEATURE_TYPES, $namespaces))//sparql:binding[@name='inspireLabel']/sparql:literal))
 let $SPOnamespaces := distinct-values($docRoot//aqd:AQD_SamplingPoint//base:Identifier/base:namespace)
 let $SPPnamespaces := distinct-values($docRoot//aqd:AQD_SamplingPointProcess/ompr:inspireId/base:Identifier/base:namespace)
 let $networkNamespaces := distinct-values($docRoot//aqd:AQD_Network/ef:inspireId/base:Identifier/base:namespace)
@@ -1310,7 +1310,7 @@ let $D53invalid :=
     try {
         for $invalidZoneXlinks in $docRoot//aqd:AQD_SamplingPoint/aqd:zone[not(@nilReason = 'inapplicable')]
         where
-            count(sparqlx:executeSparqlQuery(query:getSamplingPointZone(string($invalidZoneXlinks/@xlink:href)))/*) = 0
+            count(sparqlx:run(query:getSamplingPointZone(string($invalidZoneXlinks/@xlink:href)))/*) = 0
         return
             <tr>
                 <td title="base:localId">{data($invalidZoneXlinks/../ef:inspireId/base:Identifier/base:localId)}</td>
