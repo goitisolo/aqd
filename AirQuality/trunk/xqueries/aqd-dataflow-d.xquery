@@ -1489,7 +1489,7 @@ let $D60ainvalid :=
         where not($x/@xlink:href = $valid)
         return
             <tr>
-                <td title="aqd:AQD_SamplingPointProcess">{data($x/../ef:inspireId/base:Identifier/base:localId)}</td>
+                <td title="aqd:AQD_SamplingPointProcess">{data($x/../ompr:inspireId/base:Identifier/base:localId)}</td>
                 <td title="aqd:measurementEquipment">{data($x/@xlink:href)}</td>
             </tr>
     } catch * {
@@ -1508,7 +1508,7 @@ let $D60binvalid :=
         where not($x/@xlink:href = $valid)
         return
             <tr>
-                <td title="aqd:AQD_SamplingPointProcess">{data($x/../../../ef:inspireId/base:Identifier/base:localId)}</td>
+                <td title="aqd:AQD_SamplingPointProcess">{data($x/../../../ompr:inspireId/base:Identifier/base:localId)}</td>
                 <td title="aqd:samplingEquipment">{data($x/@xlink:href)}</td>
             </tr>
     } catch * {
