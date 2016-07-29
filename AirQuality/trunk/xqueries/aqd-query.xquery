@@ -334,7 +334,7 @@ declare function query:getSamplingPointEndPosition($latestDEnvelopes as xs:strin
 };
 
 (: Returns latest report envelope for this country and Year :)
-declare function query:getLatestEnvelope($cdrUrl as xs:string, $reportingYear as xs:string) as xs:string? {
+declare function query:getLatestEnvelope($cdrUrl as xs:string, $reportingYear as xs:string) as xs:string {
   let $query := concat("PREFIX aqd: <http://rod.eionet.europa.eu/schema.rdf#>
   SELECT *
    WHERE {
@@ -347,7 +347,7 @@ declare function query:getLatestEnvelope($cdrUrl as xs:string, $reportingYear as
   } order by desc(?date)
 limit 1")
   let $result := data(sparqlx:run($query)//sparql:binding[@name='envelope']/sparql:uri)
-  return $result
+  return if ($result) then $result else "FILENOTFOUND"
 };
 
 (: Returns latest report envelope for this country :)
@@ -364,7 +364,7 @@ declare function query:getLatestEnvelope($cdrUrl as xs:string) as xs:string? {
   } order by desc(?date)
 limit 1"
   let $result := data(sparqlx:run($query)//sparql:binding[@name='envelope']/sparql:uri)
-  return $result
+  return if ($result) then $result else "FILENOTFOUND"
 };
 
 declare function query:getEnvelopesByYear($cdrUrl as xs:string, $reportingYear as xs:string) as xs:string* {
