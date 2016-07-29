@@ -282,7 +282,9 @@ declare function xmlconv:validateEnvelope() as element(div) {
         }
 
 
-    let $errorCount := count($env1[@class = $errors:ERROR]) + count($env2[@class = $errors:ERROR]) + count($env3//tr[@class = $errors:ERROR])
+    let $errorCount := count($env1[tokenize(@class, "\s+") = $errors:ERROR]) + count($env1[tokenize(@class, "\s+") = $errors:FAILED]) +
+            count($env2[tokenize(@class, "\s+") = $errors:ERROR]) + count($env2[tokenize(@class, "\s+") = $errors:FAILED]) +
+            count($env3//div[tokenize(@class, "\s+") = $errors:ERROR]) + count($env3//div[tokenize(@class, "\s+") = $errors:FAILED])
     let $errorLevel :=
         if ($errorCount = 0) then
             "INFO"
