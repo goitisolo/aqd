@@ -575,7 +575,7 @@ let $G14table :=
 (: G14b :)
 let $G14binvalid :=
     try {
-        let $all := distinct-values(data(sparqlx:run(query:getAssessmentRegime($latestEnvelopeByYearC))/sparql:binding[@name = 'inspireLabel']))
+        let $all := distinct-values(data(sparqlx:run(query:getAssessmentRegime($latestEnvelopeByYearC))/sparql:binding[@name = 'inspireLabel']/sparql:literal))
         let $allLocal := data($docRoot//aqd:AQD_Attainment/aqd:assessment/@xlink:href)
         for $x in $all
         where (not($x = $allLocal))

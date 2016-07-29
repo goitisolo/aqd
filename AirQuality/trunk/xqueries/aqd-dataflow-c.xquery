@@ -95,7 +95,7 @@ let $latestEnvelopeB := query:getLatestEnvelope($cdrUrl || "b/")
 let $latestEnvelopeC := query:getLatestEnvelope($cdrUrl || "c/", $reportingYear)
 let $latestEnvelopeD := query:getLatestEnvelope($cdrUrl || "d/")
 let $latestEnvelopeD1b := query:getLatestEnvelope($cdrUrl || "d1b/", $reportingYear)
-let $knownRegimes := distinct-values(data(sparqlx:run(query:getAssessmentRegime($latestEnvelopeC))/sparql:binding[@name = 'inspireLabel']))
+let $knownRegimes := distinct-values(data(sparqlx:run(query:getAssessmentRegime($latestEnvelopeC))/sparql:binding[@name = 'inspireLabel']/sparql:literal))
 let $allRegimes := query:getAllRegimeIds($namespaces)
 let $countRegimes := count($docRoot//aqd:AQD_AssessmentRegime)
 

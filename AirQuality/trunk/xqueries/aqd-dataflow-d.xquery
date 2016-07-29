@@ -1311,7 +1311,7 @@ let $D51invalid :=
 (: D53 :)
 let $D53invalid :=
     try {
-        let $zones := distinct-values(data(sparqlx:run(query:getZone($latestEnvelopeB))/sparql:binding[@name = 'inspireLabel']))
+        let $zones := distinct-values(data(sparqlx:run(query:getZone($latestEnvelopeB))/sparql:binding[@name = 'inspireLabel']/sparql:literal))
         for $x in $docRoot//aqd:AQD_SamplingPoint/aqd:zone[not(@nilReason = 'inapplicable')]
         where not($x/@xlink:href = $zones)
         return
