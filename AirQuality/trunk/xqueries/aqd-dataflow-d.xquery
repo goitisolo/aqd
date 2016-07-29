@@ -1484,8 +1484,8 @@ let $D59invalid :=
 (: D60a  :)
 let $D60ainvalid :=
     try {
-        let $valid := dd:getValidConcepts($vocabulary:MEASUREMENTEQUIPMENT_VOCABULARY || "rdf")
-        for $x in $docRoot//aqd:AQD_SamplingPointProcess/aqd:measurementEquipment
+        let $valid := dd:getValidConcepts($vocabulary:MEASUREMENTTYPE_VOCABULARY || "rdf")
+        for $x in $docRoot//aqd:AQD_SamplingPointProcess/aqd:measurementType
         where not($x/@xlink:href = $valid)
         return
             <tr>
@@ -1504,7 +1504,7 @@ let $D60ainvalid :=
 let $D60binvalid :=
     try {
         let $valid := dd:getValidConcepts($vocabulary:SAMPLINGEQUIPMENT_VOCABULARY || "rdf")
-        for $x in $docRoot//aqd:AQD_SamplingPointProcess/aqd:samplingEquipment
+        for $x in $docRoot//aqd:AQD_SamplingPointProcess/aqd:samplingEquipment/aqd:SamplingEquipment/aqd:equipment
         where not($x/@xlink:href = $valid)
         return
             <tr>
