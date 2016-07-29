@@ -48,6 +48,7 @@ let $docRoot := doc($source_url)
 let $reportingYear := common:getReportingYear($docRoot)
 let $cdrUrl := common:getCdrUrl($countryCode)
 
+let $latestEnvelopeD := query:getLatestEnvelope($cdrUrl || "d/")
 (: INFO: XML Validation check. This adds delay to the running scripts :)
 let $validationResult := schemax:validateXmlSchema($source_url)
 
@@ -339,8 +340,7 @@ let $E11invalid :=
 (: E12 :)
 let $E12invalid :=
     try {
-        let $result := sparqlx:run(query:getSamples($cdrUrl))
-        let $samples := $result/sparql:binding[@name = "localId"]/sparql:literal/string()
+        let $samples := data(sparqlx:run(query:getSample($latestEnvelopeD))/sparql:binding[@name = "localId"]/sparql:literal)     
         for $x in $docRoot//om:OM_Observation
             let $featureOfInterest := $x/om:featureOfInterest/@xlink:href/tokenize(string(), "/")[last()]
         where ($featureOfInterest = "") or not($featureOfInterest = $samples)

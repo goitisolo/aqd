@@ -78,8 +78,8 @@ let $latestModels :=
     }
 
 (: GLOBAL variables needed for all checks :)
-let $knownAttainments := distinct-values(data(sparqlx:run(query:getAllAttainmentIds($cdrUrl))//sparql:binding[@name='inspireLabel']/sparql:literal))
-let $assessmentRegimeIds := distinct-values(data(sparqlx:run(query:getAssessmentRegimeIdsC($cdrUrl))//sparql:binding[@name='inspireLabel']/sparql:literal))
+let $knownAttainments := distinct-values(data(sparqlx:run(query:getAttainment($cdrUrl || "d/"))//sparql:binding[@name='inspireLabel']/sparql:literal))
+let $assessmentRegimeIds := distinct-values(data(sparqlx:run(query:getAssessmentRegime($cdrUrl || "c/"))//sparql:binding[@name='inspireLabel']/sparql:literal))
 let $assessmentMetadataNamespace := distinct-values(data(sparqlx:run(query:getAssessmentMethods())//sparql:binding[@name='assessmentMetadataNamespace']/sparql:literal))
 let $assessmentMetadataId := distinct-values(data(sparqlx:run(query:getAssessmentMethods())//sparql:binding[@name='assessmentMetadataId']/sparql:literal))
 let $assessmentMetadata := distinct-values(data(sparqlx:run(query:getAssessmentMethods())//concat(sparql:binding[@name='assessmentMetadataNamespace']/sparql:literal,"/",sparql:binding[@name='assessmentMetadataId']/sparql:literal)))
@@ -575,7 +575,7 @@ let $G14table :=
 (: G14b :)
 let $G14binvalid :=
     try {
-        let $all := query:getLatestRegimeIds($latestEnvelopeByYearC)
+        let $all := distinct-values(data(sparqlx:run(query:getAssessmentRegime($latestEnvelopeByYearC))/sparql:binding[@name = 'inspireLabel']))
         let $allLocal := data($docRoot//aqd:AQD_Attainment/aqd:assessment/@xlink:href)
         for $x in $all
         where (not($x = $allLocal))
@@ -594,7 +594,7 @@ let $G14binvalid :=
 let $G15invalid :=
     try {
         let $exceptions := (($vocabulary:POLLUTANT_VOCABULARY || "6001" || $vocabulary:REPMETRIC_VOCABULARY || "AEI"))
-        let $valid := distinct-values(data(sparqlx:run(query:getZones($latestEnvelopeByYearB))//sparql:binding[@name='inspireLabel']/sparql:literal))
+        let $valid := distinct-values(data(sparqlx:run(query:getZone($latestEnvelopeByYearB))//sparql:binding[@name='inspireLabel']/sparql:literal))
         for $x in $docRoot//aqd:AQD_Attainment
         let $pollutant := data($x/aqd:pollutant/@xlink:href)
         let $reportingMetric := data($x/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric/@xlink:href)
@@ -615,7 +615,7 @@ let $G15invalid :=
 (: G17 :)
 let $G17invalid :=
     try {
-        let $zones := if (fn:string-length($countryCode) = 2) then distinct-values(data(sparqlx:run(query:getZoneLocallD($cdrUrl))//sparql:binding[@name='inspireLabel']/sparql:literal)) else ()
+        let $zones := if (fn:string-length($countryCode) = 2) then distinct-values(data(sparqlx:run(query:getZone($cdrUrl))//sparql:binding[@name='inspireLabel']/sparql:literal)) else ()
         let $pollutants := if (fn:string-length($countryCode) = 2) then distinct-values(data(sparqlx:run(query:getPollutantlD($cdrUrl))//sparql:binding[@name='key']/sparql:literal)) else ()
 
         for $x in $docRoot//aqd:AQD_Attainment[aqd:zone/@xlink:href]

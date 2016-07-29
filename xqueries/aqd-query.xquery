@@ -12,8 +12,9 @@ import module namespace common = "aqd-common" at "aqd-common.xquery";
 declare namespace sparql = "http://www.w3.org/2005/sparql-results#";
 
 
-(: Normal InspireId Fetch - This should be the default:)
-declare function query:getZones($url as xs:string?) as xs:string {  
+(: Normal InspireId Fetch - This should be the default :)
+(: B :)
+declare function query:getZone($url as xs:string?) as xs:string {
   "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
   PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
   PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
@@ -28,20 +29,52 @@ declare function query:getZones($url as xs:string?) as xs:string {
   }"   
 };
 
-declare function query:getModel($url as xs:string) as xs:string {
+(: C :)
+declare function query:getAssessmentRegime($url as xs:string) as xs:string {
   "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
    PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
    PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
 
-   SELECT ?model ?inspireId ?inspireLabel ?localId ?namespace
+   SELECT ?localId ?inspireLabel
    WHERE {
-      ?model a aqd:AQD_Model ;
-      aqd:inspireId ?inspireId .
-      ?inspireId rdfs:label ?inspireLabel .
-      ?inspireId aqd:localId ?localId .
-      ?inspireId aqd:namespace ?namespace .
-      FILTER(CONTAINS(str(?model), '" || $url || "'))
-      }"
+          ?regime a aqd:AQD_AssessmentRegime ;
+          aqd:inspireId ?inspireId .
+          ?inspireId rdfs:label ?inspireLabel .
+          ?inspireId aqd:localId ?localId .
+          FILTER (CONTAINS(str(?regime), '" || $url || "'))
+   }"
+};
+(: D :)
+declare function query:getSamplingPointProcess($url as xs:string) as xs:string {
+  "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+   PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
+   PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+
+   SELECT ?samplingPointProcess ?inspireId ?inspireLabel ?localId ?namespace
+   WHERE {
+           ?samplingPointProcess a aqd:AQD_SamplingPointProcess;
+           aqd:inspireId ?inspireId .
+           ?inspireId rdfs:label ?inspireLabel .
+           ?inspireId aqd:localId ?localId .
+           ?inspireId aqd:namespace ?namespace .
+   FILTER(CONTAINS(str(?samplingPointProcess), '" || $url || "'))
+   }"
+};
+
+declare function query:getSample($url as xs:string) as xs:string {
+  "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+   PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
+   PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+
+   SELECT ?sample ?inspireId ?inspireLabel ?localId ?namespace
+   WHERE {
+           ?sample a aqd:AQD_Sample;
+           aqd:inspireId ?inspireId .
+           ?inspireId rdfs:label ?inspireLabel .
+           ?inspireId aqd:localId ?localId .
+           ?inspireId aqd:namespace ?namespace .
+   FILTER(CONTAINS(str(?sample), '" || $url || "'))
+   }"
 };
 
 declare function query:getSamplingPoint($cdrUrl as xs:string) as xs:string {
@@ -59,6 +92,46 @@ declare function query:getSamplingPoint($cdrUrl as xs:string) as xs:string {
    FILTER(CONTAINS(str(?samplingPoint), '" || $cdrUrl || "'))
    }"
 };
+
+(: M :)
+declare function query:getModel($url as xs:string) as xs:string {
+  "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+   PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
+   PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+
+   SELECT ?model ?inspireId ?inspireLabel ?localId ?namespace
+   WHERE {
+      ?model a aqd:AQD_Model ;
+      aqd:inspireId ?inspireId .
+      ?inspireId rdfs:label ?inspireLabel .
+      ?inspireId aqd:localId ?localId .
+      ?inspireId aqd:namespace ?namespace .
+      FILTER(CONTAINS(str(?model), '" || $url || "'))
+      }"
+};
+
+(: G :)
+declare function query:getAttainment($url as xs:string) as xs:string {
+  "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+   PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
+   PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+
+   SELECT ?inspireLabel
+   WHERE {
+      ?attainment a aqd:AQD_Attainment;
+      aqd:inspireId ?inspireId .
+      ?inspireId rdfs:label ?inspireLabel .
+      FILTER (CONTAINS(str(?attainment), '" || $url || "'))
+   }"
+};
+
+
+
+
+
+
+
+
 (: Feature Types queries - These queries return all ids of the specified feature type :)
 declare function query:getAllZoneIds($namespaces as xs:string*) as xs:string {
   "PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
@@ -91,20 +164,6 @@ declare function query:getAllFeatureIds($featureTypes as xs:string*, $namespaces
   return $pre || $mid || $end
 };
 
-declare function query:getAllAttainmentIds($cdrUrl as xs:string) as xs:string {
-  "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
-PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
-
-SELECT distinct ?inspireLabel
-    WHERE {
-        ?attainment a aqd:AQD_Attainment;
-        aqd:inspireId ?inspireId .
-        ?inspireId rdfs:label ?inspireLabel .
-        FILTER (CONTAINS(str(?attainment), '" || $cdrUrl || "g/')) .
-}"
-};
-
 (: Generic queries :)
 declare function query:deliveryExists($obligations as xs:string*, $countryCode as xs:string, $dir as xs:string, $reportingYear as xs:string) as xs:boolean {
   let $query :=
@@ -123,81 +182,10 @@ declare function query:deliveryExists($obligations as xs:string*, $countryCode a
    return count(sparqlx:run($query)//sparql:binding[@name = 'envelope']/sparql:uri) > 0
 };
 
-declare function query:getZoneIdsByReportingYear($countryCode as xs:string, $reportingYear as xs:string) as xs:string* {
-  let $query := "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-        PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
-        PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
-
-       SELECT ?inspireLabel
-       WHERE {
-              ?zone a aqd:AQD_Zone ;
-              aqd:inspireId ?inspireId .
-              ?inspireId rdfs:label ?inspireLabel .
-              ?inspireId aqd:localId ?localId .
-              ?zone aqd:residentPopulationYear ?yearElement .
-              ?yearElement rdfs:label ?reportingYear .
-              FILTER(CONTAINS(str(?zone), '" || common:getCdrUrl($countryCode) || "'))
-              FILTER(str(?reportingYear) = '" || $reportingYear || "')
-       }"
-
-  return distinct-values(sparqlx:run($query)//sparql:binding[@name = 'inspireLabel']/sparql:literal/string())
-};
-
-declare function query:getRegimeIdsByReportingYear($countryCode as xs:string, $reportingYear as xs:string) as xs:string* {
-  let $query := "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-        PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
-        PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
-
-       SELECT ?inspireLabel
-       WHERE {
-              ?regime a aqd:AQD_AssessmentRegime ;
-              aqd:inspireId ?inspireId .
-              ?inspireId rdfs:label ?inspireLabel .
-              ?inspireId aqd:localId ?localId .
-              ?regime aqd:assessmentThreshold ?threshold .
-              ?threshold aqd:classificationDate ?classificationDate .
-              ?classificationDate rdfs:label ?reportingYear .
-              FILTER(CONTAINS(str(?regime), '" || common:getCdrUrl($countryCode) || "'))
-              FILTER(str(?reportingYear) = '" || $reportingYear || "')
-       }"
-  return distinct-values(sparqlx:run($query)//sparql:binding[@name = 'inspireLabel']/sparql:literal/string())
-};
-
-(: B :)
-declare function query:getNutsSparql($countryCode as xs:string) as xs:string {
-  concat("PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
-    SELECT ?concepturl ?label ?code
-    WHERE {
-      ?concepturl skos:inScheme <http://dd.eionet.europa.eu/vocabulary/common/nuts/>;
-                  skos:prefLabel ?label;
-                  skos:notation ?code
-                  FILTER regex(?code, '^", $countryCode, "', 'i')
-    }")
-};
-declare function query:getLau2Sparql($countryCode as xs:string) as xs:string {
-  concat("PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
-    SELECT ?concepturl ?label ?code
-    WHERE {
-      ?concepturl skos:inScheme <http://dd.eionet.europa.eu/vocabulary/lau2/", $countryCode, "/>;
-                  skos:prefLabel ?label;
-                  skos:notation ?code
-    }")
-};
-
-declare function query:getLau1Sparql($countryCode as xs:string) as xs:string {
-  concat("PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
-    SELECT ?concepturl ?label ?code
-    WHERE {
-      ?concepturl skos:inScheme <http://dd.eionet.europa.eu/vocabulary/lau1/", $countryCode, "/>;
-                  skos:prefLabel ?label;
-                  skos:notation ?code
-    }")
-};
-
 declare function query:getLangCodesSparql() as xs:string {
   "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
-    SELECT distinct ?code ?label ?concepturl
-    WHERE {
+   SELECT distinct ?code ?label ?concepturl
+   WHERE {
       ?concepturl a skos:Concept .
       {?concepturl skos:inScheme <http://dd.eionet.europa.eu/vocabulary/common/iso639-3/>;
                   skos:prefLabel ?label;
@@ -211,52 +199,6 @@ declare function query:getLangCodesSparql() as xs:string {
 };
 
 (: C - Remove comment after migration :)
-declare function query:getAssessmentTypeModel($cdrUrl as xs:string) as xs:string {
-  concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-         PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
-         PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
-
-    SELECT ?zone ?inspireId ?inspireLabel ?assessmentType
-        WHERE {
-         ?zone a aqd:AQD_Model ;
-         aqd:inspireId ?inspireId .
-         ?inspireId rdfs:label ?inspireLabel .
-         ?zone aqd:assessmentType ?assessmentType
-       FILTER (CONTAINS(str(?zone), '",$cdrUrl,"d/'))
-   }")
-};
-
-declare function query:getAssessmentTypeSamplingPoint($cdrUrl as xs:string) as xs:string {
-  concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-         PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
-         PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
-
-    SELECT ?zone ?inspireId ?inspireLabel ?assessmentType
-        WHERE {
-         ?zone a aqd:AQD_SamplingPoint ;
-         aqd:inspireId ?inspireId .
-         ?inspireId rdfs:label ?inspireLabel .
-         ?zone aqd:assessmentType ?assessmentType
-       FILTER (CONTAINS(str(?zone), '", $cdrUrl,  "d/'))
-   }")
-};
-
-declare function query:getProtectionTarget($zonesUrl as xs:string) as xs:string {
-  concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-         PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
-         PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
-         SELECT distinct  ?zoneId ?pollutantCode ?protectionTarget
-         WHERE {
-               ?zone a aqd:AQD_Zone;
-               aqd:pollutants ?pollutants .
-               ?zone aqd:inspireId ?ii .
-               ?ii rdfs:label ?zoneId .
-               ?pollutants aqd:pollutantCode ?pollutantCode .
-               ?pollutants aqd:protectionTarget ?protectionTarget .
-         FILTER (CONTAINS(str(?zone), '", $zonesUrl, "'))
-}")
-};
-
 declare function query:getModelEndPosition($latestDEnvelopes as xs:string*, $startDate as xs:string, $endDate as xs:string) as xs:string {
   let $last := count($latestDEnvelopes)
   let $filters :=
@@ -335,7 +277,7 @@ limit 1")
 };
 
 (: Returns latest report envelope for this country :)
-declare function query:getLatestEnvelope($cdrUrl as xs:string) as xs:string? {
+declare function query:getLatestEnvelope($cdrUrl as xs:string) as xs:string {
   let $query :=
     "PREFIX aqd: <http://rod.eionet.europa.eu/schema.rdf#>
      SELECT *
@@ -351,7 +293,7 @@ limit 1"
   return if ($result) then $result else "FILENOTFOUND"
 };
 
-declare function query:getEnvelopesByYear($cdrUrl as xs:string, $reportingYear as xs:string) as xs:string* {
+declare function query:getEnvelopes($cdrUrl as xs:string, $reportingYear as xs:string) as xs:string* {
   let $query :=
     "PREFIX aqd: <http://rod.eionet.europa.eu/schema.rdf#>
      SELECT *
@@ -365,22 +307,6 @@ declare function query:getEnvelopesByYear($cdrUrl as xs:string, $reportingYear a
      } order by desc(?date)"
      let $result := data(sparqlx:run($query)//sparql:binding[@name='envelope']/sparql:uri)
   return $result
-};
-
-declare function query:getLatestRegimeIds($latestEnvelopeUrl as xs:string) as xs:string* {
-  let $query := "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-   PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
-   PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
-   PREFIX aq: <http://reference.eionet.europa.eu/aq/ontology/>
-
-   SELECT ?inspireLabel
-   WHERE {
-        ?regime a aqd:AQD_AssessmentRegime ;
-        aqd:inspireId ?inspireId .
-        ?inspireId rdfs:label ?inspireLabel .
-   FILTER (CONTAINS(str(?regime), '" || $latestEnvelopeUrl || "'))
-  }"
-  return data(sparqlx:run($query)//sparql:binding[@name='inspireLabel']/sparql:literal)
 };
 
 declare function query:getAllRegimeIds($namespaces as xs:string*) as xs:string* {
@@ -508,87 +434,6 @@ PREFIX prop: <http://dd.eionet.europa.eu/property/>
   }"
 };
 
-(: D :)
-declare function query:getSamplingPointAssessment($inspireId as xs:string, $inspireNamespace as xs:string) as xs:string {
-  concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-           PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
-           PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
-           PREFIX aq: <http://reference.eionet.europa.eu/aq/ontology/>
-
-        SELECT *
-            where {
-                    ?assessmentRegime a aqd:AQD_AssessmentRegime;
-                    aqd:assessmentMethods  ?assessmentMethods .
-                    ?assessmentMethods aqd:samplingPointAssessmentMetadata ?samplingPointAssessment .
-                    ?samplingPointAssessment aq:inspireId ?inspireId.
-                    ?samplingPointAssessment aq:inspireNamespace ?inspireNamespace.
-                    FILTER(?inspireId='",$inspireId,"' and ?inspireNamespace='",$inspireNamespace,"')
-                  }")
-};
-
-declare function query:getSamplingPointZone($zoneId as xs:string) as xs:string {
-  concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-            PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
-            PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
-
-            SELECT *
-            WHERE {
-                    ?zone a aqd:AQD_Zone;
-                    aqd:inspireId ?inspireId .
-                    ?inspireId rdfs:label ?inspireLabel
-                    FILTER(?inspireLabel = '",$zoneId,"')
-                  }")
-};
-
-declare function query:getConceptUrlSparql($scheme as xs:string) as xs:string {
-(: Quick fix for #69944. :)
-  if ($scheme = "http://inspire.ec.europa.eu/codelist/MediaValue/") then
-    concat("PREFIX dcterms: <http://purl.org/dc/terms/>
-                PREFIX owl: <http://www.w3.org/2002/07/owl#>
-                PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
-                    SELECT ?concepturl ?label
-                    WHERE {
-                    {
-                      ?concepturl skos:inScheme <", $scheme, ">;
-                                  skos:prefLabel ?label
-                    } UNION {
-                      ?other skos:inScheme <", $scheme, ">;
-                                  skos:prefLabel ?label;
-                                  dcterms:replaces ?concepturl
-                    }
-                }")
-  else
-    concat("PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
-        SELECT ?concepturl ?label
-        WHERE {
-          ?concepturl skos:inScheme <", $scheme, ">;
-                      skos:prefLabel ?label
-        }")
-};
-
-(: This is used by B dataflow - Maybe remove if the above function is enough :)
-declare function query:getConceptUrlSparqlB($scheme as xs:string) as xs:string {
-  concat("PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
-    SELECT ?concepturl ?label
-    WHERE {
-      ?concepturl skos:inScheme <", $scheme, ">;
-                  skos:prefLabel ?label
-    }")
-};
-
-declare function query:getCollectionConceptUrlSparql($collection as xs:string) as xs:string {
-  concat("PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
-    SELECT ?concepturl
-    WHERE {
-        GRAPH <", $collection, "> {
-            <", $collection, "> skos:member ?concepturl .
-            ?concepturl a skos:Concept
-        }
-    }")
-};
-
-(: G - remove comment after migration :)
-
 (: ---- SPARQL methods --- :)
 declare function query:getTimeExtensionExemption($cdrUrl as xs:string) as xs:string {
   "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -628,44 +473,6 @@ PREFIX aq: <http://reference.eionet.europa.eu/aq/ontology/>
            FILTER (strstarts(str(?reportingYear), '" || $reportingYear || "'))
 
        }"
-};
-
-(: TODO: Probably deprecated, to be removed :)
-declare function query:getExistingAttainmentSqarql($cdrUrl as xs:string) as xs:string {
-  concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
-PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
-SELECT distinct concat(?inspireLabel,'#',
-  str(?pollutant), '#',
-  str(?objectiveType), '#',
-  str(?reportingMetric), '#',
-  str(?protectionTarget) ) as ?key
-WHERE {
-        ?attainment a aqd:AQD_Attainment;
-       aqd:pollutant ?pollutant .
-       ?attainment  aqd:inspireId ?inspireId .
-       ?inspireId rdfs:label ?inspireLabel .
-       ?attainment aqd:environmentalObjective ?envObjective .
-?envObjective aqd:objectiveType ?objectiveType .
-?envObjective aqd:reportingMetric  ?reportingMetric .
-?envObjective aqd:protectionTarget  ?protectionTarget .
-FILTER (CONTAINS(str(?attainment), '" , $cdrUrl,  "g/')) .
-}")
-};
-
-declare function query:getAssessmentRegimeIdsC($cdrUrl as xs:string) as xs:string {
-  "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-   PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
-   PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
-
-   SELECT ?localId ?inspireLabel
-   WHERE {
-          ?regime a aqd:AQD_AssessmentRegime ;
-          aqd:inspireId ?inspireId .
-          ?inspireId rdfs:label ?inspireLabel .
-          ?inspireId aqd:localId ?localId .
-          FILTER (CONTAINS(str(?regime), '" || $cdrUrl || "c/'))
-   }"
 };
 
 declare function query:getAssessmentMethods() as xs:string {
@@ -708,22 +515,7 @@ declare function query:getSamplingPointAssessmentMetadata() as xs:string {
           ?samplingPointAssessmentMetadata aq:inspireNamespace ?metadataNamespace.
           }"
 };
-
-declare function query:getZoneLocallD($cdrUrl as xs:string) as xs:string {
-  concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-        PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
-        PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
-
-       SELECT ?zone ?inspireId ?localId ?inspireLabel
-       WHERE {
-              ?zone a aqd:AQD_Zone ;
-              aqd:inspireId ?inspireId .
-              ?inspireId rdfs:label ?inspireLabel .
-              ?inspireId aqd:localId ?localId .
-       FILTER (CONTAINS(str(?zone), '",  $cdrUrl, "b/'))
-   }")
-};
-
+(: TODO fix this to look at latest envelope :)
 declare function query:getPollutantlD($cdrUrl as xs:string) as xs:string {
   concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
             PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
@@ -738,38 +530,6 @@ declare function query:getPollutantlD($cdrUrl as xs:string) as xs:string {
                  ?pollutants aqd:pollutantCode ?pollutantCode .
           FILTER (CONTAINS(str(?zone), '", $cdrUrl, "b/'))
           }")
-};
-
-declare function query:getSamplingPointProcess($cdrUrl as xs:string) as xs:string {
-  "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-   PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
-   PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
-
-   SELECT ?samplingPointProcess ?inspireId ?inspireLabel ?localId ?namespace
-   WHERE {
-           ?samplingPointProcess a aqd:AQD_SamplingPointProcess;
-           aqd:inspireId ?inspireId .
-           ?inspireId rdfs:label ?inspireLabel .
-           ?inspireId aqd:localId ?localId .
-           ?inspireId aqd:namespace ?namespace .
-   FILTER(CONTAINS(str(?samplingPointProcess), '" || $cdrUrl || "d/'))
-   }"
-};
-
-declare function query:getSamples($cdrUrl as xs:string) as xs:string {
-  "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-   PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
-   PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
-
-   SELECT ?sample ?inspireId ?inspireLabel ?localId ?namespace
-   WHERE {
-           ?sample a aqd:AQD_Sample;
-           aqd:inspireId ?inspireId .
-           ?inspireId rdfs:label ?inspireLabel .
-           ?inspireId aqd:localId ?localId .
-           ?inspireId aqd:namespace ?namespace .
-   FILTER(CONTAINS(str(?sample), '" || $cdrUrl || "d/'))
-   }"
 };
 
 declare function query:getSamplingPointFromFiles($url as xs:string*) as xs:string {
@@ -813,22 +573,6 @@ declare function query:getSamplingPointMetadataFromFiles($url as xs:string*) as 
          ?observingCapability aqd:featureOfInterest ?featureOfInterest .
          ?observingCapability aqd:procedure ?procedure .
          ?observingCapability aqd:observedProperty ?observedProperty . " || $filters ||"
-   }"
-};
-
-declare function query:getAssessmentRegimeIds($cdrUrl as xs:string) as xs:string {
-  "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-   PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
-   PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
-
-   SELECT ?localId ?inspireLabel
-   WHERE {
-         ?regime a aqd:AQD_AssessmentRegime;
-         aqd:inspireId ?inspireId .
-         ?inspireId rdfs:label ?inspireLabel .
-         ?inspireId aqd:localId ?localId .
-         ?inspireId aqd:namespace ?namespace .
-         FILTER(CONTAINS(str(?regime ), '" || $cdrUrl || "'))
    }"
 };
 
