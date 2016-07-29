@@ -1160,7 +1160,7 @@ let $G65invalid :=
         for $x in $docRoot//aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:adjustmentType[@xlink:href = $types]
         let $model := data($x/../aqd:assessmentMethod/aqd:AssessmentMethods/aqd:modelAssessmentMetadata/@xlink:href)
         let $samplingPoint := data($x/../aqd:assessmentMethod/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata/@xlink:href)
-        where not($model = $latestModels) and not($samplingPoint = $latestSamplingPoints)
+        where (exists($model) and not($model = $latestModels)) or (exists($samplingPoint) and not($samplingPoint = $latestSamplingPoints))
         return
             <tr>
                 <td title="aqd:AQD_Attainment">{$x/../../../../../aqd:inspireId/base:Identifier/base:localId/string()}</td>
