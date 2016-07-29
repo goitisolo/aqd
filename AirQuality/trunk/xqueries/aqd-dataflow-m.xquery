@@ -528,7 +528,7 @@ let $M27invalid :=
 let $M28table :=
     try {
         for $id in $modelProcessNamespaces
-        let $localId := $docRoot//aqd:AQD_ModelProcess/ompr:inspireld/base:Identifier[base:namespace = $id]/base:localId
+        let $localId := $docRoot//aqd:AQD_ModelProcess/ompr:inspireId/base:Identifier[base:namespace = $id]/base:localId
         return
             <tr>
                 <td title="base:namespace">{$id}</td>
