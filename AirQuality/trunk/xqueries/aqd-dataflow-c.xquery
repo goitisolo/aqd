@@ -94,12 +94,23 @@ let $zoneIds := if ((fn:string-length($countryCode) = 2) and exists($latestEnvel
 let $countZoneIds1 := count($zoneIds)
 let $countZoneIds2 := count(distinct-values($docRoot//aqd:AQD_AssessmentRegime/aqd:zone/@xlink:href))
 
-let $latestenvelopeB := query:getLatestEnvelope($cdrUrl || "b/")
-let $latestenvelopeC := query:getLatestEnvelope($cdrUrl || "c/", $reportingYear)
-let $latestMenvelope := query:getLatestEnvelope($cdrUrl || "d/")
-let $knownRegimes := if (exists($latestenvelopeC)) then query:getLatestRegimeIds($latestenvelopeC) else ()
+
+let $latestEnvelopeB := query:getLatestEnvelope($cdrUrl || "b/")
+let $latestEnvelopeC := query:getLatestEnvelope($cdrUrl || "c/", $reportingYear)
+let $latestEnvelopeD := query:getLatestEnvelope($cdrUrl || "d/")
+let $latestEnvelopeD1b := query:getLatestEnvelope($cdrUrl || "d1b/", $reportingYear)
+let $knownRegimes := if (exists($latestEnvelopeC)) then query:getLatestRegimeIds($latestEnvelopeC) else ()
 let $allRegimes := query:getAllRegimeIds($namespaces)
 let $countRegimes := count($docRoot//aqd:AQD_AssessmentRegime)
+
+let $latestModels :=
+    try {
+        let $all := distinct-values(data(sparqlx:run(query:getModel($latestEnvelopeD1b))//sparql:binding[@name = 'inspireLabel']/sparql:literal))
+        return if (empty($all)) then distinct-values(data(sparqlx:run(query:getModel($latestEnvelopeD))//sparql:binding[@name = 'inspireLabel']/sparql:literal)) else $all
+    } catch * {
+        ()
+    }
+let $latestSamplingPoints := data(sparqlx:run(query:getSamplingPoint($latestEnvelopeD))/sparql:binding[@name = 'inspireLabel']/sparql:literal)
 
 (: INFO: XML Validation check. This adds delay to the running scripts :)
 let $validationResult := schemax:validateXmlSchema($source_url)
@@ -506,9 +517,8 @@ let $C23binvalid :=
 
 let $C24invalid :=
     try {
-        let $valid := data(sparqlx:run(query:getModel($latestMenvelope))/sparql:binding[@name='inspireLabel']/sparql:literal)
         for $x in $docRoot//aqd:AQD_AssessmentRegime/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:modelAssessmentMetadata
-        where not($x/@xlink:href = $valid)
+        where not($x/@xlink:href = $latestModels)
         return
             <tr>
                 <td title="aqd:AQD_AssessmentRegime">{string($x/../../../aqd:inspireId/base:Identifier/base:localId)}</td>
@@ -523,9 +533,8 @@ let $C24invalid :=
     }
 
 let $C25invalid :=
-    let $valid := data(sparqlx:run(query:getSamplingPoint($latestMenvelope))/sparql:binding[@name='inspireLabel']/sparql:literal)
     for $x in $docRoot//aqd:AQD_AssessmentRegime/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata
-    where not($x/@xlink:href = $valid)
+    where not($x/@xlink:href = $latestSamplingPoints)
     return
         <tr>
             <td title="aqd:AQD_AssessmentRegime">{string($x/../../../aqd:inspireId/base:Identifier/base:localId)}</td>
@@ -678,7 +687,7 @@ let $C28invalid :=
 let $C31table :=
     try {
         let $C31ResultB :=
-            for $i in sparqlx:run(query:getC31($latestenvelopeB))
+            for $i in sparqlx:run(query:getC31($latestEnvelopeB))
             return
                 <result>
                     <pollutantName>{string($i/sparql:binding[@name = "Pollutant"]/sparql:literal)}</pollutantName>
@@ -831,7 +840,7 @@ let $C35invalid :=
         where $used != 'true'
         return
             <tr>
-                <td title="aqd:AQD_AssessmentRegime/aqd:inspireId/base:Identifier/base:localId">{data($assessmentMetadata/../../../aqd:inspireId/base:Identifier/base:localId)}</td>{
+                <td title="aqd:AQD_AssessmentRegime">{data($assessmentMetadata/../../../aqd:inspireId/base:Identifier/base:localId)}</td>{
                 if ($assessmentMetadata/local-name() = 'modelAssessmentMetadata') then
                     (<td title="aqd:AQD_Model/ @gml:id">{data($assessmentMetadata/aqd:AQD_Model/@gml:id)}</td>,
                     html:getErrorTD(data($used), "aqd:used", fn:true())
