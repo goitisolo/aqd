@@ -63,7 +63,7 @@ let $docRoot := doc($source_url)
 let $cdrUrl := common:getCdrUrl($countryCode)
 let $bdir := if (contains($source_url, "b_preliminary")) then "b_preliminary/" else "b/"
 let $reportingYear := common:getReportingYear($docRoot)
-let $latestEnvelopeB := query:getLatestEnvelopeByYear($cdrUrl || $bdir, $reportingYear)
+let $latestEnvelopeB := query:getLatestEnvelope($cdrUrl || $bdir, $reportingYear)
 let $nameSpaces := distinct-values($docRoot//base:namespace)
 let $zonesNamespaces := distinct-values($docRoot//aqd:AQD_Zone/am:inspireId/base:Identifier/base:namespace)
 
@@ -124,7 +124,7 @@ let $isNewDelivery := errors:getMaxError($B0table) = $errors:INFO
 (: Generic variables :)
 let $knownZones :=
     if ($isNewDelivery) then
-        distinct-values(data(sparqlx:run(query:getZones(query:getLatestEnvelopeByYear($cdrUrl || $bdir, string(number($reportingYear) - 1))))//sparql:binding[@name = 'inspireLabel']/sparql:literal))
+        distinct-values(data(sparqlx:run(query:getZones(query:getLatestEnvelope($cdrUrl || $bdir, string(number($reportingYear) - 1))))//sparql:binding[@name = 'inspireLabel']/sparql:literal))
     else
         distinct-values(data(sparqlx:run(query:getZones($latestEnvelopeB))//sparql:binding[@name = 'inspireLabel']/sparql:literal))
 

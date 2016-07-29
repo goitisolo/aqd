@@ -87,15 +87,15 @@ let $bDir := if (contains($source_url, "c_preliminary")) then "b_preliminary/" e
 let $cdir := if (contains($source_url, "c_preliminary")) then "c_preliminary/" else "c/"
 let $zonesUrl := concat($cdrUrl, $bDir)
 let $reportingYear := common:getReportingYear($docRoot)
-let $latestEnvelopeB := query:getLatestEnvelopeByYear($zonesUrl, $reportingYear)
+let $latestEnvelopeB := query:getLatestEnvelope($zonesUrl, $reportingYear)
 let $namespaces := distinct-values($docRoot//base:namespace)
 
-let $zoneIds := if ((fn:string-length($countryCode) = 2) and exists($latestEnvelopeB)) then distinct-values(data(sparqlx:executeSparqlQuery(query:getZones($latestEnvelopeB))//sparql:binding[@name = 'inspireLabel']/sparql:literal)) else ()
+let $zoneIds := if ((fn:string-length($countryCode) = 2) and exists($latestEnvelopeB)) then distinct-values(data(sparqlx:run(query:getZones($latestEnvelopeB))//sparql:binding[@name = 'inspireLabel']/sparql:literal)) else ()
 let $countZoneIds1 := count($zoneIds)
 let $countZoneIds2 := count(distinct-values($docRoot//aqd:AQD_AssessmentRegime/aqd:zone/@xlink:href))
 
 let $latestenvelopeB := query:getLatestEnvelope($cdrUrl || "b/")
-let $latestenvelopeC := query:getLatestEnvelopeByYear($cdrUrl || "c/", $reportingYear)
+let $latestenvelopeC := query:getLatestEnvelope($cdrUrl || "c/", $reportingYear)
 let $latestMenvelope := query:getLatestEnvelope($cdrUrl || "d/")
 let $knownRegimes := if (exists($latestenvelopeC)) then query:getLatestRegimeIds($latestenvelopeC) else ()
 let $allRegimes := query:getAllRegimeIds($namespaces)
@@ -506,7 +506,7 @@ let $C23binvalid :=
 
 let $C24invalid :=
     try {
-        let $valid := data(sparqlx:run(query:getG86Models($latestMenvelope))/sparql:binding[@name='inspireLabel']/sparql:literal)
+        let $valid := data(sparqlx:run(query:getModel($latestMenvelope))/sparql:binding[@name='inspireLabel']/sparql:literal)
         for $x in $docRoot//aqd:AQD_AssessmentRegime/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:modelAssessmentMetadata
         where not($x/@xlink:href = $valid)
         return
@@ -523,7 +523,7 @@ let $C24invalid :=
     }
 
 let $C25invalid :=
-    let $valid := data(sparqlx:run(query:getG86Stations($latestMenvelope))/sparql:binding[@name='inspireLabel']/sparql:literal)
+    let $valid := data(sparqlx:run(query:getSamplingPoint($latestMenvelope))/sparql:binding[@name='inspireLabel']/sparql:literal)
     for $x in $docRoot//aqd:AQD_AssessmentRegime/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata
     where not($x/@xlink:href = $valid)
     return
@@ -539,8 +539,8 @@ let $C26table :=
         let $endDate := substring(data($docRoot//aqd:reportingPeriod/gml:TimePeriod/gml:endPosition),1,10)
 
         let $latestDEnvelopes := distinct-values(query:getEnvelopesByYear($cdrUrl || "d/", $reportingYear))
-        let $modelMethods := if (fn:string-length($countryCode) = 2) then distinct-values(data(sparqlx:executeSparqlQuery(query:getModelEndPosition($latestDEnvelopes, $startDate, $endDate))//sparql:binding[@name='inspireLabel']/sparql:literal)) else ()
-        let $sampingPointMethods := if (fn:string-length($countryCode) = 2) then distinct-values(data(sparqlx:executeSparqlQuery(query:getSamplingPointEndPosition($latestDEnvelopes,$startDate,$endDate))//sparql:binding[@name='inspireLabel']/sparql:literal)) else ()
+        let $modelMethods := if (fn:string-length($countryCode) = 2) then distinct-values(data(sparqlx:run(query:getModelEndPosition($latestDEnvelopes, $startDate, $endDate))//sparql:binding[@name='inspireLabel']/sparql:literal)) else ()
+        let $sampingPointMethods := if (fn:string-length($countryCode) = 2) then distinct-values(data(sparqlx:run(query:getSamplingPointEndPosition($latestDEnvelopes,$startDate,$endDate))//sparql:binding[@name='inspireLabel']/sparql:literal)) else ()
 
         for $method in $docRoot//aqd:AQD_AssessmentRegime/aqd:assessmentMethods/aqd:AssessmentMethods
         let $modelMetaCount := count($method/aqd:modelAssessmentMetadata)
@@ -624,7 +624,7 @@ let $C29invalid :=
                     $zoneId
                 else
                     ()
-        let $combinations := if (fn:string-length($countryCode) = 2) then sparqlx:executeSparqlQuery(query:getPollutantCodeAndProtectionTarge($cdrUrl, $bDir)) else ()
+        let $combinations := if (fn:string-length($countryCode) = 2) then sparqlx:run(query:getPollutantCodeAndProtectionTarge($cdrUrl, $bDir)) else ()
         let $validRows :=
             for $rec in $combinations
             return
@@ -744,7 +744,7 @@ let $C32table :=
             else
                 ""
         let $aqdSamplingPointAssessMEntTypes :=
-            for $i in sparqlx:executeSparqlQuery($samplingPointSparqlC32)
+            for $i in sparqlx:run($samplingPointSparqlC32)
             let $ii := concat($i/sparql:binding[@name = 'inspireLabel']/sparql:literal, "#", $i/sparql:binding[@name = 'assessmentType']/sparql:uri)
             return $ii
 
@@ -754,7 +754,7 @@ let $C32table :=
             else
                 ""
         let $aqdModelAssessMentTypes :=
-            for $i in sparqlx:executeSparqlQuery($modelSparql)
+            for $i in sparqlx:run($modelSparql)
             let $ii := concat($i/sparql:binding[@name = 'inspireLabel']/sparql:literal, "#", $i/sparql:binding[@name = 'assessmentType']/sparql:uri)
             return $ii
 
@@ -873,7 +873,7 @@ let $C37invalid :=
 (: C38 :)
 let $C38invalid :=
     try {
-        let $aqdSamplingPointID := if (fn:string-length($countryCode) = 2) then distinct-values(data(sparqlx:executeSparqlQuery(query:getSamplingPointInspireLabel($cdrUrl))//sparql:binding[@name = 'inspireLabel']/sparql:literal)) else ()
+        let $aqdSamplingPointID := if (fn:string-length($countryCode) = 2) then distinct-values(data(sparqlx:run(query:getSamplingPointInspireLabel($cdrUrl))//sparql:binding[@name = 'inspireLabel']/sparql:literal)) else ()
 
         let $aqdSamplingPointAssessmentMetadata :=
             for $aqdAssessmentRegime in $docRoot//aqd:AQD_AssessmentRegime/aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric
