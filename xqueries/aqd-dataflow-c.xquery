@@ -877,18 +877,29 @@ let $C37invalid :=
 (: C38 :)
 let $C38invalid :=
     try {
-        let $aqdSamplingPointID := if (fn:string-length($countryCode) = 2) then distinct-values(data(sparqlx:run(query:getSamplingPointInspireLabel($cdrUrl))//sparql:binding[@name = 'inspireLabel']/sparql:literal)) else ()
+        let $query :=
+            "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+             PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
+             PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
 
-        let $aqdSamplingPointAssessmentMetadata :=
-            for $aqdAssessmentRegime in $docRoot//aqd:AQD_AssessmentRegime/aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric
-            where $aqdAssessmentRegime/fn:normalize-space(@xlink:href) = "http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/AEI"
-            return $aqdAssessmentRegime/../../../../../aqd:assessmentMethods/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata/fn:normalize-space(@xlink:href)
+             SELECT ?zone ?inspireId ?inspireLabel ?relevantEmissions ?stationClassification
+             WHERE {
+                    ?zone a aqd:AQD_SamplingPoint ;
+                    aqd:inspireId ?inspireId .
+                    ?inspireId rdfs:label ?inspireLabel .
+                    ?zone aqd:relevantEmissions ?relevantEmissions .
+                    ?relevantEmissions aqd:stationClassification ?stationClassification
+             FILTER (CONTAINS(str(?zone), '" || $latestEnvelopeD || "') and str(?stationClassification)='http://dd.eionet.europa.eu/vocabulary/aq/stationclassification/background')
+             }"
+        let $valid := distinct-values(data(sparqlx:run($query)))/sparql:binding[@name = 'inspireLabel']/sparql:literal
 
-        for $x in $aqdSamplingPointAssessmentMetadata
-        where empty(index-of($aqdSamplingPointID, $x))
+        for $x in $docRoot//aqd:AQD_AssessmentRegime/aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric[@xlink:href = $vocabulary:REPMETRIC_VOCABULARY || "AEI"]
+        let $xlink := data($x/../../../../../aqd:assessmentMethods/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata/@xlink:href)
+        where not($xlink = $valid)
         return
             <tr>
-                <td title="">{$x}</td>
+                <td title="aqd:AQD_AssessmentRegime">{data($x/../../../../../aqd:inspireId/base:Identifier/base:localId)}</td>
+                <td title="aqd:AQD_SamplingPoint">{$xlink}</td>
             </tr>
     } catch * {
         <tr status="failed">
