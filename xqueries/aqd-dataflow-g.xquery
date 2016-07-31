@@ -575,8 +575,9 @@ let $G14table :=
 (: G14b :)
 let $G14binvalid :=
     try {
+        let $exception := ($vocabulary:OBJECTIVETYPE_VOCABULARY || "ALT", $vocabulary:OBJECTIVETYPE_VOCABULARY || "INT", $vocabulary:OBJECTIVETYPE_VOCABULARY || "MO")
         let $all := distinct-values(data(sparqlx:run(query:getAssessmentRegime($latestEnvelopeByYearC))/sparql:binding[@name = 'inspireLabel']/sparql:literal))
-        let $allLocal := data($docRoot//aqd:AQD_Attainment/aqd:assessment/@xlink:href)
+        let $allLocal := data($docRoot//aqd:AQD_Attainment[not(aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType/@xlink:href = $exception)]/aqd:assessment/@xlink:href)
         for $x in $all
         where (not($x = $allLocal))
         return
