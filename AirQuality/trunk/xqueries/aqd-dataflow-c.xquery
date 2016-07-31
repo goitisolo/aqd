@@ -101,8 +101,15 @@ let $countRegimes := count($docRoot//aqd:AQD_AssessmentRegime)
 
 let $latestModels :=
     try {
-        let $all := distinct-values(data(sparqlx:run(query:getModel($latestEnvelopeD1b))//sparql:binding[@name = 'inspireLabel']/sparql:literal))
-        return if (empty($all)) then distinct-values(data(sparqlx:run(query:getModel($latestEnvelopeD))//sparql:binding[@name = 'inspireLabel']/sparql:literal)) else $all
+        distinct-values(data(sparqlx:run(query:getModel($latestEnvelopeD1b))//sparql:binding[@name = 'inspireLabel']/sparql:literal))
+    } catch * {
+        ()
+    }
+let $modelsEnvelope := if (empty($latestModels)) then $latestEnvelopeD else $latestEnvelopeD1b
+
+let $latestModels :=
+    try {
+        if (empty($latestModels)) then distinct-values(data(sparqlx:run(query:getModel($latestEnvelopeD))//sparql:binding[@name = 'inspireLabel']/sparql:literal)) else $latestModels
     } catch * {
         ()
     }
@@ -542,9 +549,8 @@ let $C26table :=
         let $startDate := substring(data($docRoot//aqd:reportingPeriod/gml:TimePeriod/gml:beginPosition),1,10)
         let $endDate := substring(data($docRoot//aqd:reportingPeriod/gml:TimePeriod/gml:endPosition),1,10)
 
-        let $latestDEnvelopes := distinct-values(query:getEnvelopes($cdrUrl || "d/", $reportingYear))
-        let $modelMethods := if (fn:string-length($countryCode) = 2) then distinct-values(data(sparqlx:run(query:getModelEndPosition($latestDEnvelopes, $startDate, $endDate))//sparql:binding[@name='inspireLabel']/sparql:literal)) else ()
-        let $sampingPointMethods := if (fn:string-length($countryCode) = 2) then distinct-values(data(sparqlx:run(query:getSamplingPointEndPosition($latestDEnvelopes,$startDate,$endDate))//sparql:binding[@name='inspireLabel']/sparql:literal)) else ()
+        let $modelMethods := if (fn:string-length($countryCode) = 2) then distinct-values(data(sparqlx:run(query:getModelEndPosition($modelsEnvelope, $startDate, $endDate))//sparql:binding[@name='inspireLabel']/sparql:literal)) else ()
+        let $sampingPointMethods := if (fn:string-length($countryCode) = 2) then distinct-values(data(sparqlx:run(query:getSamplingPointEndPosition($latestEnvelopeD,$startDate,$endDate))//sparql:binding[@name='inspireLabel']/sparql:literal)) else ()
 
         for $method in $docRoot//aqd:AQD_AssessmentRegime/aqd:assessmentMethods/aqd:AssessmentMethods
         let $modelMetaCount := count($method/aqd:modelAssessmentMetadata)
@@ -771,7 +777,7 @@ let $C32table :=
             aqd:inspireId ?inspireId .
             ?inspireId rdfs:label ?inspireLabel .
             ?zone aqd:assessmentType ?assessmentType
-            FILTER (CONTAINS(str(?zone), '" || $latestEnvelopeD || "'))
+            FILTER (CONTAINS(str(?zone), '" || $modelsEnvelope || "'))
          }"
 
         let $aqdModelAssessMentTypes :=
