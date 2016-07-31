@@ -593,13 +593,14 @@ let $G14binvalid :=
 (: G15 :)
 let $G15invalid :=
     try {
-        let $exceptions := (($vocabulary:POLLUTANT_VOCABULARY || "6001" || $vocabulary:REPMETRIC_VOCABULARY || "AEI"))
+        let $exceptions := ($vocabulary:OBJECTIVETYPE_VOCABULARY || "ALT", $vocabulary:OBJECTIVETYPE_VOCABULARY || "INT", $vocabulary:OBJECTIVETYPE_VOCABULARY || "ECO" || $vocabulary:OBJECTIVETYPE_VOCABULARY || "ERT")
         let $valid := distinct-values(data(sparqlx:run(query:getZone($latestEnvelopeByYearB))//sparql:binding[@name='inspireLabel']/sparql:literal))
         for $x in $docRoot//aqd:AQD_Attainment
         let $pollutant := data($x/aqd:pollutant/@xlink:href)
         let $reportingMetric := data($x/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric/@xlink:href)
+        let $objectiveType := data($x/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType/@xlink:href)
         let $zone := $x/aqd:zone
-        where not(($pollutant || $reportingMetric = $exceptions and $zone/@nilReason = "inapplicable")) and not($zone/@xlink:href = $valid)
+        where not($objectiveType = $exceptions) and not($zone/@xlink:href = $valid)
         return
             <tr>
                 <td title="aqd:AQD_Attainment">{data($x/aqd:inspireId/base:Identifier/base:localId)}</td>
