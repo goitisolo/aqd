@@ -50,7 +50,7 @@ declare function xmlconv:getAQFiles($url as xs:string) {
 };
 
 (: QA doc 2.1.3 Check for Reporting Header within an envelope :)
-declare function xmlconv:checkFileReportingHeader($envelope as element(envelope)*, $file as xs:string, $pos as xs:integer) {
+declare function xmlconv:checkFileReportingHeader($envelope as element(envelope)*, $file as xs:string, $pos as xs:integer) as element(tr)* {
     (:let $obligationYears := sparqlx:run(query:getObligationYears()):)
     let $docRoot := doc($file)
 
@@ -153,12 +153,21 @@ declare function xmlconv:checkFileReportingHeader($envelope as element(envelope)
                 <td title="Error description">{$err:description}</td>
             </tr>
         }
-
+    let $resultTable :=
+        <table class="maintable hover" id="fileLink-{$pos}" style="display:none">
+            {html:build2("1", $labels:ENV1, $labels:ENV1, $containsAqdReportingHeader, "Check passed", "", $errors:ERROR)}
+            {html:build2("2", $labels:ENV2, labels:interpolate($labels:ENV2, ($minimumYear, $maximumYear)), $falseTimePeriod, "Check passed", "", $errors:ERROR)}
+            {html:build2("3", $labels:ENV3, $labels:ENV3, $missingAqdReportingHeaderSubElements, "Check passed", "", $errors:ERROR)}
+            {html:build2("4", $labels:ENV4, $labels:ENV4, $missingElementsIfAqdChangeIsTrue, "Check passed", "", $errors:ERROR)}
+            {html:build2("5", $labels:ENV5, $labels:ENV5, $appearingElementsIfAqdChangeIsFalse, "Check passed", "", $errors:ERROR)}
+        </table>
+    let $resultErrorClass :=
+        errors:getMaxError($resultTable//div)
     return
         (
         <tr>
-            <td>{$pos}</td>
-            <td colspan="2">Checked file: { common:getCleanUrl($file) }</td>
+            <td class="bullet">{html:getBullet(string($pos), $resultErrorClass)}</td>
+            <td colspan="2" style="color:{errors:getClassColor($resultErrorClass)}">Checked file: { common:getCleanUrl($file) }</td>
             <td>
                 <a id='envelopeLink-{$pos}' href='javascript:toggleItem("fileLink","envelopeLink", "{$pos}", "Check")'>Show Check</a>
             </td>
@@ -166,13 +175,7 @@ declare function xmlconv:checkFileReportingHeader($envelope as element(envelope)
         <tr>
             <td></td>
             <td colspan="3">
-                <table class="maintable hover" id="fileLink-{$pos}" style="display:none">
-                    {html:build2("1", $labels:ENV1, $labels:ENV1, $containsAqdReportingHeader, "Check passed", "", $errors:ERROR)}
-                    {html:build2("2", $labels:ENV2, labels:interpolate($labels:ENV2, ($minimumYear, $maximumYear)), $falseTimePeriod, "Check passed", "", $errors:ERROR)}
-                    {html:build2("3", $labels:ENV3, $labels:ENV3, $missingAqdReportingHeaderSubElements, "Check passed", "", $errors:ERROR)}
-                    {html:build2("4", $labels:ENV4, $labels:ENV4, $missingElementsIfAqdChangeIsTrue, "Check passed", "", $errors:ERROR)}
-                    {html:build2("5", $labels:ENV5, $labels:ENV5, $appearingElementsIfAqdChangeIsFalse, "Check passed", "", $errors:ERROR)}
-                </table>
+                {$resultTable}
             </td>
         </tr>)
 };

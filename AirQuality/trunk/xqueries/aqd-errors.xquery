@@ -42,7 +42,7 @@ declare function errors:getClassColor($class as xs:string) {
     default return $errors:COLOR_SKIPPED
 };
 
-declare function errors:getMaxError($records as element(tr)*) as xs:string {
+declare function errors:getMaxError($records as element()*) as xs:string {
     if (count($records[@status = $errors:FAILED]) > 0) then $errors:FAILED
     else if (count($records[@class = $errors:FAILED]) > 0) then $errors:FAILED
     else if (count($records[@class = $errors:ERROR]) > 0) then $errors:ERROR
