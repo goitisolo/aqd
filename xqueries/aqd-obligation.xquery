@@ -117,14 +117,14 @@ return
                     if (count($validObligations) = 1) then
                         <p>The envelope is attached to the following obligation: <a href="{$validObligations[1]}">{$validObligations[1]}</a></p>
                     else
-                        <p>The envelope is attached to the following obligations:</p>,
+                        (<p>The envelope is attached to the following obligations:</p>,
                         <ul>
                             {
                                 for $obligation in $validObligations
                                 return
                                     <li><a href="{$obligation}">{$obligation}</a></li>
                             }
-                        </ul>
+                        </ul>)
                     }
                     {$messages}
                 </div>
