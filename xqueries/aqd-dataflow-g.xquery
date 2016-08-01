@@ -576,7 +576,24 @@ let $G14table :=
 let $G14binvalid :=
     try {
         let $exception := ($vocabulary:OBJECTIVETYPE_VOCABULARY || "ALT", $vocabulary:OBJECTIVETYPE_VOCABULARY || "INT", $vocabulary:OBJECTIVETYPE_VOCABULARY || "MO")
-        let $all := distinct-values(data(sparqlx:run(query:getAssessmentRegime($latestEnvelopeByYearC))/sparql:binding[@name = 'inspireLabel']/sparql:literal))
+        let $query :=
+            "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+   PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
+   PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+
+   SELECT ?localId ?inspireLabel
+   WHERE {
+          ?regime a aqd:AQD_AssessmentRegime ;
+          aqd:inspireId ?inspireId ;
+          aqd:assessmentThreshold ?assessmentThreshold .
+          ?inspireId rdfs:label ?inspireLabel .
+          ?inspireId aqd:localId ?localId .
+          ?assessmentThreshold aqd:environmentalObjective ?objective .
+          ?objective aqd:objectiveType ?objectiveType .
+          FILTER (CONTAINS(str(?regime), '" || $latestEnvelopeByYearC || "'))
+          FILTER (not(str(?objectiveType) in ('" || string-join($exception, "','") || "')))
+   }"
+        let $all := distinct-values(data(sparqlx:run($query)/sparql:binding[@name = 'inspireLabel']/sparql:literal))
         let $allLocal := data($docRoot//aqd:AQD_Attainment[not(aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType/@xlink:href = $exception)]/aqd:assessment/@xlink:href)
         for $x in $all
         where (not($x = $allLocal))
@@ -594,7 +611,7 @@ let $G14binvalid :=
 (: G15 :)
 let $G15invalid :=
     try {
-        let $exceptions := ($vocabulary:OBJECTIVETYPE_VOCABULARY || "ALT", $vocabulary:OBJECTIVETYPE_VOCABULARY || "INT", $vocabulary:OBJECTIVETYPE_VOCABULARY || "ECO" || $vocabulary:OBJECTIVETYPE_VOCABULARY || "ERT")
+        let $exceptions := ($vocabulary:OBJECTIVETYPE_VOCABULARY || "ALT", $vocabulary:OBJECTIVETYPE_VOCABULARY || "INT", $vocabulary:OBJECTIVETYPE_VOCABULARY || "ECO", $vocabulary:OBJECTIVETYPE_VOCABULARY || "ERT")
         let $valid := distinct-values(data(sparqlx:run(query:getZone($latestEnvelopeByYearB))//sparql:binding[@name='inspireLabel']/sparql:literal))
         for $x in $docRoot//aqd:AQD_Attainment
         let $pollutant := data($x/aqd:pollutant/@xlink:href)
