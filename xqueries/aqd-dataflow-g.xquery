@@ -68,6 +68,7 @@ let $latestEnvelopeC := query:getLatestEnvelope($cdrUrl || "c/")
 let $latestEnvelopeByYearC := query:getLatestEnvelope($cdrUrl || "c/", $reportingYear)
 let $latestEnvelopeD := query:getLatestEnvelope($cdrUrl || "d/")
 let $latestEnvelopeD1b := query:getLatestEnvelope($cdrUrl || "d1b/", $reportingYear)
+let $latestEnvelopeByYearG := query:getLatestEnvelope($cdrUrl || "g/", $reportingYear)
 
 let $latestModels :=
     try {
@@ -78,7 +79,6 @@ let $latestModels :=
     }
 
 (: GLOBAL variables needed for all checks :)
-let $knownAttainments := distinct-values(data(sparqlx:run(query:getAttainment($cdrUrl || "d/"))//sparql:binding[@name='inspireLabel']/sparql:literal))
 let $assessmentRegimeIds := distinct-values(data(sparqlx:run(query:getAssessmentRegime($cdrUrl || "c/"))//sparql:binding[@name='inspireLabel']/sparql:literal))
 let $assessmentMetadataNamespace := distinct-values(data(sparqlx:run(query:getAssessmentMethods())//sparql:binding[@name='assessmentMetadataNamespace']/sparql:literal))
 let $assessmentMetadataId := distinct-values(data(sparqlx:run(query:getAssessmentMethods())//sparql:binding[@name='assessmentMetadataId']/sparql:literal))
@@ -150,6 +150,11 @@ let $G0table :=
         </tr>
     }
 let $isNewDelivery := errors:getMaxError($G0table) = $errors:INFO
+let $knownAttainments :=
+    if ($isNewDelivery) then
+        distinct-values(data(sparqlx:run(query:getAttainment($cdrUrl || "g/"))//sparql:binding[@name='inspireLabel']/sparql:literal))
+    else
+        distinct-values(data(sparqlx:run(query:getAttainment($latestEnvelopeByYearG))//sparql:binding[@name='inspireLabel']/sparql:literal))
 
 (: G1 :)
 let $countAttainments := count($docRoot//aqd:AQD_Attainment)
