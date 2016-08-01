@@ -181,6 +181,12 @@ let $M2table :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+let $M2count :=
+    try {
+        string(sum($M2table/td[2]))
+    } catch * {
+        "NaN"
+    }
 
 (: M3 - :)
 let $M3table :=
@@ -193,6 +199,7 @@ let $M3table :=
                 where ($knownFeatures = $inspireId)
                 return
                     <tr>
+                        <td title="Feature type">{string($x/name())}</td>
                         <td title="base:localId">{$x//base:Identifier/base:localId/string()}</td>
                     </tr>)
         let $errorClass :=
@@ -210,6 +217,12 @@ let $M3table :=
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
         </tr>
+    }
+let $M3count :=
+    try {
+        string(sum($M3table/td[2]))
+    } catch * {
+        "NaN"
     }
 
 (: M4 :)
@@ -772,8 +785,8 @@ let $M46message :=
         {html:build2("NS", $labels:NAMESPACES, $labels:NAMESPACES_SHORT, $NSinvalid, "All values are valid", "record", $errors:WARNING)}
         {html:build3("M0", $labels:M0, $labels:M0_SHORT, $M0table, string($M0table/td), errors:getMaxError($M0table))}
         {html:build2("M1", $labels:M1, $labels:M1_SHORT, $M1table, "All values are valid", "record", errors:getMaxError($M1table))}
-        {html:build2("M2", $labels:M2, $labels:M2_SHORT, $M2table, "All values are valid", "record", errors:getMaxError($M2table))}
-        {html:build2("M3", $labels:M3, $labels:M3_SHORT, $M3table, "All values are valid", "record", errors:getMaxError($M3table))}
+        {html:buildSimple("M2", $labels:M2, $labels:M2_SHORT, $M2table, $M2count, "feature type", errors:getMaxError($M2table))}
+        {html:buildSimple("M3", $labels:M3, $labels:M3_SHORT, $M3table, $M3count, "feature type", errors:getMaxError($M3table))}
         {html:build2("M4", $labels:M4, $labels:M4_SHORT, $M4table, "All values are valid", "record", $errors:INFO)}
         {html:build2("M5", $labels:M5, $labels:M5_SHORT, $M5invalid, "All values are valid", "record", $errors:ERROR)}
         {html:buildInfoTR("Specific checks on AQD_Models")}
