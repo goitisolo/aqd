@@ -402,8 +402,9 @@ let $D7.1invalid :=
 (: D8 :)
 let $D8invalid :=
     try {
+        let $valid := ($vocabulary:MEDIA_VALUE_VOCABULARY_BASE_URI || "air", $vocabulary:MEDIA_VALUE_VOCABULARY_BASE_URI_UC || "air")
         for $x in $docRoot//aqd:AQD_Network/ef:mediaMonitored
-        where not($x/@xlink:href = $vocabulary:MEDIA_VALUE_VOCABULARY_BASE_URI || "air")
+        where not($x/@xlink:href = $valid)
         return
             <tr>
                 <td title="aqd:AQD_Network">{data($x/../ef:inspireId/base:Identifier/base:localId)}</td>
@@ -614,8 +615,9 @@ let $D18invalid :=
 (: D19 :)
 let $D19invalid :=
     try {
+        let $valid := ($vocabulary:MEDIA_VALUE_VOCABULARY_BASE_URI || "air", $vocabulary:MEDIA_VALUE_VOCABULARY_BASE_URI_UC || "air")
         for $x in $docRoot//aqd:AQD_Station/ef:mediaMonitored
-        where not($x/xlink:href = $vocabulary:MEDIA_VALUE_VOCABULARY_BASE_URI || "air")
+        where not($x/xlink:href = $valid)
         return
             <tr>
                 <td title="aqd:AQD_Station">{data($x/../ef:inspireId/base:Identifier/base:localId)}</td>
@@ -895,8 +897,9 @@ let $D32.1invalid :=
 (: D33 :)
 let $D33invalid :=
     try {
+        let $valid := ($vocabulary:MEDIA_VALUE_VOCABULARY_BASE_URI || "air", $vocabulary:MEDIA_VALUE_VOCABULARY_BASE_URI_UC || "air")
         for $x in $docRoot//aqd:AQD_SamplingPoint/ef:mediaMonitored
-        where not($x/@xlink:href = $vocabulary:MEDIA_VALUE_VOCABULARY_BASE_URI || "air")
+        where not($x/@xlink:href = $valid)
         return
             <tr>
                 <td title="aqd:AQD_SamplingPoint">{data($x/../ef:inspireId/base:Identifier/base:localId)}</td>
