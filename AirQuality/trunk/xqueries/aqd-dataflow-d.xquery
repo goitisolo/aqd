@@ -617,7 +617,7 @@ let $D19invalid :=
     try {
         let $valid := ($vocabulary:MEDIA_VALUE_VOCABULARY_BASE_URI || "air", $vocabulary:MEDIA_VALUE_VOCABULARY_BASE_URI_UC || "air")
         for $x in $docRoot//aqd:AQD_Station/ef:mediaMonitored
-        where not($x/xlink:href = $valid)
+        where not($x/@xlink:href = $valid)
         return
             <tr>
                 <td title="aqd:AQD_Station">{data($x/../ef:inspireId/base:Identifier/base:localId)}</td>
