@@ -2077,7 +2077,7 @@ return
         {html:deprecated("D63", $labels:D63, $labels:D63_SHORT, $D63invalid, "", "", "", "", $errors:ERROR)}
         {html:buildInfoTR("Checks on SamplingPointProcess(es) where the xlinked SamplingPoint has aqd:AQD_SamplingPoint/aqd:usedAQD equals TRUE (D67 to D70):")}
         {html:build2("D65", $labels:D65, $labels:D65_SHORT, $D65invalid, "All values are valid", "record", $errors:WARNING)}
-        {html:build2("D67a", $labels:D67a, $labels:D67a_SHORT, $D67ainvalid, "All values are valid", "", $errors:ERROR)}
+        {html:build2("D67a", $labels:D67a, $labels:D67a_SHORT, $D67ainvalid, "All values are valid", "", $errors:WARNING)}
         {html:build2("D67b", $labels:D67b, $labels:D67b_SHORT, $D67binvalid, "All values are valid", "", $errors:WARNING)}
         {html:build2("D68", $labels:D68, $labels:D68_SHORT, $D68invalid, "All values are valid", "record", $errors:WARNING)}
         {html:build2("D69", $labels:D69, $labels:D69_SHORT, $D69invalid, "All values are valid", "record", $errors:WARNING)}
@@ -2091,10 +2091,10 @@ return
         {html:build2("D76", $labels:D76, $labels:D76_SHORT, $D76invalid, "All attributes are valid", " invalid attribute", $errors:WARNING)}
         {html:build2("D77", $labels:D77, $labels:D77_SHORT, $D77invalid, "All attributes are valid", " invalid attribute", $errors:WARNING)}
         {html:build2("D78", $labels:D78, $labels:D78_SHORT, $D78invalid, "All values are valid"," invalid attribute", $errors:WARNING)}
-        {html:build2("D91", $labels:D91, $labels:D91_SHORT, $D91invalid, "All values are valid"," invalid attribute", $errors:ERROR)}
-        {html:build2("D92", $labels:D92, $labels:D92_SHORT, $D92invalid, "All values are valid"," invalid attribute", $errors:ERROR)}
-        {html:build2("D93", $labels:D93, $labels:D93_SHORT, $D93invalid, "All values are valid"," invalid attribute", $errors:ERROR)}
-        {html:build2("D94", $labels:D94, $labels:D94_SHORT, $D94invalid, "All values are valid"," invalid attribute", $errors:ERROR)}
+        {html:build2("D91", $labels:D91, $labels:D91_SHORT, $D91invalid, "All values are valid"," invalid attribute", $errors:WARNING)}
+        {html:build2("D92", $labels:D92, $labels:D92_SHORT, $D92invalid, "All values are valid"," invalid attribute", $errors:WARNING)}
+        {html:build2("D93", $labels:D93, $labels:D93_SHORT, $D93invalid, "All values are valid"," invalid attribute", $errors:WARNING)}
+        {html:build2("D94", $labels:D94, $labels:D94_SHORT, $D94invalid, "All values are valid"," invalid attribute", $errors:WARNING)}
     </table>
 };
 
