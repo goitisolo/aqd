@@ -486,7 +486,33 @@ let $G13invalid :=
             <td></td>
         </tr>
     }
+(: G13b :)
 let $G13binvalid :=
+    try {
+        let $G13Results := sparqlx:run(query:getG13($cdrUrl, $reportingYear))
+        let $inspireLabels := distinct-values(data($G13Results//sparql:binding[@name='inspireLabel']/sparql:literal))
+        let $remoteConcats :=
+            for $x in $G13Results
+            return $x/sparql:binding[@name='inspireLabel']/sparql:literal || $x/sparql:binding[@name='pollutant']/sparql:uri || $x/sparql:binding[@name='protectionTarget']/sparql:uri
+
+        for $x in $docRoot//aqd:AQD_Attainment[aqd:assessment/@xlink:href]
+        let $xlink := $x/aqd:assessment/@xlink:href
+        let $concat := $x/aqd:assessment/@xlink:href/string() || $x/aqd:pollutant/@xlink:href || $x/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/@xlink:href
+        where (not($xlink = $inspireLabels) or (not($concat = $remoteConcats)))
+        return
+            <tr>
+                <td title="aqd:AQD_Attainment">{data($x/aqd:inspireId/base:Identifier/base:localId)}</td>
+                <td title="aqd:assessment">{data($x/aqd:assessment/@xlink:href)}</td>
+            </tr>
+    } catch * {
+        <tr status="failed">
+            <td title="Error code"> {$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+            <td></td>
+        </tr>
+    }
+(: G13c :)
+let $G13cinvalid :=
     try {
         let $G13Results := sparqlx:run(query:getG13($cdrUrl, $reportingYear))
         let $inspireLabels := distinct-values(data($G13Results//sparql:binding[@name='inspireLabel']/sparql:literal))
@@ -1502,8 +1528,9 @@ return
         {html:build2("G10", $labels:G10, $labels:G10_SHORT, $G10invalid, "All values are valid", "", $errors:ERROR)}
         {html:build2("G11", $labels:G11, $labels:G11_SHORT, $G11invalid, "All values are valid", " invalid value", $errors:ERROR)}
         {html:build2("G12", $labels:G12, $labels:G12_SHORT, $G12invalid, "All values are valid", " invalid value", $errors:ERROR)}
-        {html:build2("G13", $labels:G13, $labels:G13_SHORT, $G13invalid, "All values are valid", " invalid value", $errors:ERROR)}
-        {html:build2("G13b", $labels:G13b, $labels:G13b_SHORT, $G13binvalid, "All values are valid", " invalid value", $errors:WARNING)}
+        {html:build2("G13", $labels:G13, $labels:G13_SHORT, $G13invalid, "All values are valid", " invalid value", $errors:WARNING)}
+        {html:build2("G13b", $labels:G13b, $labels:G13b_SHORT, $G13binvalid, "All values are valid", " invalid value", $errors:ERROR)}
+        {html:build2("G13c", $labels:G13c, $labels:G13c_SHORT, $G13cinvalid, "All values are valid", " invalid value", $errors:WARNING)}
         {html:build2("G14", $labels:G14, $labels:G14_SHORT, $G14table, "All values are valid", "record", errors:getMaxError($G14table))}
         {html:build2("G14b", $labels:G14b, $labels:G14b_SHORT, $G14binvalid, "All assessment regimes are reported", " missing assessment regime", $errors:WARNING)}
         {html:build2("G15", $labels:G15, $labels:G15_SHORT, $G15invalid, "All values are valid", " invalid value", $errors:ERROR)}
