@@ -462,10 +462,15 @@ let $G12invalid :=
     }
 
 (: G13 - :)
+let $G13Results :=
+    try {
+        sparqlx:run(query:getG13($cdrUrl, $reportingYear))
+    } catch * {
+        ()
+    }
+let $G13inspireLabels := distinct-values(data($G13Results//sparql:binding[@name='inspireLabel']/sparql:literal))
 let $G13invalid :=
     try {
-        let $G13Results := sparqlx:run(query:getG13($cdrUrl, $reportingYear))
-        let $inspireLabels := distinct-values(data($G13Results//sparql:binding[@name='inspireLabel']/sparql:literal))
         let $remoteConcats :=
             for $x in $G13Results
             return $x/sparql:binding[@name='inspireLabel']/sparql:literal || $x/sparql:binding[@name='pollutant']/sparql:uri || $x/sparql:binding[@name='objectiveType']/sparql:uri
@@ -473,7 +478,7 @@ let $G13invalid :=
         for $x in $docRoot//aqd:AQD_Attainment[aqd:assessment/@xlink:href]
         let $xlink := $x/aqd:assessment/@xlink:href
         let $concat := $x/aqd:assessment/@xlink:href/string() || $x/aqd:pollutant/@xlink:href || $x/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType/@xlink:href
-        where (not($xlink = $inspireLabels) or (not($concat = $remoteConcats)))
+        where (not($xlink = $G13inspireLabels) or (not($concat = $remoteConcats)))
         return
             <tr>
                 <td title="aqd:AQD_Attainment">{data($x/aqd:inspireId/base:Identifier/base:localId)}</td>
@@ -489,8 +494,6 @@ let $G13invalid :=
 (: G13b :)
 let $G13binvalid :=
     try {
-        let $G13Results := sparqlx:run(query:getG13($cdrUrl, $reportingYear))
-        let $inspireLabels := distinct-values(data($G13Results//sparql:binding[@name='inspireLabel']/sparql:literal))
         let $remoteConcats :=
             for $x in $G13Results
             return $x/sparql:binding[@name='inspireLabel']/sparql:literal || $x/sparql:binding[@name='pollutant']/sparql:uri || $x/sparql:binding[@name='protectionTarget']/sparql:uri
@@ -498,7 +501,7 @@ let $G13binvalid :=
         for $x in $docRoot//aqd:AQD_Attainment[aqd:assessment/@xlink:href]
         let $xlink := $x/aqd:assessment/@xlink:href
         let $concat := $x/aqd:assessment/@xlink:href/string() || $x/aqd:pollutant/@xlink:href || $x/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/@xlink:href
-        where (not($xlink = $inspireLabels) or (not($concat = $remoteConcats)))
+        where (not($xlink = $G13inspireLabels) or (not($concat = $remoteConcats)))
         return
             <tr>
                 <td title="aqd:AQD_Attainment">{data($x/aqd:inspireId/base:Identifier/base:localId)}</td>
@@ -514,8 +517,6 @@ let $G13binvalid :=
 (: G13c :)
 let $G13cinvalid :=
     try {
-        let $G13Results := sparqlx:run(query:getG13($cdrUrl, $reportingYear))
-        let $inspireLabels := distinct-values(data($G13Results//sparql:binding[@name='inspireLabel']/sparql:literal))
         let $remoteConcats :=
             for $x in $G13Results
             return $x/sparql:binding[@name='inspireLabel']/sparql:literal || $x/sparql:binding[@name='pollutant']/sparql:uri || $x/sparql:binding[@name='objectiveType']/sparql:uri ||
@@ -525,7 +526,7 @@ let $G13cinvalid :=
         let $xlink := $x/aqd:assessment/@xlink:href
         let $concat := $x/aqd:assessment/@xlink:href/string() || $x/aqd:pollutant/@xlink:href || $x/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType/@xlink:href ||
         $x/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric/@xlink:href || $x/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/@xlink:href
-        where (not($xlink = $inspireLabels) or (not($concat = $remoteConcats)))
+        where (not($xlink = $G13inspireLabels) or (not($concat = $remoteConcats)))
         return
             <tr>
                 <td title="aqd:AQD_Attainment">{data($x/aqd:inspireId/base:Identifier/base:localId)}</td>
@@ -533,7 +534,7 @@ let $G13cinvalid :=
             </tr>
     } catch * {
         <tr status="failed">
-            <td title="Error code"> {$err:code}</td>
+            <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
             <td></td>
         </tr>
