@@ -587,8 +587,10 @@ let $G14table :=
             let $errorClass :=
                 if ((string($countB), string($countC), string($countG)) = "NaN") then $errors:ERROR
                 else if ($countG > $countC) then $errors:ERROR
+                else if ($countG > $countB) then $errors:ERROR
                 else if ($countC > $countG) then $errors:WARNING
-                    else $errors:INFO
+                else if ($countB > $countG) then $errors:WARNING
+                else $errors:INFO
         return
             <tr class="{$errorClass}">
                 <td title="Pollutant Name">{$vsName || " (" || $G14ResultG[pollutantName = $vsName and protectionTarget = $protectionTarget]/pollutantCode || ")"}</td>
