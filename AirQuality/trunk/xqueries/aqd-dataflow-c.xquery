@@ -998,7 +998,7 @@ return
         {html:build2("C8", $labels:C8, $labels:C8_SHORT, $C8invalid, "All values are valid", " missing pollutant", $errors:ERROR)}
         {html:build0("C9", $labels:C9, $labels:C9_SHORT, $C9table, "pollutant")}
         {html:build2("C10", $labels:C10, $labels:C10_SHORT, $C10invalid, "All values are valid", " invalid value", $errors:ERROR)}
-        {html:build2("C20", $labels:C20, $labels:C20_SHORT, $C20invalid, "All combinations have been found", "record", $errors:WARNING)}
+        {html:build2("C20", $labels:C20, $labels:C20_SHORT, $C20invalid, "All combinations have been found", "record", $errors:ERROR)}
         {html:build2("C21", $labels:C21, $labels:C21_SHORT, $C21invalid, "All values are valid", " invalid value", $errors:WARNING)}
         {html:build2("C22", $labels:C22, $labels:C22_SHORT, $C22invalid, "All values are valid", " invalid value", $errors:ERROR)}
         {html:build2("C23a", $labels:C23a, $labels:C23a_SHORT, $C23ainvalid, "All values are valid", " invalid value", $errors:ERROR)}
