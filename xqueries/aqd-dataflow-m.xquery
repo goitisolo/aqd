@@ -458,16 +458,19 @@ let $M23invalid :=
             return $x/prop:relatedPollutant/@rdf:resource || "#" || $x/prop:hasObjectiveType/@rdf:resource || "#" || $x/prop:hasReportingMetric/@rdf:resource || "#" || $x/prop:hasProtectionTarget/@rdf:resource
 
         for $x in $docRoot//aqd:AQD_Model
-        let $pollutant := $x/ef:observingCapability/ef:ObservingCapability/ef:observedProperty/@xlink:href
-        let $objectiveType := $x/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType/@xlink:href
-        let $reportingMetric := $x/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric/@xlink:href
-        let $protectionTarget := $x/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/@xlink:href
+        for $z in $x/ef:observingCapability
+        for $y in $x/aqd:environmentalObjective
+        let $pollutant := $z/ef:ObservingCapability/ef:observedProperty/@xlink:href
+        let $objectiveType := $y/aqd:EnvironmentalObjective/aqd:objectiveType/@xlink:href
+        let $reportingMetric := $y/aqd:EnvironmentalObjective/aqd:reportingMetric/@xlink:href
+        let $protectionTarget := $y/aqd:EnvironmentalObjective/aqd:protectionTarget/@xlink:href
         let $combination := $pollutant || "#" || $objectiveType || "#" || $reportingMetric || "#" || $protectionTarget
         where not($objectiveType = $exceptions) and not($combination = $all)
         return
             <tr>
-                <td title="aqd:AQD_Model">{data($x/aqd:inspireId/base:Identifier/base:localId)}</td>
+                <td title="aqd:AQD_Model">{data($x/ef:inspireId/base:Identifier/base:localId)}</td>
                 <td title="Pollutant">{data($pollutant)}</td>
+                <td title="ObjectiveType">{data($objectiveType)}</td>
                 <td title="ReportingMetric">{data($reportingMetric)}</td>
                 <td title="ProtectionTarget">{data($protectionTarget)}</td>
             </tr>
