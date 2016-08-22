@@ -373,6 +373,7 @@ let $C9table :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+
 (: C10 :)
 let $C10invalid :=
     try {
@@ -392,6 +393,7 @@ let $C10invalid :=
             <tr>
                 <td title="aqd:AQD_AssessmentRegime">{data($x/aqd:inspireId/base:Identifier/base:localId)}</td>
                 <td title="Pollutant">{data($pollutant)}</td>
+                <td title="ObjectiveType">{data($objectiveType)}</td>
                 <td title="ReportingMetric">{data($reportingMetric)}</td>
                 <td title="ProtectionTarget">{data($protectionTarget)}</td>
             </tr>
@@ -401,6 +403,7 @@ let $C10invalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+
 (: C20 :)
 let $C20invalid :=
     try {
@@ -453,6 +456,10 @@ let $C21invalid :=
         return
             <tr>
                 <td title="aqd:AQD_AssessmentRegime">{string($x/../../../../aqd:inspireId/base:Identifier/base:localId)}</td>
+                <td title="Pollutant">{data($pollutant)}</td>
+                <td title="ObjectiveType">{data($objectiveType)}</td>
+                <td title="ReportingMetric">{data($reportingMetric)}</td>
+                <td title="ProtectionTarget">{data($protectionTarget)}</td>
             </tr>
     } catch * {
         <tr status="failed">
@@ -460,6 +467,7 @@ let $C21invalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+
 (: C22 :)
 let $C22invalid :=
     try {
