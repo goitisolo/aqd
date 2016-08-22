@@ -2031,7 +2031,7 @@ return
         {html:build2("D16.1", $labels:D16.1, $labels:D16.1_SHORT, $D16.1invalid, "All values are valid", " invalid namespaces", $errors:ERROR)}
         {html:build2("D17", $labels:D17, $labels:D17_SHORT, $D17invalid, "All values are valid", "", $errors:ERROR)}
         {html:build2("D18", $labels:D18, $labels:D18_SHORT, $D18invalid, "All values are valid", "", $errors:ERROR)}
-        {html:build2("D19", $labels:D19, $labels:D19, $D19invalid, "All values are valid", "record", $errors:WARNING)}
+        {html:build2("D19", $labels:D19, $labels:D19_SHORT, $D19invalid, "All values are valid", "record", $errors:WARNING)}
         {html:build2("D20", $labels:D20, $labels:D20_SHORT, $D20invalid, "All smsName attributes are valid"," invalid attribute", $errors:ERROR)}
         {html:build2("D21", $labels:D21, $labels:D21_SHORT, $invalidPosD21, "All srsDimension attributes resolve to ""2""", " invalid attribute", $errors:ERROR)}
         {html:build2("D23", $labels:D23, $labels:D23_SHORT, $D23invalid, "All values are valid", "", $errors:ERROR)}
