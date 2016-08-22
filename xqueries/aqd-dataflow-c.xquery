@@ -914,10 +914,10 @@ let $C38invalid :=
                     ?relevantEmissions aqd:stationClassification ?stationClassification
              FILTER (CONTAINS(str(?zone), '" || $latestEnvelopeD || "') and str(?stationClassification)='http://dd.eionet.europa.eu/vocabulary/aq/stationclassification/background')
              }"
-        let $valid := distinct-values(data(sparqlx:run($query)))/sparql:binding[@name = 'inspireLabel']/sparql:literal
+        let $valid := distinct-values(data(sparqlx:run($query)/sparql:binding[@name = 'inspireLabel']/sparql:literal))
 
         for $x in $docRoot//aqd:AQD_AssessmentRegime/aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric[@xlink:href = $vocabulary:REPMETRIC_VOCABULARY || "AEI"]
-        let $xlink := data($x/../../../../../aqd:assessmentMethods/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata/@xlink:href)
+        for $xlink in $x/../../../../../aqd:assessmentMethods/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata/@xlink:href
         where not($xlink = $valid)
         return
             <tr>
