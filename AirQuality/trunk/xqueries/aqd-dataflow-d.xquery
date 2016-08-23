@@ -825,7 +825,7 @@ let $D30invalid :=
         where not($x/@xlink:href = $valid)
         return
             <tr>
-                <td title="aqd:AQD_Station">{data($x/../ef:inspireId/base:Identifier/base:localId)}</td>
+                <td title="aqd:AQD_Station">{data($x/../../../ef:inspireId/base:Identifier/base:localId)}</td>
                 <td title="aqd:dispersionRegional">{data($x/@xlink:href)}</td>
             </tr>
     }  catch * {
