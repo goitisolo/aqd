@@ -283,7 +283,9 @@ let $B8table :=
             let $vsName := dd:getNameFromPollutantCode($pollutant)
             let $vsCode := string($vocabulary:POLLUTANT_VOCABULARY || $pollutant)
             let $errorClass :=
-                if ($count = "" or $count = "NaN" or $count = "0") then
+                if ($countryCode = "gi" and (($x/@pollutant = "1" and $x/@protectionTarget = "V") or ($x/@pollutant = "9" and $x/@protectionTarget = "V"))) then
+                    $errors:INFO
+                else if ($count = "" or $count = "NaN" or $count = "0") then
                     $errors:ERROR
                 else
                     $errors:INFO
