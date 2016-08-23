@@ -67,10 +67,6 @@ let $latestEnvelopeB := query:getLatestEnvelope($cdrUrl || $bdir, $reportingYear
 let $nameSpaces := distinct-values($docRoot//base:namespace)
 let $zonesNamespaces := distinct-values($docRoot//aqd:AQD_Zone/am:inspireId/base:Identifier/base:namespace)
 
-(: INFO: XML Validation check. This adds delay to the running scripts :)
-let $validationResult := schemax:validateXmlSchema($source_url)
-
-
 (: File prefix/namespace check :)
 let $NSinvalid :=
     try {
@@ -1051,7 +1047,6 @@ let $B47invalid :=
 
 return
     <table class="maintable hover">
-        {html:buildXML("XML", $labels:XML, $labels:XML_SHORT, $validationResult, "This XML passed validation.", "This XML file did NOT pass the XML validation", $errors:ERROR)}
         {html:build2("NS", $labels:NAMESPACES, $labels:NAMESPACES_SHORT, $NSinvalid, "All values are valid", "record", $errors:WARNING)}
         {html:build3("B0", $labels:B0, $labels:B0_SHORT, $B0table, string($B0table/td), errors:getMaxError($B0table))}
         {html:buildCountRow0("B1", $labels:B1, $labels:B1_SHORT, $countZones, "", "record", $errors:INFO)}

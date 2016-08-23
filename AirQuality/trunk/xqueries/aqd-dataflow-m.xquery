@@ -70,8 +70,6 @@ let $MCombinations :=
     for $featureType in $xmlconv:FEATURE_TYPES
     return
         doc($source_url)//gml:featureMember/descendant::*[name()=$featureType]
-(: INFO: XML Validation check. This adds delay to the running scripts :)
-let $validationResult := schemax:validateXmlSchema($source_url)
 
 (: File prefix/namespace check :)
 let $NSinvalid :=
@@ -784,7 +782,6 @@ let $M46message :=
 
     return
     <table class="maintable hover">
-        {html:buildXML("XML", $labels:XML, $labels:XML_SHORT, $validationResult, "This XML passed validation.", "This XML file did NOT pass the XML validation", $errors:ERROR)}
         {html:build2("NS", $labels:NAMESPACES, $labels:NAMESPACES_SHORT, $NSinvalid, "All values are valid", "record", $errors:WARNING)}
         {html:build3("M0", $labels:M0, $labels:M0_SHORT, $M0table, string($M0table/td), errors:getMaxError($M0table))}
         {html:build2("M1", $labels:M1, $labels:M1_SHORT, $M1table, "All values are valid", "record", errors:getMaxError($M1table))}
