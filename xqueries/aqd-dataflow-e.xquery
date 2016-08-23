@@ -49,8 +49,6 @@ let $reportingYear := common:getReportingYear($docRoot)
 let $cdrUrl := common:getCdrUrl($countryCode)
 
 let $latestEnvelopeD := query:getLatestEnvelope($cdrUrl || "d/")
-(: INFO: XML Validation check. This adds delay to the running scripts :)
-let $validationResult := schemax:validateXmlSchema($source_url)
 
 (: File prefix/namespace check :)
 let $NSinvalid :=
@@ -540,7 +538,6 @@ let $E26invalid :=
 
 return
     <table class="maintable hover">
-        {html:buildXML("XML", $labels:XML, $labels:XML_SHORT, $validationResult, "This XML passed validation.", "This XML file did NOT pass the XML validation", $errors:ERROR)}
         {html:build2("NS", $labels:NAMESPACES, $labels:NAMESPACES_SHORT, $NSinvalid, "All values are valid", "record", $errors:WARNING)}
         {html:build3("E0", $labels:E0, $labels:E0_SHORT, $E0table, string($E0table/td), errors:getMaxError($E0table))}
         {html:build1("E01", $labels:E01, $labels:E01_SHORT, $E01table, "", string(count($E01table)), "record", "", $errors:INFO)}

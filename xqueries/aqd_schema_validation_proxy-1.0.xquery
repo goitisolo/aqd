@@ -17,15 +17,15 @@ declare namespace aqd = "http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0";
 
 declare variable $xmlconv:xmlValidatorUrl as xs:string := 'http://converters.eionet.europa.eu/api/runQAScript?script_id=-1&amp;url=';
 
-declare variable $ignoredMessages := ("cvc-elt.1: Cannot find the declaration of element 'gml:FeatureCollection'.",
-    "cvc-elt.4.2: Cannot resolve 'gco:RecordType_Type' to a type definition for element 'gco:Record'.",
-    "cvc-elt.4.2: Cannot resolve 'ns:DataArrayType' to a type definition for element 'om:result'.",
-    "cvc-elt.4.2: Cannot resolve 'ns:ReferenceType' to a type definition for element 'om:value'.");
-
-(:===================================================================:)
-(: Variable given as an external parameter by the QA service                                                 :)
-(:===================================================================:)
-
+declare variable $ignoredMessages :=
+("cvc-elt.1: Cannot find the declaration of element 'gml:FeatureCollection'.",
+"cvc-elt.4.2: Cannot resolve 'gco:RecordType_Type' to a type definition for element 'gco:Record'.",
+"cvc-elt.4.2: Cannot resolve 'ns:DataArrayType' to a type definition for element 'om:result'.",
+"cvc-elt.4.2: Cannot resolve 'ns:ReferenceType' to a type definition for element 'om:value'.",
+"cvc-elt.1.a: Cannot find the declaration of element 'gml:FeatureCollection'.",
+"cvc-elt.4.2.a: Cannot resolve 'gco:RecordType_Type' to a type definition for element 'gco:Record'.",
+"cvc-elt.4.2.a: Cannot resolve 'ns:DataArrayType' to a type definition for element 'om:result'.",
+"cvc-elt.4.2.a: Cannot resolve 'ns:ReferenceType' to a type definition for element 'om:value'.");
 declare variable $source_url as xs:string external;
 
 (: Remove the irrelevant GML XML Schema validation errors. It happens when the gml.xsd is not explicitly defined in schemaLocation attribute. :)
@@ -51,11 +51,8 @@ declare function xmlconv:validateXmlSchema($source_url) {
                         <table class="datatable" border="1">
                             {
                             for $tr in $elem//tr
-                            return
-                                if (not(empty(index-of($ignoredMessages, normalize-space($tr/td[3]/text()))))) then
-                                    ()
-                                else
-                                    $tr
+                            where not(string($tr/td[3]) = $ignoredMessages)
+                            return $tr
                             }
                          </table>
                     else
@@ -73,14 +70,4 @@ declare function xmlconv:validateXmlSchema($source_url) {
         else
             $filteredResult
 };
-
-(:
- : ======================================================================
- : Main function
- : ======================================================================
- :)
-declare function xmlconv:proceed($source_url as xs:string) {
-    xmlconv:validateXmlSchema($source_url)
-};
-
-xmlconv:proceed( $source_url )
+xmlconv:validateXmlSchema($source_url)

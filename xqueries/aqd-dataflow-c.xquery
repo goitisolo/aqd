@@ -115,9 +115,6 @@ let $latestModels :=
     }
 let $latestSamplingPoints := data(sparqlx:run(query:getSamplingPoint($latestEnvelopeD))/sparql:binding[@name = 'inspireLabel']/sparql:literal)
 
-(: INFO: XML Validation check. This adds delay to the running scripts :)
-let $validationResult := schemax:validateXmlSchema($source_url)
-
 (: File prefix/namespace check :)
 let $NSinvalid :=
     try {
@@ -994,7 +991,6 @@ let $C42invalid :=
 
 return
     <table class="maintable hover">
-        {html:buildXML("XML", $labels:XML, $labels:XML_SHORT, $validationResult, "This XML passed validation.", "This XML file did NOT pass the XML validation", $errors:ERROR)}
         {html:build2("NS", $labels:NAMESPACES, $labels:NAMESPACES_SHORT, $NSinvalid, "All values are valid", "record", $errors:WARNING)}
         {html:build3("C0", $labels:C0, $labels:C0_SHORT, $C0table, string($C0table/td), errors:getMaxError($C0table))}
         {html:build1("C1", $labels:C1, $labels:C1_SHORT, $C1table, "", string(count($C1table)), "", "", $errors:ERROR)}
