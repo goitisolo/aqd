@@ -1,0 +1,123 @@
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
+PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+PREFIX aq: <http://reference.eionet.europa.eu/aq/ontology/>
+PREFIX rod-schema: <http://rod.eionet.europa.eu/schema.rdf#>
+
+SELECT
+#DISTINCT
+#?spoURI as ?_id
+concat(?SamplingPointId, ?Sample, ?SamplingProcess)  as ?_id
+?CountryOrTerritory 
+YEAR(?startOfPeriod) as ?ReportingYear 
+?Namespace 
+?Network 
+?Timezone 
+?ResponsibleParty 
+?StationName 
+?EUStationCode as ?EoICode 
+?StationType 
+?StationArea 
+?Pollutant 
+?SamplingPointId 
+?MeasurementRegime 
+?OperationalActivityBegin 
+?OperationalActivityEnd 
+?Sample 
+?SamplingProcess 
+?MeasurementEquipment 
+?MeasurementMethod 
+?SamplingEquipment
+?AnalyticalTechnique 
+?envelope
+
+# bif:either(?usedAQD > 0, "YES","NO") AS ?UsedForAQD ?ZoneCode ?ZoneName ?ZoneResidentPopulation
+
+
+ WHERE {
+
+  ?spoURI a aqd:AQD_SamplingPoint;
+         aqd:observingCapability ?ocURI;
+         aqd:broader ?staURI ;
+      #  aqd:usedAQD ?usedAQD ;
+         aqd:belongsTo ?netURI ;
+         aqd:inspireId ?inspireId .
+         ?inspireId aqd:localId ?SamplingPointId .
+         ?inspireId aqd:namespace ?Namespace .            
+           
+  ?ocURI aqd:observedProperty ?pollURI;
+    aqd:featureOfInterest ?samURI ;
+    aqd:procedure ?sppURI .
+
+ ?envelope rod-schema:hasFile ?source .
+ ?envelope rod-schema:locality ?locURI .
+ ?envelope rod-schema:startOfPeriod ?startOfPeriod .
+ ?locURI rdfs:label ?CountryOrTerritory .
+
+OPTIONAL{?staURI aq:EUStationCode ?EUStationCode} .
+OPTIONAL{?staURI aq:areaClassification ?areaURI} .
+OPTIONAL{?staURI rdfs:label ?StationName} .
+
+OPTIONAL{?spoURI aqd:relevantEmissions ?relemiURI} .
+OPTIONAL{?spoURI aqd:operationalActivityPeriod ?operationalActivityPeriod.
+              ?operationalActivityPeriod aqd:activityTime ?activityTime.
+               ?activityTime aqd:beginPosition ?OperationalActivityBegin}.
+   
+OPTIONAL{?spoURI aqd:operationalActivityPeriod ?operationalActivityPeriod.
+              ?operationalActivityPeriod aqd:activityTime ?activityTime.
+              ?activityTime aqd:endPosition ?OperationalActivityEnd} .
+OPTIONAL{?spoURI aqd:measurementRegime ?measurementRegimeURI} .
+OPTIONAL{?measurementRegimeURI rdfs:label ?MeasurementRegime} .
+#OPTIONAL{?spoURI aqr:zone ?zonURI} .
+
+
+#OPTIONAL{?zonURI aqr:zoneCode ?ZoneCode} .
+#OPTIONAL{?zonURI aqr:residentPopulation ?ZoneResidentPopulation} .
+#OPTIONAL{?zonURI rdfs:label ?ZoneName} .
+
+OPTIONAL{?pollURI skos:notation ?Pollutant} .
+OPTIONAL{?samURI aq:inspireId ?Sample} .
+OPTIONAL{?sppURI aq:hasDeclaration ?hasDeclaration.
+           ?hasDeclaration aqd:inspireId ?inspire.
+           ?inspire aqd:localId ?SamplingProcess} .
+OPTIONAL{?netURI aq:hasDeclaration ?hasDeclaration2.
+           ?hasDeclaration2 aqd:inspireId ?inspireId2.
+           ?inspireId2 aqd:localId ?Network} .
+OPTIONAL{?netURI aq:hasDeclaration ?hasDeclaration3.
+           ?hasDeclaration3 aqd:aggregationTimeZone ?TimezoneURI} .
+OPTIONAL{?TimezoneURI rdfs:label ?Timezone} .
+OPTIONAL{?netURI aq:hasDeclaration ?hasDeclaration4.
+          ?hasDeclaration4  aqd:responsibleParty ?responseparty.
+           ?responseparty rdfs:label ?ResponsibleParty} .
+
+OPTIONAL{?sppURI aq:hasDeclaration ?hasDeclaration.
+           ?hasDeclaration aqd:measurementEquipment ?equiURI} .
+OPTIONAL{?sppURI aq:hasDeclaration ?hasDeclaration.
+            ?hasDeclaration aqd:measurementMethod ?metURI} .
+OPTIONAL{?sppURI aq:hasDeclaration ?hasDeclaration.
+            ?hasDeclaration aqd:analyticalTechnique ?analiticURI} .
+OPTIONAL{?sppURI aq:hasDeclaration ?hasDeclaration.
+            ?hasDeclaration aqd:samplingEquipment ?samequiURI} .
+
+
+
+
+
+OPTIONAL{?areaURI rdfs:label ?StationArea} .
+OPTIONAL{?relemiURI aqd:stationClassification ?staclassURI} .
+OPTIONAL{?staclassURI rdfs:stationtype ?StationType} .
+OPTIONAL{?equiURI aqd:equipment ?MeasureEquipment.
+             ?MeasureEquipment rdfs:label ?MeasurementEquipment} .
+OPTIONAL{?samequiURI aq:equipment ?samequiURI2} .
+OPTIONAL{?samequiURI2 rdfs:label ?SamplingEquipment} .
+OPTIONAL{?metURI aqd:measurementMethod ?measureMethod.
+             ?measureMethod rdfs:label ?MeasurementMethod} .
+OPTIONAL{?analiticURI rdfs:label ?AnalyticalTechnique} .
+
+#FILTER regex(?Namespace,"AT.0008.20.AQ") .
+#FILTER regex(?pollURI,"") .
+            
+#ORDER BY ?Namespace ?pollURI ?EUStationCode
+}
