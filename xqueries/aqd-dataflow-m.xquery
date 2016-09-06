@@ -137,7 +137,7 @@ let $M1table :=
             if ($countFeatureTypes[$pos] > 0) then
                 $errors:INFO
             else
-                $errors:WARNING
+                $errors:ERROR
         return
             <tr class="{$errorClass}">
                 <td title="Feature type">{$featureType}</td>
@@ -797,7 +797,7 @@ let $M46message :=
         {html:build2("M18", $labels:M18, $labels:M18_SHORT, $M18invalid, "All values are valid", "record", $errors:ERROR)}
         {html:build2("M19", $labels:M19, $labels:M19_SHORT, $M19invalid, "All values are valid", " invalid attribute", $errors:ERROR)}
         {html:build2("M20", $labels:M20, $labels:M20_SHORT, $M20invalid, "All values are valid", "record", $errors:ERROR)}
-        {html:build2("M23", $labels:M23, $labels:M23_SHORT, $M23invalid, "All values are valid", "record", $errors:ERROR)}
+        {html:build2("M23", $labels:M23, $labels:M23_SHORT, $M23invalid, "All values are valid", "record", $errors:WARNING)}
         {html:build2("M24", $labels:M24, $labels:M24_SHORT, $M24invalid, "All values are valid", "record", $errors:ERROR)}
         {html:build2("M26", $labels:M26, $labels:M26_SHORT, $M26invalid, "All values are valid", "record", $errors:ERROR)}
         {html:buildInfoTR("Specific checks on AQD_ModelProcess")}

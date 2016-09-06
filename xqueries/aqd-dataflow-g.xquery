@@ -1203,7 +1203,7 @@ let $G64invalid :=
         </tr>
     }
 
-(: G65 :)
+(: G65
 let $G65invalid :=
     try {
         let $types := ($vocabulary:ADJUSTMENTTYPE_VOCABULARY || "nsCorrection", $vocabulary:ADJUSTMENTTYPE_VOCABULARY || "wssCorrection")
@@ -1222,7 +1222,7 @@ let $G65invalid :=
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
         </tr>
-    }
+    }:)
 
 (: G66 :)
 let $G66invalid :=
@@ -1527,9 +1527,9 @@ return
         {html:build2("G10", $labels:G10, $labels:G10_SHORT, $G10invalid, "All values are valid", "", $errors:ERROR)}
         {html:build2("G11", $labels:G11, $labels:G11_SHORT, $G11invalid, "All values are valid", " invalid value", $errors:ERROR)}
         {html:build2("G12", $labels:G12, $labels:G12_SHORT, $G12invalid, "All values are valid", " invalid value", $errors:ERROR)}
-        {html:build2("G13", $labels:G13, $labels:G13_SHORT, $G13invalid, "All values are valid", " invalid value", $errors:WARNING)}
+        {html:build2("G13", $labels:G13, $labels:G13_SHORT, $G13invalid, "All values are valid", " invalid value", $errors:ERROR)}
         {html:build2("G13b", $labels:G13b, $labels:G13b_SHORT, $G13binvalid, "All values are valid", " invalid value", $errors:ERROR)}
-        {html:build2("G13c", $labels:G13c, $labels:G13c_SHORT, $G13cinvalid, "All values are valid", " invalid value", $errors:WARNING)}
+        {html:build2("G13c", $labels:G13c, $labels:G13c_SHORT, $G13cinvalid, "All values are valid", " invalid value", $errors:ERROR)}
         {html:build2("G14", $labels:G14, $labels:G14_SHORT, $G14table, "All values are valid", "record", errors:getMaxError($G14table))}
         {html:build2("G14b", $labels:G14b, $labels:G14b_SHORT, $G14binvalid, "All assessment regimes are reported", " missing assessment regime", $errors:WARNING)}
         {html:build2("G15", $labels:G15, $labels:G15_SHORT, $G15invalid, "All values are valid", " invalid value", $errors:ERROR)}
@@ -1547,7 +1547,7 @@ return
         {html:build2("G42", $labels:G42, $labels:G42_SHORT, $G42invalid, "All values are valid", " invalid value", $errors:ERROR)}
         {html:build2("G44", $labels:G44, $labels:G44_SHORT, $G44invalid, "All values are valid", " invalid value", $errors:ERROR)}
         {html:build2("G45", $labels:G45, $labels:G45_SHORT, $G45invalid, "All values are valid", " invalid value", $errors:ERROR)}
-        {html:build2("G46", $labels:G46, $labels:G46_SHORT, $G46invalid, "All values are valid", " invalid value", $errors:WARNING)}
+        {html:build2("G46", $labels:G46, $labels:G46_SHORT, $G46invalid, "All values are valid", " invalid value", $errors:ERROR)}
         {html:build2("G47", $labels:G47, $labels:G47_SHORT, $G47invalid, "All values are valid", " invalid value", $errors:ERROR)}
         {html:buildInfoTR("Specific checks on aqd:exceedanceDescriptionAdjustment")}
         {html:build2("G52", $labels:G52, $labels:G52_SHORT, $G52invalid, "All values are valid", "", $errors:ERROR)}
@@ -1562,7 +1562,6 @@ return
         {html:build2("G62", $labels:G62, $labels:G62_SHORT, $G62invalid, "All values are valid", "", $errors:ERROR)}
         {html:build2("G63", $labels:G63, $labels:G63_SHORT, $G63invalid, "All values are valid", "", $errors:ERROR)}
         {html:build2("G64", $labels:G64, $labels:G64_SHORT, $G64invalid, "All values are valid", " invalid value", $errors:ERROR)}
-        {html:build2("G65", $labels:G65, $labels:G65_SHORT, $G65invalid, "All values are valid", " invalid value", $errors:ERROR)}
         {html:build2("G66", $labels:G66, $labels:G66_SHORT, $G66invalid, "All values are valid", " invalid value", $errors:ERROR)}
         {html:build2("G67", $labels:G67, $labels:G67_SHORT, $G67invalid, "All values are valid", " invalid value", $errors:ERROR)}
         {html:buildInfoTR("Specific checks on aqd:exceedanceDescriptionFinal")}
@@ -1575,7 +1574,7 @@ return
         {html:build2("G76", $labels:G76, $labels:G76_SHORT, $G76invalid, "All values are valid", " invalid value", $errors:ERROR)}
         {html:build2("G78", $labels:G78, $labels:G78_SHORT, $G78invalid, "All values are valid", " invalid value", $errors:ERROR)}
         {html:build2("G79", $labels:G79, $labels:G79_SHORT, $G79invalid, "All values are valid", " invalid value", $errors:ERROR)}
-        {html:build2("G80", $labels:G80, $labels:G80_SHORT, $G80invalid, "All values are valid", " invalid value", $errors:WARNING)}
+        {html:build2("G80", $labels:G80, $labels:G80_SHORT, $G80invalid, "All values are valid", " invalid value", $errors:ERROR)}
         {html:build2("G81", $labels:G81, $labels:G81_SHORT, $G81invalid, "All values are valid", " invalid value", $errors:ERROR)}
         {html:build2("G85", $labels:G85, $labels:G85_SHORT, $G85invalid, "All values are valid", " invalid value", $errors:ERROR)}
         {html:build2("G86", $labels:G86, $labels:G86_SHORT, $G86invalid, "All values are valid", " invalid value", $errors:ERROR)}
