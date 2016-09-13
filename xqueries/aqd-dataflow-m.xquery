@@ -314,6 +314,29 @@ let $part4 :=
 
 let $M5invalid := ($part1, $part2, $part3, $part4)
 
+(: M6 - ./ef:inspireId/base:Identifier/base:localId shall be an unique code for AQD_Model and unique within the namespace.
+ It is recommended to start with “MOD” and may include ISO2-country code (e.g.: MOD-ES0001) :)
+let $M6invalid :=
+    try {
+        let $all := $docRoot//aqd:AQD_Model/ef:inspireId/base:Identifier/concat(base:namespace, base:localId)
+        for $x in $docRoot//aqd:AQD_Model/ef:inspireId/base:Identifier
+        let $namespace := string($x/base:namespace)
+        let $localId := string($x/base:localId)
+        let $count := count(index-of($all, $namespace || $localId))
+        where $count > 1
+        return
+            <tr>
+                <td title="base:namespace">{$namespace}</td>
+                <td title="base:localId">{$localId}</td>
+                <td title="Count">{$count}</td>
+            </tr>
+    } catch * {
+        <tr status="failed">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
+
 (: M7 :)
 let $M7table :=
     try {
@@ -789,6 +812,7 @@ let $M46message :=
         {html:buildSimple("M3", $labels:M3, $labels:M3_SHORT, $M3table, $M3count, "feature type", errors:getMaxError($M3table))}
         {html:build2("M4", $labels:M4, $labels:M4_SHORT, $M4table, "All values are valid", "record", $errors:INFO)}
         {html:build2("M5", $labels:M5, $labels:M5_SHORT, $M5invalid, "All values are valid", "record", $errors:ERROR)}
+        {html:build2("M6", $labels:M6, $labels:M6_SHORT, $M6invalid, "All values are valid", "record", $errors:ERROR)}
         {html:buildInfoTR("Specific checks on AQD_Models")}
         {html:buildUnique("M7", $labels:M7, $labels:M7_SHORT, $M7table, "namespace", $errors:ERROR)}
         {html:build2("M7.1", $labels:M7.1, $labels:M7.1_SHORT, $M7.1invalid, "All values are valid", " invalid namespaces", $errors:ERROR)}
