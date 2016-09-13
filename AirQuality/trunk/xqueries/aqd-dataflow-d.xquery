@@ -1568,19 +1568,22 @@ let $D62invalid :=
     }
 
 (: D63 :)
-(: TODO CHECK IF THIS IS DEPRECATED :)
 let $D63invalid :=
     try {
-        ()
-        (:let $valid := dd:getValidConcepts($vocabulary:UOM_CONCENTRATION_VOCABULARY || "rdf")
-        for $x in $docRoot//
-        where not($)
-        xmlconv:checkVocabularyConceptValuesUom($source_url, "aqd:DataQuality", "aqd:detectionLimit", ):)
+        let $valid := dd:getValidConcepts($vocabulary:UOM_CONCENTRATION_VOCABULARY || "rdf")
+        for $x in $docRoot//aqd:detectionLimit
+        let $uom := string($x/@uom)
+        where not ($uom = $valid)
+        return
+            <tr>
+                <td title="aqd:AQD_SamplingPointProcess">{string($x/../../../ompr:inspireId/base:Identifier/base:localId)}</td>
+                <td title="@uom">$uom</td>
+            </tr>
+
     } catch * {
         <tr status="failed">
             <td title="Error code"> {$err:code}</td>
             <td title="Error description">{$err:description}</td>
-            <td></td>
         </tr>
     }
 
@@ -2070,7 +2073,7 @@ return
         {html:build2("D60b", $labels:D60b, $labels:D60b_SHORT, $D60binvalid, "All values are valid", "", $errors:ERROR)}
         {html:build2("D61", $labels:D61, $labels:D61_SHORT, $D61invalid, "All values are valid", "record", $errors:WARNING)}
         {html:build2("D62", $labels:D62, $labels:D62_SHORT, $D62invalid, "All values are valid", "invalid record", $errors:WARNING)}
-        {html:deprecated("D63", $labels:D63, $labels:D63_SHORT, $D63invalid, "", "", "", "", $errors:ERROR)}
+        {html:build2("D63", $labels:D63, $labels:D63_SHORT, $D63invalid, "All values are valid", "invalid record", $errors:ERROR)}
         {html:buildInfoTR("Checks on SamplingPointProcess(es) where the xlinked SamplingPoint has aqd:AQD_SamplingPoint/aqd:usedAQD equals TRUE (D67 to D70):")}
         {html:build2("D65", $labels:D65, $labels:D65_SHORT, $D65invalid, "All values are valid", "record", $errors:ERROR)}
         {html:build2("D67a", $labels:D67a, $labels:D67a_SHORT, $D67ainvalid, "All values are valid", "", $errors:WARNING)}
