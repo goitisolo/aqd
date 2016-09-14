@@ -214,8 +214,7 @@ let $E5invalid :=
 (: E6 :)
 let $E6invalid :=
     try {
-        let $latestDfiles := query:getLatestEnvelope($cdrUrl || "d/")
-        let $result := sparqlx:run(query:getSamplingPointFromFiles($latestDfiles))
+        let $result := sparqlx:run(query:getSamplingPointFromFiles($latestEnvelopeD))
         let $all := $result/sparql:binding[@name = "inspireLabel"]/sparql:literal/string()
         for $x in $docRoot//om:OM_Observation/om:parameter/om:NamedValue[om:name/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/processparameter/SamplingPoint"]
             let $name := $x/om:name/@xlink:href/string()
@@ -232,6 +231,7 @@ let $E6invalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+
 (: E7 :)
 let $E7invalid :=
     try {
@@ -311,13 +311,17 @@ let $E10invalid :=
 (: E11 - The pollutant xlinked via /om:observedProperty must match the pollutant code declared via /aqd:AQD_SamplingPoint/ef:observingCapability/ef:ObservingCapability/ef:observedProperty :)
 let $E11invalid :=
     try {
-        let $latestDfiles := query:getLatestEnvelope($cdrUrl || "d/")
-        let $result := sparqlx:run(query:getSamplingPointMetadataFromFiles($latestDfiles))
+        let $result := sparqlx:run(query:getSamplingPointMetadataFromFiles($latestEnvelopeD))
         let $resultConcat := for $x in $result
         return $x/sparql:binding[@name="featureOfInterest"]/sparql:uri/string() || $x/sparql:binding[@name="observedProperty"]/sparql:uri/string()
         for $x in $docRoot//om:OM_Observation
             let $observedProperty := $x/om:observedProperty/@xlink:href/string()
-            let $featureOfInterest := "http://reference.eionet.europa.eu/aq/" || $x/om:featureOfInterest/@xlink:href/string()
+            let $featureOfInterest := $x/om:featureOfInterest/@xlink:href/string()
+            let $featureOfInterest :=
+                if (not($featureOfInterest = "") and not(starts-with($featureOfInterest, "http://"))) then
+                    "http://reference.eionet.europa.eu/aq/" || $featureOfInterest
+                else
+                    $featureOfInterest
             let $concat := $featureOfInterest || $observedProperty
             let $namedValue := $x/om:parameter/om:NamedValue[om:name/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/processparameter/SamplingPoint"]
             let $value := common:if-empty($namedValue/om:value, $namedValue/om:value/@xlink:href)
@@ -505,8 +509,7 @@ let $E21invalid :=
 (: E26 :)
 let $E26invalid :=
     try {
-        let $latestDfiles := query:getLatestEnvelope($cdrUrl || "d/")
-        let $result := sparqlx:run(query:getSamplingPointMetadataFromFiles($latestDfiles))
+        let $result := sparqlx:run(query:getSamplingPointMetadataFromFiles($latestEnvelopeD))
         let $resultsConcat :=
             for $x in $result
             return $x/sparql:binding[@name="localId"]/sparql:literal/string() || $x/sparql:binding[@name="procedure"]/sparql:uri/string() ||
@@ -515,8 +518,18 @@ let $E26invalid :=
         for $x in $docRoot//om:OM_Observation
             let $namedValue := $x/om:parameter/om:NamedValue[om:name/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/processparameter/SamplingPoint"]
             let $samplingPoint := tokenize(common:if-empty($namedValue/om:value, $namedValue/om:value/@xlink:href), "/")[last()]
-            let $procedure := "http://reference.eionet.europa.eu/aq/" || $x/om:procedure/@xlink:href/string()
-            let $featureOfInterest := "http://reference.eionet.europa.eu/aq/" || $x/om:featureOfInterest/@xlink:href/string()
+            let $procedure := $x/om:procedure/@xlink:href/string()
+            let $procedure :=
+                if (not($procedure = "") and not(starts-with($procedure, "http://"))) then
+                    "http://reference.eionet.europa.eu/aq/" || $procedure
+                else
+                    $procedure
+            let $featureOfInterest := $x/om:featureOfInterest/@xlink:href/string()
+            let $featureOfInterest :=
+                if (not($featureOfInterest = "") and not(starts-with($featureOfInterest, "http://"))) then
+                    "http://reference.eionet.europa.eu/aq/" || $featureOfInterest
+                else
+                    $featureOfInterest
             let $observedProperty := $x/om:observedProperty/@xlink:href/string()
             let $concat := $samplingPoint || $procedure || $featureOfInterest || $observedProperty
         where not($concat = $resultsConcat)
