@@ -709,8 +709,8 @@ let $C31table :=
             let $vsName := string($x/pollutantName)
             let $vsCode := string($x/pollutantCode)
             let $protectionTarget := string($x/protectionTarget)
-            let $countC := string($x/count)
-            let $countB := string($C31ResultB[pollutantName = $vsName and protectionTarget = $protectionTarget]/count)
+            let $countC := number($x/count)
+            let $countB := number($C31ResultB[pollutantName = $vsName and protectionTarget = $protectionTarget]/count)
             let $errorClass :=
                 if ((string($countC), string($countB)) = "NaN") then $errors:ERROR
                 else if ($countC > $countB) then $errors:ERROR
@@ -722,8 +722,8 @@ let $C31table :=
                 <td title="Pollutant Name">{$vsName}</td>
                 <td title="Pollutant Code">{$vsCode}</td>
                 <td title="Protection Target">{$protectionTarget}</td>
-                <td title="Count C">{$countC}</td>
-                <td title="Count B">{$countB}</td>
+                <td title="Count C">{string($countC)}</td>
+                <td title="Count B">{string($countB)}</td>
             </tr>
     } catch * {
         <tr status="failed">
