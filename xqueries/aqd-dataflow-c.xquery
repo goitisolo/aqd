@@ -941,8 +941,15 @@ let $C41invalid :=
     try {
         let $C41minYear := if ($reportingYear castable as xs:integer) then xs:integer($reportingYear) - 5 else ()
         for $x in $docRoot//aqd:AQD_AssessmentRegime/aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:classificationDate/gml:TimeInstant
-        let $timePosition := year-from-date(xs:date($x/gml:timePosition))
-        where not($timePosition castable as xs:integer) or ($timePosition < $C41minYear)
+        let $timePosition := string($x/gml:timePosition)
+        let $timePosition :=
+            if ($timePosition castable as xs:integer) then
+                xs:integer($timePosition)
+            else if ($timePosition castable as xs:date) then
+                year-from-date(xs:date($x/gml:timePosition))
+            else
+                ()
+        where empty($timePosition) or ($timePosition < $C41minYear)
         return
             <tr>
                 <td title="aqd:AQD_AssessmentRegime">{string($x/../../../../aqd:inspireId/base:Identifier/base:localId)}</td>
