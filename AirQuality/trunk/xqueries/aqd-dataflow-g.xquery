@@ -578,9 +578,9 @@ let $G14table :=
             let $vsName := string($x/pollutantName)
             let $vsCode := string($x/pollutantCode)
             let $protectionTarget := string($x/protectionTarget)
-            let $countB := string($x/countB)
-            let $countC := string($x/countC)
-            let $countG := string($G14ResultG[pollutantName = $vsName and protectionTarget = $protectionTarget]/count)
+            let $countB := number($x/countB)
+            let $countC := number($x/countC)
+            let $countG := number($G14ResultG[pollutantName = $vsName and protectionTarget = $protectionTarget]/count)
             let $errorClass :=
                 if ((string($countB), string($countC), string($countG)) = "NaN") then $errors:ERROR
                 else if ($countG > $countC) then $errors:ERROR
@@ -592,9 +592,9 @@ let $G14table :=
             <tr class="{$errorClass}">
                 <td title="Pollutant Name">{$vsName || " (" || $G14ResultG[pollutantName = $vsName and protectionTarget = $protectionTarget]/pollutantCode || ")"}</td>
                 <td title="Protection Target">{$protectionTarget}</td>
-                <td title="Count B">{$countB}</td>
-                <td title="Count C">{$countC}</td>
-                <td title="Count G">{$countG}</td>
+                <td title="Count B">{string($countB)}</td>
+                <td title="Count C">{string($countC)}</td>
+                <td title="Count G">{string($countG)}</td>
             </tr>
     } catch * {
         <tr status="failed">
