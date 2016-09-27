@@ -408,6 +408,7 @@ let $C20invalid :=
         let $rdf := distinct-values(
             for $x in $rdf//skos:Concept[string-length(prop:exceedanceThreshold) > 0]
             where not($x/prop:hasObjectiveType/@rdf:resource = ($vocabulary:OBJECTIVETYPE_VOCABULARY || "MO", $vocabulary:OBJECTIVETYPE_VOCABULARY || "LVMOT", $vocabulary:OBJECTIVETYPE_VOCABULARY || "LVmaxMOT"))
+                and not($countryCode = "gi" and ($x/prop:hasObjectiveType/@rdf:resource = ($vocabulary:OBJECTIVETYPE_VOCABULARY || "ECO") or $x/prop:hasProtectionTarget/@rdf:resource = ($vocabulary:PROTECTIONTARGET_VOCABULARY || "V")))
             return $x/prop:relatedPollutant/@rdf:resource || "#" || $x/prop:hasObjectiveType/@rdf:resource || "#" || $x/prop:hasReportingMetric/@rdf:resource || "#" || $x/prop:hasProtectionTarget/@rdf:resource
         )
         let $exception := $vocabulary:POLLUTANT_VOCABULARY || "6001" || "#" || $vocabulary:OBJECTIVETYPE_VOCABULARY || "TV" || "#" || $vocabulary:REPMETRIC_VOCABULARY || "aMean" || "#" || $vocabulary:PROTECTIONTARGET_VOCABULARY || "H"
