@@ -667,7 +667,7 @@
     <E21_SHORT>Check valid TextEncoding (decimalSeparator="." tokenSeparator="," blockSeparator="@@")</E21_SHORT>
     <E22>If the observations are defined as primaryObservations via the &lt;swe:field name=”Value”>, the difference between the StartTime and EndTime of the observations must be in accordance to the primaryObservation provided</E22>
     <E22_SHORT>If the observations are defined as primaryObservations via the &lt;swe:field name=”Value”>, the difference between the StartTime and EndTime of the observations must be in accordance to the primaryObservation provided</E22_SHORT>
-    <E23>The results element declared as swe:field name="Validity" must only use the codes (flags) provided via http://dd.eionet.europa.eu/vocabularies/aq/observationvalidity</E23>
+    <E23>The results element declared as swe:field name="Validity" must only use the codes (flags) provided via http://dd.eionet.europa.eu/vocabulary/aq/observationvalidity</E23>
     <E23_SHORT>Check all validity codes within swe:values correspon to vocabulary (…/aq/observationvalidity)</E23_SHORT>
     <E24>The results element declared as swe:field name="Verification" must only use the codes (flags) provided via http://dd.eionet.europa.eu/vocabulary/aq/observationverification/</E24>
     <E24_SHORT>Check all verificaiton codes within swe:values correspon to vocabulary (…/aq/observationverification)</E24_SHORT>
