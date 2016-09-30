@@ -653,9 +653,9 @@
     <E15_SHORT>Check valid definition for startTime</E15_SHORT>
     <E16>IF ./om:result/swe:DataArray/swe:elementType/swe:DataRecord/swe:field name="endTime" attribute THEN swe:Time definition=http://www.opengis.net/def/property/OGC/0/SamplingTime swe:uom xlink:href=http://www.opengis.net/def/uom/ISO-8601/0/Gregorian</E16>
     <E16_SHORT>Check valid definition for endTime</E16_SHORT>
-    <E17>IF ./om:result/swe:DataArray/swe:elementType/swe:DataRecord/swe:field name="validity" attribute THEN swe:Category definition is defined by http://dd.eionet.europa.eu/vocabularies/aq/observationvalidity</E17>
+    <E17>IF ./om:result/swe:DataArray/swe:elementType/swe:DataRecord/swe:field name="validity" attribute THEN swe:Category definition is defined by http://dd.eionet.europa.eu/vocabulary/aq/observationvalidity</E17>
     <E17_SHORT>Check valid definition for observation validity</E17_SHORT>
-    <E18>IF ./om:result/swe:DataArray/swe:elementType/swe:DataRecord/swe:field name="verification" attribute THEN swe:Category definition is defined by http://dd.eionet.europa.eu/vocabularies/aq/observationverification</E18>
+    <E18>IF ./om:result/swe:DataArray/swe:elementType/swe:DataRecord/swe:field name="verification" attribute THEN swe:Category definition is defined by http://dd.eionet.europa.eu/vocabulary/aq/observationverification</E18>
     <E18_SHORT>Check valid definition for observation verification</E18_SHORT>
     <E19>IF ./om:result/swe:DataArray/swe:elementType/swe:DataRecord/swe:field name="Value" attribute THEN swe:Quantity definition is defined by http://dd.eionet.europa.eu/vocabulary/aq/primaryObservation/[code] &amp; the swe:uom resolves to an xlink to http://dd.eionet.europa.eu/vocabulary/uom/concentration/[code]</E19>
     <E19_SHORT>Check valid definition for the observation values (primaryObservation code &amp; concentration)</E19_SHORT>
