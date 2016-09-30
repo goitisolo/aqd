@@ -890,7 +890,7 @@ let $B39cinvalid :=
 (: B40 - /aqd:timeExtensionExemption attribute must resolve to one of concept within http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/ :)
 let $B40invalid :=
     try {
-        let $year := xs:integer(substring($docRoot//aqd:AQD_ReportingHeader/aqd:reportingPeriod/gml:TimePeriod/gml:beginPosition, 1, 4))
+        let $year := xs:integer(common:getReportingYear($docRoot))
         let $valid :=
             if ($year >= 2015) then
                 "http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/none"
@@ -906,7 +906,7 @@ let $B40invalid :=
 
     } catch * {
         <tr status="failed">
-            <td title="Error code"> {$err:code}</td>
+            <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
         </tr>
     }
