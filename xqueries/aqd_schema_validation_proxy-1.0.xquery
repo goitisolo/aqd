@@ -15,8 +15,6 @@ xquery version "3.0" encoding "UTF-8";
 declare namespace xmlconv="http://converters.eionet.europa.eu";
 declare namespace aqd = "http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0";
 
-declare variable $xmlconv:xmlValidatorUrl as xs:string := 'http://converters.eionet.europa.eu/api/runQAScript?script_id=-1&amp;url=';
-
 declare variable $ignoredMessages :=
 ("cvc-elt.1: Cannot find the declaration of element 'gml:FeatureCollection'.",
 "cvc-elt.4.2: Cannot resolve 'gco:RecordType_Type' to a type definition for element 'gco:Record'.",
@@ -27,16 +25,18 @@ declare variable $ignoredMessages :=
 "cvc-elt.4.2.a: Cannot resolve 'ns:DataArrayType' to a type definition for element 'om:result'.",
 "cvc-elt.4.2.a: Cannot resolve 'ns:ReferenceType' to a type definition for element 'om:value'.");
 declare variable $source_url as xs:string external;
+declare variable $base_url as xs:string external;
 
 (: Remove the irrelevant GML XML Schema validation errors. It happens when the gml.xsd is not explicitly defined in schemaLocation attribute. :)
 declare function xmlconv:validateXmlSchema($source_url) {
+    let $xmlValidatorUrl as xs:string := $base_url || "/api/runQAScript?script_id=-1&amp;url="
     let $successfulResult := <div class="feedbacktext">
     <span id="feedbackStatus" class="INFO" style="display:none">XML Schema validation passed without errors.</span>
     <span style="display:none"><p>OK</p></span>
     <h2>XML Schema validation</h2>
     <p><span style="background-color: green; font-size: 0.8em; color: white; padding-left:5px;padding-right:5px;margin-right:5px;text-align:center">OK</span>XML Schema validation passed without errors.</p><p>The file was validated against <a href="http://dd.eionet.europa.eu/schemas/id2011850eu-1.0/AirQualityReporting.xsd">http://dd.eionet.europa.eu/schemas/id2011850eu-1.0/AirQualityReporting.xsd</a></p></div>
 
-    let $fullUrl := concat($xmlconv:xmlValidatorUrl, fn:encode-for-uri($source_url))
+    let $fullUrl := concat($xmlValidatorUrl, fn:encode-for-uri($source_url))
     let $validationResult := doc($fullUrl)
 
     let $hasErrors := count($validationResult//*[local-name() = "tr"]) > 1
