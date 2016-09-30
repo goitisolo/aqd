@@ -715,7 +715,8 @@ let $G19invalid :=
     try {
         let $valid := ($vocabulary:OBJECTIVETYPE_VOCABULARY || "TV", $vocabulary:OBJECTIVETYPE_VOCABULARY || "LV",$vocabulary:OBJECTIVETYPE_VOCABULARY || "CL",
         $vocabulary:OBJECTIVETYPE_VOCABULARY || "LVMOT", $vocabulary:OBJECTIVETYPE_VOCABULARY || "LVmaxMOT", $vocabulary:OBJECTIVETYPE_VOCABULARY || "INT",
-        $vocabulary:OBJECTIVETYPE_VOCABULARY || "ALT", $vocabulary:OBJECTIVETYPE_VOCABULARY || "LTO", $vocabulary:OBJECTIVETYPE_VOCABULARY || "ECO")
+        $vocabulary:OBJECTIVETYPE_VOCABULARY || "ALT", $vocabulary:OBJECTIVETYPE_VOCABULARY || "LTO", $vocabulary:OBJECTIVETYPE_VOCABULARY || "ECO",
+        $vocabulary:OBJECTIVETYPE_VOCABULARY || "LV-S2")
         for $x in $docRoot//aqd:environmentalObjective/aqd:EnvironmentalObjective
         where not($x/aqd:objectiveType/@xlink:href = $valid)
         return
