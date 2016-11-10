@@ -584,7 +584,7 @@ let $E28invalid :=
         let $tokenSeparator := string($x//swe:encoding/swe:TextEncoding/@tokenSeparator)
         let $fields := data($x//swe:elementType/swe:DataRecord/swe:field/@name)
 
-        for $i at $ipos in tokenize(replace($x//swe:values || $blockSeparator || "$", ""), $blockSeparator)
+        for $i at $ipos in tokenize(replace($x//swe:values, $blockSeparator || "$", ""), $blockSeparator)
         for $z at $zpos in tokenize($i, $tokenSeparator)
         let $invalid :=
             if ($fields[$zpos] = ("StartTime", "EndTime")) then if ($z castable as xs:dateTime) then false() else true()
