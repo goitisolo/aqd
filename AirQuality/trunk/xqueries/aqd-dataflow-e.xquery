@@ -548,6 +548,86 @@ let $E26invalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+(: E27 :)
+let $E27invalid :=
+    try {
+        for $x at $xpos in $docRoot//om:OM_Observation/om:result
+        let $blockSeparator := string($x//swe:encoding/swe:TextEncoding/@blockSeparator)
+        let $decimalSeparator := string($x//swe:encoding/swe:TextEncoding/@decimalSeparator)
+        let $tokenSeparator := string($x//swe:encoding/swe:TextEncoding/@tokenSeparator)
+        let $validCount := count($x//swe:elementType/swe:DataRecord/swe:field)
+
+        for $i at $ipos in tokenize(replace($x//swe:values, $blockSeparator || "$", ""), $blockSeparator)
+        let $count := count(tokenize($i, $tokenSeparator))
+        where not($count = $validCount)
+        return
+            <tr>
+                <td title="OM_Observation">{string($x/../@gml:id)}</td>
+                <td title="Data record position">{$ipos}</td>
+                <td title="Expected fields">{$validCount}</td>
+                <td title="Actual fields">{$count}</td>
+            </tr>
+    } catch * {
+        <tr status="failed">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
+let $E28invalid :=
+    try {
+        let $validVerifications := dd:getValidNotations($vocabulary:OBSERVATIONS_VERIFICATION || "rdf")
+        let $validValidity:= dd:getValidNotations($vocabulary:OBSERVATIONS_VALIDITY || "rdf")
+
+        for $x at $xpos in $docRoot//om:OM_Observation/om:result
+        let $blockSeparator := string($x//swe:encoding/swe:TextEncoding/@blockSeparator)
+        let $decimalSeparator := string($x//swe:encoding/swe:TextEncoding/@decimalSeparator)
+        let $tokenSeparator := string($x//swe:encoding/swe:TextEncoding/@tokenSeparator)
+        let $fields := data($x//swe:elementType/swe:DataRecord/swe:field/@name)
+
+        for $i at $ipos in tokenize(replace($x//swe:values || $blockSeparator || "$", ""), $blockSeparator)
+        for $z at $zpos in tokenize($i, $tokenSeparator)
+        let $invalid :=
+            if ($fields[$zpos] = ("StartTime", "EndTime")) then if ($z castable as xs:dateTime) then false() else true()
+            else if ($fields[$zpos] = "Verification") then if ($z = $validVerifications) then false() else true()
+            else if ($fields[$zpos] = "Validity") then if ($z = $validValidity) then false() else true()
+                else if ($fields[$zpos] = "Value") then if ($z castable as xs:decimal) then false() else true()
+                    else true()
+        where $invalid = true()
+        return
+            <tr>
+                <td title="OM_Observation">{string($x/../@gml:id)}</td>
+                <td title="Data record position">{$ipos}</td>
+                <td title="Expected type">{$fields[$zpos]}</td>
+                <td title="Actual value">{$z}</td>
+            </tr>
+    } catch * {
+        <tr status="failed">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
+let $E29invalid :=
+    try {
+        for $x at $xpos in $docRoot//om:OM_Observation/om:result
+        let $blockSeparator := string($x//swe:encoding/swe:TextEncoding/@blockSeparator)
+        let $decimalSeparator := string($x//swe:encoding/swe:TextEncoding/@decimalSeparator)
+        let $tokenSeparator := string($x//swe:encoding/swe:TextEncoding/@tokenSeparator)
+
+        let $actual := count(tokenize(replace($x/swe:values, $blockSeparator || "$", ""), $blockSeparator))
+        let $expected := number($x//swe:elementCount/swe:Count/swe:value)
+        where not($actual = $expected)
+        return
+            <tr>
+                <td title="OM_Observation">{string($x/../@gml:id)}</td>
+                <td title="Expected count">{$expected}</td>
+                <td title="Actual count">{$actual}</td>
+            </tr>
+    } catch * {
+        <tr status="failed">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
 
 return
     <table class="maintable hover">
@@ -575,6 +655,9 @@ return
         {html:build2("E20", $labels:E20, $labels:E20_SHORT, $E20invalid, "All records are valid", "record", $errors:ERROR)}
         {html:build2("E21", $labels:E21, $labels:E21_SHORT, $E21invalid, "All records are valid", "record", $errors:WARNING)}
         {html:build2("E26", $labels:E26, $labels:E26_SHORT, $E26invalid, "All records are valid", "record", $errors:ERROR)}
+        {html:build2("E27", $labels:E27, $labels:E27_SHORT, $E27invalid, "All records are valid", "record", $errors:ERROR)}
+        {html:build2("E28", $labels:E28, $labels:E28_SHORT, $E28invalid, "All records are valid", "record", $errors:ERROR)}
+        {html:build2("E29", $labels:E29, $labels:E29_SHORT, $E29invalid, "All records are valid", "record", $errors:ERROR)}
     </table>
 
 };
