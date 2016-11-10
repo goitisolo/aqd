@@ -39,6 +39,10 @@ declare function dd:getValidConcepts($url as xs:string) as xs:string* {
     data(doc($url)//skos:Concept[adms:status/@rdf:resource = $dd:VALIDRESOURCE]/@rdf:about)
 };
 
+declare function dd:getValidNotations($url as xs:string) as xs:string* {
+    data(doc($url)//skos:Concept[adms:status/@rdf:resource = $dd:VALIDRESOURCE]/skos:notation)
+};
+
 (: Lower case version :)
 declare function dd:getValidConceptsLC($url as xs:string) as xs:string* {
     data(doc($url)//skos:Concept[adms:status/@rdf:resource = $dd:VALIDRESOURCE]/lower-case(@rdf:about))
