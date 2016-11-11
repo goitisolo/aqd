@@ -25,6 +25,7 @@ declare variable $errors:COLOR_UNKNOWN := "grey";
 declare variable $errors:COLOR_BLOCKER := "red";
 declare variable $errors:COLOR_FAILED := "firebrick";
 
+declare variable $errors:MAX_RESULTS := 100;
 (: Returns error class if there are more than 0 error elements :)
 declare function errors:getClass($elems) {
   if (count($elems) > 0) then

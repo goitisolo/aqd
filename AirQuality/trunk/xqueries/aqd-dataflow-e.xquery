@@ -362,7 +362,7 @@ let $E12invalid :=
 (: E15 :)
 let $E15invalid :=
     try {
-        for $x in $docRoot//om:OM_Observation/om:result/swe:DataArray/swe:elementType/swe:DataRecord/swe:field[@name = "StartTime"
+        for $x in $docRoot//om:OM_Observation/om:result//swe:elementType/swe:DataRecord/swe:field[@name = "StartTime"
                 and not(swe:Time[@definition = "http://www.opengis.net/def/property/OGC/0/SamplingTime"]/swe:uom/@xlink:href = "http://www.opengis.net/def/uom/ISO-8601/0/Gregorian")]
         return
             <tr>
@@ -379,7 +379,7 @@ let $E15invalid :=
 (: E16 :)
 let $E16invalid :=
     try {
-        for $x in $docRoot//om:OM_Observation/om:result/swe:DataArray/swe:elementType/swe:DataRecord/swe:field[@name = "EndTime"
+        for $x in $docRoot//om:OM_Observation/om:result//swe:elementType/swe:DataRecord/swe:field[@name = "EndTime"
                 and not(swe:Time[@definition = "http://www.opengis.net/def/property/OGC/0/SamplingTime"]/swe:uom/@xlink:href = "http://www.opengis.net/def/uom/ISO-8601/0/Gregorian")]
         return
             <tr>
@@ -395,7 +395,7 @@ let $E16invalid :=
 (: E17 :)
 let $E17invalid :=
     try {
-        for $x in $docRoot//om:OM_Observation/om:result/swe:DataArray/swe:elementType/swe:DataRecord/swe:field[@name="Validity"
+        for $x in $docRoot//om:OM_Observation/om:result//swe:elementType/swe:DataRecord/swe:field[@name="Validity"
                 and not(swe:Category/@definition = "http://dd.eionet.europa.eu/vocabulary/aq/observationvalidity")]
         return
             <tr>
@@ -411,7 +411,7 @@ let $E17invalid :=
 (: E18 :)
 let $E18invalid :=
     try {
-        for $x in $docRoot//om:OM_Observation/om:result/swe:DataArray/swe:elementType/swe:DataRecord/swe:field[@name = "Verification"
+        for $x in $docRoot//om:OM_Observation/om:result//swe:elementType/swe:DataRecord/swe:field[@name = "Verification"
                 and not(swe:Category/@definition = "http://dd.eionet.europa.eu/vocabulary/aq/observationverification")]
         return
             <tr>
@@ -429,7 +429,7 @@ let $E19invalid :=
     try {
         let $obs := dd:getValidConceptsLC("http://dd.eionet.europa.eu/vocabulary/aq/primaryObservation/rdf")
         let $cons := dd:getValidConceptsLC("http://dd.eionet.europa.eu/vocabulary/uom/concentration/rdf")
-        for $x in $docRoot//om:OM_Observation/om:result/swe:DataArray/swe:elementType/swe:DataRecord/swe:field[@name = "Value"
+        for $x in $docRoot//om:OM_Observation/om:result//swe:elementType/swe:DataRecord/swe:field[@name = "Value"
                 and (not(swe:Quantity/lower-case(@definition) = $obs) or not(swe:Quantity/swe:uom/lower-case(@xlink:href) = $cons))]
         return
             <tr>
@@ -468,7 +468,7 @@ let $E19binvalid :=
 (: E20 :)
 let $E20invalid :=
     try {
-        let $all := $docRoot//om:result/swe:DataArray/swe:elementType/swe:DataRecord/swe:field[@name="DataCapture"]
+        let $all := $docRoot//om:result//swe:elementType/swe:DataRecord/swe:field[@name="DataCapture"]
         for $x in $all
         let $def := $x/swe:Quantity/@definition/string()
         let $uom := $x/swe:Quantity/swe:uom/@xlink:href/string()
@@ -490,7 +490,7 @@ let $E20invalid :=
 (: E21 - /om:result/swe:DataArray/swe:encoding/swe:TextEncoding shall resolve to decimalSeparator="." tokenSeparator="," blockSeparator="@@" :)
 let $E21invalid :=
     try {
-        for $x in $docRoot//om:result/swe:DataArray/swe:encoding/swe:TextEncoding[not(@decimalSeparator=".") or not(@tokenSeparator=",") or not(@blockSeparator="@@")]
+        for $x in $docRoot//om:result//swe:encoding/swe:TextEncoding[not(@decimalSeparator=".") or not(@tokenSeparator=",") or not(@blockSeparator="@@")]
         return
             <tr>
                 <td title="@gml:id">{string($x/../../../../@gml:id)}</td>
@@ -500,6 +500,94 @@ let $E21invalid :=
             </tr>
     }
     catch * {
+        <tr status="failed">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
+
+let $E22invalid :=
+    try {
+        (for $x at $xpos in $docRoot//om:OM_Observation/om:result[//swe:field[@name = "Value"]/swe:Quantity/contains(@definition, "http://dd.eionet.europa.eu/vocabulary/aq/PrimaryObservation/")]
+
+        let $blockSeparator := string($x//swe:encoding/swe:TextEncoding/@blockSeparator)
+        let $decimalSeparator := string($x//swe:encoding/swe:TextEncoding/@decimalSeparator)
+        let $tokenSeparator := string($x//swe:encoding/swe:TextEncoding/@tokenSeparator)
+        let $definition := $x//swe:field[@name = "Value"]/swe:Quantity/@definition/string()
+        let $fields := data($x//swe:elementType/swe:DataRecord/swe:field/@name)
+
+        let $startPos := index-of($fields, "StartTime")
+        let $endPos := index-of($fields, "EndTime")
+
+        for $i at $ipos in tokenize(replace($x//swe:values, $blockSeparator || "$", ""), $blockSeparator)
+        let $startTime := tokenize($i, $tokenSeparator)[$startPos]
+        let $endTime := tokenize($i, $tokenSeparator)[$endPos]
+        (:TODO FIX THIS - NEEDS CLARIFICATIONS:)
+        where 1 != 1
+        return
+            <tr>
+                <td title="@gml:id">{string($x/../../../../@gml:id)}</td>
+                <td title="@definition">{$definition}</td>
+                <td title="StartTime">{$startTime}</td>
+                <td title="EndTime">{$endTime}</td>
+            </tr>)[position() = 1 to $errors:MAX_RESULTS]
+    }
+    catch * {
+        <tr status="failed">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
+
+(:let $E23invalid :=:)
+    (:try {:)
+        (:():)
+    (:} catch * {:)
+        (:<tr status="failed">:)
+            (:<td title="Error code">{$err:code}</td>:)
+            (:<td title="Error description">{$err:description}</td>:)
+        (:</tr>:)
+    (:}:)
+
+(:let $E24invalid :=:)
+    (:try {:)
+        (:():)
+    (:} catch * {:)
+        (:<tr status="failed">:)
+            (:<td title="Error code">{$err:code}</td>:)
+            (:<td title="Error description">{$err:description}</td>:)
+        (:</tr>:)
+    (:}:)
+
+let $E25invalid :=
+    try {
+        (for $x at $xpos in $docRoot//om:OM_Observation/om:result
+
+        let $blockSeparator := string($x//swe:encoding/swe:TextEncoding/@blockSeparator)
+        let $decimalSeparator := string($x//swe:encoding/swe:TextEncoding/@decimalSeparator)
+        let $tokenSeparator := string($x//swe:encoding/swe:TextEncoding/@tokenSeparator)
+        let $definition := $x//swe:field[@name = "Value"]/swe:Quantity/@definition/string()
+        let $fields := data($x//swe:elementType/swe:DataRecord/swe:field/@name)
+
+        let $startPos := index-of($fields, "StartTime")
+        let $endPos := index-of($fields, "EndTime")
+
+        for $i at $ipos in tokenize(replace($x//swe:values, $blockSeparator || "$", ""), $blockSeparator)
+        let $startTime := tokenize($i, $tokenSeparator)[$startPos]
+        let $endTime := tokenize($i, $tokenSeparator)[$endPos]
+        let $expectedStart := $x/../om:phenomenonTime/gml:TimePeriod/gml:beginPosition/text()
+        let $expectedEnd := $x/../om:phenomenonTime/gml:TimePeriod/gml:endPosition/text()
+        where not($expectedStart = $startTime) or not($expectedEnd = $endTime)
+        return
+            <tr>
+                <td title="@gml:id">{string($x/../../../../@gml:id)}</td>
+                <td title="@definition">{$definition}</td>
+                <td title="Expected StartTime">{$startTime}</td>
+                <td title="Actual StartTime">{$expectedStart}</td>
+                <td title="EndTime">{$endTime}</td>
+                <td title="Actual EndTime">{$expectedEnd}</td>
+            </tr>)[position() = 1 to $errors:MAX_RESULTS]
+    } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
@@ -551,7 +639,7 @@ let $E26invalid :=
 (: E27 :)
 let $E27invalid :=
     try {
-        for $x at $xpos in $docRoot//om:OM_Observation/om:result
+        (for $x at $xpos in $docRoot//om:OM_Observation/om:result
         let $blockSeparator := string($x//swe:encoding/swe:TextEncoding/@blockSeparator)
         let $decimalSeparator := string($x//swe:encoding/swe:TextEncoding/@decimalSeparator)
         let $tokenSeparator := string($x//swe:encoding/swe:TextEncoding/@tokenSeparator)
@@ -566,7 +654,7 @@ let $E27invalid :=
                 <td title="Data record position">{$ipos}</td>
                 <td title="Expected fields">{$validCount}</td>
                 <td title="Actual fields">{$count}</td>
-            </tr>
+            </tr>)[position() = 1 to $errors:MAX_RESULTS]
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
@@ -575,7 +663,7 @@ let $E27invalid :=
     }
 let $E28invalid :=
     try {
-        let $validVerifications := dd:getValidNotations($vocabulary:OBSERVATIONS_VERIFICATION || "rdf")
+        (let $validVerifications := dd:getValidNotations($vocabulary:OBSERVATIONS_VERIFICATION || "rdf")
         let $validValidity:= dd:getValidNotations($vocabulary:OBSERVATIONS_VALIDITY || "rdf")
 
         for $x at $xpos in $docRoot//om:OM_Observation/om:result
@@ -599,21 +687,22 @@ let $E28invalid :=
                 <td title="Data record position">{$ipos}</td>
                 <td title="Expected type">{$fields[$zpos]}</td>
                 <td title="Actual value">{$z}</td>
-            </tr>
+            </tr>)[position() = 1 to $errors:MAX_RESULTS]
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+
 let $E29invalid :=
     try {
-        for $x at $xpos in $docRoot//om:OM_Observation/om:result
+        (for $x at $xpos in $docRoot//om:OM_Observation/om:result
         let $blockSeparator := string($x//swe:encoding/swe:TextEncoding/@blockSeparator)
         let $decimalSeparator := string($x//swe:encoding/swe:TextEncoding/@decimalSeparator)
         let $tokenSeparator := string($x//swe:encoding/swe:TextEncoding/@tokenSeparator)
 
-        let $actual := count(tokenize(replace($x/swe:values, $blockSeparator || "$", ""), $blockSeparator))
+        let $actual := count(tokenize(replace($x//swe:values, $blockSeparator || "$", ""), $blockSeparator))
         let $expected := number($x//swe:elementCount/swe:Count/swe:value)
         where not($actual = $expected)
         return
@@ -621,7 +710,48 @@ let $E29invalid :=
                 <td title="OM_Observation">{string($x/../@gml:id)}</td>
                 <td title="Expected count">{$expected}</td>
                 <td title="Actual count">{$actual}</td>
-            </tr>
+            </tr>)[position() = 1 to $errors:MAX_RESULTS]
+    } catch * {
+        <tr status="failed">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
+
+let $E30invalid :=
+    try {
+        (for $x at $xpos in $docRoot//om:OM_Observation/om:result
+        let $blockSeparator := string($x//swe:encoding/swe:TextEncoding/@blockSeparator)
+        where ends-with($x//swe:values, $blockSeparator)
+        return
+            <tr>
+                <td title="OM_Observation">{string($x/../@gml:id)}</td>
+            </tr>)[position() = 1 to $errors:MAX_RESULTS]
+    } catch * {
+        <tr status="failed">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
+
+let $E31invalid :=
+    try {
+        (for $x at $xpos in $docRoot//om:OM_Observation/om:result
+        let $blockSeparator := string($x//swe:encoding/swe:TextEncoding/@blockSeparator)
+        let $decimalSeparator := string($x//swe:encoding/swe:TextEncoding/@decimalSeparator)
+        let $tokenSeparator := string($x//swe:encoding/swe:TextEncoding/@tokenSeparator)
+        let $fields := data($x//swe:elementType/swe:DataRecord/swe:field/@name)
+
+        for $i at $ipos in tokenize(replace($x//swe:values, $blockSeparator || "$", ""), $blockSeparator)
+        for $z at $zpos in tokenize($i, $tokenSeparator)
+        where matches($z, "\s+")
+        return
+            <tr>
+                <td title="OM_Observation">{string($x/../@gml:id)}</td>
+                <td title="Data record position">{$ipos}</td>
+                <td title="Expected type">{$fields[$zpos]}</td>
+                <td title="Actual value">{$z}</td>
+            </tr>)[position() = 1 to $errors:MAX_RESULTS]
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
@@ -653,11 +783,15 @@ return
         {html:build2("E19", $labels:E19, $labels:E19_SHORT, $E19invalid, "All records are valid", "record", $errors:ERROR)}
         {html:build2("E19b", $labels:E19b, $labels:E19b_SHORT, $E19binvalid, "All records are valid", "record", $errors:WARNING)}
         {html:build2("E20", $labels:E20, $labels:E20_SHORT, $E20invalid, "All records are valid", "record", $errors:ERROR)}
-        {html:build2("E21", $labels:E21, $labels:E21_SHORT, $E21invalid, "All records are valid", "record", $errors:WARNING)}
+        {html:build2("E21", $labels:E21, $labels:E21_SHORT, $E21invalid, "All records are valid", "record", $errors:ERROR)}
+        {html:build2("E22", $labels:E22, $labels:E22_SHORT, $E22invalid, "All records are valid", "record", $errors:ERROR)}
+        {html:build2("E25", $labels:E25, $labels:E25_SHORT, $E25invalid, "All records are valid", "record", $errors:ERROR)}
         {html:build2("E26", $labels:E26, $labels:E26_SHORT, $E26invalid, "All records are valid", "record", $errors:ERROR)}
         {html:build2("E27", $labels:E27, $labels:E27_SHORT, $E27invalid, "All records are valid", "record", $errors:ERROR)}
         {html:build2("E28", $labels:E28, $labels:E28_SHORT, $E28invalid, "All records are valid", "record", $errors:ERROR)}
         {html:build2("E29", $labels:E29, $labels:E29_SHORT, $E29invalid, "All records are valid", "record", $errors:ERROR)}
+        {html:build2("E30", $labels:E30, $labels:E30_SHORT, $E30invalid, "All records are valid", "record", $errors:WARNING)}
+        {html:build2("E31", $labels:E31, $labels:E31_SHORT, $E31invalid, "All records are valid", "record", $errors:WARNING)}
     </table>
 
 };
