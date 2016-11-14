@@ -123,13 +123,13 @@ let $E01table :=
 (: E1 - /om:OM_Observation gml:id attribute shall be unique code for the group of observations enclosed by /OM_Observation within the delivery. :)
 let $E1invalid :=
     try {
-        let $all := data($docRoot//om:OM_Observation/@gml:id)
+        (let $all := data($docRoot//om:OM_Observation/@gml:id)
         for $x in $docRoot//om:OM_Observation/@gml:id
         where count(index-of($all, $x)) > 1
         return
             <tr>
                 <td title="om:OM_Observation">{string($x)}</td>
-            </tr>
+            </tr>)[position() = 1 to $errors:MAX_RESULTS]
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
@@ -140,7 +140,7 @@ let $E1invalid :=
 (:E2 - /om:phenomenonTime/gml:TimePeriod/gml:beginPosition shall be LESS THAN ./om:phenomenonTime/gml:TimePeriod/gml:endPosition. -:)
 let $E2invalid :=
     try {
-        let $all := $docRoot//om:phenomenonTime/gml:TimePeriod
+        (let $all := $docRoot//om:phenomenonTime/gml:TimePeriod
         for $x in $all
             let $begin := xs:dateTime($x/gml:beginPosition)
             let $end := xs:dateTime($x/gml:endPosition)
@@ -150,7 +150,7 @@ let $E2invalid :=
                 <td title="@gml:id">{string($x/../../@gml:id)}</td>
                 <td title="gml:beginPosition">{string($x/gml:beginPosition)}</td>
                 <td title="gml:endPosition">{string($x/gml:endPosition)}</td>
-            </tr>
+            </tr>)[position() = 1 to $errors:MAX_RESULTS]
     }
     catch * {
         <tr status="failed">
@@ -162,7 +162,7 @@ let $E2invalid :=
 (:E3 - ./om:resultTime/gml:TimeInstant/gml:timePosition shall be GREATER THAN ./om:phenomenonTime/gml:TimePeriod/gml:endPosition :)
 let $E3invalid :=
     try {
-        let $all := $docRoot//om:OM_Observation
+        (let $all := $docRoot//om:OM_Observation
         for $x in $all
             let $timePosition := xs:dateTime($x/om:resultTime/gml:TimeInstant/gml:timePosition)
             let $endPosition := xs:dateTime($x/om:phenomenonTime/gml:TimePeriod/gml:endPosition)
@@ -170,7 +170,7 @@ let $E3invalid :=
         return
             <tr>
                 <td title="@gml:id">{string($x/@gml:id)}</td>
-            </tr>
+            </tr>)[position() = 1 to $errors:MAX_RESULTS]
     }
     catch * {
         <tr status="failed">
@@ -181,14 +181,14 @@ let $E3invalid :=
 (: E4 - ./om:procedure xlink:href attribute shall resolve to a traversable link process configuration in Data flow D: /aqd:AQD_SamplingPointProcess/ompr:inspireld/base:Identifier/base:localId:)
 let $E4invalid :=
     try {
-        let $result := sparqlx:run(query:getSamplingPointProcess($cdrUrl))
+        (let $result := sparqlx:run(query:getSamplingPointProcess($cdrUrl))
         let $all := $result/sparql:binding[@name = "inspireLabel"]/sparql:literal/string()
         let $procedures := $docRoot//om:procedure/@xlink:href/string()
         for $x in $procedures[not(. = $all)]
         return
             <tr>
                 <td title="base:localId">{$x}</td>
-            </tr>
+            </tr>)[position() = 1 to $errors:MAX_RESULTS]
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
@@ -198,12 +198,12 @@ let $E4invalid :=
 (: E5 - A valid delivery MUST provide an om:parameter with om:name/@xlink:href to http://dd.eionet.europa.eu/vocabulary/aq/processparameter/SamplingPoint :)
 let $E5invalid :=
     try {
-        for $x in $docRoot//om:OM_Observation
+        (for $x in $docRoot//om:OM_Observation
         where not($x/om:parameter/om:NamedValue/om:name/@xlink:href = $vocabulary:PROCESS_PARAMETER || "SamplingPoint")
         return
         <tr>
             <td title="@gml:id">{string($x/@gml:id)}</td>
-        </tr>
+        </tr>)[position() = 1 to $errors:MAX_RESULTS]
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
@@ -214,7 +214,7 @@ let $E5invalid :=
 (: E6 :)
 let $E6invalid :=
     try {
-        let $result := sparqlx:run(query:getSamplingPointFromFiles($latestEnvelopeD))
+        (let $result := sparqlx:run(query:getSamplingPointFromFiles($latestEnvelopeD))
         let $all := $result/sparql:binding[@name = "inspireLabel"]/sparql:literal/string()
         for $x in $docRoot//om:OM_Observation/om:parameter/om:NamedValue[om:name/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/processparameter/SamplingPoint"]
             let $name := $x/om:name/@xlink:href/string()
@@ -224,7 +224,7 @@ let $E6invalid :=
             <tr>
                 <td title="om:OM_Observation">{string($x/../../@gml:id)}</td>
                 <td title="om:value">{$value}</td>
-            </tr>
+            </tr>)[position() = 1 to $errors:MAX_RESULTS]
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
@@ -235,12 +235,12 @@ let $E6invalid :=
 (: E7 :)
 let $E7invalid :=
     try {
-        for $x in $docRoot//om:OM_Observation
+        (for $x in $docRoot//om:OM_Observation
         where not($x/om:parameter/om:NamedValue/om:name/@xlink:href = $vocabulary:PROCESS_PARAMETER || "AssessmentType")
         return
             <tr>
                 <td title="@gml:id">{string($x/@gml:id)}</td>
-            </tr>
+            </tr>)[position() = 1 to $errors:MAX_RESULTS]
     }
     catch * {
         <tr status="failed">
@@ -252,7 +252,7 @@ let $E7invalid :=
 (: E8 :)
 let $E8invalid :=
     try {
-        let $valid := dd:getValidConcepts($vocabulary:ASSESSMENTTYPE_VOCABULARY || "rdf")
+        (let $valid := dd:getValidConcepts($vocabulary:ASSESSMENTTYPE_VOCABULARY || "rdf")
         for $x in $docRoot//om:OM_Observation/om:parameter/om:NamedValue[om:name/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/processparameter/AssessmentType"]
         let $value := common:if-empty($x/om:value, $x/om:value/@xlink:href)
         where not($value = $valid)
@@ -260,7 +260,7 @@ let $E8invalid :=
             <tr>
                 <td title="om:OM_Observation">{string($x/../../@gml:id)}</td>
                 <td title="om:value">{$value}</td>
-            </tr>
+            </tr>)[position() = 1 to $errors:MAX_RESULTS]
     }
     catch * {
         <tr status="failed">
@@ -273,14 +273,14 @@ let $E8invalid :=
 (: TODO Check ticket for implementation :)
 let $E9invalid :=
     try {
-        let $valid := dd:getValidConcepts($vocabulary:PROCESS_PARAMETER || "rdf")
+        (let $valid := dd:getValidConcepts($vocabulary:PROCESS_PARAMETER || "rdf")
         for $x in $docRoot//om:OM_Observation/om:parameter/om:NamedValue/om:name
         where not($x/@xlink:href = $valid)
         return
             <tr>
                 <td title="@gml:id">{string($x/../../../@gml:id)}</td>
                 <td title="om:name">{data($x/@xlink:href)}</td>
-            </tr>
+            </tr>)[position() = 1 to $errors:MAX_RESULTS]
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
@@ -291,7 +291,7 @@ let $E9invalid :=
 (: E10 - /om:observedProperty xlink:href attribute shall resolve to a traversable link to http://dd.eionet.europa.eu/vocabulary/aq/pollutant/ :)
 let $E10invalid :=
     try {
-        let $all := dd:getValidConcepts("http://dd.eionet.europa.eu/vocabulary/aq/pollutant/rdf")
+        (let $all := dd:getValidConcepts("http://dd.eionet.europa.eu/vocabulary/aq/pollutant/rdf")
         for $x in $docRoot//om:OM_Observation/om:observedProperty
         let $namedValue := $x/../om:parameter/om:NamedValue[om:name/@xlink:href ="http://dd.eionet.europa.eu/vocabulary/aq/processparameter/SamplingPoint"]
         let $value := common:if-empty($namedValue/om:value, $namedValue/om:value/@xlink:href)
@@ -301,7 +301,7 @@ let $E10invalid :=
                 <td title="om:OM_Observation">{string($x/../@gml:id)}</td>
                 <td title="om:value">{$value}</td>
                 <td title="om:observedProperty">{string($x/@xlink:href)}</td>
-            </tr>
+            </tr>)[position() = 1 to $errors:MAX_RESULTS]
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
@@ -311,7 +311,7 @@ let $E10invalid :=
 (: E11 - The pollutant xlinked via /om:observedProperty must match the pollutant code declared via /aqd:AQD_SamplingPoint/ef:observingCapability/ef:ObservingCapability/ef:observedProperty :)
 let $E11invalid :=
     try {
-        let $result := sparqlx:run(query:getSamplingPointMetadataFromFiles($latestEnvelopeD))
+        (let $result := sparqlx:run(query:getSamplingPointMetadataFromFiles($latestEnvelopeD))
         let $resultConcat := for $x in $result
         return $x/sparql:binding[@name="featureOfInterest"]/sparql:uri/string() || $x/sparql:binding[@name="observedProperty"]/sparql:uri/string()
         for $x in $docRoot//om:OM_Observation
@@ -331,7 +331,7 @@ let $E11invalid :=
                 <td title="@gml:id">{$x/@gml:id/string()}</td>
                 <td title="om:value">{$value}</td>
                 <td title="om:observedProperty">{$observedProperty}</td>
-            </tr>
+            </tr>)[position() = 1 to $errors:MAX_RESULTS]
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
@@ -342,7 +342,7 @@ let $E11invalid :=
 (: E12 :)
 let $E12invalid :=
     try {
-        let $samples := data(sparqlx:run(query:getSample($latestEnvelopeD))/sparql:binding[@name = "localId"]/sparql:literal)     
+        (let $samples := data(sparqlx:run(query:getSample($latestEnvelopeD))/sparql:binding[@name = "localId"]/sparql:literal)
         for $x in $docRoot//om:OM_Observation
             let $featureOfInterest := $x/om:featureOfInterest/@xlink:href/tokenize(string(), "/")[last()]
         where ($featureOfInterest = "") or not($featureOfInterest = $samples)
@@ -351,7 +351,7 @@ let $E12invalid :=
                 <td title="@gml:id">{$x/@gml:id/string()}</td>
                 <td title="om:featureOfInterest">{$featureOfInterest}</td>
                 <td title="om:observedProperty">{string($x/om:observedProperty/@xlink:href)}</td>
-            </tr>
+            </tr>)[position() = 1 to $errors:MAX_RESULTS]
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
@@ -362,13 +362,13 @@ let $E12invalid :=
 (: E15 :)
 let $E15invalid :=
     try {
-        for $x in $docRoot//om:OM_Observation/om:result//swe:elementType/swe:DataRecord/swe:field[@name = "StartTime"
+        (for $x in $docRoot//om:OM_Observation/om:result//swe:elementType/swe:DataRecord/swe:field[@name = "StartTime"
                 and not(swe:Time[@definition = "http://www.opengis.net/def/property/OGC/0/SamplingTime"]/swe:uom/@xlink:href = "http://www.opengis.net/def/uom/ISO-8601/0/Gregorian")]
         return
             <tr>
                 <td title="@gml:id">{string($x/../../../../../@gml:id)}</td>
                 <td title="swe:uom">{string($x/swe:Time[@definition = "http://www.opengis.net/def/property/OGC/0/SamplingTime"]/swe:uom/@xlink:href)}</td>
-            </tr>
+            </tr>)[position() = 1 to $errors:MAX_RESULTS]
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
@@ -379,13 +379,13 @@ let $E15invalid :=
 (: E16 :)
 let $E16invalid :=
     try {
-        for $x in $docRoot//om:OM_Observation/om:result//swe:elementType/swe:DataRecord/swe:field[@name = "EndTime"
+        (for $x in $docRoot//om:OM_Observation/om:result//swe:elementType/swe:DataRecord/swe:field[@name = "EndTime"
                 and not(swe:Time[@definition = "http://www.opengis.net/def/property/OGC/0/SamplingTime"]/swe:uom/@xlink:href = "http://www.opengis.net/def/uom/ISO-8601/0/Gregorian")]
         return
             <tr>
                 <td title="@gml:id">{string($x/../../../../../@gml:id)}</td>
                 <td title="swe:uom">{string($x/swe:Time[@definition = "http://www.opengis.net/def/property/OGC/0/SamplingTime"]/swe:uom/@xlink:href)}</td>
-            </tr>
+            </tr>)[position() = 1 to $errors:MAX_RESULTS]
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
@@ -395,13 +395,13 @@ let $E16invalid :=
 (: E17 :)
 let $E17invalid :=
     try {
-        for $x in $docRoot//om:OM_Observation/om:result//swe:elementType/swe:DataRecord/swe:field[@name="Validity"
+        (for $x in $docRoot//om:OM_Observation/om:result//swe:elementType/swe:DataRecord/swe:field[@name="Validity"
                 and not(swe:Category/@definition = "http://dd.eionet.europa.eu/vocabulary/aq/observationvalidity")]
         return
             <tr>
                 <td title="@gml:id">{string($x/../../../../../@gml:id)}</td>
                 <td title="swe:Category">{string($x/swe:Category/@definition)}</td>
-            </tr>
+            </tr>)[position() = 1 to $errors:MAX_RESULTS]
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
@@ -411,13 +411,13 @@ let $E17invalid :=
 (: E18 :)
 let $E18invalid :=
     try {
-        for $x in $docRoot//om:OM_Observation/om:result//swe:elementType/swe:DataRecord/swe:field[@name = "Verification"
+        (for $x in $docRoot//om:OM_Observation/om:result//swe:elementType/swe:DataRecord/swe:field[@name = "Verification"
                 and not(swe:Category/@definition = "http://dd.eionet.europa.eu/vocabulary/aq/observationverification")]
         return
             <tr>
                 <td title="@gml:id">{string($x/../../../../../@gml:id)}</td>
                 <td title="swe:Category">{string($x/swe:Category/@definition)}</td>
-            </tr>
+            </tr>)[position() = 1 to $errors:MAX_RESULTS]
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
@@ -427,7 +427,7 @@ let $E18invalid :=
 (: E19 :)
 let $E19invalid :=
     try {
-        let $obs := dd:getValidConceptsLC("http://dd.eionet.europa.eu/vocabulary/aq/primaryObservation/rdf")
+        (let $obs := dd:getValidConceptsLC("http://dd.eionet.europa.eu/vocabulary/aq/primaryObservation/rdf")
         let $cons := dd:getValidConceptsLC("http://dd.eionet.europa.eu/vocabulary/uom/concentration/rdf")
         for $x in $docRoot//om:OM_Observation/om:result//swe:elementType/swe:DataRecord/swe:field[@name = "Value"
                 and (not(swe:Quantity/lower-case(@definition) = $obs) or not(swe:Quantity/swe:uom/lower-case(@xlink:href) = $cons))]
@@ -436,7 +436,7 @@ let $E19invalid :=
                 <td title="@gml:id">{string($x/../../../../../@gml:id)}</td>
                 <td title="swe:Quantity">{string($x/swe:Quantity/@definition)}</td>
                 <td title="swe:uom">{string($x/swe:Quantity/swe:uom/@xlink:href)}</td>
-            </tr>
+            </tr>)[position() = 1 to $errors:MAX_RESULTS]
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
@@ -446,7 +446,7 @@ let $E19invalid :=
 (: E19b :)
 let $E19binvalid :=
     try {
-        for $x in $docRoot//om:OM_Observation
+        (for $x in $docRoot//om:OM_Observation
         let $pollutant := string($x/om:observedProperty/@xlink:href)
         let $value := string($x//swe:field[@name = 'Value']/swe:Quantity/swe:uom/@xlink:href)
         let $recommended := dd:getRecommendedUnit($pollutant)
@@ -457,7 +457,7 @@ let $E19binvalid :=
                 <td title="Pollutant">{$pollutant}</td>
                 <td title="Recommended Unit">{$recommended}</td>
                 <td title="swe:uom">{$value}</td>
-            </tr>
+            </tr>)[position() = 1 to $errors:MAX_RESULTS]
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
@@ -468,7 +468,7 @@ let $E19binvalid :=
 (: E20 :)
 let $E20invalid :=
     try {
-        let $all := $docRoot//om:result//swe:elementType/swe:DataRecord/swe:field[@name="DataCapture"]
+        (let $all := $docRoot//om:result//swe:elementType/swe:DataRecord/swe:field[@name="DataCapture"]
         for $x in $all
         let $def := $x/swe:Quantity/@definition/string()
         let $uom := $x/swe:Quantity/swe:uom/@xlink:href/string()
@@ -478,7 +478,7 @@ let $E20invalid :=
                 <td title="@gml:id">{string($x/../../../../../@gml:id)}</td>
                 <td title="@definition">{$def}</td>
                 <td title="@uom">{$uom}</td>
-            </tr>
+            </tr>)[position() = 1 to $errors:MAX_RESULTS]
     }
     catch * {
         <tr status="failed">
@@ -490,14 +490,14 @@ let $E20invalid :=
 (: E21 - /om:result/swe:DataArray/swe:encoding/swe:TextEncoding shall resolve to decimalSeparator="." tokenSeparator="," blockSeparator="@@" :)
 let $E21invalid :=
     try {
-        for $x in $docRoot//om:result//swe:encoding/swe:TextEncoding[not(@decimalSeparator=".") or not(@tokenSeparator=",") or not(@blockSeparator="@@")]
+        (for $x in $docRoot//om:result//swe:encoding/swe:TextEncoding[not(@decimalSeparator=".") or not(@tokenSeparator=",") or not(@blockSeparator="@@")]
         return
             <tr>
                 <td title="@gml:id">{string($x/../../../../@gml:id)}</td>
                 <td title="@decimalSeparator">{string($x/@decimalSeparator)}</td>
                 <td title="@tokenSeparator">{string($x/@tokenSeparator)}</td>
                 <td title="@blockSeparator">{string($x/@blockSeparator)}</td>
-            </tr>
+            </tr>)[position() = 1 to $errors:MAX_RESULTS]
     }
     catch * {
         <tr status="failed">
@@ -566,7 +566,7 @@ let $E23invalid :=
 
 let $E24invalid :=
     try {
-        (for $x at $xpos in $docRoot//om:OM_Observation/om:result[//swe:field[@name = "Value"]/swe:Quantity/contains(@definition, $vocabulary:OBSERVATIONS_PRIMARY)]
+        (for $x at $xpos in $docRoot//om:OM_Observation/om:result[//swe:field[@name = "Value"]/swe:Quantity/contains(@definition, $vocabulary:OBSERVATIONS_PRIMARY) = true()]
 
         let $blockSeparator := string($x//swe:encoding/swe:TextEncoding/@blockSeparator)
         let $decimalSeparator := string($x//swe:encoding/swe:TextEncoding/@decimalSeparator)
@@ -588,20 +588,22 @@ let $E24invalid :=
                 let $endDateTime := xs:dateTime($endTime)
                 return
                     if ($definition = $vocabulary:OBSERVATIONS_PRIMARY || "hour") then
-                        if ($startDateTime - $endDateTime > 1) then
+                        if (($endDateTime - $startDateTime) div xs:dayTimeDuration("PT1H") > 1) then
                             true()
                         else
                             false()
                     else if ($definition = $vocabulary:OBSERVATIONS_PRIMARY || "day") then
-                        if ($startDateTime - $endDateTime > 24) then
+                        if (($endDateTime - $startDateTime) div xs:dayTimeDuration("P1D") > 24) then
                             true()
                         else
                             false()
                     else if ($definition = $vocabulary:OBSERVATIONS_PRIMARY || "year") then
-                        (: TODO: Fix for leap years :)
-                        true()
+                        if (common:isDateTimeDifferenceOverYear($startDateTime, $endDateTime)) then
+                            true()
+                        else
+                            false()
                     else if ($definition = $vocabulary:OBSERVATIONS_PRIMARY || "var") then
-                        if ($startDateTime - $endDateTime > 0) then
+                        if (($endDateTime - $startDateTime) div xs:dayTimeDuration("PT1H") > 0) then
                             false()
                         else
                             true()
@@ -610,7 +612,7 @@ let $E24invalid :=
         where $result = true()
         return
             <tr>
-                <td title="@gml:id">{string($x/../../../../@gml:id)}</td>
+                <td title="@gml:id">{string($x/../@gml:id)}</td>
                 <td title="@definition">{$definition}</td>
                 <td title="StartTime">{$startTime}</td>
                 <td title="EndTime">{$endTime}</td>
@@ -644,7 +646,7 @@ let $E25invalid :=
         where not($expectedStart = $startTime) or not($expectedEnd = $endTime)
         return
             <tr>
-                <td title="@gml:id">{string($x/../../../../@gml:id)}</td>
+                <td title="@gml:id">{string($x/../@gml:id)}</td>
                 <td title="@definition">{$definition}</td>
                 <td title="Expected StartTime">{$startTime}</td>
                 <td title="Actual StartTime">{$expectedStart}</td>
@@ -661,7 +663,7 @@ let $E25invalid :=
 (: E26 :)
 let $E26invalid :=
     try {
-        let $result := sparqlx:run(query:getSamplingPointMetadataFromFiles($latestEnvelopeD))
+        (let $result := sparqlx:run(query:getSamplingPointMetadataFromFiles($latestEnvelopeD))
         let $resultsConcat :=
             for $x in $result
             return $x/sparql:binding[@name="localId"]/sparql:literal/string() || $x/sparql:binding[@name="procedure"]/sparql:uri/string() ||
@@ -692,7 +694,7 @@ let $E26invalid :=
                 <td title="aqd:AQD_SamplingPointProcess">{$procedure}</td>
                 <td title="aqd:AQD_Sample">{$featureOfInterest}</td>
                 <td title="Pollutant">{$observedProperty}</td>
-            </tr>
+            </tr>)[position() = 1 to $errors:MAX_RESULTS]
     }
     catch * {
         <tr status="failed">

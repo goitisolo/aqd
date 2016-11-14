@@ -48,4 +48,4 @@ declare variable $vocabulary:PROCESS_PARAMETER as xs:string := "http://dd.eionet
 declare variable $vocabulary:ROD_PREFIX as xs:string := "http://rod.eionet.europa.eu/obligations/";
 declare variable $vocabulary:OBSERVATIONS_VERIFICATION as xs:string := "http://dd.eionet.europa.eu/vocabulary/aq/observationverification/";
 declare variable $vocabulary:OBSERVATIONS_VALIDITY as xs:string := "http://dd.eionet.europa.eu/vocabulary/aq/observationvalidity/";
-declare variable $vocabulary:OBSERVATIONS_PRIMARY as xs:string := "http://dd.eionet.europa.eu/vocabulary/aq/PrimaryObservation/";
+declare variable $vocabulary:OBSERVATIONS_PRIMARY as xs:string := "http://dd.eionet.europa.eu/vocabulary/aq/primaryObservation/";
