@@ -3,6 +3,7 @@ xquery version "3.0" encoding "UTF-8";
 module namespace common = "aqd-common";
 import module namespace vocabulary = "aqd-vocabulary" at "aqd-vocabulary.xquery";
 import module namespace dd = "aqd-dd" at "aqd-dd.xquery";
+import module namespace functx = "http://www.functx.com" at "aqd-functx.xq";
 
 declare namespace base = "http://inspire.ec.europa.eu/schemas/base/3.3";
 declare namespace skos = "http://www.w3.org/2004/02/skos/core#";
@@ -136,3 +137,38 @@ declare function common:if-empty($first as item()?, $second as item()?) as item(
     else
         data($second)
 } ;
+
+(: This is to be used only for dates with <= 1 year difference :)
+declare function common:isDateDifferenceOverYear($startDate as xs:date, $endDate as xs:date) as xs:boolean {
+    let $year1 := year-from-date($startDate)
+    let $year2 := year-from-date($endDate)
+    let $difference :=
+        if (functx:is-leap-year($year1) and $startDate < xs:date(concat($year1,"-02-29"))
+                or functx:is-leap-year($year2) and $endDate > xs:date(concat($year2,"-02-29"))) then
+            366
+        else
+            365
+    return
+        if (($endDate - $startDate) div xs:dayTimeDuration("P1D") > $difference) then
+            true()
+        else
+            false()
+};
+
+(: This is to be used only for dateTimes with <= 1 year difference :)
+declare function common:isDateTimeDifferenceOverYear($startDateTime as xs:dateTime, $endDateTime as xs:dateTime) as xs:boolean {
+    let $year1 := year-from-dateTime($startDateTime)
+    let $year2 := year-from-dateTime($endDateTime)
+    (: TODO check again corner cases :)
+    let $difference :=
+        if (functx:is-leap-year($year1) and $startDateTime < xs:dateTime(concat($year1,"-02-29T24:00:00"))
+                or functx:is-leap-year($year2) and $endDateTime > xs:dateTime(concat($year2,"-02-29T00:00:00"))) then
+            8760
+        else
+            8784
+    return
+        if (($endDateTime - $startDateTime) div xs:dayTimeDuration("PT1H") > $difference) then
+            true()
+        else
+            false()
+};
