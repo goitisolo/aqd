@@ -163,9 +163,9 @@ declare function common:isDateTimeDifferenceOverYear($startDateTime as xs:dateTi
     let $difference :=
         if (functx:is-leap-year($year1) and $startDateTime < xs:dateTime(concat($year1,"-02-29T24:00:00"))
                 or functx:is-leap-year($year2) and $endDateTime > xs:dateTime(concat($year2,"-02-29T00:00:00"))) then
-            8760
-        else
             8784
+        else
+            8760
     return
         if (($endDateTime - $startDateTime) div xs:dayTimeDuration("PT1H") > $difference) then
             true()
