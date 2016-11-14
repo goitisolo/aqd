@@ -508,7 +508,65 @@ let $E21invalid :=
 
 let $E22invalid :=
     try {
-        (for $x at $xpos in $docRoot//om:OM_Observation/om:result[//swe:field[@name = "Value"]/swe:Quantity/contains(@definition, "http://dd.eionet.europa.eu/vocabulary/aq/PrimaryObservation/")]
+        (let $validVerifications := dd:getValidNotations($vocabulary:OBSERVATIONS_VERIFICATION || "rdf")
+        let $validValidity:= dd:getValidNotations($vocabulary:OBSERVATIONS_VALIDITY || "rdf")
+
+        for $x at $xpos in $docRoot//om:OM_Observation/om:result
+        let $blockSeparator := string($x//swe:encoding/swe:TextEncoding/@blockSeparator)
+        let $decimalSeparator := string($x//swe:encoding/swe:TextEncoding/@decimalSeparator)
+        let $tokenSeparator := string($x//swe:encoding/swe:TextEncoding/@tokenSeparator)
+        let $fields := data($x//swe:elementType/swe:DataRecord/swe:field/@name)
+
+        for $i at $ipos in tokenize(replace($x//swe:values, $blockSeparator || "$", ""), $blockSeparator)
+        for $z at $zpos in tokenize($i, $tokenSeparator)
+        let $invalid :=
+            if ($fields[$zpos] = ("StartTime", "EndTime")) then if ($z castable as xs:dateTime) then false() else true()
+            else if ($fields[$zpos] = "Verification") then if ($z = $validVerifications) then false() else true()
+            else if ($fields[$zpos] = "Validity") then if ($z = $validValidity) then false() else true()
+                else if ($fields[$zpos] = "Value") then if ($z castable as xs:decimal) then false() else true()
+                    else true()
+        where $invalid = true()
+        return
+            <tr>
+                <td title="OM_Observation">{string($x/../@gml:id)}</td>
+                <td title="Data record position">{$ipos}</td>
+                <td title="Expected type">{$fields[$zpos]}</td>
+                <td title="Actual value">{$z}</td>
+            </tr>)[position() = 1 to $errors:MAX_RESULTS]
+    } catch * {
+        <tr status="failed">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
+
+let $E23invalid :=
+    try {
+        (for $x at $xpos in $docRoot//om:OM_Observation/om:result
+        let $blockSeparator := string($x//swe:encoding/swe:TextEncoding/@blockSeparator)
+        let $decimalSeparator := string($x//swe:encoding/swe:TextEncoding/@decimalSeparator)
+        let $tokenSeparator := string($x//swe:encoding/swe:TextEncoding/@tokenSeparator)
+
+        let $actual := count(tokenize(replace($x//swe:values, $blockSeparator || "$", ""), $blockSeparator))
+        let $expected := number($x//swe:elementCount/swe:Count/swe:value)
+        where not($actual = $expected)
+        return
+            <tr>
+                <td title="OM_Observation">{string($x/../@gml:id)}</td>
+                <td title="Expected count">{$expected}</td>
+                <td title="Actual count">{$actual}</td>
+            </tr>)[position() = 1 to $errors:MAX_RESULTS]
+    } catch * {
+        <tr status="failed">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
+
+
+let $E24invalid :=
+    try {
+        (for $x at $xpos in $docRoot//om:OM_Observation/om:result[//swe:field[@name = "Value"]/swe:Quantity/contains(@definition, $vocabulary:OBSERVATIONS_PRIMARY)]
 
         let $blockSeparator := string($x//swe:encoding/swe:TextEncoding/@blockSeparator)
         let $decimalSeparator := string($x//swe:encoding/swe:TextEncoding/@decimalSeparator)
@@ -522,8 +580,34 @@ let $E22invalid :=
         for $i at $ipos in tokenize(replace($x//swe:values, $blockSeparator || "$", ""), $blockSeparator)
         let $startTime := tokenize($i, $tokenSeparator)[$startPos]
         let $endTime := tokenize($i, $tokenSeparator)[$endPos]
-        (:TODO FIX THIS - NEEDS CLARIFICATIONS:)
-        where 1 != 1
+        let $result :=
+            if (not($startTime castable as xs:dateTime) or not($endTime castable as xs:dateTime)) then
+                true()
+            else
+                let $startDateTime := xs:dateTime($startTime)
+                let $endDateTime := xs:dateTime($endTime)
+                return
+                    if ($definition = $vocabulary:OBSERVATIONS_PRIMARY || "hour") then
+                        if ($startDateTime - $endDateTime > 1) then
+                            true()
+                        else
+                            false()
+                    else if ($definition = $vocabulary:OBSERVATIONS_PRIMARY || "day") then
+                        if ($startDateTime - $endDateTime > 24) then
+                            true()
+                        else
+                            false()
+                    else if ($definition = $vocabulary:OBSERVATIONS_PRIMARY || "year") then
+                        (: TODO: Fix for leap years :)
+                        true()
+                    else if ($definition = $vocabulary:OBSERVATIONS_PRIMARY || "var") then
+                        if ($startDateTime - $endDateTime > 0) then
+                            false()
+                        else
+                            true()
+                    else
+                        false()
+        where $result = true()
         return
             <tr>
                 <td title="@gml:id">{string($x/../../../../@gml:id)}</td>
@@ -538,26 +622,6 @@ let $E22invalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
-
-(:let $E23invalid :=:)
-    (:try {:)
-        (:():)
-    (:} catch * {:)
-        (:<tr status="failed">:)
-            (:<td title="Error code">{$err:code}</td>:)
-            (:<td title="Error description">{$err:description}</td>:)
-        (:</tr>:)
-    (:}:)
-
-(:let $E24invalid :=:)
-    (:try {:)
-        (:():)
-    (:} catch * {:)
-        (:<tr status="failed">:)
-            (:<td title="Error code">{$err:code}</td>:)
-            (:<td title="Error description">{$err:description}</td>:)
-        (:</tr>:)
-    (:}:)
 
 let $E25invalid :=
     try {
@@ -636,6 +700,7 @@ let $E26invalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+
 (: E27 :)
 let $E27invalid :=
     try {
@@ -661,64 +726,8 @@ let $E27invalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+
 let $E28invalid :=
-    try {
-        (let $validVerifications := dd:getValidNotations($vocabulary:OBSERVATIONS_VERIFICATION || "rdf")
-        let $validValidity:= dd:getValidNotations($vocabulary:OBSERVATIONS_VALIDITY || "rdf")
-
-        for $x at $xpos in $docRoot//om:OM_Observation/om:result
-        let $blockSeparator := string($x//swe:encoding/swe:TextEncoding/@blockSeparator)
-        let $decimalSeparator := string($x//swe:encoding/swe:TextEncoding/@decimalSeparator)
-        let $tokenSeparator := string($x//swe:encoding/swe:TextEncoding/@tokenSeparator)
-        let $fields := data($x//swe:elementType/swe:DataRecord/swe:field/@name)
-
-        for $i at $ipos in tokenize(replace($x//swe:values, $blockSeparator || "$", ""), $blockSeparator)
-        for $z at $zpos in tokenize($i, $tokenSeparator)
-        let $invalid :=
-            if ($fields[$zpos] = ("StartTime", "EndTime")) then if ($z castable as xs:dateTime) then false() else true()
-            else if ($fields[$zpos] = "Verification") then if ($z = $validVerifications) then false() else true()
-            else if ($fields[$zpos] = "Validity") then if ($z = $validValidity) then false() else true()
-                else if ($fields[$zpos] = "Value") then if ($z castable as xs:decimal) then false() else true()
-                    else true()
-        where $invalid = true()
-        return
-            <tr>
-                <td title="OM_Observation">{string($x/../@gml:id)}</td>
-                <td title="Data record position">{$ipos}</td>
-                <td title="Expected type">{$fields[$zpos]}</td>
-                <td title="Actual value">{$z}</td>
-            </tr>)[position() = 1 to $errors:MAX_RESULTS]
-    } catch * {
-        <tr status="failed">
-            <td title="Error code">{$err:code}</td>
-            <td title="Error description">{$err:description}</td>
-        </tr>
-    }
-
-let $E29invalid :=
-    try {
-        (for $x at $xpos in $docRoot//om:OM_Observation/om:result
-        let $blockSeparator := string($x//swe:encoding/swe:TextEncoding/@blockSeparator)
-        let $decimalSeparator := string($x//swe:encoding/swe:TextEncoding/@decimalSeparator)
-        let $tokenSeparator := string($x//swe:encoding/swe:TextEncoding/@tokenSeparator)
-
-        let $actual := count(tokenize(replace($x//swe:values, $blockSeparator || "$", ""), $blockSeparator))
-        let $expected := number($x//swe:elementCount/swe:Count/swe:value)
-        where not($actual = $expected)
-        return
-            <tr>
-                <td title="OM_Observation">{string($x/../@gml:id)}</td>
-                <td title="Expected count">{$expected}</td>
-                <td title="Actual count">{$actual}</td>
-            </tr>)[position() = 1 to $errors:MAX_RESULTS]
-    } catch * {
-        <tr status="failed">
-            <td title="Error code">{$err:code}</td>
-            <td title="Error description">{$err:description}</td>
-        </tr>
-    }
-
-let $E30invalid :=
     try {
         (for $x at $xpos in $docRoot//om:OM_Observation/om:result
         let $blockSeparator := string($x//swe:encoding/swe:TextEncoding/@blockSeparator)
@@ -734,7 +743,7 @@ let $E30invalid :=
         </tr>
     }
 
-let $E31invalid :=
+let $E29invalid :=
     try {
         (for $x at $xpos in $docRoot//om:OM_Observation/om:result
         let $blockSeparator := string($x//swe:encoding/swe:TextEncoding/@blockSeparator)
@@ -785,13 +794,13 @@ return
         {html:build2("E20", $labels:E20, $labels:E20_SHORT, $E20invalid, "All records are valid", "record", $errors:ERROR)}
         {html:build2("E21", $labels:E21, $labels:E21_SHORT, $E21invalid, "All records are valid", "record", $errors:ERROR)}
         {html:build2("E22", $labels:E22, $labels:E22_SHORT, $E22invalid, "All records are valid", "record", $errors:ERROR)}
+        {html:build2("E23", $labels:E23, $labels:E23_SHORT, $E23invalid, "All records are valid", "record", $errors:ERROR)}
+        {html:build2("E24", $labels:E24, $labels:E24_SHORT, $E24invalid, "All records are valid", "record", $errors:ERROR)}
         {html:build2("E25", $labels:E25, $labels:E25_SHORT, $E25invalid, "All records are valid", "record", $errors:ERROR)}
         {html:build2("E26", $labels:E26, $labels:E26_SHORT, $E26invalid, "All records are valid", "record", $errors:ERROR)}
         {html:build2("E27", $labels:E27, $labels:E27_SHORT, $E27invalid, "All records are valid", "record", $errors:ERROR)}
-        {html:build2("E28", $labels:E28, $labels:E28_SHORT, $E28invalid, "All records are valid", "record", $errors:ERROR)}
-        {html:build2("E29", $labels:E29, $labels:E29_SHORT, $E29invalid, "All records are valid", "record", $errors:ERROR)}
-        {html:build2("E30", $labels:E30, $labels:E30_SHORT, $E30invalid, "All records are valid", "record", $errors:WARNING)}
-        {html:build2("E31", $labels:E31, $labels:E31_SHORT, $E31invalid, "All records are valid", "record", $errors:WARNING)}
+        {html:build2("E28", $labels:E28, $labels:E28_SHORT, $E28invalid, "All records are valid", "record", $errors:WARNING)}
+        {html:build2("E29", $labels:E29, $labels:E29_SHORT, $E29invalid, "All records are valid", "record", $errors:WARNING)}
     </table>
 
 };
