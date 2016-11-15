@@ -13,10 +13,6 @@ declare variable $labels:SHOWRECORDS := "Show Records";
 declare variable $labels:SHOWERRORS := "Show Errors";
 declare variable $labels:SHOWCOMBINATIONS := "Show Combinations";
 
-(: GENERIC QC LABELS :)
-declare variable $labels:NAMESPACES := "Prefix/namespaces check";
-declare variable $labels:NAMESPACES_SHORT := "Prefix/namespaces check";
-
 (: ENVELOPE QC LABELS :)
 declare variable $labels:ENV1 := "aqd:AQD_ReportingHeader element must be present.";
 declare variable $labels:ENV2 := "The (start) year value must be equal to the year specified in (aqd:AQD_ReportingHeader) in the XML file and it must be between $1 - $2.";
@@ -27,6 +23,8 @@ declare variable $labels:ENV5 := "For aqd:AQD_ReportingHeader, if aqd:change='fa
 (: QC Labels :)
 declare variable $labels:XML := labels:getLabel("XML", "VALIDATION");
 declare variable $labels:XML_SHORT := labels:getLabel("XML", "VALIDATION_SHORT");
+declare variable $labels:NAMESPACES := labels:getLabel("XML", "NAMESPACES");
+declare variable $labels:NAMESPACES_SHORT := labels:getLabel("XML", "NAMESPACES_SHORT");
 declare variable $labels:B0 := labels:getLabel("B", "B0");
 declare variable $labels:B0_SHORT :=  labels:getLabel("B", "B0_SHORT");
 declare variable $labels:B1 := labels:getLabel("B", "B1");

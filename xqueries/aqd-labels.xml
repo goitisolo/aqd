@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <labels xml:lang="en">
   <XML>
-    <VALIDATION>XML validation</VALIDATION>
-    <VALIDATION_SHORT>XML validation</VALIDATION_SHORT>
+      <VALIDATION>XML validation to confirm that it is both well-formed and also "valid" in that it follows a defined structure. A well-formed document follows the basic syntactic rules of XML, which are the same for all XML documents.A valid document also respects the rules dictated by XML schema (http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0/view)</VALIDATION>
+      <VALIDATION_SHORT>XML validation</VALIDATION_SHORT>
+      <NAMESPACES>Check prefix and namespaces of the gml:featureCollection according to expected root elements (More information at http://www.eionet.europa.eu/aqportal/datamodel)</NAMESPACES>
+      <NAMESPACES_SHORT>Prefix/namespaces check</NAMESPACES_SHORT>
   </XML>
   <B>
     <B0>Check if delivery if this is a new delivery or updated delivery (via reporting year) </B0>
@@ -254,6 +256,24 @@
     <C9_SHORT>Count number of Assessment Regimes for pollutants with Monitoring Objetive</C9_SHORT>
     <C10>Check that EnvironmentalObjetive (ObjectiveType+ReportingMetric+ProtectionTarget) correspond to a valid combination in http://dd.eionet.europa.eu/vocabulary/aq/environmentalobjective/view</C10>
     <C10_SHORT>Check valid combination of pollutant/EnvironmentalObjective (Objective/ProtectionTarget/ReportingMetric). Error if unexpected combination</C10_SHORT>
+    <C11>inc C10</C11>
+    <C11_SHORT>Content check</C11_SHORT>
+    <C12>inc C10</C12>
+    <C12_SHORT>Content check</C12_SHORT>
+    <C13>inc C10</C13>
+    <C13_SHORT>Content check</C13_SHORT>
+    <C14>inc C10</C14>
+    <C14_SHORT>Content check</C14_SHORT>
+    <C15>inc C10</C15>
+    <C15_SHORT>Content check</C15_SHORT>
+    <C16>inc C10</C16>
+    <C16_SHORT>Content check</C16_SHORT>
+    <C17>inc C10</C17>
+    <C17_SHORT>Content check</C17_SHORT>
+    <C18>inc C10</C18>
+    <C18_SHORT>Content check</C18_SHORT>
+    <C19>inc C10</C19>
+    <C19_SHORT>Content check</C19_SHORT>
     <C20>Provide any missing combination of Pollutant/EnvironmentalObjective according to vocabulary http://dd.eionet.europa.eu/vocabulary/aq/environmentalobjective/ (Exceptions: when ObjectiveType = .../MO + .../LVMOT + .../LVmaxMOT &amp;those combinations when "Exceedance threshold" within the vocabulary is populated)</C20>
     <C20_SHORT>Check and list any missing combination of pollutant/EnvironmentalObjective. Error if combination missing</C20_SHORT>
     <C21>Assess correctness of /aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:exceedanceAttainment depending on combination aqd:pollutant + aqd:objectiveType + aqd:reportingMetric + aqd:protectionTarget against vocabulary http://dd.eionet.europa.eu/vocabulary/aq/environmentalobjective/</C21>
@@ -426,7 +446,7 @@
     <D28>The content of aqd:AQD_Station/aqd:areaClassification shall resolve to any concept in http://dd.eionet.europa.eu/vocabulary/aq/areaclassification/</D28>
     <D28_SHORT>Must conform to a recognised Station Classification from the eionet data dictionary. These are: Rural, Rural-Nearcity, Rural-Regional, Rural-Remote, Suburban, Urban</D28_SHORT>
     <D29>The content of aqd:AQD_Station/aqd:dispersionLocal shall resolve to any concept in http://dd.eionet.europa.eu/vocabulary/aq/dispersionlocal/</D29>
-    <D29_SHORT>Must use a recognised Local descriptpor from the eionet data dictionary. These are: Canyon, Detached, Elevated and Open.</D29_SHORT>
+    <D29_SHORT>Must use a recognised Local description from the eionet data dictionary. These are: Canyon, Detached, Elevated and Open.</D29_SHORT>
     <D30>The content of aqd:AQD_Station/aqd:dispersionRegional shall resolve to any concept in http://dd.eionet.europa.eu/vocabulary/aq/dispersionregional/</D30>
     <D30_SHORT>Must use a recognised Regional descriptor: Alpine, Base, Basin-Hilly, Coast-Mount,  Coast-Plane, Hilly, Mount, Mount-Slope, Plane, Valley-Hilly and Valley-Mount.</D30_SHORT>
     <D31>AQD_SamplingPoint/ef:inspireId/base:Identifier/base:localId not unique codes:</D31>
@@ -599,6 +619,107 @@
     </D94>
     <D94_SHORT>All reported Networks shall be used within at least one SamplingPoint or one Station</D94_SHORT>
   </D>
+  <M>
+    <M0>Check if delivery if this is a new delivery or updated delivery (via reporting year) </M0>
+    <M0_SHORT>Checks if this delivery is new or an update (on same reporting year)</M0_SHORT>
+    <M1>Compile &amp; feedback upon the total number of each environmental monitoring feature types included in the delivery</M1>
+    <M1_SHORT>Total number of individual element reported within this XML Document for assessment methods (models/objective estimation)</M1_SHORT>
+    <M2>Compile &amp; feedback upon the total number of new records for each environmental monitoring feature types included in the delivery</M2>
+    <M2_SHORT>Total number of new records for each feature type included in the delivery. Warning will be returned if all LocalIds are new.</M2_SHORT>
+    <M3>Compile &amp; feedback upon the total number of modification to existing for each environmental monitoring feature types included in the delivery</M3>
+    <M3_SHORT>Total number of updated records for each feature type included in the delivery. Warning will be returned if all LocalIds are new.</M3_SHORT>
+    <M4>Compile &amp; feedback a list of the unique identifier information for each new record or modification to an environmental monitoring feature type. Feedback report shall include the gml:id attribute, ef:inspireId, aqd:inspireId, ef:name and/or ompr:name elements as available.</M4>
+    <M4_SHORT>Full list of reported Environmental Monitoring Features within this XML Document</M4_SHORT>
+    <M5>All gml:id attributes, ef:inspireId and aqd:inspireId elements shall have unique content</M5>
+    <M5_SHORT>Id elements must have unique content</M5_SHORT>
+    <M6>./ef:inspireId/base:Identifier/base:localId shall be an unique code for AQD_Model and unique within the namespace.  It is recommended to start with “MOD” and may include ISO2-country code (e.g.: MOD-ES0001)</M6>
+    <M6_SHORT>./ef:inspireId/base:Identifier/base:localId shall be an unique code for AQD_Model and unique within the namespace.  It is recommended to start with “MOD” and may include ISO2-country code (e.g.: MOD-ES0001)</M6_SHORT>
+    <M7>Count the number of unique AQD_Model (via localId) submitted within base:namespace.</M7>
+    <M7_SHORT>List unique namespaces used and count number of Models used.</M7_SHORT>
+    <M7.1>Check that namespace is registered in vocabulary (http://dd.eionet.europa.eu/vocabulary/aq/namespace/view)</M7.1>
+    <M7.1_SHORT>Check namespace is registered </M7.1_SHORT>
+    <M8>./ef:name shall return a string</M8>
+    <M8_SHORT>Model name must be provided</M8_SHORT>
+    <M9>The content of /ef:additionalDescription shall provide brief description for the model / objective estimation method</M9>
+    <M9_SHORT>The content of /ef:additionalDescription shall provide brief description for the model / objective estimation method</M9_SHORT>
+    <M10>The content of aqd:AQD_SamplingPoint/ef:mediaMonitored shall resolve to any concept inhttp://dd.eionet.europa.eu/vocabulary/inspire/MediaValue/</M10>
+    <M10_SHORT>Must conform to the code 'air' in the Media codelist in the Inspire registry </M10_SHORT>
+    <M11>./ef:geometry shall contain a valid geometric property type, typically gml:Point, gml:MultiPoint, gml:Grid, gml:RectifiedGrid, gml:Polygon </M11>
+    <M11_SHORT>./ef:geometry shall contain a valid geometric property type, typically gml:Point, gml:MultiPoint, gml:Grid, gml:RectifiedGrid, gml:Polygon </M11_SHORT>
+    <M12>Removed</M12>
+    <M12_SHORT>updated in 4.0</M12_SHORT>
+    <M13>Removed</M13>
+    <M13_SHORT>updated in 4.0</M13_SHORT>
+    <M14>Removed</M14>
+    <M14_SHORT>updated in 4.0</M14_SHORT>
+    <M15>.ef:observingCapability/ef:ObservingCapability/ef:observingTime/gml:TimePeriod/gml:beginPosition shall be equal to or less than ./ef:operationalActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod /gml:endPosition - gml:TimePeriod within the multiple ef:observingCapability MUST NOT overlap which each other</M15>
+    <M15_SHORT>Check if the operational period for the model is invalid or overlaps</M15_SHORT>
+    <M16>./ef:observingCapability/ef:ObservingCapability/ef:processType shall resolve to “INSPIRE_OM_Process” via an XLINK: http://inspire.ec.europa.eu/codelist/ProcessTypeValue/process (currently resolves to 404 error)</M16>
+    <M16_SHORT>ef:processType must conform to codelist in the Inspire registry</M16_SHORT>
+    <M17>./ef:observingCapability/ef:ObservingCapability/ef:resultNature element shall resolve to http://inspire.ec.europa.eu/codelist/ResultNatureValue/simulated (currently resolves to 404 error)</M17>
+    <M17_SHORT>ef:resultNature must conform to codelist in the Inspire registry</M17_SHORT>
+    <M18>./ef:observingCapability/ef:ObservingCapability/ef:observedProperty shall resolve to a valid code within http://dd.eionet.europa.eu/vocabulary/aq/pollutant/ Within a unique AQD_Model, multiple ef:observedProperty may be found. These MUST always resolve to the same code</M18>
+    <M18_SHORT>./ef:observingCapability/ef:ObservingCapability/ef:observedProperty shall resolve to a valid code within http://dd.eionet.europa.eu/vocabulary/aq/pollutant/ Within a unique AQD_Model, multiple ef:observedProperty may be found. These MUST always resolve to the same code</M18_SHORT>
+    <M19>./ef:observingCapability/ef:ObservingCapability/ef:featureOfInterest shall resolve to a traversable link to a unique  AQD_ModelArea (“namespace/localId” of the object)</M19>
+    <M19_SHORT>Links between Model and ModelArea shall be traceable and valid</M19_SHORT>
+    <M20>./ef:observingCapability/ef:ObservingCapability/ef:procedure shall resolve to a traversable local of global URI to ../aqd:AQD_ModelProcess</M20>
+    <M20_SHORT>Links between Model and ModelProcess shall be traceable and valid</M20_SHORT>
+    <M21>./ef:organisationLevel attribute shall resolve to a valid code in http://dd.eionet.europa.eu/vocabulary/aq/reportinglevel/  (e.g. http://dd.eionet.europa.eu/vocabulary/aq/reportinglevel/national</M21>
+    <M21_SHORT>ef:organisationLevel </M21_SHORT>
+    <M22>Empty</M22>
+    <M23> Number of invalid 3 elements aqd:AQD_Model/aqd:environmentalObjective/aqd:EnvironmentalObjective/ combinations</M23>
+    <M23_SHORT>Number of invalid 3 elements in Model and Environmental Objective combinations:</M23_SHORT>
+    <M24>/aqd:assessmentType shall resolve to http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/ via xlink:href to either http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/model or http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/objective</M24>
+    <M24_SHORT>Check that Assessment Type conforms to either Model or Objective</M24_SHORT>
+    <M25>If ./aqd:usedAQD  equals “true”, the AQD_Model must be xlinked in at least at one  /aqd:AQD_AssessmentRegime /aqd:assessmentMethods/aqd:AssessmentMethods/aqd:modelAssessmentMetadata (dataset C)</M25>
+    <M25_SHORT>Yes</M25_SHORT>
+    <M26>./aqd:zone shall resolve to a traversable local of global URI to AQD_Zones via xlink:href</M26>
+    <M26_SHORT>Check if there are any invalid link from Model  to zone(s)</M26_SHORT>
+    <M27>./ompr:inspireId/base:Identifier/base:localId shall be an unique code for SamplingPointProcess and within the namespace</M27>
+    <M27_SHORT>ModelProcess localId must be unique within the namespace</M27_SHORT>
+    <M28>./ompr:inspireld/base:Identifier/base:namespace shall be a unique namespace identifier for the data source (within an annual e-Reporting cycle). The namespace value will be owned by the data provider of the spatial object</M28>
+    <M28_SHORT>List unique namespaces used and count number of ModelProcess used.</M28_SHORT>
+    <M28.1>Check that namespace is registered in vocabulary (http://dd.eionet.europa.eu/vocabulary/aq/namespace/view)</M28.1>
+    <M28.1_SHORT>Check namespace is registered </M28.1_SHORT>
+    <M29>./ompr:documentation/base2:DocumentationCitation/base2:link shall resolve to a traceable URL </M29>
+    <M29_SHORT>./ompr:documentation/base2:DocumentationCitation/base2:link shall resolve to a traceable URL </M29_SHORT>
+    <M30>./ompr:name shall resolve to provide a name for the model process configuration </M30>
+    <M30_SHORT>ModelProcess name should be provided</M30_SHORT>
+    <M31>./ompr:type shall resolve to a text description of the type of "process" or "configuration" </M31>
+    <M31_SHORT>./ompr:type shall resolve to a text description of the type of "process" or "configuration" </M31_SHORT>
+    <M32>ompr:processParameter/ompr:ProcessParameter/ompr:name  shall resolve to a valid code within  http://dd.eionet.europa.eu/vocabulary/aq/modelparameter/ &amp; ompr:processParameter/ompr:ProcessParameter/ompr:description resolve to a text description of the model process  -- e.g.  &lt;ompr:name xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/modelparameter/emissions"/> &lt;ompr:description>NAEI2011 data, scaled forward to 2012 by linear interpolation between 2011 and projected (UEP45) 2012 data.&lt;/ompr:description></M32>
+    <M32_SHORT>Not implemented</M32_SHORT>
+    <M33>If the aqd:AQD_Model/aqd:assessmentType resolves to http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/model (please note that the link between AQD_Model and AQD_ModelProcess is made via an xlink with aqd:AQD_Model/ef:observingCapability/ef:ObservingCapability/ef:procedure - AQD_ModelProcess shall include a description of the following modelparameters: http://dd.eionet.europa.eu/vocabulary/aq/modelparameter/chemistry http://dd.eionet.europa.eu/vocabulary/aq/modelparameter/emissions http://dd.eionet.europa.eu/vocabulary/aq/modelparameter/meterology http://dd.eionet.europa.eu/vocabulary/aq/modelparameter/topography </M33>
+    <M33_SHORT>Not implemented</M33_SHORT>
+    <M34>aqd:AQD_ModelProcess/aqd:description shall provide a free text description of the model - e.g. GIS-based dispersion kernel approach for 1x1km background concentrations from area source emissions, calibrated with monitoring. The contribution from point sources is estimated using a separate dispersion model and then included in the total. A bi-linear interpolation of corrected rural measurement data has been used to map regional background NOx concentrations throughout the UK.</M34>
+    <M34_SHORT>A textual description of model process</M34_SHORT>
+    <M35>/aqd:AQD_ModelProcess/aqd:temporalResolution/aqd:TimeReferences/aqd:unit shall resolve to   http://dd.eionet.europa.eu/vocabulary/uom/time/</M35>
+    <M35_SHORT>The unit of the temporal resolution should be provided and conform with vocabulary</M35_SHORT>
+    <M36>./aqd:numUnits shall contain an integer value</M36>
+    <M36_SHORT>./aqd:numUnits shall contain an integer value</M36_SHORT>
+    <M37>./aqd:spatialResolution shall provide a free text description of the spatial resolution of the model - e.g. 1x1km background concentrations</M37>
+    <M37_SHORT>./aqd:spatialResolution shall provide a free text description of the spatial resolution of the model - e.g. 1x1km background concentrations</M37_SHORT>
+    <M38>./dataQualityDescription shall provide a description of the quality of the model data / objective estimation in relation to the DQOs</M38>
+    <M38_SHORT>./dataQualityDescription shall provide a description of the quality of the model data / objective estimation in relation to the DQOs</M38_SHORT>
+    <M39>./dataQualityReport shall provide a traceable URL (Note to data provider, the url should lead to a report describing the data quality equaluation process)</M39>
+    <M39_SHORT>Check Data Quality Report is provided  via a traceable URL</M39_SHORT>
+    <M40>./aqd:inspireId/base:Identifier/base:localId shall be an unique code for AQD_Sample and unique within the namespace</M40>
+    <M40_SHORT>ModelArea localId must be unique within the namespace</M40_SHORT>
+    <M41>./aqd:inspireId/base:Identifier/base:namespace shall be a unique namespace identifier for the data source (within an annual e-Reporting cycle). The namespace value will be owned by the data provider of the spatial object and will be registered in the INSPIRE External Object Identifier Namespaces Register</M41>
+    <M41_SHORT>List unique namespaces used and count number of ModelArea used.</M41_SHORT>
+    <M41.1>Check that namespace is registered in vocabulary (http://dd.eionet.europa.eu/vocabulary/aq/namespace/view)</M41.1>
+    <M41.1_SHORT>Check namespace is registered </M41.1_SHORT>
+    <M42>Check on ./sam:sampledFeature to be skipped. This element is not relevant and might contain xlink to  http://sweet.jpl.nasa.gov/2.2/realm.owl or &lt;sam:sampledFeature nilReason="inapplicable" xsi:nil="true"/></M42>
+    <M42_SHORT>No</M42_SHORT>
+    <M43>/sams:shape/gml:Polygon, ./sams:shape/gml:Point, ./sams:shape/gml:MultiPoint, ./sams:shape/gml:MultiSurface, ./sams:shape/gml:Grid, ./sams:shape/gml:RectifiedGrid the srsName attribute shall be a recognisable URN. The following 3 srsNames are expected urn:ogc:def:crs:EPSG::3035 or urn:ogc:def:crs:EPSG::4258 or urn:ogc:def:crs:EPSG::4326</M43>
+    <M43_SHORT>The coordinate reference system for the ModelArea must be defined with a correct uniform resource name</M43_SHORT>
+    <M44>./sams:shape shall contain a valid geometric property type, typically gml:Point, gml:MultiPoint, gml:MultiSurface, gml:Grid, gml:RectifiedGrid, gml:Polygon</M44>
+    <M44_SHORT>./sams:shape shall contain a valid geometric property type, typically gml:Point, gml:MultiPoint, gml:MultiSurface, gml:Grid, gml:RectifiedGrid, gml:Polygon</M44_SHORT>
+    <M45>.../gml:posList the count attribute shall resolve to the sum of y &amp; x;coordinate doublets.  </M45>
+    <M45_SHORT>The count attribute must be equal to the Y and X coordinate doublets</M45_SHORT>
+    <M46>Check that the coordinates lists in .../gml:posList ar presented in lat / long (y;axis / x;axis) notation.  </M46>
+    <M46_SHORT>The coordinates must be ordered as latitude (y-axis) ,longtitude (x-axis)</M46_SHORT>
+  </M>
   <E>
     <E0>Check if delivery if this is a new delivery or updated delivery (via reporting year) </E0>
     <E0_SHORT>Checks if this delivery is new or an update (on same reporting year)</E0_SHORT>
@@ -626,13 +747,8 @@
       /om:parameter/om:NamedValue/om:value xlink:href attribute shall resolve to a traversable link to a unique AQD_SamplingPoint (“namespace/localId” of the object)
     </E6>
     <E6_SHORT>Observation must link to a valid AQD_SamplingPoint in dataflow D (via om:parameter/...)</E6_SHORT>
-    <E7>
-
-
-      A valid delivery SHOULD provide  an om:parameter with om:name xlink:href to
-      http://dd.eionet.europa.eu/vocabulary/aq/processparameter/AssessmentType
-
-    </E7>
+    <E7>A valid delivery should provide  an om:parameter with om:name xlink:href to
+      http://dd.eionet.europa.eu/vocabulary/aq/processparameter/AssessmentType</E7>
     <E7_SHORT>Observation should provide link to Assessment Type</E7_SHORT>
     <E8>If ./om:parameter/om:NamedValue/om:name links to http://dd.eionet.europa.eu/vocabulary/aq/processparameter/AssessmentType /om:parameter/om:NamedValue/om:value xlink:href attribute shall resolve to  valid code for http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/</E8>
     <E8_SHORT>Observation must provide a correct link to AssessmentType vocabulary</E8_SHORT>
@@ -665,12 +781,16 @@
     <E20_SHORT>Check valid definition for the data coverage element (if provided)</E20_SHORT>
     <E21>/om:result/swe:DataArray/swe:encoding/swe:TextEncoding shall resolve to decimalSeparator="." tokenSeparator="," blockSeparator="@@"</E21>
     <E21_SHORT>Check valid TextEncoding (decimalSeparator="." tokenSeparator="," blockSeparator="@@")</E21_SHORT>
-    <E22>If the observations are defined as primaryObservations via the &lt;swe:field name=”Value”>, the difference between the StartTime and EndTime of the observations must be in accordance to the primaryObservation provided</E22>
-    <E22_SHORT>If the observations are defined as primaryObservations via the &lt;swe:field name=”Value”>, the difference between the StartTime and EndTime of the observations must be in accordance to the primaryObservation provided</E22_SHORT>
-    <E23>The results element declared as swe:field name="Validity" must only use the codes (flags) provided via http://dd.eionet.europa.eu/vocabulary/aq/observationvalidity</E23>
-    <E23_SHORT>Check all validity codes within swe:values correspon to vocabulary (…/aq/observationvalidity)</E23_SHORT>
-    <E24>The results element declared as swe:field name="Verification" must only use the codes (flags) provided via http://dd.eionet.europa.eu/vocabulary/aq/observationverification/</E24>
-    <E24_SHORT>Check all verificaiton codes within swe:values correspon to vocabulary (…/aq/observationverification)</E24_SHORT>
+    <E22>The order of the fields within individual data blocks (swe:values) must correspond to the order described within the swe:DataRecord/swe:field(multiple).</E22>
+    <E22_SHORT>The order of the fields within individual data blocks must correspond to the order described.</E22_SHORT>
+    <E23>The count of elements under &lt;swe:elementCount>&lt;swe:Count>&lt;swe:value> should match the count of data blocks under &lt;swe:values>.</E23>
+    <E23_SHORT>The count of values provided for observation should match the count declared.</E23_SHORT>
+    <E24>Difference between endTime &amp; startTime must correspond to the definition under &lt;swe:field name="Value">&lt;swe:Quantity definition=> .Difference between endTime &amp; startTime must correspond to the definition:
+      http://dd.eionet.europa.eu/vocabulary/aq/primaryObservation/hour must be 1 h
+      http://dd.eionet.europa.eu/vocabulary/aq/primaryObservation/day must be 24 hours
+      http://dd.eionet.europa.eu/vocabulary/aq/primaryObservation/year must be 8760 hours or 8784
+      http://dd.eionet.europa.eu/vocabulary/aq/primaryObservation/var can be anything</E24>
+    <E24_SHORT>Difference between endTime &amp; startTime must correspond to the definition under &lt;swe:field name="Value">&lt;swe:Quantity definition=>.</E24_SHORT>
     <E25>The temporal envelopes of the swe:values (reported via starTime and EndTime) shall reconcile with ./om:phenomenonTime/gml:TimePeriod/gml:beginPosition</E25>
     <E25_SHORT>The temporal envelopes of the swe:values (reported via starTime and EndTime) shall reconcile with ./om:phenomenonTime/gml:TimePeriod/gml:beginPosition</E25_SHORT>
     <E26>Check valid “constellation”:
@@ -696,6 +816,12 @@
       /aqd:AQD_SamplingPoint/ef:observingCapability/ef:ObservingCapability/ef:observedProperty
     </E26>
     <E26_SHORT>The combination of SamplingPoint, SamplingPointProcess, Sample and Pollutant must be valid compared to latest Assessment Methods (D) reported</E26_SHORT>
+    <E27>Check that all values (between @@) include as many fields as declared under swe:DataRecord</E27>
+    <E27_SHORT>Check that all values (between @@) include as many fields as declared under swe:DataRecord</E27_SHORT>
+    <E28>The data array should not end with "@@". Please note that @@ is a block separator.</E28>
+    <E28_SHORT>The data array should not end with "@@". Please note that @@ is a block separator.</E28_SHORT>
+    <E29>Check that all values (between @@) include as many fields as declared under swe:DataRecord</E29>
+    <E29_SHORT>Check that all values (between @@) include as many fields as declared under swe:DataRecord</E29_SHORT>
   </E>
   <G>
     <G0>Check if delivery if this is a new delivery or updated delivery (via reporting year) </G0>
@@ -835,25 +961,25 @@
     <G22_SHORT>Check and list any invalid combination of pollutant &amp; environmental objective</G22_SHORT>
     <G23>inc G22</G23>
     <G23_SHORT>Content check</G23_SHORT>
-    <G24>inc G23</G24>
+    <G24>inc G22</G24>
     <G24_SHORT>Content check</G24_SHORT>
-    <G25>inc G24</G25>
+    <G25>inc G22</G25>
     <G25_SHORT>Content check</G25_SHORT>
-    <G26>inc G25</G26>
+    <G26>inc G22</G26>
     <G26_SHORT>Content check</G26_SHORT>
-    <G27>inc G26</G27>
+    <G27>inc G22</G27>
     <G27_SHORT>Content check</G27_SHORT>
-    <G28>inc G27</G28>
+    <G28>inc G22</G28>
     <G28_SHORT>Content check</G28_SHORT>
-    <G29>inc G28</G29>
+    <G29>inc G22</G29>
     <G29_SHORT>Content check</G29_SHORT>
-    <G30>inc G29</G30>
+    <G30>inc G22</G30>
     <G30_SHORT>Content check</G30_SHORT>
-    <G31>inc G30</G31>
+    <G31>inc G22</G31>
     <G31_SHORT>Content check</G31_SHORT>
-    <G32>inc G31</G32>
+    <G32>inc G22</G32>
     <G32_SHORT>Content check</G32_SHORT>
-    <G33>inc G32</G33>
+    <G33>inc G22</G33>
     <G33_SHORT>Content check</G33_SHORT>
     <G34>All occurrences of the srsDimension attribute in
       ./aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:spatialExtent
@@ -1089,106 +1215,4 @@
     </G88>
     <G88_SHORT>If exceedance is TRUE, information on area exposed must be provided</G88_SHORT>
   </G>
-  <M>
-    <M0>Check if delivery if this is a new delivery or updated delivery (via reporting year) </M0>
-    <M0_SHORT>Checks if this delivery is new or an update (on same reporting year)</M0_SHORT>
-    <M1>Compile &amp; feedback upon the total number of each environmental monitoring feature types included in the delivery</M1>
-    <M1_SHORT>Total number of individual element reported within this XML Document for assessment methods (models/objective estimation)</M1_SHORT>
-    <M2>Compile &amp; feedback upon the total number of new records for each environmental monitoring feature types included in the delivery</M2>
-    <M2_SHORT>Total number of new records for each feature type included in the delivery. Warning will be returned if all LocalIds are new.</M2_SHORT>
-    <M3>Compile &amp; feedback upon the total number of modification to existing for each environmental monitoring feature types included in the delivery</M3>
-    <M3_SHORT>Total number of updated records for each feature type included in the delivery. Warning will be returned if all LocalIds are new.</M3_SHORT>
-    <M4>Compile &amp; feedback a list of the unique identifier information for each new record or modification to an environmental monitoring feature type. Feedback report shall include the gml:id attribute, ef:inspireId, aqd:inspireId, ef:name and/or ompr:name elements as available.</M4>
-    <M4_SHORT>Full list of reported Environmental Monitoring Features within this XML Document</M4_SHORT>
-    <M5>All gml:id attributes, ef:inspireId and aqd:inspireId elements shall have unique content</M5>
-    <M5_SHORT>Id elements must have unique content</M5_SHORT>
-    <M6>./ef:inspireId/base:Identifier/base:localId shall be an unique code for AQD_Model and unique within the namespace.  It is recommended to start with “MOD” and may include ISO2-country code (e.g.: MOD-ES0001)</M6>
-    <M6_SHORT>./ef:inspireId/base:Identifier/base:localId shall be an unique code for AQD_Model and unique within the namespace.  It is recommended to start with “MOD” and may include ISO2-country code (e.g.: MOD-ES0001)</M6_SHORT>
-    <M7>Count the number of unique AQD_Model (via localId) submitted within base:namespace.</M7>
-    <M7_SHORT>List unique namespaces used and count number of Models used.</M7_SHORT>
-    <M7.1>Check that namespace is registered in vocabulary (http://dd.eionet.europa.eu/vocabulary/aq/namespace/view)</M7.1>
-    <M7.1_SHORT>Check namespace is registered </M7.1_SHORT>
-    <M8>./ef:name shall return a string</M8>
-    <M8_SHORT>Model name must be provided</M8_SHORT>
-    <M9>The content of /ef:additionalDescription shall provide brief description for the model / objective estimation method</M9>
-    <M9_SHORT>The content of /ef:additionalDescription shall provide brief description for the model / objective estimation method</M9_SHORT>
-    <M10>The content of aqd:AQD_SamplingPoint/ef:mediaMonitored shall resolve to any concept inhttp://dd.eionet.europa.eu/vocabulary/inspire/MediaValue/</M10>
-    <M10_SHORT>Must conform to the code 'air' in the Media codelist in the Inspire registry </M10_SHORT>
-    <M11>./ef:geometry shall contain a valid geometric property type, typically gml:Point, gml:MultiPoint, gml:Grid, gml:RectifiedGrid, gml:Polygon </M11>
-    <M11_SHORT>./ef:geometry shall contain a valid geometric property type, typically gml:Point, gml:MultiPoint, gml:Grid, gml:RectifiedGrid, gml:Polygon </M11_SHORT>
-    <M12>Removed</M12>
-    <M12_SHORT>updated in 4.0</M12_SHORT>
-    <M13>Removed</M13>
-    <M13_SHORT>updated in 4.0</M13_SHORT>
-    <M14>Removed</M14>
-    <M14_SHORT>updated in 4.0</M14_SHORT>
-    <M15>.ef:observingCapability/ef:ObservingCapability/ef:observingTime/gml:TimePeriod/gml:beginPosition shall be equal to or less than ./ef:operationalActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod /gml:endPosition - gml:TimePeriod within the multiple ef:observingCapability MUST NOT overlap which each other</M15>
-    <M15_SHORT>Check if the operational period for the model is invalid or overlaps</M15_SHORT>
-    <M16>./ef:observingCapability/ef:ObservingCapability/ef:processType shall resolve to “INSPIRE_OM_Process” via an XLINK: http://inspire.ec.europa.eu/codelist/ProcessTypeValue/process (currently resolves to 404 error)</M16>
-    <M16_SHORT>ef:processType must conform to codelist in the Inspire registry</M16_SHORT>
-    <M17>./ef:observingCapability/ef:ObservingCapability/ef:resultNature element shall resolve to http://inspire.ec.europa.eu/codelist/ResultNatureValue/simulated (currently resolves to 404 error)</M17>
-    <M17_SHORT>ef:resultNature must conform to codelist in the Inspire registry</M17_SHORT>
-    <M18>./ef:observingCapability/ef:ObservingCapability/ef:observedProperty shall resolve to a valid code within http://dd.eionet.europa.eu/vocabulary/aq/pollutant/ Within a unique AQD_Model, multiple ef:observedProperty may be found. These MUST always resolve to the same code</M18>
-    <M18_SHORT>./ef:observingCapability/ef:ObservingCapability/ef:observedProperty shall resolve to a valid code within http://dd.eionet.europa.eu/vocabulary/aq/pollutant/ Within a unique AQD_Model, multiple ef:observedProperty may be found. These MUST always resolve to the same code</M18_SHORT>
-    <M19>./ef:observingCapability/ef:ObservingCapability/ef:featureOfInterest shall resolve to a traversable link to a unique  AQD_ModelArea (“namespace/localId” of the object)</M19>
-    <M19_SHORT>Links between Model and ModelArea shall be traceable and valid</M19_SHORT>
-    <M20>./ef:observingCapability/ef:ObservingCapability/ef:procedure shall resolve to a traversable local of global URI to ../aqd:AQD_ModelProcess</M20>
-    <M20_SHORT>Links between Model and ModelProcess shall be traceable and valid</M20_SHORT>
-    <M21>./ef:organisationLevel attribute shall resolve to a valid code in http://dd.eionet.europa.eu/vocabulary/aq/reportinglevel/  (e.g. http://dd.eionet.europa.eu/vocabulary/aq/reportinglevel/national</M21>
-    <M21_SHORT>ef:organisationLevel </M21_SHORT>
-    <M22>Not implemented</M22>
-    <M22_SHORT>/aqd:AQD_Model/ef:belongsTo</M22_SHORT>
-    <M23> Number of invalid 3 elements aqd:AQD_Model/aqd:environmentalObjective/aqd:EnvironmentalObjective/ combinations</M23>
-    <M23_SHORT>Number of invalid 3 elements in Model and Environmental Objective combinations:</M23_SHORT>
-    <M24>/aqd:assessmentType shall resolve to http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/ via xlink:href to either http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/model or http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/objective</M24>
-    <M24_SHORT>Check that Assessment Type conforms to either Model or Objective</M24_SHORT>
-    <M25>If ./aqd:usedAQD  equals “true”, the AQD_Model must be xlinked in at least at one  /aqd:AQD_AssessmentRegime /aqd:assessmentMethods/aqd:AssessmentMethods/aqd:modelAssessmentMetadata (dataset C)</M25>
-    <M25_SHORT>Yes</M25_SHORT>
-    <M26>./aqd:zone shall resolve to a traversable local of global URI to AQD_Zones via xlink:href</M26>
-    <M26_SHORT>Check if there are any invalid link from Model  to zone(s)</M26_SHORT>
-    <M27>./ompr:inspireId/base:Identifier/base:localId shall be an unique code for SamplingPointProcess and within the namespace</M27>
-    <M27_SHORT>ModelProcess localId must be unique within the namespace</M27_SHORT>
-    <M28>./ompr:inspireld/base:Identifier/base:namespace shall be a unique namespace identifier for the data source (within an annual e-Reporting cycle). The namespace value will be owned by the data provider of the spatial object</M28>
-    <M28_SHORT>List unique namespaces used and count number of ModelProcess used.</M28_SHORT>
-    <M28.1>Check that namespace is registered in vocabulary (http://dd.eionet.europa.eu/vocabulary/aq/namespace/view)</M28.1>
-    <M28.1_SHORT>Check namespace is registered </M28.1_SHORT>
-    <M29>./ompr:documentation/base2:DocumentationCitation/base2:link shall resolve to a traceable URL </M29>
-    <M29_SHORT>./ompr:documentation/base2:DocumentationCitation/base2:link shall resolve to a traceable URL </M29_SHORT>
-    <M30>./ompr:name shall resolve to provide a name for the model process configuration </M30>
-    <M30_SHORT>ModelProcess name should be provided</M30_SHORT>
-    <M31>./ompr:type shall resolve to a text description of the type of "process" or "configuration" </M31>
-    <M31_SHORT>./ompr:type shall resolve to a text description of the type of "process" or "configuration" </M31_SHORT>
-    <M32>ompr:processParameter/ompr:ProcessParameter/ompr:name  shall resolve to a valid code within  http://dd.eionet.europa.eu/vocabulary/aq/modelparameter/ &amp; ompr:processParameter/ompr:ProcessParameter/ompr:description resolve to a text description of the model process  -- e.g.  &lt;ompr:name xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/modelparameter/emissions"/> &lt;ompr:description>NAEI2011 data, scaled forward to 2012 by linear interpolation between 2011 and projected (UEP45) 2012 data.&lt;/ompr:description></M32>
-    <M32_SHORT>Not implemented</M32_SHORT>
-    <M33>If the aqd:AQD_Model/aqd:assessmentType resolves to http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/model (please note that the link between AQD_Model and AQD_ModelProcess is made via an xlink with aqd:AQD_Model/ef:observingCapability/ef:ObservingCapability/ef:procedure - AQD_ModelProcess shall include a description of the following modelparameters: http://dd.eionet.europa.eu/vocabulary/aq/modelparameter/chemistry http://dd.eionet.europa.eu/vocabulary/aq/modelparameter/emissions http://dd.eionet.europa.eu/vocabulary/aq/modelparameter/meterology http://dd.eionet.europa.eu/vocabulary/aq/modelparameter/topography </M33>
-    <M33_SHORT>Not implemented</M33_SHORT>
-    <M34>aqd:AQD_ModelProcess/aqd:description shall provide a free text description of the model - e.g. GIS-based dispersion kernel approach for 1x1km background concentrations from area source emissions, calibrated with monitoring. The contribution from point sources is estimated using a separate dispersion model and then included in the total. A bi-linear interpolation of corrected rural measurement data has been used to map regional background NOx concentrations throughout the UK.</M34>
-    <M34_SHORT>A textual description of model process</M34_SHORT>
-    <M35>/aqd:AQD_ModelProcess/aqd:temporalResolution/aqd:TimeReferences/aqd:unit shall resolve to   http://dd.eionet.europa.eu/vocabulary/uom/time/</M35>
-    <M35_SHORT>The unit of the temporal resolution should be provided and conform with vocabulary</M35_SHORT>
-    <M36>./aqd:numUnits shall contain an integer value</M36>
-    <M36_SHORT>./aqd:numUnits shall contain an integer value</M36_SHORT>
-    <M37>./aqd:spatialResolution shall provide a free text description of the spatial resolution of the model - e.g. 1x1km background concentrations</M37>
-    <M37_SHORT>./aqd:spatialResolution shall provide a free text description of the spatial resolution of the model - e.g. 1x1km background concentrations</M37_SHORT>
-    <M38>./dataQualityDescription shall provide a description of the quality of the model data / objective estimation in relation to the DQOs</M38>
-    <M38_SHORT>./dataQualityDescription shall provide a description of the quality of the model data / objective estimation in relation to the DQOs</M38_SHORT>
-    <M39>./dataQualityReport shall provide a traceable URL (Note to data provider, the url should lead to a report describing the data quality equaluation process)</M39>
-    <M39_SHORT>Check Data Quality Report is provided  via a traceable URL</M39_SHORT>
-    <M40>./aqd:inspireId/base:Identifier/base:localId shall be an unique code for AQD_Sample and unique within the namespace</M40>
-    <M40_SHORT>ModelArea localId must be unique within the namespace</M40_SHORT>
-    <M41>./aqd:inspireId/base:Identifier/base:namespace shall be a unique namespace identifier for the data source (within an annual e-Reporting cycle). The namespace value will be owned by the data provider of the spatial object and will be registered in the INSPIRE External Object Identifier Namespaces Register</M41>
-    <M41_SHORT>List unique namespaces used and count number of ModelArea used.</M41_SHORT>
-    <M41.1>Check that namespace is registered in vocabulary (http://dd.eionet.europa.eu/vocabulary/aq/namespace/view)</M41.1>
-    <M41.1_SHORT>Check namespace is registered </M41.1_SHORT>
-    <M42>Check on ./sam:sampledFeature to be skipped. This element is not relevant and might contain xlink to  http://sweet.jpl.nasa.gov/2.2/realm.owl or &lt;sam:sampledFeature nilReason="inapplicable" xsi:nil="true"/></M42>
-    <M42_SHORT>No</M42_SHORT>
-    <M43>/sams:shape/gml:Polygon, ./sams:shape/gml:Point, ./sams:shape/gml:MultiPoint, ./sams:shape/gml:MultiSurface, ./sams:shape/gml:Grid, ./sams:shape/gml:RectifiedGrid the srsName attribute shall be a recognisable URN. The following 3 srsNames are expected urn:ogc:def:crs:EPSG::3035 or urn:ogc:def:crs:EPSG::4258 or urn:ogc:def:crs:EPSG::4326</M43>
-    <M43_SHORT>The coordinate reference system for the ModelArea must be defined with a correct uniform resource name</M43_SHORT>
-    <M44>./sams:shape shall contain a valid geometric property type, typically gml:Point, gml:MultiPoint, gml:MultiSurface, gml:Grid, gml:RectifiedGrid, gml:Polygon</M44>
-    <M44_SHORT>./sams:shape shall contain a valid geometric property type, typically gml:Point, gml:MultiPoint, gml:MultiSurface, gml:Grid, gml:RectifiedGrid, gml:Polygon</M44_SHORT>
-    <M45>.../gml:posList the count attribute shall resolve to the sum of y &amp; x;coordinate doublets.  </M45>
-    <M45_SHORT>The count attribute must be equal to the Y and X coordinate doublets</M45_SHORT>
-    <M46>Check that the coordinates lists in .../gml:posList ar presented in lat / long (y;axis / x;axis) notation.  </M46>
-    <M46_SHORT>The coordinates must be ordered as latitude (y-axis) ,longtitude (x-axis)</M46_SHORT>
-  </M>
 </labels>
