@@ -523,7 +523,7 @@ let $E22invalid :=
             if ($fields[$zpos] = ("StartTime", "EndTime")) then if ($z castable as xs:dateTime) then false() else true()
             else if ($fields[$zpos] = "Verification") then if ($z = $validVerifications) then false() else true()
             else if ($fields[$zpos] = "Validity") then if ($z = $validValidity) then false() else true()
-                else if ($fields[$zpos] = "Value") then if ($z castable as xs:decimal) then false() else true()
+                else if ($fields[$zpos] = "Value") then if ($z = "" or $z castable as xs:decimal) then false() else true()
                     else true()
         where $invalid = true()
         return
@@ -643,15 +643,15 @@ let $E25invalid :=
         let $endTime := tokenize($i, $tokenSeparator)[$endPos]
         let $expectedStart := $x/../om:phenomenonTime/gml:TimePeriod/gml:beginPosition/text()
         let $expectedEnd := $x/../om:phenomenonTime/gml:TimePeriod/gml:endPosition/text()
-        where not($expectedStart = $startTime) or not($expectedEnd = $endTime)
+        where not($expectedStart <= $startTime) or not($expectedEnd >= $endTime)
         return
             <tr>
                 <td title="@gml:id">{string($x/../@gml:id)}</td>
                 <td title="@definition">{$definition}</td>
-                <td title="Expected StartTime">{$startTime}</td>
-                <td title="Actual StartTime">{$expectedStart}</td>
+                <td title="gml:beginPosition">{$expectedStart}</td>
+                <td title="StartTime">{$startTime}</td>
+                <td title="gml:endPosition">{$expectedEnd}</td>
                 <td title="EndTime">{$endTime}</td>
-                <td title="Actual EndTime">{$expectedEnd}</td>
             </tr>)[position() = 1 to $errors:MAX_RESULTS]
     } catch * {
         <tr status="failed">
