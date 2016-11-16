@@ -593,7 +593,7 @@ let $E24invalid :=
                         else
                             false()
                     else if ($definition = $vocabulary:OBSERVATIONS_PRIMARY || "day") then
-                        if (($endDateTime - $startDateTime) div xs:dayTimeDuration("P1D") > 24) then
+                        if (($endDateTime - $startDateTime) div xs:dayTimeDuration("P1D") > 1) then
                             true()
                         else
                             false()
