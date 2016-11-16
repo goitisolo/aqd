@@ -156,7 +156,7 @@ declare function common:isDateDifferenceOverYear($startDate as xs:date, $endDate
 };
 
 (: This is to be used only for dateTimes with <= 1 year difference :)
-declare function common:isDateTimeDifferenceOverYear($startDateTime as xs:dateTime, $endDateTime as xs:dateTime) as xs:boolean {
+declare function common:isDateTimeDifferenceOneYear($startDateTime as xs:dateTime, $endDateTime as xs:dateTime) as xs:boolean {
     let $year1 := year-from-dateTime($startDateTime)
     let $year2 := year-from-dateTime($endDateTime)
     (: TODO check again corner cases :)
@@ -167,7 +167,7 @@ declare function common:isDateTimeDifferenceOverYear($startDateTime as xs:dateTi
         else
             8760
     return
-        if (($endDateTime - $startDateTime) div xs:dayTimeDuration("PT1H") > $difference) then
+        if (($endDateTime - $startDateTime) div xs:dayTimeDuration("PT1H") = $difference) then
             true()
         else
             false()
