@@ -129,7 +129,7 @@ let $E1invalid :=
         return
             <tr>
                 <td title="om:OM_Observation">{string($x)}</td>
-            </tr>)[position() = 1 to $errors:MAX_RESULTS]
+            </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
@@ -150,7 +150,7 @@ let $E2invalid :=
                 <td title="@gml:id">{string($x/../../@gml:id)}</td>
                 <td title="gml:beginPosition">{string($x/gml:beginPosition)}</td>
                 <td title="gml:endPosition">{string($x/gml:endPosition)}</td>
-            </tr>)[position() = 1 to $errors:MAX_RESULTS]
+            </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
     }
     catch * {
         <tr status="failed">
@@ -170,7 +170,7 @@ let $E3invalid :=
         return
             <tr>
                 <td title="@gml:id">{string($x/@gml:id)}</td>
-            </tr>)[position() = 1 to $errors:MAX_RESULTS]
+            </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
     }
     catch * {
         <tr status="failed">
@@ -188,7 +188,7 @@ let $E4invalid :=
         return
             <tr>
                 <td title="base:localId">{$x}</td>
-            </tr>)[position() = 1 to $errors:MAX_RESULTS]
+            </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
@@ -203,7 +203,7 @@ let $E5invalid :=
         return
         <tr>
             <td title="@gml:id">{string($x/@gml:id)}</td>
-        </tr>)[position() = 1 to $errors:MAX_RESULTS]
+        </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
@@ -224,7 +224,7 @@ let $E6invalid :=
             <tr>
                 <td title="om:OM_Observation">{string($x/../../@gml:id)}</td>
                 <td title="om:value">{$value}</td>
-            </tr>)[position() = 1 to $errors:MAX_RESULTS]
+            </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
@@ -240,7 +240,7 @@ let $E7invalid :=
         return
             <tr>
                 <td title="@gml:id">{string($x/@gml:id)}</td>
-            </tr>)[position() = 1 to $errors:MAX_RESULTS]
+            </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
     }
     catch * {
         <tr status="failed">
@@ -260,7 +260,7 @@ let $E8invalid :=
             <tr>
                 <td title="om:OM_Observation">{string($x/../../@gml:id)}</td>
                 <td title="om:value">{$value}</td>
-            </tr>)[position() = 1 to $errors:MAX_RESULTS]
+            </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
     }
     catch * {
         <tr status="failed">
@@ -280,7 +280,7 @@ let $E9invalid :=
             <tr>
                 <td title="@gml:id">{string($x/../../../@gml:id)}</td>
                 <td title="om:name">{data($x/@xlink:href)}</td>
-            </tr>)[position() = 1 to $errors:MAX_RESULTS]
+            </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
@@ -301,7 +301,7 @@ let $E10invalid :=
                 <td title="om:OM_Observation">{string($x/../@gml:id)}</td>
                 <td title="om:value">{$value}</td>
                 <td title="om:observedProperty">{string($x/@xlink:href)}</td>
-            </tr>)[position() = 1 to $errors:MAX_RESULTS]
+            </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
@@ -331,7 +331,7 @@ let $E11invalid :=
                 <td title="@gml:id">{$x/@gml:id/string()}</td>
                 <td title="om:value">{$value}</td>
                 <td title="om:observedProperty">{$observedProperty}</td>
-            </tr>)[position() = 1 to $errors:MAX_RESULTS]
+            </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
@@ -351,7 +351,7 @@ let $E12invalid :=
                 <td title="@gml:id">{$x/@gml:id/string()}</td>
                 <td title="om:featureOfInterest">{$featureOfInterest}</td>
                 <td title="om:observedProperty">{string($x/om:observedProperty/@xlink:href)}</td>
-            </tr>)[position() = 1 to $errors:MAX_RESULTS]
+            </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
@@ -368,7 +368,7 @@ let $E15invalid :=
             <tr>
                 <td title="@gml:id">{string($x/../../../../../@gml:id)}</td>
                 <td title="swe:uom">{string($x/swe:Time[@definition = "http://www.opengis.net/def/property/OGC/0/SamplingTime"]/swe:uom/@xlink:href)}</td>
-            </tr>)[position() = 1 to $errors:MAX_RESULTS]
+            </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
@@ -385,7 +385,7 @@ let $E16invalid :=
             <tr>
                 <td title="@gml:id">{string($x/../../../../../@gml:id)}</td>
                 <td title="swe:uom">{string($x/swe:Time[@definition = "http://www.opengis.net/def/property/OGC/0/SamplingTime"]/swe:uom/@xlink:href)}</td>
-            </tr>)[position() = 1 to $errors:MAX_RESULTS]
+            </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
@@ -401,7 +401,7 @@ let $E17invalid :=
             <tr>
                 <td title="@gml:id">{string($x/../../../../../@gml:id)}</td>
                 <td title="swe:Category">{string($x/swe:Category/@definition)}</td>
-            </tr>)[position() = 1 to $errors:MAX_RESULTS]
+            </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
@@ -417,7 +417,7 @@ let $E18invalid :=
             <tr>
                 <td title="@gml:id">{string($x/../../../../../@gml:id)}</td>
                 <td title="swe:Category">{string($x/swe:Category/@definition)}</td>
-            </tr>)[position() = 1 to $errors:MAX_RESULTS]
+            </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
@@ -436,7 +436,7 @@ let $E19invalid :=
                 <td title="@gml:id">{string($x/../../../../../@gml:id)}</td>
                 <td title="swe:Quantity">{string($x/swe:Quantity/@definition)}</td>
                 <td title="swe:uom">{string($x/swe:Quantity/swe:uom/@xlink:href)}</td>
-            </tr>)[position() = 1 to $errors:MAX_RESULTS]
+            </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
@@ -457,7 +457,7 @@ let $E19binvalid :=
                 <td title="Pollutant">{$pollutant}</td>
                 <td title="Recommended Unit">{$recommended}</td>
                 <td title="swe:uom">{$value}</td>
-            </tr>)[position() = 1 to $errors:MAX_RESULTS]
+            </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
@@ -478,7 +478,7 @@ let $E20invalid :=
                 <td title="@gml:id">{string($x/../../../../../@gml:id)}</td>
                 <td title="@definition">{$def}</td>
                 <td title="@uom">{$uom}</td>
-            </tr>)[position() = 1 to $errors:MAX_RESULTS]
+            </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
     }
     catch * {
         <tr status="failed">
@@ -497,7 +497,7 @@ let $E21invalid :=
                 <td title="@decimalSeparator">{string($x/@decimalSeparator)}</td>
                 <td title="@tokenSeparator">{string($x/@tokenSeparator)}</td>
                 <td title="@blockSeparator">{string($x/@blockSeparator)}</td>
-            </tr>)[position() = 1 to $errors:MAX_RESULTS]
+            </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
     }
     catch * {
         <tr status="failed">
@@ -534,7 +534,7 @@ let $E22invalid :=
                 <td title="Data record position">{$ipos}</td>
                 <td title="Expected type">{$fields[$zpos]}</td>
                 <td title="Actual value">{$z}</td>
-            </tr>)[position() = 1 to $errors:MAX_RESULTS]
+            </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
@@ -557,7 +557,7 @@ let $E23invalid :=
                 <td title="OM_Observation">{string($x/../@gml:id)}</td>
                 <td title="Expected count">{$expected}</td>
                 <td title="Actual count">{$actual}</td>
-            </tr>)[position() = 1 to $errors:MAX_RESULTS]
+            </tr>)[position() = 1 to $errors:MAX_LIMIT]
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
@@ -618,7 +618,7 @@ let $E24invalid :=
                 <td title="@definition">{$definition}</td>
                 <td title="StartTime">{$startTime}</td>
                 <td title="EndTime">{$endTime}</td>
-            </tr>)[position() = 1 to $errors:MAX_RESULTS]
+            </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
     }
     catch * {
         <tr status="failed">
@@ -654,7 +654,7 @@ let $E25invalid :=
                 <td title="StartTime">{$startTime}</td>
                 <td title="gml:endPosition">{$expectedEnd}</td>
                 <td title="EndTime">{$endTime}</td>
-            </tr>)[position() = 1 to $errors:MAX_RESULTS]
+            </tr>)[position() = 1 to $errors:HIGH_LIMIT]
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
@@ -696,7 +696,7 @@ let $E26invalid :=
                 <td title="aqd:AQD_SamplingPointProcess">{$procedure}</td>
                 <td title="aqd:AQD_Sample">{$featureOfInterest}</td>
                 <td title="Pollutant">{$observedProperty}</td>
-            </tr>)[position() = 1 to $errors:MAX_RESULTS]
+            </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
     }
     catch * {
         <tr status="failed">
@@ -723,7 +723,7 @@ let $E27invalid :=
                 <td title="Data record position">{$ipos}</td>
                 <td title="Expected fields">{$validCount}</td>
                 <td title="Actual fields">{$count}</td>
-            </tr>)[position() = 1 to $errors:MAX_RESULTS]
+            </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
@@ -739,7 +739,7 @@ let $E28invalid :=
         return
             <tr>
                 <td title="OM_Observation">{string($x/../@gml:id)}</td>
-            </tr>)[position() = 1 to $errors:MAX_RESULTS]
+            </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
@@ -764,7 +764,7 @@ let $E29invalid :=
                 <td title="Data record position">{$ipos}</td>
                 <td title="Expected type">{$fields[$zpos]}</td>
                 <td title="Actual value">{$z}</td>
-            </tr>)[position() = 1 to $errors:MAX_RESULTS]
+            </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
