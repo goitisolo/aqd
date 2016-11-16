@@ -510,6 +510,7 @@ let $E22invalid :=
     try {
         (let $validVerifications := dd:getValidNotations($vocabulary:OBSERVATIONS_VERIFICATION || "rdf")
         let $validValidity:= dd:getValidNotations($vocabulary:OBSERVATIONS_VALIDITY || "rdf")
+        let $exceptionDataCapture := ("-99", "-999")
 
         for $x at $xpos in $docRoot//om:OM_Observation/om:result
         let $blockSeparator := string($x//swe:encoding/swe:TextEncoding/@blockSeparator)
@@ -523,8 +524,9 @@ let $E22invalid :=
             if ($fields[$zpos] = ("StartTime", "EndTime")) then if ($z castable as xs:dateTime) then false() else true()
             else if ($fields[$zpos] = "Verification") then if ($z = $validVerifications) then false() else true()
             else if ($fields[$zpos] = "Validity") then if ($z = $validValidity) then false() else true()
-                else if ($fields[$zpos] = "Value") then if ($z = "" or $z castable as xs:decimal) then false() else true()
-                    else true()
+            else if ($fields[$zpos] = "Value") then if ($z = "" or $z castable as xs:decimal) then false() else true()
+            else if ($fields[$zpos] = "DataCapture") then if ($z = $exceptionDataCapture or ($z castable as xs:decimal and number($z) >= 0 and number($z) <= 100)) then false() else true()
+            else true()
         where $invalid = true()
         return
             <tr>
@@ -588,20 +590,20 @@ let $E24invalid :=
                 let $endDateTime := xs:dateTime($endTime)
                 return
                     if ($definition = $vocabulary:OBSERVATIONS_PRIMARY || "hour") then
-                        if (($endDateTime - $startDateTime) div xs:dayTimeDuration("PT1H") > 1) then
-                            true()
-                        else
+                        if (($endDateTime - $startDateTime) div xs:dayTimeDuration("PT1H") = 1) then
                             false()
+                        else
+                            true()
                     else if ($definition = $vocabulary:OBSERVATIONS_PRIMARY || "day") then
-                        if (($endDateTime - $startDateTime) div xs:dayTimeDuration("P1D") > 1) then
-                            true()
-                        else
+                        if (($endDateTime - $startDateTime) div xs:dayTimeDuration("P1D") = 1) then
                             false()
+                        else
+                            true()
                     else if ($definition = $vocabulary:OBSERVATIONS_PRIMARY || "year") then
-                        if (common:isDateTimeDifferenceOverYear($startDateTime, $endDateTime)) then
-                            true()
-                        else
+                        if (common:isDateTimeDifferenceOneYear($startDateTime, $endDateTime)) then
                             false()
+                        else
+                            true()
                     else if ($definition = $vocabulary:OBSERVATIONS_PRIMARY || "var") then
                         if (($endDateTime - $startDateTime) div xs:dayTimeDuration("PT1H") > 0) then
                             false()
