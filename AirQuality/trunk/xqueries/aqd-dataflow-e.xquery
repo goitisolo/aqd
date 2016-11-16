@@ -524,7 +524,7 @@ let $E22invalid :=
             if ($fields[$zpos] = ("StartTime", "EndTime")) then if ($z castable as xs:dateTime) then false() else true()
             else if ($fields[$zpos] = "Verification") then if ($z = $validVerifications) then false() else true()
             else if ($fields[$zpos] = "Validity") then if ($z = $validValidity) then false() else true()
-            else if ($fields[$zpos] = "Value") then if ($z = "" or $z castable as xs:decimal) then false() else true()
+            else if ($fields[$zpos] = "Value") then if ($z = "" or $z castable as xs:double) then false() else true()
             else if ($fields[$zpos] = "DataCapture") then if ($z = $exceptionDataCapture or ($z castable as xs:decimal and number($z) >= 0 and number($z) <= 100)) then false() else true()
             else true()
         where $invalid = true()
