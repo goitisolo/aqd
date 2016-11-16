@@ -645,7 +645,9 @@ let $E25invalid :=
         let $endTime := tokenize($i, $tokenSeparator)[$endPos]
         let $expectedStart := $x/../om:phenomenonTime/gml:TimePeriod/gml:beginPosition/text()
         let $expectedEnd := $x/../om:phenomenonTime/gml:TimePeriod/gml:endPosition/text()
-        where not($expectedStart <= $startTime) or not($expectedEnd >= $endTime)
+        where not($expectedStart castable as xs:dateTime) or not($expectedEnd castable as xs:dateTime) or
+                not($startTime castable as xs:dateTime) or not($endTime castable as xs:dateTime) or
+                not(xs:dateTime($expectedStart) <= xs:dateTime($startTime)) or not(xs:dateTime($expectedEnd) >= xs:dateTime($endTime))
         return
             <tr>
                 <td title="@gml:id">{string($x/../@gml:id)}</td>
