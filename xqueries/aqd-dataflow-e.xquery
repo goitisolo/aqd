@@ -630,13 +630,10 @@ let $E24invalid :=
 let $E25invalid :=
     try {
         (for $x at $xpos in $docRoot//om:OM_Observation/om:result
-
         let $blockSeparator := string($x//swe:encoding/swe:TextEncoding/@blockSeparator)
         let $decimalSeparator := string($x//swe:encoding/swe:TextEncoding/@decimalSeparator)
         let $tokenSeparator := string($x//swe:encoding/swe:TextEncoding/@tokenSeparator)
-        let $definition := $x//swe:field[@name = "Value"]/swe:Quantity/@definition/string()
         let $fields := data($x//swe:elementType/swe:DataRecord/swe:field/@name)
-
         let $startPos := index-of($fields, "StartTime")
         let $endPos := index-of($fields, "EndTime")
 
@@ -651,7 +648,7 @@ let $E25invalid :=
         return
             <tr>
                 <td title="@gml:id">{string($x/../@gml:id)}</td>
-                <td title="@definition">{$definition}</td>
+                <td title="Data record position">{$ipos}</td>
                 <td title="gml:beginPosition">{$expectedStart}</td>
                 <td title="StartTime">{$startTime}</td>
                 <td title="gml:endPosition">{$expectedEnd}</td>
