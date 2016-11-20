@@ -21,6 +21,9 @@ import module namespace vocabulary = "aqd-vocabulary" at "aqd-vocabulary.xquery"
 declare variable $dd:VALIDRESOURCE := "http://dd.eionet.europa.eu/vocabulary/datadictionary/status/valid";
 declare variable $dd:VALIDPOLLUTANTS as xs:string* := dd:getValidPollutants();
 
+declare function dd:getValid($url as xs:string) {
+    doc($url || "rdf")//skos:Concept[adms:status/@rdf:resource = $dd:VALIDRESOURCE]
+};
 declare function dd:getNameFromPollutantCode($code as xs:string) as xs:string? {
     let $code := tokenize($code, "/")[last()]
     let $codes := doc(concat($vocabulary:POLLUTANT_VOCABULARY, "/rdf"))    
