@@ -834,7 +834,7 @@ let $E31invalid :=
     return
         <tr>
             <td title="@gml:id">{string($x/../@gml:id)}</td>
-            <td title="Data array position">{$ipos}</td>
+            <td title="Data record position">{$ipos}</td>
             <td title="StartTime">{$startTime}</td>
             <td title="Previous endTime">{$prevEndTime}</td>
         </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
