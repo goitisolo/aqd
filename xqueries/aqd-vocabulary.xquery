@@ -49,3 +49,4 @@ declare variable $vocabulary:ROD_PREFIX as xs:string := "http://rod.eionet.europ
 declare variable $vocabulary:OBSERVATIONS_VERIFICATION as xs:string := "http://dd.eionet.europa.eu/vocabulary/aq/observationverification/";
 declare variable $vocabulary:OBSERVATIONS_VALIDITY as xs:string := "http://dd.eionet.europa.eu/vocabulary/aq/observationvalidity/";
 declare variable $vocabulary:OBSERVATIONS_PRIMARY as xs:string := "http://dd.eionet.europa.eu/vocabulary/aq/primaryObservation/";
+declare variable $vocabulary:OBSERVATIONS_RANGE as xs:string := "http://dd.eionet.europa.eu/vocabulary/aq/primaryObservationRange/";
