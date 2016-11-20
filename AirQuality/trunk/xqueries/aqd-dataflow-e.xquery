@@ -802,7 +802,7 @@ let $E30invalid :=
                 <td title="Minimum value">{$minValue}</td>
                 <td title="Maximum value">{$maxValue}</td>
                 <td title="Actual value">{$value}</td>
-            </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
+            </tr>)[position() = 1 to $errors:HIGH_LIMIT]
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
