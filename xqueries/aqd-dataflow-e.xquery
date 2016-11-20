@@ -809,6 +809,38 @@ let $E30invalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+let $E31invalid :=
+    (for $x at $xpos in $docRoot//om:OM_Observation/om:result[//swe:field[@name = "Value"]/swe:Quantity/contains(@definition, $vocabulary:OBSERVATIONS_PRIMARY) = true()]
+
+    let $blockSeparator := string($x//swe:encoding/swe:TextEncoding/@blockSeparator)
+    let $decimalSeparator := string($x//swe:encoding/swe:TextEncoding/@decimalSeparator)
+    let $tokenSeparator := string($x//swe:encoding/swe:TextEncoding/@tokenSeparator)
+    let $definition := $x//swe:field[@name = "Value"]/swe:Quantity/@definition/string()
+    let $fields := data($x//swe:elementType/swe:DataRecord/swe:field/@name)
+
+    let $startPos := index-of($fields, "StartTime")
+    let $endPos := index-of($fields, "EndTime")
+
+    let $startTimes := for $i in tokenize(replace($x//swe:values, $blockSeparator || "$", ""), $blockSeparator)
+    return tokenize($i, $tokenSeparator)[$startPos]
+    let $endTimes := for $i in tokenize(replace($x//swe:values, $blockSeparator || "$", ""), $blockSeparator)
+    return tokenize($i, $tokenSeparator)[$endPos]
+    for $startTime at $ipos in $startTimes
+    let $prevStartTime := $startTimes[$ipos - 1]
+    let $endTime := $endTimes[$ipos]
+    let $prevEndTime := $endTimes[$ipos - 1]
+    where not($ipos = 1) and (not($startTime castable as xs:dateTime) or not($prevStartTime castable as xs:dateTime) or not($endTime castable as xs:dateTime)
+            or not($prevEndTime castable as xs:dateTime) or (xs:dateTime($startTime) < xs:dateTime($prevStartTime)) or (xs:dateTime($endTime) < xs:dateTime($prevEndTime)))
+    return
+        <tr>
+            <td title="@gml:id">{string($x/../@gml:id)}</td>
+            <td title="Data array position">{$ipos}</td>
+            <td title="@definition">{$definition}</td>
+            <td title="StartTime">{$startTime}</td>
+            <td title="Previous startTime">{$prevStartTime}</td>
+            <td title="EndTime">{$endTime}</td>
+            <td title="Previous endTime">{$prevEndTime}</td>
+        </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
 
 return
     <table class="maintable hover">
@@ -843,6 +875,8 @@ return
         {html:build2("E27", $labels:E27, $labels:E27_SHORT, $E27invalid, "All records are valid", "record", $errors:ERROR)}
         {html:build2("E28", $labels:E28, $labels:E28_SHORT, $E28invalid, "All records are valid", "record", $errors:WARNING)}
         {html:build2("E29", $labels:E29, $labels:E29_SHORT, $E29invalid, "All records are valid", "record", $errors:WARNING)}
+        {html:build2("E30", $labels:E30, $labels:E30_SHORT, $E30invalid, "All records are valid", "record", $errors:WARNING)}
+        {html:build2("E31", $labels:E31, $labels:E31_SHORT, $E31invalid, "All records are valid", "record", $errors:ERROR)}
     </table>
 
 };
