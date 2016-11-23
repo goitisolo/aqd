@@ -820,8 +820,8 @@
     <E27_SHORT>Check that all values (between @@) include as many fields as declared under swe:DataRecord</E27_SHORT>
     <E28>The data array should not end with "@@". Please note that @@ is a block separator.</E28>
     <E28_SHORT>The data array should not end with "@@". Please note that @@ is a block separator.</E28_SHORT>
-    <E29>Check that all values (between @@) include as many fields as declared under swe:DataRecord</E29>
-    <E29_SHORT>Check that all values (between @@) include as many fields as declared under swe:DataRecord</E29_SHORT>
+    <E29>Check for unexpected spaces around all values (between comma separator) under swe:values</E29>
+    <E29_SHORT>Check for unexpected spaces around all values (between comma separator) under swe:values</E29_SHORT>
   </E>
   <G>
     <G0>Check if delivery if this is a new delivery or updated delivery (via reporting year) </G0>
