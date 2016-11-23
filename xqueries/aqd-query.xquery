@@ -378,12 +378,14 @@ declare function query:getC31($cdrUrl as xs:string) as xs:string {
   aqd:inspireId ?inspireId;
   aqd:designationPeriod ?designationPeriod .
   ?designationPeriod aqd:beginPosition ?beginPosition .
+  OPTIONAL { ?designationPeriod aqd:endPosition ?endPosition . }
   ?inspireId aqd:namespace ?Namespace .
 
   ?polltargetURI aqd:protectionTarget ?ProtectionTarget .
   ?polltargetURI aqd:pollutantCode ?pollURI .
   ?pollURI rdfs:label ?Pollutant .
   FILTER regex(?pollURI,'') .
+  FILTER (not(bound(?endPosition))) .
   FILTER CONTAINS(str(?zoneURI),'" || $cdrUrl || "') .
   }"
 };
@@ -406,12 +408,16 @@ PREFIX prop: <http://dd.eionet.europa.eu/property/>
     ?zoneURI a aqd:AQD_Zone;
        aqd:zoneCode ?Zone;
        aqd:pollutants ?polltargetURI;
-       aqd:inspireId ?inspireId .
+       aqd:inspireId ?inspireId;
+       aqd:designationPeriod ?designationPeriod .
+       ?designationPeriod aqd:beginPosition ?beginPosition .
+       OPTIONAL { ?designationPeriod aqd:endPosition ?endPosition . }
        ?inspireId aqd:namespace ?Namespace .
        ?polltargetURI aqd:protectionTarget ?ProtectionTarget .
        ?polltargetURI aqd:pollutantCode ?pollURI .
        ?pollURI rdfs:label ?Pollutant
-  FILTER CONTAINS(str(?zoneURI),'" || $envelopeB || "') .
+       FILTER (not(bound(?endPosition))) .
+       FILTER CONTAINS(str(?zoneURI),'" || $envelopeB || "') .
   }}
   {
   SELECT DISTINCT
