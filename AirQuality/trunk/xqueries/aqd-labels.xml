@@ -822,6 +822,10 @@
     <E28_SHORT>The data array should not end with "@@". Please note that @@ is a block separator.</E28_SHORT>
     <E29>Check for unexpected spaces around all values (between comma separator) under swe:values</E29>
     <E29_SHORT>Check for unexpected spaces around all values (between comma separator) under swe:values</E29_SHORT>
+    <E30>Check for possible outliers reported. List of valid values found outside the range according to http://dd.eionet.europa.eu/vocabulary/aq/primaryObservationRange/</E30>
+    <E30_SHORT>Check for possible outliers reported. List of valid values found outside the range according to http://dd.eionet.europa.eu/vocabulary/aq/primaryObservationRange/</E30_SHORT>
+    <E31>Check for date overlaps between consecutive data blocks within swe:values</E31>
+    <E31_SHORT>Check for date overlaps between consecutive data blocks within swe:values</E31_SHORT>
   </E>
   <G>
     <G0>Check if delivery if this is a new delivery or updated delivery (via reporting year) </G0>
