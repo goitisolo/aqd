@@ -792,7 +792,7 @@ let $E30invalid :=
         let $tokens := tokenize($i, $tokenSeparator)
         let $validity := $tokens[index-of($fields, "Validity")]
         let $value := $tokens[index-of($fields, "Value")]
-        where not($validity = "-1") and (not($value castable as xs:double) or (xs:double($value) < xs:double($minValue)) or (xs:double($value) > xs:double($maxValue)))
+        where (($validity castable as xs:integer) and xs:integer($validity) >= 1) and (not($value castable as xs:double) or (xs:double($value) < xs:double($minValue)) or (xs:double($value) > xs:double($maxValue)))
         return
             <tr>
                 <td title="OM_Observation">{string($x/../@gml:id)}</td>
