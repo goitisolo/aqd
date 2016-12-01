@@ -827,19 +827,25 @@ let $E31invalid :=
         return tokenize($i, $tokenSeparator)[$startPos]
         let $endTimes := for $i in tokenize(replace($x//swe:values, $blockSeparator || "$", ""), $blockSeparator)
         return tokenize($i, $tokenSeparator)[$endPos]
-        for $startTime at $ipos in $startTimes
-        let $prevStartTime := $startTimes[$ipos - 1]
-        let $endTime := $endTimes[$ipos]
-        let $prevEndTime := $endTimes[$ipos - 1]
-        where not($ipos = 1) and (not($startTime castable as xs:dateTime) or not($prevStartTime castable as xs:dateTime) or not($endTime castable as xs:dateTime)
-                or not($prevEndTime castable as xs:dateTime) or (xs:dateTime($startTime) < xs:dateTime($prevEndTime)))
-        return
-            <tr>
-                <td title="@gml:id">{string($x/../@gml:id)}</td>
-                <td title="Data record position">{$ipos}</td>
-                <td title="StartTime">{$startTime}</td>
-                <td title="Previous endTime">{$prevEndTime}</td>
-            </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
+        return try {
+            for $startTime at $ipos in $startTimes
+            let $prevStartTime := $startTimes[$ipos - 1]
+            let $endTime := $endTimes[$ipos]
+            let $prevEndTime := $endTimes[$ipos - 1]
+            where not($ipos = 1) and (xs:dateTime($startTime) < xs:dateTime($prevEndTime))
+            return
+                <tr>
+                    <td title="@gml:id">{string($x/../@gml:id)}</td>
+                    <td title="Data record position">{$ipos}</td>
+                    <td title="StartTime">{$startTime}</td>
+                    <td title="Previous endTime">{$prevEndTime}</td>
+                </tr>
+        } catch * {
+            <tr status="failed">
+                <td title="Error code">{$err:code}</td>
+                <td title="Error description">{$err:description}</td>
+            </tr>
+        })[position() = 1 to $errors:MEDIUM_LIMIT]
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
