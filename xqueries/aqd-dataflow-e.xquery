@@ -636,24 +636,29 @@ let $E25invalid :=
         let $fields := data($x//swe:elementType/swe:DataRecord/swe:field/@name)
         let $startPos := index-of($fields, "StartTime")
         let $endPos := index-of($fields, "EndTime")
-
-        for $i at $ipos in tokenize(replace($x//swe:values, $blockSeparator || "$", ""), $blockSeparator)
-        let $startTime := tokenize($i, $tokenSeparator)[$startPos]
-        let $endTime := tokenize($i, $tokenSeparator)[$endPos]
         let $expectedStart := $x/../om:phenomenonTime/gml:TimePeriod/gml:beginPosition/text()
         let $expectedEnd := $x/../om:phenomenonTime/gml:TimePeriod/gml:endPosition/text()
-        where not($expectedStart castable as xs:dateTime) or not($expectedEnd castable as xs:dateTime) or
-                not($startTime castable as xs:dateTime) or not($endTime castable as xs:dateTime) or
-                not(xs:dateTime($expectedStart) <= xs:dateTime($startTime)) or not(xs:dateTime($expectedEnd) >= xs:dateTime($endTime))
         return
-            <tr>
-                <td title="@gml:id">{string($x/../@gml:id)}</td>
-                <td title="Data record position">{$ipos}</td>
-                <td title="gml:beginPosition">{$expectedStart}</td>
-                <td title="StartTime">{$startTime}</td>
-                <td title="gml:endPosition">{$expectedEnd}</td>
-                <td title="EndTime">{$endTime}</td>
-            </tr>)[position() = 1 to $errors:HIGH_LIMIT]
+            try {
+                for $i at $ipos in tokenize(replace($x//swe:values, $blockSeparator || "$", ""), $blockSeparator)
+                let $startTime := tokenize($i, $tokenSeparator)[$startPos]
+                let $endTime := tokenize($i, $tokenSeparator)[$endPos]
+                where not(xs:dateTime($expectedStart) <= xs:dateTime($startTime)) or not(xs:dateTime($expectedEnd) >= xs:dateTime($endTime))
+                return
+                    <tr>
+                        <td title="@gml:id">{string($x/../@gml:id)}</td>
+                        <td title="Data record position">{$ipos}</td>
+                        <td title="gml:beginPosition">{$expectedStart}</td>
+                        <td title="StartTime">{$startTime}</td>
+                        <td title="gml:endPosition">{$expectedEnd}</td>
+                        <td title="EndTime">{$endTime}</td>
+                    </tr>
+            } catch * {
+                <tr status="failed">
+                    <td title="Error code">{$err:code}</td>
+                    <td title="Error description">{$err:description}</td>
+                </tr>
+            })[position() = 1 to $errors:HIGH_LIMIT]
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
