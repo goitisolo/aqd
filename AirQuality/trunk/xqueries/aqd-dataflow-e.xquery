@@ -810,35 +810,42 @@ let $E30invalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+
 let $E31invalid :=
-    (for $x at $xpos in $docRoot//om:OM_Observation/om:result[//swe:field[@name = "Value"]/swe:Quantity/contains(@definition, $vocabulary:OBSERVATIONS_PRIMARY) = true()]
+    try {
+        (for $x at $xpos in $docRoot//om:OM_Observation/om:result
 
-    let $blockSeparator := string($x//swe:encoding/swe:TextEncoding/@blockSeparator)
-    let $decimalSeparator := string($x//swe:encoding/swe:TextEncoding/@decimalSeparator)
-    let $tokenSeparator := string($x//swe:encoding/swe:TextEncoding/@tokenSeparator)
-    let $definition := $x//swe:field[@name = "Value"]/swe:Quantity/@definition/string()
-    let $fields := data($x//swe:elementType/swe:DataRecord/swe:field/@name)
+        let $blockSeparator := string($x//swe:encoding/swe:TextEncoding/@blockSeparator)
+        let $decimalSeparator := string($x//swe:encoding/swe:TextEncoding/@decimalSeparator)
+        let $tokenSeparator := string($x//swe:encoding/swe:TextEncoding/@tokenSeparator)
+        let $fields := data($x//swe:elementType/swe:DataRecord/swe:field/@name)
 
-    let $startPos := index-of($fields, "StartTime")
-    let $endPos := index-of($fields, "EndTime")
+        let $startPos := index-of($fields, "StartTime")
+        let $endPos := index-of($fields, "EndTime")
 
-    let $startTimes := for $i in tokenize(replace($x//swe:values, $blockSeparator || "$", ""), $blockSeparator)
-    return tokenize($i, $tokenSeparator)[$startPos]
-    let $endTimes := for $i in tokenize(replace($x//swe:values, $blockSeparator || "$", ""), $blockSeparator)
-    return tokenize($i, $tokenSeparator)[$endPos]
-    for $startTime at $ipos in $startTimes
-    let $prevStartTime := $startTimes[$ipos - 1]
-    let $endTime := $endTimes[$ipos]
-    let $prevEndTime := $endTimes[$ipos - 1]
-    where not($ipos = 1) and (not($startTime castable as xs:dateTime) or not($prevStartTime castable as xs:dateTime) or not($endTime castable as xs:dateTime)
-            or not($prevEndTime castable as xs:dateTime) or (xs:dateTime($startTime) < xs:dateTime($prevEndTime)))
-    return
-        <tr>
-            <td title="@gml:id">{string($x/../@gml:id)}</td>
-            <td title="Data record position">{$ipos}</td>
-            <td title="StartTime">{$startTime}</td>
-            <td title="Previous endTime">{$prevEndTime}</td>
-        </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
+        let $startTimes := for $i in tokenize(replace($x//swe:values, $blockSeparator || "$", ""), $blockSeparator)
+        return tokenize($i, $tokenSeparator)[$startPos]
+        let $endTimes := for $i in tokenize(replace($x//swe:values, $blockSeparator || "$", ""), $blockSeparator)
+        return tokenize($i, $tokenSeparator)[$endPos]
+        for $startTime at $ipos in $startTimes
+        let $prevStartTime := $startTimes[$ipos - 1]
+        let $endTime := $endTimes[$ipos]
+        let $prevEndTime := $endTimes[$ipos - 1]
+        where not($ipos = 1) and (not($startTime castable as xs:dateTime) or not($prevStartTime castable as xs:dateTime) or not($endTime castable as xs:dateTime)
+                or not($prevEndTime castable as xs:dateTime) or (xs:dateTime($startTime) < xs:dateTime($prevEndTime)))
+        return
+            <tr>
+                <td title="@gml:id">{string($x/../@gml:id)}</td>
+                <td title="Data record position">{$ipos}</td>
+                <td title="StartTime">{$startTime}</td>
+                <td title="Previous endTime">{$prevEndTime}</td>
+            </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
+    } catch * {
+        <tr status="failed">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
 
 return
     <table class="maintable hover">
