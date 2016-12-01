@@ -826,6 +826,8 @@
     <E30_SHORT>Check for possible outliers reported. List of valid values found outside the range according to http://dd.eionet.europa.eu/vocabulary/aq/primaryObservationRange/</E30_SHORT>
     <E31>Check for date overlaps between consecutive data blocks within swe:values</E31>
     <E31_SHORT>Check for date overlaps between consecutive data blocks within swe:values</E31_SHORT>
+    <E32>Check that all data submitted via CDR has been fully verified. The verification flag must be 1 for all data.</E32>
+    <E32_SHORT>Check that all data submitted via CDR has been fully verified (flag 1)</E32_SHORT>
   </E>
   <G>
     <G0>Check if delivery if this is a new delivery or updated delivery (via reporting year) </G0>

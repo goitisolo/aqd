@@ -853,6 +853,32 @@ let $E31invalid :=
         </tr>
     }
 
+let $E32invalid :=
+    try {
+        (for $x at $xpos in $docRoot//om:OM_Observation/om:result
+        let $blockSeparator := string($x//swe:encoding/swe:TextEncoding/@blockSeparator)
+        let $decimalSeparator := string($x//swe:encoding/swe:TextEncoding/@decimalSeparator)
+        let $tokenSeparator := string($x//swe:encoding/swe:TextEncoding/@tokenSeparator)
+        let $fields := data($x//swe:elementType/swe:DataRecord/swe:field/@name)
+        let $verificationPos := index-of($fields, "Verification")
+
+        for $i at $ipos in tokenize(replace($x//swe:values, $blockSeparator || "$", ""), $blockSeparator)
+        let $verification := tokenize($i, $tokenSeparator)[$verificationPos]
+        where not($verification = "1")
+        return
+            <tr>
+                <td title="OM_Observation">{string($x/../@gml:id)}</td>
+                <td title="Data record position">{$ipos}</td>
+                <td title="Verification value">{$verification}</td>
+            </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
+
+    } catch * {
+        <tr status="failed">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
+
 return
     <table class="maintable hover">
         {html:build2("NS", $labels:NAMESPACES, $labels:NAMESPACES_SHORT, $NSinvalid, "All values are valid", "record", $errors:WARNING)}
@@ -888,6 +914,7 @@ return
         {html:build2("E29", $labels:E29, $labels:E29_SHORT, $E29invalid, "All records are valid", "record", $errors:WARNING)}
         {html:build2("E30", $labels:E30, $labels:E30_SHORT, $E30invalid, "All records are valid", "record", $errors:WARNING)}
         {html:build2("E31", $labels:E31, $labels:E31_SHORT, $E31invalid, "All records are valid", "record", $errors:ERROR)}
+        {html:build2("E32", $labels:E32, $labels:E32_SHORT, $E32invalid, "All records are valid", "record", $errors:WARNING)}
     </table>
 
 };
