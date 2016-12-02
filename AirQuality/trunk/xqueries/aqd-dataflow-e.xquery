@@ -867,14 +867,18 @@ let $E32invalid :=
         let $fields := data($x//swe:elementType/swe:DataRecord/swe:field/@name)
         let $verificationPos := index-of($fields, "Verification")
 
-        for $i at $ipos in tokenize(replace($x//swe:values, $blockSeparator || "$", ""), $blockSeparator)
-        let $verification := tokenize($i, $tokenSeparator)[$verificationPos]
-        where not($verification = "1")
+        let $values :=
+            for $i at $ipos in tokenize(replace($x//swe:values, $blockSeparator || "$", ""), $blockSeparator)
+            let $verification := tokenize($i, $tokenSeparator)[$verificationPos]
+            where not($verification = "1")
+            return
+                $verification
+        for $z in distinct-values($values)
         return
             <tr>
                 <td title="OM_Observation">{string($x/../@gml:id)}</td>
-                <td title="Data record position">{$ipos}</td>
-                <td title="Verification value">{$verification}</td>
+                <td title="Verification">{$z}</td>
+                <td title="Occurrences">{count(index-of($values, $z))}</td>
             </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
 
     } catch * {
