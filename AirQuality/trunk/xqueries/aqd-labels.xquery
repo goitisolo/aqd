@@ -6,8 +6,9 @@ xquery version "3.0";
 : Date: 5/31/2016
 : Time: 1:32 PM
 :)
-
 module namespace labels = "aqd-labels";
+import module namespace eionet = "eionet-config" at "eionet-config.xq";
+
 (: HTML Labels :)
 declare variable $labels:SHOWRECORDS := "Show Records";
 declare variable $labels:SHOWERRORS := "Show Errors";
@@ -664,7 +665,7 @@ declare variable $labels:C6.1_SHORT := "Check that namespace is registered in vo
 
 declare variable $labels:LABELS_FILE_NAME := "aqd-labels.xml";
 declare variable $labels:DOC :=
-    let $doc := "http://converterstest.eionet.europa.eu/xmlfile/" || $labels:LABELS_FILE_NAME
+    let $doc := $eionet:CONVERTERS || "/xmlfile/" || $labels:LABELS_FILE_NAME
     return if (doc-available($doc)) then
         doc($doc)
     else if (doc-available($labels:LABELS_FILE_NAME)) then
