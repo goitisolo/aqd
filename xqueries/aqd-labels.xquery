@@ -663,7 +663,7 @@ declare variable $labels:M46_SHORT := labels:getLabel("M", "M46_SHORT");
 declare variable $labels:C6.1 := "Check that namespace is registered in vocabulary";
 declare variable $labels:C6.1_SHORT := "Check that namespace is registered in vocabulary";
 
-declare variable $labels:LABELS_FILE_NAME := "aqd-labels.xml";
+declare variable $labels:LABELS_FILE_NAME := "aqd-labels-xq.xml";
 declare variable $labels:DOC :=
     let $doc := $eionet:CONVERTERS || "/xmlfile/" || $labels:LABELS_FILE_NAME
     return if (doc-available($doc)) then
