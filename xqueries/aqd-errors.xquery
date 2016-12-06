@@ -28,7 +28,8 @@ declare variable $errors:COLOR_FAILED := "firebrick";
 declare variable $errors:LOW_LIMIT := 100;
 declare variable $errors:MEDIUM_LIMIT := 250;
 declare variable $errors:HIGH_LIMIT := 500;
-declare variable $errors:MAX_LIMIT := 1000;
+declare variable $errors:HIGHER_LIMIT := 1000;
+declare variable $errors:MAX_LIMIT := 1500;
 (: Returns error class if there are more than 0 error elements :)
 declare function errors:getClass($elems) {
   if (count($elems) > 0) then

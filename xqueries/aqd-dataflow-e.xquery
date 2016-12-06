@@ -557,7 +557,7 @@ let $E23invalid :=
                 <td title="OM_Observation">{string($x/../@gml:id)}</td>
                 <td title="Expected count">{$expected}</td>
                 <td title="Actual count">{$actual}</td>
-            </tr>)[position() = 1 to $errors:MAX_LIMIT]
+            </tr>)[position() = 1 to $errors:HIGHER_LIMIT]
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
@@ -658,7 +658,7 @@ let $E25invalid :=
                     <td title="Error code">{$err:code}</td>
                     <td title="Error description">{$err:description}</td>
                 </tr>
-            })[position() = 1 to $errors:HIGH_LIMIT]
+            })[position() = 1 to $errors:HIGHER_LIMIT]
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
@@ -727,7 +727,7 @@ let $E27invalid :=
                 <td title="Data record position">{$ipos}</td>
                 <td title="Expected fields">{$validCount}</td>
                 <td title="Actual fields">{$count}</td>
-            </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
+            </tr>)[position() = 1 to $errors:HIGHER_LIMIT]
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
@@ -808,7 +808,7 @@ let $E30invalid :=
                 <td title="Minimum value">{$minValue}</td>
                 <td title="Maximum value">{$maxValue}</td>
                 <td title="Actual value">{$value}</td>
-            </tr>)[position() = 1 to $errors:HIGH_LIMIT]
+            </tr>)[position() = 1 to $errors:MAX_LIMIT]
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>
