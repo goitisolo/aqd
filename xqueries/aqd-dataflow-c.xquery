@@ -505,6 +505,7 @@ let $C23binvalid :=
         </tr>
     }
 
+let $C24errorClass := if (contains($source_url, "c_preliminary")) then $errors:WARNING else $errors:ERROR
 let $C24invalid :=
     try {
         for $x in $docRoot//aqd:AQD_AssessmentRegime/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:modelAssessmentMetadata
@@ -998,7 +999,7 @@ return
         {html:build2("C21", $labels:C21, $labels:C21_SHORT, $C21invalid, "All values are valid", " invalid value", $errors:WARNING)}
         {html:build2("C23a", $labels:C23a, $labels:C23a_SHORT, $C23ainvalid, "All values are valid", " invalid value", $errors:ERROR)}
         {html:build2("C23b", $labels:C23b, $labels:C23b_SHORT, $C23binvalid, "All values are valid", " invalid value", $errors:WARNING)}
-        {html:build2("C24", $labels:C24, $labels:C24_SHORT, $C24invalid, "All values are valid", "", $errors:ERROR)}
+        {html:build2("C24", $labels:C24, $labels:C24_SHORT, $C24invalid, "All values are valid", "", $C24errorClass)}
         {html:build2("C25", $labels:C25, $labels:C25_SHORT, $C25invalid, "All values are valid", "", $errors:ERROR)}
         {html:build2("C26", $labels:C26, $labels:C26_SHORT, $C26table, "All values are valid", " invalid value", $errors:WARNING)}
         {html:build2("C27", labels:interpolate($labels:C27, ($countZoneIds2, $countZoneIds1)), $labels:C27_SHORT, $C27table, "", " not unique zone", $errors:WARNING)}
