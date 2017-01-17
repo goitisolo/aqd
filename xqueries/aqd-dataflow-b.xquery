@@ -241,7 +241,9 @@ let $B7table :=
 let $B8table :=
     try {
         let $B8tmp :=
-            for $x in $docRoot//aqd:AQD_Zone[am:designationPeriod//gml:endPosition/@indeterminatePosition = "unknown"]/aqd:pollutants/aqd:Pollutant
+            for $x in $docRoot//aqd:AQD_Zone[xs:dateTime(am:designationPeriod//gml:beginPosition) < xs:dateTime($reportingYear || "-01-01T00:00:00")
+                    and (am:designationPeriod//gml:endPosition/@indeterminatePosition = "unknown"
+                            or xs:dateTime(am:designationPeriod//gml:endPosition) > xs:dateTime($reportingYear || "-12-31T24:00:00"))]/aqd:pollutants/aqd:Pollutant
             let $pollutant := string($x/aqd:pollutantCode/@xlink:href)
             let $zone := string($x/../../am:inspireId/base:Identifier/base:localId)
             let $protectionTarget := string($x/aqd:protectionTarget/@xlink:href)
