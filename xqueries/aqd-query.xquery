@@ -385,13 +385,13 @@ declare function query:getC31($cdrUrl as xs:string, $reportingYear as xs:string)
   ?polltargetURI aqd:pollutantCode ?pollURI .
   ?pollURI rdfs:label ?Pollutant .
   FILTER regex(?pollURI,'') .
-  FILTER (((xsd:date(substr(str(?beginPosition),1,10)) <= xsd:date('" || $reportingYear || "-01-01')) AND not(bound(?endPosition))) OR
-((xsd:date(substr(str(?beginPosition),1,10)) <= xsd:date('" || $reportingYear || "-01-01')) AND xsd:date(substr(str(?endPosition),1,10)) >= xsd:date('" || $reportingYear || "-12-31'))) .
+  FILTER (((xsd:date(substr(str(?beginPosition),1,10)) <= xsd:date('" || $reportingYear || "-01-01')) AND (not(bound(?endPosition)) ||
+xsd:date(substr(str(?endPosition),1,10)) >= xsd:date('" || $reportingYear || "-12-31')))) .
   FILTER CONTAINS(str(?zoneURI),'" || $cdrUrl || "') .
   }"
 };
 
-declare function query:getG14($envelopeB as xs:string, $envelopeC as xs:string) as xs:string {
+declare function query:getG14($envelopeB as xs:string, $envelopeC as xs:string, $reportingYear as xs:string) as xs:string {
   "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX aq: <http://reference.eionet.europa.eu/aq/ontology/>
 PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
@@ -417,7 +417,8 @@ PREFIX prop: <http://dd.eionet.europa.eu/property/>
        ?polltargetURI aqd:protectionTarget ?ProtectionTarget .
        ?polltargetURI aqd:pollutantCode ?pollURI .
        ?pollURI rdfs:label ?Pollutant
-       FILTER (not(bound(?endPosition))) .
+       FILTER (((xsd:date(substr(str(?beginPosition),1,10)) <= xsd:date('" || $reportingYear || "-01-01')) AND (not(bound(?endPosition)) ||
+xsd:date(substr(str(?endPosition),1,10)) >= xsd:date('" || $reportingYear || "-12-31')))) .
        FILTER CONTAINS(str(?zoneURI),'" || $envelopeB || "') .
   }}
   {

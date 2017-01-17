@@ -541,7 +541,7 @@ let $G13cinvalid :=
 let $G14table :=
     try {
         let $G14resultBC :=
-            for $i in sparqlx:run(query:getG14($latestEnvelopeB, $latestEnvelopeC))
+            for $i in sparqlx:run(query:getG14($latestEnvelopeB, $latestEnvelopeC, $reportingYear))
             return
                 <result>
                     <pollutantName>{string($i/sparql:binding[@name = "Pollutant"]/sparql:literal)}</pollutantName>
@@ -588,6 +588,7 @@ let $G14table :=
                 else if ($countC > $countG) then $errors:WARNING
                 else if ($countB > $countG) then $errors:WARNING
                 else $errors:INFO
+        order by $vsName
         return
             <tr class="{$errorClass}">
                 <td title="Pollutant Name">{$vsName || " (" || $G14ResultG[pollutantName = $vsName and protectionTarget = $protectionTarget]/pollutantCode || ")"}</td>
