@@ -677,7 +677,7 @@ let $C28invalid :=
 let $C31table :=
     try {
         let $C31ResultB :=
-            for $i in sparqlx:run(query:getC31($latestEnvelopeB))
+            for $i in sparqlx:run(query:getC31($latestEnvelopeB, $reportingYear))
             return
                 <result>
                     <pollutantName>{string($i/sparql:binding[@name = "Pollutant"]/sparql:literal)}</pollutantName>
