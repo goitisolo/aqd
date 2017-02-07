@@ -161,8 +161,8 @@ declare function common:isDateTimeDifferenceOneYear($startDateTime as xs:dateTim
     let $year2 := year-from-dateTime($endDateTime)
     (: TODO check again corner cases :)
     let $difference :=
-        if (functx:is-leap-year($year1) and $startDateTime < xs:dateTime(concat($year1,"-02-29T24:00:00"))
-                or functx:is-leap-year($year2) and $endDateTime > xs:dateTime(concat($year2,"-02-29T00:00:00"))) then
+        if (functx:is-leap-year($year1) and $startDateTime < xs:dateTime(concat($year1,"-02-29T24:00:00Z"))
+                or functx:is-leap-year($year2) and $endDateTime > xs:dateTime(concat($year2,"-02-29T00:00:00Z"))) then
             8784
         else
             8760
