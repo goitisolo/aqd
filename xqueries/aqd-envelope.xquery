@@ -181,25 +181,33 @@ declare function xmlconv:checkFileReportingHeader($envelope as element(envelope)
 };
 
 declare function xmlconv:getObligationMinMaxYear($envelope as element(envelope)) as element(year) {
-    let $deadline := 2016
+    let $part1_deadline := xs:date("2017-02-15")
+    let $part3_deadline := xs:date("2017-03-31")
+    let $deadline := 2017
     let $id := substring-after($envelope/obligation, $vocabulary:OBLIGATIONS)
     let $part1 := ("670", "671", "672", "673", "674", "675", "679", "742")
     let $part2 := ("680", "681", "682", "683")
     let $part3 := ("693", "694")
     let $minYear :=
         if ($id = $part1) then
-            $deadline - 2
+            if (current-date() <= $part1_deadline) then
+                $deadline - 2
+            else
+                $deadline - 1
         else if ($id = $part2) then
             $deadline - 3
         else if ($id = $part3) then
-            $deadline
+            if (current-date() <= $part3_deadline) then
+                $deadline
+            else
+                $deadline + 1
         else
             ()
     let $maxYear :=
         if ($id = $part1) then
             $deadline - 1
         else if ($id = $part2) then
-            $deadline - 2
+            $deadline - 1
         else if ($id = $part3) then
             $deadline + 1
         else
@@ -211,9 +219,9 @@ declare function xmlconv:getObligationMinMaxYear($envelope as element(envelope))
         </year>
 };
 
-declare function xmlconv:warningTable($pos, $file) {
-    <tr class="{$errors:WARNING}">
-        <td>{$pos}</td>
+declare function xmlconv:errorTable($pos, $file) {
+    <tr>
+        <td class="bullet">{html:getBullet(string($pos), $errors:ERROR)}</td>
         <td colspan="3">File is not available for aqd:AQD_ReportingHeader check: { common:getCleanUrl($file) }</td>
     </tr>
 };
@@ -276,7 +284,7 @@ declare function xmlconv:validateEnvelope() as element(div) {
                 if (doc-available($file)) then
                     xmlconv:checkFileReportingHeader($envelope, $file, $pos)
                 else
-                    xmlconv:warningTable($pos, common:getCleanUrl($file))
+                    xmlconv:errorTable($pos, common:getCleanUrl($file))
         } catch * {
             <tr status="failed">
                 <td title="Error code">{$err:code}</td>
