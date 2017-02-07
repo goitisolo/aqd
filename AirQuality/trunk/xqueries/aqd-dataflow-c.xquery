@@ -79,9 +79,9 @@ declare function xmlconv:checkReport($source_url as xs:string, $countryCode as x
 let $envelopeUrl := common:getEnvelopeXML($source_url)
 let $docRoot := doc($source_url)
 let $cdrUrl := common:getCdrUrl($countryCode)
-let $bDir := if (contains($source_url, "c_preliminary")) then "b_preliminary/" else "b/"
+let $bdir := if (contains($source_url, "c_preliminary")) then "b_preliminary/" else "b/"
 let $cdir := if (contains($source_url, "c_preliminary")) then "c_preliminary/" else "c/"
-let $zonesUrl := concat($cdrUrl, $bDir)
+let $zonesUrl := concat($cdrUrl, $bdir)
 let $reportingYear := common:getReportingYear($docRoot)
 let $latestEnvelopeB := query:getLatestEnvelope($zonesUrl, $reportingYear)
 let $namespaces := distinct-values($docRoot//base:namespace)
@@ -91,8 +91,8 @@ let $countZoneIds1 := count($zoneIds)
 let $countZoneIds2 := count(distinct-values($docRoot//aqd:AQD_AssessmentRegime/aqd:zone/@xlink:href))
 
 
-let $latestEnvelopeB := query:getLatestEnvelope($cdrUrl || "b/")
-let $latestEnvelopeC := query:getLatestEnvelope($cdrUrl || "c/", $reportingYear)
+let $latestEnvelopeB := query:getLatestEnvelope($cdrUrl || $bdir)
+let $latestEnvelopeC := query:getLatestEnvelope($cdrUrl || $cdir, $reportingYear)
 let $latestEnvelopeD := query:getLatestEnvelope($cdrUrl || "d/")
 let $latestEnvelopeD1b := query:getLatestEnvelope($cdrUrl || "d1b/", $reportingYear)
 let $knownRegimes := distinct-values(data(sparqlx:run(query:getAssessmentRegime($latestEnvelopeC))/sparql:binding[@name = 'inspireLabel']/sparql:literal))
@@ -623,7 +623,7 @@ let $C29invalid :=
                     $zoneId
                 else
                     ()
-        let $combinations := sparqlx:run(query:getPollutantCodeAndProtectionTarge($cdrUrl, $bDir))
+        let $combinations := sparqlx:run(query:getPollutantCodeAndProtectionTarge($cdrUrl, $bdir))
         let $validRows :=
             for $rec in $combinations
             return
