@@ -182,7 +182,7 @@ declare function xmlconv:checkFileReportingHeader($envelope as element(envelope)
 
 declare function xmlconv:getObligationMinMaxYear($envelope as element(envelope)) as element(year) {
     let $part1_deadline := xs:date("2017-02-15")
-    let $part3_deadline := xs:date("2017-03-31")
+    let $part3_deadline := xs:date("2017-05-31")
     let $deadline := 2017
     let $id := substring-after($envelope/obligation, $vocabulary:OBLIGATIONS)
     let $part1 := ("670", "671", "672", "673", "674", "675", "679", "742")
