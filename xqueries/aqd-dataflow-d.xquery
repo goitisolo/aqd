@@ -139,8 +139,8 @@ let $D1sum := string(sum(
     for $featureType in $xmlconv:FEATURE_TYPES
     return
         count($docRoot//descendant::*[name()=$featureType])))
-(: D1 :)
-let $D1table :=
+(: D01 :)
+let $D01table :=
     try {
         for $featureType at $pos in $xmlconv:FEATURE_TYPES
         order by $featureType descending
@@ -157,8 +157,8 @@ let $D1table :=
         </tr>
     }
 
-(: D2 - :)
-let $D2table :=
+(: D02 - :)
+let $D02table :=
     try {
         let $all := map:merge((
             for $featureType at $pos in $xmlconv:FEATURE_TYPES
@@ -188,10 +188,10 @@ let $D2table :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
-let $D2errorLevel :=
+let $D02errorLevel :=
     try {
         let $map1 := map:merge((
-            for $x in $D2table
+            for $x in $D02table
             return
                 map:entry($x/td[1]/string(), $x/td[2]/number())
         ))
@@ -210,8 +210,8 @@ let $D2errorLevel :=
         $errors:FAILED
     }
 
-(: D3 - :)
-let $D3table :=
+(: D03 - :)
+let $D03table :=
     try {
         let $featureTypes := remove($xmlconv:FEATURE_TYPES, index-of($xmlconv:FEATURE_TYPES, "aqd:AQD_RepresentativeArea"))
         let $all := map:merge((
@@ -239,9 +239,9 @@ let $D3table :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
-let $D3errorLevel :=
+let $D03errorLevel :=
     try {
-        if (data($D3table/@isvalid) = "false") then
+        if (data($D03table/@isvalid) = "false") then
             $errors:ERROR
         else
             $errors:INFO
@@ -250,14 +250,14 @@ let $D3errorLevel :=
     }
 let $D3count :=
     try {
-        string(sum($D3table/td[2]))
+        string(sum($D03table/td[2]))
     } catch * {
         "NaN"
     }
 
 
-(: D4 :)
-let $D4table :=
+(: D04 :)
+let $D04table :=
     try {
         let $allD4Combinations :=
             for $aqdModel in $DCombinations
@@ -287,7 +287,7 @@ let $D4table :=
         </tr>
     }
 
-(: D5 :)
+(: D05 :)
 (: TODO: FIX TRY CATCH :)
 let $all1 := $DCombinations/lower-case(normalize-space(@gml:id))
 let $part1 := distinct-values(
@@ -342,10 +342,10 @@ let $part3 :=
 let $countGmlIdDuplicates := count($part1)
 let $countefInspireIdDuplicates := count($part2)
 let $countaqdInspireIdDuplicates := count($part3)
-let $D5invalid := $part1 + $part2 + $part3
+let $D05invalid := $part1 + $part2 + $part3
 
 
-(: D6 Done by Rait ./ef:inspireId/base:Identifier/base:localId shall be an unique code for AQD_network and unique within the namespace.:)
+(: D06 Done by Rait ./ef:inspireId/base:Identifier/base:localId shall be an unique code for AQD_network and unique within the namespace.:)
 (: TODO FIX TRY CATCH :)
     let $amInspireIds := $docRoot//aqd:AQD_Network/ef:inspireId/base:Identifier/concat(lower-case(normalize-space(base:namespace)), '##',
             lower-case(normalize-space(base:localId)))
@@ -357,10 +357,10 @@ let $D5invalid := $part1 + $part2 + $part3
                 concat(normalize-space($identifier/base:namespace), ':', normalize-space($identifier/base:localId))
     )
     let $countAmInspireIdDuplicates := count($duplicateEUStationCode)
-    let $D6invalid := $countAmInspireIdDuplicates
+    let $D06invalid := $countAmInspireIdDuplicates
 
-(: D7 :)
-let $D7table :=
+(: D07 :)
+let $D07table :=
     try {
         for $id in $networkNamespaces
         let $localId := $docRoot//aqd:AQD_Network/ef:inspireId/base:Identifier[base:namespace = $id]/base:localId
@@ -377,8 +377,8 @@ let $D7table :=
         </tr>
     }
 
-(: D7.1 :)
-let $D7.1invalid :=
+(: D07.1 :)
+let $D07.1invalid :=
     try {
         let $vocDoc := doc($vocabulary:NAMESPACE || "rdf")
         let $prefLabel := $vocDoc//skos:Concept[adms:status/@rdf:resource = $dd:VALIDRESOURCE and @rdf:about = concat($vocabulary:NAMESPACE, $countryCode)]/skos:prefLabel[1]
@@ -396,8 +396,8 @@ let $D7.1invalid :=
         </tr>
     }
 
-(: D8 :)
-let $D8invalid :=
+(: D08 :)
+let $D08invalid :=
     try {
         let $valid := ($vocabulary:MEDIA_VALUE_VOCABULARY_BASE_URI || "air", $vocabulary:MEDIA_VALUE_VOCABULARY_BASE_URI_UC || "air")
         for $x in $docRoot//aqd:AQD_Network/ef:mediaMonitored
@@ -414,8 +414,8 @@ let $D8invalid :=
         </tr>
     }
 
-(: D9 :)
-let $D9invalid :=
+(: D09 :)
+let $D09invalid :=
     try {
         let $valid := dd:getValidConcepts($vocabulary:ORGANISATIONAL_LEVEL_VOCABULARY || "rdf")
         for $x in $docRoot//aqd:AQD_Network/ef:organisationLevel
@@ -2007,93 +2007,93 @@ let $D94invalid :=
 
 return
     <table class="maintable hover">
-        {html:build2("NS", $labels:NAMESPACES, $labels:NAMESPACES_SHORT, $NSinvalid, "All values are valid", "record", $errors:WARNING)}
+        {html:build2("NS", $labels:NAMESPACES, $labels:NAMESPACES_SHORT, $NSinvalid, "All values are valid", "record", $errors:NS)}
         {html:build3("D0", $labels:D0, $labels:D0_SHORT, $D0table, string($D0table/td), errors:getMaxError($D0table))}
-        {html:build1("D1", $labels:D1, $labels:D1_SHORT, $D1table, "", $D1sum, "", "",$errors:ERROR)}
-        {html:buildSimple("D2", $labels:D2, $labels:D2_SHORT, $D2table, "", "feature type", $D2errorLevel)}
-        {html:buildSimple("D3", $labels:D3, $labels:D3_SHORT, $D3table, $D3count, "feature type", $D3errorLevel)}
-        {html:build1("D4", $labels:D4, $labels:D4_SHORT, $D4table, string(count($D4table)), "", "", "",$errors:ERROR)}
-        {html:build2("D5", $labels:D5, $labels:D5_SHORT, $D5invalid, "All values are valid", "record", $errors:ERROR)}
+        {html:build1("D01", $labels:D01, $labels:D01_SHORT, $D01table, "", $D1sum, "", "",$errors:D01)}
+        {html:buildSimple("D02", $labels:D02, $labels:D02_SHORT, $D02table, "", "feature type", $D02errorLevel)}
+        {html:buildSimple("D03", $labels:D03, $labels:D03_SHORT, $D03table, $D3count, "feature type", $D03errorLevel)}
+        {html:build1("D04", $labels:D04, $labels:D04_SHORT, $D04table, string(count($D04table)), "", "", "", $errors:D04)}
+        {html:build2("D05", $labels:D05, $labels:D05_SHORT, $D05invalid, "All values are valid", "record", $errors:D05)}
         {html:buildInfoTR("Specific checks on AQD_Network feature(s) within this XML")}
-        {html:buildCountRow("D6", $labels:D6, $labels:D6_SHORT, $D6invalid, (), (), ())}
-        {html:buildUnique("D7", $labels:D7, $labels:D7_SHORT, $D7table, "namespace", $errors:ERROR)}
-        {html:build2("D7.1", $labels:D7.1, $labels:D7.1_SHORT, $D7.1invalid, "All values are valid", " invalid namespaces", $errors:ERROR)}
-        {html:build2("D8", $labels:D8, $labels:D8_SHORT, $D8invalid, "", "", $errors:WARNING)}
-        {html:build2("D9", $labels:D9, $labels:D9_SHORT, $D9invalid, "", "", $errors:WARNING)}
-        {html:build2("D10", $labels:D10, $labels:D10_SHORT, $D10invalid, "", "", $errors:WARNING)}
-        {html:build2("D11", $labels:D11, $labels:D11_SHORT, $D11invalid, "All attributes are valid", " invalid attribute ", $errors:ERROR)}
-        {html:build2("D12", $labels:D12, $labels:D12_SHORT, $D12invalid, "All attributes are valid", " invalid attribute ", $errors:WARNING)}
-        {html:build2("D14", $labels:D14, $labels:D14_SHORT, $D14invalid, "", "", $errors:ERROR)}
+        {html:buildCountRow("D06", $labels:D06, $labels:D06_SHORT, $D06invalid, (), (), ())}
+        {html:buildUnique("D07", $labels:D07, $labels:D07_SHORT, $D07table, "namespace", $errors:D07)}
+        {html:build2("D07.1", $labels:D07.1, $labels:D07.1_SHORT, $D07.1invalid, "All values are valid", " invalid namespaces", $errors:D07.1)}
+        {html:build2("D08", $labels:D08, $labels:D08_SHORT, $D08invalid, "", "", $errors:D08)}
+        {html:build2("D09", $labels:D09, $labels:D09_SHORT, $D09invalid, "", "", $errors:D09)}
+        {html:build2("D10", $labels:D10, $labels:D10_SHORT, $D10invalid, "", "", $errors:D10)}
+        {html:build2("D11", $labels:D11, $labels:D11_SHORT, $D11invalid, "All attributes are valid", " invalid attribute ", $errors:D11)}
+        {html:build2("D12", $labels:D12, $labels:D12_SHORT, $D12invalid, "All attributes are valid", " invalid attribute ", $errors:D12)}
+        {html:build2("D14", $labels:D14, $labels:D14_SHORT, $D14invalid, "", "", $errors:D14)}
         {html:buildInfoTR("Specific checks on AQD_Station feature(s) within this XML")}
         {html:buildCountRow("D15", $labels:D15, $labels:D15_SHORT, $D15invalid, "All Ids are unique", (), ())}
-        {html:buildUnique("D16", $labels:D16, $labels:D16_SHORT, $D16table, "namespace", $errors:ERROR)}
-        {html:build2("D16.1", $labels:D16.1, $labels:D16.1_SHORT, $D16.1invalid, "All values are valid", " invalid namespaces", $errors:ERROR)}
-        {html:build2("D17", $labels:D17, $labels:D17_SHORT, $D17invalid, "All values are valid", "", $errors:ERROR)}
-        {html:build2("D18", $labels:D18, $labels:D18_SHORT, $D18invalid, "All values are valid", "", $errors:ERROR)}
-        {html:build2("D19", $labels:D19, $labels:D19_SHORT, $D19invalid, "All values are valid", "record", $errors:WARNING)}
-        {html:build2("D20", $labels:D20, $labels:D20_SHORT, $D20invalid, "All smsName attributes are valid"," invalid attribute", $errors:ERROR)}
-        {html:build2("D21", $labels:D21, $labels:D21_SHORT, $invalidPosD21, "All srsDimension attributes resolve to ""2""", " invalid attribute", $errors:ERROR)}
-        {html:build2("D23", $labels:D23, $labels:D23_SHORT, $D23invalid, "All values are valid", "", $errors:ERROR)}
-        {html:build1("D24", $labels:D24, $labels:D24_SHORT, $D24table, "", string(count($D24table)) || "records found", "record", "", $errors:WARNING)}
-        {html:build2("D26", $labels:D26, $labels:D26_SHORT, $D26invalid, "All station codes are valid", " invalid station codes", $errors:ERROR)}
-        {html:deprecated("D27", $labels:D27, $labels:D27_SHORT, $D27invalid, "aqd:meteoParams", "", "", "", $errors:WARNING)}
-        {html:build2("D28", $labels:D28, $labels:D28_SHORT, $D28invalid, "All values are valid", "", $errors:ERROR)}
-        {html:build2("D29", $labels:D29, $labels:D29_SHORT, $D29invalid, "All values are valid", "", $errors:WARNING)}
-        {html:build2("D30", $labels:D30, $labels:D30_SHORT, $D30invalid, "All values are valid", "", $errors:WARNING)}
-        {html:build2("D31", $labels:D31, $labels:D31_SHORT, $D31invalid, "All values are valid", "", $errors:ERROR)}
-        {html:buildUnique("D32", $labels:D32, $labels:D32_SHORT, $D32table, "namespace", $errors:ERROR)}
-        {html:build2("D32.1", $labels:D32.1, $labels:D32.1_SHORT, $D32.1invalid, "All values are valid", " invalid namespaces", $errors:ERROR)}
-        {html:build2("D33", $labels:D33, $labels:D33_SHORT, $D33invalid, "All values are valid", "", $errors:WARNING)}
-        {html:build2("D34", $labels:D34, $labels:D34_SHORT, $D34invalid, "All values are valid", "", $errors:ERROR)}
-        {html:build2("D35", $labels:D35, $labels:D35_SHORT, $D35invalid, $D35message, " invalid elements", $errors:ERROR)}
-        {html:build2("D36", $labels:D36, $labels:D36_SHORT, $D36invalid, "All attributes are valid", " invalid attribute", $errors:WARNING)}
-        {html:build2("D37", $labels:D37, $labels:D37_SHORT, $D37invalid, "All values are valid", "", $errors:ERROR)}
-        {html:build2("D40", $labels:D40, $labels:D40_SHORT, $D40invalid, "All values are valid", "invalid pollutant", $errors:ERROR)}
+        {html:buildUnique("D16", $labels:D16, $labels:D16_SHORT, $D16table, "namespace", $errors:D16)}
+        {html:build2("D16.1", $labels:D16.1, $labels:D16.1_SHORT, $D16.1invalid, "All values are valid", " invalid namespaces", $errors:D16.1)}
+        {html:build2("D17", $labels:D17, $labels:D17_SHORT, $D17invalid, "All values are valid", "", $errors:D17)}
+        {html:build2("D18", $labels:D18, $labels:D18_SHORT, $D18invalid, "All values are valid", "", $errors:D18)}
+        {html:build2("D19", $labels:D19, $labels:D19_SHORT, $D19invalid, "All values are valid", "record", $errors:D19)}
+        {html:build2("D20", $labels:D20, $labels:D20_SHORT, $D20invalid, "All smsName attributes are valid"," invalid attribute", $errors:D20)}
+        {html:build2("D21", $labels:D21, $labels:D21_SHORT, $invalidPosD21, "All srsDimension attributes resolve to ""2""", " invalid attribute", $errors:D21)}
+        {html:build2("D23", $labels:D23, $labels:D23_SHORT, $D23invalid, "All values are valid", "", $errors:D23)}
+        {html:build1("D24", $labels:D24, $labels:D24_SHORT, $D24table, "", string(count($D24table)) || "records found", "record", "", $errors:D24)}
+        {html:build2("D26", $labels:D26, $labels:D26_SHORT, $D26invalid, "All station codes are valid", " invalid station codes", $errors:D26)}
+        {html:deprecated("D27", $labels:D27, $labels:D27_SHORT, $D27invalid, "aqd:meteoParams", "", "", "", $errors:D27)}
+        {html:build2("D28", $labels:D28, $labels:D28_SHORT, $D28invalid, "All values are valid", "", $errors:D28)}
+        {html:build2("D29", $labels:D29, $labels:D29_SHORT, $D29invalid, "All values are valid", "", $errors:D29)}
+        {html:build2("D30", $labels:D30, $labels:D30_SHORT, $D30invalid, "All values are valid", "", $errors:D30)}
+        {html:build2("D31", $labels:D31, $labels:D31_SHORT, $D31invalid, "All values are valid", "", $errors:D31)}
+        {html:buildUnique("D32", $labels:D32, $labels:D32_SHORT, $D32table, "namespace", $errors:D32)}
+        {html:build2("D32.1", $labels:D32.1, $labels:D32.1_SHORT, $D32.1invalid, "All values are valid", " invalid namespaces", $errors:D32.1)}
+        {html:build2("D33", $labels:D33, $labels:D33_SHORT, $D33invalid, "All values are valid", "", $errors:D33)}
+        {html:build2("D34", $labels:D34, $labels:D34_SHORT, $D34invalid, "All values are valid", "", $errors:D34)}
+        {html:build2("D35", $labels:D35, $labels:D35_SHORT, $D35invalid, $D35message, " invalid elements", $errors:D35)}
+        {html:build2("D36", $labels:D36, $labels:D36_SHORT, $D36invalid, "All attributes are valid", " invalid attribute", $errors:D36)}
+        {html:build2("D37", $labels:D37, $labels:D37_SHORT, $D37invalid, "All values are valid", "", $errors:D37)}
+        {html:build2("D40", $labels:D40, $labels:D40_SHORT, $D40invalid, "All values are valid", "invalid pollutant", $errors:D40)}
         {html:buildInfoTR("Internal XML cross-checks between AQD_SamplingPoint and AQD_Sample;AQD_SamplingPointProcess;AQD_Station;AQD_Network")}
         {html:buildInfoTR("Please note that the qa might give you warning if different features have been submitted in separate XMLs")}
-        {html:build2("D41", $labels:D41, $labels:D41_SHORT, $D41invalid, "All attributes are valid", " invalid attribute", $errors:ERROR)}
-        {html:build2("D42", $labels:D42, $labels:D42_SHORT, $D42invalid, "All attributes are valid", " invalid attribute", $errors:ERROR)}
-        {html:build2("D43", $labels:D43, $labels:D43_SHORT, $D43invalid, "All attributes are valid", " invalid attribute", $errors:ERROR)}
-        {html:build2("D44", $labels:D44, $labels:D44_SHORT, $D44invalid, "All attributes are valid", " invalid attribute", $errors:ERROR)}
-        {html:build2("D45", $labels:D45, $labels:D45_SHORT, $D45invalid, "All values are valid", "", $errors:ERROR)}
-        {html:build2("D46", $labels:D46, $labels:D46_SHORT, $D46invalid, "All values are valid", "", $errors:INFO)}
-        {html:build2("D48", $labels:D48, $labels:D48_SHORT, $D48invalid, "All values are valid", "record", $errors:WARNING)}
-        {html:build2("D50", $labels:D50, $labels:D50_SHORT, $D50invalid, "All values are valid", "", $errors:ERROR)}
-        {html:build2("D51", $labels:D51, $labels:D51_SHORT, $D51invalid, "All values are valid", " invalid attribute", $errors:WARNING)}
-        {html:build2("D53", $labels:D53, $labels:D53_SHORT, $D53invalid, "All values are valid", " invalid attribute", $errors:ERROR)}
-        {html:build2("D54", $labels:D54, $labels:D54_SHORT, $D54invalid, "All values are valid", " invalid attribute", $errors:ERROR)}
+        {html:build2("D41", $labels:D41, $labels:D41_SHORT, $D41invalid, "All attributes are valid", " invalid attribute", $errors:D41)}
+        {html:build2("D42", $labels:D42, $labels:D42_SHORT, $D42invalid, "All attributes are valid", " invalid attribute", $errors:D42)}
+        {html:build2("D43", $labels:D43, $labels:D43_SHORT, $D43invalid, "All attributes are valid", " invalid attribute", $errors:D43)}
+        {html:build2("D44", $labels:D44, $labels:D44_SHORT, $D44invalid, "All attributes are valid", " invalid attribute", $errors:D44)}
+        {html:build2("D45", $labels:D45, $labels:D45_SHORT, $D45invalid, "All values are valid", "", $errors:D45)}
+        {html:build2("D46", $labels:D46, $labels:D46_SHORT, $D46invalid, "All values are valid", "", $errors:D46)}
+        {html:build2("D48", $labels:D48, $labels:D48_SHORT, $D48invalid, "All values are valid", "record", $errors:D48)}
+        {html:build2("D50", $labels:D50, $labels:D50_SHORT, $D50invalid, "All values are valid", "", $errors:D50)}
+        {html:build2("D51", $labels:D51, $labels:D51_SHORT, $D51invalid, "All values are valid", " invalid attribute", $errors:D51)}
+        {html:build2("D53", $labels:D53, $labels:D53_SHORT, $D53invalid, "All values are valid", " invalid attribute", $errors:D53)}
+        {html:build2("D54", $labels:D54, $labels:D54_SHORT, $D54invalid, "All values are valid", " invalid attribute", $errors:D54)}
         {html:buildInfoTR("Specific checks on AQD_SamplingPointProcess feature(s) within this XML")}
-        {html:buildUnique("D55", $labels:D55, $labels:D55_SHORT, $D55table, "namespace", $errors:INFO)}
-        {html:build2("D55.1", $labels:D55.1, $labels:D55.1_SHORT, $D55.1invalid, "All values are valid", " invalid namespaces", $errors:ERROR)}
-        {html:build2("D56", $labels:D56, $labels:D56_SHORT, $D56invalid, "All values are valid", "",$errors:ERROR)}
-        {html:build2("D57", $labels:D57, $labels:D57_SHORT, $D57table, "All values are valid", "", $errors:WARNING)}
-        {html:build2("D58", $labels:D58, $labels:D58_SHORT, $D58table, "All values are valid", " invalid attribute", $errors:WARNING)}
-        {html:build2("D59", $labels:D59, $labels:D59_SHORT, $D59invalid, "All values are valid", "", $errors:ERROR)}
-        {html:build2("D60a", $labels:D60a, $labels:D60a_SHORT, $D60ainvalid, "All values are valid", "", $errors:ERROR)}
-        {html:build2("D60b", $labels:D60b, $labels:D60b_SHORT, $D60binvalid, "All values are valid", "", $errors:ERROR)}
-        {html:build2("D61", $labels:D61, $labels:D61_SHORT, $D61invalid, "All values are valid", "record", $errors:WARNING)}
-        {html:build2("D62", $labels:D62, $labels:D62_SHORT, $D62invalid, "All values are valid", "invalid record", $errors:WARNING)}
-        {html:build2("D63", $labels:D63, $labels:D63_SHORT, $D63invalid, "All values are valid", "invalid record", $errors:ERROR)}
+        {html:buildUnique("D55", $labels:D55, $labels:D55_SHORT, $D55table, "namespace", $errors:D55)}
+        {html:build2("D55.1", $labels:D55.1, $labels:D55.1_SHORT, $D55.1invalid, "All values are valid", " invalid namespaces", $errors:D55.1)}
+        {html:build2("D56", $labels:D56, $labels:D56_SHORT, $D56invalid, "All values are valid", "",$errors:D56)}
+        {html:build2("D57", $labels:D57, $labels:D57_SHORT, $D57table, "All values are valid", "", $errors:D57)}
+        {html:build2("D58", $labels:D58, $labels:D58_SHORT, $D58table, "All values are valid", " invalid attribute", $errors:D58)}
+        {html:build2("D59", $labels:D59, $labels:D59_SHORT, $D59invalid, "All values are valid", "", $errors:D59)}
+        {html:build2("D60a", $labels:D60a, $labels:D60a_SHORT, $D60ainvalid, "All values are valid", "", $errors:D60a)}
+        {html:build2("D60b", $labels:D60b, $labels:D60b_SHORT, $D60binvalid, "All values are valid", "", $errors:D60b)}
+        {html:build2("D61", $labels:D61, $labels:D61_SHORT, $D61invalid, "All values are valid", "record", $errors:D61)}
+        {html:build2("D62", $labels:D62, $labels:D62_SHORT, $D62invalid, "All values are valid", "invalid record", $errors:D62)}
+        {html:build2("D63", $labels:D63, $labels:D63_SHORT, $D63invalid, "All values are valid", "invalid record", $errors:D63)}
         {html:buildInfoTR("Checks on SamplingPointProcess(es) where the xlinked SamplingPoint has aqd:AQD_SamplingPoint/aqd:usedAQD equals TRUE (D67 to D70):")}
-        {html:build2("D65", $labels:D65, $labels:D65_SHORT, $D65invalid, "All values are valid", "record", $errors:ERROR)}
-        {html:build2("D67a", $labels:D67a, $labels:D67a_SHORT, $D67ainvalid, "All values are valid", "", $errors:WARNING)}
-        {html:build2("D67b", $labels:D67b, $labels:D67b_SHORT, $D67binvalid, "All values are valid", "", $errors:WARNING)}
-        {html:build2("D68", $labels:D68, $labels:D68_SHORT, $D68invalid, "All values are valid", "record", $errors:WARNING)}
-        {html:build2("D69", $labels:D69, $labels:D69_SHORT, $D69invalid, "All values are valid", "record", $errors:WARNING)}
+        {html:build2("D65", $labels:D65, $labels:D65_SHORT, $D65invalid, "All values are valid", "record", $errors:D65)}
+        {html:build2("D67a", $labels:D67a, $labels:D67a_SHORT, $D67ainvalid, "All values are valid", "", $errors:D67a)}
+        {html:build2("D67b", $labels:D67b, $labels:D67b_SHORT, $D67binvalid, "All values are valid", "", $errors:D67b)}
+        {html:build2("D68", $labels:D68, $labels:D68_SHORT, $D68invalid, "All values are valid", "record", $errors:D68)}
+        {html:build2("D69", $labels:D69, $labels:D69_SHORT, $D69invalid, "All values are valid", "record", $errors:D69)}
         {html:buildInfoTR("Specific checks on AQD_Sample feature(s) within this XML")}
-        {html:build2("D71", $labels:D71, $labels:D71_SHORT, $D71invalid, "All values are valid", "", $errors:ERROR)}
-        {html:buildUnique("D72", $labels:D72, $labels:D72_SHORT, $D72table, "namespace", $errors:ERROR)}
-        {html:build2("D72.1", $labels:D72.1, $labels:D72.1_SHORT, $D72.1invalid, "All values are valid", " invalid namespaces", $errors:ERROR)}
+        {html:build2("D71", $labels:D71, $labels:D71_SHORT, $D71invalid, "All values are valid", "", $errors:D71)}
+        {html:buildUnique("D72", $labels:D72, $labels:D72_SHORT, $D72table, "namespace", $errors:D72)}
+        {html:build2("D72.1", $labels:D72.1, $labels:D72.1_SHORT, $D72.1invalid, "All values are valid", " invalid namespaces", $errors:D72.1)}
         {html:build2("D73", $labels:D73, $labels:D73_SHORT, $D73invalid, concat(string(count($D73invalid)), $errMsg73), "", $errLevelD73)}
-        {html:build2("D74", $labels:D74, $labels:D74_SHORT, $D74invalid, "All srsDimension attributes are valid"," invalid attribute", $errors:ERROR)}
-        {html:build2("D75", $labels:D75, $labels:D75_SHORT, $D75invalid, "All attributes are valid", " invalid attribute", $errors:WARNING)}
-        {html:build2("D76", $labels:D76, $labels:D76_SHORT, $D76invalid, "All attributes are valid", " invalid attribute", $errors:WARNING)}
-        {html:build2("D77", $labels:D77, $labels:D77_SHORT, $D77invalid, "All attributes are valid", " invalid attribute", $errors:WARNING)}
-        {html:build2("D78", $labels:D78, $labels:D78_SHORT, $D78invalid, "All values are valid"," invalid attribute", $errors:WARNING)}
-        {html:build2("D91", $labels:D91, $labels:D91_SHORT, $D91invalid, "All values are valid"," invalid attribute", $errors:WARNING)}
-        {html:build2("D92", $labels:D92, $labels:D92_SHORT, $D92invalid, "All values are valid"," invalid attribute", $errors:WARNING)}
-        {html:build2("D93", $labels:D93, $labels:D93_SHORT, $D93invalid, "All values are valid"," invalid attribute", $errors:WARNING)}
-        {html:build2("D94", $labels:D94, $labels:D94_SHORT, $D94invalid, "All values are valid"," invalid attribute", $errors:WARNING)}
+        {html:build2("D74", $labels:D74, $labels:D74_SHORT, $D74invalid, "All srsDimension attributes are valid"," invalid attribute", $errors:D74)}
+        {html:build2("D75", $labels:D75, $labels:D75_SHORT, $D75invalid, "All attributes are valid", " invalid attribute", $errors:D75)}
+        {html:build2("D76", $labels:D76, $labels:D76_SHORT, $D76invalid, "All attributes are valid", " invalid attribute", $errors:D76)}
+        {html:build2("D77", $labels:D77, $labels:D77_SHORT, $D77invalid, "All attributes are valid", " invalid attribute", $errors:D77)}
+        {html:build2("D78", $labels:D78, $labels:D78_SHORT, $D78invalid, "All values are valid"," invalid attribute", $errors:D78)}
+        {html:build2("D91", $labels:D91, $labels:D91_SHORT, $D91invalid, "All values are valid"," invalid attribute", $errors:D91)}
+        {html:build2("D92", $labels:D92, $labels:D92_SHORT, $D92invalid, "All values are valid"," invalid attribute", $errors:D92)}
+        {html:build2("D93", $labels:D93, $labels:D93_SHORT, $D93invalid, "All values are valid"," invalid attribute", $errors:D93)}
+        {html:build2("D94", $labels:D94, $labels:D94_SHORT, $D94invalid, "All values are valid"," invalid attribute", $errors:D94)}
     </table>
 };
 

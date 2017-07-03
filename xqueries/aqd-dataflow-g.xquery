@@ -153,7 +153,7 @@ let $knownAttainments :=
     else
         distinct-values(data(sparqlx:run(query:getAttainment($latestEnvelopeByYearG))//sparql:binding[@name='inspireLabel']/sparql:literal))
 
-(: G1 :)
+(: G01 :)
 let $countAttainments := count($docRoot//aqd:AQD_Attainment)
 let $tblAllAttainments :=
     try {
@@ -174,8 +174,8 @@ let $tblAllAttainments :=
         </tr>
     }
 
-(: G2 :)
-let $G2table :=
+(: G02 :)
+let $G02table :=
     try {
         for $x in $docRoot//aqd:AQD_Attainment
         let $inspireId := concat(data($x/aqd:inspireId/base:Identifier/base:namespace), "/", data($x/aqd:inspireId/base:Identifier/base:localId))
@@ -197,7 +197,7 @@ let $G2table :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
-let $G2errorLevel :=
+let $G02errorLevel :=
     if ($isNewDelivery and count(
         for $x in $docRoot//aqd:AQD_Attainment
             let $id := $x/aqd:inspireId/base:Identifier/base:namespace || "/" || $x/aqd:inspireId/base:Identifier/base:localId
@@ -207,8 +207,8 @@ let $G2errorLevel :=
         else
             $errors:INFO
 
-(: G3 - :)
-let $G3table :=
+(: G03 - :)
+let $G03table :=
     try {
         for $x in $docRoot//aqd:AQD_Attainment
         let $inspireId := data($x/aqd:inspireId/base:Identifier/base:namespace) ||  "/" || data($x/aqd:inspireId/base:Identifier/base:localId)
@@ -230,14 +230,14 @@ let $G3table :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
-let $G3errorLevel :=
-    if (not($isNewDelivery) and count($G3table) = 0)  then
+let $G03errorLevel :=
+    if (not($isNewDelivery) and count($G03table) = 0)  then
         $errors:ERROR
     else
         $errors:INFO
 
-(: G4 - :)
-let $G4table :=
+(: G04 - :)
+let $G04table :=
     try {
         let $gmlIds := $docRoot//aqd:AQD_Attainment/lower-case(normalize-space(@gml:id))
         let $inspireIds := $docRoot//aqd:AQD_Attainment/lower-case(normalize-space(aqd:inspireId))
@@ -265,9 +265,9 @@ let $G4table :=
         </tr>
     }
 
-(: G5 Compile & feedback a list of the exceedances situations based on the content of ./aqd:zone, ./aqd:pollutant, ./aqd:objectiveType, ./aqd:reportingMetric,
+(: G05 Compile & feedback a list of the exceedances situations based on the content of ./aqd:zone, ./aqd:pollutant, ./aqd:objectiveType, ./aqd:reportingMetric,
    ./aqd:protectionTarget, aqd:exceedanceDescription_Final/aqd:ExceedanceDescription/aqd:exceedance :)
-let $G5table :=
+let $G05table :=
     try {
         for $rec in $docRoot//aqd:AQD_Attainment[aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedance = "true"]
         return
@@ -288,8 +288,8 @@ let $G5table :=
         </tr>
     }
 
-(: G6 :)
-let $G6table :=
+(: G06 :)
+let $G06table :=
     try {
         let $errorClass := if (number($reportingYear) >= 2015) then $errors:ERROR else $errors:INFO
         for $rec in $docRoot//aqd:AQD_Attainment[aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LVmaxMOT"]
@@ -309,9 +309,9 @@ let $G6table :=
         </tr>
     }
 
-(: G7 duplicate @gml:ids and aqd:inspireIds and ef:inspireIds :)
+(: G07 duplicate @gml:ids and aqd:inspireIds and ef:inspireIds :)
 (: Feedback report shall include the gml:id attribute, ef:inspireId, aqd:inspireId, ef:name and/or ompr:name elements as available. :)
-let $G7invalid :=
+let $G07invalid :=
     try {
         let $gmlIds := $docRoot//aqd:AQD_Attainment/lower-case(normalize-space(@gml:id))
         let $inspireIds := $docRoot//aqd:AQD_Attainment/lower-case(normalize-space(aqd:inspireId))
@@ -343,8 +343,8 @@ let $G7invalid :=
         </tr>
     }
 
-(: G8 ./aqd:inspireId/base:Identifier/base:localId shall be an unique code for the attainment records starting with ISO2-country code :)
-let $G8invalid :=
+(: G08 ./aqd:inspireId/base:Identifier/base:localId shall be an unique code for the attainment records starting with ISO2-country code :)
+let $G08invalid :=
     try {
         let $localIds :=  $docRoot//aqd:AQD_Attainment/aqd:inspireId/base:Identifier/lower-case(normalize-space(base:localId))
         for $rec in $docRoot//aqd:AQD_Attainment/aqd:inspireId/base:Identifier
@@ -363,8 +363,8 @@ let $G8invalid :=
         </tr>
     }
 
-(: G9 ./ef:inspireId/base:Identifier/base:namespace shall resolve to a unique namespace identifier for the data source (within an annual e-Reporting cycle). :)
-let $G9table :=
+(: G09 ./ef:inspireId/base:Identifier/base:namespace shall resolve to a unique namespace identifier for the data source (within an annual e-Reporting cycle). :)
+let $G09table :=
     try {
         for $id in distinct-values($docRoot//aqd:AQD_Attainment/aqd:inspireId/base:Identifier/base:namespace)
             let $localId := $docRoot//aqd:AQD_Attainment/aqd:inspireId/base:Identifier[base:namespace = $id]/base:localId
@@ -380,8 +380,8 @@ let $G9table :=
         </tr>
     }
 
-(: G9.1 :)
-let $G9.1invalid :=
+(: G09.1 :)
+let $G09.1invalid :=
     try {
         let $vocDoc := doc($vocabulary:NAMESPACE || "rdf")
         let $prefLabel := $vocDoc//skos:Concept[adms:status/@rdf:resource = $dd:VALIDRESOURCE and @rdf:about = concat($vocabulary:NAMESPACE, $countryCode)]/skos:prefLabel[1]
@@ -1516,16 +1516,16 @@ return
     <table class="maintable hover">
         {html:build2("NS", $labels:NAMESPACES, $labels:NAMESPACES_SHORT, $NSinvalid, "All values are valid", "record", $errors:WARNING)}
         {html:build3("G0", $labels:G0, $labels:G0_SHORT, $G0table, string($G0table/td), errors:getMaxError($G0table))}
-        {html:build1("G1", $labels:G1, $labels:G1_SHORT, $tblAllAttainments, "", string($countAttainments), "", "", $errors:ERROR)}
-        {html:buildSimple("G2", $labels:G2, $labels:G2_SHORT, $G2table, "", "", $G2errorLevel)}
-        {html:buildSimple("G3", $labels:G3, $labels:G3_SHORT, $G3table, "", "", $G3errorLevel)}
-        {html:build1("G4", $labels:G4, $labels:G4_SHORT, $G4table, "", string(count($G4table)), " ", "", $errors:ERROR)}
-        {html:build1("G5", $labels:G5, $labels:G5_SHORT, $G5table, "", string(count($G5table)), " exceedance", "", $errors:WARNING)}
-        {html:build2("G6", $labels:G6, $labels:G6_SHORT, $G6table, "All values are valid", "record", errors:getMaxError($G6table))}
-        {html:build2("G7", $labels:G7, $labels:G7_SHORT, $G7invalid, "No duplicates found", " duplicate", $errors:ERROR)}
-        {html:build2("G8", $labels:G8, $labels:G8_SHORT, $G8invalid, "No duplicate values found", " duplicate value", $errors:ERROR)}
-        {html:buildUnique("G9", $labels:G9, $labels:G9_SHORT, $G9table, "namespace", $errors:ERROR)}
-        {html:build2("G9.1", $labels:G9.1, $labels:G9.1_SHORT, $G9.1invalid, "All values are valid", " invalid namespaces", $errors:ERROR)}
+        {html:build1("G1", $labels:G01, $labels:G01_SHORT, $tblAllAttainments, "", string($countAttainments), "", "", $errors:ERROR)}
+        {html:buildSimple("G2", $labels:G02, $labels:G02_SHORT, $G02table, "", "", $G02errorLevel)}
+        {html:buildSimple("G3", $labels:G03, $labels:G03_SHORT, $G03table, "", "", $G03errorLevel)}
+        {html:build1("G4", $labels:G04, $labels:G04_SHORT, $G04table, "", string(count($G04table)), " ", "", $errors:ERROR)}
+        {html:build1("G5", $labels:G05, $labels:G05_SHORT, $G05table, "", string(count($G05table)), " exceedance", "", $errors:WARNING)}
+        {html:build2("G6", $labels:G06, $labels:G06_SHORT, $G06table, "All values are valid", "record", errors:getMaxError($G06table))}
+        {html:build2("G7", $labels:G07, $labels:G07_SHORT, $G07invalid, "No duplicates found", " duplicate", $errors:ERROR)}
+        {html:build2("G8", $labels:G08, $labels:G08_SHORT, $G08invalid, "No duplicate values found", " duplicate value", $errors:ERROR)}
+        {html:buildUnique("G9", $labels:G09, $labels:G09_SHORT, $G09table, "namespace", $errors:ERROR)}
+        {html:build2("G9.1", $labels:G09.1, $labels:G09.1_SHORT, $G09.1invalid, "All values are valid", " invalid namespaces", $errors:ERROR)}
         {html:build2("G10", $labels:G10, $labels:G10_SHORT, $G10invalid, "All values are valid", "", $errors:ERROR)}
         {html:build2("G11", $labels:G11, $labels:G11_SHORT, $G11invalid, "All values are valid", " invalid value", $errors:ERROR)}
         {html:build2("G12", $labels:G12, $labels:G12_SHORT, $G12invalid, "All values are valid", " invalid value", $errors:ERROR)}

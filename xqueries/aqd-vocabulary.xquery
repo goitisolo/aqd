@@ -50,3 +50,4 @@ declare variable $vocabulary:OBSERVATIONS_VERIFICATION as xs:string := "http://d
 declare variable $vocabulary:OBSERVATIONS_VALIDITY as xs:string := "http://dd.eionet.europa.eu/vocabulary/aq/observationvalidity/";
 declare variable $vocabulary:OBSERVATIONS_PRIMARY as xs:string := "http://dd.eionet.europa.eu/vocabulary/aq/primaryObservation/";
 declare variable $vocabulary:OBSERVATIONS_RANGE as xs:string := "http://dd.eionet.europa.eu/vocabulary/aq/primaryObservationRange/";
+declare variable $vocabulary:QAQC_VOCABULARY as xs:string := "http://dd.eionet.europa.eu/vocabulary/aq/cdrqaqc/";

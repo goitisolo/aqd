@@ -165,8 +165,8 @@ let $C0table :=
     }
 let $isNewDelivery := errors:getMaxError($C0table) = $errors:INFO
 
-(: C1 :)
-let $C1table :=
+(: C01 :)
+let $C01table :=
     try {
         for $rec in $docRoot//aqd:AQD_AssessmentRegime
         return
@@ -185,8 +185,8 @@ let $C1table :=
         </tr>
     }
 
-(: C2 :)
-let $C2table :=
+(: C02 :)
+let $C02table :=
     try {
         for $x in $docRoot//aqd:AQD_AssessmentRegime
         let $id := $x/aqd:inspireId/base:Identifier/base:namespace || "/" || $x/aqd:inspireId/base:Identifier/base:localId
@@ -206,7 +206,7 @@ let $C2table :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
-let $C2errorLevel :=
+let $C02errorLevel :=
     if ($isNewDelivery and count(
         for $x in $docRoot//aqd:AQD_AssessmentRegime
         let $id := $x/aqd:inspireId/base:Identifier/base:namespace || "/" || $x/aqd:inspireId/base:Identifier/base:localId
@@ -216,8 +216,8 @@ let $C2errorLevel :=
     else
         $errors:INFO
 
-(: C3 :)
-let $C3table :=
+(: C03 :)
+let $C03table :=
     try {
         for $x in $docRoot//aqd:AQD_AssessmentRegime
         let $id := $x/aqd:inspireId/base:Identifier/base:namespace || "/" || $x/aqd:inspireId/base:Identifier/base:localId
@@ -238,14 +238,14 @@ let $C3table :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
-let $C3errorLevel :=
-    if (not($isNewDelivery) and count($C3table) = 0) then
+let $C03errorLevel :=
+    if (not($isNewDelivery) and count($C03table) = 0) then
         $errors:ERROR
     else
         $errors:INFO
 
-(: C4 - duplicate @gml:ids :)
-let $C4invalid :=
+(: C04 - duplicate @gml:ids :)
+let $C04invalid :=
     try {
         let $gmlIds := $docRoot//aqd:AQD_AssessmentRegime/lower-case(normalize-space(@gml:id))
         for $id in $docRoot//aqd:AQD_AssessmentRegime/@gml:id
@@ -262,8 +262,8 @@ let $C4invalid :=
     }
 
 
-(: C5 - duplicate ./aqd:inspireId/base:Identifier/base:localId :)
-let $C5invalid :=
+(: C05 - duplicate ./aqd:inspireId/base:Identifier/base:localId :)
+let $C05invalid :=
     try {
         let $localIds := $docRoot//aqd:AQD_AssessmentRegime/aqd:inspireId/base:Identifier/lower-case(normalize-space(base:localId))
         for $id in $docRoot//aqd:inspireId/base:Identifier/base:localId
@@ -279,8 +279,8 @@ let $C5invalid :=
         </tr>
     }
 
-(: C6 - :)
-let $C6table :=
+(: C06 - :)
+let $C06table :=
     try {
         let $allBaseNamespace := distinct-values($docRoot//aqd:AQD_AssessmentRegime/aqd:inspireId/base:Identifier/base:namespace)
         for $id in $allBaseNamespace
@@ -297,8 +297,8 @@ let $C6table :=
         </tr>
     }
         
-(: C6.1 :)
-let $C6.1invalid :=
+(: C06.1 :)
+let $C06.1invalid :=
     try {
         let $vocDoc := doc($vocabulary:NAMESPACE || "rdf")
         let $prefLabel := $vocDoc//skos:Concept[adms:status/@rdf:resource = $dd:VALIDRESOURCE and @rdf:about = concat($vocabulary:NAMESPACE, $countryCode)]/skos:prefLabel[1]
@@ -316,8 +316,8 @@ let $C6.1invalid :=
         </tr>
     }
 
-(: C7 :)
-let $C7invalid :=
+(: C07 :)
+let $C07invalid :=
     try {
         for $aqdAQD_AssessmentRegim in $docRoot//aqd:AQD_AssessmentRegime
         where $aqdAQD_AssessmentRegim[count(aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType/@xlink:href) = 0]
@@ -332,8 +332,8 @@ let $C7invalid :=
         </tr>
     }
 
-(: C8 - if a regime is missing for a pollutant in the list, warning should be thrown :)
-let $C8invalid :=
+(: C08 - if a regime is missing for a pollutant in the list, warning should be thrown :)
+let $C08invalid :=
     try {
         let $mandatory := ("1","7","8","9","5","6001","10","20","5012","5014","5015","5018","5029")
         let $pollutants :=
@@ -353,8 +353,8 @@ let $C8invalid :=
         </tr>
     }
 
-(: C9 - Provides a count of unique pollutants and lists them :)
-let $C9table :=
+(: C09 - Provides a count of unique pollutants and lists them :)
+let $C09table :=
     try {
         let $pollutants :=
             for $x in $docRoot//aqd:AQD_AssessmentRegime[aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/MO"]
@@ -982,38 +982,38 @@ let $C42invalid :=
 
 return
     <table class="maintable hover">
-        {html:build2("NS", $labels:NAMESPACES, $labels:NAMESPACES_SHORT, $NSinvalid, "All values are valid", "record", $errors:WARNING)}
+        {html:build2("NS", $labels:NAMESPACES, $labels:NAMESPACES_SHORT, $NSinvalid, "All values are valid", "record", $errors:NS)}
         {html:build3("C0", $labels:C0, $labels:C0_SHORT, $C0table, string($C0table/td), errors:getMaxError($C0table))}
-        {html:build1("C1", $labels:C1, $labels:C1_SHORT, $C1table, "", string(count($C1table)), "", "", $errors:ERROR)}
-        {html:buildSimple("C2", $labels:C2, $labels:C2_SHORT, $C2table, "", "record", $C2errorLevel)}
-        {html:buildSimple("C3", $labels:C3, $labels:C3_SHORT, $C3table, "", "record", $C3errorLevel)}
-        {html:build2("C4", $labels:C4, $labels:C4_SHORT, $C4invalid, "No duplicates found", " duplicate", $errors:ERROR)}
-        {html:build2("C5", $labels:C5, $labels:C5_SHORT, $C5invalid, "No duplicates found", " duplicate", $errors:ERROR)}
-        {html:build2("C6", $labels:C6, $labels:C6_SHORT, $C6table, string(count($C6table)), "", $errors:INFO)}
-        {html:build2("C6.1", $labels:C6.1, $labels:C6.1_SHORT, $C6.1invalid, "All values are valid", " invalid namespaces", $errors:ERROR)}
-        {html:build2("C7", $labels:C7, $labels:C7_SHORT, $C7invalid, "All values are valid", " invalid value", $errors:ERROR)}
-        {html:build2("C8", $labels:C8, $labels:C8_SHORT, $C8invalid, "All values are valid", " missing pollutant", $errors:ERROR)}
-        {html:build0("C9", $labels:C9, $labels:C9_SHORT, $C9table, "pollutant")}
-        {html:build2("C10", $labels:C10, $labels:C10_SHORT, $C10invalid, "All values are valid", " invalid value", $errors:ERROR)}
-        {html:build2("C20", $labels:C20, $labels:C20_SHORT, $C20invalid, "All combinations have been found", "record", $errors:ERROR)}
-        {html:build2("C21", $labels:C21, $labels:C21_SHORT, $C21invalid, "All values are valid", " invalid value", $errors:WARNING)}
-        {html:build2("C23a", $labels:C23a, $labels:C23a_SHORT, $C23ainvalid, "All values are valid", " invalid value", $errors:ERROR)}
-        {html:build2("C23b", $labels:C23b, $labels:C23b_SHORT, $C23binvalid, "All values are valid", " invalid value", $errors:WARNING)}
+        {html:build1("C01", $labels:C01, $labels:C01_SHORT, $C01table, "", string(count($C01table)), "", "", $errors:C01)}
+        {html:buildSimple("C02", $labels:C02, $labels:C02_SHORT, $C02table, "", "record", $C02errorLevel)}
+        {html:buildSimple("C03", $labels:C03, $labels:C03_SHORT, $C03table, "", "record", $C03errorLevel)}
+        {html:build2("C04", $labels:C04, $labels:C04_SHORT, $C04invalid, "No duplicates found", " duplicate", $errors:C04)}
+        {html:build2("C05", $labels:C05, $labels:C05_SHORT, $C05invalid, "No duplicates found", " duplicate", $errors:C05)}
+        {html:build2("C06", $labels:C06, $labels:C06_SHORT, $C06table, string(count($C06table)), "", $errors:C06)}
+        {html:build2("C06.1", $labels:C06.1, $labels:C06.1_SHORT, $C06.1invalid, "All values are valid", " invalid namespaces", $errors:C06.1)}
+        {html:build2("C07", $labels:C07, $labels:C07_SHORT, $C07invalid, "All values are valid", " invalid value", $errors:C07)}
+        {html:build2("C08", $labels:C08, $labels:C08_SHORT, $C08invalid, "All values are valid", " missing pollutant", $errors:C08)}
+        {html:build0("C09", $labels:C09, $labels:C09_SHORT, $C09table, "pollutant")}
+        {html:build2("C10", $labels:C10, $labels:C10_SHORT, $C10invalid, "All values are valid", " invalid value", $errors:C10)}
+        {html:build2("C20", $labels:C20, $labels:C20_SHORT, $C20invalid, "All combinations have been found", "record", $errors:C20)}
+        {html:build2("C21", $labels:C21, $labels:C21_SHORT, $C21invalid, "All values are valid", " invalid value", $errors:C21)}
+        {html:build2("C23a", $labels:C23a, $labels:C23a_SHORT, $C23ainvalid, "All values are valid", " invalid value", $errors:C23a)}
+        {html:build2("C23b", $labels:C23b, $labels:C23b_SHORT, $C23binvalid, "All values are valid", " invalid value", $errors:C23b)}
         {html:build2("C24", $labels:C24, $labels:C24_SHORT, $C24invalid, "All values are valid", "", $C24errorClass)}
-        {html:build2("C25", $labels:C25, $labels:C25_SHORT, $C25invalid, "All values are valid", "", $errors:ERROR)}
-        {html:build2("C26", $labels:C26, $labels:C26_SHORT, $C26table, "All values are valid", " invalid value", $errors:WARNING)}
-        {html:build2("C27", labels:interpolate($labels:C27, ($countZoneIds2, $countZoneIds1)), $labels:C27_SHORT, $C27table, "", " not unique zone", $errors:WARNING)}
-        {html:build2("C28", $labels:C28, $labels:C28_SHORT, $C28invalid, "All values are valid", " invalid value", $errors:ERROR)}
-        {html:build2("C29", $labels:C29, $labels:C29_SHORT,  $C29invalid, "All values are valid", " invalid value", $errors:WARNING)}
+        {html:build2("C25", $labels:C25, $labels:C25_SHORT, $C25invalid, "All values are valid", "", $errors:C25)}
+        {html:build2("C26", $labels:C26, $labels:C26_SHORT, $C26table, "All values are valid", " invalid value", $errors:C26)}
+        {html:build2("C27", labels:interpolate($labels:C27, ($countZoneIds2, $countZoneIds1)), $labels:C27_SHORT, $C27table, "", " not unique zone", $errors:C27)}
+        {html:build2("C28", $labels:C28, $labels:C28_SHORT, $C28invalid, "All values are valid", " invalid value", $errors:C28)}
+        {html:build2("C29", $labels:C29, $labels:C29_SHORT,  $C29invalid, "All values are valid", " invalid value", $errors:C29)}
         {html:build2("C31", $labels:C31, $labels:C31_SHORT, $C31table, "", "record", errors:getMaxError($C31table))}
-        {html:build2("C32", $labels:C32, $labels:C32_SHORT, $C32table, "All values are valid", " invalid value", $errors:WARNING)}
-        {html:build2("C33", $labels:C33, $labels:C33_SHORT, $C33invalid, "All values are valid", " invalid value", $errors:WARNING)}
-        {html:build2("C35", $labels:C35, $labels:C35_SHORT, $C35invalid, "All values are valid", " invalid value", $errors:WARNING)}
-        {html:build2("C37", $labels:C37, $labels:C37_SHORT, $C37invalid, "All values are valid", " invalid value", $errors:WARNING)}
-        {html:build2("C38", $labels:C38, $labels:C38_SHORT, $C38invalid, "All values are valid", " invalid value", $errors:WARNING)}
-        {html:build2("C40", $labels:C40, $labels:C40_SHORT, $C40invalid, "All values are valid", " invalid value", $errors:WARNING)}
-        {html:build2("C41", $labels:C41, $labels:C41_SHORT, $C41invalid, "All values are valid", " invalid value", $errors:WARNING)}
-        {html:build2("C42", $labels:C42, $labels:C42_SHORT, $C42invalid, "All values are valid", " invalid value", $errors:WARNING)}
+        {html:build2("C32", $labels:C32, $labels:C32_SHORT, $C32table, "All values are valid", " invalid value", $errors:C32)}
+        {html:build2("C33", $labels:C33, $labels:C33_SHORT, $C33invalid, "All values are valid", " invalid value", $errors:C33)}
+        {html:build2("C35", $labels:C35, $labels:C35_SHORT, $C35invalid, "All values are valid", " invalid value", $errors:C35)}
+        {html:build2("C37", $labels:C37, $labels:C37_SHORT, $C37invalid, "All values are valid", " invalid value", $errors:C37)}
+        {html:build2("C38", $labels:C38, $labels:C38_SHORT, $C38invalid, "All values are valid", " invalid value", $errors:C38)}
+        {html:build2("C40", $labels:C40, $labels:C40_SHORT, $C40invalid, "All values are valid", " invalid value", $errors:C40)}
+        {html:build2("C41", $labels:C41, $labels:C41_SHORT, $C41invalid, "All values are valid", " invalid value", $errors:C41)}
+        {html:build2("C42", $labels:C42, $labels:C42_SHORT, $C42invalid, "All values are valid", " invalid value", $errors:C42)}
     </table>
 };
 
