@@ -203,7 +203,7 @@ let $D02errorLevel :=
                         else
                             $errors:INFO
                     })) then
-                $errors:ERROR
+                $errors:D02
             else
                 $errors:INFO
     } catch * {
@@ -242,7 +242,7 @@ let $D03table :=
 let $D03errorLevel :=
     try {
         if (data($D03table/@isvalid) = "false") then
-            $errors:ERROR
+            $errors:D03
         else
             $errors:INFO
     } catch * {

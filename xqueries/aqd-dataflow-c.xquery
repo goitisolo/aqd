@@ -212,7 +212,7 @@ let $C02errorLevel :=
         let $id := $x/aqd:inspireId/base:Identifier/base:namespace || "/" || $x/aqd:inspireId/base:Identifier/base:localId
         where ($allRegimes = $id)
         return 1) > 0) then
-            $errors:ERROR
+            $errors:C02
     else
         $errors:INFO
 
@@ -240,7 +240,7 @@ let $C03table :=
     }
 let $C03errorLevel :=
     if (not($isNewDelivery) and count($C03table) = 0) then
-        $errors:ERROR
+        $errors:C03
     else
         $errors:INFO
 
@@ -505,7 +505,7 @@ let $C23binvalid :=
         </tr>
     }
 
-let $C24errorClass := if (contains($source_url, "c_preliminary")) then $errors:WARNING else $errors:ERROR
+let $C24errorClass := if (contains($source_url, "c_preliminary")) then $errors:WARNING else $errors:C24
 let $C24invalid :=
     try {
         for $x in $docRoot//aqd:AQD_AssessmentRegime/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:modelAssessmentMetadata
@@ -714,8 +714,8 @@ let $C31table :=
             let $countC := number($x/count)
             let $countB := number($C31ResultB[pollutantName = $vsName and protectionTarget = $protectionTarget]/count)
             let $errorClass :=
-                if ((string($countC), string($countB)) = "NaN") then $errors:ERROR
-                else if ($countC > $countB) then $errors:ERROR
+                if ((string($countC), string($countB)) = "NaN") then $errors:C31
+                else if ($countC > $countB) then $errors:C31
                 else if ($countB > $countC) then $errors:WARNING
                 else $errors:INFO
         order by $vsName

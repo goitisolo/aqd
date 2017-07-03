@@ -1052,15 +1052,15 @@ return
     <table class="maintable hover">
         {html:build2("NS", $labels:NAMESPACES, $labels:NAMESPACES_SHORT, $NSinvalid, "All values are valid", "record", $errors:NS)}
         {html:build3("B0", $labels:B0, $labels:B0_SHORT, $B0table, string($B0table/td), errors:getMaxError($B0table))}
-        {html:buildCountRow0("B01", $labels:B1, $labels:B1_SHORT, $countZones, "", "record", $errors:B01)}
-        {html:buildSimple("B02", $labels:B2, $labels:B2_SHORT, $B02table, "", "record", $B02errorLevel)}
-        {html:build0("B03", $labels:B3, $labels:B3_SHORT, $B03table, "record")}
-        {html:build0("B04", $labels:B4, $labels:B4_SHORT, $B04table, "record")}
-        {html:buildResultsSimpleRow("B06a", $labels:B6a, $labels:B6a_SHORT, $countZonesWithAmGeometry, $errors:B06a)}
-        {html:buildResultsSimpleRow("B06b", $labels:B6b, $labels:B6b_SHORT, $countZonesWithLAU, $errors:B06b)}
-        {html:build0("B07", $labels:B7, $labels:B7_SHORT, $B07table, "record")}
-        {html:build2("B08", $labels:B8, $labels:B8_SHORT, $B08table, "", "record", errors:getMaxError($B08table))}
-        {html:build2("B09", $labels:B9, $labels:B9_SHORT, $B09invalid, "All values are valid", "record", $errors:B09)}
+        {html:buildCountRow0("B01", $labels:B01, $labels:B01_SHORT, $countZones, "", "record", $errors:B01)}
+        {html:buildSimple("B02", $labels:B02, $labels:B02_SHORT, $B02table, "", "record", $B02errorLevel)}
+        {html:build0("B03", $labels:B03, $labels:B03_SHORT, $B03table, "record")}
+        {html:build0("B04", $labels:B04, $labels:B04_SHORT, $B04table, "record")}
+        {html:buildResultsSimpleRow("B06a", $labels:B06a, $labels:B06a_SHORT, $countZonesWithAmGeometry, $errors:B06a)}
+        {html:buildResultsSimpleRow("B06b", $labels:B06b, $labels:B06b_SHORT, $countZonesWithLAU, $errors:B06b)}
+        {html:build0("B07", $labels:B07, $labels:B07_SHORT, $B07table, "record")}
+        {html:build2("B08", $labels:B08, $labels:B08_SHORT, $B08table, "", "record", errors:getMaxError($B08table))}
+        {html:build2("B09", $labels:B09, $labels:B09_SHORT, $B09invalid, "All values are valid", "record", $errors:B09)}
         {html:buildUnique("B10", $labels:B10, $labels:B10_SHORT, $B10table, "record", $errors:B10)}
         {html:build2("B10.1", $labels:B10.1, $labels:B10.1_SHORT, $B10.1invalid, "All values are valid", " invalid namespaces", $errors:B10.1)}
         {html:build2("B13", $labels:B13, $labels:B13_SHORT, $B13invalid, "All values are valid", " invalid value", $errors:B13)}

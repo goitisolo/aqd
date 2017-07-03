@@ -203,7 +203,7 @@ let $G02errorLevel :=
             let $id := $x/aqd:inspireId/base:Identifier/base:namespace || "/" || $x/aqd:inspireId/base:Identifier/base:localId
         where ($allAttainments = $id)
         return 1) > 0) then
-            $errors:ERROR
+            $errors:G02
         else
             $errors:INFO
 
@@ -232,7 +232,7 @@ let $G03table :=
     }
 let $G03errorLevel :=
     if (not($isNewDelivery) and count($G03table) = 0)  then
-        $errors:ERROR
+        $errors:G03
     else
         $errors:INFO
 
@@ -291,7 +291,7 @@ let $G05table :=
 (: G06 :)
 let $G06table :=
     try {
-        let $errorClass := if (number($reportingYear) >= 2015) then $errors:ERROR else $errors:INFO
+        let $errorClass := if (number($reportingYear) >= 2015) then $errors:G06 else $errors:INFO
         for $rec in $docRoot//aqd:AQD_Attainment[aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/LVmaxMOT"]
         return
             <tr class="{$errorClass}">
@@ -582,9 +582,9 @@ let $G14table :=
             let $countC := number($x/countC)
             let $countG := number($G14ResultG[pollutantName = $vsName and protectionTarget = $protectionTarget]/count)
             let $errorClass :=
-                if ((string($countB), string($countC), string($countG)) = "NaN") then $errors:ERROR
-                else if ($countG > $countC) then $errors:ERROR
-                else if ($countG > $countB) then $errors:ERROR
+                if ((string($countB), string($countC), string($countG)) = "NaN") then $errors:G14
+                else if ($countG > $countC) then $errors:G14
+                else if ($countG > $countB) then $errors:G14
                 else if ($countC > $countG) then $errors:WARNING
                 else if ($countB > $countG) then $errors:WARNING
                 else $errors:INFO
@@ -1514,72 +1514,72 @@ let $G86invalid :=
 
 return
     <table class="maintable hover">
-        {html:build2("NS", $labels:NAMESPACES, $labels:NAMESPACES_SHORT, $NSinvalid, "All values are valid", "record", $errors:WARNING)}
+        {html:build2("NS", $labels:NAMESPACES, $labels:NAMESPACES_SHORT, $NSinvalid, "All values are valid", "record", $errors:NS)}
         {html:build3("G0", $labels:G0, $labels:G0_SHORT, $G0table, string($G0table/td), errors:getMaxError($G0table))}
-        {html:build1("G1", $labels:G01, $labels:G01_SHORT, $tblAllAttainments, "", string($countAttainments), "", "", $errors:ERROR)}
-        {html:buildSimple("G2", $labels:G02, $labels:G02_SHORT, $G02table, "", "", $G02errorLevel)}
-        {html:buildSimple("G3", $labels:G03, $labels:G03_SHORT, $G03table, "", "", $G03errorLevel)}
-        {html:build1("G4", $labels:G04, $labels:G04_SHORT, $G04table, "", string(count($G04table)), " ", "", $errors:ERROR)}
-        {html:build1("G5", $labels:G05, $labels:G05_SHORT, $G05table, "", string(count($G05table)), " exceedance", "", $errors:WARNING)}
-        {html:build2("G6", $labels:G06, $labels:G06_SHORT, $G06table, "All values are valid", "record", errors:getMaxError($G06table))}
-        {html:build2("G7", $labels:G07, $labels:G07_SHORT, $G07invalid, "No duplicates found", " duplicate", $errors:ERROR)}
-        {html:build2("G8", $labels:G08, $labels:G08_SHORT, $G08invalid, "No duplicate values found", " duplicate value", $errors:ERROR)}
-        {html:buildUnique("G9", $labels:G09, $labels:G09_SHORT, $G09table, "namespace", $errors:ERROR)}
-        {html:build2("G9.1", $labels:G09.1, $labels:G09.1_SHORT, $G09.1invalid, "All values are valid", " invalid namespaces", $errors:ERROR)}
-        {html:build2("G10", $labels:G10, $labels:G10_SHORT, $G10invalid, "All values are valid", "", $errors:ERROR)}
-        {html:build2("G11", $labels:G11, $labels:G11_SHORT, $G11invalid, "All values are valid", " invalid value", $errors:ERROR)}
-        {html:build2("G12", $labels:G12, $labels:G12_SHORT, $G12invalid, "All values are valid", " invalid value", $errors:ERROR)}
-        {html:build2("G13", $labels:G13, $labels:G13_SHORT, $G13invalid, "All values are valid", " invalid value", $errors:ERROR)}
-        {html:build2("G13b", $labels:G13b, $labels:G13b_SHORT, $G13binvalid, "All values are valid", " invalid value", $errors:ERROR)}
-        {html:build2("G13c", $labels:G13c, $labels:G13c_SHORT, $G13cinvalid, "All values are valid", " invalid value", $errors:ERROR)}
+        {html:build1("G01", $labels:G01, $labels:G01_SHORT, $tblAllAttainments, "", string($countAttainments), "", "", $errors:G01)}
+        {html:buildSimple("G02", $labels:G02, $labels:G02_SHORT, $G02table, "", "", $G02errorLevel)}
+        {html:buildSimple("G03", $labels:G03, $labels:G03_SHORT, $G03table, "", "", $G03errorLevel)}
+        {html:build1("G04", $labels:G04, $labels:G04_SHORT, $G04table, "", string(count($G04table)), " ", "", $errors:G04)}
+        {html:build1("G05", $labels:G05, $labels:G05_SHORT, $G05table, "", string(count($G05table)), " exceedance", "", $errors:G05)}
+        {html:build2("G06", $labels:G06, $labels:G06_SHORT, $G06table, "All values are valid", "record", errors:getMaxError($G06table))}
+        {html:build2("G07", $labels:G07, $labels:G07_SHORT, $G07invalid, "No duplicates found", " duplicate", $errors:G07)}
+        {html:build2("G08", $labels:G08, $labels:G08_SHORT, $G08invalid, "No duplicate values found", " duplicate value", $errors:G08)}
+        {html:buildUnique("G09", $labels:G09, $labels:G09_SHORT, $G09table, "namespace", $errors:G09)}
+        {html:build2("G09.1", $labels:G09.1, $labels:G09.1_SHORT, $G09.1invalid, "All values are valid", " invalid namespaces", $errors:G09.1)}
+        {html:build2("G10", $labels:G10, $labels:G10_SHORT, $G10invalid, "All values are valid", "", $errors:G10)}
+        {html:build2("G11", $labels:G11, $labels:G11_SHORT, $G11invalid, "All values are valid", " invalid value", $errors:G11)}
+        {html:build2("G12", $labels:G12, $labels:G12_SHORT, $G12invalid, "All values are valid", " invalid value", $errors:G12)}
+        {html:build2("G13", $labels:G13, $labels:G13_SHORT, $G13invalid, "All values are valid", " invalid value", $errors:G13)}
+        {html:build2("G13b", $labels:G13b, $labels:G13b_SHORT, $G13binvalid, "All values are valid", " invalid value", $errors:G13b)}
+        {html:build2("G13c", $labels:G13c, $labels:G13c_SHORT, $G13cinvalid, "All values are valid", " invalid value", $errors:G13c)}
         {html:build2("G14", $labels:G14, $labels:G14_SHORT, $G14table, "All values are valid", "record", errors:getMaxError($G14table))}
-        {html:build2("G14b", $labels:G14b, $labels:G14b_SHORT, $G14binvalid, "All assessment regimes are reported", " missing assessment regime", $errors:WARNING)}
-        {html:build2("G15", $labels:G15, $labels:G15_SHORT, $G15invalid, "All values are valid", " invalid value", $errors:ERROR)}
-        {html:build2("G17", $labels:G17, $labels:G17_SHORT, $G17invalid, "All values are valid", " invalid value", $errors:ERROR)}
-        {html:build2("G18", $labels:G18, $labels:G18_SHORT, $G18invalid, "All values are valid", " invalid value", $errors:ERROR)}
-        {html:build2("G19", $labels:G19, $labels:G19_SHORT, $G19invalid, "All values are valid", "", $errors:ERROR)}
-        {html:build2("G20", $labels:G20, $labels:G20_SHORT, $G20invalid, "All values are valid", "", $errors:ERROR)}
-        {html:build2("G21", $labels:G21, $labels:G21_SHORT, $G21invalid, "No invalid protection target types found", " invalid value", $errors:ERROR)}
-        {html:build2("G22", $labels:G22, $labels:G22_SHORT, $G22invalid, "No invalid objective types for Health found", " invalid value", $errors:ERROR)}
+        {html:build2("G14b", $labels:G14b, $labels:G14b_SHORT, $G14binvalid, "All assessment regimes are reported", " missing assessment regime", $errors:G14b)}
+        {html:build2("G15", $labels:G15, $labels:G15_SHORT, $G15invalid, "All values are valid", " invalid value", $errors:G15)}
+        {html:build2("G17", $labels:G17, $labels:G17_SHORT, $G17invalid, "All values are valid", " invalid value", $errors:G17)}
+        {html:build2("G18", $labels:G18, $labels:G18_SHORT, $G18invalid, "All values are valid", " invalid value", $errors:G18)}
+        {html:build2("G19", $labels:G19, $labels:G19_SHORT, $G19invalid, "All values are valid", "", $errors:G19)}
+        {html:build2("G20", $labels:G20, $labels:G20_SHORT, $G20invalid, "All values are valid", "", $errors:G20)}
+        {html:build2("G21", $labels:G21, $labels:G21_SHORT, $G21invalid, "No invalid protection target types found", " invalid value", $errors:G21)}
+        {html:build2("G22", $labels:G22, $labels:G22_SHORT, $G22invalid, "No invalid objective types for Health found", " invalid value", $errors:G22)}
         {html:buildInfoTR("Specific checks on aqd:exceedanceDescriptionBase")}
-        {html:build2("G38", $labels:G38, $labels:G38_SHORT, $G38invalid, "All values are valid", "", $errors:ERROR)}
-        {html:build2("G39", $labels:G39, $labels:G39_SHORT, $G39invalid, "All values are valid", " invalid value", $errors:ERROR)}
-        {html:build2("G40", $labels:G40, $labels:G40_SHORT, $G40invalid, "All values are valid", " invalid value", $errors:ERROR)}
-        {html:build2("G41", $labels:G41, $labels:G41_SHORT, $G41invalid, "All values are valid", " invalid value", $errors:ERROR)}
-        {html:build2("G42", $labels:G42, $labels:G42_SHORT, $G42invalid, "All values are valid", " invalid value", $errors:ERROR)}
-        {html:build2("G44", $labels:G44, $labels:G44_SHORT, $G44invalid, "All values are valid", " invalid value", $errors:ERROR)}
-        {html:build2("G45", $labels:G45, $labels:G45_SHORT, $G45invalid, "All values are valid", " invalid value", $errors:ERROR)}
-        {html:build2("G46", $labels:G46, $labels:G46_SHORT, $G46invalid, "All values are valid", " invalid value", $errors:ERROR)}
-        {html:build2("G47", $labels:G47, $labels:G47_SHORT, $G47invalid, "All values are valid", " invalid value", $errors:ERROR)}
+        {html:build2("G38", $labels:G38, $labels:G38_SHORT, $G38invalid, "All values are valid", "", $errors:G38)}
+        {html:build2("G39", $labels:G39, $labels:G39_SHORT, $G39invalid, "All values are valid", " invalid value", $errors:G39)}
+        {html:build2("G40", $labels:G40, $labels:G40_SHORT, $G40invalid, "All values are valid", " invalid value", $errors:G40)}
+        {html:build2("G41", $labels:G41, $labels:G41_SHORT, $G41invalid, "All values are valid", " invalid value", $errors:G41)}
+        {html:build2("G42", $labels:G42, $labels:G42_SHORT, $G42invalid, "All values are valid", " invalid value", $errors:G42)}
+        {html:build2("G44", $labels:G44, $labels:G44_SHORT, $G44invalid, "All values are valid", " invalid value", $errors:G44)}
+        {html:build2("G45", $labels:G45, $labels:G45_SHORT, $G45invalid, "All values are valid", " invalid value", $errors:G45)}
+        {html:build2("G46", $labels:G46, $labels:G46_SHORT, $G46invalid, "All values are valid", " invalid value", $errors:G46)}
+        {html:build2("G47", $labels:G47, $labels:G47_SHORT, $G47invalid, "All values are valid", " invalid value", $errors:G47)}
         {html:buildInfoTR("Specific checks on aqd:exceedanceDescriptionAdjustment")}
-        {html:build2("G52", $labels:G52, $labels:G52_SHORT, $G52invalid, "All values are valid", "", $errors:ERROR)}
-        {html:build2("G53", $labels:G53, $labels:G53_SHORT, $G53invalid, "All values are valid", " invalid value", $errors:ERROR)}
-        {html:build2("G54", $labels:G54, $labels:G54_SHORT, $G54invalid, "All values are valid", " invalid value", $errors:ERROR)}
-        {html:build2("G55", $labels:G55, $labels:G55_SHORT, $G55invalid, "All values are valid", " invalid value", $errors:ERROR)}
-        {html:build2("G56", $labels:G56, $labels:G56_SHORT, $G56invalid, "All values are valid", " invalid value", $errors:ERROR)}
-        {html:build2("G58", $labels:G58, $labels:G58_SHORT, $G58invalid, "All values are valid", " invalid value", $errors:ERROR)}
-        {html:build2("G59", $labels:G59, $labels:G59_SHORT, $G59invalid, "All values are valid", " invalid value", $errors:ERROR)}
-        {html:build2("G60", $labels:G60, $labels:G60_SHORT, $G60invalid, "All values are valid", " invalid value", $errors:WARNING)}
-        {html:build2("G61", $labels:G61, $labels:G61_SHORT, $G61invalid, "All values are valid", "", $errors:ERROR)}
-        {html:build2("G62", $labels:G62, $labels:G62_SHORT, $G62invalid, "All values are valid", "", $errors:ERROR)}
-        {html:build2("G63", $labels:G63, $labels:G63_SHORT, $G63invalid, "All values are valid", "", $errors:ERROR)}
-        {html:build2("G64", $labels:G64, $labels:G64_SHORT, $G64invalid, "All values are valid", " invalid value", $errors:ERROR)}
-        {html:build2("G66", $labels:G66, $labels:G66_SHORT, $G66invalid, "All values are valid", " invalid value", $errors:ERROR)}
-        {html:build2("G67", $labels:G67, $labels:G67_SHORT, $G67invalid, "All values are valid", " invalid value", $errors:ERROR)}
+        {html:build2("G52", $labels:G52, $labels:G52_SHORT, $G52invalid, "All values are valid", "", $errors:G52)}
+        {html:build2("G53", $labels:G53, $labels:G53_SHORT, $G53invalid, "All values are valid", " invalid value", $errors:G53)}
+        {html:build2("G54", $labels:G54, $labels:G54_SHORT, $G54invalid, "All values are valid", " invalid value", $errors:G54)}
+        {html:build2("G55", $labels:G55, $labels:G55_SHORT, $G55invalid, "All values are valid", " invalid value", $errors:G55)}
+        {html:build2("G56", $labels:G56, $labels:G56_SHORT, $G56invalid, "All values are valid", " invalid value", $errors:G56)}
+        {html:build2("G58", $labels:G58, $labels:G58_SHORT, $G58invalid, "All values are valid", " invalid value", $errors:G58)}
+        {html:build2("G59", $labels:G59, $labels:G59_SHORT, $G59invalid, "All values are valid", " invalid value", $errors:G59)}
+        {html:build2("G60", $labels:G60, $labels:G60_SHORT, $G60invalid, "All values are valid", " invalid value", $errors:G60)}
+        {html:build2("G61", $labels:G61, $labels:G61_SHORT, $G61invalid, "All values are valid", "", $errors:G61)}
+        {html:build2("G62", $labels:G62, $labels:G62_SHORT, $G62invalid, "All values are valid", "", $errors:G62)}
+        {html:build2("G63", $labels:G63, $labels:G63_SHORT, $G63invalid, "All values are valid", "", $errors:G63)}
+        {html:build2("G64", $labels:G64, $labels:G64_SHORT, $G64invalid, "All values are valid", " invalid value", $errors:G64)}
+        {html:build2("G66", $labels:G66, $labels:G66_SHORT, $G66invalid, "All values are valid", " invalid value", $errors:G66)}
+        {html:build2("G67", $labels:G67, $labels:G67_SHORT, $G67invalid, "All values are valid", " invalid value", $errors:G67)}
         {html:buildInfoTR("Specific checks on aqd:exceedanceDescriptionFinal")}
-        {html:build2("G70", $labels:G70, $labels:G70_SHORT, $G70invalid, "All values are valid", " invalid value", $errors:ERROR)}
-        {html:build2("G71", $labels:G71, $labels:G71_SHORT, $G71invalid, "All values are valid", " invalid value", $errors:ERROR)}
-        {html:build2("G72", $labels:G72, $labels:G72_SHORT, $G72invalid, "All values are valid", "", $errors:ERROR)}
-        {html:build2("G73", $labels:G73, $labels:G73_SHORT, $G73invalid, "All values are valid", " invalid value", $errors:ERROR)}
-        {html:build2("G74", $labels:G74, $labels:G74_SHORT, $modelUsed_74, "All values are valid", " invalid value", $errors:ERROR)}
-        {html:build2("G75", $labels:G75, $labels:G75_SHORT, $G75invalid, "All values are valid", " invalid value", $errors:ERROR)}
-        {html:build2("G76", $labels:G76, $labels:G76_SHORT, $G76invalid, "All values are valid", " invalid value", $errors:ERROR)}
-        {html:build2("G78", $labels:G78, $labels:G78_SHORT, $G78invalid, "All values are valid", " invalid value", $errors:ERROR)}
-        {html:build2("G79", $labels:G79, $labels:G79_SHORT, $G79invalid, "All values are valid", " invalid value", $errors:ERROR)}
-        {html:build2("G80", $labels:G80, $labels:G80_SHORT, $G80invalid, "All values are valid", " invalid value", $errors:WARNING)}
-        {html:build2("G81", $labels:G81, $labels:G81_SHORT, $G81invalid, "All values are valid", " invalid value", $errors:ERROR)}
-        {html:build2("G85", $labels:G85, $labels:G85_SHORT, $G85invalid, "All values are valid", " invalid value", $errors:ERROR)}
-        {html:build2("G86", $labels:G86, $labels:G86_SHORT, $G86invalid, "All values are valid", " invalid value", $errors:ERROR)}
+        {html:build2("G70", $labels:G70, $labels:G70_SHORT, $G70invalid, "All values are valid", " invalid value", $errors:G70)}
+        {html:build2("G71", $labels:G71, $labels:G71_SHORT, $G71invalid, "All values are valid", " invalid value", $errors:G71)}
+        {html:build2("G72", $labels:G72, $labels:G72_SHORT, $G72invalid, "All values are valid", "", $errors:G72)}
+        {html:build2("G73", $labels:G73, $labels:G73_SHORT, $G73invalid, "All values are valid", " invalid value", $errors:G73)}
+        {html:build2("G74", $labels:G74, $labels:G74_SHORT, $modelUsed_74, "All values are valid", " invalid value", $errors:G74)}
+        {html:build2("G75", $labels:G75, $labels:G75_SHORT, $G75invalid, "All values are valid", " invalid value", $errors:G75)}
+        {html:build2("G76", $labels:G76, $labels:G76_SHORT, $G76invalid, "All values are valid", " invalid value", $errors:G76)}
+        {html:build2("G78", $labels:G78, $labels:G78_SHORT, $G78invalid, "All values are valid", " invalid value", $errors:G78)}
+        {html:build2("G79", $labels:G79, $labels:G79_SHORT, $G79invalid, "All values are valid", " invalid value", $errors:G79)}
+        {html:build2("G80", $labels:G80, $labels:G80_SHORT, $G80invalid, "All values are valid", " invalid value", $errors:G80)}
+        {html:build2("G81", $labels:G81, $labels:G81_SHORT, $G81invalid, "All values are valid", " invalid value", $errors:G81)}
+        {html:build2("G85", $labels:G85, $labels:G85_SHORT, $G85invalid, "All values are valid", " invalid value", $errors:G85)}
+        {html:build2("G86", $labels:G86, $labels:G86_SHORT, $G86invalid, "All values are valid", " invalid value", $errors:G86)}
         {$G82invalid}
     </table>
 };

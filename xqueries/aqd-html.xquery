@@ -123,6 +123,7 @@ declare function html:getBullet($text as xs:string, $level as xs:string) as elem
     let $color :=
         switch ($level)
         case $errors:FAILED return $errors:COLOR_FAILED
+        case $errors:BLOCKER return $errors:COLOR_BLOCKER
         case $errors:ERROR return $errors:COLOR_ERROR
         case $errors:WARNING return $errors:COLOR_WARNING
         case $errors:SKIPPED return $errors:COLOR_SKIPPED
@@ -589,13 +590,23 @@ declare function html:buildResultDiv($meta as map(*), $result as element(table)?
                         else ()
                     }
                     {
-                        if ($result//div/tokenize(@class, "\s+") = $errors:ERROR) then
-                            <p class="{$errors:ERROR} bg-error box" style="color:{$errors:COLOR_ERROR}">
-                                <strong>This XML file did NOT pass the following crucial check(s): {string-join($result//div[tokenize(@class, "\s+") = $errors:ERROR], ',')}</strong>
+                        if ($result//div/tokenize(@class, "\s+") = $errors:BLOCKER) then
+                            <p class="{$errors:BLOCKER} bg-error box" style="color:{$errors:COLOR_BLOCKER}">
+                                <strong>This XML file did NOT pass the following crucial check(s): {string-join($result//div[tokenize(@class, "\s+") = $errors:BLOCKER], ',')}</strong>
                             </p>
                         else
                             <p class="{$errors:INFO} bg-info box" style="color:#0080FF">
                                 <strong>This XML file passed all crucial checks.</strong>
+                            </p>
+                    }
+                    {
+                        if ($result//div/tokenize(@class, "\s+") = $errors:ERROR) then
+                            <p class="{$errors:ERROR} bg-error box" style="color:{$errors:COLOR_ERROR}">
+                                <strong>This XML file did NOT pass the following serious check(s): {string-join($result//div[tokenize(@class, "\s+") = $errors:ERROR], ',')}</strong>
+                            </p>
+                        else
+                            <p class="{$errors:INFO} bg-info box" style="color:#0080FF">
+                                <strong>This XML file passed all serious checks.</strong>
                             </p>
                     }
                     {
@@ -613,7 +624,8 @@ declare function html:buildResultDiv($meta as map(*), $result as element(table)?
                         All test results are labeled with coloured bullets. The number in the bullet reffers to the rule code. The background colour of the bullets means:
                         <ul style="list-style-type: none;">
                             <li><div style="width:50px; display:inline-block;margin-left:10px">{html:getBullet('Blue', $errors:INFO)}</div> - the data confirms to the rule, but additional feedback could be provided in QA result.</li>
-                            <li><div style="width:50px; display:inline-block;margin-left:10px">{html:getBullet('Red', $errors:ERROR)}</div> - the crucial check did NOT pass and errenous records found from the delivery.</li>
+                            <li><div style="width:50px; display:inline-block;margin-left:10px">{html:getBullet('Red', $errors:BLOCKER)}</div> - the crucial check did NOT pass and errenous records found from the delivery.</li>
+                            <li><div style="width:50px; display:inline-block;margin-left:10px">{html:getBullet('Red', $errors:ERROR)}</div> - the serious check did NOT pass and errenous records found from the delivery.</li>
                             <li><div style="width:50px; display:inline-block;margin-left:10px">{html:getBullet('Orange', $errors:WARNING)}</div> - the non-crucial check did NOT pass.</li>
                             <li><div style="width:50px; display:inline-block;margin-left:10px">{html:getBullet('Grey', $errors:SKIPPED)}</div> - the check was skipped due to no relevant values found to check.</li>
                         </ul>

@@ -76,14 +76,16 @@ declare function obligations:proceed($source_url as xs:string) {
             ()
 
     let $messages := ($resultB, $resultC, $resultD, $resultE, $resultG, $resultM)
+    let $failedString := string-join($messages//p[tokenize(@class, "\s+") = $errors:FAILED], ' || ')
+    let $blockerString := normalize-space(string-join($messages//p[tokenize(@class, "\s+") = $errors:BLOCKER], ' || '))
     let $errorString := normalize-space(string-join($messages//p[tokenize(@class, "\s+") = $errors:ERROR], ' || '))
     let $warningString := normalize-space(string-join($messages//p[tokenize(@class, "\s+") = $errors:WARNING], ' || '))
-    let $failedString := string-join($messages//p[tokenize(@class, "\s+") = $errors:FAILED], ' || ')
-
 
 	let $errorLevel :=
-		if ($errorString) then
+        if ($blockerString) then
             "BLOCKER"
+		else if ($errorString) then
+            "ERROR"
         else if ($warningString or $failedString) then
             "WARNING"
         else
@@ -91,6 +93,8 @@ declare function obligations:proceed($source_url as xs:string) {
 
 	let $feedbackmessage :=
 		if ($errorLevel = 'BLOCKER') then
+            $blockerString
+        else if ($errorLevel = 'ERROR') then
             $errorString
         else if ($errorLevel = 'WARNING') then
             $warningString
