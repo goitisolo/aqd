@@ -125,12 +125,12 @@ let $M0table :=
     }
 let $isNewDelivery := errors:getMaxError($M0table) = $errors:INFO
 
-(: M1 :)
+(: M01 :)
 let $countFeatureTypes :=
     for $featureType in $xmlconv:FEATURE_TYPES
     return
         count(doc($source_url)//gml:featureMember/descendant::*[name()=$featureType])
-let $M1table :=
+let $M01table :=
     try {
         for $featureType at $pos in $xmlconv:FEATURE_TYPES
         let $errorClass :=
@@ -150,8 +150,8 @@ let $M1table :=
         </tr>
     }
 
-(: M2 - :)
-let $M2table :=
+(: M02 - :)
+let $M02table :=
     try {
         for $featureType at $pos in $xmlconv:FEATURE_TYPES
         let $countAll := count($docRoot//descendant::*[name()=$featureType])
@@ -179,15 +179,15 @@ let $M2table :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
-let $M2count :=
+let $M02count :=
     try {
-        string(sum($M2table/td[2]))
+        string(sum($M02table/td[2]))
     } catch * {
         "NaN"
     }
 
-(: M3 - :)
-let $M3table :=
+(: M03 - :)
+let $M03table :=
     try {
         let $featureTypes := $xmlconv:FEATURE_TYPES
         for $featureType at $pos in $featureTypes
@@ -216,15 +216,15 @@ let $M3table :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
-let $M3count :=
+let $M03count :=
     try {
-        string(sum($M3table/td[2]))
+        string(sum($M03table/td[2]))
     } catch * {
         "NaN"
     }
 
-(: M4 :)
-let $M4table :=
+(: M04 :)
+let $M04table :=
     try {
         let $allM4Combinations :=
             for $aqdModel in $MCombinations
@@ -248,7 +248,7 @@ let $M4table :=
         </tr>
     }
 
-(: M5 :)
+(: M05 :)
 (: TODO: FIX TRY CATCH CODE :)
 let $all1 := $MCombinations/lower-case(normalize-space(@gml:id))
 let $part1 := distinct-values(
@@ -312,11 +312,11 @@ let $part4 :=
             <td title="Duplicate records">aqd:inspireId {$x}</td>
         </tr>
 
-let $M5invalid := ($part1, $part2, $part3, $part4)
+let $M05invalid := ($part1, $part2, $part3, $part4)
 
-(: M6 - ./ef:inspireId/base:Identifier/base:localId shall be an unique code for AQD_Model and unique within the namespace.
+(: M06 - ./ef:inspireId/base:Identifier/base:localId shall be an unique code for AQD_Model and unique within the namespace.
  It is recommended to start with “MOD” and may include ISO2-country code (e.g.: MOD-ES0001) :)
-let $M6invalid :=
+let $M06invalid :=
     try {
         let $all := $docRoot//aqd:AQD_Model/ef:inspireId/base:Identifier/concat(base:namespace, base:localId)
         for $x in $docRoot//aqd:AQD_Model/ef:inspireId/base:Identifier
@@ -337,8 +337,8 @@ let $M6invalid :=
         </tr>
     }
 
-(: M7 :)
-let $M7table :=
+(: M07 :)
+let $M07table :=
     try {
         for $id in $modelNamespaces
         let $localId := $docRoot//aqd:AQD_Model/ef:inspireId/base:Identifier[base:namespace = $id]/base:localId
@@ -354,8 +354,8 @@ let $M7table :=
         </tr>
     }
 
-(: M7.1 :)
-let $M7.1invalid :=
+(: M07.1 :)
+let $M07.1invalid :=
     try {
         let $vocDoc := doc($vocabulary:NAMESPACE || "rdf")
         let $prefLabel := $vocDoc//skos:Concept[adms:status/@rdf:resource = $dd:VALIDRESOURCE and @rdf:about = concat($vocabulary:NAMESPACE, $countryCode)]/skos:prefLabel[1]
@@ -373,8 +373,8 @@ let $M7.1invalid :=
         </tr>
     }
 
-(: M8 aqd:AQD_Model/ef:name shall return a string :)
-let $M8invalid :=
+(: M08 aqd:AQD_Model/ef:name shall return a string :)
+let $M08invalid :=
     try {
         for $x in $docRoot//aqd:AQD_Model[string(ef:name) = ""]
         return
@@ -807,16 +807,16 @@ let $M46message :=
     <table class="maintable hover">
         {html:build2("NS", $labels:NAMESPACES, $labels:NAMESPACES_SHORT, $NSinvalid, "All values are valid", "record", $errors:WARNING)}
         {html:build3("M0", $labels:M0, $labels:M0_SHORT, $M0table, string($M0table/td), errors:getMaxError($M0table))}
-        {html:build2("M1", $labels:M1, $labels:M1_SHORT, $M1table, "All values are valid", "record", errors:getMaxError($M1table))}
-        {html:buildSimple("M2", $labels:M2, $labels:M2_SHORT, $M2table, $M2count, "feature type", errors:getMaxError($M2table))}
-        {html:buildSimple("M3", $labels:M3, $labels:M3_SHORT, $M3table, $M3count, "feature type", errors:getMaxError($M3table))}
-        {html:build2("M4", $labels:M4, $labels:M4_SHORT, $M4table, "All values are valid", "record", $errors:INFO)}
-        {html:build2("M5", $labels:M5, $labels:M5_SHORT, $M5invalid, "All values are valid", "record", $errors:ERROR)}
-        {html:build2("M6", $labels:M6, $labels:M6_SHORT, $M6invalid, "All values are valid", "record", $errors:ERROR)}
+        {html:build2("M1", $labels:M01, $labels:M01_SHORT, $M01table, "All values are valid", "record", errors:getMaxError($M01table))}
+        {html:buildSimple("M2", $labels:M02, $labels:M02_SHORT, $M02table, $M02count, "feature type", errors:getMaxError($M02table))}
+        {html:buildSimple("M3", $labels:M03, $labels:M03_SHORT, $M03table, $M03count, "feature type", errors:getMaxError($M03table))}
+        {html:build2("M4", $labels:M04, $labels:M04_SHORT, $M04table, "All values are valid", "record", $errors:INFO)}
+        {html:build2("M5", $labels:M05, $labels:M05_SHORT, $M05invalid, "All values are valid", "record", $errors:ERROR)}
+        {html:build2("M6", $labels:M06, $labels:M06_SHORT, $M06invalid, "All values are valid", "record", $errors:ERROR)}
         {html:buildInfoTR("Specific checks on AQD_Models")}
-        {html:buildUnique("M7", $labels:M7, $labels:M7_SHORT, $M7table, "namespace", $errors:ERROR)}
-        {html:build2("M7.1", $labels:M7.1, $labels:M7.1_SHORT, $M7.1invalid, "All values are valid", " invalid namespaces", $errors:ERROR)}
-        {html:build2("M8", $labels:M8, $labels:M8_SHORT, $M8invalid, "All values are valid", "record", $errors:ERROR)}
+        {html:buildUnique("M7", $labels:M07, $labels:M07_SHORT, $M07table, "namespace", $errors:ERROR)}
+        {html:build2("M7.1", $labels:M07.1, $labels:M07.1_SHORT, $M07.1invalid, "All values are valid", " invalid namespaces", $errors:ERROR)}
+        {html:build2("M8", $labels:M08, $labels:M08_SHORT, $M08invalid, "All values are valid", "record", $errors:ERROR)}
         {html:build2("M15", $labels:M15, $labels:M15_SHORT, $M15invalid, "All values are valid", "", $errors:ERROR)}
         {html:build2("M18", $labels:M18, $labels:M18_SHORT, $M18invalid, "All values are valid", "record", $errors:ERROR)}
         {html:build2("M19", $labels:M19, $labels:M19_SHORT, $M19invalid, "All values are valid", " invalid attribute", $errors:ERROR)}

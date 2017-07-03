@@ -124,11 +124,11 @@ let $knownZones :=
     else
         distinct-values(data(sparqlx:run(query:getZone($latestEnvelopeB))//sparql:binding[@name = 'inspireLabel']/sparql:literal))
 
-(: B1 :)
+(: B01 :)
 let $countZones := count($docRoot//aqd:AQD_Zone)
 
-(: B2 :)
-let $B2table :=
+(: B02 :)
+let $B02table :=
     try {
         for $zone in $docRoot//aqd:AQD_Zone
             let $id := $zone/am:inspireId/base:Identifier/base:namespace || "/" || $zone/am:inspireId/base:Identifier/base:localId
@@ -146,14 +146,14 @@ let $B2table :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
-let $B2errorLevel :=
-    if (count($B2table) = $countZones) then
-        $errors:ERROR
+let $B02errorLevel :=
+    if (count($B02table) = $countZones) then
+        $errors:B02
     else
         $errors:INFO
 
-(: B3 :)
-let $B3table :=
+(: B03 :)
+let $B03table :=
     try {
         for $zone in $docRoot//aqd:AQD_Zone
             let $id := $zone/am:inspireId/base:Identifier/base:namespace || "/" || $zone/am:inspireId/base:Identifier/base:localId
@@ -172,8 +172,8 @@ let $B3table :=
         </tr>
     }
 
-(: B4 :)
-let $B4table :=
+(: B04 :)
+let $B04table :=
     try {
         for $rec in $docRoot//aqd:AQD_Zone
         return
@@ -190,7 +190,7 @@ let $B4table :=
         </tr>
     }
 
-(: B6a :)
+(: B06a :)
 let $countZonesWithAmGeometry :=
     try {
         count($docRoot//aqd:AQD_Zone/am:geometry)
@@ -201,7 +201,7 @@ let $countZonesWithAmGeometry :=
         </tr>
     }
 
-(: B6b :)
+(: B06b :)
 let $countZonesWithLAU :=
     try {
         count($docRoot//aqd:AQD_Zone[not(empty(aqd:LAU)) or not(empty(aqd:shapefileLink))])
@@ -212,8 +212,8 @@ let $countZonesWithLAU :=
         </tr>
     }
 
-(: B7 - Compile & feedback a list of aqd:aqdZoneType, aqd:pollutantCode, aqd:protectionTarget combinations in the delivery :)
-let $B7table :=
+(: B07 - Compile & feedback a list of aqd:aqdZoneType, aqd:pollutantCode, aqd:protectionTarget combinations in the delivery :)
+let $B07table :=
     try {
         let $allB7Combinations :=
             for $pollutant in $docRoot//aqd:Pollutant
@@ -237,10 +237,11 @@ let $B7table :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
-(: B8 :)
-let $B8table :=
+
+(: B08 :)
+let $B08table :=
     try {
-        let $B8tmp :=
+        let $B08tmp :=
             for $x in $docRoot//aqd:AQD_Zone[xs:dateTime(am:designationPeriod//gml:beginPosition) < xs:dateTime($reportingYear || "-01-01T00:00:00Z")
                     and (am:designationPeriod//gml:endPosition/@indeterminatePosition = "unknown"
                             or xs:dateTime(am:designationPeriod//gml:endPosition) > xs:dateTime($reportingYear || "-12-31T24:00:00Z"))]/aqd:pollutants/aqd:Pollutant
@@ -276,7 +277,7 @@ let $B8table :=
         for $x in $combinations/combination
             let $pollutant := $x/@pollutant
             let $protectionTarget := $vocabulary:PROTECTIONTARGET_VOCABULARY || $x/@protectionTarget
-            let $elem := $B8tmp[pollutantCode = $pollutant and protectionTarget = $protectionTarget]
+            let $elem := $B08tmp[pollutantCode = $pollutant and protectionTarget = $protectionTarget]
             let $count := string($elem/count)
             let $vsName := dd:getNameFromPollutantCode($pollutant)
             let $vsCode := string($vocabulary:POLLUTANT_VOCABULARY || $pollutant)
@@ -284,7 +285,7 @@ let $B8table :=
                 if ($countryCode = "gi" and (($x/@pollutant = "1" and $x/@protectionTarget = "V") or ($x/@pollutant = "9" and $x/@protectionTarget = "V"))) then
                     $errors:INFO
                 else if ($count = "" or $count = "NaN" or $count = "0") then
-                    $errors:ERROR
+                    $errors:B08
                 else
                     $errors:INFO
             order by $vsName
@@ -302,7 +303,7 @@ let $B8table :=
         </tr>
     }
 
-(: B9 :)
+(: B09 :)
 (:TODO: ADD TRY CATCH :)
 let $all1 := $docRoot//aqd:AQD_Zone/lower-case(@gml:id)
 let $part1 := distinct-values(
@@ -355,7 +356,7 @@ let $part3 :=
 let $countGmlIdDuplicates := count($part1)
 let $countamInspireIdDuplicates := count($part2)
 let $countaqdInspireIdDuplicates := count($part3)
-let $B9invalid := ($part1, $part2, $part3)
+let $B09invalid := ($part1, $part2, $part3)
 
 (: B10 :)
 let $B10table :=
@@ -1049,48 +1050,48 @@ let $B47invalid :=
 
 return
     <table class="maintable hover">
-        {html:build2("NS", $labels:NAMESPACES, $labels:NAMESPACES_SHORT, $NSinvalid, "All values are valid", "record", $errors:WARNING)}
+        {html:build2("NS", $labels:NAMESPACES, $labels:NAMESPACES_SHORT, $NSinvalid, "All values are valid", "record", $errors:NS)}
         {html:build3("B0", $labels:B0, $labels:B0_SHORT, $B0table, string($B0table/td), errors:getMaxError($B0table))}
-        {html:buildCountRow0("B1", $labels:B1, $labels:B1_SHORT, $countZones, "", "record", $errors:INFO)}
-        {html:buildSimple("B2", $labels:B2, $labels:B2_SHORT, $B2table, "", "record", $B2errorLevel)}
-        {html:build0("B3", $labels:B3, $labels:B3_SHORT, $B3table, "record")}
-        {html:build0("B4", $labels:B4, $labels:B4_SHORT, $B4table, "record")}
-        {html:buildResultsSimpleRow("B6a", $labels:B6a, $labels:B6a_SHORT, $countZonesWithAmGeometry, $errors:INFO)}
-        {html:buildResultsSimpleRow("B6b", $labels:B6b, $labels:B6b_SHORT, $countZonesWithLAU, $errors:INFO )}
-        {html:build0("B7", $labels:B7, $labels:B7_SHORT, $B7table, "record")}
-        {html:build2("B8", $labels:B8, $labels:B8_SHORT, $B8table, "", "record", errors:getMaxError($B8table))}
-        {html:build2("B9", $labels:B9, $labels:B9_SHORT, $B9invalid, "All values are valid", "record", $errors:ERROR)}
-        {html:buildUnique("B10", $labels:B10, $labels:B10_SHORT, $B10table, "record", $errors:ERROR)}
-        {html:build2("B10.1", $labels:B10.1, $labels:B10.1_SHORT, $B10.1invalid, "All values are valid", " invalid namespaces", $errors:ERROR)}
-        {html:build2("B13", $labels:B13, $labels:B13_SHORT, $B13invalid, "All values are valid", " invalid value", $errors:WARNING)}
-        {html:build2("B18", $labels:B18, $labels:B18_SHORT, $B18invalid, "All text are valid"," invalid attribute", $errors:ERROR)}
-        {html:build2("B20", $labels:B20, $labels:B20_SHORT, $B20invalid, "All srsName attributes are valid"," invalid attribute", $errors:ERROR)}
-        {html:build2("B21", $labels:B21, $labels:B21_SHORT, $B21invalid, "All srsDimension attributes resolve to ""2""", " invalid attribute", $errors:WARNING)}
-        {html:build2("B22", $labels:B22, $labels:B22_SHORT, $B22invalid, "All values are valid", " invalid attribute", $errors:ERROR)}
-        {html:build2("B23", $labels:B23, $labels:B23_SHORT, $B23invalid, $B23message, " invalid attribute", $errors:ERROR)}
-        {html:build2("B24", $labels:B24, $labels:B24_SHORT, $B24invalid, "All zoneType attributes are valid", " invalid attribute", $errors:WARNING)}
-        {html:build2("B25", $labels:B25, $labels:B25_SHORT, $B25invalid, "All positions are valid", " invalid position", $errors:ERROR)}
-        {html:build2("B28", $labels:B28, $labels:B28_SHORT, $B28invalid, "All LifespanVersion values are valid", " invalid value", $errors:ERROR)}
-        {html:build2("B30", $labels:B30, $labels:B30_SHORT, $B30invalid, "All values are valid", " invalid value", $errors:WARNING)}
-        {html:build2("B31", $labels:B31, $labels:B31_SHORT, $B31invalid, "All values are valid", " invalid value", $errors:WARNING)}
-        {html:build2("B32", $labels:B32, $labels:B32_SHORT, $B32invalid, "All values are valid", " invalid value", $errors:WARNING)}
-        {html:build2("B33", $labels:B33, $labels:B33_SHORT, $B33invalid, "All values are valid", " invalid value", $errors:WARNING)}
-        {html:build2("B34", $labels:B34, $labels:B34_SHORT, $B34invalid, "All values are valid", " invalid value", $errors:WARNING)}
+        {html:buildCountRow0("B01", $labels:B1, $labels:B1_SHORT, $countZones, "", "record", $errors:B01)}
+        {html:buildSimple("B02", $labels:B2, $labels:B2_SHORT, $B02table, "", "record", $B02errorLevel)}
+        {html:build0("B03", $labels:B3, $labels:B3_SHORT, $B03table, "record")}
+        {html:build0("B04", $labels:B4, $labels:B4_SHORT, $B04table, "record")}
+        {html:buildResultsSimpleRow("B06a", $labels:B6a, $labels:B6a_SHORT, $countZonesWithAmGeometry, $errors:B06a)}
+        {html:buildResultsSimpleRow("B06b", $labels:B6b, $labels:B6b_SHORT, $countZonesWithLAU, $errors:B06b)}
+        {html:build0("B07", $labels:B7, $labels:B7_SHORT, $B07table, "record")}
+        {html:build2("B08", $labels:B8, $labels:B8_SHORT, $B08table, "", "record", errors:getMaxError($B08table))}
+        {html:build2("B09", $labels:B9, $labels:B9_SHORT, $B09invalid, "All values are valid", "record", $errors:B09)}
+        {html:buildUnique("B10", $labels:B10, $labels:B10_SHORT, $B10table, "record", $errors:B10)}
+        {html:build2("B10.1", $labels:B10.1, $labels:B10.1_SHORT, $B10.1invalid, "All values are valid", " invalid namespaces", $errors:B10.1)}
+        {html:build2("B13", $labels:B13, $labels:B13_SHORT, $B13invalid, "All values are valid", " invalid value", $errors:B13)}
+        {html:build2("B18", $labels:B18, $labels:B18_SHORT, $B18invalid, "All text are valid"," invalid attribute", $errors:B18)}
+        {html:build2("B20", $labels:B20, $labels:B20_SHORT, $B20invalid, "All srsName attributes are valid"," invalid attribute", $errors:B20)}
+        {html:build2("B21", $labels:B21, $labels:B21_SHORT, $B21invalid, "All srsDimension attributes resolve to ""2""", " invalid attribute", $errors:B21)}
+        {html:build2("B22", $labels:B22, $labels:B22_SHORT, $B22invalid, "All values are valid", " invalid attribute", $errors:B22)}
+        {html:build2("B23", $labels:B23, $labels:B23_SHORT, $B23invalid, $B23message, " invalid attribute", $errors:B23)}
+        {html:build2("B24", $labels:B24, $labels:B24_SHORT, $B24invalid, "All zoneType attributes are valid", " invalid attribute", $errors:B24)}
+        {html:build2("B25", $labels:B25, $labels:B25_SHORT, $B25invalid, "All positions are valid", " invalid position", $errors:B25)}
+        {html:build2("B28", $labels:B28, $labels:B28_SHORT, $B28invalid, "All LifespanVersion values are valid", " invalid value", $errors:B28)}
+        {html:build2("B30", $labels:B30, $labels:B30_SHORT, $B30invalid, "All values are valid", " invalid value", $errors:B30)}
+        {html:build2("B31", $labels:B31, $labels:B31_SHORT, $B31invalid, "All values are valid", " invalid value", $errors:B31)}
+        {html:build2("B32", $labels:B32, $labels:B32_SHORT, $B32invalid, "All values are valid", " invalid value", $errors:B32)}
+        {html:build2("B33", $labels:B33, $labels:B33_SHORT, $B33invalid, "All values are valid", " invalid value", $errors:B33)}
+        {html:build2("B34", $labels:B34, $labels:B34_SHORT, $B34invalid, "All values are valid", " invalid value", $errors:B34)}
         {html:buildCountRow("B35", $labels:B35, $labels:B35_SHORT, $countB35duplicates, (), (), ())}
         {html:buildConcatRow($dublicateAmNamespaceAndaqdZoneCodeIds, "Duplicate base:namespace:aqd:zoneCode - ")}
-        {html:build2("B36", $labels:B36, $labels:B36_SHORT, $B36invalid, "All values are valid", " invalid value", $errors:ERROR)}
-        {html:build2("B37", $labels:B37, $labels:B37_SHORT, $B37invalid, "All values are valid", " invalid value", $errors:WARNING)}
-        {html:build2("B38", $labels:B38, $labels:B38_SHORT, $B38invalid, "All values are valid", " invalid value", $errors:ERROR)}
-        {html:build2("B39a", $labels:B39a, <span>{$labels:B39a_SHORT} - {html:buildInfoTable("B39a", $B39aItemsList)}</span>, $B39ainvalid, "All values are valid", " invalid value", $errors:WARNING)}
-        {html:build2("B39b", $labels:B39b, $labels:B39b_SHORT, $B39binvalid, "All values are valid", " missing value", $errors:ERROR)}
-        {html:build2("B39c", $labels:B39c, $labels:B39c_SHORT, $B39cinvalid, "All values are valid", " invalid value", $errors:ERROR)}
-        {html:build2("B40", $labels:B40, $labels:B40_SHORT, $B40invalid, "All values are valid", "record", $errors:WARNING)}
-        {html:build2("B41", $labels:B41, $labels:B41_SHORT, $B41invalid, "All values are valid", " invalid value", $errors:ERROR)}
-        {html:build2("B42", $labels:B42, $labels:B42_SHORT, $B42invalid, "All values are valid", " crucial invalid value", $errors:ERROR)}
-        {html:build2("B43", $labels:B43, $labels:B43_SHORT, $B43invalid, "All values are valid", " crucial invalid value", $errors:ERROR)}
-        {html:build2("B45", $labels:B45, $labels:B45_SHORT, $B45invalid, "All values are valid", " invalid value", $errors:WARNING)}
-        {html:build2("B46", $labels:B46, $labels:B46_SHORT, $B46invalid, "All values are valid", " invalid value", $errors:ERROR)}
-        {html:build2("B47", $labels:B47, $labels:B47_SHORT, $B47invalid, "All values are valid", "invalid value", $errors:WARNING)}
+        {html:build2("B36", $labels:B36, $labels:B36_SHORT, $B36invalid, "All values are valid", " invalid value", $errors:B36)}
+        {html:build2("B37", $labels:B37, $labels:B37_SHORT, $B37invalid, "All values are valid", " invalid value", $errors:B37)}
+        {html:build2("B38", $labels:B38, $labels:B38_SHORT, $B38invalid, "All values are valid", " invalid value", $errors:B38)}
+        {html:build2("B39a", $labels:B39a, <span>{$labels:B39a_SHORT} - {html:buildInfoTable("B39a", $B39aItemsList)}</span>, $B39ainvalid, "All values are valid", " invalid value", $errors:B39a)}
+        {html:build2("B39b", $labels:B39b, $labels:B39b_SHORT, $B39binvalid, "All values are valid", " missing value", $errors:B39b)}
+        {html:build2("B39c", $labels:B39c, $labels:B39c_SHORT, $B39cinvalid, "All values are valid", " invalid value", $errors:B39c)}
+        {html:build2("B40", $labels:B40, $labels:B40_SHORT, $B40invalid, "All values are valid", "record", $errors:B40)}
+        {html:build2("B41", $labels:B41, $labels:B41_SHORT, $B41invalid, "All values are valid", " invalid value", $errors:B41)}
+        {html:build2("B42", $labels:B42, $labels:B42_SHORT, $B42invalid, "All values are valid", " crucial invalid value", $errors:B42)}
+        {html:build2("B43", $labels:B43, $labels:B43_SHORT, $B43invalid, "All values are valid", " crucial invalid value", $errors:B43)}
+        {html:build2("B45", $labels:B45, $labels:B45_SHORT, $B45invalid, "All values are valid", " invalid value", $errors:B45)}
+        {html:build2("B46", $labels:B46, $labels:B46_SHORT, $B46invalid, "All values are valid", " invalid value", $errors:B46)}
+        {html:build2("B47", $labels:B47, $labels:B47_SHORT, $B47invalid, "All values are valid", "invalid value", $errors:B47)}
     </table>
 };
 declare function xmlconv:proceed($source_url as xs:string, $countryCode as xs:string) as element(div) {

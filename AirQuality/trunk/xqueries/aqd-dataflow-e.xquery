@@ -100,8 +100,8 @@ let $E0table :=
     }
 let $isNewDelivery := errors:getMaxError($E0table) = $errors:INFO
 
-(: E01 :)
-let $E01table :=
+(: E01a :)
+let $E01atable :=
     try {
         for $x in $docRoot//om:OM_Observation
             let $namedValue := $x/om:parameter/om:NamedValue[om:name/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/processparameter/SamplingPoint"]
@@ -120,8 +120,8 @@ let $E01table :=
         </tr>
     }
 
-(: E1 - /om:OM_Observation gml:id attribute shall be unique code for the group of observations enclosed by /OM_Observation within the delivery. :)
-let $E1invalid :=
+(: E01b - /om:OM_Observation gml:id attribute shall be unique code for the group of observations enclosed by /OM_Observation within the delivery. :)
+let $E01binvalid :=
     try {
         (let $all := data($docRoot//om:OM_Observation/@gml:id)
         for $x in $docRoot//om:OM_Observation/@gml:id
@@ -890,18 +890,18 @@ let $E32invalid :=
 
 return
     <table class="maintable hover">
-        {html:build2("NS", $labels:NAMESPACES, $labels:NAMESPACES_SHORT, $NSinvalid, "All values are valid", "record", $errors:WARNING)}
+        {html:build2("NS", $labels:NAMESPACES, $labels:NAMESPACES_SHORT, $NSinvalid, "All values are valid", "record", $errors:NS)}
         {html:build3("E0", $labels:E0, $labels:E0_SHORT, $E0table, data($E0table/td), errors:getMaxError($E0table))}
-        {html:build1("E01", $labels:E01, $labels:E01_SHORT, $E01table, "", string(count($E01table)), "record", "", $errors:INFO)}
-        {html:build2("E1", $labels:E1, $labels:E1_SHORT, $E1invalid, "All records are valid", "record", $errors:ERROR)}
-        {html:build2("E2", $labels:E2, $labels:E2_SHORT, $E2invalid, "All records are valid", "record", $errors:ERROR)}
-        {html:build2("E3", $labels:E3, $labels:E3_SHORT, $E3invalid, "All records are valid", "record", $errors:ERROR)}
-        {html:build2("E4", $labels:E4, $labels:E4_SHORT, $E4invalid, "All records are valid", "record", $errors:ERROR)}
-        {html:build2("E5", $labels:E5, $labels:E5_SHORT, $E5invalid, "All records are valid", "record", $errors:ERROR)}
-        {html:build2("E6", $labels:E6, $labels:E6_SHORT, $E6invalid, "All records are valid", "record", $errors:ERROR)}
-        {html:build2("E7", $labels:E7, $labels:E7_SHORT, $E7invalid, "All records are valid", "record", $errors:WARNING)}
-        {html:build2("E8", $labels:E8, $labels:E8_SHORT, $E8invalid, "All records are valid", "record", $errors:WARNING)}
-        {html:build2("E9", $labels:E9, $labels:E9_SHORT, $E9invalid, "All records are valid", "record", $errors:WARNING)}
+        {html:build1("E01a", $labels:E01a, $labels:E01a_SHORT, $E01atable, "", string(count($E01atable)), "record", "", $errors:E01a)}
+        {html:build2("E01b", $labels:E01b, $labels:E01b_SHORT, $E01binvalid, "All records are valid", "record", $errors:E01b)}
+        {html:build2("E02", $labels:E02, $labels:E02_SHORT, $E2invalid, "All records are valid", "record", $errors:ERROR)}
+        {html:build2("E03", $labels:E03, $labels:E03_SHORT, $E3invalid, "All records are valid", "record", $errors:ERROR)}
+        {html:build2("E04", $labels:E04, $labels:E04_SHORT, $E4invalid, "All records are valid", "record", $errors:ERROR)}
+        {html:build2("E05", $labels:E05, $labels:E05_SHORT, $E5invalid, "All records are valid", "record", $errors:ERROR)}
+        {html:build2("E06", $labels:E06, $labels:E06_SHORT, $E6invalid, "All records are valid", "record", $errors:ERROR)}
+        {html:build2("E07", $labels:E07, $labels:E07_SHORT, $E7invalid, "All records are valid", "record", $errors:WARNING)}
+        {html:build2("E08", $labels:E08, $labels:E08_SHORT, $E8invalid, "All records are valid", "record", $errors:WARNING)}
+        {html:build2("E09", $labels:E09, $labels:E09_SHORT, $E9invalid, "All records are valid", "record", $errors:WARNING)}
         {html:build2("E10", $labels:E10, $labels:E10_SHORT, $E10invalid, "All records are valid", "record", $errors:ERROR)}
         {html:build2("E11", $labels:E11, $labels:E11_SHORT, $E11invalid, "All records are valid", "record", $errors:ERROR)}
         {html:build2("E12", $labels:E12, $labels:E12_SHORT, $E12invalid, "All records are valid", "record", $errors:ERROR)}

@@ -17,9 +17,11 @@ declare namespace dcterms="http://purl.org/dc/terms/";
 declare namespace prop = "http://dd.eionet.europa.eu/property/";
 
 import module namespace vocabulary = "aqd-vocabulary" at "aqd-vocabulary.xquery";
+import module namespace common = "aqd-common" at "aqd-common.xquery";
 
 declare variable $dd:VALIDRESOURCE := "http://dd.eionet.europa.eu/vocabulary/datadictionary/status/valid";
 declare variable $dd:VALIDPOLLUTANTS as xs:string* := dd:getValidPollutants();
+declare variable $dd:QAQCMAP as element(QAQCMap) := dd:getQAQCMap();
 
 declare function dd:getValid($url as xs:string) {
     doc($url || "rdf")//skos:Concept[adms:status/@rdf:resource = $dd:VALIDRESOURCE]
@@ -54,3 +56,48 @@ declare function dd:getValidConceptsLC($url as xs:string) as xs:string* {
 declare function dd:getRecommendedUnit($pollutant as xs:string) as xs:string* {
     data(doc($vocabulary:POLLUTANT_VOCABULARY || "rdf")//skos:Concept[@rdf:about = $pollutant and adms:status/@rdf:resource = $dd:VALIDRESOURCE]/prop:recommendedUnit/@rdf:resource)
 };
+
+(:declare function dd:getQAQCMapBK() as xs:string* {
+    for $x in doc($vocabulary:QAQC_VOCABULARY || "rdf")//skos:Concept
+    :)(: [string(skos:notation) != ""] :)(:
+    return common:createHashMapEntry(string($x/skos:notation), (string($x/skos:prefLabel), string($x/skos:definition), string($x/prop:errorType)))
+};:)
+
+declare function dd:getQAQCMap() as element(QAQCMap) {
+    <QAQCMap>{
+        for $x in doc($vocabulary:QAQC_VOCABULARY || "rdf")//skos:Concept
+        return
+            <Entry notation="{string($x/skos:notation)}">
+                <PrefLabel>{string($x/skos:prefLabel)}</PrefLabel>
+                <Definition>{string($x/skos:definition)}</Definition>
+                <ErrorType>{string($x/prop:errorType)}</ErrorType>
+            </Entry>}
+    </QAQCMap>
+};
+
+declare function dd:getQAQCLabel($notation as xs:string) as xs:string {
+    string($dd:QAQCMAP/Entry[@notation = $notation]/PrefLabel)
+};
+
+declare function dd:getQAQCDefinition($notation as xs:string) as xs:string {
+    string($dd:QAQCMAP/Entry[@notation = $notation]/Definition)
+};
+
+declare function dd:getQAQCErrorType($notation as xs:string) as xs:string {
+    string($dd:QAQCMAP/Entry[@notation = $notation]/ErrorType)
+};
+
+(:declare function dd:getQAQCLabel($map as element(QAQCMap), $notation as xs:string) as xs:string {
+    string($map/Entry[@notation = $notation]/PrefLabel)
+};
+
+declare function dd:getQAQCDefinition($map as element(QAQCMap), $notation as xs:string) as xs:string {
+    string($map/Entry[@notation = $notation]/Definition)
+};
+
+declare function dd:getQAQCErrorType($map as element(QAQCMap), $notation as xs:string) as xs:string {
+    string($map/Entry[@notation = $notation]/ErrorType)
+};:)
+
+(: [string(skos:notation) != ""] :)
+(:return common:createHashMapEntry(string($x/skos:notation), (string($x/skos:prefLabel), string($x/skos:definition), string($x/prop:errorType))):)
