@@ -894,36 +894,36 @@ return
         {html:build3("E0", $labels:E0, $labels:E0_SHORT, $E0table, data($E0table/td), errors:getMaxError($E0table))}
         {html:build1("E01a", $labels:E01a, $labels:E01a_SHORT, $E01atable, "", string(count($E01atable)), "record", "", $errors:E01a)}
         {html:build2("E01b", $labels:E01b, $labels:E01b_SHORT, $E01binvalid, "All records are valid", "record", $errors:E01b)}
-        {html:build2("E02", $labels:E02, $labels:E02_SHORT, $E2invalid, "All records are valid", "record", $errors:ERROR)}
-        {html:build2("E03", $labels:E03, $labels:E03_SHORT, $E3invalid, "All records are valid", "record", $errors:ERROR)}
-        {html:build2("E04", $labels:E04, $labels:E04_SHORT, $E4invalid, "All records are valid", "record", $errors:ERROR)}
-        {html:build2("E05", $labels:E05, $labels:E05_SHORT, $E5invalid, "All records are valid", "record", $errors:ERROR)}
-        {html:build2("E06", $labels:E06, $labels:E06_SHORT, $E6invalid, "All records are valid", "record", $errors:ERROR)}
-        {html:build2("E07", $labels:E07, $labels:E07_SHORT, $E7invalid, "All records are valid", "record", $errors:WARNING)}
-        {html:build2("E08", $labels:E08, $labels:E08_SHORT, $E8invalid, "All records are valid", "record", $errors:WARNING)}
-        {html:build2("E09", $labels:E09, $labels:E09_SHORT, $E9invalid, "All records are valid", "record", $errors:WARNING)}
-        {html:build2("E10", $labels:E10, $labels:E10_SHORT, $E10invalid, "All records are valid", "record", $errors:ERROR)}
-        {html:build2("E11", $labels:E11, $labels:E11_SHORT, $E11invalid, "All records are valid", "record", $errors:ERROR)}
-        {html:build2("E12", $labels:E12, $labels:E12_SHORT, $E12invalid, "All records are valid", "record", $errors:ERROR)}
-        {html:build2("E15", $labels:E15, $labels:E15_SHORT, $E15invalid, "All records are valid", "record", $errors:ERROR)}
-        {html:build2("E16", $labels:E16, $labels:E16_SHORT, $E16invalid, "All records are valid", "record", $errors:ERROR)}
-        {html:build2("E17", $labels:E17, $labels:E17_SHORT, $E17invalid, "All records are valid", "record", $errors:ERROR)}
-        {html:build2("E18", $labels:E18, $labels:E18_SHORT, $E18invalid, "All records are valid", "record", $errors:ERROR)}
-        {html:build2("E19", $labels:E19, $labels:E19_SHORT, $E19invalid, "All records are valid", "record", $errors:ERROR)}
-        {html:build2("E19b", $labels:E19b, $labels:E19b_SHORT, $E19binvalid, "All records are valid", "record", $errors:WARNING)}
-        {html:build2("E20", $labels:E20, $labels:E20_SHORT, $E20invalid, "All records are valid", "record", $errors:ERROR)}
-        {html:build2("E21", $labels:E21, $labels:E21_SHORT, $E21invalid, "All records are valid", "record", $errors:ERROR)}
-        {html:build2("E22", $labels:E22, $labels:E22_SHORT, $E22invalid, "All records are valid", "record", $errors:ERROR)}
-        {html:build2("E23", $labels:E23, $labels:E23_SHORT, $E23invalid, "All records are valid", "record", $errors:ERROR)}
-        {html:build2("E24", $labels:E24, $labels:E24_SHORT, $E24invalid, "All records are valid", "record", $errors:ERROR)}
-        {html:build2("E25", $labels:E25, $labels:E25_SHORT, $E25invalid, "All records are valid", "record", $errors:ERROR)}
-        {html:build2("E26", $labels:E26, $labels:E26_SHORT, $E26invalid, "All records are valid", "record", $errors:ERROR)}
-        {html:build2("E27", $labels:E27, $labels:E27_SHORT, $E27invalid, "All records are valid", "record", $errors:ERROR)}
-        {html:build2("E28", $labels:E28, $labels:E28_SHORT, $E28invalid, "All records are valid", "record", $errors:WARNING)}
-        {html:build2("E29", $labels:E29, $labels:E29_SHORT, $E29invalid, "All records are valid", "record", $errors:WARNING)}
-        {html:build2("E30", $labels:E30, $labels:E30_SHORT, $E30invalid, "All records are valid", "record", $errors:WARNING)}
-        {html:build2("E31", $labels:E31, $labels:E31_SHORT, $E31invalid, "All records are valid", "record", $errors:ERROR)}
-        {html:build2("E32", $labels:E32, $labels:E32_SHORT, $E32invalid, "All records are valid", "record", $errors:WARNING)}
+        {html:build2("E02", $labels:E02, $labels:E02_SHORT, $E2invalid, "All records are valid", "record", $errors:E02)}
+        {html:build2("E03", $labels:E03, $labels:E03_SHORT, $E3invalid, "All records are valid", "record", $errors:E03)}
+        {html:build2("E04", $labels:E04, $labels:E04_SHORT, $E4invalid, "All records are valid", "record", $errors:E04)}
+        {html:build2("E05", $labels:E05, $labels:E05_SHORT, $E5invalid, "All records are valid", "record", $errors:E05)}
+        {html:build2("E06", $labels:E06, $labels:E06_SHORT, $E6invalid, "All records are valid", "record", $errors:E06)}
+        {html:build2("E07", $labels:E07, $labels:E07_SHORT, $E7invalid, "All records are valid", "record", $errors:E07)}
+        {html:build2("E08", $labels:E08, $labels:E08_SHORT, $E8invalid, "All records are valid", "record", $errors:E08)}
+        {html:build2("E09", $labels:E09, $labels:E09_SHORT, $E9invalid, "All records are valid", "record", $errors:E09)}
+        {html:build2("E10", $labels:E10, $labels:E10_SHORT, $E10invalid, "All records are valid", "record", $errors:E10)}
+        {html:build2("E11", $labels:E11, $labels:E11_SHORT, $E11invalid, "All records are valid", "record", $errors:E11)}
+        {html:build2("E12", $labels:E12, $labels:E12_SHORT, $E12invalid, "All records are valid", "record", $errors:E12)}
+        {html:build2("E15", $labels:E15, $labels:E15_SHORT, $E15invalid, "All records are valid", "record", $errors:E15)}
+        {html:build2("E16", $labels:E16, $labels:E16_SHORT, $E16invalid, "All records are valid", "record", $errors:E16)}
+        {html:build2("E17", $labels:E17, $labels:E17_SHORT, $E17invalid, "All records are valid", "record", $errors:E17)}
+        {html:build2("E18", $labels:E18, $labels:E18_SHORT, $E18invalid, "All records are valid", "record", $errors:E18)}
+        {html:build2("E19", $labels:E19, $labels:E19_SHORT, $E19invalid, "All records are valid", "record", $errors:E19)}
+        {html:build2("E19b", $labels:E19b, $labels:E19b_SHORT, $E19binvalid, "All records are valid", "record", $errors:E19b)}
+        {html:build2("E20", $labels:E20, $labels:E20_SHORT, $E20invalid, "All records are valid", "record", $errors:E20)}
+        {html:build2("E21", $labels:E21, $labels:E21_SHORT, $E21invalid, "All records are valid", "record", $errors:E21)}
+        {html:build2("E22", $labels:E22, $labels:E22_SHORT, $E22invalid, "All records are valid", "record", $errors:E22)}
+        {html:build2("E23", $labels:E23, $labels:E23_SHORT, $E23invalid, "All records are valid", "record", $errors:E23)}
+        {html:build2("E24", $labels:E24, $labels:E24_SHORT, $E24invalid, "All records are valid", "record", $errors:E24)}
+        {html:build2("E25", $labels:E25, $labels:E25_SHORT, $E25invalid, "All records are valid", "record", $errors:E25)}
+        {html:build2("E26", $labels:E26, $labels:E26_SHORT, $E26invalid, "All records are valid", "record", $errors:E26)}
+        {html:build2("E27", $labels:E27, $labels:E27_SHORT, $E27invalid, "All records are valid", "record", $errors:E27)}
+        {html:build2("E28", $labels:E28, $labels:E28_SHORT, $E28invalid, "All records are valid", "record", $errors:E28)}
+        {html:build2("E29", $labels:E29, $labels:E29_SHORT, $E29invalid, "All records are valid", "record", $errors:E29)}
+        {html:build2("E30", $labels:E30, $labels:E30_SHORT, $E30invalid, "All records are valid", "record", $errors:E30)}
+        {html:build2("E31", $labels:E31, $labels:E31_SHORT, $E31invalid, "All records are valid", "record", $errors:E31)}
+        {html:build2("E32", $labels:E32, $labels:E32_SHORT, $E32invalid, "All records are valid", "record", $errors:E32)}
     </table>
 
 };
