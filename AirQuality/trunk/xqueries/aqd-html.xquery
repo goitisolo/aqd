@@ -83,14 +83,20 @@ declare function html:getCSS() as element(style) {
             padding:10px;
             border:1px solid rgba(0,0,0,0.5);
         }
-        .bg-info {
-            background:#A0D3E8;
+        .bg-failed {
+            background:white;
+        }
+        .bg-blocker {
+            background:firebrick;
         }
         .bg-error {
-            background:pink;
+            background:red;
         }
         .bg-warning {
             background:bisque;
+        }
+        .bg-info {
+            background:#A0D3E8;
         }
         .reveal {
             width:900px;
@@ -584,29 +590,30 @@ declare function html:buildResultDiv($meta as map(*), $result as element(table)?
                 <div>
                     {
                         if ($result//div/tokenize(@class, "\s+") = $errors:FAILED) then
-                            <p class="{$errors:FAILED} bg-failed box" style="color:{$errors:COLOR_FAILED}">
+                            <p class="{$errors:FAILED} bg-failed box" style="color:black">
                                 <strong>The following checks have failed to execute: {string-join($result//div[tokenize(@class, "\s+") = $errors:FAILED], ',')}</strong>
                             </p>
                         else ()
                     }
                     {
                         if ($result//div/tokenize(@class, "\s+") = $errors:BLOCKER) then
-                            <p class="{$errors:BLOCKER} bg-error box" style="color:{$errors:COLOR_BLOCKER}">
-                                <strong>This XML file did NOT pass the following crucial check(s): {string-join($result//div[tokenize(@class, "\s+") = $errors:BLOCKER], ',')}</strong>
+                            <p class="{$errors:BLOCKER} bg-blocker box" style="color:white">
+                                <strong>This XML file did NOT pass the following BLOCKER check(s): {string-join($result//div[tokenize(@class, "\s+") = $errors:BLOCKER], ',')}</strong>
                             </p>
                         else
-                            <p class="{$errors:INFO} bg-info box" style="color:#0080FF">
-                                <strong>This XML file passed all crucial checks.</strong>
+                            (:color:#0080FF:)
+                            <p class="{$errors:INFO} bg-info box" style="color:white">
+                                <strong>This XML file passed all BLOCKER checks.</strong>
                             </p>
                     }
                     {
                         if ($result//div/tokenize(@class, "\s+") = $errors:ERROR) then
-                            <p class="{$errors:ERROR} bg-error box" style="color:{$errors:COLOR_ERROR}">
-                                <strong>This XML file did NOT pass the following serious check(s): {string-join($result//div[tokenize(@class, "\s+") = $errors:ERROR], ',')}</strong>
+                            <p class="{$errors:ERROR} bg-error box" style="color:white">
+                                <strong>This XML file did NOT pass the following ERROR check(s): {string-join($result//div[tokenize(@class, "\s+") = $errors:ERROR], ',')}</strong>
                             </p>
                         else
-                            <p class="{$errors:INFO} bg-info box" style="color:#0080FF">
-                                <strong>This XML file passed all serious checks.</strong>
+                            <p class="{$errors:INFO} bg-info box" style="color:white">
+                                <strong>This XML file passed all ERROR checks.</strong>
                             </p>
                     }
                     {
