@@ -349,8 +349,8 @@ declare variable $errors:COLOR_ERROR := "red";
 declare variable $errors:COLOR_INFO := "deepskyblue";
 declare variable $errors:COLOR_SKIPPED := "grey";
 declare variable $errors:COLOR_UNKNOWN := "grey";
-declare variable $errors:COLOR_BLOCKER := "red";
-declare variable $errors:COLOR_FAILED := "firebrick";
+declare variable $errors:COLOR_BLOCKER := "firebrick";
+declare variable $errors:COLOR_FAILED := "black";
 
 declare variable $errors:LOW_LIMIT := 100;
 declare variable $errors:MEDIUM_LIMIT := 250;
