@@ -95,10 +95,10 @@ declare function xmlconv:checkFileReportingHeader($envelope as element(envelope)
                 <td title="Error description">{$err:description}</td>
             </tr>
         }
-    (: The aqd:AQD_ReportingHeader must include aqd:inspireId, aqd:reportingAuthority, aqd:change elements :)
+    (: The aqd:AQD_ReportingHeader must include aqd:inspireId, aqd:reportingAuthority, aqd:change and aqd:reportingPeriod elements :)
     let $missingAqdReportingHeaderSubElements :=
         try {
-            for $elem in ("aqd:inspireId", "aqd:reportingAuthority", "aqd:change")
+            for $elem in ("aqd:inspireId", "aqd:reportingAuthority", "aqd:change", "aqd:reportingPeriod")
             where count($docRoot//aqd:AQD_ReportingHeader/*[name()=$elem and string-length(.) > 0]) = 0
             return
                 <tr>
