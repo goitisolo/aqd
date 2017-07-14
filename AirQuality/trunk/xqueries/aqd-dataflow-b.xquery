@@ -499,10 +499,12 @@ let $B23invalid :=
         let $latlongToken := fn:tokenize(normalize-space($latLong), "\s+")
         let $lat := number($latlongToken[1])
         let $long := number($latlongToken[2])
-        where (not($countryCode = "fr") and ($long > $lat))
+        let $srsName := string($latLong/../../../@srsName)
+        where (not($countryCode = "fr") and not(geox:compareLatLong($srsName, $lat, $long)))
         return
             <tr>
                 <td title="Polygon">{string($latLong/../../../@gml:id)}</td>
+                <td title="srsName">{$srsName}</td>
                 <td title="First vertex">{string($lat) || string($long)}</td>
             </tr>
     } catch * {
