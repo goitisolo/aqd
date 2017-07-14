@@ -137,8 +137,8 @@ let $E01binvalid :=
         </tr>
     }
 
-(:E2 - /om:phenomenonTime/gml:TimePeriod/gml:beginPosition shall be LESS THAN ./om:phenomenonTime/gml:TimePeriod/gml:endPosition. -:)
-let $E2invalid :=
+(:E02 - /om:phenomenonTime/gml:TimePeriod/gml:beginPosition shall be LESS THAN ./om:phenomenonTime/gml:TimePeriod/gml:endPosition. -:)
+let $E02invalid :=
     try {
         (let $all := $docRoot//om:phenomenonTime/gml:TimePeriod
         for $x in $all
@@ -159,8 +159,8 @@ let $E2invalid :=
         </tr>
     }
 
-(:E3 - ./om:resultTime/gml:TimeInstant/gml:timePosition shall be GREATER THAN ./om:phenomenonTime/gml:TimePeriod/gml:endPosition :)
-let $E3invalid :=
+(:E03 - ./om:resultTime/gml:TimeInstant/gml:timePosition shall be GREATER THAN ./om:phenomenonTime/gml:TimePeriod/gml:endPosition :)
+let $E03invalid :=
     try {
         (let $all := $docRoot//om:OM_Observation
         for $x in $all
@@ -178,8 +178,8 @@ let $E3invalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
-(: E4 - ./om:procedure xlink:href attribute shall resolve to a traversable link process configuration in Data flow D: /aqd:AQD_SamplingPointProcess/ompr:inspireld/base:Identifier/base:localId:)
-let $E4invalid :=
+(: E04 - ./om:procedure xlink:href attribute shall resolve to a traversable link process configuration in Data flow D: /aqd:AQD_SamplingPointProcess/ompr:inspireld/base:Identifier/base:localId:)
+let $E04invalid :=
     try {
         (let $result := sparqlx:run(query:getSamplingPointProcess($cdrUrl))
         let $all := $result/sparql:binding[@name = "inspireLabel"]/sparql:literal/string()
@@ -195,8 +195,8 @@ let $E4invalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
-(: E5 - A valid delivery MUST provide an om:parameter with om:name/@xlink:href to http://dd.eionet.europa.eu/vocabulary/aq/processparameter/SamplingPoint :)
-let $E5invalid :=
+(: E05 - A valid delivery MUST provide an om:parameter with om:name/@xlink:href to http://dd.eionet.europa.eu/vocabulary/aq/processparameter/SamplingPoint :)
+let $E05invalid :=
     try {
         (for $x in $docRoot//om:OM_Observation
         where not($x/om:parameter/om:NamedValue/om:name/@xlink:href = $vocabulary:PROCESS_PARAMETER || "SamplingPoint")
@@ -211,8 +211,8 @@ let $E5invalid :=
         </tr>
     }
 
-(: E6 :)
-let $E6invalid :=
+(: E06 :)
+let $E06invalid :=
     try {
         (let $result := sparqlx:run(query:getSamplingPointFromFiles($latestEnvelopeD))
         let $all := $result/sparql:binding[@name = "inspireLabel"]/sparql:literal/string()
@@ -232,8 +232,8 @@ let $E6invalid :=
         </tr>
     }
 
-(: E7 :)
-let $E7invalid :=
+(: E07 :)
+let $E07invalid :=
     try {
         (for $x in $docRoot//om:OM_Observation
         where not($x/om:parameter/om:NamedValue/om:name/@xlink:href = $vocabulary:PROCESS_PARAMETER || "AssessmentType")
@@ -249,8 +249,8 @@ let $E7invalid :=
         </tr>
     }
 
-(: E8 :)
-let $E8invalid :=
+(: E08 :)
+let $E08invalid :=
     try {
         (let $valid := dd:getValidConcepts($vocabulary:ASSESSMENTTYPE_VOCABULARY || "rdf")
         for $x in $docRoot//om:OM_Observation/om:parameter/om:NamedValue[om:name/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/processparameter/AssessmentType"]
@@ -269,9 +269,9 @@ let $E8invalid :=
         </tr>
     }
 
-(: E9 :)
+(: E09 :)
 (: TODO Check ticket for implementation :)
-let $E9invalid :=
+let $E09invalid :=
     try {
         (let $valid := dd:getValidConcepts($vocabulary:PROCESS_PARAMETER || "rdf")
         for $x in $docRoot//om:OM_Observation/om:parameter/om:NamedValue/om:name
@@ -894,14 +894,14 @@ return
         {html:build3("E0", $labels:E0, $labels:E0_SHORT, $E0table, data($E0table/td), errors:getMaxError($E0table))}
         {html:build1("E01a", $labels:E01a, $labels:E01a_SHORT, $E01atable, "", string(count($E01atable)), "record", "", $errors:E01a)}
         {html:build2("E01b", $labels:E01b, $labels:E01b_SHORT, $E01binvalid, "All records are valid", "record", $errors:E01b)}
-        {html:build2("E02", $labels:E02, $labels:E02_SHORT, $E2invalid, "All records are valid", "record", $errors:E02)}
-        {html:build2("E03", $labels:E03, $labels:E03_SHORT, $E3invalid, "All records are valid", "record", $errors:E03)}
-        {html:build2("E04", $labels:E04, $labels:E04_SHORT, $E4invalid, "All records are valid", "record", $errors:E04)}
-        {html:build2("E05", $labels:E05, $labels:E05_SHORT, $E5invalid, "All records are valid", "record", $errors:E05)}
-        {html:build2("E06", $labels:E06, $labels:E06_SHORT, $E6invalid, "All records are valid", "record", $errors:E06)}
-        {html:build2("E07", $labels:E07, $labels:E07_SHORT, $E7invalid, "All records are valid", "record", $errors:E07)}
-        {html:build2("E08", $labels:E08, $labels:E08_SHORT, $E8invalid, "All records are valid", "record", $errors:E08)}
-        {html:build2("E09", $labels:E09, $labels:E09_SHORT, $E9invalid, "All records are valid", "record", $errors:E09)}
+        {html:build2("E02", $labels:E02, $labels:E02_SHORT, $E02invalid, "All records are valid", "record", $errors:E02)}
+        {html:build2("E03", $labels:E03, $labels:E03_SHORT, $E03invalid, "All records are valid", "record", $errors:E03)}
+        {html:build2("E04", $labels:E04, $labels:E04_SHORT, $E04invalid, "All records are valid", "record", $errors:E04)}
+        {html:build2("E05", $labels:E05, $labels:E05_SHORT, $E05invalid, "All records are valid", "record", $errors:E05)}
+        {html:build2("E06", $labels:E06, $labels:E06_SHORT, $E06invalid, "All records are valid", "record", $errors:E06)}
+        {html:build2("E07", $labels:E07, $labels:E07_SHORT, $E07invalid, "All records are valid", "record", $errors:E07)}
+        {html:build2("E08", $labels:E08, $labels:E08_SHORT, $E08invalid, "All records are valid", "record", $errors:E08)}
+        {html:build2("E09", $labels:E09, $labels:E09_SHORT, $E09invalid, "All records are valid", "record", $errors:E09)}
         {html:build2("E10", $labels:E10, $labels:E10_SHORT, $E10invalid, "All records are valid", "record", $errors:E10)}
         {html:build2("E11", $labels:E11, $labels:E11_SHORT, $E11invalid, "All records are valid", "record", $errors:E11)}
         {html:build2("E12", $labels:E12, $labels:E12_SHORT, $E12invalid, "All records are valid", "record", $errors:E12)}

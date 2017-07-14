@@ -28,6 +28,8 @@ import module namespace dfD = "http://converters.eionet.europa.eu/dataflowD" at 
 import module namespace dfG = "http://converters.eionet.europa.eu/dataflowG" at "aqd-dataflow-g.xquery";
 import module namespace dfM = "http://converters.eionet.europa.eu/dataflowM" at "aqd-dataflow-m.xquery";
 import module namespace dfE = "http://converters.eionet.europa.eu/dataflowE" at "aqd-dataflow-e.xquery";
+import module namespace dfEb = "http://converters.eionet.europa.eu/dataflowEb" at "aqd-dataflow-eb.xquery";
+
 import module namespace common = "aqd-common" at "aqd-common.xquery";
 import module namespace html = "aqd-html" at "aqd-html.xquery";
 import module namespace schemax = "aqd-schema" at "aqd-schema.xquery";
@@ -41,7 +43,7 @@ declare function obligations:proceed($source_url as xs:string) {
     let $countryCode := lower-case(doc($envelopeUrl)/envelope/countrycode)
 
     let $validObligations := common:getSublist($obligations,
-            ($dfB:OBLIGATIONS, $dfC:OBLIGATIONS, $dfD:OBLIGATIONS, $dfG:OBLIGATIONS, $dfM:OBLIGATIONS, $dfE:OBLIGATIONS))
+            ($dfB:OBLIGATIONS, $dfC:OBLIGATIONS, $dfD:OBLIGATIONS, $dfG:OBLIGATIONS, $dfM:OBLIGATIONS, $dfE:OBLIGATIONS, $dfEb:OBLIGATIONS))
 
     let $result := ()
     let $resultB :=
@@ -74,8 +76,13 @@ declare function obligations:proceed($source_url as xs:string) {
             dfE:proceed($source_url, $countryCode)
         else
             ()
+    let $resultEb :=
+        if (common:containsAny($obligations, $dfEb:OBLIGATIONS)) then
+            dfEb:proceed($source_url, $countryCode)
+        else
+            ()
 
-    let $messages := ($resultB, $resultC, $resultD, $resultE, $resultG, $resultM)
+    let $messages := ($resultB, $resultC, $resultD, $resultE, $resultEb, $resultG, $resultM)
     let $failedString := string-join($messages//p[tokenize(@class, "\s+") = $errors:FAILED], ' || ')
     let $blockerString := normalize-space(string-join($messages//p[tokenize(@class, "\s+") = $errors:BLOCKER], ' || '))
     let $errorString := normalize-space(string-join($messages//p[tokenize(@class, "\s+") = $errors:ERROR], ' || '))
