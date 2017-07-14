@@ -15,3 +15,9 @@ declare function geox:getX($point) as xs:string {
 declare function geox:getY($point) as xs:string {
   substring-after($point, " ")
 };
+
+declare function geox:parseDateTime($x as xs:string) {
+  if ($x castable as xs:dateTime) then xs:dateTime($x) else
+    if ($x castable as xs:date) then xs:dateTime(xs:date($x))
+    else $x
+};

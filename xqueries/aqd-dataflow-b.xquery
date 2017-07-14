@@ -24,6 +24,7 @@ import module namespace errors = "aqd-errors" at "aqd-errors.xquery";
 import module namespace filter = "aqd-filter" at "aqd-filter.xquery";
 import module namespace dd = "aqd-dd" at "aqd-dd.xquery";
 import module namespace schemax = "aqd-schema" at "aqd-schema.xquery";
+import module namespace geox = "aqd-geo" at "aqd-geo.xquery";
 
 declare namespace aqd = "http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0";
 declare namespace gml = "http://www.opengis.net/gml/3.2";
@@ -242,13 +243,16 @@ let $B07table :=
 let $B08table :=
     try {
         let $B08tmp :=
-            for $x in $docRoot//aqd:AQD_Zone[xs:dateTime(am:designationPeriod//gml:beginPosition) < xs:dateTime($reportingYear || "-01-01T00:00:00Z")
-                    and (am:designationPeriod//gml:endPosition/@indeterminatePosition = "unknown"
-                            or xs:dateTime(am:designationPeriod//gml:endPosition) > xs:dateTime($reportingYear || "-12-31T24:00:00Z"))]/aqd:pollutants/aqd:Pollutant
-            let $pollutant := string($x/aqd:pollutantCode/@xlink:href)
-            let $zone := string($x/../../am:inspireId/base:Identifier/base:localId)
-            let $protectionTarget := string($x/aqd:protectionTarget/@xlink:href)
-            let $key := string-join(($zone, $pollutant, $protectionTarget), "#")
+            for $x in $docRoot//aqd:AQD_Zone
+                let $beginPosition := geox:parseDateTime($x/am:designationPeriod//gml:beginPosition)
+                let $endPosition := geox:parseDateTime($x/am:designationPeriod//gml:endPosition)
+                for $pollutantNode in $x/aqd:pollutants/aqd:Pollutant
+                let $pollutant := string($pollutantNode/aqd:pollutantCode/@xlink:href)
+                let $zone := string($pollutantNode/../../am:inspireId/base:Identifier/base:localId)
+                let $protectionTarget := string($pollutantNode/aqd:protectionTarget/@xlink:href)
+                let $key := string-join(($zone, $pollutant, $protectionTarget), "#")
+            where ($beginPosition < xs:dateTime($reportingYear || "-01-01T00:00:00Z") and ($x/am:designationPeriod//gml:endPosition/@indeterminatePosition = "unknown")
+                    or $endPosition > xs:dateTime($reportingYear || "-12-31T24:00:00Z"))
             group by $pollutant, $protectionTarget
             return
                 <result>
