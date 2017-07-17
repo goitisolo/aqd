@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="wise-soe-backup" default="Start">
+<project name="air-quality  " default="Start">
 
   <property name="namespaceFile" value="namespaces.xquery"/>
 
@@ -34,9 +34,9 @@
     <antcall target="Clean"/>
     <!-- Create files for water-quality dataflow -->
     <antcall target="Initialize">
-      <param name="dataflow" value="air-quality"/>
+      <!--<param name="dataflow" value="air-quality"/>-->
       <param name="output" value="dist/aqd-obligations-checks.xquery"/>
-      <param name="initFile" value="../aqd-main.xquery"/>
+      <param name="initFile" value="aqd-main.xquery"/>
     </antcall>
     <!--&lt;!&ndash; Create files for water-quantity dataflow &ndash;&gt;
     <antcall target="Initialize">
@@ -57,7 +57,7 @@
   </target>
 
   <target name="Initialize">
-    <dirname property="dataflow.dir" file="${initFile}"/>
+    <!--<dirname property="dataflow.dir" file="${initFile}"/>-->
     <antcall target="appendNamespaces"/>
     <antcall target="appendVariables"/>
     <antcall target="Build"/>

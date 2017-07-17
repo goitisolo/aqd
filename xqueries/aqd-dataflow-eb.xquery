@@ -72,10 +72,8 @@ declare function xmlconv:checkReport($source_url as xs:string, $countryCode as x
             </tr>
         }
 
-
-
-    (: E0 :)
-    let $E0table :=
+    (: Eb0 - Check if delivery if this is a new delivery or updated delivery (via reporting year) :)
+    let $Eb0table :=
         try {
             if ($reportingYear = "") then
                 <tr class="{$errors:ERROR}">
@@ -95,10 +93,10 @@ declare function xmlconv:checkReport($source_url as xs:string, $countryCode as x
                 <td title="Error description">{$err:description}</td>
             </tr>
         }
-    let $isNewDelivery := errors:getMaxError($E0table) = $errors:INFO
+    let $isNewDelivery := errors:getMaxError($Eb0table) = $errors:INFO
 
-    (: E01a :)
-    let $E01atable :=
+    (: Eb01 - Compile & feedback upon the total number of observations included in the delivery :)
+    let $Eb01table :=
         try {
             for $x in $docRoot//om:OM_Observation
             let $namedValue := $x/om:parameter/om:NamedValue[om:name/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/processparameter/SamplingPoint"]
@@ -117,8 +115,8 @@ declare function xmlconv:checkReport($source_url as xs:string, $countryCode as x
             </tr>
         }
 
-    (:E02 - /om:phenomenonTime/gml:TimePeriod/gml:beginPosition shall be LESS THAN ./om:phenomenonTime/gml:TimePeriod/gml:endPosition. -:)
-    let $E02invalid :=
+    (:Eb02 ./om:phenomenonTime/gml:TimePeriod/gml:beginPosition shall be LESS THAN ./om:phenomenonTime/gml:TimePeriod/gml:endPosition. :)
+    let $Eb02invalid :=
         try {
             (let $all := $docRoot//om:phenomenonTime/gml:TimePeriod
             for $x in $all
@@ -139,8 +137,8 @@ declare function xmlconv:checkReport($source_url as xs:string, $countryCode as x
             </tr>
         }
 
-    (:E03 - ./om:resultTime/gml:TimeInstant/gml:timePosition shall be GREATER THAN ./om:phenomenonTime/gml:TimePeriod/gml:endPosition :)
-    let $E03invalid :=
+    (:Eb03 - ./om:resultTime/gml:TimeInstant/gml:timePosition shall be GREATER THAN ./om:phenomenonTime/gml:TimePeriod/gml:endPosition :)
+    let $Eb03invalid :=
         try {
             (let $all := $docRoot//om:OM_Observation
             for $x in $all
@@ -159,8 +157,9 @@ declare function xmlconv:checkReport($source_url as xs:string, $countryCode as x
             </tr>
         }
 
-    (: E04 - ./om:procedure xlink:href attribute shall resolve to a traversable link process configuration in Data flow D: /aqd:AQD_SamplingPointProcess/ompr:inspireld/base:Identifier/base:localId:)
-    let $E04invalid :=
+    (: Eb04 -  All om:OM_Observation/ must provide a valid /om:procedure xlink (can not be empty) & ./om:procedure xlink:href attribute
+     shall resolve to a traversable link process configuration in Data flow D1b: /aqd:AQD_ModelProcess/ompr:inspireld/base:Identifier/base:localId :)
+    let $Eb04invalid :=
         try {
             (let $result := sparqlx:run(query:getSamplingPointProcess($cdrUrl))
             let $all := $result/sparql:binding[@name = "inspireLabel"]/sparql:literal/string()
@@ -176,8 +175,9 @@ declare function xmlconv:checkReport($source_url as xs:string, $countryCode as x
                 <td title="Error description">{$err:description}</td>
             </tr>
         }
-    (: E05 - A valid delivery MUST provide an om:parameter with om:name/@xlink:href to http://dd.eionet.europa.eu/vocabulary/aq/processparameter/SamplingPoint :)
-    let $E05invalid :=
+    (: Eb05 A valid delivery MUST provide an om:parameter/om:NamedValue/om:name xlink:href to
+either http://dd.eionet.europa.eu/vocabulary/aq/processparameter/model or http://dd.eionet.europa.eu/vocabulary/aq/processparameter/objective :)
+    let $Eb05invalid :=
         try {
             (for $x in $docRoot//om:OM_Observation
             where not($x/om:parameter/om:NamedValue/om:name/@xlink:href = $vocabulary:PROCESS_PARAMETER || "SamplingPoint")
@@ -192,8 +192,9 @@ declare function xmlconv:checkReport($source_url as xs:string, $countryCode as x
             </tr>
         }
 
-    (: E06 :)
-    let $E06invalid :=
+    (: Eb06 - If ./om:parameter/om:NamedValue/om:name xlink:href  resolves to http://dd.eionet.europa.eu/vocabulary/aq/processparameter/model or .../objective
+/om:parameter/om:NamedValue/om:value xlink:href attribute shall resolve to a traversable link to a unique AQD_Model (“namespace/localId” of the object) :)
+    let $Eb06invalid :=
         try {
             (let $result := sparqlx:run(query:getSamplingPointFromFiles($latestEnvelopeD))
             let $all := $result/sparql:binding[@name = "inspireLabel"]/sparql:literal/string()
@@ -213,8 +214,8 @@ declare function xmlconv:checkReport($source_url as xs:string, $countryCode as x
             </tr>
         }
 
-    (: E07 :)
-    let $E07invalid :=
+    (: Eb07 -  A valid delivery should provide  an om:parameter with om:name xlink:href to http://dd.eionet.europa.eu/vocabulary/aq/processparameter/AssessmentType :)
+    let $Eb07invalid :=
         try {
             (for $x in $docRoot//om:OM_Observation
             where not($x/om:parameter/om:NamedValue/om:name/@xlink:href = $vocabulary:PROCESS_PARAMETER || "AssessmentType")
@@ -230,8 +231,8 @@ declare function xmlconv:checkReport($source_url as xs:string, $countryCode as x
             </tr>
         }
 
-    (: E08 :)
-    let $E08invalid :=
+    (: Eb08 - If ./om:parameter/om:NamedValue/om:name links to http://dd.eionet.europa.eu/vocabulary/aq/processparameter/AssessmentType /om:parameter/om:NamedValue/om:value xlink:href attribute shall resolve to  valid code for http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/ :)
+    let $Eb08invalid :=
         try {
             (let $valid := dd:getValidConcepts($vocabulary:ASSESSMENTTYPE_VOCABULARY || "rdf")
             for $x in $docRoot//om:OM_Observation/om:parameter/om:NamedValue[om:name/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/processparameter/AssessmentType"]
@@ -250,9 +251,10 @@ declare function xmlconv:checkReport($source_url as xs:string, $countryCode as x
             </tr>
         }
 
-    (: E09 :)
+    (: Eb09 - OM observations shall contain several om:parameters to further define the model/objective estimation results
+./om:parameter/om:NamedValue/om:name xlink:href attribute shall resolve to a traversable link to http://dd.eionet.europa.eu/vocabulary/aq/processparameter/ :)
     (: TODO Check ticket for implementation :)
-    let $E09invalid :=
+    let $Eb09invalid :=
         try {
             (let $valid := dd:getValidConcepts($vocabulary:PROCESS_PARAMETER || "rdf")
             for $x in $docRoot//om:OM_Observation/om:parameter/om:NamedValue/om:name
@@ -269,8 +271,8 @@ declare function xmlconv:checkReport($source_url as xs:string, $countryCode as x
             </tr>
         }
 
-    (: E10 - /om:observedProperty xlink:href attribute shall resolve to a traversable link to http://dd.eionet.europa.eu/vocabulary/aq/pollutant/ :)
-    let $E10invalid :=
+    (: Eb10 - . /om:observedProperty xlink:href attribute shall resolve to a traversable link to http://dd.eionet.europa.eu/vocabulary/aq/pollutant/ :)
+    let $Eb10invalid :=
         try {
             (let $all := dd:getValidConcepts("http://dd.eionet.europa.eu/vocabulary/aq/pollutant/rdf")
             for $x in $docRoot//om:OM_Observation/om:observedProperty
@@ -290,11 +292,66 @@ declare function xmlconv:checkReport($source_url as xs:string, $countryCode as x
             </tr>
         }
 
+    (: Eb11 - The pollutant xlinked via /om:observedProperty must match the pollutant code declared via /aqd:AQD_Model/ef:observingCapability/ef:ObservingCapability/ef:observedProperty
+      (See Eb6 on linkages between the Observations & the SamplingPoint) :)
+    let $Eb11invalid :=
+        try {
 
+        } catch * {
+            <tr status="failed">
+                <td title="Error code">{$err:code}</td>
+                <td title="Error description">{$err:description}</td>
+            </tr>
+        }
 
+    (: Eb12 - All om:OM_Observation/ must provide a valid /om:featureOfInterest xlink (can not be empty)&  /om:featureOfInterest xlink:href attribute shall resolve to a traversable link to /aqd:AQD_modelArea/ompr:inspireld/base:Identifier/base:localId :)
+    let $Eb12invalid :=
+        try {
 
-    (: E15 :)
-    let $E15invalid :=
+        } catch * {
+            <tr status="failed">
+                <td title="Error code">{$err:code}</td>
+                <td title="Error description">{$err:description}</td>
+            </tr>
+        }
+    (: Eb13 - A valid delivery MUST provide an om:parameter/om:NamedValue/om:name xlink:href to http://dd.eionet.europa.eu/vocabulary/aq/resultparameter/result-location  &
+    om:parameter/om:NamedValue/om:value ./om:procedure xlink:href attribute attribute shall resolve to  valid code for http://dd.eionet.europa.eu/vocabulary/aq/resultencoding/ :)
+    let $Eb13invalid :=
+        try {
+
+        } catch * {
+            <tr status="failed">
+                <td title="Error code">{$err:code}</td>
+                <td title="Error description">{$err:description}</td>
+            </tr>
+        }
+
+    (: Eb14 - A valid delivery MUST provide an om:parameter/om:NamedValue/om:name xlink:href to http://dd.eionet.europa.eu/vocabulary/aq/resultparameter/result-encoding  &
+    om:parameter/om:NamedValue/om:value ./om:procedure xlink:href attribute attribute shall resolve to  valid code for http://dd.eionet.europa.eu/vocabulary/aq/resultformat/ :))
+    let $Eb14invalid :=
+        try {
+
+        } catch * {
+            <tr status="failed">
+                <td title="Error code">{$err:code}</td>
+                <td title="Error description">{$err:description}</td>
+            </tr>
+        }
+    (: IF resultencoding = inline, resultformat can only be http://dd.eionet.europa.eu/vocabulary/aq/resultformat/swe-array IF resultencoding = external resultformat can only be http://dd.eionet.europa.eu/vocabulary/aq/resultformat/ascii-grid ;
+      http://dd.eionet.europa.eu/vocabulary/aq/resultformat/esri-shp or http://dd.eionet.europa.eu/vocabulary/aq/resultformat/geotiff :)
+    let $Eb14binvalid :=
+        try {
+
+        } catch * {
+            <tr status="failed">
+                <td title="Error code">{$err:code}</td>
+                <td title="Error description">{$err:description}</td>
+            </tr>
+        }
+
+    (: Eb15 - IF resultformat is http://dd.eionet.europa.eu/vocabulary/aq/resultformat/swe-array (Eb14) then ./om:result/swe:DataArray/swe:elementType/swe:DataRecord/swe:field name="startTime" attribute THEN
+    swe:Time definition=http://www.opengis.net/def/property/OGC/0/SamplingTime swe:uom xlink:href=http://www.opengis.net/def/uom/ISO-8601/0/Gregorian:)
+    let $Eb15invalid :=
         try {
             (for $x in $docRoot//om:OM_Observation/om:result//swe:elementType/swe:DataRecord/swe:field[@name = "StartTime"
                     and not(swe:Time[@definition = "http://www.opengis.net/def/property/OGC/0/SamplingTime"]/swe:uom/@xlink:href = "http://www.opengis.net/def/uom/ISO-8601/0/Gregorian")]
@@ -310,8 +367,9 @@ declare function xmlconv:checkReport($source_url as xs:string, $countryCode as x
             </tr>
         }
 
-    (: E16 :)
-    let $E16invalid :=
+    (: Eb16 - IF resultformat is http://dd.eionet.europa.eu/vocabulary/aq/resultformat/swe-array (Eb14) then ./om:result/swe:DataArray/swe:elementType/swe:DataRecord/swe:field name="endTime" attribute THEN
+    swe:Time definition=http://www.opengis.net/def/property/OGC/0/SamplingTime swe:uom xlink:href=http://www.opengis.net/def/uom/ISO-8601/0/Gregorian :)
+    let $Eb16invalid :=
         try {
             (for $x in $docRoot//om:OM_Observation/om:result//swe:elementType/swe:DataRecord/swe:field[@name = "EndTime"
                     and not(swe:Time[@definition = "http://www.opengis.net/def/property/OGC/0/SamplingTime"]/swe:uom/@xlink:href = "http://www.opengis.net/def/uom/ISO-8601/0/Gregorian")]
@@ -326,8 +384,10 @@ declare function xmlconv:checkReport($source_url as xs:string, $countryCode as x
                 <td title="Error description">{$err:description}</td>
             </tr>
         }
-    (: E17 :)
-    let $E17invalid :=
+
+    (: Eb17 - IF resultformat is http://dd.eionet.europa.eu/vocabulary/aq/resultformat/swe-array (Eb14) then ./om:result/swe:DataArray/swe:elementType/swe:DataRecord/swe:field name="validity" attribute THEN
+     swe:Category definition is defined by http://dd.eionet.europa.eu/vocabulary/aq/observationvalidity:)
+    let $Eb17invalid :=
         try {
             (for $x in $docRoot//om:OM_Observation/om:result//swe:elementType/swe:DataRecord/swe:field[@name="Validity"
                     and not(swe:Category/@definition = "http://dd.eionet.europa.eu/vocabulary/aq/observationvalidity")]
@@ -342,8 +402,9 @@ declare function xmlconv:checkReport($source_url as xs:string, $countryCode as x
                 <td title="Error description">{$err:description}</td>
             </tr>
         }
-    (: E18 :)
-    let $E18invalid :=
+    (: Eb18 - IF resultformat is http://dd.eionet.europa.eu/vocabulary/aq/resultformat/swe-array (Eb14) then ./om:result/swe:DataArray/swe:elementType/swe:DataRecord/swe:field name="verification" attribute THEN
+     swe:Category definition is defined by http://dd.eionet.europa.eu/vocabulary/aq/observationverification :)
+    let $Eb18invalid :=
         try {
             (for $x in $docRoot//om:OM_Observation/om:result//swe:elementType/swe:DataRecord/swe:field[@name = "Verification"
                     and not(swe:Category/@definition = "http://dd.eionet.europa.eu/vocabulary/aq/observationverification")]
@@ -358,8 +419,9 @@ declare function xmlconv:checkReport($source_url as xs:string, $countryCode as x
                 <td title="Error description">{$err:description}</td>
             </tr>
         }
-    (: E19 :)
-    let $E19invalid :=
+    (: Eb19 - IF resultformat is http://dd.eionet.europa.eu/vocabulary/aq/resultformat/swe-array (Eb14) then ./om:result/swe:DataArray/swe:elementType/swe:DataRecord/swe:field name="Value" attribute THEN swe:Quantity definition is defined by
+    http://dd.eionet.europa.eu/vocabulary/aq/primaryObservation/[code] & the swe:uom resolves to an xlink to http://dd.eionet.europa.eu/vocabulary/uom/concentration/[code] :)
+    let $Eb19invalid :=
         try {
             (let $obs := dd:getValidConceptsLC("http://dd.eionet.europa.eu/vocabulary/aq/primaryObservation/rdf")
             let $cons := dd:getValidConceptsLC("http://dd.eionet.europa.eu/vocabulary/uom/concentration/rdf")
@@ -377,8 +439,9 @@ declare function xmlconv:checkReport($source_url as xs:string, $countryCode as x
                 <td title="Error description">{$err:description}</td>
             </tr>
         }
-    (: E19b :)
-    let $E19binvalid :=
+
+    (: Eb19b - Check if the unit of measure reporting via (swe:uom) corresponds to the recommended unit of measure in vocabulary http://dd.eionet.europa.eu/vocabulary/uom/concentration/[code] depending on pollutant reported via /om:observedProperty :)
+    let $Eb19binvalid :=
         try {
             (for $x in $docRoot//om:OM_Observation
             let $pollutant := string($x/om:observedProperty/@xlink:href)
@@ -399,8 +462,9 @@ declare function xmlconv:checkReport($source_url as xs:string, $countryCode as x
             </tr>
         }
 
-    (: E20 :)
-    let $E20invalid :=
+    (: Eb20 - IF resultformat is http://dd.eionet.europa.eu/vocabulary/aq/resultformat/swe-array (Eb14) then a fifth element might be included. IF ./om:result/swe:DataArray/swe:elementType/swe:DataRecord/swe:field name="DataCapture" attribute THEN swe:Category definition is defined by
+     http://dd.eionet.europa.eu/vocabulary/aq/primaryObservation/dc & the swe:uom resolves to an xlink to http://dd.eionet.europa.eu/vocabulary/uom/statistics/percentage :)
+    let $Eb20invalid :=
         try {
             (let $all := $docRoot//om:result//swe:elementType/swe:DataRecord/swe:field[@name="DataCapture"]
             for $x in $all
@@ -421,8 +485,8 @@ declare function xmlconv:checkReport($source_url as xs:string, $countryCode as x
             </tr>
         }
 
-    (: E21 - /om:result/swe:DataArray/swe:encoding/swe:TextEncoding shall resolve to decimalSeparator="." tokenSeparator="," blockSeparator="@@" :)
-    let $E21invalid :=
+    (: Eb21 - IF resultformat is http://dd.eionet.europa.eu/vocabulary/aq/resultformat/swe-array (Eb14) then /om:result/swe:DataArray/swe:encoding/swe:TextEncoding shall resolve to decimalSeparator="." tokenSeparator="," blockSeparator="@@" :)
+    let $Eb21invalid :=
         try {
             (for $x in $docRoot//om:result//swe:encoding/swe:TextEncoding[not(@decimalSeparator=".") or not(@tokenSeparator=",") or not(@blockSeparator="@@")]
             return
@@ -440,7 +504,8 @@ declare function xmlconv:checkReport($source_url as xs:string, $countryCode as x
             </tr>
         }
 
-    let $E22invalid :=
+    (: Eb22 - IF resultformat is http://dd.eionet.europa.eu/vocabulary/aq/resultformat/swe-array (Eb14) then the order of the fields within individual data blocks (swe:values) must correspond to the order described within the swe:DataRecord/swe:field(multiple). :)
+    let $Eb22invalid :=
         try {
             (let $validVerifications := dd:getValidNotations($vocabulary:OBSERVATIONS_VERIFICATION || "rdf")
             let $validValidity:= dd:getValidNotations($vocabulary:OBSERVATIONS_VALIDITY || "rdf")
@@ -476,7 +541,8 @@ declare function xmlconv:checkReport($source_url as xs:string, $countryCode as x
             </tr>
         }
 
-    let $E23invalid :=
+    (: Eb23 - IF resultformat is http://dd.eionet.europa.eu/vocabulary/aq/resultformat/swe-array (Eb14) then the count of elements under <swe:elementCount><swe:Count><swe:value> should match the count of data blocks under <swe:values>. :)
+    let $Eb23invalid :=
         try {
             (for $x at $xpos in $docRoot//om:OM_Observation/om:result
             let $blockSeparator := string($x//swe:encoding/swe:TextEncoding/@blockSeparator)
@@ -499,8 +565,12 @@ declare function xmlconv:checkReport($source_url as xs:string, $countryCode as x
             </tr>
         }
 
-
-    let $E24invalid :=
+    (: Eb24 - IF resultformat is http://dd.eionet.europa.eu/vocabulary/aq/resultformat/swe-array (Eb14) then difference between endTime & startTime must correspond to the definition under <swe:field name="Value"><swe:Quantity definition=> .Difference between endTime & startTime must correspond to the definition:
+    http://dd.eionet.europa.eu/vocabulary/aq/primaryObservation/hour must be 1 h
+    http://dd.eionet.europa.eu/vocabulary/aq/primaryObservation/day must be 24 hours
+    http://dd.eionet.europa.eu/vocabulary/aq/primaryObservation/year must be 8760 hours or 8784
+    http://dd.eionet.europa.eu/vocabulary/aq/primaryObservation/var can be anything :)
+    let $Eb24invalid :=
         try {
             (for $x at $xpos in $docRoot//om:OM_Observation/om:result[//swe:field[@name = "Value"]/swe:Quantity/contains(@definition, $vocabulary:OBSERVATIONS_PRIMARY) = true()]
 
@@ -560,8 +630,9 @@ declare function xmlconv:checkReport($source_url as xs:string, $countryCode as x
                 <td title="Error description">{$err:description}</td>
             </tr>
         }
-
-    let $E25invalid :=
+    (: Eb25 - IF resultformat is http://dd.eionet.europa.eu/vocabulary/aq/resultformat/swe-array (Eb14)
+     then the temporal envelopes of the swe:values (reported via starTime and EndTime) shall reconcile with ./om:phenomenonTime/gml:TimePeriod/gml:beginPosition :)
+    let $Eb25invalid :=
         try {
             (for $x at $xpos in $docRoot//om:OM_Observation/om:result
             let $blockSeparator := string($x//swe:encoding/swe:TextEncoding/@blockSeparator)
@@ -600,8 +671,8 @@ declare function xmlconv:checkReport($source_url as xs:string, $countryCode as x
             </tr>
         }
 
-    (: E26 :)
-    let $E26invalid :=
+    (: Eb26 :)
+    let $Eb26invalid :=
         try {
             (let $result := sparqlx:run(query:getSamplingPointMetadataFromFiles($latestEnvelopeD))
             let $resultsConcat :=
@@ -643,8 +714,8 @@ declare function xmlconv:checkReport($source_url as xs:string, $countryCode as x
             </tr>
         }
 
-    (: E27 :)
-    let $E27invalid :=
+    (: Eb27 -  IF resultformat is http://dd.eionet.europa.eu/vocabulary/aq/resultformat/swe-array (Eb14) then check that all values (between @@) include as many fields as declared under swe:DataRecord :)
+    let $Eb27invalid :=
         try {
             (for $x at $xpos in $docRoot//om:OM_Observation/om:result
             let $blockSeparator := string($x//swe:encoding/swe:TextEncoding/@blockSeparator)
@@ -669,7 +740,8 @@ declare function xmlconv:checkReport($source_url as xs:string, $countryCode as x
             </tr>
         }
 
-    let $E28invalid :=
+    (: Eb28 - IF resultformat is http://dd.eionet.europa.eu/vocabulary/aq/resultformat/swe-array (Eb14) then the data array should not end with "@@". Please note that @@ is a block separator. :)
+    let $Eb28invalid :=
         try {
             (for $x at $xpos in $docRoot//om:OM_Observation/om:result
             let $blockSeparator := string($x//swe:encoding/swe:TextEncoding/@blockSeparator)
@@ -684,8 +756,8 @@ declare function xmlconv:checkReport($source_url as xs:string, $countryCode as x
                 <td title="Error description">{$err:description}</td>
             </tr>
         }
-
-    let $E29invalid :=
+    (: Eb29 - IF resultformat is http://dd.eionet.europa.eu/vocabulary/aq/resultformat/swe-array (Eb14) then check for unexpected spaces  around all values (between comma separator) under swe:values :)
+    let $Eb29invalid :=
         try {
             (for $x at $xpos in $docRoot//om:OM_Observation/om:result
             let $blockSeparator := string($x//swe:encoding/swe:TextEncoding/@blockSeparator)
@@ -709,8 +781,8 @@ declare function xmlconv:checkReport($source_url as xs:string, $countryCode as x
                 <td title="Error description">{$err:description}</td>
             </tr>
         }
-
-    let $E31invalid :=
+    (: Eb31 - IF resultformat is http://dd.eionet.europa.eu/vocabulary/aq/resultformat/swe-array (Eb14) then check for date overlaps between consecutive data blocks within swe:values :)
+    let $Eb31invalid :=
         try {
             (let $valid := dd:getValid($vocabulary:OBSERVATIONS_RANGE)
 
@@ -750,7 +822,8 @@ declare function xmlconv:checkReport($source_url as xs:string, $countryCode as x
             </tr>
         }
 
-    let $E32invalid :=
+    (: Eb32 - IF resultformat is http://dd.eionet.europa.eu/vocabulary/aq/resultformat/swe-array (Eb14) then check that all data submitted via CDR has been fully verified. The verification flag must be 1 for all data. :)
+    let $Eb32invalid :=
         try {
             (for $x at $xpos in $docRoot//om:OM_Observation/om:result
 
@@ -792,39 +865,147 @@ declare function xmlconv:checkReport($source_url as xs:string, $countryCode as x
             </tr>
         }
 
+    (: Eb35 - IF resultformat is ascii-grid ;  esri-shp or geotiff (Eb14) then ./om:result/gml:File/gml:rangeParameters MUST be populated :)
+    let $Eb35invalid :=
+        try {
+
+
+        } catch * {
+            <tr status="failed">
+                <td title="Error code">{$err:code}</td>
+                <td title="Error description">{$err:description}</td>
+            </tr>
+        }
+    (: Eb36 - IF resultformat is ascii-grid ;  esri-shp or geotiff (Eb14) then ./om:result/gml:File/gml:rangeParameters/swe:Quantity@Definition MUST match a code under
+     http://dd.eionet.europa.eu/vocabulary/aq/aggregationprocess/ :)
+    let $Eb36invalid :=
+        try {
+
+
+        } catch * {
+            <tr status="failed">
+                <td title="Error code">{$err:code}</td>
+                <td title="Error description">{$err:description}</td>
+            </tr>
+        }
+
+    (: Eb37 - IF resultformat is ascii-grid ;  esri-shp or geotiff (Eb14) then ./om:result/gml:File/gml:rangeParameters/swe:label should be populated :)
+    let $Eb37invalid :=
+        try {
+
+
+        } catch * {
+            <tr status="failed">
+                <td title="Error code">{$err:code}</td>
+                <td title="Error description">{$err:description}</td>
+            </tr>
+        }
+
+    (: Eb38 - IF resultformat is ascii-grid ;  esri-shp or geotiff (Eb14) then ./om:result/gml:File/gml:rangeParameters/swe:description MUST be provided :)
+    let $Eb38invalid :=
+        try {
+
+
+        } catch * {
+            <tr status="failed">
+                <td title="Error code">{$err:code}</td>
+                <td title="Error description">{$err:description}</td>
+            </tr>
+        }
+
+    (: Eb39 - IF resultformat is ascii-grid ;  esri-shp or geotiff (Eb14) then ./om:result/gml:File/gml:rangeParameters/swe:uom xlink MUST match a code under http://dd.eionet.europa.eu/vocabulary/uom/concentration/ :)
+    let $Eb39invalid :=
+        try {
+
+
+        } catch * {
+            <tr status="failed">
+                <td title="Error code">{$err:code}</td>
+                <td title="Error description">{$err:description}</td>
+            </tr>
+        }
+
+    (: Eb40 - Check if the unit of measure reporting via (/om:result/gml:File/gml:rangeParameters/swe:uom) corresponds to the recommended unit of measure in vocabulary http://dd.eionet.europa.eu/vocabulary/uom/concentration/[code] depending on pollutant reported via /om:observedProperty :)
+    let $Eb40invalid :=
+        try {
+
+
+        } catch * {
+            <tr status="failed">
+                <td title="Error code">{$err:code}</td>
+                <td title="Error description">{$err:description}</td>
+            </tr>
+        }
+    (: Eb41 - IF resultformat is ascii-grid ;  esri-shp or geotiff (Eb14) then ./om:result/gml:File/gml:fileReference MUST be provided :)
+    let $Eb41invalid :=
+        try {
+
+
+        } catch * {
+            <tr status="failed">
+                <td title="Error code">{$err:code}</td>
+                <td title="Error description">{$err:description}</td>
+            </tr>
+        }
+
+    (: Eb42 - ./om:result/gml:File/gml:fileReference MUST provide appropiate reference following this format:
+        A valid cdr URL matching the cdr location where the XML files is located  (e.g. http://cdr.eionet.europa.eu/es/eu/aqd/e1b/.../)
+        +
+        File including extension (e.g. model.zip)
+        +
+        Variable using a # (e.g. #no2) :)
+    let $Eb42invalid :=
+        try {
+
+
+        } catch * {
+            <tr status="failed">
+                <td title="Error code">{$err:code}</td>
+                <td title="Error description">{$err:description}</td>
+            </tr>
+        }
+
 
     return
         <table class="maintable hover">
             {html:build2("NS", $labels:NAMESPACES, $labels:NAMESPACES_SHORT, $NSinvalid, "All values are valid", "record", $errors:NS)}
-            {html:build3("Eb0", $labels:E0, $labels:E0_SHORT, $E0table, data($E0table/td), errors:getMaxError($E0table))}
-            {html:build1("Eb01", $labels:E01a, $labels:E01a_SHORT, $E01atable, "", string(count($E01atable)), "record", "", $errors:E01a)}
-            {html:build2("Eb02", $labels:E02, $labels:E02_SHORT, $E02invalid, "All records are valid", "record", $errors:E02)}
-            {html:build2("Eb03", $labels:E03, $labels:E03_SHORT, $E03invalid, "All records are valid", "record", $errors:E03)}
-            {html:build2("Eb04", $labels:E04, $labels:E04_SHORT, $E04invalid, "All records are valid", "record", $errors:E04)}
-            {html:build2("Eb05", $labels:E05, $labels:E05_SHORT, $E05invalid, "All records are valid", "record", $errors:E05)}
-            {html:build2("Eb06", $labels:E06, $labels:E06_SHORT, $E06invalid, "All records are valid", "record", $errors:E06)}
-            {html:build2("Eb07", $labels:E07, $labels:E07_SHORT, $E07invalid, "All records are valid", "record", $errors:E07)}
-            {html:build2("Eb08", $labels:E08, $labels:E08_SHORT, $E08invalid, "All records are valid", "record", $errors:E08)}
-            {html:build2("Eb09", $labels:E09, $labels:E09_SHORT, $E09invalid, "All records are valid", "record", $errors:E09)}
-            {html:build2("Eb10", $labels:E10, $labels:E10_SHORT, $E10invalid, "All records are valid", "record", $errors:E10)}
-            {html:build2("Eb15", $labels:E15, $labels:E15_SHORT, $E15invalid, "All records are valid", "record", $errors:E15)}
-            {html:build2("Eb16", $labels:E16, $labels:E16_SHORT, $E16invalid, "All records are valid", "record", $errors:E16)}
-            {html:build2("Eb17", $labels:E17, $labels:E17_SHORT, $E17invalid, "All records are valid", "record", $errors:E17)}
-            {html:build2("Eb18", $labels:E18, $labels:E18_SHORT, $E18invalid, "All records are valid", "record", $errors:E18)}
-            {html:build2("Eb19", $labels:E19, $labels:E19_SHORT, $E19invalid, "All records are valid", "record", $errors:E19)}
-            {html:build2("Eb19b", $labels:E19b, $labels:E19b_SHORT, $E19binvalid, "All records are valid", "record", $errors:E19b)}
-            {html:build2("Eb20", $labels:E20, $labels:E20_SHORT, $E20invalid, "All records are valid", "record", $errors:E20)}
-            {html:build2("Eb21", $labels:E21, $labels:E21_SHORT, $E21invalid, "All records are valid", "record", $errors:E21)}
-            {html:build2("Eb22", $labels:E22, $labels:E22_SHORT, $E22invalid, "All records are valid", "record", $errors:E22)}
-            {html:build2("Eb23", $labels:E23, $labels:E23_SHORT, $E23invalid, "All records are valid", "record", $errors:E23)}
-            {html:build2("Eb24", $labels:E24, $labels:E24_SHORT, $E24invalid, "All records are valid", "record", $errors:E24)}
-            {html:build2("Eb25", $labels:E25, $labels:E25_SHORT, $E25invalid, "All records are valid", "record", $errors:E25)}
-            {html:build2("Eb26", $labels:E26, $labels:E26_SHORT, $E26invalid, "All records are valid", "record", $errors:E26)}
-            {html:build2("Eb27", $labels:E27, $labels:E27_SHORT, $E27invalid, "All records are valid", "record", $errors:E27)}
-            {html:build2("Eb28", $labels:E28, $labels:E28_SHORT, $E28invalid, "All records are valid", "record", $errors:E28)}
-            {html:build2("Eb29", $labels:E29, $labels:E29_SHORT, $E29invalid, "All records are valid", "record", $errors:E29)}
-            {html:build2("Eb31", $labels:E31, $labels:E31_SHORT, $E31invalid, "All records are valid", "record", $errors:E31)}
-            {html:build2("Eb32", $labels:E32, $labels:E32_SHORT, $E32invalid, "All records are valid", "record", $errors:E32)}
+            {html:build3("Eb0", $labels:Eb0, $labels:Eb0_SHORT, $Eb0table, data($Eb0table/td), errors:getMaxError($Eb0table))}
+            {html:build1("Eb01", $labels:Eb01a, $labels:Eb01a_SHORT, $Eb01table, "", string(count($Eb01table)), "record", "", $errors:Eb01a)}
+            {html:build2("Eb02", $labels:Eb02, $labels:Eb02_SHORT, $Eb02invalid, "All records are valid", "record", $errors:Eb02)}
+            {html:build2("Eb03", $labels:Eb03, $labels:Eb03_SHORT, $Eb03invalid, "All records are valid", "record", $errors:Eb03)}
+            {html:build2("Eb04", $labels:Eb04, $labels:Eb04_SHORT, $Eb04invalid, "All records are valid", "record", $errors:Eb04)}
+            {html:build2("Eb05", $labels:Eb05, $labels:Eb05_SHORT, $Eb05invalid, "All records are valid", "record", $errors:Eb05)}
+            {html:build2("Eb06", $labels:Eb06, $labels:Eb06_SHORT, $Eb06invalid, "All records are valid", "record", $errors:Eb06)}
+            {html:build2("Eb07", $labels:Eb07, $labels:Eb07_SHORT, $Eb07invalid, "All records are valid", "record", $errors:Eb07)}
+            {html:build2("Eb08", $labels:Eb08, $labels:Eb08_SHORT, $Eb08invalid, "All records are valid", "record", $errors:Eb08)}
+            {html:build2("Eb09", $labels:Eb09, $labels:Eb09_SHORT, $Eb09invalid, "All records are valid", "record", $errors:Eb09)}
+            {html:build2("Eb10", $labels:Eb10, $labels:Eb10_SHORT, $Eb10invalid, "All records are valid", "record", $errors:Eb10)}
+            {html:build2("Eb15", $labels:Eb15, $labels:Eb15_SHORT, $Eb15invalid, "All records are valid", "record", $errors:Eb15)}
+            {html:build2("Eb16", $labels:Eb16, $labels:Eb16_SHORT, $Eb16invalid, "All records are valid", "record", $errors:Eb16)}
+            {html:build2("Eb17", $labels:Eb17, $labels:Eb17_SHORT, $Eb17invalid, "All records are valid", "record", $errors:Eb17)}
+            {html:build2("Eb18", $labels:Eb18, $labels:Eb18_SHORT, $Eb18invalid, "All records are valid", "record", $errors:Eb18)}
+            {html:build2("Eb19", $labels:Eb19, $labels:Eb19_SHORT, $Eb19invalid, "All records are valid", "record", $errors:Eb19)}
+            {html:build2("Eb19b", $labels:Eb19b, $labels:Eb19b_SHORT, $Eb19binvalid, "All records are valid", "record", $errors:Eb19b)}
+            {html:build2("Eb20", $labels:Eb20, $labels:Eb20_SHORT, $Eb20invalid, "All records are valid", "record", $errors:Eb20)}
+            {html:build2("Eb21", $labels:Eb21, $labels:Eb21_SHORT, $Eb21invalid, "All records are valid", "record", $errors:Eb21)}
+            {html:build2("Eb22", $labels:Eb22, $labels:Eb22_SHORT, $Eb22invalid, "All records are valid", "record", $errors:Eb22)}
+            {html:build2("Eb23", $labels:Eb23, $labels:Eb23_SHORT, $Eb23invalid, "All records are valid", "record", $errors:Eb23)}
+            {html:build2("Eb24", $labels:Eb24, $labels:Eb24_SHORT, $Eb24invalid, "All records are valid", "record", $errors:Eb24)}
+            {html:build2("Eb25", $labels:Eb25, $labels:Eb25_SHORT, $Eb25invalid, "All records are valid", "record", $errors:Eb25)}
+            {html:build2("Eb26", $labels:Eb26, $labels:Eb26_SHORT, $Eb26invalid, "All records are valid", "record", $errors:Eb26)}
+            {html:build2("Eb27", $labels:Eb27, $labels:Eb27_SHORT, $Eb27invalid, "All records are valid", "record", $errors:Eb27)}
+            {html:build2("Eb28", $labels:Eb28, $labels:Eb28_SHORT, $Eb28invalid, "All records are valid", "record", $errors:Eb28)}
+            {html:build2("Eb29", $labels:Eb29, $labels:Eb29_SHORT, $Eb29invalid, "All records are valid", "record", $errors:Eb29)}
+            {html:build2("Eb31", $labels:Eb31, $labels:Eb31_SHORT, $Eb31invalid, "All records are valid", "record", $errors:Eb31)}
+            {html:build2("Eb32", $labels:Eb32, $labels:Eb32_SHORT, $Eb32invalid, "All records are valid", "record", $errors:Eb32)}
+            {html:build2("Eb35", $labels:Eb35, $labels:Eb35_SHORT, $Eb35invalid, "All records are valid", "record", $errors:Eb35)}
+            {html:build2("Eb36", $labels:Eb36, $labels:Eb36_SHORT, $Eb36invalid, "All records are valid", "record", $errors:Eb36)}
+            {html:build2("Eb37", $labels:Eb37, $labels:Eb37_SHORT, $Eb37invalid, "All records are valid", "record", $errors:Eb37)}
+            {html:build2("Eb38", $labels:Eb38, $labels:Eb38_SHORT, $Eb38invalid, "All records are valid", "record", $errors:Eb38)}
+            {html:build2("Eb39", $labels:Eb39, $labels:Eb39_SHORT, $Eb39invalid, "All records are valid", "record", $errors:Eb39)}
+            {html:build2("Eb40", $labels:Eb40, $labels:Eb40_SHORT, $Eb40invalid, "All records are valid", "record", $errors:Eb40)}
+            {html:build2("Eb41", $labels:Eb41, $labels:Eb41_SHORT, $Eb41invalid, "All records are valid", "record", $errors:Eb41)}
+            {html:build2("Eb42", $labels:Eb42, $labels:Eb42_SHORT, $Eb42invalid, "All records are valid", "record", $errors:Eb42)}
         </table>
 
 };
@@ -836,7 +1017,7 @@ declare function xmlconv:proceed($source_url as xs:string, $countryCode as xs:st
     let $meta := map:merge((
         map:entry("count", $count),
         map:entry("header", "Check air quality observations"),
-        map:entry("dataflow", "Dataflow E"),
+        map:entry("dataflow", "Dataflow Eb"),
         map:entry("zeroCount", <p>No aqd:OM_Observation elements found in this XML.</p>),
         map:entry("report", <p>This check evaluated the delivery by executing tier-1 tests on air quality observation data in Dataflow E as specified in <a href="http://www.eionet.europa.eu/aqportal/qaqc/">e-reporting QA/QC rules documentation</a>.</p>)
     ))
