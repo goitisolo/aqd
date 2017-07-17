@@ -458,6 +458,9 @@ let $B20invalid :=
 (: B21 :)
 let $B21invalid  :=
     try {
+        let $count := count($docRoot//aqd:AQD_Zone/am:geometry//gml:posList[@srsDimension != "2"])
+        let $metadata := html:createMetadataTR($count)
+        let $result :=
         for $x in $docRoot//aqd:AQD_Zone/am:geometry//gml:posList[@srsDimension != "2"]
         return
             <tr>
@@ -465,6 +468,7 @@ let $B21invalid  :=
                 <td title="Polygon">{string($x/ancestor::gml:Polygon/@gml:id)}</td>
                 <td title="srsDimension">{string($x/@srsDimension)}</td>
             </tr>
+        return ($metadata, $result)
     } catch * {
         <tr status="failed">
             <td title="Error code">{$err:code}</td>

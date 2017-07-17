@@ -124,7 +124,6 @@ declare function html:getModalInfo($ruleCode, $longText) as element()* {
     </div>)
 };
 
-
 declare function html:getBullet($text as xs:string, $level as xs:string) as element(div) {
     let $color :=
         switch ($level)
@@ -206,9 +205,12 @@ as element(tr)*{
     ()
 };
 declare function html:buildExists($ruleCode as xs:string, $longText, $text, $records as element(tr)*, $validMessage as xs:string, $invalidMessage as xs:string, $errorLevel as xs:string) {
-    let $countRecords := count($records)
+
+    let $data := html:parseData($records, "data")
+
+    let $countRecords := count($data)
     let $bulletType :=
-        if (count($records) = 0) then
+        if (count($data) = 0) then
             $errors:INFO
         else
             $errorLevel
@@ -227,6 +229,7 @@ declare function html:buildExists($ruleCode as xs:string, $longText, $text, $rec
 
     return $result
 };
+
 declare function html:buildXML($ruleCode as xs:string, $longText, $text, $records as element(tr)*, $validMessage as xs:string, $invalidMessage as xs:string, $errorLevel as xs:string) {
     let $countRecords := count($records)
     let $ruleCode := "XML"(: || string(random:double() * 100):)
@@ -271,6 +274,8 @@ declare function html:buildXML($ruleCode as xs:string, $longText, $text, $record
     return $result
 };
 declare function html:buildSimple($ruleCode as xs:string, $longText, $text, $records as element(tr)*, $message as xs:string, $unit as xs:string, $errorLevel as xs:string) {
+    let $data := html:parseData($records, "data")
+
     let $countRecords := count($records)
     let $message :=
         if ($countRecords = 0) then
@@ -283,6 +288,8 @@ declare function html:buildSimple($ruleCode as xs:string, $longText, $text, $rec
     return html:buildGeneric($ruleCode, $longText, $text, $records, $message, $bulletType)
 };
 declare function html:build0($ruleCode as xs:string, $longText, $text, $records as element(tr)*, $unit as xs:string) {
+    let $data := html:parseData($records, "data")
+
     let $countRecords := count($records)
     let $bulletType :=
         if (count($records) = 0) then
@@ -298,6 +305,8 @@ declare function html:build0($ruleCode as xs:string, $longText, $text, $records 
         return html:buildGeneric($ruleCode, $longText, $text, $records, $message, $bulletType)
 };
 declare function html:buildUnique($ruleCode as xs:string, $longText, $text, $records as element(tr)*, $unit as xs:string, $errorLevel as xs:string) {
+    let $data := html:parseData($records, "data")
+
     let $countRecords := count($records)
     let $bulletType :=
         if (count($records) = 1) then
@@ -316,11 +325,13 @@ declare function html:buildUnique($ruleCode as xs:string, $longText, $text, $rec
             html:buildGeneric($ruleCode, $longText, $text, $records, $message, $bulletType)
 };
 declare function html:build1($ruleCode as xs:string, $longText, $text, $records as element(tr)*, $valueHeading as xs:string, $validMsg as xs:string, $unit as xs:string, $skippedMsg, $errorLevel as xs:string) as element(tr)* {
-    let $countRecords := count($records)
+
+    let $data := html:parseData($records, "data")
+    let $countRecords := count($data)
     let $bulletType :=
         if (string-length($skippedMsg) > 0) then
             $errors:SKIPPED
-        else if (count($records) > 0) then
+        else if (count($data) > 0) then
             $errors:INFO
         else
             $errorLevel
@@ -331,32 +342,36 @@ declare function html:build1($ruleCode as xs:string, $longText, $text, $records 
             $validMsg
         else
             $countRecords || " " || $unit || " found"
-    return html:buildGeneric($ruleCode, $longText, $text, $records, $validMsg, $bulletType)
+    return html:buildGeneric($ruleCode, $longText, $text, $data, $validMsg, $bulletType)
 };
-(: TODO add meta argument and skipped element :)
+
 declare function html:build2($ruleCode as xs:string, $longText, $text, $records as element(tr)*, $validMsg as xs:string, $unit as xs:string, $errorLevel as xs:string) as element(tr)* {
-    let $countRecords := count($records)
-    let $meta := map {}
-    let $skipped := map:get($meta, "status")
-    let $skippedMessage := map:get($meta, "message")
+
+    let $metadata := html:parseData($records, "metadata")
+    let $thead := html:parseData($records, "thead")
+    let $data := html:parseData($records, "data")
+
+    let $countRecords := count($data)
+    let $skipped := $metadata/count = "0"
+
     let $bulletType :=
         if ($skipped) then
             $errors:SKIPPED
-        else if (count($records) = 0) then
+        else if (count($data) = 0) then
             $errors:INFO
         else
             $errorLevel
     let $message :=
         if ($skipped) then
-            $skippedMessage
+            $labels:SKIPPED
         else if ($countRecords = 0) then
             $validMsg
         else
             $countRecords || " " || $unit || substring("s ", number(not($countRecords > 1)) * 2) || " found"
-    return html:buildGeneric($ruleCode, $longText, $text, $records, $message, $bulletType)
+    return html:buildGeneric($ruleCode, $longText, $text, $data, $message, $bulletType)
 };
 declare function html:build3($ruleCode as xs:string, $longText, $text, $records as element(tr)*, $message as xs:string, $errorLevel as xs:string) as element(tr)* {
-    let $countRecords := count($records)
+    let $data := html:parseData($records, "data")
     let $bulletType := $errorLevel
     return
         <tr>
@@ -366,8 +381,10 @@ declare function html:build3($ruleCode as xs:string, $longText, $text, $records 
         </tr>
 };
 declare function html:build9($ruleCode as xs:string, $longText, $text, $records as element(tr)*, $valueHeading as xs:string, $validMsg as xs:string, $unit as xs:string, $skippedMsg, $errorLevel as xs:string) as element(tr)* {
-    let $countRecords := count($records)
-    let $countInvalid := count($records/@valid = "false")
+
+    let $data := html:parseData($records, "data")
+    let $countRecords := count($data)
+    let $countInvalid := count($data/@valid = "false")
     let $bulletType :=
         if ($countRecords = 0) then
             $errors:SKIPPED
@@ -382,12 +399,14 @@ declare function html:build9($ruleCode as xs:string, $longText, $text, $records 
             $countInvalid || " " || $unit || substring("s ", number(not($countRecords > 1)) * 2) || " found"
         else
             $validMsg
-    return html:buildGeneric($ruleCode, $longText, $text, $records, $message, $bulletType)
+    return html:buildGeneric($ruleCode, $longText, $text, $data, $message, $bulletType)
 };
 (: TODO: maybe remove :)
 declare function html:build7($ruleCode as xs:string, $longText, $text, $records as element(tr)*, $valueHeading as xs:string, $validMsg as xs:string, $unit as xs:string, $skippedMsg, $errorLevel as xs:string) as element(tr)* {
-    let $countRecords := count($records)
-    let $countInvalid := count($records/@valid = "false")
+
+    let $data := html:parseData($records, "data")
+    let $countRecords := count($data)
+    let $countInvalid := count($data/@valid = "false")
     let $bulletType :=
         if ($countRecords = 0) then
             $errors:SKIPPED
@@ -405,7 +424,20 @@ declare function html:build7($ruleCode as xs:string, $longText, $text, $records 
         else
             "unknown error"
 
-    return html:buildGeneric($ruleCode, $longText, $text, $records, $validMsg, $bulletType)
+    return html:buildGeneric($ruleCode, $longText, $text, $data, $validMsg, $bulletType)
+};
+
+(:~
+ : Selects and returns specified data blocks (metadata, data, headers, etc)
+ :
+ :)
+declare %private function html:parseData($records as element(tr)*, $type as xs:string) as element(tr)* {
+    if ($type = "metadata") then
+        $records[@metadata="true"]
+    else if ($type = "thead") then
+        $records[@thead="true"]
+    else
+        $records[not(@metadata) and not(@thead)]
 };
 
 (: Builds HTML table rows for rules. :)
@@ -643,4 +675,10 @@ declare function html:buildResultDiv($meta as map(*), $result as element(table)?
                 </div>
         }
     </div>
+};
+
+declare function html:createMetadataTR($rowsCount as xs:integer) {
+    <tr metadata="true">
+        <count>{$rowsCount}</count>
+    </tr>
 };
