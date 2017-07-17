@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="wise-soe-backup" default="Start">
+
+  <property name="namespaceFile" value="namespaces.xquery"/>
+
+  <target name="aggregateNamespaces">
+    <delete file="dist/namespaces.xquery"/>
+    <concat destfile="dist/namespaces.xquery" encoding="UTF-8" outputencoding="UTF-8" append="true">
+      <fileset dir="${user.dir}">
+        <include name="**/*.xquery"/>
+        <exclude name="dist/*.xquery"/>
+        <exclude name="deprecated/*.xquery"/>
+        <exclude name="old/*.xquery"/>
+        <exclude name="namespaces.xquery"/>
+      </fileset>
+      <filterchain>
+        <linecontainsregexp><regexp pattern="^module namespace"/></linecontainsregexp>
+        <replaceregex pattern="^module namespace" replace="declare namespace"/>
+      </filterchain>
+    </concat>
+    <concat destfile="dist/namespaces.xquery" encoding="UTF-8" outputencoding="UTF-8" append="true">
+      <fileset dir="${user.dir}">
+        <include name="**/*.xquery"/>
+        <exclude name="dist/*.xquery"/>
+        <exclude name="namespaces.xquery"/>
+      </fileset>
+      <filterchain>
+        <linecontainsregexp><regexp pattern="^declare namespace"/></linecontainsregexp>
+      </filterchain>
+    </concat>
+  </target>
+
+  <target name="Start">
+    <antcall target="Clean"/>
+    <!-- Create files for water-quality dataflow -->
+    <antcall target="Initialize">
+      <param name="dataflow" value="air-quality"/>
+      <param name="output" value="dist/aqd-obligations-checks.xquery"/>
+      <param name="initFile" value="../aqd-main.xquery"/>
+    </antcall>
+    <!--&lt;!&ndash; Create files for water-quantity dataflow &ndash;&gt;
+    <antcall target="Initialize">
+      <param name="dataflow" value="water-quantity"/>
+      <param name="output" value="dist/water-quantity-envelope.xquery"/>
+      <param name="initFile" value="../water-quantity/water-quantity-envelope.xquery"/>
+    </antcall>
+    &lt;!&ndash; Create files for water-quality dataflow &ndash;&gt;
+    <antcall target="Initialize">
+      <param name="dataflow" value="emissions"/>
+      <param name="output" value="dist/emissions-envelope.xquery"/>
+      <param name="initFile" value="../emissions/emissions-envelope.xquery"/>
+    </antcall>-->
+  </target>
+
+  <target name="Clean">
+    <delete><fileset dir="dist" includes="**/*" excludes="**/namespaces.xquery"/></delete>
+  </target>
+
+  <target name="Initialize">
+    <dirname property="dataflow.dir" file="${initFile}"/>
+    <antcall target="appendNamespaces"/>
+    <antcall target="appendVariables"/>
+    <antcall target="Build"/>
+  </target>
+
+  <target name="appendNamespaces">
+<concat destfile="${output}" encoding="UTF-8" outputencoding="UTF-8" append="true">
+xquery version "3.0" encoding "UTF-8";${line.separator}
+</concat>
+    <concat destfile="${output}" encoding="UTF-8" outputencoding="UTF-8" append="true">
+      <file file="${initFile}"/>
+      <filterchain>
+        <linecontains><contains value="declare namespace"/></linecontains>
+      </filterchain>
+    </concat>
+    <concat destfile="${output}" encoding="UTF-8" outputencoding="UTF-8" append="true">
+      <file file="${namespaceFile}"/>
+    </concat>
+<!--<concat destfile="${output}" encoding="UTF-8" outputencoding="UTF-8" append="true">
+declare variable $xmlconv:TEST_ENV := false();${line.separator}
+</concat>-->
+  </target>
+
+  <target name="appendVariables">
+    <concat destfile="${output}" encoding="UTF-8" outputencoding="UTF-8" append="true">
+      <fileset dir="${user.dir}">
+        <include name="**/*.xquery"/>
+        <exclude name="dist/*.xquery"/>
+        <exclude name="namespaces.xquery"/>
+      </fileset>
+      <filterchain>
+        <tokenfilter>
+          <containsregex pattern="declare variable [^;]+;$"/>
+        </tokenfilter>
+      </filterchain>
+    </concat>
+  </target>
+
+  <target name="Build">
+
+    <concat destfile="${output}" encoding="UTF-8" outputencoding="UTF-8" append="true">
+      <fileset dir="${user.dir}">
+        <include name="**/*.xquery"/>
+        <exclude name="dist/*.xquery"/>
+        <exclude name="namespaces.xquery"/>
+      </fileset>
+      <filterchain>
+        <tokenfilter>
+          <replaceregex pattern="declare variable [^;]+;$" replace=""/>
+        </tokenfilter>
+        <linecontains negate="true"><contains value="xquery version"/></linecontains>
+        <linecontains negate="true"><contains value="module namespace"/></linecontains>
+        <linecontains negate="true"><contains value="import module"/></linecontains>
+        <linecontains negate="true"><contains value="declare namespace"/></linecontains>
+      </filterchain>
+    </concat>
+
+    <concat destfile="${output}" encoding="UTF-8" outputencoding="UTF-8" append="true">
+      <file file="${initFile}"/>
+      <filterchain>
+        <!--<tokenfilter>
+            <replaceregex pattern="declare variable [^;]+;$" replace=""/>
+        </tokenfilter>-->
+        <!--<linecontainsregexp negate="true"><regexp pattern="declare variable [^;]+;$"/></linecontainsregexp>-->
+        <linecontains negate="true"><contains value="xquery version"/></linecontains>
+        <linecontains negate="true"><contains value="import module"/></linecontains>
+        <linecontains negate="true"><contains value="declare namespace"/></linecontains>
+      </filterchain>
+    </concat>
+
+  </target>
+</project>
