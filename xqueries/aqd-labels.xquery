@@ -14,6 +14,7 @@ import module namespace dd = "aqd-dd" at "aqd-dd.xquery";
 declare variable $labels:SHOWRECORDS := "Show Records";
 declare variable $labels:SHOWERRORS := "Show Errors";
 declare variable $labels:SHOWCOMBINATIONS := "Show Combinations";
+declare variable $labels:SKIPPED := "Check Skipped";
 
 (: ENVELOPE QC LABELS :)
 declare variable $labels:ENV1 := "aqd:AQD_ReportingHeader element must be present.";

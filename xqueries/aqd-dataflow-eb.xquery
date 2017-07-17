@@ -43,6 +43,8 @@ declare function xmlconv:checkReport($source_url as xs:string, $countryCode as x
     let $cdrUrl := common:getCdrUrl($countryCode)
     let $reportingYear := common:getReportingYear($docRoot)
 
+    let $latestEnvelopeD := ()
+
     (: File prefix/namespace check :)
     let $NSinvalid :=
         try {
