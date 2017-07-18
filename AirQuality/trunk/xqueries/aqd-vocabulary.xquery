@@ -8,6 +8,7 @@ xquery version "3.0";
 
 module namespace vocabulary = "aqd-vocabulary";
 
+declare variable $vocabulary:BASE := "http://dd.eionet.europa.eu/vocabulary/aq/";
 declare variable $vocabulary:NAMESPACE := "http://dd.eionet.europa.eu/vocabulary/aq/namespace/";
 declare variable $vocabulary:OBLIGATIONS := "http://rod.eionet.europa.eu/obligations/";
 declare variable $vocabulary:UOM_TIME := "http://dd.eionet.europa.eu/vocabulary/uom/time/";
@@ -51,3 +52,4 @@ declare variable $vocabulary:OBSERVATIONS_VALIDITY as xs:string := "http://dd.ei
 declare variable $vocabulary:OBSERVATIONS_PRIMARY as xs:string := "http://dd.eionet.europa.eu/vocabulary/aq/primaryObservation/";
 declare variable $vocabulary:OBSERVATIONS_RANGE as xs:string := "http://dd.eionet.europa.eu/vocabulary/aq/primaryObservationRange/";
 declare variable $vocabulary:QAQC_VOCABULARY as xs:string := "http://dd.eionet.europa.eu/vocabulary/aq/cdrqaqc/";
+declare variable $vocabulary:AGGREGATION_PROCESS as xs:string := $vocabulary:BASE || "aggregationprocess";
