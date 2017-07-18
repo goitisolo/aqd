@@ -6,7 +6,7 @@ xquery version "3.0";
 : Time: 6:10 PM
 :)
 
-module namespace xmlconv = "http://converters.eionet.europa.eu/dataflowE";
+module namespace dataflowEa = "http://converters.eionet.europa.eu/dataflowEa";
 import module namespace common = "aqd-common" at "aqd-common.xquery";
 import module namespace html = "aqd-html" at "aqd-html.xquery";
 import module namespace errors = "aqd-errors" at "aqd-errors.xquery";
@@ -40,14 +40,13 @@ declare namespace adms="http://www.w3.org/ns/adms#";
 declare namespace prop = "http://dd.eionet.europa.eu/property/";
 declare namespace rdf = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
 
-declare variable $xmlconv:OBLIGATIONS as xs:string* := ($vocabulary:ROD_PREFIX || "673");
-declare function xmlconv:checkReport($source_url as xs:string, $countryCode as xs:string) as element(table) {
+declare variable $dataflowEa:OBLIGATIONS as xs:string* := ($vocabulary:ROD_PREFIX || "673");
+declare function dataflowEa:checkReport($source_url as xs:string, $countryCode as xs:string) as element(table) {
 
 let $envelopeUrl := common:getEnvelopeXML($source_url)
 let $docRoot := doc($source_url)
 let $reportingYear := common:getReportingYear($docRoot)
 let $cdrUrl := common:getCdrUrl($countryCode)
-
 let $latestEnvelopeD := query:getLatestEnvelope($cdrUrl || "d/")
 
 (: File prefix/namespace check :)
@@ -84,7 +83,7 @@ let $E0table :=
             <tr class="{$errors:ERROR}">
                 <td title="Status">Reporting Year is missing.</td>
             </tr>
-        else if (query:deliveryExists($xmlconv:OBLIGATIONS, $countryCode, "e1a/", $reportingYear)) then
+        else if (query:deliveryExists($dataflowEa:OBLIGATIONS, $countryCode, "e1a/", $reportingYear)) then
             <tr class="{$errors:WARNING}">
                 <td title="Status">Updating delivery for {$reportingYear}</td>
             </tr>
@@ -929,9 +928,9 @@ return
 };
 
 
-declare function xmlconv:proceed($source_url as xs:string, $countryCode as xs:string) as element(div) {
+declare function dataflowEa:proceed($source_url as xs:string, $countryCode as xs:string) as element(div) {
     let $count := count(doc($source_url)//om:OM_Observation)
-    let $result := if ($count > 0) then xmlconv:checkReport($source_url, $countryCode) else ()
+    let $result := if ($count > 0) then dataflowEa:checkReport($source_url, $countryCode) else ()
     let $meta := map:merge((
         map:entry("count", $count),
         map:entry("header", "Check air quality observations"),

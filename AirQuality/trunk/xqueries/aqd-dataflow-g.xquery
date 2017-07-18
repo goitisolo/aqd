@@ -13,7 +13,7 @@ xquery version "3.0" encoding "UTF-8";
  : @author George Sofianos
  :)
 
-module namespace xmlconv = "http://converters.eionet.europa.eu/dataflowG";
+module namespace dataflowG = "http://converters.eionet.europa.eu/dataflowG";
 import module namespace common = "aqd-common" at "aqd-common.xquery";
 import module namespace sparqlx = "aqd-sparql" at "aqd-sparql.xquery";
 import module namespace labels = "aqd-labels" at "aqd-labels.xquery";
@@ -48,13 +48,13 @@ declare namespace adms="http://www.w3.org/ns/adms#";
 declare namespace prop = "http://dd.eionet.europa.eu/property/";
 declare namespace rdf = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
 
-declare variable $xmlconv:ISO2_CODES as xs:string* := ("AL","AT","BA","BE","BG","CH","CY","CZ","DE","DK","DZ","EE","EG","ES","FI",
+declare variable $dataflowG:ISO2_CODES as xs:string* := ("AL","AT","BA","BE","BG","CH","CY","CZ","DE","DK","DZ","EE","EG","ES","FI",
     "FR","GB","GR","HR","HU","IE","IL","IS","IT","JO","LB","LI","LT","LU","LV","MA","ME","MK","MT","NL","NO","PL","PS","PT",
      "RO","RS","SE","SI","SK","TN","TR","XK","UK");
-declare variable $xmlconv:OBLIGATIONS as xs:string* := ($vocabulary:ROD_PREFIX || "679");
+declare variable $dataflowG:OBLIGATIONS as xs:string* := ($vocabulary:ROD_PREFIX || "679");
 
 (: Rule implementations :)
-declare function xmlconv:checkReport($source_url as xs:string, $countryCode as xs:string) as element(table) {
+declare function dataflowG:checkReport($source_url as xs:string, $countryCode as xs:string) as element(table) {
 
 let $envelopeUrl := common:getEnvelopeXML($source_url)
 let $docRoot := doc($source_url)
@@ -132,7 +132,7 @@ let $G0table :=
             <tr class="{$errors:ERROR}">
                 <td title="Status">Reporting Year is missing.</td>
             </tr>
-        else if (query:deliveryExists($xmlconv:OBLIGATIONS, $countryCode, "g/", $reportingYear)) then
+        else if (query:deliveryExists($dataflowG:OBLIGATIONS, $countryCode, "g/", $reportingYear)) then
             <tr class="{$errors:WARNING}">
                 <td title="Status">Updating delivery for {$reportingYear}</td>
             </tr>
@@ -1585,7 +1585,7 @@ return
 };
 
 
-declare function xmlconv:buildVocItemsList($ruleId as xs:string, $vocabularyUrl as xs:string, $ids as xs:string*)
+declare function dataflowG:buildVocItemsList($ruleId as xs:string, $vocabularyUrl as xs:string, $ids as xs:string*)
 as element(div) {
     let $list :=
         for $id in $ids
@@ -1608,10 +1608,10 @@ as element(div) {
  : Main function
  : ======================================================================
  :)
-declare function xmlconv:proceed($source_url as xs:string, $countryCode as xs:string) {
+declare function dataflowG:proceed($source_url as xs:string, $countryCode as xs:string) {
 
 let $countZones := count(doc($source_url)//aqd:AQD_Attainment)
-let $result := if ($countZones > 0) then xmlconv:checkReport($source_url, $countryCode) else ()
+let $result := if ($countZones > 0) then dataflowG:checkReport($source_url, $countryCode) else ()
 let $meta := map:merge((
     map:entry("count", $countZones),
     map:entry("header", "Check air quality attainment of environmental objectives"),

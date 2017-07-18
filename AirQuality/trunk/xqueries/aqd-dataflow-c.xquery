@@ -13,7 +13,7 @@ xquery version "3.0" encoding "UTF-8";
  : small modification added by Jaume Targa (ETC/ACM) to align with QA document & polish some checks
  :)
 
-module namespace xmlconv = "http://converters.eionet.europa.eu/dataflowC";
+module namespace dataflowC = "http://converters.eionet.europa.eu/dataflowC";
 import module namespace common = "aqd-common" at "aqd-common.xquery";
 import module namespace sparqlx = "aqd-sparql" at "aqd-sparql.xquery";
 import module namespace labels = "aqd-labels" at "aqd-labels.xquery";
@@ -49,31 +49,31 @@ declare namespace prop="http://dd.eionet.europa.eu/property/";
 declare namespace adms="http://www.w3.org/ns/adms#";
 
 
-declare variable $xmlconv:ISO2_CODES as xs:string* := ("AL","AT","BA","BE","BG","CH","CY","CZ","DE","DK","DZ","EE","EG","ES","FI",
+declare variable $dataflowC:ISO2_CODES as xs:string* := ("AL","AT","BA","BE","BG","CH","CY","CZ","DE","DK","DZ","EE","EG","ES","FI",
     "FR","GB","GR","HR","HU","IE","IL","IS","IT","JO","LB","LI","LT","LU","LV","MA","ME","MK","MT","NL","NO","PL","PS","PT",
      "RO","RS","SE","SI","SK","TN","TR","XK","UK");
-declare variable $xmlconv:VALID_POLLUTANT_IDS as xs:string* := ("1", "7", "8", "9", "5", "6001", "10","20", "5012", "5014", "5015", "5018", "5029");
-declare variable $xmlconv:VALID_POLLUTANT_IDS_18 as xs:string* := ("5014", "5015", "5018", "5029");
-declare variable $xmlconv:MANDATORY_POLLUTANT_IDS_8 as xs:string* := ("1","7","8","9","5","6001","10","20","5012","5014","5015","5018","5029");
-declare variable $xmlconv:UNIQUE_POLLUTANT_IDS_9 as xs:string* := ("1","7","8","9","5","6001","10","20","5012","5014","5015","5018","5029","1045",
+declare variable $dataflowC:VALID_POLLUTANT_IDS as xs:string* := ("1", "7", "8", "9", "5", "6001", "10","20", "5012", "5014", "5015", "5018", "5029");
+declare variable $dataflowC:VALID_POLLUTANT_IDS_18 as xs:string* := ("5014", "5015", "5018", "5029");
+declare variable $dataflowC:MANDATORY_POLLUTANT_IDS_8 as xs:string* := ("1","7","8","9","5","6001","10","20","5012","5014","5015","5018","5029");
+declare variable $dataflowC:UNIQUE_POLLUTANT_IDS_9 as xs:string* := ("1","7","8","9","5","6001","10","20","5012","5014","5015","5018","5029","1045",
 "1046","1047","1771","1772","1629","1659","1657","1668","1631","2012","2014","2015","2018","7013","4013","4813","653","5013","5610","5617","5759",
 "5626","5655","5763","7029","611","618","760","627","656","7419","20","428","430","432","503","505","394","447","6005","6006","6007","24","486",
 "316","6008","6009","451","443","316","441","475","449","21","431","464","482","6011","6012","32","25");
 
-declare variable $xmlconv:VALID_POLLUTANT_IDS_19 as xs:string* := ("1045","1046","1047","1771","1772","1629","1659","1657","1668","1631","2012","2014","2015","2018","7013","4013","4813","653","5013","5610","5617",
+declare variable $dataflowC:VALID_POLLUTANT_IDS_19 as xs:string* := ("1045","1046","1047","1771","1772","1629","1659","1657","1668","1631","2012","2014","2015","2018","7013","4013","4813","653","5013","5610","5617",
 "5759","5626","5655","5763","7029","611","618","760","627","656","7419","428","430","432","503","505","394","447","6005","6006","6007","24","486","316","6008","6009","451","443","441","475","449","21","431","464",
 "482","6011","6012","32","25");
 
-declare variable $xmlconv:VALID_POLLUTANT_IDS_27 as xs:string* := ('1045','1046','1047','1771','1772','1629','1659','1657','1668','1631','2012','2014','2015','2018','7013','4013','4813','653','5013','5610','5617',
+declare variable $dataflowC:VALID_POLLUTANT_IDS_27 as xs:string* := ('1045','1046','1047','1771','1772','1629','1659','1657','1668','1631','2012','2014','2015','2018','7013','4013','4813','653','5013','5610','5617',
 '5759','5626','5655','5763','7029','611','618','760','627','656','7419','20','428','430','432','503','505','394','447','6005','6006','6007','24','486','316','6008','6009',
 '451','443','316','441','475','449','21','431','464','482','6011','6012','32','25','6001');
 
-declare variable $xmlconv:VALID_POLLUTANT_IDS_40 as xs:string* := ($xmlconv:MANDATORY_POLLUTANT_IDS_8, $xmlconv:UNIQUE_POLLUTANT_IDS_9);
+declare variable $dataflowC:VALID_POLLUTANT_IDS_40 as xs:string* := ($dataflowC:MANDATORY_POLLUTANT_IDS_8, $dataflowC:UNIQUE_POLLUTANT_IDS_9);
 
-declare variable $xmlconv:VALID_POLLUTANT_IDS_21 as xs:string* := ("1","8","9","10","5","6001","5014","5018","5015","5029","5012","20");
-declare variable $xmlconv:OBLIGATIONS as xs:string* := ($vocabulary:ROD_PREFIX || "671", $vocabulary:ROD_PREFIX || "694");
+declare variable $dataflowC:VALID_POLLUTANT_IDS_21 as xs:string* := ("1","8","9","10","5","6001","5014","5018","5015","5029","5012","20");
+declare variable $dataflowC:OBLIGATIONS as xs:string* := ($vocabulary:ROD_PREFIX || "671", $vocabulary:ROD_PREFIX || "694");
 (: Rule implementations :)
-declare function xmlconv:checkReport($source_url as xs:string, $countryCode as xs:string) as element(table) {
+declare function dataflowC:checkReport($source_url as xs:string, $countryCode as xs:string) as element(table) {
 
 (: SETUP COMMON VARIABLES :)
 let $envelopeUrl := common:getEnvelopeXML($source_url)
@@ -149,7 +149,7 @@ let $C0table :=
             <tr class="{$errors:ERROR}">
                 <td title="Status">Reporting Year is missing.</td>
             </tr>
-        else if (query:deliveryExists($xmlconv:OBLIGATIONS, $countryCode, $cdir, $reportingYear)) then
+        else if (query:deliveryExists($dataflowC:OBLIGATIONS, $countryCode, $cdir, $reportingYear)) then
             <tr class="{$errors:WARNING}">
                 <td title="Status">Updating delivery for {$reportingYear}</td>
             </tr>
@@ -639,7 +639,7 @@ let $C29invalid :=
                     "EXC"
                 else
                     concat(data($x//aqd:zone/@xlink:href), '#', data($x//aqd:pollutant/@xlink:href), '#', data($x//aqd:protectionTarget/@xlink:href))
-            where empty(index-of($validRows, $key)) and not(empty(index-of($xmlconv:MANDATORY_POLLUTANT_IDS_8, $pollutantCode))) and ($key != "EXC")
+            where empty(index-of($validRows, $key)) and not(empty(index-of($dataflowC:MANDATORY_POLLUTANT_IDS_8, $pollutantCode))) and ($key != "EXC")
             return
                 <tr>
                     <td title="AQD_AssessmentRegime">{data($x/aqd:inspireId/base:Identifier/base:localId)}</td>
@@ -778,7 +778,7 @@ let $C32table :=
         for $sMetadata in $docRoot//aqd:AQD_AssessmentRegime/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata
         let $id := string($sMetadata/@xlink:href)
         let $docType := string($sMetadata/../aqd:assessmentType/@xlink:href)
-        where (not(xmlconv:isValidAssessmentTypeCombination($id, $docType, $allAssessmentTypes)))
+        where (not(dataflowC:isValidAssessmentTypeCombination($id, $docType, $allAssessmentTypes)))
         return
             <tr>
                 <td title="AQD_AssessmentRegime">{string($sMetadata/../../../aqd:inspireId/base:Identifier/base:localId)}</td>
@@ -925,7 +925,7 @@ let $C40invalid :=
     try {
         for $aqdPollutantC40 in $docRoot//aqd:AQD_AssessmentRegime
         let $pollutantXlinkC40 := fn:substring-after(data($aqdPollutantC40/aqd:pollutant/@xlink:href), "pollutant/")
-        where not(empty(index-of($xmlconv:VALID_POLLUTANT_IDS_40, $pollutantXlinkC40))) and not((count($aqdPollutantC40/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata) >= 1
+        where not(empty(index-of($dataflowC:VALID_POLLUTANT_IDS_40, $pollutantXlinkC40))) and not((count($aqdPollutantC40/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata) >= 1
                 or count($aqdPollutantC40/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:modelAssessmentMetadata) >= 1))
         return
             <tr>
@@ -1017,10 +1017,10 @@ return
     </table>
 };
 
-declare function xmlconv:proceed($source_url as xs:string, $countryCode as xs:string) {
+declare function dataflowC:proceed($source_url as xs:string, $countryCode as xs:string) {
 
 let $countZones := count(doc($source_url)//aqd:AQD_AssessmentRegime)
-let $result := if ($countZones > 0) then xmlconv:checkReport($source_url, $countryCode) else ()
+let $result := if ($countZones > 0) then dataflowC:checkReport($source_url, $countryCode) else ()
 
 let $meta := map:merge((
     map:entry("count", $countZones),
@@ -1033,7 +1033,7 @@ return
     html:buildResultDiv($meta, $result)
 };
 
-declare function xmlconv:isValidAssessmentTypeCombination($id as xs:string, $type as xs:string, $allCombinations as xs:string*) as xs:boolean {
+declare function dataflowC:isValidAssessmentTypeCombination($id as xs:string, $type as xs:string, $allCombinations as xs:string*) as xs:boolean {
     let $typeInDoc := lower-case(substring-after($type, $vocabulary:ASSESSMENTTYPE_VOCABULARY))
     let $combination := concat($id, "#", $type)
     let $combinationFixed := concat($id, "#", $vocabulary:ASSESSMENTTYPE_VOCABULARY, "fixed")

@@ -27,7 +27,7 @@ import module namespace dfC = "http://converters.eionet.europa.eu/dataflowC" at 
 import module namespace dfD = "http://converters.eionet.europa.eu/dataflowD" at "aqd-dataflow-d.xquery";
 import module namespace dfG = "http://converters.eionet.europa.eu/dataflowG" at "aqd-dataflow-g.xquery";
 import module namespace dfM = "http://converters.eionet.europa.eu/dataflowM" at "aqd-dataflow-m.xquery";
-import module namespace dfE = "http://converters.eionet.europa.eu/dataflowE" at "aqd-dataflow-e.xquery";
+import module namespace dfEa = "http://converters.eionet.europa.eu/dataflowEa" at "aqd-dataflow-ea.xquery";
 import module namespace dfEb = "http://converters.eionet.europa.eu/dataflowEb" at "aqd-dataflow-eb.xquery";
 
 import module namespace common = "aqd-common" at "aqd-common.xquery";
@@ -43,7 +43,7 @@ declare function obligations:proceed($source_url as xs:string) {
     let $countryCode := lower-case(doc($envelopeUrl)/envelope/countrycode)
 
     let $validObligations := common:getSublist($obligations,
-            ($dfB:OBLIGATIONS, $dfC:OBLIGATIONS, $dfD:OBLIGATIONS, $dfG:OBLIGATIONS, $dfM:OBLIGATIONS, $dfE:OBLIGATIONS, $dfEb:OBLIGATIONS))
+            ($dfB:OBLIGATIONS, $dfC:OBLIGATIONS, $dfD:OBLIGATIONS, $dfG:OBLIGATIONS, $dfM:OBLIGATIONS, $dfEa:OBLIGATIONS, $dfEb:OBLIGATIONS))
 
     let $result := ()
     let $resultB :=
@@ -72,8 +72,8 @@ declare function obligations:proceed($source_url as xs:string) {
         else
             ()
     let $resultE :=
-        if (common:containsAny($obligations, $dfE:OBLIGATIONS)) then
-            dfE:proceed($source_url, $countryCode)
+        if (common:containsAny($obligations, $dfEa:OBLIGATIONS)) then
+            dfEa:proceed($source_url, $countryCode)
         else
             ()
     let $resultEb :=
