@@ -42,8 +42,7 @@ declare function xmlconv:checkReport($source_url as xs:string, $countryCode as x
     let $docRoot := doc($source_url)
     let $cdrUrl := common:getCdrUrl($countryCode)
     let $reportingYear := common:getReportingYear($docRoot)
-
-    let $latestEnvelopeD := ()
+    let $latestEnvelopeD1b := query:getLatestEnvelope($cdrUrl || "d1b/")
 
     (: File prefix/namespace check :)
     let $NSinvalid :=
@@ -79,7 +78,7 @@ declare function xmlconv:checkReport($source_url as xs:string, $countryCode as x
                 <tr class="{$errors:ERROR}">
                     <td title="Status">Reporting Year is missing.</td>
                 </tr>
-            else if (query:deliveryExists($xmlconv:OBLIGATIONS, $countryCode, "e/", $reportingYear)) then
+            else if (query:deliveryExists($xmlconv:OBLIGATIONS, $countryCode, "e1b/", $reportingYear)) then
                 <tr class="{$errors:WARNING}">
                     <td title="Status">Updating delivery for {$reportingYear}</td>
                 </tr>
@@ -129,8 +128,7 @@ declare function xmlconv:checkReport($source_url as xs:string, $countryCode as x
                     <td title="gml:beginPosition">{string($x/gml:beginPosition)}</td>
                     <td title="gml:endPosition">{string($x/gml:endPosition)}</td>
                 </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
-        }
-        catch * {
+        } catch * {
             <tr status="failed">
                 <td title="Error code">{$err:code}</td>
                 <td title="Error description">{$err:description}</td>
@@ -161,7 +159,7 @@ declare function xmlconv:checkReport($source_url as xs:string, $countryCode as x
      shall resolve to a traversable link process configuration in Data flow D1b: /aqd:AQD_ModelProcess/ompr:inspireld/base:Identifier/base:localId :)
     let $Eb04invalid :=
         try {
-            (let $result := sparqlx:run(query:getSamplingPointProcess($cdrUrl))
+            (let $result := sparqlx:run(query:getModelProcess($cdrUrl))
             let $all := $result/sparql:binding[@name = "inspireLabel"]/sparql:literal/string()
             let $procedures := $docRoot//om:procedure/@xlink:href/string()
             for $x in $procedures[not(. = $all)]
@@ -175,12 +173,14 @@ declare function xmlconv:checkReport($source_url as xs:string, $countryCode as x
                 <td title="Error description">{$err:description}</td>
             </tr>
         }
+
     (: Eb05 A valid delivery MUST provide an om:parameter/om:NamedValue/om:name xlink:href to
-either http://dd.eionet.europa.eu/vocabulary/aq/processparameter/model or http://dd.eionet.europa.eu/vocabulary/aq/processparameter/objective :)
+    either http://dd.eionet.europa.eu/vocabulary/aq/processparameter/model or http://dd.eionet.europa.eu/vocabulary/aq/processparameter/objective :)
     let $Eb05invalid :=
         try {
-            (for $x in $docRoot//om:OM_Observation
-            where not($x/om:parameter/om:NamedValue/om:name/@xlink:href = $vocabulary:PROCESS_PARAMETER || "SamplingPoint")
+            (let $parameters := for $i in ("model", "objective") return $vocabulary:PROCESS_PARAMETER || $i
+            for $x in $docRoot//om:OM_Observation
+            where not($x/om:parameter/om:NamedValue/om:name/@xlink:href = $parameters)
             return
                 <tr>
                     <td title="@gml:id">{string($x/@gml:id)}</td>
@@ -196,9 +196,10 @@ either http://dd.eionet.europa.eu/vocabulary/aq/processparameter/model or http:/
 /om:parameter/om:NamedValue/om:value xlink:href attribute shall resolve to a traversable link to a unique AQD_Model (“namespace/localId” of the object) :)
     let $Eb06invalid :=
         try {
-            (let $result := sparqlx:run(query:getSamplingPointFromFiles($latestEnvelopeD))
+            (let $parameters := for $i in ("model", "objective") return $vocabulary:PROCESS_PARAMETER || $i
+            let $result := sparqlx:run(query:getModelFromFiles($latestEnvelopeD1b))
             let $all := $result/sparql:binding[@name = "inspireLabel"]/sparql:literal/string()
-            for $x in $docRoot//om:OM_Observation/om:parameter/om:NamedValue[om:name/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/processparameter/SamplingPoint"]
+            for $x in $docRoot//om:OM_Observation/om:parameter/om:NamedValue[om:name/@xlink:href = $parameters]
             let $name := $x/om:name/@xlink:href/string()
             let $value := common:if-empty($x/om:value, $x/om:value/@xlink:href)
             where ($value = "" or not($value = $all))
@@ -231,11 +232,12 @@ either http://dd.eionet.europa.eu/vocabulary/aq/processparameter/model or http:/
             </tr>
         }
 
-    (: Eb08 - If ./om:parameter/om:NamedValue/om:name links to http://dd.eionet.europa.eu/vocabulary/aq/processparameter/AssessmentType /om:parameter/om:NamedValue/om:value xlink:href attribute shall resolve to  valid code for http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/ :)
+    (: Eb08 - If ./om:parameter/om:NamedValue/om:name links to http://dd.eionet.europa.eu/vocabulary/aq/processparameter/AssessmentType
+     /om:parameter/om:NamedValue/om:value xlink:href attribute shall resolve to  valid code for http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/ :)
     let $Eb08invalid :=
         try {
             (let $valid := dd:getValidConcepts($vocabulary:ASSESSMENTTYPE_VOCABULARY || "rdf")
-            for $x in $docRoot//om:OM_Observation/om:parameter/om:NamedValue[om:name/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/processparameter/AssessmentType"]
+            for $x in $docRoot//om:OM_Observation/om:parameter/om:NamedValue[om:name/@xlink:href = $vocabulary:PROCESS_PARAMETER || "AssessmentType"]
             let $value := common:if-empty($x/om:value, $x/om:value/@xlink:href)
             where not($value = $valid)
             return
@@ -253,7 +255,6 @@ either http://dd.eionet.europa.eu/vocabulary/aq/processparameter/model or http:/
 
     (: Eb09 - OM observations shall contain several om:parameters to further define the model/objective estimation results
 ./om:parameter/om:NamedValue/om:name xlink:href attribute shall resolve to a traversable link to http://dd.eionet.europa.eu/vocabulary/aq/processparameter/ :)
-    (: TODO Check ticket for implementation :)
     let $Eb09invalid :=
         try {
             (let $valid := dd:getValidConcepts($vocabulary:PROCESS_PARAMETER || "rdf")
@@ -276,7 +277,7 @@ either http://dd.eionet.europa.eu/vocabulary/aq/processparameter/model or http:/
         try {
             (let $all := dd:getValidConcepts("http://dd.eionet.europa.eu/vocabulary/aq/pollutant/rdf")
             for $x in $docRoot//om:OM_Observation/om:observedProperty
-            let $namedValue := $x/../om:parameter/om:NamedValue[om:name/@xlink:href ="http://dd.eionet.europa.eu/vocabulary/aq/processparameter/SamplingPoint"]
+            let $namedValue := $x/../om:parameter/om:NamedValue[om:name/@xlink:href = $vocabulary:PROCESS_PARAMETER || "model"]
             let $value := common:if-empty($namedValue/om:value, $namedValue/om:value/@xlink:href)
             where not($x/@xlink:href = $all)
             return
@@ -296,7 +297,27 @@ either http://dd.eionet.europa.eu/vocabulary/aq/processparameter/model or http:/
       (See Eb6 on linkages between the Observations & the SamplingPoint) :)
     let $Eb11invalid :=
         try {
-
+            (let $result := sparqlx:run(query:getModelMetadataFromFiles($latestEnvelopeD1b))
+            let $resultConcat := for $x in $result
+            return $x/sparql:binding[@name="featureOfInterest"]/sparql:uri/string() || $x/sparql:binding[@name="observedProperty"]/sparql:uri/string()
+            for $x in $docRoot//om:OM_Observation
+            let $observedProperty := $x/om:observedProperty/@xlink:href/string()
+            let $featureOfInterest := $x/om:featureOfInterest/@xlink:href/string()
+            let $featureOfInterest :=
+                if (not($featureOfInterest = "") and not(starts-with($featureOfInterest, "http://"))) then
+                    "http://reference.eionet.europa.eu/aq/" || $featureOfInterest
+                else
+                    $featureOfInterest
+            let $concat := $featureOfInterest || $observedProperty
+            let $namedValue := $x/om:parameter/om:NamedValue[om:name/@xlink:href = $vocabulary:PROCESS_PARAMETER || "model"]
+            let $value := common:if-empty($namedValue/om:value, $namedValue/om:value/@xlink:href)
+            where not($concat = $resultConcat)
+            return
+                <tr>
+                    <td title="@gml:id">{$x/@gml:id/string()}</td>
+                    <td title="om:value">{$value}</td>
+                    <td title="om:observedProperty">{$observedProperty}</td>
+                </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
         } catch * {
             <tr status="failed">
                 <td title="Error code">{$err:code}</td>
@@ -304,10 +325,20 @@ either http://dd.eionet.europa.eu/vocabulary/aq/processparameter/model or http:/
             </tr>
         }
 
-    (: Eb12 - All om:OM_Observation/ must provide a valid /om:featureOfInterest xlink (can not be empty)&  /om:featureOfInterest xlink:href attribute shall resolve to a traversable link to /aqd:AQD_modelArea/ompr:inspireld/base:Identifier/base:localId :)
+    (: Eb12 - All om:OM_Observation/ must provide a valid /om:featureOfInterest xlink (can not be empty)& 
+     /om:featureOfInterest xlink:href attribute shall resolve to a traversable link to /aqd:AQD_modelArea/ompr:inspireld/base:Identifier/base:localId :)
     let $Eb12invalid :=
         try {
-
+            (let $areas := data(sparqlx:run(query:getModelArea($latestEnvelopeD1b))/sparql:binding[@name = "localId"]/sparql:literal)
+            for $x in $docRoot//om:OM_Observation
+            let $featureOfInterest := $x/om:featureOfInterest/@xlink:href/tokenize(string(), "/")[last()]
+            where ($featureOfInterest = "") or not($featureOfInterest = $areas)
+            return
+                <tr>
+                    <td title="@gml:id">{$x/@gml:id/string()}</td>
+                    <td title="om:featureOfInterest">{$featureOfInterest}</td>
+                    <td title="om:observedProperty">{string($x/om:observedProperty/@xlink:href)}</td>
+                </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
         } catch * {
             <tr status="failed">
                 <td title="Error code">{$err:code}</td>
@@ -318,7 +349,7 @@ either http://dd.eionet.europa.eu/vocabulary/aq/processparameter/model or http:/
     om:parameter/om:NamedValue/om:value ./om:procedure xlink:href attribute attribute shall resolve to  valid code for http://dd.eionet.europa.eu/vocabulary/aq/resultencoding/ :)
     let $Eb13invalid :=
         try {
-
+            ()
         } catch * {
             <tr status="failed">
                 <td title="Error code">{$err:code}</td>
@@ -330,18 +361,19 @@ either http://dd.eionet.europa.eu/vocabulary/aq/processparameter/model or http:/
     om:parameter/om:NamedValue/om:value ./om:procedure xlink:href attribute attribute shall resolve to  valid code for http://dd.eionet.europa.eu/vocabulary/aq/resultformat/ :))
     let $Eb14invalid :=
         try {
-
+            ()
         } catch * {
             <tr status="failed">
                 <td title="Error code">{$err:code}</td>
                 <td title="Error description">{$err:description}</td>
             </tr>
         }
-    (: IF resultencoding = inline, resultformat can only be http://dd.eionet.europa.eu/vocabulary/aq/resultformat/swe-array IF resultencoding = external resultformat can only be http://dd.eionet.europa.eu/vocabulary/aq/resultformat/ascii-grid ;
-      http://dd.eionet.europa.eu/vocabulary/aq/resultformat/esri-shp or http://dd.eionet.europa.eu/vocabulary/aq/resultformat/geotiff :)
+    (: IF resultencoding = inline, resultformat can only be http://dd.eionet.europa.eu/vocabulary/aq/resultformat/swe-array IF resultencoding = external
+        resultformat can only be http://dd.eionet.europa.eu/vocabulary/aq/resultformat/ascii-grid ;
+        http://dd.eionet.europa.eu/vocabulary/aq/resultformat/esri-shp or http://dd.eionet.europa.eu/vocabulary/aq/resultformat/geotiff :)
     let $Eb14binvalid :=
         try {
-
+            ()
         } catch * {
             <tr status="failed">
                 <td title="Error code">{$err:code}</td>
@@ -351,6 +383,7 @@ either http://dd.eionet.europa.eu/vocabulary/aq/processparameter/model or http:/
 
     (: Eb15 - IF resultformat is http://dd.eionet.europa.eu/vocabulary/aq/resultformat/swe-array (Eb14) then ./om:result/swe:DataArray/swe:elementType/swe:DataRecord/swe:field name="startTime" attribute THEN
     swe:Time definition=http://www.opengis.net/def/property/OGC/0/SamplingTime swe:uom xlink:href=http://www.opengis.net/def/uom/ISO-8601/0/Gregorian:)
+    (: TODO FIX :)
     let $Eb15invalid :=
         try {
             (for $x in $docRoot//om:OM_Observation/om:result//swe:elementType/swe:DataRecord/swe:field[@name = "StartTime"
@@ -407,7 +440,7 @@ either http://dd.eionet.europa.eu/vocabulary/aq/processparameter/model or http:/
     let $Eb18invalid :=
         try {
             (for $x in $docRoot//om:OM_Observation/om:result//swe:elementType/swe:DataRecord/swe:field[@name = "Verification"
-                    and not(swe:Category/@definition = "http://dd.eionet.europa.eu/vocabulary/aq/observationverification")]
+                    and not(swe:Category/@definition = $vocabulary:BASE || "observationverification")]
             return
                 <tr>
                     <td title="@gml:id">{string($x/../../../../../@gml:id)}</td>
@@ -423,8 +456,8 @@ either http://dd.eionet.europa.eu/vocabulary/aq/processparameter/model or http:/
     http://dd.eionet.europa.eu/vocabulary/aq/primaryObservation/[code] & the swe:uom resolves to an xlink to http://dd.eionet.europa.eu/vocabulary/uom/concentration/[code] :)
     let $Eb19invalid :=
         try {
-            (let $obs := dd:getValidConceptsLC("http://dd.eionet.europa.eu/vocabulary/aq/primaryObservation/rdf")
-            let $cons := dd:getValidConceptsLC("http://dd.eionet.europa.eu/vocabulary/uom/concentration/rdf")
+            (let $obs := dd:getValidConceptsLC($vocabulary:OBSERVATIONS_PRIMARY || "rdf")
+            let $cons := dd:getValidConceptsLC($vocabulary:UOM_CONCENTRATION_VOCABULARY || "rdf")
             for $x in $docRoot//om:OM_Observation/om:result//swe:elementType/swe:DataRecord/swe:field[@name = "Value"
                     and (not(swe:Quantity/lower-case(@definition) = $obs) or not(swe:Quantity/swe:uom/lower-case(@xlink:href) = $cons))]
             return
@@ -541,7 +574,8 @@ either http://dd.eionet.europa.eu/vocabulary/aq/processparameter/model or http:/
             </tr>
         }
 
-    (: Eb23 - IF resultformat is http://dd.eionet.europa.eu/vocabulary/aq/resultformat/swe-array (Eb14) then the count of elements under <swe:elementCount><swe:Count><swe:value> should match the count of data blocks under <swe:values>. :)
+    (: Eb23 - IF resultformat is http://dd.eionet.europa.eu/vocabulary/aq/resultformat/swe-array (Eb14)
+     then the count of elements under <swe:elementCount><swe:Count><swe:value> should match the count of data blocks under <swe:values>. :)
     let $Eb23invalid :=
         try {
             (for $x at $xpos in $docRoot//om:OM_Observation/om:result
@@ -672,16 +706,17 @@ either http://dd.eionet.europa.eu/vocabulary/aq/processparameter/model or http:/
         }
 
     (: Eb26 :)
+    (: TODO check if objective is needed as process parameter :)
     let $Eb26invalid :=
         try {
-            (let $result := sparqlx:run(query:getSamplingPointMetadataFromFiles($latestEnvelopeD))
+            (let $result := sparqlx:run(query:getModelMetadataFromFiles($latestEnvelopeD1b))
             let $resultsConcat :=
                 for $x in $result
                 return $x/sparql:binding[@name="localId"]/sparql:literal/string() || $x/sparql:binding[@name="procedure"]/sparql:uri/string() ||
                 $x/sparql:binding[@name="featureOfInterest"]/sparql:uri/string() || $x/sparql:binding[@name="observedProperty"]/sparql:uri/string()
 
             for $x in $docRoot//om:OM_Observation
-            let $namedValue := $x/om:parameter/om:NamedValue[om:name/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/processparameter/SamplingPoint"]
+            let $namedValue := $x/om:parameter/om:NamedValue[om:name/@xlink:href = $vocabulary:PROCESS_PARAMETER || "model"]
             let $samplingPoint := tokenize(common:if-empty($namedValue/om:value, $namedValue/om:value/@xlink:href), "/")[last()]
             let $procedure := $x/om:procedure/@xlink:href/string()
             let $procedure :=
@@ -781,7 +816,8 @@ either http://dd.eionet.europa.eu/vocabulary/aq/processparameter/model or http:/
                 <td title="Error description">{$err:description}</td>
             </tr>
         }
-    (: Eb31 - IF resultformat is http://dd.eionet.europa.eu/vocabulary/aq/resultformat/swe-array (Eb14) then check for date overlaps between consecutive data blocks within swe:values :)
+    (: Eb31 - IF resultformat is http://dd.eionet.europa.eu/vocabulary/aq/resultformat/swe-array (Eb14) then check for date overlaps
+     between consecutive data blocks within swe:values :)
     let $Eb31invalid :=
         try {
             (let $valid := dd:getValid($vocabulary:OBSERVATIONS_RANGE)
@@ -868,8 +904,13 @@ either http://dd.eionet.europa.eu/vocabulary/aq/processparameter/model or http:/
     (: Eb35 - IF resultformat is ascii-grid ;  esri-shp or geotiff (Eb14) then ./om:result/gml:File/gml:rangeParameters MUST be populated :)
     let $Eb35invalid :=
         try {
-
-
+            (for $x in $docRoot//om:result
+                let $files := $x/gml:File/gml:rangeParameters
+                where $files => empty()
+                return
+                <tr>
+                    <td title="@gml:id">{string($x/../@gml:id)}</td>
+                </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
         } catch * {
             <tr status="failed">
                 <td title="Error code">{$err:code}</td>
@@ -880,8 +921,14 @@ either http://dd.eionet.europa.eu/vocabulary/aq/processparameter/model or http:/
      http://dd.eionet.europa.eu/vocabulary/aq/aggregationprocess/ :)
     let $Eb36invalid :=
         try {
-
-
+            (let $valid := dd:getValidConcepts($vocabulary:AGGREGATION_PROCESS || "rdf")
+            for $x in $docRoot//om:result
+            let $definition := $x/gml:File/gml:rangeParameters/swe:Quantity/@Definition/string()
+            where not($definition = $valid)
+            return
+                <tr>
+                    <td title="@gml:id">{string($x/../@gml:id)}</td>
+                </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
         } catch * {
             <tr status="failed">
                 <td title="Error code">{$err:code}</td>
@@ -892,8 +939,13 @@ either http://dd.eionet.europa.eu/vocabulary/aq/processparameter/model or http:/
     (: Eb37 - IF resultformat is ascii-grid ;  esri-shp or geotiff (Eb14) then ./om:result/gml:File/gml:rangeParameters/swe:label should be populated :)
     let $Eb37invalid :=
         try {
-
-
+            (for $x in $docRoot//om:result
+            let $label:= $x/gml:File/gml:rangeParameters/swe:label
+            where ($label => empty())
+            return
+                <tr>
+                    <td title="@gml:id">{string($x/../@gml:id)}</td>
+                </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
         } catch * {
             <tr status="failed">
                 <td title="Error code">{$err:code}</td>
@@ -904,8 +956,13 @@ either http://dd.eionet.europa.eu/vocabulary/aq/processparameter/model or http:/
     (: Eb38 - IF resultformat is ascii-grid ;  esri-shp or geotiff (Eb14) then ./om:result/gml:File/gml:rangeParameters/swe:description MUST be provided :)
     let $Eb38invalid :=
         try {
-
-
+            (for $x in $docRoot//om:result
+            let $description:= $x/gml:File/gml:rangeParameters/swe:description
+            where ($description => empty())
+            return
+                <tr>
+                    <td title="@gml:id">{string($x/../@gml:id)}</td>
+                </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
         } catch * {
             <tr status="failed">
                 <td title="Error code">{$err:code}</td>
@@ -913,11 +970,18 @@ either http://dd.eionet.europa.eu/vocabulary/aq/processparameter/model or http:/
             </tr>
         }
 
-    (: Eb39 - IF resultformat is ascii-grid ;  esri-shp or geotiff (Eb14) then ./om:result/gml:File/gml:rangeParameters/swe:uom xlink MUST match a code under http://dd.eionet.europa.eu/vocabulary/uom/concentration/ :)
+    (: Eb39 - IF resultformat is ascii-grid ;  esri-shp or geotiff (Eb14) then ./om:result/gml:File/gml:rangeParameters/swe:uom xlink
+     MUST match a code under http://dd.eionet.europa.eu/vocabulary/uom/concentration/ :)
     let $Eb39invalid :=
         try {
-
-
+            (let $valid := dd:getValidConcepts($vocabulary:UOM_CONCENTRATION_VOCABULARY)
+            for $x in $docRoot//om:result
+            let $xlink := $x/gml:File/gml:rangeParameters/swe:uom/@xlink:href
+            where ($xlink => empty())
+            return
+                <tr>
+                    <td title="@gml:id">{string($x/../@gml:id)}</td>
+                </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
         } catch * {
             <tr status="failed">
                 <td title="Error code">{$err:code}</td>
@@ -925,11 +989,20 @@ either http://dd.eionet.europa.eu/vocabulary/aq/processparameter/model or http:/
             </tr>
         }
 
-    (: Eb40 - Check if the unit of measure reporting via (/om:result/gml:File/gml:rangeParameters/swe:uom) corresponds to the recommended unit of measure in vocabulary http://dd.eionet.europa.eu/vocabulary/uom/concentration/[code] depending on pollutant reported via /om:observedProperty :)
+    (: Eb40 - Check if the unit of measure reporting via (/om:result/gml:File/gml:rangeParameters/swe:uom) corresponds to the recommended unit of measure in
+    vocabulary http://dd.eionet.europa.eu/vocabulary/uom/concentration/[code] depending on pollutant reported via /om:observedProperty :)
+    (: TODO FIX :)
     let $Eb40invalid :=
         try {
-
-
+            (let $valid := dd:getValidConcepts($vocabulary:UOM_CONCENTRATION_VOCABULARY)
+            for $x in $docRoot//om:result
+            let $observedProperty := $x/om:observedProperty
+            let $xlink := $x/gml:File/gml:rangeParameters/swe:uom/@xlink:href
+            where not($xlink = $valid)
+            return
+                <tr>
+                    <td title="@gml:id">{string($x/../@gml:id)}</td>
+                </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
         } catch * {
             <tr status="failed">
                 <td title="Error code">{$err:code}</td>
@@ -939,8 +1012,13 @@ either http://dd.eionet.europa.eu/vocabulary/aq/processparameter/model or http:/
     (: Eb41 - IF resultformat is ascii-grid ;  esri-shp or geotiff (Eb14) then ./om:result/gml:File/gml:fileReference MUST be provided :)
     let $Eb41invalid :=
         try {
-
-
+            (for $x in $docRoot//om:result
+            let $reference := $x/gml:File/gml:fileReference
+            where $reference => empty()
+            return
+                <tr>
+                    <td title="@gml:id">{string($x/../@gml:id)}</td>
+                </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
         } catch * {
             <tr status="failed">
                 <td title="Error code">{$err:code}</td>
@@ -954,10 +1032,16 @@ either http://dd.eionet.europa.eu/vocabulary/aq/processparameter/model or http:/
         File including extension (e.g. model.zip)
         +
         Variable using a # (e.g. #no2) :)
+    (: TODO FIX URL :)
     let $Eb42invalid :=
         try {
-
-
+            (for $x in $docRoot//om:result
+            let $reference := $x/gml:File/gml:fileReference
+            where not(contains($reference, $cdrUrl || "e1b"))
+            return
+                <tr>
+                    <td title="@gml:id">{string($x/../@gml:id)}</td>
+                </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
         } catch * {
             <tr status="failed">
                 <td title="Error code">{$err:code}</td>

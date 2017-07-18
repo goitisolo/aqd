@@ -136,7 +136,7 @@ declare function common:if-empty($first as item()?, $second as item()?) as item(
         data($first)
     else
         data($second)
-} ;
+};
 
 (: This is to be used only for dates with <= 1 year difference :)
 declare function common:isDateDifferenceOverYear($startDate as xs:date, $endDate as xs:date) as xs:boolean {
