@@ -13,7 +13,7 @@ xquery version "3.0" encoding "UTF-8";
  : small modification added by Jaume Targa (ETC/ACM) to align with QA document
  :)
 
-module namespace xmlconv = "http://converters.eionet.europa.eu/dataflowB";
+module namespace dataflowB = "http://converters.eionet.europa.eu/dataflowB";
 import module namespace common = "aqd-common" at "aqd-common.xquery";
 import module namespace html = "aqd-html" at "aqd-html.xquery";
 import module namespace sparqlx = "aqd-sparql" at "aqd-sparql.xquery";
@@ -50,14 +50,14 @@ declare namespace prop = "http://dd.eionet.europa.eu/property/";
 declare namespace rdf = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
 
 
-declare variable $xmlconv:invalidCount as xs:integer := 0;
-declare variable $xmlconv:ISO2_CODES as xs:string* := ("AL","AT","BA","BE","BG","CH","CY","CZ","DE","DK","DZ","EE","EG","ES","FI",
+declare variable $dataflowB:invalidCount as xs:integer := 0;
+declare variable $dataflowB:ISO2_CODES as xs:string* := ("AL","AT","BA","BE","BG","CH","CY","CZ","DE","DK","DZ","EE","EG","ES","FI",
     "FR","GB","GR","HR","HU","IE","IL","IS","IT","JO","LB","LI","LT","LU","LV","MA","ME","MK","MT","NL","NO","PL","PS","PT",
      "RO","RS","SE","SI","SK","TN","TR","XK","UK");
-declare variable $xmlconv:OBLIGATIONS as xs:string* := ($vocabulary:ROD_PREFIX || "670", $vocabulary:ROD_PREFIX || "693");
+declare variable $dataflowB:OBLIGATIONS as xs:string* := ($vocabulary:ROD_PREFIX || "670", $vocabulary:ROD_PREFIX || "693");
 
 (: Rule implementations :)
-declare function xmlconv:checkReport($source_url as xs:string, $countryCode as xs:string) as element(table) {
+declare function dataflowB:checkReport($source_url as xs:string, $countryCode as xs:string) as element(table) {
 
 let $envelopeUrl := common:getEnvelopeXML($source_url)
 let $docRoot := doc($source_url)
@@ -102,7 +102,7 @@ let $B0table :=
             <tr class="{$errors:ERROR}">
                 <td title="Status">Reporting Year is missing.</td>
             </tr>
-        else if (query:deliveryExists($xmlconv:OBLIGATIONS, $countryCode, "b/", $reportingYear)) then
+        else if (query:deliveryExists($dataflowB:OBLIGATIONS, $countryCode, "b/", $reportingYear)) then
             <tr class="{$errors:WARNING}">
                 <td title="Status">Updating delivery for {$reportingYear}</td>
             </tr>
@@ -1104,10 +1104,10 @@ return
         {html:build2("B47", $labels:B47, $labels:B47_SHORT, $B47invalid, "All values are valid", "invalid value", $errors:B47)}
     </table>
 };
-declare function xmlconv:proceed($source_url as xs:string, $countryCode as xs:string) as element(div) {
+declare function dataflowB:proceed($source_url as xs:string, $countryCode as xs:string) as element(div) {
 
 let $countZones := count(doc($source_url)//aqd:AQD_Zone)
-let $result := if ($countZones > 0) then xmlconv:checkReport($source_url, $countryCode) else ()
+let $result := if ($countZones > 0) then dataflowB:checkReport($source_url, $countryCode) else ()
 let $meta := map:merge((
     map:entry("count", $countZones),
     map:entry("header", "Check air quality zones"),

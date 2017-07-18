@@ -13,7 +13,7 @@ xquery version "3.0" encoding "UTF-8";
  : small modification added by Jaume Targa (ETC/ACM) to align with QA document
  :)
 
-module namespace xmlconv = "http://converters.eionet.europa.eu/dataflowD";
+module namespace dataflowD = "http://converters.eionet.europa.eu/dataflowD";
 import module namespace common = "aqd-common" at "aqd-common.xquery";
 import module namespace sparqlx = "aqd-sparql" at "aqd-sparql.xquery";
 import module namespace labels = "aqd-labels" at "aqd-labels.xquery";
@@ -48,16 +48,16 @@ declare namespace prop="http://dd.eionet.europa.eu/property/";
 declare namespace rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#";
 declare namespace adms="http://www.w3.org/ns/adms#";
 
-declare variable $xmlconv:ISO2_CODES as xs:string* := ("AL", "AD", "AT","BA","BE","BG","CH","CY","CZ","DE","DK","DZ","EE","EG","ES","FI",
+declare variable $dataflowD:ISO2_CODES as xs:string* := ("AL", "AD", "AT","BA","BE","BG","CH","CY","CZ","DE","DK","DZ","EE","EG","ES","FI",
     "FR","GB","GR","HR","HU","IE","IL","IS","IT","JO","LB","LI","LT","LU","LV","MA","ME","MK","MT","NL","NO","PL","PS","PT",
      "RO","RS","SE","SI","SK","TN","TR","XK","UK");
 
-declare variable $xmlconv:FEATURE_TYPES := ("aqd:AQD_Network", "aqd:AQD_Station", "aqd:AQD_SamplingPointProcess", "aqd:AQD_Sample",
+declare variable $dataflowD:FEATURE_TYPES := ("aqd:AQD_Network", "aqd:AQD_Station", "aqd:AQD_SamplingPointProcess", "aqd:AQD_Sample",
 "aqd:AQD_RepresentativeArea", "aqd:AQD_SamplingPoint");
-declare variable $xmlconv:OBLIGATIONS as xs:string* := ($vocabulary:ROD_PREFIX || "672");
+declare variable $dataflowD:OBLIGATIONS as xs:string* := ($vocabulary:ROD_PREFIX || "672");
 
 (: Rule implementations :)
-declare function xmlconv:checkReport($source_url as xs:string, $countryCode as xs:string) as element(table) {
+declare function dataflowD:checkReport($source_url as xs:string, $countryCode as xs:string) as element(table) {
 
 let $docRoot := doc($source_url)
 let $cdrUrl := common:getCdrUrl($countryCode)
@@ -66,16 +66,16 @@ let $reportingYear := common:getReportingYear($docRoot)
 (: COMMON variables used in many QCs :)
 let $countFeatureTypesMap :=
     map:merge((
-    for $featureType in $xmlconv:FEATURE_TYPES
+    for $featureType in $dataflowD:FEATURE_TYPES
     return
         map:entry($featureType, count($docRoot//descendant::*[name()=$featureType]))
     ))
 let $DCombinations :=
-    for $featureType in $xmlconv:FEATURE_TYPES
+    for $featureType in $dataflowD:FEATURE_TYPES
     return
         doc($source_url)//descendant::*[name()=$featureType]
 let $namespaces := distinct-values($docRoot//base:namespace)
-let $knownFeatures := distinct-values(data(sparqlx:run(query:getAllFeatureIds($xmlconv:FEATURE_TYPES, $namespaces))//sparql:binding[@name='inspireLabel']/sparql:literal))
+let $knownFeatures := distinct-values(data(sparqlx:run(query:getAllFeatureIds($dataflowD:FEATURE_TYPES, $namespaces))//sparql:binding[@name='inspireLabel']/sparql:literal))
 let $SPOnamespaces := distinct-values($docRoot//aqd:AQD_SamplingPoint//base:Identifier/base:namespace)
 let $SPPnamespaces := distinct-values($docRoot//aqd:AQD_SamplingPointProcess/ompr:inspireId/base:Identifier/base:namespace)
 let $networkNamespaces := distinct-values($docRoot//aqd:AQD_Network/ef:inspireId/base:Identifier/base:namespace)
@@ -118,7 +118,7 @@ let $D0table :=
             <tr class="{$errors:ERROR}">
                 <td title="Status">Reporting Year is missing.</td>
             </tr>
-        else if (query:deliveryExists($xmlconv:OBLIGATIONS, $countryCode, "d/", $reportingYear)) then
+        else if (query:deliveryExists($dataflowD:OBLIGATIONS, $countryCode, "d/", $reportingYear)) then
             <tr class="{$errors:WARNING}">
                 <td title="Status">Updating delivery for {$reportingYear}</td>
             </tr>
@@ -136,13 +136,13 @@ let $isNewDelivery := errors:getMaxError($D0table) = $errors:INFO
 
 
 let $D1sum := string(sum(
-    for $featureType in $xmlconv:FEATURE_TYPES
+    for $featureType in $dataflowD:FEATURE_TYPES
     return
         count($docRoot//descendant::*[name()=$featureType])))
 (: D01 :)
 let $D01table :=
     try {
-        for $featureType at $pos in $xmlconv:FEATURE_TYPES
+        for $featureType at $pos in $dataflowD:FEATURE_TYPES
         order by $featureType descending
         where map:get($countFeatureTypesMap, $featureType) > 0
         return
@@ -161,7 +161,7 @@ let $D01table :=
 let $D02table :=
     try {
         let $all := map:merge((
-            for $featureType at $pos in $xmlconv:FEATURE_TYPES
+            for $featureType at $pos in $dataflowD:FEATURE_TYPES
                 let $count := count(
                 for $x in $docRoot//descendant::*[name()=$featureType]
                     let $inspireId := $x//base:Identifier/base:namespace/string() || "/" || $x//base:Identifier/base:localId/string()
@@ -170,7 +170,7 @@ let $D02table :=
                     <tr>
                         <td title="base:localId">{$x//base:Identifier/base:localId/string()}</td>
                     </tr>)
-            return map:entry($xmlconv:FEATURE_TYPES[$pos], $count)
+            return map:entry($dataflowD:FEATURE_TYPES[$pos], $count)
         ))
         return
             map:for-each($all, function($name, $count) {
@@ -213,7 +213,7 @@ let $D02errorLevel :=
 (: D03 - :)
 let $D03table :=
     try {
-        let $featureTypes := remove($xmlconv:FEATURE_TYPES, index-of($xmlconv:FEATURE_TYPES, "aqd:AQD_RepresentativeArea"))
+        let $featureTypes := remove($dataflowD:FEATURE_TYPES, index-of($dataflowD:FEATURE_TYPES, "aqd:AQD_RepresentativeArea"))
         let $all := map:merge((
             for $featureType at $pos in $featureTypes
             let $count := count(
@@ -748,7 +748,7 @@ let $D26invalid :=
         where
             count(index-of($localEUStationCode, upper-case(normalize-space($EUStationCode)))) > 1 or
                     (
-                        count(index-of($xmlconv:ISO2_CODES, substring(upper-case(normalize-space($EUStationCode)), 1, 2))) = 0
+                        count(index-of($dataflowD:ISO2_CODES, substring(upper-case(normalize-space($EUStationCode)), 1, 2))) = 0
                     )
         return
             <tr>
@@ -767,7 +767,7 @@ let $D26invalid :=
 let $D27invalid :=
     try {
         ()
-        (:xmlconv:checkVocabulariesConceptEquipmentValues($source_url, "aqd:AQD_Station", "aqd:meteoParams", $vocabulary:METEO_PARAMS_VOCABULARY, "collection"):)
+        (:dataflowD:checkVocabulariesConceptEquipmentValues($source_url, "aqd:AQD_Station", "aqd:meteoParams", $vocabulary:METEO_PARAMS_VOCABULARY, "collection"):)
     }  catch * {
         <tr status="failed">
             <td title="Error code"> {$err:code}</td>
@@ -2102,15 +2102,15 @@ return
  : Main function
  : ======================================================================
  :)
-declare function xmlconv:proceed($source_url as xs:string, $countryCode as xs:string) {
+declare function dataflowD:proceed($source_url as xs:string, $countryCode as xs:string) {
 
-let $countFeatures := count(doc($source_url)//descendant::*[$xmlconv:FEATURE_TYPES = name()])
-let $result := if ($countFeatures > 0) then xmlconv:checkReport($source_url, $countryCode) else ()
+let $countFeatures := count(doc($source_url)//descendant::*[$dataflowD:FEATURE_TYPES = name()])
+let $result := if ($countFeatures > 0) then dataflowD:checkReport($source_url, $countryCode) else ()
 let $meta := map:merge((
     map:entry("count", $countFeatures),
     map:entry("header", "Check environmental monitoring feature types"),
     map:entry("dataflow", "Dataflow D"),
-    map:entry("zeroCount", <p>No environmental monitoring feature type elements ({string-join($xmlconv:FEATURE_TYPES, ", ")}) found in this XML.</p>),
+    map:entry("zeroCount", <p>No environmental monitoring feature type elements ({string-join($dataflowD:FEATURE_TYPES, ", ")}) found in this XML.</p>),
     map:entry("report", <p>This feedback report provides a summary overview of feature types reported and some consistency checks defined in Dataflow D as specified in <a href="http://www.eionet.europa.eu/aqportal/qaqc/">e-reporting QA/QC rules documentation</a>.</p>)
 ))
 return

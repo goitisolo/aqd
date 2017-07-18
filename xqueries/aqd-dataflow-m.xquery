@@ -13,7 +13,7 @@ xquery version "3.0" encoding "UTF-8";
  : small modification added by Jaume Targa (ETC/ACM) to align with QA document
  :)
 
-module namespace xmlconv = "http://converters.eionet.europa.eu/dataflowM";
+module namespace dataflowM = "http://converters.eionet.europa.eu/dataflowM";
 import module namespace common = "aqd-common" at "aqd-common.xquery";
 import module namespace sparqlx = "aqd-sparql" at "aqd-sparql.xquery";
 import module namespace labels = "aqd-labels" at "aqd-labels.xquery";
@@ -47,15 +47,15 @@ declare namespace adms="http://www.w3.org/ns/adms#";
 declare namespace prop = "http://dd.eionet.europa.eu/property/";
 declare namespace rdf = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
 
-declare variable $xmlconv:ISO2_CODES as xs:string* := ("AL","AT","BA","BE","BG","CH","CY","CZ","DE","DK","DZ","EE","EG","ES","FI",
+declare variable $dataflowM:ISO2_CODES as xs:string* := ("AL","AT","BA","BE","BG","CH","CY","CZ","DE","DK","DZ","EE","EG","ES","FI",
     "FR","GB","GR","HR","HU","IE","IL","IS","IT","JO","LB","LI","LT","LU","LV","MA","ME","MK","MT","NL","NO","PL","PS","PT",
      "RO","RS","SE","SI","SK","TN","TR","XK","UK");
 
-declare variable $xmlconv:FEATURE_TYPES := ("aqd:AQD_Model", "aqd:AQD_ModelProcess", "aqd:AQD_ModelArea");
-declare variable $xmlconv:OBLIGATIONS as xs:string* := ($vocabulary:ROD_PREFIX || "672", $vocabulary:ROD_PREFIX || "742");
+declare variable $dataflowM:FEATURE_TYPES := ("aqd:AQD_Model", "aqd:AQD_ModelProcess", "aqd:AQD_ModelArea");
+declare variable $dataflowM:OBLIGATIONS as xs:string* := ($vocabulary:ROD_PREFIX || "672", $vocabulary:ROD_PREFIX || "742");
 
 (: Rule implementations :)
-declare function xmlconv:checkReport($source_url as xs:string, $countryCode as xs:string) as element(table) {
+declare function dataflowM:checkReport($source_url as xs:string, $countryCode as xs:string) as element(table) {
 let $docRoot := doc($source_url)
 let $cdrUrl := common:getCdrUrl($countryCode)
 let $reportingYear := common:getReportingYear($docRoot)
@@ -64,10 +64,10 @@ let $modelNamespaces := distinct-values($docRoot//aqd:AQD_Model/ef:inspireId/bas
 let $modelProcessNamespaces := distinct-values($docRoot//aqd:AQD_ModelProcess/ompr:inspireId/base:Identifier/base:namespace)
 let $modelAreaNamespaces := distinct-values($docRoot//aqd:AQD_ModelArea/aqd:inspireId/base:Identifier/base:namespace)
 let $namespaces := distinct-values($docRoot//base:namespace)
-let $knownFeatures := distinct-values(data(sparqlx:run(query:getAllFeatureIds($xmlconv:FEATURE_TYPES, $namespaces))//sparql:binding[@name = 'inspireLabel']/sparql:literal))
+let $knownFeatures := distinct-values(data(sparqlx:run(query:getAllFeatureIds($dataflowM:FEATURE_TYPES, $namespaces))//sparql:binding[@name = 'inspireLabel']/sparql:literal))
 
 let $MCombinations :=
-    for $featureType in $xmlconv:FEATURE_TYPES
+    for $featureType in $dataflowM:FEATURE_TYPES
     return
         doc($source_url)//gml:featureMember/descendant::*[name()=$featureType]
 
@@ -105,11 +105,11 @@ let $M0table :=
             <tr class="{$errors:ERROR}">
                 <td title="Status">Reporting Year is missing.</td>
             </tr>
-        else if (query:deliveryExists($xmlconv:OBLIGATIONS, $countryCode, "d/", $reportingYear)) then
+        else if (query:deliveryExists($dataflowM:OBLIGATIONS, $countryCode, "d/", $reportingYear)) then
             <tr class="{$errors:WARNING}">
                 <td title="Status">Updating delivery for {$reportingYear}</td>
             </tr>
-        else if (query:deliveryExists($xmlconv:OBLIGATIONS, $countryCode, "d1b/", $reportingYear)) then
+        else if (query:deliveryExists($dataflowM:OBLIGATIONS, $countryCode, "d1b/", $reportingYear)) then
             <tr class="{$errors:WARNING}">
                 <td title="Status">Updating delivery for {$reportingYear}</td>
             </tr>
@@ -127,12 +127,12 @@ let $isNewDelivery := errors:getMaxError($M0table) = $errors:INFO
 
 (: M01 :)
 let $countFeatureTypes :=
-    for $featureType in $xmlconv:FEATURE_TYPES
+    for $featureType in $dataflowM:FEATURE_TYPES
     return
         count(doc($source_url)//gml:featureMember/descendant::*[name()=$featureType])
 let $M01table :=
     try {
-        for $featureType at $pos in $xmlconv:FEATURE_TYPES
+        for $featureType at $pos in $dataflowM:FEATURE_TYPES
         let $errorClass :=
             if ($countFeatureTypes[$pos] > 0) then
                 $errors:INFO
@@ -153,7 +153,7 @@ let $M01table :=
 (: M02 - :)
 let $M02table :=
     try {
-        for $featureType at $pos in $xmlconv:FEATURE_TYPES
+        for $featureType at $pos in $dataflowM:FEATURE_TYPES
         let $countAll := count($docRoot//descendant::*[name()=$featureType])
         let $count := count(
                 for $x in $docRoot//descendant::*[name()=$featureType]
@@ -189,7 +189,7 @@ let $M02count :=
 (: M03 - :)
 let $M03table :=
     try {
-        let $featureTypes := $xmlconv:FEATURE_TYPES
+        let $featureTypes := $dataflowM:FEATURE_TYPES
         for $featureType at $pos in $featureTypes
         let $count := count(
                 for $x in $docRoot//descendant::*[name()=$featureType]
@@ -843,15 +843,15 @@ let $M46message :=
     </table>
 };
 
-declare function xmlconv:proceed($source_url as xs:string, $countryCode as xs:string) {
+declare function dataflowM:proceed($source_url as xs:string, $countryCode as xs:string) {
 
-let $countFeatures := count(doc($source_url)//descendant::*[$xmlconv:FEATURE_TYPES = name()])
-let $result := if ($countFeatures > 0) then xmlconv:checkReport($source_url, $countryCode) else ()
+let $countFeatures := count(doc($source_url)//descendant::*[$dataflowM:FEATURE_TYPES = name()])
+let $result := if ($countFeatures > 0) then dataflowM:checkReport($source_url, $countryCode) else ()
 let $meta := map:merge((
     map:entry("count", $countFeatures),
     map:entry("header", "Check environmental monitoring feature types"),
     map:entry("dataflow", "Dataflow D on Models and Objective Estimation"),
-    map:entry("zeroCount", <p>No environmental monitoring feature type elements ({string-join($xmlconv:FEATURE_TYPES, ", ")}) found from this XML.</p>),
+    map:entry("zeroCount", <p>No environmental monitoring feature type elements ({string-join($dataflowM:FEATURE_TYPES, ", ")}) found from this XML.</p>),
     map:entry("report", <p>This feedback report provides a summary overview of feature types reported and some consistency checks defined in Dataflow D on Models and Objective Estimation as specified in <a href="http://www.eionet.europa.eu/aqportal/qaqc/">e-reporting QA/QC rules documentation</a>.</p>)
 ))
 return

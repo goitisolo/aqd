@@ -1,6 +1,6 @@
 xquery version "3.0" encoding "UTF-8";
 
-module namespace xmlconv = "http://converters.eionet.europa.eu/dataflowEb";
+module namespace dataflowEb = "http://converters.eionet.europa.eu/dataflowEb";
 import module namespace common = "aqd-common" at "aqd-common.xquery";
 import module namespace sparqlx = "aqd-sparql" at "aqd-sparql.xquery";
 import module namespace labels = "aqd-labels" at "aqd-labels.xquery";
@@ -34,11 +34,11 @@ declare namespace adms="http://www.w3.org/ns/adms#";
 declare namespace prop = "http://dd.eionet.europa.eu/property/";
 declare namespace rdf = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
 
-declare variable $xmlconv:OBLIGATIONS as xs:string* := ($vocabulary:ROD_PREFIX || "674");
-declare variable $xmlconv:FEATURE_TYPES := ("aqd:AQD_Model", "aqd:AQD_ModelProcess", "aqd:AQD_ModelArea");
+declare variable $dataflowEb:OBLIGATIONS as xs:string* := ($vocabulary:ROD_PREFIX || "674");
+declare variable $dataflowEb:FEATURE_TYPES := ("aqd:AQD_Model", "aqd:AQD_ModelProcess", "aqd:AQD_ModelArea");
 
 (: Rule implementations :)
-declare function xmlconv:checkReport($source_url as xs:string, $countryCode as xs:string) as element(table) {
+declare function dataflowEb:checkReport($source_url as xs:string, $countryCode as xs:string) as element(table) {
     let $docRoot := doc($source_url)
     let $cdrUrl := common:getCdrUrl($countryCode)
     let $reportingYear := common:getReportingYear($docRoot)
@@ -78,7 +78,7 @@ declare function xmlconv:checkReport($source_url as xs:string, $countryCode as x
                 <tr class="{$errors:ERROR}">
                     <td title="Status">Reporting Year is missing.</td>
                 </tr>
-            else if (query:deliveryExists($xmlconv:OBLIGATIONS, $countryCode, "e1b/", $reportingYear)) then
+            else if (query:deliveryExists($dataflowEb:OBLIGATIONS, $countryCode, "e1b/", $reportingYear)) then
                 <tr class="{$errors:WARNING}">
                     <td title="Status">Updating delivery for {$reportingYear}</td>
                 </tr>
@@ -1095,9 +1095,9 @@ declare function xmlconv:checkReport($source_url as xs:string, $countryCode as x
 };
 
 
-declare function xmlconv:proceed($source_url as xs:string, $countryCode as xs:string) as element(div) {
+declare function dataflowEb:proceed($source_url as xs:string, $countryCode as xs:string) as element(div) {
     let $count := count(doc($source_url)//om:OM_Observation)
-    let $result := if ($count > 0) then xmlconv:checkReport($source_url, $countryCode) else ()
+    let $result := if ($count > 0) then dataflowEb:checkReport($source_url, $countryCode) else ()
     let $meta := map:merge((
         map:entry("count", $count),
         map:entry("header", "Check air quality observations"),
