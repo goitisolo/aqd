@@ -358,7 +358,7 @@ declare function xmlconv:checkReport($source_url as xs:string, $countryCode as x
         }
 
     (: Eb14 - A valid delivery MUST provide an om:parameter/om:NamedValue/om:name xlink:href to http://dd.eionet.europa.eu/vocabulary/aq/resultparameter/result-encoding  &
-    om:parameter/om:NamedValue/om:value ./om:procedure xlink:href attribute attribute shall resolve to  valid code for http://dd.eionet.europa.eu/vocabulary/aq/resultformat/ :))
+    om:parameter/om:NamedValue/om:value ./om:procedure xlink:href attribute attribute shall resolve to  valid code for http://dd.eionet.europa.eu/vocabulary/aq/resultformat/ :)
     let $Eb14invalid :=
         try {
             ()
