@@ -350,7 +350,16 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
     om:parameter/om:NamedValue/om:value ./om:procedure xlink:href attribute attribute shall resolve to  valid code for http://dd.eionet.europa.eu/vocabulary/aq/resultencoding/ :)
     let $Eb13invalid :=
         try {
-            ()
+            (let $valid := dd:getValidConcepts($vocabulary:RESULT_ENCODING || "rdf")
+            for $x in $docRoot//om:OM_Observation
+            let $namedValue := $x/om:parameter/om:NamedValue[om:name/@xlink:href = $vocabulary:RESULTPARAMETER_LOCATION]
+            let $resultParam := tokenize(common:if-empty($namedValue/om:value, $namedValue/om:value/@xlink:href), "/")[last()]
+            return
+                <tr>
+                    <td title="gml:id">{data($x/@gml:id)}</td>
+                    <td title="aqd:AQD_Model">{$resultParam}</td>
+                    <td title="Pollutant">{$resultParam}</td>
+                </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
         } catch * {
             <tr status="failed">
                 <td title="Error code">{$err:code}</td>
@@ -362,19 +371,42 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
     om:parameter/om:NamedValue/om:value ./om:procedure xlink:href attribute attribute shall resolve to  valid code for http://dd.eionet.europa.eu/vocabulary/aq/resultformat/ :)
     let $Eb14invalid :=
         try {
-            ()
+            (let $valid := dd:getValidConcepts($vocabulary:RESULT_FORMAT || "rdf")
+            for $x in $docRoot//om:OM_Observation
+            let $namedValue := $x/om:parameter/om:NamedValue[om:name/@xlink:href = $vocabulary:RESULTPARAMETER_LOCATION]
+            let $resultParam := tokenize(common:if-empty($namedValue/om:value, $namedValue/om:value/@xlink:href), "/")[last()]
+            return
+                <tr>
+                    <td title="gml:id">{data($x/@gml:id)}</td>
+                    <td title="aqd:AQD_Model">{$resultParam}</td>
+                    <td title="Pollutant">{$resultParam}</td>
+                </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
         } catch * {
             <tr status="failed">
                 <td title="Error code">{$err:code}</td>
                 <td title="Error description">{$err:description}</td>
             </tr>
         }
+
     (: IF resultencoding = inline, resultformat can only be http://dd.eionet.europa.eu/vocabulary/aq/resultformat/swe-array IF resultencoding = external
         resultformat can only be http://dd.eionet.europa.eu/vocabulary/aq/resultformat/ascii-grid ;
         http://dd.eionet.europa.eu/vocabulary/aq/resultformat/esri-shp or http://dd.eionet.europa.eu/vocabulary/aq/resultformat/geotiff :)
     let $Eb14binvalid :=
         try {
-            ()
+            (let $valid := ("http://dd.eionet.europa.eu/vocabulary/aq/resultencoding/inline" || "http://dd.eionet.europa.eu/vocabulary/aq/resultformat/swe-array", "http://dd.eionet.europa.eu/vocabulary/aq/resultencoding/external" || "http://dd.eionet.europa.eu/vocabulary/aq/resultformat/ascii-grid")
+            for $x in $docRoot//om:OM_Observation
+            let $encoding := $x/om:parameter/om:NamedValue[om:name/@xlink:href = $vocabulary:PROCESSPARAMETER_RESULTENCODING]
+            let $encoding := common:if-empty($encoding/om:value, $encoding/om:value/@xlink:href)
+            let $format := $x/om:parameter/om:NamedValue[om:name/@xlink:href = $vocabulary:PROCESSPARAMETER_RESULTFORMAT]
+            let $format := common:if-empty($format/om:value, $format/om:value/@xlink:href)
+            let $combination := $encoding || $format
+            where not($combination = $valid)
+            return
+                <tr>
+                    <td title="gml:id">{data($x/@gml:id)}</td>
+                    <td title="Result Encoding">{$encoding}</td>
+                    <td title="Result Formatting">{$format}</td>
+                </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
         } catch * {
             <tr status="failed">
                 <td title="Error code">{$err:code}</td>
@@ -719,7 +751,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
 
             for $x in $docRoot//om:OM_Observation
             let $namedValue := $x/om:parameter/om:NamedValue[om:name/@xlink:href = $vocabulary:PROCESS_PARAMETER || "model"]
-            let $samplingPoint := tokenize(common:if-empty($namedValue/om:value, $namedValue/om:value/@xlink:href), "/")[last()]
+            let $model := tokenize(common:if-empty($namedValue/om:value, $namedValue/om:value/@xlink:href), "/")[last()]
             let $procedure := $x/om:procedure/@xlink:href/string()
             let $procedure :=
                 if (not($procedure = "") and not(starts-with($procedure, "http://"))) then
@@ -733,14 +765,14 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
                 else
                     $featureOfInterest
             let $observedProperty := $x/om:observedProperty/@xlink:href/string()
-            let $concat := $samplingPoint || $procedure || $featureOfInterest || $observedProperty
+            let $concat := $model || $procedure || $featureOfInterest || $observedProperty
             where not($concat = $resultsConcat)
             return
                 <tr>
                     <td title="om:OM_Observation">{string($x/@gml:id)}</td>
-                    <td title="aqd:AQD_SamplingPoint">{string($samplingPoint)}</td>
-                    <td title="aqd:AQD_SamplingPointProcess">{$procedure}</td>
-                    <td title="aqd:AQD_Sample">{$featureOfInterest}</td>
+                    <td title="aqd:AQD_Model">{string($model)}</td>
+                    <td title="aqd:AQD_ModelProcess">{$procedure}</td>
+                    <td title="aqd:AQD_ModelArea">{$featureOfInterest}</td>
                     <td title="Pollutant">{$observedProperty}</td>
                 </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
         }
@@ -908,7 +940,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
         try {
             (for $x in $docRoot//om:result
                 let $files := $x/gml:File/gml:rangeParameters
-                where $files => empty()
+                where $files/* => empty()
                 return
                 <tr>
                     <td title="@gml:id">{string($x/../@gml:id)}</td>
@@ -1067,6 +1099,9 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
             {html:build2("Eb08", $labels:Eb08, $labels:Eb08_SHORT, $Eb08invalid, "All records are valid", "record", $errors:Eb08)}
             {html:build2("Eb09", $labels:Eb09, $labels:Eb09_SHORT, $Eb09invalid, "All records are valid", "record", $errors:Eb09)}
             {html:build2("Eb10", $labels:Eb10, $labels:Eb10_SHORT, $Eb10invalid, "All records are valid", "record", $errors:Eb10)}
+            {html:build2("Eb13", $labels:Eb13, $labels:Eb13_SHORT, $Eb13invalid, "All records are valid", "record", $errors:Eb13)}
+            {html:build2("Eb14", $labels:Eb14, $labels:Eb14_SHORT, $Eb14invalid, "All records are valid", "record", $errors:Eb14)}
+            {html:build2("Eb14b", $labels:Eb14b, $labels:Eb14b_SHORT, $Eb14binvalid, "All records are valid", "record", $errors:Eb14b)}
             {html:build2("Eb15", $labels:Eb15, $labels:Eb15_SHORT, $Eb15invalid, "All records are valid", "record", $errors:Eb15)}
             {html:build2("Eb16", $labels:Eb16, $labels:Eb16_SHORT, $Eb16invalid, "All records are valid", "record", $errors:Eb16)}
             {html:build2("Eb17", $labels:Eb17, $labels:Eb17_SHORT, $Eb17invalid, "All records are valid", "record", $errors:Eb17)}
