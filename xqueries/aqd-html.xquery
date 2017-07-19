@@ -134,7 +134,7 @@ declare function html:getBullet($text as xs:string, $level as xs:string) as elem
         case $errors:WARNING return $errors:COLOR_WARNING
         case $errors:SKIPPED return $errors:COLOR_SKIPPED
         default return $errors:COLOR_INFO
-    let $text := if ($text != "NS") then <a href="{$vocabulary:QAQC_VOCABULARY || $text}" style="color: inherit">{$text}</a> else $text
+    let $text := if ($text != "NS") then <a target="_blank" href="{$vocabulary:QAQC_VOCABULARY || $text}" style="color: inherit">{$text}</a> else $text
     return
         <div class="{$level}" style="background-color: { $color };">{ $text }</div>
 };
