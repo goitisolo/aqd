@@ -10,6 +10,7 @@ import module namespace vocabulary = "aqd-vocabulary" at "aqd-vocabulary.xquery"
 import module namespace query = "aqd-query" at "aqd-query.xquery";
 import module namespace errors = "aqd-errors" at "aqd-errors.xquery";
 import module namespace schemax = "aqd-schema" at "aqd-schema.xquery";
+import module namespace functx = "http://www.functx.com" at "aqd-functx.xq";
 
 declare namespace aqd = "http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0";
 declare namespace gml = "http://www.opengis.net/gml/3.2";
@@ -399,8 +400,15 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
             let $encoding := common:if-empty($encoding/om:value, $encoding/om:value/@xlink:href)
             let $format := $x/om:parameter/om:NamedValue[om:name/@xlink:href = $vocabulary:PROCESSPARAMETER_RESULTFORMAT]
             let $format := common:if-empty($format/om:value, $format/om:value/@xlink:href)
+            let $condition :=
+                if ($encoding = "http://dd.eionet.europa.eu/vocabulary/aq/resultencoding/inline") then
+                    exists($x/swe:DataArray)
+                else if ($encoding = "http://dd.eionet.europa.eu/vocabulary/aq/resultencoding/external") then
+                    exists($x/gml:File)
+                else
+                    false()
             let $combination := $encoding || $format
-            where not($combination = $valid)
+            where not($combination = $valid) or not($condition)
             return
                 <tr>
                     <td title="gml:id">{data($x/@gml:id)}</td>
@@ -419,7 +427,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
     (: TODO FIX :)
     let $Eb15invalid :=
         try {
-            (for $x in $docRoot//om:OM_Observation/om:result//swe:elementType/swe:DataRecord/swe:field[@name = "StartTime"
+            (for $x in $docRoot//om:OM_Observation/om:result[swe:DataArray]//swe:elementType/swe:DataRecord/swe:field[@name = "StartTime"
                     and not(swe:Time[@definition = "http://www.opengis.net/def/property/OGC/0/SamplingTime"]/swe:uom/@xlink:href = "http://www.opengis.net/def/uom/ISO-8601/0/Gregorian")]
             return
                 <tr>
@@ -437,7 +445,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
     swe:Time definition=http://www.opengis.net/def/property/OGC/0/SamplingTime swe:uom xlink:href=http://www.opengis.net/def/uom/ISO-8601/0/Gregorian :)
     let $Eb16invalid :=
         try {
-            (for $x in $docRoot//om:OM_Observation/om:result//swe:elementType/swe:DataRecord/swe:field[@name = "EndTime"
+            (for $x in $docRoot//om:OM_Observation/om:result[swe:DataArray]//swe:elementType/swe:DataRecord/swe:field[@name = "EndTime"
                     and not(swe:Time[@definition = "http://www.opengis.net/def/property/OGC/0/SamplingTime"]/swe:uom/@xlink:href = "http://www.opengis.net/def/uom/ISO-8601/0/Gregorian")]
             return
                 <tr>
@@ -455,7 +463,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
      swe:Category definition is defined by http://dd.eionet.europa.eu/vocabulary/aq/observationvalidity:)
     let $Eb17invalid :=
         try {
-            (for $x in $docRoot//om:OM_Observation/om:result//swe:elementType/swe:DataRecord/swe:field[@name="Validity"
+            (for $x in $docRoot//om:OM_Observation/om:result[swe:DataArray]//swe:elementType/swe:DataRecord/swe:field[@name="Validity"
                     and not(swe:Category/@definition = "http://dd.eionet.europa.eu/vocabulary/aq/observationvalidity")]
             return
                 <tr>
@@ -472,7 +480,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
      swe:Category definition is defined by http://dd.eionet.europa.eu/vocabulary/aq/observationverification :)
     let $Eb18invalid :=
         try {
-            (for $x in $docRoot//om:OM_Observation/om:result//swe:elementType/swe:DataRecord/swe:field[@name = "Verification"
+            (for $x in $docRoot//om:OM_Observation/om:result[swe:DataArray]//swe:elementType/swe:DataRecord/swe:field[@name = "Verification"
                     and not(swe:Category/@definition = $vocabulary:BASE || "observationverification")]
             return
                 <tr>
@@ -491,7 +499,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
         try {
             (let $obs := dd:getValidConceptsLC($vocabulary:OBSERVATIONS_PRIMARY || "rdf")
             let $cons := dd:getValidConceptsLC($vocabulary:UOM_CONCENTRATION_VOCABULARY || "rdf")
-            for $x in $docRoot//om:OM_Observation/om:result//swe:elementType/swe:DataRecord/swe:field[@name = "Value"
+            for $x in $docRoot//om:OM_Observation/om:result[swe:DataArray]//swe:elementType/swe:DataRecord/swe:field[@name = "Value"
                     and (not(swe:Quantity/lower-case(@definition) = $obs) or not(swe:Quantity/swe:uom/lower-case(@xlink:href) = $cons))]
             return
                 <tr>
@@ -506,18 +514,18 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
             </tr>
         }
 
-    (: Eb19b - Check if the unit of measure reporting via (swe:uom) corresponds to the recommended unit of measure in vocabulary http://dd.eionet.europa.eu/vocabulary/uom/concentration/[code] depending on pollutant reported via /om:observedProperty :)
-    (: TODO make it better for E19b also :)
+    (: Eb19b - Check if the unit of measure reporting via (swe:uom) corresponds to the recommended unit of measure in vocabulary
+     http://dd.eionet.europa.eu/vocabulary/uom/concentration/[code] depending on pollutant reported via /om:observedProperty :)
     let $Eb19binvalid :=
         try {
-            (for $x in $docRoot//om:OM_Observation
-            let $pollutant := string($x/om:observedProperty/@xlink:href)
+            (for $x in $docRoot//om:OM_Observation/om:result[swe:DataArray]
+            let $pollutant := string($x/../om:observedProperty/@xlink:href)
             let $value := string($x//swe:field[@name = 'Value']/swe:Quantity/swe:uom/@xlink:href)
             let $recommended := dd:getRecommendedUnit($pollutant)
             where not($value = $recommended)
             return
                 <tr>
-                    <td title="om:OM_Observation">{data($x/@gml:id)}</td>
+                    <td title="om:OM_Observation">{data($x/../@gml:id)}</td>
                     <td title="Pollutant">{$pollutant}</td>
                     <td title="Recommended Unit">{$recommended}</td>
                     <td title="swe:uom">{$value}</td>
@@ -533,7 +541,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
      http://dd.eionet.europa.eu/vocabulary/aq/primaryObservation/dc & the swe:uom resolves to an xlink to http://dd.eionet.europa.eu/vocabulary/uom/statistics/percentage :)
     let $Eb20invalid :=
         try {
-            (let $all := $docRoot//om:result//swe:elementType/swe:DataRecord/swe:field[@name="DataCapture"]
+            (let $all := $docRoot//om:OM_Observation/om:result[swe:DataArray]//swe:elementType/swe:DataRecord/swe:field[@name="DataCapture"]
             for $x in $all
             let $def := $x/swe:Quantity/@definition/string()
             let $uom := $x/swe:Quantity/swe:uom/@xlink:href/string()
@@ -555,7 +563,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
     (: Eb21 - IF resultformat is http://dd.eionet.europa.eu/vocabulary/aq/resultformat/swe-array (Eb14) then /om:result/swe:DataArray/swe:encoding/swe:TextEncoding shall resolve to decimalSeparator="." tokenSeparator="," blockSeparator="@@" :)
     let $Eb21invalid :=
         try {
-            (for $x in $docRoot//om:result//swe:encoding/swe:TextEncoding[not(@decimalSeparator=".") or not(@tokenSeparator=",") or not(@blockSeparator="@@")]
+            (for $x in $docRoot//om:OM_Observation/om:result[swe:DataArray]//swe:encoding/swe:TextEncoding[not(@decimalSeparator=".") or not(@tokenSeparator=",") or not(@blockSeparator="@@")]
             return
                 <tr>
                     <td title="@gml:id">{string($x/../../../../@gml:id)}</td>
@@ -940,7 +948,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
     (: Eb35 - IF resultformat is ascii-grid ;  esri-shp or geotiff (Eb14) then ./om:result/gml:File/gml:rangeParameters MUST be populated :)
     let $Eb35invalid :=
         try {
-            (for $x in $docRoot//om:result
+            (for $x in $docRoot//om:OM_Observation/om:result[gml:File]
                 let $files := $x/gml:File/gml:rangeParameters
                 where $files/* => empty()
                 return
@@ -959,7 +967,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
     let $Eb36invalid :=
         try {
             (let $valid := dd:getValidConcepts($vocabulary:AGGREGATION_PROCESS || "rdf")
-            for $x in $docRoot//om:result
+            for $x in $docRoot//om:OM_Observation/om:result[gml:File]
             let $definition := $x/gml:File/gml:rangeParameters/swe:Quantity/@Definition/string()
             where not($definition = $valid)
             return
@@ -976,8 +984,8 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
     (: Eb37 - IF resultformat is ascii-grid ;  esri-shp or geotiff (Eb14) then ./om:result/gml:File/gml:rangeParameters/swe:label should be populated :)
     let $Eb37invalid :=
         try {
-            (for $x in $docRoot//om:result
-            let $label:= $x/gml:File/gml:rangeParameters/swe:label
+            (for $x in $docRoot//om:OM_Observation/om:result[gml:File]
+            let $label:= $x/gml:File/gml:rangeParameters/swe:Quantity/swe:label
             where ($label => empty())
             return
                 <tr>
@@ -993,8 +1001,8 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
     (: Eb38 - IF resultformat is ascii-grid ;  esri-shp or geotiff (Eb14) then ./om:result/gml:File/gml:rangeParameters/swe:description MUST be provided :)
     let $Eb38invalid :=
         try {
-            (for $x in $docRoot//om:result
-            let $description:= $x/gml:File/gml:rangeParameters/swe:description
+            (for $x in $docRoot//om:OM_Observation/om:result[gml:File]
+            let $description:= $x/gml:File/gml:rangeParameters/swe:Quantity/swe:description
             where ($description => empty())
             return
                 <tr>
@@ -1011,8 +1019,8 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
      MUST match a code under http://dd.eionet.europa.eu/vocabulary/uom/concentration/ :)
     let $Eb39invalid :=
         try {
-            (let $valid := (dd:getValidConcepts($vocabulary:UOM_CONCENTRATION_VOCABULARY || "rdf"), dd:getValidConcepts($vocabulary:UOM_STATISTICS))
-            for $x in $docRoot//om:result
+            (let $valid := (dd:getValidConcepts($vocabulary:UOM_CONCENTRATION_VOCABULARY || "rdf"), dd:getValidConcepts($vocabulary:UOM_STATISTICS || "rdf"))
+            for $x in $docRoot//om:OM_Observation/om:result[gml:File]
             let $xlink := $x/gml:File/gml:rangeParameters/swe:Quantity/swe:uom/@xlink:href
             where not($xlink = $valid)
             return
@@ -1029,17 +1037,17 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
 
     (: Eb40 - Check if the unit of measure reporting via (/om:result/gml:File/gml:rangeParameters/swe:uom) corresponds to the recommended unit of measure in
     vocabulary http://dd.eionet.europa.eu/vocabulary/uom/concentration/[code] depending on pollutant reported via /om:observedProperty :)
-    (: TODO FIX :)
     let $Eb40invalid :=
         try {
             (let $valid := dd:getValidConcepts($vocabulary:UOM_CONCENTRATION_VOCABULARY || "rdf")
-            for $x in $docRoot//om:result
+            for $x in $docRoot//om:OM_Observation/om:result[gml:File]
             let $observedProperty := $x/om:observedProperty
-            let $xlink := $x/gml:File/gml:rangeParameters/swe:uom/@xlink:href
+            let $xlink := $x/gml:File/gml:rangeParameters/swe:Quantity/swe:uom/@xlink:href
             where not($xlink = $valid)
             return
                 <tr>
                     <td title="@gml:id">{string($x/../@gml:id)}</td>
+                    <td title="swe:uom">{$xlink => string()}</td>
                 </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
         } catch * {
             <tr status="failed">
@@ -1050,7 +1058,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
     (: Eb41 - IF resultformat is ascii-grid ;  esri-shp or geotiff (Eb14) then ./om:result/gml:File/gml:fileReference MUST be provided :)
     let $Eb41invalid :=
         try {
-            (for $x in $docRoot//om:result
+            (for $x in $docRoot//om:OM_Observation/om:result[gml:File]
             let $reference := $x/gml:File/gml:fileReference
             where $reference => empty()
             return
@@ -1070,15 +1078,16 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
         File including extension (e.g. model.zip)
         +
         Variable using a # (e.g. #no2) :)
-    (: TODO FIX URL :)
     let $Eb42invalid :=
         try {
-            (for $x in $docRoot//om:result
+            (let $regex := functx:escape-for-regex($cdrUrl || "e1b") || ".+\.[a-z]{3,3}#.*"
+            for $x in $docRoot//om:OM_Observation/om:result[gml:File]
             let $reference := $x/gml:File/gml:fileReference
-            where not(contains($reference, $cdrUrl || "e1b"))
+            where not(matches($reference, $regex))
             return
                 <tr>
                     <td title="@gml:id">{string($x/../@gml:id)}</td>
+                    <td title="gml:fileReference">{$reference => string()}</td>
                 </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
         } catch * {
             <tr status="failed">
@@ -1086,7 +1095,6 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
                 <td title="Error description">{$err:description}</td>
             </tr>
         }
-
 
     return
         <table class="maintable hover">

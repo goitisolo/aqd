@@ -13,3 +13,7 @@ declare function functx:is-leap-year($date as xs:anyAtomicType?) as xs:boolean {
             $year mod 100 != 0) or
             $year mod 400 = 0
 };
+
+declare function functx:escape-for-regex($arg as xs:string?) as xs:string {
+    replace($arg, '(\.|\[|\]|\\|\||\-|\^|\$|\?|\*|\+|\{|\}|\(|\))','\\$1')
+};
