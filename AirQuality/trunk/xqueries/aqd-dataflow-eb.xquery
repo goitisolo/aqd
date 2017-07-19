@@ -346,19 +346,20 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
                 <td title="Error description">{$err:description}</td>
             </tr>
         }
-    (: Eb13 - A valid delivery MUST provide an om:parameter/om:NamedValue/om:name xlink:href to http://dd.eionet.europa.eu/vocabulary/aq/resultparameter/result-location  &
-    om:parameter/om:NamedValue/om:value ./om:procedure xlink:href attribute attribute shall resolve to  valid code for http://dd.eionet.europa.eu/vocabulary/aq/resultencoding/ :)
+
+    (: Eb13 - A valid delivery MUST provide an om:parameter/om:NamedValue/om:name xlink:href to http://dd.eionet.europa.eu/vocabulary/aq/processparameter/resultencoding &
+    om:parameter/om:NamedValue/om:value xlink:href attribute shall resolve to  valid code for http://dd.eionet.europa.eu/vocabulary/aq/resultencoding/ :)
     let $Eb13invalid :=
         try {
             (let $valid := dd:getValidConcepts($vocabulary:RESULT_ENCODING || "rdf")
             for $x in $docRoot//om:OM_Observation
-            let $namedValue := $x/om:parameter/om:NamedValue[om:name/@xlink:href = $vocabulary:RESULTPARAMETER_LOCATION]
-            let $resultParam := tokenize(common:if-empty($namedValue/om:value, $namedValue/om:value/@xlink:href), "/")[last()]
+            let $node := $x/om:parameter/om:NamedValue[om:name/@xlink:href = $vocabulary:PROCESSPARAMETER_RESULTENCODING]
+            let $value := tokenize(common:if-empty($node/om:value, $node/om:value/@xlink:href), "/")[last()]
+            where $node => empty() or not($value = $valid)
             return
                 <tr>
                     <td title="gml:id">{data($x/@gml:id)}</td>
-                    <td title="aqd:AQD_Model">{$resultParam}</td>
-                    <td title="Pollutant">{$resultParam}</td>
+                    <td title="Result encoding">{$value}</td>
                 </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
         } catch * {
             <tr status="failed">
@@ -367,19 +368,18 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
             </tr>
         }
 
-    (: Eb14 - A valid delivery MUST provide an om:parameter/om:NamedValue/om:name xlink:href to http://dd.eionet.europa.eu/vocabulary/aq/resultparameter/result-encoding  &
-    om:parameter/om:NamedValue/om:value ./om:procedure xlink:href attribute attribute shall resolve to  valid code for http://dd.eionet.europa.eu/vocabulary/aq/resultformat/ :)
+    (: Eb14 - A valid delivery MUST provide an om:parameter/om:NamedValue/om:name xlink:href to http://dd.eionet.europa.eu/vocabulary/aq/processparameter/resultformat &
+    om:parameter/om:NamedValue/om:value xlink:href attribute attribute shall resolve to  valid code for http://dd.eionet.europa.eu/vocabulary/aq/resultformat/ :)
     let $Eb14invalid :=
         try {
             (let $valid := dd:getValidConcepts($vocabulary:RESULT_FORMAT || "rdf")
             for $x in $docRoot//om:OM_Observation
-            let $namedValue := $x/om:parameter/om:NamedValue[om:name/@xlink:href = $vocabulary:RESULTPARAMETER_LOCATION]
-            let $resultParam := tokenize(common:if-empty($namedValue/om:value, $namedValue/om:value/@xlink:href), "/")[last()]
+            let $node := $x/om:parameter/om:NamedValue[om:name/@xlink:href = $vocabulary:PROCESSPARAMETER_RESULTFORMAT]
+            let $value := tokenize(common:if-empty($node/om:value, $node/om:value/@xlink:href), "/")[last()]
             return
                 <tr>
                     <td title="gml:id">{data($x/@gml:id)}</td>
-                    <td title="aqd:AQD_Model">{$resultParam}</td>
-                    <td title="Pollutant">{$resultParam}</td>
+                    <td title="Result format">{$value}</td>
                 </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
         } catch * {
             <tr status="failed">
@@ -825,6 +825,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
                 <td title="Error description">{$err:description}</td>
             </tr>
         }
+
     (: Eb29 - IF resultformat is http://dd.eionet.europa.eu/vocabulary/aq/resultformat/swe-array (Eb14) then check for unexpected spaces  around all values (between comma separator) under swe:values :)
     let $Eb29invalid :=
         try {
@@ -850,6 +851,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
                 <td title="Error description">{$err:description}</td>
             </tr>
         }
+
     (: Eb31 - IF resultformat is http://dd.eionet.europa.eu/vocabulary/aq/resultformat/swe-array (Eb14) then check for date overlaps
      between consecutive data blocks within swe:values :)
     let $Eb31invalid :=
@@ -951,6 +953,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
                 <td title="Error description">{$err:description}</td>
             </tr>
         }
+
     (: Eb36 - IF resultformat is ascii-grid ;  esri-shp or geotiff (Eb14) then ./om:result/gml:File/gml:rangeParameters/swe:Quantity@Definition MUST match a code under
      http://dd.eionet.europa.eu/vocabulary/aq/aggregationprocess/ :)
     let $Eb36invalid :=
