@@ -43,10 +43,10 @@ declare namespace gmd = "http://www.isotc211.org/2005/gmd";
 declare namespace gco = "http://www.isotc211.org/2005/gco";
 
 declare namespace sparql = "http://www.w3.org/2005/sparql-results#";
-declare namespace skos="http://www.w3.org/2004/02/skos/core#";
-declare namespace prop="http://dd.eionet.europa.eu/property/";
-declare namespace rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#";
-declare namespace adms="http://www.w3.org/ns/adms#";
+declare namespace skos = "http://www.w3.org/2004/02/skos/core#";
+declare namespace prop = "http://dd.eionet.europa.eu/property/";
+declare namespace rdf = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
+declare namespace adms = "http://www.w3.org/ns/adms#";
 
 declare variable $dataflowD:ISO2_CODES as xs:string* := ("AL", "AD", "AT","BA","BE","BG","CH","CY","CZ","DE","DK","DZ","EE","EG","ES","FI",
     "FR","GB","GR","HR","HU","IE","IL","IS","IT","JO","LB","LI","LT","LU","LV","MA","ME","MK","MT","NL","NO","PL","PS","PT",

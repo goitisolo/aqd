@@ -22,13 +22,13 @@ xquery version "3.0" encoding "UTF-8";
  : Dataflow M script -
  :)
 module namespace obligations = "http://converters.eionet.europa.eu";
-import module namespace dfB = "http://converters.eionet.europa.eu/dataflowB" at "aqd-dataflow-b.xquery";
-import module namespace dfC = "http://converters.eionet.europa.eu/dataflowC" at "aqd-dataflow-c.xquery";
-import module namespace dfD = "http://converters.eionet.europa.eu/dataflowD" at "aqd-dataflow-d.xquery";
-import module namespace dfG = "http://converters.eionet.europa.eu/dataflowG" at "aqd-dataflow-g.xquery";
-import module namespace dfM = "http://converters.eionet.europa.eu/dataflowM" at "aqd-dataflow-m.xquery";
-import module namespace dfEa = "http://converters.eionet.europa.eu/dataflowEa" at "aqd-dataflow-ea.xquery";
-import module namespace dfEb = "http://converters.eionet.europa.eu/dataflowEb" at "aqd-dataflow-eb.xquery";
+import module namespace dataflowB = "http://converters.eionet.europa.eu/dataflowB" at "aqd-dataflow-b.xquery";
+import module namespace dataflowC = "http://converters.eionet.europa.eu/dataflowC" at "aqd-dataflow-c.xquery";
+import module namespace dataflowD = "http://converters.eionet.europa.eu/dataflowD" at "aqd-dataflow-d.xquery";
+import module namespace dataflowG = "http://converters.eionet.europa.eu/dataflowG" at "aqd-dataflow-g.xquery";
+import module namespace dataflowM = "http://converters.eionet.europa.eu/dataflowM" at "aqd-dataflow-m.xquery";
+import module namespace dataflowEa = "http://converters.eionet.europa.eu/dataflowEa" at "aqd-dataflow-ea.xquery";
+import module namespace dataflowEb = "http://converters.eionet.europa.eu/dataflowEb" at "aqd-dataflow-eb.xquery";
 
 import module namespace common = "aqd-common" at "aqd-common.xquery";
 import module namespace html = "aqd-html" at "aqd-html.xquery";
@@ -43,42 +43,42 @@ declare function obligations:proceed($source_url as xs:string) {
     let $countryCode := lower-case(doc($envelopeUrl)/envelope/countrycode)
 
     let $validObligations := common:getSublist($obligations,
-            ($dfB:OBLIGATIONS, $dfC:OBLIGATIONS, $dfD:OBLIGATIONS, $dfG:OBLIGATIONS, $dfM:OBLIGATIONS, $dfEa:OBLIGATIONS, $dfEb:OBLIGATIONS))
+            ($dataflowB:OBLIGATIONS, $dataflowC:OBLIGATIONS, $dataflowD:OBLIGATIONS, $dataflowG:OBLIGATIONS, $dataflowM:OBLIGATIONS, $dataflowEa:OBLIGATIONS, $dataflowEb:OBLIGATIONS))
 
     let $result := ()
     let $resultB :=
-        if (common:containsAny($obligations, $dfB:OBLIGATIONS)) then
-            dfB:proceed($source_url, $countryCode)
+        if (common:containsAny($obligations, $dataflowB:OBLIGATIONS)) then
+            dataflowB:proceed($source_url, $countryCode)
         else
             ()
     let $resultC :=
-        if (common:containsAny($obligations, $dfC:OBLIGATIONS)) then
-            dfC:proceed($source_url, $countryCode)
+        if (common:containsAny($obligations, $dataflowC:OBLIGATIONS)) then
+            dataflowC:proceed($source_url, $countryCode)
         else
             ()
     let $resultD :=
-        if (common:containsAny($obligations, $dfD:OBLIGATIONS)) then
-            dfD:proceed($source_url, $countryCode)
+        if (common:containsAny($obligations, $dataflowD:OBLIGATIONS)) then
+            dataflowD:proceed($source_url, $countryCode)
         else
             ()
     let $resultG :=
-        if (common:containsAny($obligations, $dfG:OBLIGATIONS)) then
-            dfG:proceed($source_url, $countryCode)
+        if (common:containsAny($obligations, $dataflowG:OBLIGATIONS)) then
+            dataflowG:proceed($source_url, $countryCode)
         else
             ()
     let $resultM :=
-        if (common:containsAny($obligations, $dfM:OBLIGATIONS)) then
-            dfM:proceed($source_url, $countryCode)
+        if (common:containsAny($obligations, $dataflowM:OBLIGATIONS)) then
+            dataflowM:proceed($source_url, $countryCode)
         else
             ()
     let $resultE :=
-        if (common:containsAny($obligations, $dfEa:OBLIGATIONS)) then
-            dfEa:proceed($source_url, $countryCode)
+        if (common:containsAny($obligations, $dataflowEa:OBLIGATIONS)) then
+            dataflowEa:proceed($source_url, $countryCode)
         else
             ()
     let $resultEb :=
-        if (common:containsAny($obligations, $dfEb:OBLIGATIONS)) then
-            dfEb:proceed($source_url, $countryCode)
+        if (common:containsAny($obligations, $dataflowEb:OBLIGATIONS)) then
+            dataflowEb:proceed($source_url, $countryCode)
         else
             ()
 
