@@ -56,6 +56,5 @@ declare variable $vocabulary:OBSERVATIONS_PRIMARY as xs:string := "http://dd.eio
 declare variable $vocabulary:OBSERVATIONS_RANGE as xs:string := "http://dd.eionet.europa.eu/vocabulary/aq/primaryObservationRange/";
 declare variable $vocabulary:QAQC_VOCABULARY as xs:string := "http://dd.eionet.europa.eu/vocabulary/aq/cdrqaqc/";
 declare variable $vocabulary:AGGREGATION_PROCESS as xs:string := $vocabulary:BASE || "aggregationprocess/";
-declare variable $vocabulary:RESULTPARAMETER_LOCATION as xs:string := $vocabulary:BASE || "resultparameter/result-location";
 declare variable $vocabulary:RESULT_ENCODING as xs:string := $vocabulary:BASE || "resultencoding/";
 declare variable $vocabulary:RESULT_FORMAT as xs:string := $vocabulary:BASE || "resultformat/";
