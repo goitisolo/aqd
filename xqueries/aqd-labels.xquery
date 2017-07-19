@@ -448,10 +448,8 @@ declare variable $labels:E32_SHORT := labels:getPrefLabel("E32");
 
 declare variable $labels:Eb0 := labels:getDefinition("Eb0");
 declare variable $labels:Eb0_SHORT := labels:getPrefLabel("Eb0");
-declare variable $labels:Eb01a := labels:getDefinition("Eb01a");
-declare variable $labels:Eb01a_SHORT := labels:getPrefLabel("Eb01a");
-declare variable $labels:Eb01b := labels:getDefinition("Eb01b");
-declare variable $labels:Eb01b_SHORT := labels:getPrefLabel("Eb01b");
+declare variable $labels:Eb01 := labels:getDefinition("Eb01");
+declare variable $labels:Eb01_SHORT := labels:getPrefLabel("Eb01");
 declare variable $labels:Eb02 := labels:getDefinition("Eb02");
 declare variable $labels:Eb02_SHORT := labels:getPrefLabel("Eb02");
 declare variable $labels:Eb03 := labels:getDefinition("Eb03");

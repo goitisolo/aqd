@@ -97,14 +97,15 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
     (: Eb01 - Compile & feedback upon the total number of observations included in the delivery :)
     let $Eb01table :=
         try {
+            let $parameters := for $i in ("model", "objective") return $vocabulary:PROCESS_PARAMETER || $i
             for $x in $docRoot//om:OM_Observation
-            let $namedValue := $x/om:parameter/om:NamedValue[om:name/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/processparameter/SamplingPoint"]
-            let $samplingPoint := tokenize(common:if-empty($namedValue/om:value, $namedValue/om:value/@xlink:href), "/")[last()]
+            let $namedValue := $x/om:parameter/om:NamedValue[om:name/@xlink:href = $parameters]
+            let $model := tokenize(common:if-empty($namedValue/om:value, $namedValue/om:value/@xlink:href), "/")[last()]
             let $observedProperty := $x/om:observedProperty/@xlink:href/string()
             return
                 <tr>
                     <td title="gml:id">{data($x/@gml:id)}</td>
-                    <td title="aqd:AQD_SamplingPoint">{$samplingPoint}</td>
+                    <td title="aqd:AQD_Model">{$model}</td>
                     <td title="Pollutant">{$observedProperty}</td>
                 </tr>
         } catch * {
@@ -215,7 +216,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
             </tr>
         }
 
-    (: Eb07 -  A valid delivery should provide  an om:parameter with om:name xlink:href to http://dd.eionet.europa.eu/vocabulary/aq/processparameter/AssessmentType :)
+    (: Eb07 - A valid delivery should provide  an om:parameter with om:name xlink:href to http://dd.eionet.europa.eu/vocabulary/aq/processparameter/AssessmentType :)
     let $Eb07invalid :=
         try {
             (for $x in $docRoot//om:OM_Observation
@@ -474,6 +475,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
         }
 
     (: Eb19b - Check if the unit of measure reporting via (swe:uom) corresponds to the recommended unit of measure in vocabulary http://dd.eionet.europa.eu/vocabulary/uom/concentration/[code] depending on pollutant reported via /om:observedProperty :)
+    (: TODO make it better for E19b also :)
     let $Eb19binvalid :=
         try {
             (for $x in $docRoot//om:OM_Observation
@@ -544,7 +546,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
             let $validValidity:= dd:getValidNotations($vocabulary:OBSERVATIONS_VALIDITY || "rdf")
             let $exceptionDataCapture := ("-99", "-999")
 
-            for $x at $xpos in $docRoot//om:OM_Observation/om:result
+            for $x at $xpos in $docRoot//om:OM_Observation/om:result[swe:DataArray]
             let $blockSeparator := string($x//swe:encoding/swe:TextEncoding/@blockSeparator)
             let $decimalSeparator := string($x//swe:encoding/swe:TextEncoding/@decimalSeparator)
             let $tokenSeparator := string($x//swe:encoding/swe:TextEncoding/@tokenSeparator)
@@ -578,7 +580,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
      then the count of elements under <swe:elementCount><swe:Count><swe:value> should match the count of data blocks under <swe:values>. :)
     let $Eb23invalid :=
         try {
-            (for $x at $xpos in $docRoot//om:OM_Observation/om:result
+            (for $x at $xpos in $docRoot//om:OM_Observation/om:result[swe:DataArray]
             let $blockSeparator := string($x//swe:encoding/swe:TextEncoding/@blockSeparator)
             let $decimalSeparator := string($x//swe:encoding/swe:TextEncoding/@decimalSeparator)
             let $tokenSeparator := string($x//swe:encoding/swe:TextEncoding/@tokenSeparator)
@@ -606,7 +608,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
     http://dd.eionet.europa.eu/vocabulary/aq/primaryObservation/var can be anything :)
     let $Eb24invalid :=
         try {
-            (for $x at $xpos in $docRoot//om:OM_Observation/om:result[//swe:field[@name = "Value"]/swe:Quantity/contains(@definition, $vocabulary:OBSERVATIONS_PRIMARY) = true()]
+            (for $x at $xpos in $docRoot//om:OM_Observation/om:result[swe:DataArray//swe:field[@name = "Value"]/swe:Quantity/contains(@definition, $vocabulary:OBSERVATIONS_PRIMARY) = true()]
 
             let $blockSeparator := string($x//swe:encoding/swe:TextEncoding/@blockSeparator)
             let $decimalSeparator := string($x//swe:encoding/swe:TextEncoding/@decimalSeparator)
@@ -668,7 +670,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
      then the temporal envelopes of the swe:values (reported via starTime and EndTime) shall reconcile with ./om:phenomenonTime/gml:TimePeriod/gml:beginPosition :)
     let $Eb25invalid :=
         try {
-            (for $x at $xpos in $docRoot//om:OM_Observation/om:result
+            (for $x at $xpos in $docRoot//om:OM_Observation/om:result[swe:DataArray]
             let $blockSeparator := string($x//swe:encoding/swe:TextEncoding/@blockSeparator)
             let $decimalSeparator := string($x//swe:encoding/swe:TextEncoding/@decimalSeparator)
             let $tokenSeparator := string($x//swe:encoding/swe:TextEncoding/@tokenSeparator)
@@ -752,7 +754,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
     (: Eb27 -  IF resultformat is http://dd.eionet.europa.eu/vocabulary/aq/resultformat/swe-array (Eb14) then check that all values (between @@) include as many fields as declared under swe:DataRecord :)
     let $Eb27invalid :=
         try {
-            (for $x at $xpos in $docRoot//om:OM_Observation/om:result
+            (for $x at $xpos in $docRoot//om:OM_Observation/om:result[swe:DataArray]
             let $blockSeparator := string($x//swe:encoding/swe:TextEncoding/@blockSeparator)
             let $decimalSeparator := string($x//swe:encoding/swe:TextEncoding/@decimalSeparator)
             let $tokenSeparator := string($x//swe:encoding/swe:TextEncoding/@tokenSeparator)
@@ -778,7 +780,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
     (: Eb28 - IF resultformat is http://dd.eionet.europa.eu/vocabulary/aq/resultformat/swe-array (Eb14) then the data array should not end with "@@". Please note that @@ is a block separator. :)
     let $Eb28invalid :=
         try {
-            (for $x at $xpos in $docRoot//om:OM_Observation/om:result
+            (for $x at $xpos in $docRoot//om:OM_Observation/om:result[swe:DataArray]
             let $blockSeparator := string($x//swe:encoding/swe:TextEncoding/@blockSeparator)
             where ends-with($x//swe:values, $blockSeparator)
             return
@@ -794,7 +796,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
     (: Eb29 - IF resultformat is http://dd.eionet.europa.eu/vocabulary/aq/resultformat/swe-array (Eb14) then check for unexpected spaces  around all values (between comma separator) under swe:values :)
     let $Eb29invalid :=
         try {
-            (for $x at $xpos in $docRoot//om:OM_Observation/om:result
+            (for $x at $xpos in $docRoot//om:OM_Observation/om:result[swe:DataArray]
             let $blockSeparator := string($x//swe:encoding/swe:TextEncoding/@blockSeparator)
             let $decimalSeparator := string($x//swe:encoding/swe:TextEncoding/@decimalSeparator)
             let $tokenSeparator := string($x//swe:encoding/swe:TextEncoding/@tokenSeparator)
@@ -822,7 +824,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
         try {
             (let $valid := dd:getValid($vocabulary:OBSERVATIONS_RANGE)
 
-            for $x at $xpos in $docRoot//om:OM_Observation/om:result
+            for $x at $xpos in $docRoot//om:OM_Observation/om:result[swe:DataArray]
             let $blockSeparator := string($x//swe:encoding/swe:TextEncoding/@blockSeparator)
             let $decimalSeparator := string($x//swe:encoding/swe:TextEncoding/@decimalSeparator)
             let $tokenSeparator := string($x//swe:encoding/swe:TextEncoding/@tokenSeparator)
@@ -861,7 +863,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
     (: Eb32 - IF resultformat is http://dd.eionet.europa.eu/vocabulary/aq/resultformat/swe-array (Eb14) then check that all data submitted via CDR has been fully verified. The verification flag must be 1 for all data. :)
     let $Eb32invalid :=
         try {
-            (for $x at $xpos in $docRoot//om:OM_Observation/om:result
+            (for $x at $xpos in $docRoot//om:OM_Observation/om:result[swe:DataArray]
 
             let $blockSeparator := string($x//swe:encoding/swe:TextEncoding/@blockSeparator)
             let $decimalSeparator := string($x//swe:encoding/swe:TextEncoding/@decimalSeparator)
@@ -974,13 +976,14 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
      MUST match a code under http://dd.eionet.europa.eu/vocabulary/uom/concentration/ :)
     let $Eb39invalid :=
         try {
-            (let $valid := dd:getValidConcepts($vocabulary:UOM_CONCENTRATION_VOCABULARY)
+            (let $valid := (dd:getValidConcepts($vocabulary:UOM_CONCENTRATION_VOCABULARY || "rdf"), dd:getValidConcepts($vocabulary:UOM_STATISTICS))
             for $x in $docRoot//om:result
-            let $xlink := $x/gml:File/gml:rangeParameters/swe:uom/@xlink:href
-            where ($xlink => empty())
+            let $xlink := $x/gml:File/gml:rangeParameters/swe:Quantity/swe:uom/@xlink:href
+            where not($xlink = $valid)
             return
                 <tr>
                     <td title="@gml:id">{string($x/../@gml:id)}</td>
+                    <td title="swe:uom">{$xlink => string()}</td>
                 </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
         } catch * {
             <tr status="failed">
@@ -994,7 +997,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
     (: TODO FIX :)
     let $Eb40invalid :=
         try {
-            (let $valid := dd:getValidConcepts($vocabulary:UOM_CONCENTRATION_VOCABULARY)
+            (let $valid := dd:getValidConcepts($vocabulary:UOM_CONCENTRATION_VOCABULARY || "rdf")
             for $x in $docRoot//om:result
             let $observedProperty := $x/om:observedProperty
             let $xlink := $x/gml:File/gml:rangeParameters/swe:uom/@xlink:href
@@ -1054,7 +1057,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
         <table class="maintable hover">
             {html:build2("NS", $labels:NAMESPACES, $labels:NAMESPACES_SHORT, $NSinvalid, "All values are valid", "record", $errors:NS)}
             {html:build3("Eb0", $labels:Eb0, $labels:Eb0_SHORT, $Eb0table, data($Eb0table/td), errors:getMaxError($Eb0table))}
-            {html:build1("Eb01", $labels:Eb01a, $labels:Eb01a_SHORT, $Eb01table, "", string(count($Eb01table)), "record", "", $errors:Eb01a)}
+            {html:build1("Eb01", $labels:Eb01, $labels:Eb01_SHORT, $Eb01table, "", string(count($Eb01table)), "record", "", $errors:Eb01)}
             {html:build2("Eb02", $labels:Eb02, $labels:Eb02_SHORT, $Eb02invalid, "All records are valid", "record", $errors:Eb02)}
             {html:build2("Eb03", $labels:Eb03, $labels:Eb03_SHORT, $Eb03invalid, "All records are valid", "record", $errors:Eb03)}
             {html:build2("Eb04", $labels:Eb04, $labels:Eb04_SHORT, $Eb04invalid, "All records are valid", "record", $errors:Eb04)}

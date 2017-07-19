@@ -10,6 +10,7 @@ xquery version "3.0";
 module namespace html = "aqd-html";
 import module namespace labels = "aqd-labels" at "aqd-labels.xquery";
 import module namespace errors = "aqd-errors" at "aqd-errors.xquery";
+import module namespace vocabulary = "aqd-vocabulary" at "aqd-vocabulary.xquery";
 
 declare function html:getHead() as element()* {  
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/foundation/6.2.3/foundation.min.css">&#32;</link>
@@ -133,6 +134,7 @@ declare function html:getBullet($text as xs:string, $level as xs:string) as elem
         case $errors:WARNING return $errors:COLOR_WARNING
         case $errors:SKIPPED return $errors:COLOR_SKIPPED
         default return $errors:COLOR_INFO
+    let $text := if ($text != "NS") then <a href="{$vocabulary:QAQC_VOCABULARY || $text}" style="color: inherit">{$text}</a> else $text
     return
         <div class="{$level}" style="background-color: { $color };">{ $text }</div>
 };
