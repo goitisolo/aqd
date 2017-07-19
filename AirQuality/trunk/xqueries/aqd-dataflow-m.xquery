@@ -43,7 +43,7 @@ declare namespace gco = "http://www.isotc211.org/2005/gco";
 
 declare namespace sparql = "http://www.w3.org/2005/sparql-results#";
 declare namespace skos = "http://www.w3.org/2004/02/skos/core#";
-declare namespace adms="http://www.w3.org/ns/adms#";
+declare namespace adms = "http://www.w3.org/ns/adms#";
 declare namespace prop = "http://dd.eionet.europa.eu/property/";
 declare namespace rdf = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
 
