@@ -66,7 +66,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
                         ()
             })
         } catch * {
-            <tr status="failed">
+            <tr class="{$errors:FAILED}">
                 <td title="Error code">{$err:code}</td>
                 <td title="Error description">{$err:description}</td>
             </tr>
@@ -88,7 +88,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
                     <td title="Status">New delivery for {$reportingYear}</td>
                 </tr>
         } catch * {
-            <tr status="failed">
+            <tr class="{$errors:FAILED}">
                 <td title="Error code">{$err:code}</td>
                 <td title="Error description">{$err:description}</td>
             </tr>
@@ -110,7 +110,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
                     <td title="Pollutant">{$observedProperty}</td>
                 </tr>
         } catch * {
-            <tr status="failed">
+            <tr class="{$errors:FAILED}">
                 <td title="Error code">{$err:code}</td>
                 <td title="Error description">{$err:description}</td>
             </tr>
@@ -131,7 +131,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
                     <td title="gml:endPosition">{string($x/gml:endPosition)}</td>
                 </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
         } catch * {
-            <tr status="failed">
+            <tr class="{$errors:FAILED}">
                 <td title="Error code">{$err:code}</td>
                 <td title="Error description">{$err:description}</td>
             </tr>
@@ -151,7 +151,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
                 </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
         }
         catch * {
-            <tr status="failed">
+            <tr class="{$errors:FAILED}">
                 <td title="Error code">{$err:code}</td>
                 <td title="Error description">{$err:description}</td>
             </tr>
@@ -170,7 +170,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
                     <td title="base:localId">{$x}</td>
                 </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
         } catch * {
-            <tr status="failed">
+            <tr class="{$errors:FAILED}">
                 <td title="Error code">{$err:code}</td>
                 <td title="Error description">{$err:description}</td>
             </tr>
@@ -188,7 +188,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
                     <td title="@gml:id">{string($x/@gml:id)}</td>
                 </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
         } catch * {
-            <tr status="failed">
+            <tr class="{$errors:FAILED}">
                 <td title="Error code">{$err:code}</td>
                 <td title="Error description">{$err:description}</td>
             </tr>
@@ -211,7 +211,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
                     <td title="om:value">{$value}</td>
                 </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
         } catch * {
-            <tr status="failed">
+            <tr class="{$errors:FAILED}">
                 <td title="Error code">{$err:code}</td>
                 <td title="Error description">{$err:description}</td>
             </tr>
@@ -228,7 +228,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
                 </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
         }
         catch * {
-            <tr status="failed">
+            <tr class="{$errors:FAILED}">
                 <td title="Error code">{$err:code}</td>
                 <td title="Error description">{$err:description}</td>
             </tr>
@@ -249,7 +249,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
                 </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
         }
         catch * {
-            <tr status="failed">
+            <tr class="{$errors:FAILED}">
                 <td title="Error code">{$err:code}</td>
                 <td title="Error description">{$err:description}</td>
             </tr>
@@ -268,7 +268,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
                     <td title="om:name">{data($x/@xlink:href)}</td>
                 </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
         } catch * {
-            <tr status="failed">
+            <tr class="{$errors:FAILED}">
                 <td title="Error code">{$err:code}</td>
                 <td title="Error description">{$err:description}</td>
             </tr>
@@ -289,7 +289,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
                     <td title="om:observedProperty">{string($x/@xlink:href)}</td>
                 </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
         } catch * {
-            <tr status="failed">
+            <tr class="{$errors:FAILED}">
                 <td title="Error code">{$err:code}</td>
                 <td title="Error description">{$err:description}</td>
             </tr>
@@ -321,7 +321,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
                     <td title="om:observedProperty">{$observedProperty}</td>
                 </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
         } catch * {
-            <tr status="failed">
+            <tr class="{$errors:FAILED}">
                 <td title="Error code">{$err:code}</td>
                 <td title="Error description">{$err:description}</td>
             </tr>
@@ -342,7 +342,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
                     <td title="om:observedProperty">{string($x/om:observedProperty/@xlink:href)}</td>
                 </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
         } catch * {
-            <tr status="failed">
+            <tr class="{$errors:FAILED}">
                 <td title="Error code">{$err:code}</td>
                 <td title="Error description">{$err:description}</td>
             </tr>
@@ -363,7 +363,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
                     <td title="Result encoding">{$value}</td>
                 </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
         } catch * {
-            <tr status="failed">
+            <tr class="{$errors:FAILED}">
                 <td title="Error code">{$err:code}</td>
                 <td title="Error description">{$err:description}</td>
             </tr>
@@ -383,7 +383,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
                     <td title="Result format">{$value}</td>
                 </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
         } catch * {
-            <tr status="failed">
+            <tr class="{$errors:FAILED}">
                 <td title="Error code">{$err:code}</td>
                 <td title="Error description">{$err:description}</td>
             </tr>
@@ -416,7 +416,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
                     <td title="Result Formatting">{$format}</td>
                 </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
         } catch * {
-            <tr status="failed">
+            <tr class="{$errors:FAILED}">
                 <td title="Error code">{$err:code}</td>
                 <td title="Error description">{$err:description}</td>
             </tr>
@@ -435,7 +435,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
                     <td title="swe:uom">{string($x/swe:Time[@definition = "http://www.opengis.net/def/property/OGC/0/SamplingTime"]/swe:uom/@xlink:href)}</td>
                 </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
         } catch * {
-            <tr status="failed">
+            <tr class="{$errors:FAILED}">
                 <td title="Error code">{$err:code}</td>
                 <td title="Error description">{$err:description}</td>
             </tr>
@@ -453,7 +453,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
                     <td title="swe:uom">{string($x/swe:Time[@definition = "http://www.opengis.net/def/property/OGC/0/SamplingTime"]/swe:uom/@xlink:href)}</td>
                 </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
         } catch * {
-            <tr status="failed">
+            <tr class="{$errors:FAILED}">
                 <td title="Error code">{$err:code}</td>
                 <td title="Error description">{$err:description}</td>
             </tr>
@@ -471,7 +471,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
                     <td title="swe:Category">{string($x/swe:Category/@definition)}</td>
                 </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
         } catch * {
-            <tr status="failed">
+            <tr class="{$errors:FAILED}">
                 <td title="Error code">{$err:code}</td>
                 <td title="Error description">{$err:description}</td>
             </tr>
@@ -488,7 +488,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
                     <td title="swe:Category">{string($x/swe:Category/@definition)}</td>
                 </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
         } catch * {
-            <tr status="failed">
+            <tr class="{$errors:FAILED}">
                 <td title="Error code">{$err:code}</td>
                 <td title="Error description">{$err:description}</td>
             </tr>
@@ -508,7 +508,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
                     <td title="swe:uom">{string($x/swe:Quantity/swe:uom/@xlink:href)}</td>
                 </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
         } catch * {
-            <tr status="failed">
+            <tr class="{$errors:FAILED}">
                 <td title="Error code">{$err:code}</td>
                 <td title="Error description">{$err:description}</td>
             </tr>
@@ -531,7 +531,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
                     <td title="swe:uom">{$value}</td>
                 </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
         } catch * {
-            <tr status="failed">
+            <tr class="{$errors:FAILED}">
                 <td title="Error code">{$err:code}</td>
                 <td title="Error description">{$err:description}</td>
             </tr>
@@ -554,7 +554,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
                 </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
         }
         catch * {
-            <tr status="failed">
+            <tr class="{$errors:FAILED}">
                 <td title="Error code">{$err:code}</td>
                 <td title="Error description">{$err:description}</td>
             </tr>
@@ -573,7 +573,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
                 </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
         }
         catch * {
-            <tr status="failed">
+            <tr class="{$errors:FAILED}">
                 <td title="Error code">{$err:code}</td>
                 <td title="Error description">{$err:description}</td>
             </tr>
@@ -610,7 +610,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
                     <td title="Actual value">{$z}</td>
                 </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
         } catch * {
-            <tr status="failed">
+            <tr class="{$errors:FAILED}">
                 <td title="Error code">{$err:code}</td>
                 <td title="Error description">{$err:description}</td>
             </tr>
@@ -635,7 +635,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
                     <td title="Actual count">{$actual}</td>
                 </tr>)[position() = 1 to $errors:HIGHER_LIMIT]
         } catch * {
-            <tr status="failed">
+            <tr class="{$errors:FAILED}">
                 <td title="Error code">{$err:code}</td>
                 <td title="Error description">{$err:description}</td>
             </tr>
@@ -701,7 +701,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
                 </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
         }
         catch * {
-            <tr status="failed">
+            <tr class="{$errors:FAILED}">
                 <td title="Error code">{$err:code}</td>
                 <td title="Error description">{$err:description}</td>
             </tr>
@@ -735,13 +735,13 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
                             <td title="EndTime">{$endTime}</td>
                         </tr>
                 } catch * {
-                    <tr status="failed">
+                    <tr class="{$errors:FAILED}">
                         <td title="Error code">{$err:code}</td>
                         <td title="Error description">{$err:description}</td>
                     </tr>
                 })[position() = 1 to $errors:HIGHER_LIMIT]
         } catch * {
-            <tr status="failed">
+            <tr class="{$errors:FAILED}">
                 <td title="Error code">{$err:code}</td>
                 <td title="Error description">{$err:description}</td>
             </tr>
@@ -785,7 +785,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
                 </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
         }
         catch * {
-            <tr status="failed">
+            <tr class="{$errors:FAILED}">
                 <td title="Error code">{$err:code}</td>
                 <td title="Error description">{$err:description}</td>
             </tr>
@@ -811,7 +811,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
                     <td title="Actual fields">{$count}</td>
                 </tr>)[position() = 1 to $errors:HIGHER_LIMIT]
         } catch * {
-            <tr status="failed">
+            <tr class="{$errors:FAILED}">
                 <td title="Error code">{$err:code}</td>
                 <td title="Error description">{$err:description}</td>
             </tr>
@@ -828,7 +828,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
                     <td title="OM_Observation">{string($x/../@gml:id)}</td>
                 </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
         } catch * {
-            <tr status="failed">
+            <tr class="{$errors:FAILED}">
                 <td title="Error code">{$err:code}</td>
                 <td title="Error description">{$err:description}</td>
             </tr>
@@ -854,7 +854,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
                     <td title="Actual value">{$z}</td>
                 </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
         } catch * {
-            <tr status="failed">
+            <tr class="{$errors:FAILED}">
                 <td title="Error code">{$err:code}</td>
                 <td title="Error description">{$err:description}</td>
             </tr>
@@ -896,7 +896,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
                     <td title="Actual value">{$value}</td>
                 </tr>)[position() = 1 to $errors:MAX_LIMIT]
         } catch * {
-            <tr status="failed">
+            <tr class="{$errors:FAILED}">
                 <td title="Error code">{$err:code}</td>
                 <td title="Error description">{$err:description}</td>
             </tr>
@@ -933,13 +933,13 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
                         <td title="Previous endTime">{$prevEndTime}</td>
                     </tr>
             } catch * {
-                <tr status="failed">
+                <tr class="{$errors:FAILED}">
                     <td title="Error code">{$err:code}</td>
                     <td title="Error description">{$err:description}</td>
                 </tr>
             })[position() = 1 to $errors:MEDIUM_LIMIT]
         } catch * {
-            <tr status="failed">
+            <tr class="{$errors:FAILED}">
                 <td title="Error code">{$err:code}</td>
                 <td title="Error description">{$err:description}</td>
             </tr>
@@ -956,7 +956,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
                     <td title="@gml:id">{string($x/../@gml:id)}</td>
                 </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
         } catch * {
-            <tr status="failed">
+            <tr class="{$errors:FAILED}">
                 <td title="Error code">{$err:code}</td>
                 <td title="Error description">{$err:description}</td>
             </tr>
@@ -975,7 +975,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
                     <td title="@gml:id">{string($x/../@gml:id)}</td>
                 </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
         } catch * {
-            <tr status="failed">
+            <tr class="{$errors:FAILED}">
                 <td title="Error code">{$err:code}</td>
                 <td title="Error description">{$err:description}</td>
             </tr>
@@ -992,7 +992,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
                     <td title="@gml:id">{string($x/../@gml:id)}</td>
                 </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
         } catch * {
-            <tr status="failed">
+            <tr class="{$errors:FAILED}">
                 <td title="Error code">{$err:code}</td>
                 <td title="Error description">{$err:description}</td>
             </tr>
@@ -1009,7 +1009,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
                     <td title="@gml:id">{string($x/../@gml:id)}</td>
                 </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
         } catch * {
-            <tr status="failed">
+            <tr class="{$errors:FAILED}">
                 <td title="Error code">{$err:code}</td>
                 <td title="Error description">{$err:description}</td>
             </tr>
@@ -1029,7 +1029,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
                     <td title="swe:uom">{$xlink => string()}</td>
                 </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
         } catch * {
-            <tr status="failed">
+            <tr class="{$errors:FAILED}">
                 <td title="Error code">{$err:code}</td>
                 <td title="Error description">{$err:description}</td>
             </tr>
@@ -1050,7 +1050,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
                     <td title="swe:uom">{$xlink => string()}</td>
                 </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
         } catch * {
-            <tr status="failed">
+            <tr class="{$errors:FAILED}">
                 <td title="Error code">{$err:code}</td>
                 <td title="Error description">{$err:description}</td>
             </tr>
@@ -1066,7 +1066,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
                     <td title="@gml:id">{string($x/../@gml:id)}</td>
                 </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
         } catch * {
-            <tr status="failed">
+            <tr class="{$errors:FAILED}">
                 <td title="Error code">{$err:code}</td>
                 <td title="Error description">{$err:description}</td>
             </tr>
@@ -1090,7 +1090,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
                     <td title="gml:fileReference">{$reference => string()}</td>
                 </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
         } catch * {
-            <tr status="failed">
+            <tr class="{$errors:FAILED}">
                 <td title="Error code">{$err:code}</td>
                 <td title="Error description">{$err:description}</td>
             </tr>

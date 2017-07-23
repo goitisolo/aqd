@@ -69,7 +69,7 @@ declare function xmlconv:checkFileReportingHeader($envelope as element(envelope)
             else
                 ()
         }  catch * {
-            <tr status="failed">
+            <tr class="{$errors:FAILED}">
                 <td title="Error code">{$err:code}</td>
                 <td title="Error description">{$err:description}</td>
             </tr>
@@ -90,7 +90,7 @@ declare function xmlconv:checkFileReportingHeader($envelope as element(envelope)
             else
                 ()
         }  catch * {
-            <tr status="failed">
+            <tr class="{$errors:FAILED}">
                 <td title="Error code">{$err:code}</td>
                 <td title="Error description">{$err:description}</td>
             </tr>
@@ -106,7 +106,7 @@ declare function xmlconv:checkFileReportingHeader($envelope as element(envelope)
                     <td title="Status">Missing</td>
                 </tr>
             }  catch * {
-                <tr status="failed">
+                <tr class="{$errors:FAILED}">
                     <td title="Error code">{$err:code}</td>
                     <td title="Error description">{$err:description}</td>
                 </tr>
@@ -132,7 +132,7 @@ declare function xmlconv:checkFileReportingHeader($envelope as element(envelope)
             return
                 ($part1, $part2)
         }  catch * {
-            <tr status="failed">
+            <tr class="{$errors:FAILED}">
                 <td title="Error code">{$err:code}</td>
                 <td title="Error description">{$err:description}</td>
             </tr>
@@ -148,7 +148,7 @@ declare function xmlconv:checkFileReportingHeader($envelope as element(envelope)
             else
                 ()
         }  catch * {
-            <tr status="failed">
+            <tr class="{$errors:FAILED}">
                 <td title="Error code">{$err:code}</td>
                 <td title="Error description">{$err:description}</td>
             </tr>
@@ -252,7 +252,7 @@ declare function xmlconv:validateEnvelope() as element(div) {
                     <p>Your delivery contains {$validCount} AQ e-Reporting XML file{substring("s ", number(not($validCount > 1)) * 2)}with correct XML Schema.</p>
                 </tr>
         } catch * {
-            <tr status="failed">
+            <tr class="{$errors:FAILED}">
                 <td title="Error code">{$err:code}</td>
                 <td title="Error description">{$err:description}</td>
             </tr>
@@ -271,7 +271,7 @@ declare function xmlconv:validateEnvelope() as element(div) {
             else
                 ()
         } catch * {
-            <tr status="failed">
+            <tr class="{$errors:FAILED}">
                 <td title="Error code">{$err:code}</td>
                 <td title="Error description">{$err:description}</td>
             </tr>
@@ -286,7 +286,7 @@ declare function xmlconv:validateEnvelope() as element(div) {
                 else
                     xmlconv:errorTable($pos, common:getCleanUrl($file))
         } catch * {
-            <tr status="failed">
+            <tr class="{$errors:FAILED}">
                 <td title="Error code">{$err:code}</td>
                 <td title="Error description">{$err:description}</td>
             </tr>

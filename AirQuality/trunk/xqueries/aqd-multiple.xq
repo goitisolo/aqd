@@ -29,7 +29,7 @@ let $execute :=
     } catch * {
         try {
             file:write($resultPath,
-                    <tr status="failed">
+                    <tr class="{$errors:FAILED}">
                         <td title="Error code">{$err:code}</td>
                         <td title="Error description">{$err:description}</td>
                     </tr>

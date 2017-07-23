@@ -136,7 +136,7 @@ let $NSinvalid :=
                     ()
         })
     } catch * {
-        <tr status="failed">
+        <tr class="{$errors:FAILED}">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
         </tr>
@@ -158,7 +158,7 @@ let $C0table :=
                 <td title="Status">New delivery for {$reportingYear}</td>
             </tr>
     } catch * {
-        <tr status="failed">
+        <tr class="{$errors:FAILED}">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
         </tr>
@@ -179,7 +179,7 @@ let $C01table :=
                 <td title="aqd:protectionTarget">{common:checkLink(data($rec/aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/@xlink:href))}</td>
             </tr>
     } catch * {
-        <tr status="failed">
+        <tr class="{$errors:FAILED}">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
         </tr>
@@ -201,7 +201,7 @@ let $C02table :=
                 <td title="aqd:protectionTarget">{common:checkLink(data($x/aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/@xlink:href))}</td>
             </tr>
     } catch * {
-        <tr status="failed">
+        <tr class="{$errors:FAILED}">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
         </tr>
@@ -233,7 +233,7 @@ let $C03table :=
                 <td title="aqd:protectionTarget">{common:checkLink(data($x/aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/@xlink:href))}</td>
             </tr>
     } catch * {
-        <tr status="failed">
+        <tr class="{$errors:FAILED}">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
         </tr>
@@ -255,7 +255,7 @@ let $C04invalid :=
                 <td title="@gml:id">{$id}</td>
             </tr>
     } catch * {
-        <tr status="failed">
+        <tr class="{$errors:FAILED}">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
         </tr>
@@ -273,7 +273,7 @@ let $C05invalid :=
                 <td title="base:localId">{$id}</td>
             </tr>
     } catch * {
-        <tr status="failed">
+        <tr class="{$errors:FAILED}">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
         </tr>
@@ -291,7 +291,7 @@ let $C06table :=
                 <td title="base:localId">{count($localId)}</td>
             </tr>
     } catch * {
-        <tr status="failed">
+        <tr class="{$errors:FAILED}">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
         </tr>
@@ -310,7 +310,7 @@ let $C06.1invalid :=
                 <td title="base:namespace">{$x}</td>
             </tr>
     }  catch * {
-        <tr status="failed">
+        <tr class="{$errors:FAILED}">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
         </tr>
@@ -326,7 +326,7 @@ let $C07invalid :=
                 <td title="base:localId">{string($aqdAQD_AssessmentRegim/aqd:inspireId/base:Identifier/base:localId)}</td>
             </tr>
     }  catch * {
-        <tr status="failed">
+        <tr class="{$errors:FAILED}">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
         </tr>
@@ -347,7 +347,7 @@ let $C08invalid :=
                 <td title="Pollutant"><a href="{$pollutantLink}">{$code}</a></td>
             </tr>
     }  catch * {
-        <tr status="failed">
+        <tr class="{$errors:FAILED}">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
         </tr>
@@ -365,7 +365,7 @@ let $C09table :=
                 <td title="pollutant">{$i}</td>
             </tr>
     }  catch * {
-        <tr status="failed">
+        <tr class="{$errors:FAILED}">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
         </tr>
@@ -395,7 +395,7 @@ let $C10invalid :=
                 <td title="ProtectionTarget">{data($protectionTarget)}</td>
             </tr>
     }  catch * {
-        <tr status="failed">
+        <tr class="{$errors:FAILED}">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
         </tr>
@@ -431,7 +431,7 @@ let $C20invalid :=
             </tr>
 
     } catch * {
-        <tr status="failed">
+        <tr class="{$errors:FAILED}">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
         </tr>
@@ -460,7 +460,7 @@ let $C21invalid :=
                 <td title="ProtectionTarget">{data($protectionTarget)}</td>
             </tr>
     } catch * {
-        <tr status="failed">
+        <tr class="{$errors:FAILED}">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
         </tr>
@@ -480,7 +480,7 @@ let $C23ainvalid :=
                 <td title="aqd:assessmentType">{data($x/@xlink:href)}</td>
             </tr>
     } catch * {
-        <tr status="failed">
+        <tr class="{$errors:FAILED}">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
         </tr>
@@ -499,7 +499,7 @@ let $C23binvalid :=
                 <td title="aqd:assessmentType">{data($type)}</td>
             </tr>
     } catch * {
-        <tr status="failed">
+        <tr class="{$errors:FAILED}">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
         </tr>
@@ -517,7 +517,7 @@ let $C24invalid :=
             </tr>
 
     } catch * {
-        <tr status="failed">
+        <tr class="{$errors:FAILED}">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
         </tr>
@@ -575,7 +575,7 @@ let $C26table :=
             else
                 (($invalidModel), ($invalidSampingPoint))
     } catch * {
-        <tr status="failed">
+        <tr class="{$errors:FAILED}">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
         </tr>
@@ -607,7 +607,7 @@ let $C27table :=
 
         return (($invalidEqual), ($invalidEqual2))
     } catch * {
-        <tr status="failed">
+        <tr class="{$errors:FAILED}">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
         </tr>
@@ -648,7 +648,7 @@ let $C29invalid :=
                     <td title="aqd:protectionTarget">{data($x//aqd:protectionTarget/@xlink:href)}</td>
                 </tr>
     } catch * {
-        <tr status="failed">
+        <tr class="{$errors:FAILED}">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
         </tr>
@@ -667,7 +667,7 @@ let $C28invalid :=
                 {html:getErrorTD(data($endPosition), "gml:endPosition", fn:true())}
             </tr>
     } catch * {
-        <tr status="failed">
+        <tr class="{$errors:FAILED}">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
         </tr>
@@ -728,7 +728,7 @@ let $C31table :=
                 <td title="Count B">{string($countB)}</td>
             </tr>
     } catch * {
-        <tr status="failed">
+        <tr class="{$errors:FAILED}">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
         </tr>
@@ -786,7 +786,7 @@ let $C32table :=
                 <td title="aqd:assessmentType">{substring-after($docType, $vocabulary:ASSESSMENTTYPE_VOCABULARY)}</td>
             </tr>
     } catch * {
-        <tr status="failed">
+        <tr class="{$errors:FAILED}">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
         </tr>
@@ -824,7 +824,7 @@ let $C33invalid :=
             }
             </tr>
     } catch * {
-        <tr status="failed">
+        <tr class="{$errors:FAILED}">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
         </tr>
@@ -862,7 +862,7 @@ let $C35invalid :=
             }
             </tr>
     } catch * {
-        <tr status="failed">
+        <tr class="{$errors:FAILED}">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
         </tr>
@@ -880,7 +880,7 @@ let $C37invalid :=
             else
                 ()
     } catch * {
-        <tr status="failed">
+        <tr class="{$errors:FAILED}">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
         </tr>
@@ -914,7 +914,7 @@ let $C38invalid :=
                 <td title="aqd:AQD_SamplingPoint">{$xlink}</td>
             </tr>
     } catch * {
-        <tr status="failed">
+        <tr class="{$errors:FAILED}">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
         </tr>
@@ -932,7 +932,7 @@ let $C40invalid :=
                 <td title="@gml:id">{string($aqdPollutantC40/@gml:id)}</td>
             </tr>
     } catch * {
-        <tr status="failed">
+        <tr class="{$errors:FAILED}">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
         </tr>
@@ -958,7 +958,7 @@ let $C41invalid :=
                 <td title="gml:timePosition">{$timePosition}</td>
             </tr>
     } catch * {
-        <tr status="failed">
+        <tr class="{$errors:FAILED}">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
         </tr>
@@ -974,7 +974,7 @@ let $C42invalid :=
                 <td title="base:localId">{$x/../../../aqd:inspireId/base:Identifier/base:localId}</td>
             </tr>
     } catch * {
-        <tr status="failed">
+        <tr class="{$errors:FAILED}">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
         </tr>
