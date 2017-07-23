@@ -6,17 +6,8 @@ xquery version "3.0";
  : Created:     15 November 2013
  : Copyright:   European Environment Agency
  :)
-(:~
- : Reporting Obligation: http://rod.eionet.europa.eu/obligations/670
- : XML Schema: http://dd.eionet.europa.eu/schemas/id2011850eu/AirQualityReporting.xsd
- :
- : Air Quality QA Rules implementation
- :
- : @author Enriko Käsper
- : BLOCKER logic fixed and other changes by Hermann Peifer, EEA, August 2015
- : @author George Sofianos
- :)
 
+module namespace envelope = "http://converters.eionet.europa.eu/aqd";
 import module namespace schemax = "aqd-schema" at "aqd-schema.xquery";
 import module namespace common = "aqd-common" at "aqd-common.xquery";
 import module namespace sparqlx = "aqd-sparql" at "aqd-sparql.xquery";
@@ -26,23 +17,14 @@ import module namespace errors = "aqd-errors" at "aqd-errors.xquery";
 import module namespace labels = "aqd-labels" at "aqd-labels.xquery";
 import module namespace vocabulary = "aqd-vocabulary" at "aqd-vocabulary.xquery";
 
-declare namespace xmlconv="http://converters.eionet.europa.eu/aqd";
 declare namespace aqd = "http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0";
 declare namespace gml = "http://www.opengis.net/gml/3.2";
 
-declare option output:method "html";
-declare option db:inlinelimit '0';
-
-declare variable $source_url as xs:string external;
-
-(:~ Separator used in lists expressed as string :)
-declare variable $xmlconv:LIST_ITEM_SEP := "##";
-
-(:~ Source file URL parameter name :)
-declare variable $xmlconv:SOURCE_URL_PARAM := "source_url=";
+declare variable $envelope:LIST_ITEM_SEP := "##";
+(:declare variable $envelope:SOURCE_URL_PARAM := "source_url=";:)
 
 (: Not documented in QA doc: count only XML files related to AQ e-Reporting :)
-declare function xmlconv:getAQFiles($url as xs:string) {
+declare function envelope:getAQFiles($url as xs:string) {
     for $pn in fn:doc($url)//file[contains(@schema,'AirQualityReporting.xsd') and string-length(@link)>0]
     let $fileUrl := common:replaceSourceUrl($url, string($pn/@link))
     return
@@ -50,13 +32,13 @@ declare function xmlconv:getAQFiles($url as xs:string) {
 };
 
 (: QA doc 2.1.3 Check for Reporting Header within an envelope :)
-declare function xmlconv:checkFileReportingHeader($envelope as element(envelope)*, $file as xs:string, $pos as xs:integer) as element(tr)* {
+declare function envelope:checkFileReportingHeader($envelope as element(envelope)*, $file as xs:string, $pos as xs:integer) as element(tr)* {
     (:let $obligationYears := sparqlx:run(query:getObligationYears()):)
     let $docRoot := doc($file)
 
     (: set variables for envelope year :)
-    let $minimumYear := number(xmlconv:getObligationMinMaxYear($envelope)/min)
-    let $maximumYear := number(xmlconv:getObligationMinMaxYear($envelope)/max)
+    let $minimumYear := number(envelope:getObligationMinMaxYear($envelope)/min)
+    let $maximumYear := number(envelope:getObligationMinMaxYear($envelope)/max)
 
     (:  If AQ e-Reporting XML files in the envelope, at least one must have an aqd:AQD_ReportingHeader element. :)
     let $containsAqdReportingHeader :=
@@ -180,7 +162,7 @@ declare function xmlconv:checkFileReportingHeader($envelope as element(envelope)
         </tr>)
 };
 
-declare function xmlconv:getObligationMinMaxYear($envelope as element(envelope)) as element(year) {
+declare function envelope:getObligationMinMaxYear($envelope as element(envelope)) as element(year) {
     let $part1_deadline := xs:date("2017-02-15")
     let $part3_deadline := xs:date("2017-05-31")
     let $deadline := 2017
@@ -219,19 +201,19 @@ declare function xmlconv:getObligationMinMaxYear($envelope as element(envelope))
         </year>
 };
 
-declare function xmlconv:errorTable($pos, $file) {
+declare function envelope:errorTable($pos, $file) {
     <tr>
         <td class="bullet">{html:getBullet(string($pos), $errors:ERROR)}</td>
         <td colspan="3">File is not available for aqd:AQD_ReportingHeader check: { common:getCleanUrl($file) }</td>
     </tr>
 };
 
-declare function xmlconv:validateEnvelope() as element(div) {
+declare function envelope:validateEnvelope($source_url as xs:string) as element(div) {
 
     let $envelope := doc($source_url)/envelope
-    let $minimumYear := number(xmlconv:getObligationMinMaxYear($envelope)/min)
-    let $maximumYear := number(xmlconv:getObligationMinMaxYear($envelope)/max)
-    let $xmlFilesWithAQSchema := xmlconv:getAQFiles($source_url)
+    let $minimumYear := number(envelope:getObligationMinMaxYear($envelope)/min)
+    let $maximumYear := number(envelope:getObligationMinMaxYear($envelope)/max)
+    let $xmlFilesWithAQSchema := envelope:getAQFiles($source_url)
     let $filesWithAQSchema := $envelope/file[contains(@schema,'AirQualityReporting.xsd') and string-length(@link)>0]
 
     let $env1 :=
@@ -282,9 +264,9 @@ declare function xmlconv:validateEnvelope() as element(div) {
             for $file at $pos in $xmlFilesWithAQSchema
             return
                 if (doc-available($file)) then
-                    xmlconv:checkFileReportingHeader($envelope, $file, $pos)
+                    envelope:checkFileReportingHeader($envelope, $file, $pos)
                 else
-                    xmlconv:errorTable($pos, common:getCleanUrl($file))
+                    envelope:errorTable($pos, common:getCleanUrl($file))
         } catch * {
             <tr class="{$errors:FAILED}">
                 <td title="Error code">{$err:code}</td>
@@ -328,4 +310,3 @@ declare function xmlconv:validateEnvelope() as element(div) {
         </div>
 };
 
-xmlconv:validateEnvelope()

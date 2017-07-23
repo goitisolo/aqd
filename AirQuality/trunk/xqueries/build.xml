@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="air-quality  " default="Start">
+<project name="air-quality  " default="Start Main">
   <target name="namespaces">
     <delete file="dist/temp.xquery"/>
     <delete file="dist/namespaces.xquery"/>
@@ -12,11 +12,10 @@
           <exclude name="aqd-local.xquery"/>
           <exclude name="aqd-main.xquery"/>
           <exclude name="aqd-xref.xquery"/>
-          <exclude name="aqd-envelope.xquery"/>
+          <exclude name="aqd-envelope-main.xquery"/>
           <exclude name="dist/*.xquery"/>
           <exclude name="deprecated/*.xquery"/>
           <exclude name="old/*.xquery"/>
-          <exclude name="namespaces.xquery"/>
         </patternset>
       </fileset>
       <filterchain>
@@ -31,12 +30,11 @@
         <exclude name="aqd-multiple.xq"/>
         <exclude name="aqd-local.xquery"/>
         <exclude name="aqd-main.xquery"/>
+        <exclude name="aqd-envelope-main.xquery"/>
         <exclude name="aqd-xref.xquery"/>
-        <exclude name="aqd-envelope.xquery"/>
         <exclude name="dist/*.xquery"/>
         <exclude name="deprecated/*.xquery"/>
         <exclude name="old/*.xquery"/>
-        <!--<exclude name="namespaces.xquery"/>-->
       </fileset>
       <filterchain>
         <linecontainsregexp><regexp pattern="^declare namespace"/></linecontainsregexp>
@@ -85,8 +83,8 @@ declare variable $xmlconv:TEST_ENV := false();${line.separator}
         <exclude name="namespaces.xquery"/>
         <exclude name="aqd-local.xquery"/>
         <exclude name="aqd-main.xquery"/>
+        <exclude name="aqd-envelope-main.xquery"/>
         <exclude name="aqd-multiple.xq"/>
-        <exclude name="aqd-envelope.xquery"/>
         <exclude name="aqd-xref.xquery"/>
       </fileset>
       <filterchain>
@@ -104,8 +102,8 @@ declare variable $xmlconv:TEST_ENV := false();${line.separator}
         <exclude name="namespaces.xquery"/>
         <exclude name="aqd-local.xquery"/>
         <exclude name="aqd-main.xquery"/>
+        <exclude name="aqd-envelope-main.xquery"/>
         <exclude name="aqd-multiple.xq"/>
-        <exclude name="aqd-envelope.xquery"/>
         <exclude name="aqd-xref.xquery"/>
       </fileset>
       <filterchain>
@@ -134,12 +132,21 @@ declare variable $xmlconv:TEST_ENV := false();${line.separator}
     </concat>
   </target>
 
-  <target name="Start">
+  <target name="Start Main">
     <antcall target="Clean"/>
     <antcall target="namespaces"/>
     <antcall target="Build">
       <param name="output" value="dist/aqd-obligations-checks.xquery"/>
       <param name="initFile" value="aqd-main.xquery"/>
+    </antcall>
+  </target>
+
+  <target name="Start Envelope">
+    <!--<antcall target="Clean"/>-->
+    <antcall target="namespaces"/>
+    <antcall target="Build">
+      <param name="output" value="dist/aqd-envelope-checks.xquery"/>
+      <param name="initFile" value="aqd-envelope-main.xquery"/>
     </antcall>
   </target>
 
