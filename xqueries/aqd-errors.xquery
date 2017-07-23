@@ -420,8 +420,7 @@ declare function errors:getClassColor($class as xs:string) {
 };
 
 declare function errors:getMaxError($records as element()*) as xs:string {
-    if (count($records[@status = $errors:FAILED]) > 0) then $errors:FAILED
-    else if (count($records[@class = $errors:FAILED]) > 0) then $errors:FAILED
+    if (count($records[@class = $errors:FAILED]) > 0) then $errors:FAILED
     else if (count($records[@class = $errors:BLOCKER]) > 0) then $errors:BLOCKER
     else if (count($records[@class = $errors:ERROR]) > 0) then $errors:ERROR
     else if (count($records[@class = $errors:WARNING]) > 0) then $errors:WARNING

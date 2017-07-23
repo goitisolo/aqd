@@ -70,7 +70,7 @@ let $NSinvalid :=
                     ()
         })
     } catch * {
-        <tr status="failed">
+        <tr class="{$errors:FAILED}">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
         </tr>
@@ -92,7 +92,7 @@ let $E0table :=
                 <td title="Status">New delivery for {$reportingYear}</td>
             </tr>
     } catch * {
-        <tr status="failed">
+        <tr class="{$errors:FAILED}">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
         </tr>
@@ -113,7 +113,7 @@ let $E01atable :=
                 <td title="Pollutant">{$observedProperty}</td>
             </tr>
     } catch * {
-        <tr status="failed">
+        <tr class="{$errors:FAILED}">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
         </tr>
@@ -130,7 +130,7 @@ let $E01binvalid :=
                 <td title="om:OM_Observation">{string($x)}</td>
             </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
     } catch * {
-        <tr status="failed">
+        <tr class="{$errors:FAILED}">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
         </tr>
@@ -152,7 +152,7 @@ let $E02invalid :=
             </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
     }
     catch * {
-        <tr status="failed">
+        <tr class="{$errors:FAILED}">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
         </tr>
@@ -172,7 +172,7 @@ let $E03invalid :=
             </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
     }
     catch * {
-        <tr status="failed">
+        <tr class="{$errors:FAILED}">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
         </tr>
@@ -189,7 +189,7 @@ let $E04invalid :=
                 <td title="base:localId">{$x}</td>
             </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
     } catch * {
-        <tr status="failed">
+        <tr class="{$errors:FAILED}">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
         </tr>
@@ -204,7 +204,7 @@ let $E05invalid :=
             <td title="@gml:id">{string($x/@gml:id)}</td>
         </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
     } catch * {
-        <tr status="failed">
+        <tr class="{$errors:FAILED}">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
         </tr>
@@ -225,7 +225,7 @@ let $E06invalid :=
                 <td title="om:value">{$value}</td>
             </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
     } catch * {
-        <tr status="failed">
+        <tr class="{$errors:FAILED}">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
         </tr>
@@ -242,7 +242,7 @@ let $E07invalid :=
             </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
     }
     catch * {
-        <tr status="failed">
+        <tr class="{$errors:FAILED}">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
         </tr>
@@ -262,7 +262,7 @@ let $E08invalid :=
             </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
     }
     catch * {
-        <tr status="failed">
+        <tr class="{$errors:FAILED}">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
         </tr>
@@ -281,7 +281,7 @@ let $E09invalid :=
                 <td title="om:name">{data($x/@xlink:href)}</td>
             </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
     } catch * {
-        <tr status="failed">
+        <tr class="{$errors:FAILED}">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
         </tr>
@@ -302,7 +302,7 @@ let $E10invalid :=
                 <td title="om:observedProperty">{string($x/@xlink:href)}</td>
             </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
     } catch * {
-        <tr status="failed">
+        <tr class="{$errors:FAILED}">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
         </tr>
@@ -332,7 +332,7 @@ let $E11invalid :=
                 <td title="om:observedProperty">{$observedProperty}</td>
             </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
     } catch * {
-        <tr status="failed">
+        <tr class="{$errors:FAILED}">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
         </tr>
@@ -352,7 +352,7 @@ let $E12invalid :=
                 <td title="om:observedProperty">{string($x/om:observedProperty/@xlink:href)}</td>
             </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
     } catch * {
-        <tr status="failed">
+        <tr class="{$errors:FAILED}">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
         </tr>
@@ -369,7 +369,7 @@ let $E15invalid :=
                 <td title="swe:uom">{string($x/swe:Time[@definition = "http://www.opengis.net/def/property/OGC/0/SamplingTime"]/swe:uom/@xlink:href)}</td>
             </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
     } catch * {
-        <tr status="failed">
+        <tr class="{$errors:FAILED}">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
         </tr>
@@ -386,7 +386,7 @@ let $E16invalid :=
                 <td title="swe:uom">{string($x/swe:Time[@definition = "http://www.opengis.net/def/property/OGC/0/SamplingTime"]/swe:uom/@xlink:href)}</td>
             </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
     } catch * {
-        <tr status="failed">
+        <tr class="{$errors:FAILED}">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
         </tr>
@@ -402,7 +402,7 @@ let $E17invalid :=
                 <td title="swe:Category">{string($x/swe:Category/@definition)}</td>
             </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
     } catch * {
-        <tr status="failed">
+        <tr class="{$errors:FAILED}">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
         </tr>
@@ -418,7 +418,7 @@ let $E18invalid :=
                 <td title="swe:Category">{string($x/swe:Category/@definition)}</td>
             </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
     } catch * {
-        <tr status="failed">
+        <tr class="{$errors:FAILED}">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
         </tr>
@@ -437,7 +437,7 @@ let $E19invalid :=
                 <td title="swe:uom">{string($x/swe:Quantity/swe:uom/@xlink:href)}</td>
             </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
     } catch * {
-        <tr status="failed">
+        <tr class="{$errors:FAILED}">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
         </tr>
@@ -458,7 +458,7 @@ let $E19binvalid :=
                 <td title="swe:uom">{$value}</td>
             </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
     } catch * {
-        <tr status="failed">
+        <tr class="{$errors:FAILED}">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
         </tr>
@@ -480,7 +480,7 @@ let $E20invalid :=
             </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
     }
     catch * {
-        <tr status="failed">
+        <tr class="{$errors:FAILED}">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
         </tr>
@@ -499,7 +499,7 @@ let $E21invalid :=
             </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
     }
     catch * {
-        <tr status="failed">
+        <tr class="{$errors:FAILED}">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
         </tr>
@@ -535,7 +535,7 @@ let $E22invalid :=
                 <td title="Actual value">{$z}</td>
             </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
     } catch * {
-        <tr status="failed">
+        <tr class="{$errors:FAILED}">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
         </tr>
@@ -558,7 +558,7 @@ let $E23invalid :=
                 <td title="Actual count">{$actual}</td>
             </tr>)[position() = 1 to $errors:HIGHER_LIMIT]
     } catch * {
-        <tr status="failed">
+        <tr class="{$errors:FAILED}">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
         </tr>
@@ -620,7 +620,7 @@ let $E24invalid :=
             </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
     }
     catch * {
-        <tr status="failed">
+        <tr class="{$errors:FAILED}">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
         </tr>
@@ -653,13 +653,13 @@ let $E25invalid :=
                         <td title="EndTime">{$endTime}</td>
                     </tr>
             } catch * {
-                <tr status="failed">
+                <tr class="{$errors:FAILED}">
                     <td title="Error code">{$err:code}</td>
                     <td title="Error description">{$err:description}</td>
                 </tr>
             })[position() = 1 to $errors:HIGHER_LIMIT]
     } catch * {
-        <tr status="failed">
+        <tr class="{$errors:FAILED}">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
         </tr>
@@ -702,7 +702,7 @@ let $E26invalid :=
             </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
     }
     catch * {
-        <tr status="failed">
+        <tr class="{$errors:FAILED}">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
         </tr>
@@ -728,7 +728,7 @@ let $E27invalid :=
                 <td title="Actual fields">{$count}</td>
             </tr>)[position() = 1 to $errors:HIGHER_LIMIT]
     } catch * {
-        <tr status="failed">
+        <tr class="{$errors:FAILED}">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
         </tr>
@@ -744,7 +744,7 @@ let $E28invalid :=
                 <td title="OM_Observation">{string($x/../@gml:id)}</td>
             </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
     } catch * {
-        <tr status="failed">
+        <tr class="{$errors:FAILED}">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
         </tr>
@@ -769,7 +769,7 @@ let $E29invalid :=
                 <td title="Actual value">{$z}</td>
             </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
     } catch * {
-        <tr status="failed">
+        <tr class="{$errors:FAILED}">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
         </tr>
@@ -809,7 +809,7 @@ let $E30invalid :=
                 <td title="Actual value">{$value}</td>
             </tr>)[position() = 1 to $errors:MAX_LIMIT]
     } catch * {
-        <tr status="failed">
+        <tr class="{$errors:FAILED}">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
         </tr>
@@ -845,13 +845,13 @@ let $E31invalid :=
                     <td title="Previous endTime">{$prevEndTime}</td>
                 </tr>
         } catch * {
-            <tr status="failed">
+            <tr class="{$errors:FAILED}">
                 <td title="Error code">{$err:code}</td>
                 <td title="Error description">{$err:description}</td>
             </tr>
         })[position() = 1 to $errors:MEDIUM_LIMIT]
     } catch * {
-        <tr status="failed">
+        <tr class="{$errors:FAILED}">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
         </tr>
@@ -881,7 +881,7 @@ let $E32invalid :=
             </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
 
     } catch * {
-        <tr status="failed">
+        <tr class="{$errors:FAILED}">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
         </tr>
