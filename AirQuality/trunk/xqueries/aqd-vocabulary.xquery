@@ -47,6 +47,7 @@ declare variable $vocabulary:PROTECTIONTARGET_VOCABULARY as xs:string := "http:/
 declare variable $vocabulary:METEO_PARAMS_VOCABULARY_M := "http://vocab.nerc.ac.uk/collection/P07/current/";
 declare variable $vocabulary:ZONETYPE_VOCABULARY as xs:string := "http://dd.eionet.europa.eu/vocabulary/aq/zonetype/";
 declare variable $vocabulary:PROCESS_PARAMETER as xs:string := "http://dd.eionet.europa.eu/vocabulary/aq/processparameter/";
+declare variable $vocabulary:MODEL_PARAMETER as xs:string := "http://dd.eionet.europa.eu/vocabulary/aq/modelparameter/";
 declare variable $vocabulary:PROCESSPARAMETER_RESULTENCODING as xs:string := $vocabulary:PROCESS_PARAMETER || "resultencoding";
 declare variable $vocabulary:PROCESSPARAMETER_RESULTFORMAT as xs:string := $vocabulary:PROCESS_PARAMETER || "resultformat";
 declare variable $vocabulary:ROD_PREFIX as xs:string := "http://rod.eionet.europa.eu/obligations/";

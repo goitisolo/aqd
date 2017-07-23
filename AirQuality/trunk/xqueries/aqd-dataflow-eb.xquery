@@ -259,7 +259,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
 ./om:parameter/om:NamedValue/om:name xlink:href attribute shall resolve to a traversable link to http://dd.eionet.europa.eu/vocabulary/aq/processparameter/ :)
     let $Eb09invalid :=
         try {
-            (let $valid := dd:getValidConcepts($vocabulary:PROCESS_PARAMETER || "rdf")
+            (let $valid := dd:getValidConcepts($vocabulary:MODEL_PARAMETER || "rdf")
             for $x in $docRoot//om:OM_Observation/om:parameter/om:NamedValue/om:name
             where not($x/@xlink:href = $valid)
             return
@@ -355,7 +355,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
             (let $valid := dd:getValidConcepts($vocabulary:RESULT_ENCODING || "rdf")
             for $x in $docRoot//om:OM_Observation
             let $node := $x/om:parameter/om:NamedValue[om:name/@xlink:href = $vocabulary:PROCESSPARAMETER_RESULTENCODING]
-            let $value := tokenize(common:if-empty($node/om:value, $node/om:value/@xlink:href), "/")[last()]
+            let $value := common:if-empty($node/om:value, $node/om:value/@xlink:href)
             where $node => empty() or not($value = $valid)
             return
                 <tr>
@@ -376,7 +376,8 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
             (let $valid := dd:getValidConcepts($vocabulary:RESULT_FORMAT || "rdf")
             for $x in $docRoot//om:OM_Observation
             let $node := $x/om:parameter/om:NamedValue[om:name/@xlink:href = $vocabulary:PROCESSPARAMETER_RESULTFORMAT]
-            let $value := tokenize(common:if-empty($node/om:value, $node/om:value/@xlink:href), "/")[last()]
+            let $value := common:if-empty($node/om:value, $node/om:value/@xlink:href)
+            where $node => empty() or not($value = $valid)
             return
                 <tr>
                     <td title="gml:id">{data($x/@gml:id)}</td>
@@ -973,6 +974,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
             return
                 <tr>
                     <td title="@gml:id">{string($x/../@gml:id)}</td>
+                    <td title="Definition">{$definition}</td>
                 </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
         } catch * {
             <tr class="{$errors:FAILED}">
@@ -1043,7 +1045,8 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
             for $x in $docRoot//om:OM_Observation/om:result[gml:File]
             let $observedProperty := $x/om:observedProperty
             let $xlink := $x/gml:File/gml:rangeParameters/swe:Quantity/swe:uom/@xlink:href
-            where not($xlink = $valid)
+            let $condition1 := not(contains($xlink, $vocabulary:UOM_STATISTICS))
+            where $condition1 and not($xlink = $valid)
             return
                 <tr>
                     <td title="@gml:id">{string($x/../@gml:id)}</td>
