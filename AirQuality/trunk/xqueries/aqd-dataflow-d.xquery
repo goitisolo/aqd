@@ -678,7 +678,7 @@ let $invalidPosD21 :=
             let $samplingLong := if ($samplingLong castable as xs:decimal) then xs:decimal($samplingLong) else 0.00
 
             return
-                if ($samplingLat < $samplingLong and $countryCode != 'FR') then
+                if ($samplingLat < $samplingLong and $countryCode != 'fr') then
                     <tr>
                         <td title="lat/long">{concat($gmlPos/ef:inspireId/base:Identifier/base:localId, " : lat=", string($samplingLat), " :long=", string($samplingLong))}</td>
                     </tr>
