@@ -157,13 +157,6 @@ declare function query:getAttainment($url as xs:string) as xs:string {
    }"
 };
 
-
-
-
-
-
-
-
 (: Feature Types queries - These queries return all ids of the specified feature type :)
 declare function query:getAllZoneIds($namespaces as xs:string*) as xs:string {
   "PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
