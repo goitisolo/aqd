@@ -91,9 +91,11 @@ declare function obligations:proceed($source_url as xs:string) {
 	let $errorLevel :=
         if ($blockerString) then
             "BLOCKER"
+        else if ($failedString) then
+            "FAILED"
 		else if ($errorString) then
             "ERROR"
-        else if ($warningString or $failedString) then
+        else if ($warningString) then
             "WARNING"
         else
             "INFO"
@@ -101,6 +103,8 @@ declare function obligations:proceed($source_url as xs:string) {
 	let $feedbackmessage :=
 		if ($errorLevel = 'BLOCKER') then
             $blockerString
+        else if ($errorLevel = "FAILED") then
+            $failedString
         else if ($errorLevel = 'ERROR') then
             $errorString
         else if ($errorLevel = 'WARNING') then

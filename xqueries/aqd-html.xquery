@@ -445,6 +445,8 @@ declare %private function html:parseData($records as element(tr)*, $type as xs:s
 (: Builds HTML table rows for rules. :)
 declare %private function html:buildGeneric($ruleCode as xs:string, $longText, $text, $records as element(tr)*, $message as xs:string, $bulletType as xs:string) as element(tr)* {
     let $countRecords := count($records)
+    let $hasFailed := errors:hasFailed(($records, $records//td))
+    let $bulletType := if ($hasFailed) then $errors:FAILED else $bulletType
     let $result :=
         (
             <tr>

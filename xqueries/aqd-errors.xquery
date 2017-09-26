@@ -428,6 +428,10 @@ declare function errors:getMaxError($records as element()*) as xs:string {
     else $errors:INFO
 };
 
+declare function errors:hasFailed($records as element()*) as xs:boolean {
+    errors:getMaxError($records) = $errors:FAILED
+};
+
 declare function errors:getError($notation as xs:string) {
     dd:getQAQCErrorType($notation)
 };
