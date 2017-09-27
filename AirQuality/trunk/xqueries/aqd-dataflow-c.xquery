@@ -469,16 +469,14 @@ let $C21invalid :=
 (: C23a :)
 let $C23ainvalid :=
     try {
+        (let $valid := for $i in ("fixed", "model", "indicative", "objective", "fixedrandom") return $vocabulary:ASSESSMENTTYPE_VOCABULARY || $i
         for $x in $docRoot//aqd:AQD_AssessmentRegime[count(aqd:assessmentMethods/aqd:AssessmentMethods/aqd:assessmentType/@xlink:href) > 0]/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:assessmentType
-        where $x/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/fixed"
-                and $x/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/model"
-                and $x/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/indicative"
-                and $x/@xlink:href != "http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/objective"
+        where not($x/@xlink:href = $valid)
         return
             <tr>
                 <td title="base:localId">{string($x/../../../aqd:inspireId/base:Identifier/base:localId)}</td>
                 <td title="aqd:assessmentType">{data($x/@xlink:href)}</td>
-            </tr>
+            </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
     } catch * {
         <tr class="{$errors:FAILED}">
             <td title="Error code">{$err:code}</td>
