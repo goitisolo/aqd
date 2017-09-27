@@ -974,7 +974,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
         try {
             (let $valid := dd:getValidConcepts($vocabulary:AGGREGATION_PROCESS || "rdf")
             for $x in $docRoot//om:OM_Observation/om:result[gml:File]
-            let $definition := $x/gml:File/gml:rangeParameters/swe:Quantity/@Definition/string()
+            let $definition := $x/gml:File/gml:rangeParameters/swe:Quantity/@definition/string()
             where not($definition = $valid)
             return
                 <tr>
