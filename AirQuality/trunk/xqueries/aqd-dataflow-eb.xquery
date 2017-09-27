@@ -390,26 +390,31 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
             </tr>
         }
 
-    (: IF resultencoding = inline, resultformat can only be http://dd.eionet.europa.eu/vocabulary/aq/resultformat/swe-array IF resultencoding = external
-        resultformat can only be http://dd.eionet.europa.eu/vocabulary/aq/resultformat/ascii-grid ;
-        http://dd.eionet.europa.eu/vocabulary/aq/resultformat/esri-shp or http://dd.eionet.europa.eu/vocabulary/aq/resultformat/geotiff :)
+    (: IF resultencoding = inline, resultformat can only be http://dd.eionet.europa.eu/vocabulary/aq/resultformat/swe-array
+     IF resultencoding = external resultformat can only be http://dd.eionet.europa.eu/vocabulary/aq/resultformat/ascii-grid ,
+       http://dd.eionet.europa.eu/vocabulary/aq/resultformat/esri-shp or http://dd.eionet.europa.eu/vocabulary/aq/resultformat/geotiff
+    :)
     let $Eb14binvalid :=
         try {
-            (let $valid := ("http://dd.eionet.europa.eu/vocabulary/aq/resultencoding/inline" || "http://dd.eionet.europa.eu/vocabulary/aq/resultformat/swe-array", "http://dd.eionet.europa.eu/vocabulary/aq/resultencoding/external" || "http://dd.eionet.europa.eu/vocabulary/aq/resultformat/ascii-grid")
+            (let $ir := "http://dd.eionet.europa.eu/vocabulary/aq/resultencoding/inline"
+            let $er := "http://dd.eionet.europa.eu/vocabulary/aq/resultencoding/external"
+            let $validInline := ($ir || "http://dd.eionet.europa.eu/vocabulary/aq/resultformat/swe-array")
+            let $validExternal := ($er || "http://dd.eionet.europa.eu/vocabulary/aq/resultformat/ascii-grid",
+            $er || "http://dd.eionet.europa.eu/vocabulary/aq/resultformat/esri-shp", $er || "http://dd.eionet.europa.eu/vocabulary/aq/resultformat/geotiff")
             for $x in $docRoot//om:OM_Observation
             let $encoding := $x/om:parameter/om:NamedValue[om:name/@xlink:href = $vocabulary:PROCESSPARAMETER_RESULTENCODING]
             let $encoding := common:if-empty($encoding/om:value, $encoding/om:value/@xlink:href)
             let $format := $x/om:parameter/om:NamedValue[om:name/@xlink:href = $vocabulary:PROCESSPARAMETER_RESULTFORMAT]
             let $format := common:if-empty($format/om:value, $format/om:value/@xlink:href)
+            let $combination := $encoding || $format
             let $condition :=
                 if ($encoding = "http://dd.eionet.europa.eu/vocabulary/aq/resultencoding/inline") then
-                    exists($x/swe:DataArray)
+                    $combination = $validInline and exists($x/om:result/swe:DataArray)
                 else if ($encoding = "http://dd.eionet.europa.eu/vocabulary/aq/resultencoding/external") then
-                    exists($x/gml:File)
+                    $combination = $validExternal and exists($x/om:result/gml:File)
                 else
                     false()
-            let $combination := $encoding || $format
-            where not($combination = $valid) or not($condition)
+            where not($condition)
             return
                 <tr>
                     <td title="gml:id">{data($x/@gml:id)}</td>
