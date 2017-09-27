@@ -500,13 +500,13 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
             </tr>
         }
     (: Eb19 - IF resultformat is http://dd.eionet.europa.eu/vocabulary/aq/resultformat/swe-array (Eb14) then ./om:result/swe:DataArray/swe:elementType/swe:DataRecord/swe:field name="Value" attribute THEN swe:Quantity definition is defined by
-    http://dd.eionet.europa.eu/vocabulary/aq/primaryObservation/[code] & the swe:uom resolves to an xlink to http://dd.eionet.europa.eu/vocabulary/uom/concentration/[code] :)
+    http://dd.eionet.europa.eu/vocabulary/aq/primaryObservation/[code] or http://dd.eionet.europa.eu/vocabulary/aq/aggregationprocess/[code] & the swe:uom resolves to an xlink to http://dd.eionet.europa.eu/vocabulary/uom/concentration/[code]:)
     let $Eb19invalid :=
         try {
-            (let $obs := dd:getValidConceptsLC($vocabulary:OBSERVATIONS_PRIMARY || "rdf")
+            (let $defs := (dd:getValidConceptsLC($vocabulary:OBSERVATIONS_PRIMARY || "rdf"), dd:getValidConceptsLC($vocabulary:AGGREGATION_PROCESS || "rdf"))
             let $cons := dd:getValidConceptsLC($vocabulary:UOM_CONCENTRATION_VOCABULARY || "rdf")
             for $x in $docRoot//om:OM_Observation/om:result[swe:DataArray]//swe:elementType/swe:DataRecord/swe:field[@name = "Value"
-                    and (not(swe:Quantity/lower-case(@definition) = $obs) or not(swe:Quantity/swe:uom/lower-case(@xlink:href) = $cons))]
+                    and (not(swe:Quantity/lower-case(@definition) = $defs) or not(swe:Quantity/swe:uom/lower-case(@xlink:href) = $cons))]
             return
                 <tr>
                     <td title="@gml:id">{string($x/../../../../../@gml:id)}</td>
