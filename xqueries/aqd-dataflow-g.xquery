@@ -557,7 +557,9 @@ let $G14table :=
                 </result>
         let $G14tmp :=
             for $x in $docRoot//aqd:AQD_Attainment/aqd:environmentalObjective/aqd:EnvironmentalObjective/
-                    aqd:protectionTarget[not(../string(aqd:objectiveType/@xlink:href) = ("http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/MO", "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/ECO"))]
+                    aqd:protectionTarget[not(../string(aqd:objectiveType/@xlink:href) = ("http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/MO",
+                    "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/ECO", "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/ALT",
+                    "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/INT"))]
             let $pollutant := string($x/../../../aqd:pollutant/@xlink:href)
             let $zone := string($x/../../../aqd:zone/@xlink:href)
             let $protectionTarget := string($x/@xlink:href)
