@@ -1091,14 +1091,14 @@ let $G58invalid :=
 OR ./aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:numberExceedances must be provided AS an integer number :)
 let $G59invalid :=
     try {
-        for $x in $docRoot//aqd:AQD_Attainment[aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:exceedance = "true"]
-            let $numerical := string($x/aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:numericalExceedance)
-            let $numbers := string($x/aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:numberExceedances)
-            let $percentile := string($x/aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:percentileExceedance)
+        for $x in $docRoot//aqd:AQD_Attainment/aqd:exceedanceDescriptionAdjustment[/aqd:ExceedanceDescription/aqd:exceedance = "true"]
+            let $numerical := string($x/aqd:ExceedanceDescription/aqd:numericalExceedance)
+            let $numbers := string($x/aqd:ExceedanceDescription/aqd:numberExceedances)
+            let $percentile := string($x/aqd:ExceedanceDescription/aqd:percentileExceedance)
         where not(common:containsAnyNumber(($numerical, $numbers, $percentile)))
         return
             <tr>
-                <td title="base:localId">{$x/aqd:inspireId/base:Identifier/base:localId/string()}</td>
+                <td title="base:localId">{$x/../aqd:inspireId/base:Identifier/base:localId/string()}</td>
             </tr>
     } catch * {
         <tr class="{$errors:FAILED}">
@@ -1111,14 +1111,14 @@ let $G59invalid :=
 OR ./aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:numberExceedances must be provided AS an integer number :)
 let $G60invalid :=
     try {
-        for $x in $docRoot//aqd:AQD_Attainment[aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:exceedance = "false"]
-            let $numerical := string($x/aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:numericalExceedance)
-            let $numbers := string($x/aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:numberExceedances)
-            let $percentile := string($x/aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:percentileExceedance)
+        for $x in $docRoot//aqd:AQD_Attainment/aqd:exceedanceDescriptionAdjustment[aqd:ExceedanceDescription/aqd:exceedance = "false"]
+            let $numerical := string($x/aqd:ExceedanceDescription/aqd:numericalExceedance)
+            let $numbers := string($x/aqd:ExceedanceDescription/aqd:numberExceedances)
+            let $percentile := string($x/aqd:ExceedanceDescription/aqd:percentileExceedance)
         where not(common:containsAnyNumber(($numerical, $numbers, $percentile)))
         return
             <tr>
-                <td title="base:localId">{$x/aqd:inspireId/base:Identifier/base:localId/string()}</td>
+                <td title="base:localId">{$x/../aqd:inspireId/base:Identifier/base:localId/string()}</td>
             </tr>
     } catch * {
         <tr class="{$errors:FAILED}">
