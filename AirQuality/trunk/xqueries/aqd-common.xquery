@@ -155,6 +155,14 @@ declare function common:isDateDifferenceOverYear($startDate as xs:date, $endDate
             false()
 };
 
+declare function common:containsAnyNumber($values as xs:string*) as xs:boolean {
+    let $result :=
+        for $i in $values
+        where $i castable as xs:double
+        return 1
+    return $result = 1
+};
+
 (: This is to be used only for dateTimes with <= 1 year difference :)
 declare function common:isDateTimeDifferenceOneYear($startDateTime as xs:dateTime, $endDateTime as xs:dateTime) as xs:boolean {
     let $year1 := year-from-dateTime($startDateTime)
