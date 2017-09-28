@@ -776,7 +776,27 @@ let $C32table :=
         for $sMetadata in $docRoot//aqd:AQD_AssessmentRegime/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata
         let $id := string($sMetadata/@xlink:href)
         let $docType := string($sMetadata/../aqd:assessmentType/@xlink:href)
-        where (not(dataflowC:isValidAssessmentTypeCombination($id, $docType, $allAssessmentTypes)))
+
+        let $typeInDoc := lower-case(substring-after($docType, $vocabulary:ASSESSMENTTYPE_VOCABULARY))
+        let $combination := $id || "#" || $docType
+        let $combinationFixed := $id || "#" || $vocabulary:ASSESSMENTTYPE_VOCABULARY || "fixed"
+        let $combinationFixedRandom := $id || "#" || $vocabulary:ASSESSMENTTYPE_VOCABULARY || "fixedrandom"
+        let $combinationIndicative := $id || "#" || $vocabulary:ASSESSMENTTYPE_VOCABULARY || "indicative"
+        let $combinationModel := $id || "#" || $vocabulary:ASSESSMENTTYPE_VOCABULARY || "model"
+        let $combinationObjective := $id || "#" || $vocabulary:ASSESSMENTTYPE_VOCABULARY || "objective"
+
+        let $condition :=
+            if ($typeInDoc = ("fixed")) then
+                $combination = ($combinationFixed, $combinationFixedRandom)
+            else if ($typeInDoc = ("fixedrandom")) then
+                $combination = ($combinationFixedRandom)
+            else if ($typeInDoc = "indicative") then
+                $combination = ($combinationIndicative, $combinationFixed, $combinationFixedRandom)
+            else if ($typeInDoc = "objective") then
+                $combination = ($combinationObjective, $combinationFixed, $combinationFixedRandom, $combinationIndicative, $combinationModel)
+            else
+                false()
+        where (not($condition))
         return
             <tr>
                 <td title="AQD_AssessmentRegime">{string($sMetadata/../../../aqd:inspireId/base:Identifier/base:localId)}</td>
@@ -1029,33 +1049,4 @@ let $meta := map:merge((
 ))
 return
     html:buildResultDiv($meta, $result)
-};
-
-declare function dataflowC:isValidAssessmentTypeCombination($id as xs:string, $type as xs:string, $allCombinations as xs:string*) as xs:boolean {
-    let $typeInDoc := lower-case(substring-after($type, $vocabulary:ASSESSMENTTYPE_VOCABULARY))
-    let $combination := concat($id, "#", $type)
-    let $combinationFixed := concat($id, "#", $vocabulary:ASSESSMENTTYPE_VOCABULARY, "fixed")
-    let $combinationIndicative := concat($id, "#", $vocabulary:ASSESSMENTTYPE_VOCABULARY, "indicative")
-    let $combinationModel := concat($id, "#", $vocabulary:ASSESSMENTTYPE_VOCABULARY, "model")
-    let $combinationObjective := concat($id, "#", $vocabulary:ASSESSMENTTYPE_VOCABULARY, "objective")
-    
-    let $combinationOk := 
-        if ($typeInDoc = ("fixed", "model")) then
-            if ($combination = $allCombinations) then
-                true()
-            else
-                false()
-        else if ($typeInDoc = "indicative") then
-            if ($allCombinations = ($combinationFixed, $combinationIndicative)) then
-                true()
-            else
-                false()
-        else if ($typeInDoc = "objective") then
-            if ($allCombinations = ($combinationFixed, $combinationIndicative, $combinationModel, $combinationObjective)) then
-                true()
-            else
-                false()   
-        else
-            false()
-    return $combinationOk
 };
