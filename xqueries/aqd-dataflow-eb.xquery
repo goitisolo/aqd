@@ -259,7 +259,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
 ./om:parameter/om:NamedValue/om:name xlink:href attribute shall resolve to a traversable link to http://dd.eionet.europa.eu/vocabulary/aq/processparameter/ :)
     let $Eb09invalid :=
         try {
-            (let $valid := dd:getValidConcepts($vocabulary:PROCESS_PARAMETER || "rdf")
+            (let $valid := (dd:getValidConcepts($vocabulary:MODEL_PARAMETER || "rdf"), dd:getValidConcepts($vocabulary:PROCESS_PARAMETER || "rdf"))
             for $x in $docRoot//om:OM_Observation/om:parameter/om:NamedValue/om:name
             where not($x/@xlink:href = $valid)
             return
