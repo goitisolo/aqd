@@ -754,7 +754,6 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
         }
 
     (: Eb26 :)
-    (: TODO check if objective is needed as process parameter :)
     let $Eb26invalid :=
         try {
             (let $result := sparqlx:run(query:getModelMetadataFromFiles($latestEnvelopeD1b))
@@ -764,7 +763,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
                 $x/sparql:binding[@name="featureOfInterest"]/sparql:uri/string() || $x/sparql:binding[@name="observedProperty"]/sparql:uri/string()
 
             for $x in $docRoot//om:OM_Observation
-            let $namedValue := $x/om:parameter/om:NamedValue[om:name/@xlink:href = $vocabulary:PROCESS_PARAMETER || "model"]
+            let $namedValue := $x/om:parameter/om:NamedValue[om:name/@xlink:href = ($vocabulary:PROCESS_PARAMETER || "model", $vocabulary:PROCESS_PARAMETER || "objective")]
             let $model := tokenize(common:if-empty($namedValue/om:value, $namedValue/om:value/@xlink:href), "/")[last()]
             let $procedure := $x/om:procedure/@xlink:href/string()
             let $procedure :=
