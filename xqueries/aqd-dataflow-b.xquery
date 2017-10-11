@@ -251,8 +251,7 @@ let $B08table :=
                 let $zone := string($pollutantNode/../../am:inspireId/base:Identifier/base:localId)
                 let $protectionTarget := string($pollutantNode/aqd:protectionTarget/@xlink:href)
                 let $key := string-join(($zone, $pollutant, $protectionTarget), "#")
-            where ($beginPosition < xs:dateTime($reportingYear || "-01-01T00:00:00Z") and ($x/am:designationPeriod//gml:endPosition/@indeterminatePosition = "unknown")
-                    or $endPosition > xs:dateTime($reportingYear || "-12-31T24:00:00Z"))
+            where common:isDateTimeIncluded($reportingYear, $beginPosition, $endPosition)
             group by $pollutant, $protectionTarget
             return
                 <result>
