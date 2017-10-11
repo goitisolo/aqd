@@ -180,3 +180,20 @@ declare function common:isDateTimeDifferenceOneYear($startDateTime as xs:dateTim
         else
             false()
 };
+
+declare function common:isDateTimeIncluded($reportingYear as xs:string, $beginPosition as xs:dateTime?, $endPosition as xs:dateTime?) {
+    let $reportingYearDateTimeStart := xs:dateTime($reportingYear || "-01-01T00:00:00Z")
+    let $reportingYearDateTimeEnd := xs:dateTime($reportingYear || "-01-01T00:00:00Z")
+    return
+        if (empty($endPosition)) then
+            if ($reportingYearDateTimeStart >= $beginPosition) then
+                true()
+            else
+                false()
+        else if ($endPosition >= $reportingYearDateTimeEnd) then
+            if ($reportingYearDateTimeStart >= $beginPosition) then
+                true()
+            else false()
+        else
+            false()
+};
