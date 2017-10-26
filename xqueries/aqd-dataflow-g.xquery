@@ -625,7 +625,7 @@ let $G14binvalid :=
           ?assessmentThreshold aqd:environmentalObjective ?objective .
           ?objective aqd:objectiveType ?objectiveType .
           FILTER (CONTAINS(str(?regime), '" || $latestEnvelopeByYearC || "'))
-          FILTER (not(str(?objectiveType) in ('" || string-join($exception, "','") || "')))
+          FILTER (!(str(?objectiveType) in ('" || string-join($exception, "','") || "')))
    }"
         let $all := distinct-values(data(sparqlx:run($query)/sparql:binding[@name = 'inspireLabel']/sparql:literal))
         let $allLocal := data($docRoot//aqd:AQD_Attainment[not(aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType/@xlink:href = $exception)]/aqd:assessment/@xlink:href)

@@ -346,7 +346,7 @@ declare function query:getAllRegimeIds($namespaces as xs:string*) as xs:string* 
         aqd:inspireId ?inspireId .
         ?inspireId rdfs:label ?inspireLabel .
         ?inspireId aqd:namespace ?namespace
-        FILTER(NOT(CONTAINS(str(?regime), 'c_preliminary')))
+        FILTER(!(CONTAINS(str(?regime), 'c_preliminary')))
         FILTER(str(?namespace) in ('" || string-join($namespaces, "','") || "'))
   }"
   return data(sparqlx:run($query)//sparql:binding[@name='inspireLabel']/sparql:literal)
@@ -410,7 +410,7 @@ declare function query:getC31($cdrUrl as xs:string, $reportingYear as xs:string)
   ?polltargetURI aqd:pollutantCode ?pollURI .
   ?pollURI rdfs:label ?Pollutant .
   FILTER regex(?pollURI,'') .
-  FILTER (((xsd:date(substr(str(?beginPosition),1,10)) <= xsd:date('" || $reportingYear || "-01-01')) AND (not(bound(?endPosition)) ||
+  FILTER (((xsd:date(substr(str(?beginPosition),1,10)) <= xsd:date('" || $reportingYear || "-01-01')) AND (!(bound(?endPosition)) ||
 xsd:date(substr(str(?endPosition),1,10)) >= xsd:date('" || $reportingYear || "-12-31')))) .
   FILTER CONTAINS(str(?zoneURI),'" || $cdrUrl || "') .
   }"
@@ -442,7 +442,7 @@ PREFIX prop: <http://dd.eionet.europa.eu/property/>
        ?polltargetURI aqd:protectionTarget ?ProtectionTarget .
        ?polltargetURI aqd:pollutantCode ?pollURI .
        ?pollURI rdfs:label ?Pollutant
-       FILTER (((xsd:date(substr(str(?beginPosition),1,10)) <= xsd:date('" || $reportingYear || "-01-01')) AND (not(bound(?endPosition)) ||
+       FILTER (((xsd:date(substr(str(?beginPosition),1,10)) <= xsd:date('" || $reportingYear || "-01-01')) AND (!(bound(?endPosition)) ||
 xsd:date(substr(str(?endPosition),1,10)) >= xsd:date('" || $reportingYear || "-12-31')))) .
        FILTER CONTAINS(str(?zoneURI),'" || $envelopeB || "') .
   }}
