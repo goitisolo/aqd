@@ -19,13 +19,22 @@ xquery version "3.0" encoding "UTF-8";
  : Dataflow C script - Assessment regimes
  : Dataflow D script -
  : Dataflow G script -
+ : Dataflow H script -
+ : Dataflow I script -
+ : Dataflow J script -
+ : Dataflow K script -
  : Dataflow M script -
  :)
 module namespace obligations = "http://converters.eionet.europa.eu";
+
 import module namespace dataflowB = "http://converters.eionet.europa.eu/dataflowB" at "aqd-dataflow-b.xquery";
 import module namespace dataflowC = "http://converters.eionet.europa.eu/dataflowC" at "aqd-dataflow-c.xquery";
 import module namespace dataflowD = "http://converters.eionet.europa.eu/dataflowD" at "aqd-dataflow-d.xquery";
 import module namespace dataflowG = "http://converters.eionet.europa.eu/dataflowG" at "aqd-dataflow-g.xquery";
+import module namespace dataflowH = "http://converters.eionet.europa.eu/dataflowH" at "aqd-dataflow-h.xquery";
+import module namespace dataflowI = "http://converters.eionet.europa.eu/dataflowH" at "aqd-dataflow-i.xquery";
+import module namespace dataflowJ = "http://converters.eionet.europa.eu/dataflowH" at "aqd-dataflow-j.xquery";
+import module namespace dataflowK = "http://converters.eionet.europa.eu/dataflowH" at "aqd-dataflow-k.xquery";
 import module namespace dataflowM = "http://converters.eionet.europa.eu/dataflowM" at "aqd-dataflow-m.xquery";
 import module namespace dataflowEa = "http://converters.eionet.europa.eu/dataflowEa" at "aqd-dataflow-ea.xquery";
 import module namespace dataflowEb = "http://converters.eionet.europa.eu/dataflowEb" at "aqd-dataflow-eb.xquery";
@@ -43,7 +52,9 @@ declare function obligations:proceed($source_url as xs:string) {
     let $countryCode := lower-case(doc($envelopeUrl)/envelope/countrycode)
 
     let $validObligations := common:getSublist($obligations,
-            ($dataflowB:OBLIGATIONS, $dataflowC:OBLIGATIONS, $dataflowD:OBLIGATIONS, $dataflowG:OBLIGATIONS, $dataflowM:OBLIGATIONS, $dataflowEa:OBLIGATIONS, $dataflowEb:OBLIGATIONS))
+            ($dataflowB:OBLIGATIONS, $dataflowC:OBLIGATIONS, $dataflowD:OBLIGATIONS, $dataflowG:OBLIGATIONS,
+            $dataflowH:OBLIGATIONS, $dataflowI:OBLIGATIONS, $dataflowJ:OBLIGATIONS, $dataflowK:OBLIGATIONS,
+            $dataflowM:OBLIGATIONS, $dataflowEa:OBLIGATIONS, $dataflowEb:OBLIGATIONS))
 
     let $result := ()
     let $resultB :=
@@ -66,6 +77,26 @@ declare function obligations:proceed($source_url as xs:string) {
             dataflowG:proceed($source_url, $countryCode)
         else
             ()
+    let $resultH :=
+        if (common:containsAny($obligations, $dataflowH:OBLIGATIONS)) then
+            dataflowH:proceed($source_url, $countryCode)
+        else
+            ()
+    let $resultI :=
+        if (common:containsAny($obligations, $dataflowI:OBLIGATIONS)) then
+            dataflowI:proceed($source_url, $countryCode)
+        else
+            ()
+    let $resultJ :=
+        if (common:containsAny($obligations, $dataflowJ:OBLIGATIONS)) then
+            dataflowJ:proceed($source_url, $countryCode)
+        else
+            ()
+    let $resultK :=
+        if (common:containsAny($obligations, $dataflowK:OBLIGATIONS)) then
+            dataflowK:proceed($source_url, $countryCode)
+        else
+            ()
     let $resultM :=
         if (common:containsAny($obligations, $dataflowM:OBLIGATIONS)) then
             dataflowM:proceed($source_url, $countryCode)
@@ -82,7 +113,7 @@ declare function obligations:proceed($source_url as xs:string) {
         else
             ()
 
-    let $messages := ($resultB, $resultC, $resultD, $resultE, $resultEb, $resultG, $resultM)
+    let $messages := ($resultB, $resultC, $resultD, $resultE, $resultEb, $resultG, $resultH, $resultI, $resultJ, $resultK, $resultM)
     let $failedString := string-join($messages//p[tokenize(@class, "\s+") = $errors:FAILED], ' || ')
     let $blockerString := normalize-space(string-join($messages//p[tokenize(@class, "\s+") = $errors:BLOCKER], ' || '))
     let $errorString := normalize-space(string-join($messages//p[tokenize(@class, "\s+") = $errors:ERROR], ' || '))
