@@ -131,8 +131,16 @@ declare function common:checkLink($text as xs:string*) as element(span)*{
         }</span>
 };
 
-declare function common:is-a-number( $value as xs:anyAtomicType? ) as xs:boolean {
-    string(number($value)) != 'NaN'
+(:~ Test if a given value matches a positive number (either integer or decimal)
+(with two places after dot)
+:)
+declare function common:is-a-number(
+    $value as xs:anyAtomicType?
+) as xs:boolean {
+    let $n := string(number($value))
+    let $matches := matches($n, "^\d+(\.\d\d?){0,1}$")
+    let $positive := number($value) > 0
+    return $matches and $positive
 };
 
 declare function common:includesURL($x as xs:string) {
@@ -254,16 +262,6 @@ declare function common:isInVocabulary(
 ) as xs:boolean {
     let $validUris := dd:getValidConcepts($vocabularyName || "rdf")
     return $uri and $uri = $validUris
-};
-
-(: Check if the given node equals to a term that is defined in the vocabulary :)
-declare function common:isEqualToTermInVocabulary(
-        $uri as xs:string?,
-        $vocabularyName as xs:string,
-        $vocabularyTermUri as xs:string
-) as xs:boolean {
-    let $validUris := dd:getValidConcepts($vocabularyName || "rdf")
-    return $uri and $uri = $validUris and $uri = $vocabularyTermUri
 };
 
 declare function common:isInVocabularyReport(
