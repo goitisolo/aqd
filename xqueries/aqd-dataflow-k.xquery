@@ -13,42 +13,42 @@ xquery version "3.0" encoding "UTF-8";
 
 module namespace dataflowK = "http://converters.eionet.europa.eu/dataflowK";
 
-import module namespace common = "aqd-common" at "aqd-common.xquery";
-import module namespace html = "aqd-html" at "aqd-html.xquery";
-import module namespace sparqlx = "aqd-sparql" at "aqd-sparql.xquery";
-import module namespace labels = "aqd-labels" at "aqd-labels.xquery";
-import module namespace vocabulary = "aqd-vocabulary" at "aqd-vocabulary.xquery";
-import module namespace query = "aqd-query" at "aqd-query.xquery";
-import module namespace errors = "aqd-errors" at "aqd-errors.xquery";
+(:declare namespace ad = "urn:x-inspire:specification:gmlas:Addresses:3.0";:)
+(:declare namespace base2 = "http://inspire.ec.europa.eu/schemas/base2/1.0";:)
+(:declare namespace ef = "http://inspire.ec.europa.eu/schemas/ef/3.0";:)
+(:declare namespace gco = "http://www.isotc211.org/2005/gco";:)
+(:declare namespace gmd = "http://www.isotc211.org/2005/gmd";:)
+(:declare namespace gn = "urn:x-inspire:specification:gmlas:GeographicalNames:3.0";:)
+(:declare namespace om = "http://www.opengis.net/om/2.0";:)
+(:declare namespace ompr="http://inspire.ec.europa.eu/schemas/ompr/2.0";:)
+(:declare namespace prop = "http://dd.eionet.europa.eu/property/";:)
+(:declare namespace sam = "http://www.opengis.net/sampling/2.0";:)
+(:declare namespace sams="http://www.opengis.net/samplingSpatial/2.0";:)
+(:declare namespace swe = "http://www.opengis.net/swe/2.0";:)
 (:import module namespace filter = "aqd-filter" at "aqd-filter.xquery";:)
-import module namespace dd = "aqd-dd" at "aqd-dd.xquery";
-(:import module namespace schemax = "aqd-schema" at "aqd-schema.xquery";:)
 (:import module namespace geox = "aqd-geo" at "aqd-geo.xquery";
+(:import module namespace schemax = "aqd-schema" at "aqd-schema.xquery";:)
+
+declare namespace adms = "http://www.w3.org/ns/adms#";
+declare namespace am = "http://inspire.ec.europa.eu/schemas/am/3.0";
+declare namespace aqd = "http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0";
+declare namespace base = "http://inspire.ec.europa.eu/schemas/base/3.3";
+declare namespace gml = "http://www.opengis.net/gml/3.2";
+declare namespace rdf = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
+declare namespace skos = "http://www.w3.org/2004/02/skos/core#";
+declare namespace sparql = "http://www.w3.org/2005/sparql-results#";
+declare namespace xlink = "http://www.w3.org/1999/xlink";
+
+import module namespace common = "aqd-common" at "aqd-common.xquery";
+import module namespace dd = "aqd-dd" at "aqd-dd.xquery";
+import module namespace errors = "aqd-errors" at "aqd-errors.xquery";
 import module namespace functx = "http://www.functx.com" at "aqd-functx.xq";:)
 import module namespace functx = "http://www.functx.com" at "functx-1.0-doc-2007-01.xq";
-
-declare namespace aqd = "http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0";
-declare namespace gml = "http://www.opengis.net/gml/3.2";
-declare namespace am = "http://inspire.ec.europa.eu/schemas/am/3.0";
-(:declare namespace ef = "http://inspire.ec.europa.eu/schemas/ef/3.0";:)
-declare namespace base = "http://inspire.ec.europa.eu/schemas/base/3.3";
-(:declare namespace ad = "urn:x-inspire:specification:gmlas:Addresses:3.0";:)
-(:declare namespace gn = "urn:x-inspire:specification:gmlas:GeographicalNames:3.0";:)
-(:declare namespace base2 = "http://inspire.ec.europa.eu/schemas/base2/1.0";:)
-declare namespace xlink = "http://www.w3.org/1999/xlink";
-(:declare namespace om = "http://www.opengis.net/om/2.0";:)
-(:declare namespace swe = "http://www.opengis.net/swe/2.0";:)
-(:declare namespace ompr="http://inspire.ec.europa.eu/schemas/ompr/2.0";:)
-(:declare namespace sams="http://www.opengis.net/samplingSpatial/2.0";:)
-(:declare namespace sam = "http://www.opengis.net/sampling/2.0";:)
-(:declare namespace gmd = "http://www.isotc211.org/2005/gmd";:)
-(:declare namespace gco = "http://www.isotc211.org/2005/gco";:)
-
-declare namespace sparql = "http://www.w3.org/2005/sparql-results#";
-declare namespace skos = "http://www.w3.org/2004/02/skos/core#";
-declare namespace adms = "http://www.w3.org/ns/adms#";
-(:declare namespace prop = "http://dd.eionet.europa.eu/property/";:)
-declare namespace rdf = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
+import module namespace html = "aqd-html" at "aqd-html.xquery";
+import module namespace labels = "aqd-labels" at "aqd-labels.xquery";
+import module namespace query = "aqd-query" at "aqd-query.xquery";
+import module namespace sparqlx = "aqd-sparql" at "aqd-sparql.xquery";
+import module namespace vocabulary = "aqd-vocabulary" at "aqd-vocabulary.xquery";
 
 declare variable $dataflowK:OBLIGATIONS as xs:string* := ($vocabulary:ROD_PREFIX || "683");
 
