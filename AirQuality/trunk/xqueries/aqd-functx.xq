@@ -17,3 +17,12 @@ declare function functx:is-leap-year($date as xs:anyAtomicType?) as xs:boolean {
 declare function functx:escape-for-regex($arg as xs:string?) as xs:string {
     replace($arg, '(\.|\[|\]|\\|\||\-|\^|\$|\?|\*|\+|\{|\}|\(|\))','\\$1')
 };
+
+declare function functx:if-empty
+ ( $arg as item()* ,
+   $value as item()* )  as item()* {
+
+    if (string($arg) != '')
+        then data($arg)
+        else $value
+};
