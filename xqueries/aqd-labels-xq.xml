@@ -1431,7 +1431,7 @@
     <J13>aqd:AQD_EvaluationScenario/aqd:codeOfScenario should begin with with the 2-digit country code according to ISO 3166-1.</J13>
     <J13_SHORT>A code of the scenario should be provided as nn alpha-numeric code starting with the country ISO code</J13_SHORT>
     <J14>aqd:AQD_EvaluationScenario/aqd:publication/aqd:Publication/aqd:description shall be a text string </J14>
-    <J14_SHORT>Short textul description of the publication should be provided. If availabel, include the ISBN number.</J14_SHORT>
+    <J14_SHORT>Short textul description of the publication should be provided. If available, include the ISBN number.</J14_SHORT>
     <J15>aqd:AQD_EvaluationScenario/aqd:publication/aqd:Publication/aqd:title shall be a text string</J15>
     <J15_SHORT>Title as written in the publication.</J15_SHORT>
     <J16>aqd:AQD_EvaluationScenario/aqd:publication/aqd:Publication/aqd:author shall be a text string (if provided)</J16>
