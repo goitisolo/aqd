@@ -7,7 +7,7 @@ xquery version "3.0";
 : Time: 1:32 PM
 :)
 module namespace labels = "aqd-labels";
-import module namespace eionet = "eionet-config" at "eionet-config.xq";
+(:import module namespace eionet = "eionet-config" at "eionet-config.xq";:)
 import module namespace dd = "aqd-dd" at "aqd-dd.xquery";
 
 (: HTML Labels :)
@@ -757,30 +757,28 @@ declare variable $labels:H35_SHORT := labels:getPrefLabel("H35");
 
 declare variable $labels:I0 := labels:getDefinition("I0");
 declare variable $labels:I0_SHORT := labels:getPrefLabel("I0");
-declare variable $labels:I01 := labels:getDefinition("I01");
-declare variable $labels:I01_SHORT := labels:getPrefLabel("I01");
-declare variable $labels:I02 := labels:getDefinition("I02");
-declare variable $labels:I02_SHORT := labels:getPrefLabel("I02");
-declare variable $labels:I03 := labels:getDefinition("I03");
-declare variable $labels:I03_SHORT := labels:getPrefLabel("I03");
-declare variable $labels:I04 := labels:getDefinition("I04");
-declare variable $labels:I04_SHORT := labels:getPrefLabel("I04");
-declare variable $labels:I05 := labels:getDefinition("I05");
-declare variable $labels:I05_SHORT := labels:getPrefLabel("I05");
-declare variable $labels:I06 := labels:getDefinition("I06");
-declare variable $labels:I06_SHORT := labels:getPrefLabel("I06");
-declare variable $labels:I07 := labels:getDefinition("I07");
-declare variable $labels:I07_SHORT := labels:getPrefLabel("I07");
-declare variable $labels:I08 := labels:getDefinition("I08");
-declare variable $labels:I08_SHORT := labels:getPrefLabel("I08");
-declare variable $labels:I09 := labels:getDefinition("I09");
-declare variable $labels:I09_SHORT := labels:getPrefLabel("I09");
+declare variable $labels:I1 := labels:getDefinition("I1");
+declare variable $labels:I1_SHORT := labels:getPrefLabel("I0");
+declare variable $labels:I2 := labels:getDefinition("I2");
+declare variable $labels:I2_SHORT := labels:getPrefLabel("I0");
+declare variable $labels:I3 := labels:getDefinition("I0");
+declare variable $labels:I3_SHORT := labels:getPrefLabel("I3");
+declare variable $labels:I4 := labels:getDefinition("I4");
+declare variable $labels:I4_SHORT := labels:getPrefLabel("I4");
+declare variable $labels:I5 := labels:getDefinition("I5");
+declare variable $labels:I5_SHORT := labels:getPrefLabel("I5");
+declare variable $labels:I6 := labels:getDefinition("I6");
+declare variable $labels:I6_SHORT := labels:getPrefLabel("I6");
+declare variable $labels:I7 := labels:getDefinition("I7");
+declare variable $labels:I7_SHORT := labels:getPrefLabel("I7");
+declare variable $labels:I8 := labels:getDefinition("I8");
+declare variable $labels:I8_SHORT := labels:getPrefLabel("I8");
+declare variable $labels:I9 := labels:getDefinition("I9");
+declare variable $labels:I9_SHORT := labels:getPrefLabel("I9");
 declare variable $labels:I10 := labels:getDefinition("I10");
 declare variable $labels:I10_SHORT := labels:getPrefLabel("I10");
 declare variable $labels:I11 := labels:getDefinition("I11");
 declare variable $labels:I11_SHORT := labels:getPrefLabel("I11");
-declare variable $labels:I11b := labels:getDefinition("I11b");
-declare variable $labels:I11b_SHORT := labels:getPrefLabel("I11b");
 declare variable $labels:I12 := labels:getDefinition("I12");
 declare variable $labels:I12_SHORT := labels:getPrefLabel("I12");
 declare variable $labels:I13 := labels:getDefinition("I13");
@@ -916,7 +914,6 @@ declare variable $labels:J31 := labels:getDefinition("J31");
 declare variable $labels:J31_SHORT := labels:getPrefLabel("J31");
 declare variable $labels:J32 := labels:getDefinition("J32");
 declare variable $labels:J32_SHORT := labels:getPrefLabel("J32");
-
 declare variable $labels:K0 := labels:getDefinition("K0");
 declare variable $labels:K0_SHORT := labels:getPrefLabel("K0");
 declare variable $labels:K01 := labels:getDefinition("K01");

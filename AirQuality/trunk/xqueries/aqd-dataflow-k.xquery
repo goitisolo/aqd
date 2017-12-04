@@ -13,42 +13,44 @@ xquery version "3.0" encoding "UTF-8";
 
 module namespace dataflowK = "http://converters.eionet.europa.eu/dataflowK";
 
-(:declare namespace ad = "urn:x-inspire:specification:gmlas:Addresses:3.0";:)
-(:declare namespace base2 = "http://inspire.ec.europa.eu/schemas/base2/1.0";:)
-(:declare namespace ef = "http://inspire.ec.europa.eu/schemas/ef/3.0";:)
-(:declare namespace gco = "http://www.isotc211.org/2005/gco";:)
-(:declare namespace gmd = "http://www.isotc211.org/2005/gmd";:)
-(:declare namespace gn = "urn:x-inspire:specification:gmlas:GeographicalNames:3.0";:)
-(:declare namespace om = "http://www.opengis.net/om/2.0";:)
-(:declare namespace ompr="http://inspire.ec.europa.eu/schemas/ompr/2.0";:)
-(:declare namespace prop = "http://dd.eionet.europa.eu/property/";:)
-(:declare namespace sam = "http://www.opengis.net/sampling/2.0";:)
-(:declare namespace sams="http://www.opengis.net/samplingSpatial/2.0";:)
-(:declare namespace swe = "http://www.opengis.net/swe/2.0";:)
-(:import module namespace filter = "aqd-filter" at "aqd-filter.xquery";:)
-(:import module namespace geox = "aqd-geo" at "aqd-geo.xquery";
-(:import module namespace schemax = "aqd-schema" at "aqd-schema.xquery";:)
-
-declare namespace adms = "http://www.w3.org/ns/adms#";
-declare namespace am = "http://inspire.ec.europa.eu/schemas/am/3.0";
-declare namespace aqd = "http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0";
-declare namespace base = "http://inspire.ec.europa.eu/schemas/base/3.3";
-declare namespace gml = "http://www.opengis.net/gml/3.2";
-declare namespace rdf = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
-declare namespace skos = "http://www.w3.org/2004/02/skos/core#";
-declare namespace sparql = "http://www.w3.org/2005/sparql-results#";
-declare namespace xlink = "http://www.w3.org/1999/xlink";
-
 import module namespace common = "aqd-common" at "aqd-common.xquery";
-import module namespace dd = "aqd-dd" at "aqd-dd.xquery";
-import module namespace errors = "aqd-errors" at "aqd-errors.xquery";
-import module namespace functx = "http://www.functx.com" at "aqd-functx.xq";:)
-import module namespace functx = "http://www.functx.com" at "functx-1.0-doc-2007-01.xq";
 import module namespace html = "aqd-html" at "aqd-html.xquery";
-import module namespace labels = "aqd-labels" at "aqd-labels.xquery";
-import module namespace query = "aqd-query" at "aqd-query.xquery";
 import module namespace sparqlx = "aqd-sparql" at "aqd-sparql.xquery";
+import module namespace labels = "aqd-labels" at "aqd-labels.xquery";
 import module namespace vocabulary = "aqd-vocabulary" at "aqd-vocabulary.xquery";
+import module namespace query = "aqd-query" at "aqd-query.xquery";
+import module namespace errors = "aqd-errors" at "aqd-errors.xquery";
+import module namespace dd = "aqd-dd" at "aqd-dd.xquery";
+import module namespace functx = "http://www.functx.com" at "functx-1.0-doc-2007-01.xq";
+
+(:import module namespace filter = "aqd-filter" at "aqd-filter.xquery";:)
+(:import module namespace schemax = "aqd-schema" at "aqd-schema.xquery";:)
+(:import module namespace geox = "aqd-geo" at "aqd-geo.xquery";
+import module namespace functx = "http://www.functx.com" at "aqd-functx.xq";:)
+
+declare namespace aqd = "http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0";
+declare namespace gml = "http://www.opengis.net/gml/3.2";
+declare namespace am = "http://inspire.ec.europa.eu/schemas/am/3.0";
+declare namespace base = "http://inspire.ec.europa.eu/schemas/base/3.3";
+declare namespace xlink = "http://www.w3.org/1999/xlink";
+declare namespace sparql = "http://www.w3.org/2005/sparql-results#";
+declare namespace skos = "http://www.w3.org/2004/02/skos/core#";
+declare namespace adms = "http://www.w3.org/ns/adms#";
+declare namespace rdf = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
+
+(:declare namespace ef = "http://inspire.ec.europa.eu/schemas/ef/3.0";:)
+(:declare namespace ad = "urn:x-inspire:specification:gmlas:Addresses:3.0";:)
+(:declare namespace gn = "urn:x-inspire:specification:gmlas:GeographicalNames:3.0";:)
+(:declare namespace base2 = "http://inspire.ec.europa.eu/schemas/base2/1.0";:)
+(:declare namespace om = "http://www.opengis.net/om/2.0";:)
+(:declare namespace swe = "http://www.opengis.net/swe/2.0";:)
+(:declare namespace ompr="http://inspire.ec.europa.eu/schemas/ompr/2.0";:)
+(:declare namespace sams="http://www.opengis.net/samplingSpatial/2.0";:)
+(:declare namespace sam = "http://www.opengis.net/sampling/2.0";:)
+(:declare namespace gmd = "http://www.isotc211.org/2005/gmd";:)
+(:declare namespace gco = "http://www.isotc211.org/2005/gco";:)
+
+(:declare namespace prop = "http://dd.eionet.europa.eu/property/";:)
 
 declare variable $dataflowK:OBLIGATIONS as xs:string* := ($vocabulary:ROD_PREFIX || "683");
 
@@ -77,6 +79,7 @@ let $zonesNamespaces := distinct-values($docRoot//aqd:AQD_Zone/am:inspireId/base
 let $latestEnvelopeByYearK := query:getLatestEnvelope($cdrUrl || "k/", $reportingYear)
 
 let $namespaces := distinct-values($docRoot//base:namespace)
+let $ancestor-name := "aqd:AQD_Measures"
 
 (: File prefix/namespace check :)
 
@@ -109,7 +112,7 @@ let $K0table := try {
     then
         common:checkDeliveryReport($errors:ERROR, "Reporting Year is missing.")
     else
-        if (query:deliveryExists($dataflowK:OBLIGATIONS, $countryCode, "j/", $reportingYear))
+        if (query:deliveryExists($dataflowK:OBLIGATIONS, $countryCode, "k/", $reportingYear))
             then
                 common:checkDeliveryReport($errors:WARNING, "Updating delivery for " || $reportingYear)
             else
@@ -402,7 +405,7 @@ let $K11 := try{
         return common:conditionalReportRow(
             $ok,
             [
-                ("gml:id", data($el/../@gml:id)),
+                ("gml:id", $el/ancestor-or-self::*[name() = $ancestor-name]/@gml:id),
                 (node-name($el), $el/@xlink:href)
             ]
         )
@@ -427,7 +430,7 @@ let $K12 := try {
         return common:conditionalReportRow(
             $ok,
             [
-                ("gml:id", data($el/../@gml:id)),
+                ("gml:id", $el/ancestor-or-self::*[name() = $ancestor-name]/@gml:id),
                 (node-name($el), $el/@xlink:href)
             ]
         )
@@ -468,28 +471,32 @@ let $K13invalid := try {
 (: K14 aqd:AQD_Measures/aqd:name must be populated with a text string
 A short name for the measure :)
 let $K14invalid := common:needsValidString(
-        $docRoot//aqd:AQD_Measures, 'aqd:name'
+        $docRoot//aqd:AQD_Measures, 'aqd:name',
+        $ancestor-name
         )
 
 (: K15 aqd:AQD_Measures/aqd:name must be populated with a text string
 A short name for the measure :)
 let $K15invalid := common:needsValidString(
         $docRoot//aqd:AQD_Measures,
-        'aqd:description'
+        'aqd:description',
+        $ancestor-name
         )
 
 (: K16 aqd:AQD_Measures/aqd:classification shall resolve to the codelist http://dd.eionet.europa.eu/vocabulary/aq/measureclassification/
 Measure classification should conform to vocabulary :)
 let $K16 := common:isInVocabularyReport(
         $docRoot//aqd:AQD_Measures/aqd:classification,
-        $vocabulary:MEASURECLASSIFICATION_VOCABULARY
+        $vocabulary:MEASURECLASSIFICATION_VOCABULARY,
+        $ancestor-name
         )
 
 (: K17 aqd:AQD_Measures/aqd:measureType shall resolve to the codelist http://dd.eionet.europa.eu/vocabulary/aq/measuretype/
 Measure type should conform to vocabulary :)
 let $K17 := common:isInVocabularyReport(
         $docRoot//aqd:AQD_Measures/aqd:measureType,
-        $vocabulary:MEASURETYPE_VOCABULARY
+        $vocabulary:MEASURETYPE_VOCABULARY,
+        $ancestor-name
         )
 
 
@@ -499,7 +506,8 @@ Administrative level should conform to vocabulary
 :)
 let $K18 := common:isInVocabularyReport(
         $docRoot//aqd:AQD_Measures/aqd:administrativeLevel,
-        $vocabulary:ADMINISTRATIVE_LEVEL_VOCABULARY
+        $vocabulary:ADMINISTRATIVE_LEVEL_VOCABULARY,
+        $ancestor-name
         )
 
 (: K19
@@ -508,7 +516,8 @@ The measure's timescale should conform to vocabulary
 :)
 let $K19 := common:isInVocabularyReport(
         $docRoot//aqd:AQD_Measures/aqd:timeScale,
-        $vocabulary:TIMESCALE_VOCABULARY
+        $vocabulary:TIMESCALE_VOCABULARY,
+        $ancestor-name
         )
 
 
@@ -517,7 +526,8 @@ Information on the cost of the measure should be provided
 :)
 let $K20 := common:isNodeNotInParentReport(
         $docRoot//aqd:AQD_Measures,
-        'aqd:costs'
+        'aqd:costs',
+        $ancestor-name
         )
 
 (: K21
@@ -583,16 +593,13 @@ If populated,
 integer number
 If the final total costs of the measure is provided, this nneeds to be a number
 
-let $K22 := c:maybeNodeValueIsIntegerReport(
-    $docRoot//aqd:AQD_Measures/aqd:costs/aqd:Costs,
-    'aqd:finalImplementationCosts'
-)
 :)
 
 let $K22 := common:validatePossibleNodeValueReport(
     $docRoot//aqd:AQD_Measures/aqd:costs/aqd:Costs,
     'aqd:finalImplementationCosts',
-    common:is-a-number#1
+    common:is-a-number#1,
+    $ancestor-name
 )
 
 (: K23
@@ -614,7 +621,8 @@ let $K23 := (
         common:isInVocabulary(
             $el/aqd:currency/@xlink:href,
             $vocabulary:CURRENCIES
-        )
+        ),
+        $ancestor-name
     )
 )
 
@@ -628,7 +636,8 @@ Source sector should conform to vocabulary
 
 let $K24 := common:isInVocabularyReport(
     $docRoot//aqd:AQD_Measures/aqd:sourceSectors,
-    $vocabulary:SOURCESECTORS_VOCABULARY
+    $vocabulary:SOURCESECTORS_VOCABULARY,
+    $ancestor-name
     )
 
 (: K25
@@ -640,7 +649,8 @@ Spatial scale should conform to vocabulary
 
 let $K25 := common:isInVocabularyReport(
     $docRoot//aqd:AQD_Measures/aqd:spatialScale,
-    $vocabulary:SPACIALSCALE_VOCABULARY
+    $vocabulary:SPACIALSCALE_VOCABULARY,
+    $ancestor-name
     )
 
 (: K26
@@ -658,7 +668,7 @@ let $K26 := try {
         if (not(common:isInVocabulary($uri, $vocabulary:MEASUREIMPLEMENTATIONSTATUS_VOCABULARY)))
         then
             <tr>
-                <td title="gml:id">{data($el/../../../@gml:id)}</td>
+                ("gml:id", $el/ancestor-or-self::*[name() = $ancestor-name]/@gml:id),
                 <td title="{node-name($el)}"> not conform to vocabulary</td>
             </tr>
         else
@@ -675,7 +685,8 @@ The planned start date for the measure should be provided
 :)
 
 let $K27 := common:isDateFullISOReport(
-    $docRoot//aqd:AQD_Measures/aqd:plannedImplementation/aqd:PlannedImplementation/aqd:implementationPlannedTimePeriod/gml:TimePeriod/gml:beginPosition
+    $docRoot//aqd:AQD_Measures/aqd:plannedImplementation/aqd:PlannedImplementation/aqd:implementationPlannedTimePeriod/gml:TimePeriod/gml:beginPosition,
+    $ancestor-name
 )
 
 (: K28
@@ -702,7 +713,7 @@ let $K28 := try {
         return common:conditionalReportRow(
             $ok,
             [
-                ("gml:id", data($el/../../../../@gml:id)),
+                ("gml:id", $el/ancestor-or-self::*[name() = $ancestor-name]/@gml:id),
                 ("gml:beginPosition", data($begin)),
                 ("gml:endPosition", data($end))
             ]
@@ -718,7 +729,8 @@ must be a date in full ISO date format
 The planned start date for the measure should be provided
 :)
 let $K29 := common:isDateFullISOReport(
-    $docRoot//aqd:AQD_Measures/aqd:plannedImplementation/aqd:PlannedImplementation/aqd:implementationActualTimePeriod/gml:TimePeriod/gml:beginPosition
+    $docRoot//aqd:AQD_Measures/aqd:plannedImplementation/aqd:PlannedImplementation/aqd:implementationActualTimePeriod/gml:TimePeriod/gml:beginPosition,
+    $ancestor-name
 )
 
 (:
@@ -752,7 +764,7 @@ let $K30 := try {
         return common:conditionalReportRow(
             $ok,
             [
-                ("gml:id", data($el/../../../../@gml:id)),
+                ("gml:id", $el/ancestor-or-self::*[name() = $ancestor-name]/@gml:id),
                 ("gml:beginPosition", data($begin)),
                 ("gml:endPosition", data($end))
             ]
@@ -780,7 +792,7 @@ let $K31 := try {
     return common:conditionalReportRow(
         $ok,
         [
-            ("gml:id", data($node/../../../../../@gml:id)),
+            ("gml:id", $node/ancestor-or-self::*[name() = $ancestor-name]/@gml:id),
             (node-name($node), data($node))
         ]
     )
@@ -816,7 +828,7 @@ let $K33 := try {
         return common:conditionalReportRow(
             $ok,
             [
-                ("gml:id", data($el/../../@gml:id)),
+                ("gml:id", $el/ancestor-or-self::*[name() = $ancestor-name]/@gml:id),
                 ("aqd:monitoringProgressIndicators", data($main)),
                 ("aqd:comment", data($comment))
             ]
@@ -854,7 +866,7 @@ let $K34 := try {
         return common:conditionalReportRow(
             $ok,
             [
-                ("gml:id", data($node/../../../@gml:id)),
+                ("gml:id", $node/ancestor-or-self::*[name() = $ancestor-name]/@gml:id),
                 ("aqd:quantity", data($node)),
                 ("xsi:nil", $node/@xsi:nil)
             ]
@@ -892,7 +904,7 @@ let $K35 := try {
         return common:conditionalReportRow(
             $ok,
             [
-                ("gml:id", data($node/../../../@gml:id)),
+                ("gml:id", $node/ancestor-or-self::*[name() = $ancestor-name]/@gml:id),
                 ("aqd:quantity", data($node)),
                 ("xsi:nil", data($node/@xsi:nil)),
                 ("nilReason", data($node/@nilReason))
@@ -927,7 +939,7 @@ let $K36 := try {
         return common:conditionalReportRow(
             $ok,
             [
-                ("gml:id", data($main/../../@gml:id)),
+                ("gml:id", $main/ancestor-or-self::*[name() = $ancestor-name]/@gml:id),
                 ("aqd:quantity", data($quantity)),
                 ("aqd:comment", data($comment))
             ]
@@ -952,7 +964,7 @@ let $K37 := try {
         return common:conditionalReportRow(
             $ok,
             [
-                ("gml:id", data($el/../../../@gml:id)),
+                ("gml:id", $el/ancestor-or-self::*[name() = $ancestor-name]/@gml:id),
                 ("aqd:quantity", data($el)),
                 ("uom", data($uri))
             ]
@@ -992,7 +1004,7 @@ let $K38 := try {
         return common:conditionalReportRow(
             $ok,
             [
-                ("gml:id", data($el/../../../@gml:id)),
+                ("gml:id", $el/ancestor-or-self::*[name() = $ancestor-name]/@gml:id),
                 ("aqd:levelOfConcentration", data($el)),
                 ("uom", data($uri))
             ]
@@ -1031,7 +1043,7 @@ let $K39 := try {
         return common:conditionalReportRow(
             $ok,
             [
-                ("gml:id", data($el/../../../@gml:id)),
+                ("gml:id", $el/ancestor-or-self::*[name() = $ancestor-name]/@gml:id),
                 ("aqd:numberOfExceedances", data($el)),
                 ("uom", data($uri))
             ]
