@@ -237,7 +237,8 @@ declare function common:checkDeliveryReport (
 (: TODO: test if node doesn't exist :)
 declare function common:needsValidString(
     $parent as node()*,
-    $nodeName as xs:string
+    $nodeName as xs:string,
+    $ancestor-name as xs:string
 ) as element(tr)* {
     let $main := $parent/*[name() = $nodeName]
     for $el in $main
@@ -245,7 +246,7 @@ declare function common:needsValidString(
         if (string-length(normalize-space($el/text())) = 0)
         then
             <tr>
-                <td title="gml:id">{data($el/../@gml:id)}</td>
+                <td title="gml:id">{data($el/ancestor-or-self::*[name() = $ancestor-name]/@gml:id)}</td>
                 <td title="{$nodeName}">{$nodeName} needs a valid input</td>
             </tr>
         else
@@ -266,7 +267,8 @@ declare function common:isInVocabulary(
 
 declare function common:isInVocabularyReport(
   $main as node()+,
-  $vocabularyName as xs:string
+  $vocabularyName as xs:string,
+  $ancestor-name as xs:string
 ) as element(tr)* {
     try {
         for $el in $main
@@ -275,7 +277,7 @@ declare function common:isInVocabularyReport(
             if (not(common:isInVocabulary($uri, $vocabularyName)))
             then
                 <tr>
-                    <td title="gml:id">{data($el/../@gml:id)}</td>
+                    <td title="gml:id">{data($el/ancestor-or-self::*[name() = $ancestor-name]/@gml:id)}</td>
                     <td title="{node-name($el)}"> not conform to vocabulary</td>
                 </tr>
             else
@@ -336,7 +338,8 @@ declare function common:isNodeInParent(
 (: prints error if a specific node does not exist in a parent :)
 declare function common:isNodeNotInParentReport(
     $parent as node()*,
-    $nodeName as xs:string
+    $nodeName as xs:string,
+    $ancestor-name as xs:string
 ) as element(tr)* {
     try {
         for $el in $parent
@@ -344,7 +347,7 @@ declare function common:isNodeNotInParentReport(
             if (not(common:isNodeInParent($el, $nodeName)))
             then
                 <tr>
-                    <td title="gml:id">{data($el/@gml:id)}</td>
+                    <td title="gml:id">{data($el/ancestor-or-self::*[name() = $ancestor-name]/@gml:id)}</td>
                     <td title="{$nodeName}"> needs valid input</td>
                 </tr>
             else
@@ -369,13 +372,15 @@ declare function common:maybeNodeValueIsInteger($el) as xs:boolean {
 (: prints error if a specific node has value and is not an integer :)
 declare function common:maybeNodeValueIsIntegerReport(
     $parent as node()?,
-    $nodeName as xs:string
+    $nodeName as xs:string,
+    $ancestor-name
 ) as element(tr)* {
     let $el := $parent/*[name() = $nodeName]
     return try {
         if (not(common:maybeNodeValueIsInteger($el)))
         then
             <tr>
+                <td title="gml:id">{data($el/ancestor-or-self::*[name() = $ancestor-name]/@gml:id)}</td>
                 <td title="{$nodeName}"> needs valid input</td>
             </tr>
         else
@@ -403,7 +408,8 @@ declare function common:validatePossibleNodeValue(
 declare function common:validatePossibleNodeValueReport(
     $parent as node()*,
     $nodeName as xs:string,
-    $validator as function(item()) as xs:boolean
+    $validator as function(item()) as xs:boolean,
+    $ancestor-name as xs:string
 ) {
     let $main := $parent/*[name() = $nodeName]
     for $el in $main
@@ -411,7 +417,7 @@ declare function common:validatePossibleNodeValueReport(
         if (not(common:validatePossibleNodeValue($el, $validator)))
         then
             <tr>
-                <td title="gml:id"> {data($el/../../../../@gml:id)}</td>
+                <td title="gml:id"> {data($el/ancestor-or-self::*[name() = $ancestor-name]/@gml:id)}</td>
                 <td title="{$nodeName}"> needs valid input</td>
             </tr>
         else
@@ -426,7 +432,8 @@ declare function common:validatePossibleNodeValueReport(
 declare function common:validateMaybeNodeWithValueReport(
     $parent as node()?,
     $nodeName as xs:string,
-    $val as xs:boolean
+    $val as xs:boolean,
+    $ancestor-name as xs:string
 ) as element(tr)* {
     let $el := $parent/*[name() = $nodeName]
     return try {
@@ -435,7 +442,7 @@ declare function common:validateMaybeNodeWithValueReport(
             if (not($val))
             then
                 <tr>
-                    <td title="gml:id"> {data($el/../../../@gml:id)}</td>
+                    <td title="gml:id"> {data($el/ancestor-or-self::*[name() = $ancestor-name]/@gml:id)}</td>
                     <td title="{$nodeName}"> needs valid input</td>
                 </tr>
             else
@@ -466,7 +473,8 @@ declare function common:isDateFullISO(
 };
 (: Create report :)
 declare function common:isDateFullISOReport(
-    $main as node()*
+    $main as node()*,
+    $ancestor-name as xs:string
 ) as element(tr)*
 {
     for $el in $main
@@ -476,7 +484,7 @@ declare function common:isDateFullISOReport(
             if (not(common:isDateFullISO($date)))
             then
                 <tr>
-                    <td title="gml:id">{data($el/../../../../../@gml:id)}</td>
+                    <td title="gml:id">{data($el/ancestor-or-self::*[name() = $ancestor-name]/@gml:id)}</td>
                     <td title="{node-name($el)}">{$date}</td>
                 </tr>
             else

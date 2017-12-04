@@ -68,6 +68,7 @@ let $envelopeUrl := common:getEnvelopeXML($source_url)
 let $cdrUrl := common:getCdrUrl($countryCode)
 (: example http://cdr.eionet.europa.eu/be/eu/aqd/j/envwmp5lw :)
 let $latestEnvelopeByYearJ := query:getLatestEnvelope($cdrUrl || "j/", $reportingYear)
+let $ancestor-name := "aqd:AQD_EvaluationScenario"
 
 (: NS
 Check prefix and namespaces of the gml:featureCollection according to expected root elements
@@ -400,6 +401,7 @@ let $J11 := try {
         return common:conditionalReportRow(
                 $ok,
                 [
+                    ("gml:id", $el/ancestor-or-self::*[name() = $ancestor-name]/@gml:id),
                     (node-name($el), $label)
                 ]
             )
@@ -427,6 +429,7 @@ let $J12 := try {
         return common:conditionalReportRow(
                 $ok,
                 [
+                    ("gml:id", $el/ancestor-or-self::*[name() = $ancestor-name]/@gml:id),
                     (node-name($el), $label)
                 ]
             )
@@ -447,7 +450,7 @@ let $J13 := try {
         return common:conditionalReportRow(
                 $ok,
                 [
-                    ("gml:id", data($el/../@gml:id)),
+                    ("gml:id", $main/ancestor-or-self::*[name() = $ancestor-name]/@gml:id),
                     (node-name($el), $el)
                 ]
             )
@@ -470,7 +473,7 @@ let $J14 := try {
         return common:conditionalReportRow(
                 $ok,
                 [
-                    ("gml:id", data($el/../../../@gml:id)),
+                    ("gml:id", $el/ancestor-or-self::*[name() = $ancestor-name]/@gml:id),
                     (node-name($el), data($el))
                 ]
             )
@@ -495,7 +498,7 @@ let $J15 := try {
         return common:conditionalReportRow(
                 $ok,
                 [
-                    ("gml:id", data($el/../../../@gml:id)),
+                    ("gml:id", $el/ancestor-or-self::*[name() = $ancestor-name]/@gml:id),
                     (node-name($el), $el)
                 ]
             )
@@ -519,7 +522,7 @@ let $J16 := try {
         return common:conditionalReportRow(
                 $ok,
                 [
-                    ("gml:id", data($el/../../../@gml:id)),
+                    ("gml:id", $el/ancestor-or-self::*[name() = $ancestor-name]/@gml:id),
                     (node-name($el), $el)
                 ]
             )
@@ -545,7 +548,7 @@ let $J17 := try {
         return common:conditionalReportRow(
             $ok,
             [
-                ("gml:id", data($node/../../../../../@gml:id)),
+                ("gml:id", $node/ancestor-or-self::*[name() = $ancestor-name]/@gml:id),
                 (node-name($node), data($node))
             ]
         )
@@ -570,7 +573,7 @@ let $J18 := try {
         return common:conditionalReportRow(
                 $ok,
                 [
-                    ("gml:id", data($el/../../../@gml:id)),
+                    ("gml:id", $el/ancestor-or-self::*[name() = $ancestor-name]/@gml:id),
                     (node-name($el), $el)
                 ]
             )
@@ -596,7 +599,7 @@ let $J19 := try {
         return common:conditionalReportRow(
                 $ok,
                 [
-                    ("gml:id", data($el/../../../@gml:id)),
+                    ("gml:id", $el/ancestor-or-self::*[name() = $ancestor-name]/@gml:id),
                     (node-name($el), $el)
                 ]
             )
@@ -618,7 +621,7 @@ let $J20 := try {
         return common:conditionalReportRow(
                 $ok,
                 [
-                    ("gml:id", data($el/../../../@gml:id)),
+                    ("gml:id", $el/ancestor-or-self::*[name() = $ancestor-name]/@gml:id),
                     (node-name($el), $el)
                 ]
             )
@@ -646,7 +649,7 @@ let $J21 := try {
         return common:conditionalReportRow(
                 $ok,
                 [
-                    ("gml:id", data($el/../../../@gml:id)),
+                    ("gml:id", $el/ancestor-or-self::*[name() = $ancestor-name]/@gml:id),
                     (node-name($el), $el)
                 ]
             )
@@ -675,7 +678,7 @@ let $J22 := try {
         return common:conditionalReportRow(
                     $ok,
                     [
-                        ("gml:id", data($el/../@gml:id)),
+                        ("gml:id", $el/ancestor-or-self::*[name() = $ancestor-name]/@gml:id),
                         (node-name($el), $el/@xlink:href)
                     ]
                 )
@@ -700,7 +703,7 @@ let $J23 := try {
         return common:conditionalReportRow(
                 $ok,
                 [
-                    ("gml:id", data($el/../../../@gml:id)),
+                    ("gml:id", $el/ancestor-or-self::*[name() = $ancestor-name]/@gml:id),
                     (node-name($el), $el)
                 ]
             )
@@ -736,7 +739,7 @@ let $J24 := try {
         return common:conditionalReportRow(
                 $ok,
                 [
-                    ("gml:id", data($el/../../../@gml:id)),
+                    ("gml:id", $el/ancestor-or-self::*[name() = $ancestor-name]/@gml:id),
                     ("aqd:totalEmissions", $el),
                     ("uom", $el/@uom)
                 ]
@@ -771,7 +774,7 @@ let $J25 := try {
         return common:conditionalReportRow(
                 $ok,
                 [
-                    ("gml:id", data($el/../../../@gml:id)),
+                    ("gml:id", $el/ancestor-or-self::*[name() = $ancestor-name]/@gml:id),
                     ("aqd:expectedConcentration", $el),
                     ("uom", $el/@uom)
                 ]
@@ -806,7 +809,7 @@ let $J26 := try {
         return common:conditionalReportRow(
                 $ok,
                 [
-                    ("gml:id", data($el/../../../@gml:id)),
+                    ("gml:id", $el/ancestor-or-self::*[name() = $ancestor-name]/@gml:id),
                     ("aqd:expectedExceedances", $el),
                     ("uom", $el/@uom)
                 ]
@@ -834,7 +837,7 @@ let $J27 := try{
         return common:conditionalReportRow(
                 $ok,
                 [
-                    ("gml:id", data($el/../../../@gml:id)),
+                    ("gml:id", $el/ancestor-or-self::*[name() = $ancestor-name]/@gml:id),
                     (node-name($el), $el/@xlink:href)
                 ]
             )
@@ -858,7 +861,7 @@ let $J28 := try {
     return common:conditionalReportRow(
             $ok,
             [
-                ("gml:id", data($el/../../../@gml:id)),
+                ("gml:id", $el/ancestor-or-self::*[name() = $ancestor-name]/@gml:id),
                 (node-name($el), $el)
             ]
         )
@@ -895,7 +898,7 @@ let $J29 := try {
         return common:conditionalReportRow(
                 $ok,
                 [
-                    ("gml:id", data($el/../../../@gml:id)),
+                    ("gml:id", $el/ancestor-or-self::*[name() = $ancestor-name]/@gml:id),
                     ("aqd:totalEmissions", $el),
                     ("uom", $el/@uom)
                 ]
@@ -930,7 +933,7 @@ let $J30 := try {
         return common:conditionalReportRow(
                 $ok,
                 [
-                    ("gml:id", data($el/../../../@gml:id)),
+                    ("gml:id", $el/ancestor-or-self::*[name() = $ancestor-name]/@gml:id),
                     ("aqd:expectedConcentration", $el),
                     ("uom", $el/@uom)
                 ]
@@ -966,7 +969,7 @@ let $J31 := try {
         return common:conditionalReportRow(
                 $ok,
                 [
-                    ("gml:id", data($el/../../../@gml:id)),
+                    ("gml:id", $el/ancestor-or-self::*[name() = $ancestor-name]/@gml:id),
                     ("aqd:expectedExceedances", $el),
                     ("uom", $el/@uom)
                 ]
@@ -994,7 +997,7 @@ let $J32 := try{
         return common:conditionalReportRow(
                 $ok,
                 [
-                    ("gml:id", data($el/../../../@gml:id)),
+                    ("gml:id", $el/ancestor-or-self::*[name() = $ancestor-name]/@gml:id),
                     (node-name($el), $el/@xlink:href)
                 ]
             )

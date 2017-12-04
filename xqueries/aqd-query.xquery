@@ -143,6 +143,7 @@ declare function query:getModel($url as xs:string) as xs:string {
 };
 
 (: Checks if X references an existing Y via namespace/localid :)
+(: TODO: look at this for inspiration on how to find the AQD_Attainment for a AQD_SourceApportionment :)
 declare function query:existsViaNameLocalId(
         $label as xs:string,
         $name as xs:string
@@ -547,6 +548,8 @@ SELECT distinct
 WHERE {
  ?s ?p ?o .
 
+ aqd:inspireId ?inspireId .
+ ?inspireId rdfs:label ?inspireLabel .
  optional { ?s aqd:declarationFor ?uf}
  optional { ?s aqd:pollutant ?pollutant}
 
@@ -977,8 +980,6 @@ WHERE {
 };
 
 
-
-
 (:~ Returns the areaClassification for a given attainment
 
 /aqd:AQD_Attainment/aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/
@@ -1010,5 +1011,5 @@ WHERE {
 }
 "
     let $res := sparqlx:run($query)
-    return data($res//sparql:binding[@name='area_classification']/sparql:literal)
+    return data($res//sparql:binding[@name='area_classification']/sparql:uri)
 };

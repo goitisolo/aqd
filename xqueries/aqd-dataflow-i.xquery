@@ -180,6 +180,20 @@ declare function dataflowI:checkReport(
         else
             distinct-values(data($latest-delivery))
 
+    let $attainments := sparqlx:run(
+        query:getAttainment($cdrUrl || "g/")
+    )//sparql:binding[@name='inspireLabel']/sparql:literal
+
+    let $latest-attainment := sparqlx:run(
+        query:getAttainment($latestEnvelopeByYearI)
+    )//sparql:binding[@name='inspireLabel']/sparql:literal
+
+    let $knownAttainments :=
+        if ($isNewDelivery) then
+            distinct-values(data($attainments))
+        else
+            distinct-values(data($latest-attainment))
+
     (: I1
 
     Compile & feedback upon the total number of Source Apportionments included
@@ -201,7 +215,7 @@ declare function dataflowI:checkReport(
             html:createErrorRow($err:code, $err:description)
         }
 
-    (: I02
+    (: I2
 
     Compile & feedback upon the total number of new  Source Apportionments
     records included in the delivery. ERROR will be returned if XML is a new
@@ -214,7 +228,7 @@ declare function dataflowI:checkReport(
     BLOCKER
 
     :)
-    let $I02table :=
+    let $I2table :=
         try {
             for $x in $sources
             let $inspireId := concat(
@@ -231,7 +245,7 @@ declare function dataflowI:checkReport(
         } catch * {
             html:createErrorRow($err:code, $err:description)
         }
-    let $I02errorLevel :=
+    let $I2errorLevel :=
         if ($isNewDelivery and count(
             for $x in $sources
                 let $id := $x/aqd:inspireId/base:Identifier/base:namespace
@@ -239,11 +253,11 @@ declare function dataflowI:checkReport(
                             || $x/aqd:inspireId/base:Identifier/base:localId
             where ($allSources = $id)
             return 1) > 0) then
-                $errors:I02
+                $errors:I2
             else
                 $errors:INFO
 
-    (: I03
+    (: I3
 
     Compile & feedback upon the total number of updated Source Apportionments
     included in the delivery. ERROR will be returned if XML is an update and
@@ -258,7 +272,7 @@ declare function dataflowI:checkReport(
     TODO: please check
 
     - :)
-    let $I03table :=
+    let $I3table :=
         try {
             for $x in $sources
             let $inspireId := data($x/aqd:inspireId/base:Identifier/base:namespace)
@@ -273,13 +287,13 @@ declare function dataflowI:checkReport(
         } catch * {
             html:createErrorRow($err:code, $err:description)
         }
-    let $I03errorLevel :=
-        if (not($isNewDelivery) and count($I03table) = 0) then
-            $errors:I03
+    let $I3errorLevel :=
+        if (not($isNewDelivery) and count($I3table) = 0) then
+            $errors:I3
         else
             $errors:INFO
 
-    (: I04
+    (: I4
 
     Compile & feedback a list of the unique identifier information for all
     Source Apportionments records included in the delivery. Feedback report
@@ -297,7 +311,7 @@ declare function dataflowI:checkReport(
     BLOCKER
 
     :)
-    let $I04table :=
+    let $I4table :=
         try {
             let $gmlIds := $sources/lower-case(normalize-space(@gml:id))
             let $inspireIds := $sources/lower-case(normalize-space(aqd:inspireId))
@@ -334,13 +348,13 @@ declare function dataflowI:checkReport(
             html:createErrorRow($err:code, $err:description)
         }
 
-    (: I05 reserved :)
-    let $I05 := ()
+    (: I5 reserved :)
+    let $I5 := ()
 
-    (: I06 reserved :)
-    let $I06 := ()
+    (: I6 reserved :)
+    let $I6 := ()
 
-    (: I07
+    (: I7
 
     All gml:id attributes, ef:inspireId and aqd:inspireId elements shall have
     unique content
@@ -350,7 +364,7 @@ declare function dataflowI:checkReport(
     BLOCKER
 
     :)
-    let $I07 := try {
+    let $I7 := try {
         let $checks := ('gml:id', 'aqd:inspireId', 'ef:inspireId')
 
         let $errors := array {
@@ -376,7 +390,7 @@ declare function dataflowI:checkReport(
         html:createErrorRow($err:code, $err:description)
     }
 
-    (: I08
+    (: I8
 
     ./aqd:inspireId/base:Identifier/base:localId must be unique code for the
     Plans records
@@ -385,7 +399,7 @@ declare function dataflowI:checkReport(
 
     BLOCKER
     :)
-    let $I08invalid:= try {
+    let $I8invalid:= try {
         let $localIds := $sources/aqd:inspireId/base:Identifier/lower-case(normalize-space(base:localId))
         for $x in $sources
             let $localID := $x/aqd:inspireId/base:Identifier/base:localId
@@ -407,7 +421,7 @@ declare function dataflowI:checkReport(
     }
 
 
-    (: I09
+    (: I9
 
     ./aqd:inspireId/base:Identifier/base:namespace
 
@@ -419,7 +433,7 @@ declare function dataflowI:checkReport(
     BLOCKER
     :)
 
-    let $I09table := try {
+    let $I9table := try {
         for $namespace in distinct-values($sources/aqd:inspireId/base:Identifier/base:namespace)
             let $localIds := $sources/aqd:inspireId/base:Identifier[base:namespace = $namespace]/base:localId
             let $ok := false()
@@ -996,7 +1010,9 @@ declare function dataflowI:checkReport(
 
     WARNING
 
-    TODO: check this
+    TODO: check get-area-classifications-for-attainment, it returns a list
+    because of how it gets Attainments
+    See comments on ticket https://taskman.eionet.europa.eu/issues/89179
 
     :)
 
@@ -1241,7 +1257,7 @@ declare function dataflowI:checkReport(
     G instead
 
     WARNING
-    TODO: properly implement this
+    TODO: check implementation
     :)
 
     let $I32 := try {
@@ -1498,7 +1514,9 @@ declare function dataflowI:checkReport(
             $ok,
             [
                 ("gml:id", data($node/ancestor-or-self::aqd:AQD_SourceApportionment/@gml:id)),
-                (node-name($el), data($el))
+                (node-name($el), data($el)),
+                ('pollutant', $pollutant),
+                ('needed', $needed)
             ]
         )
     } catch * {
@@ -1588,8 +1606,11 @@ declare function dataflowI:checkReport(
     (: I42
 
     WHERE
-    ./aqd:pollutant xlink:href attribute EQUALs http://dd.eionet.europa.eu/vocabulary/aq/pollutant/[1,5,10,6001]
+
+        ./aqd:pollutant xlink:href attribute EQUALs http://dd.eionet.europa.eu/vocabulary/aq/pollutant/[1,5,10,6001]
+
     (via …/aqd:parentExceedanceSituation),
+
     at least one of
         /aqd:AQD_SourceApportionment/
         aqd:macroExceedanceSituation/
@@ -1599,7 +1620,9 @@ declare function dataflowI:checkReport(
         aqd:assessmentMethod/
         aqd:AssessmentMethods/
         aqd:samplingPointAssessmentMetadata/@xlink:href
+
     or
+
         /aqd:AQD_SourceApportionment/
         aqd:macroExceedanceSituation/
         aqd:ExceedanceDescription/
@@ -1608,6 +1631,7 @@ declare function dataflowI:checkReport(
         aqd:assessmentMethod/
         aqd:AssessmentMethods/
         aqd:modelAssessmentMetadata/@xlink:href
+
     must be populated and correctly link to D/D1b.
 
     Cross check the links provided against D, all assessment methods must exist
@@ -1619,6 +1643,9 @@ declare function dataflowI:checkReport(
     ERROR
 
     TODO: check implementation. The implementation has not been check properly
+
+    TODO: $samplingPointAssessmentMetadata and $assessmentMetadata are not
+    filled in
     :)
 
     let $I42 := try {
@@ -1626,11 +1653,15 @@ declare function dataflowI:checkReport(
 
             let $a := $node/aqd:samplingPointAssessmentMetadata
             let $a-m := $a/@xlink:href
-            let $a-ok := common:has-content($a-m) and ($a-m = $samplingPointAssessmentMetadata)
+            let $a-ok := common:has-content($a-m)
+            (: TODO: this implements the "correctly link in D/D1b :)
+            (: and ($a-m = $samplingPointAssessmentMetadata) :)
 
             let $b := $node/aqd:modelAssessmentMetadata
             let $b-m := $b/@xlink:href
-            let $b-ok := common:has-content($b-m) and ($b-m = $assessmentMetadata)
+            let $b-ok := common:has-content($b-m)
+            (: TODO: this implements the "correctly link in D/D1b :)
+            (: and ($b-m = $assessmentMetadata) :)
 
             let $parent := $node/ancestor::aqd:AQD_SourceApportionment/aqd:parentExceedanceSituation/@xlink:href
             let $pollutant := query:get-pollutant-for-attainment($parent)
@@ -1831,16 +1862,15 @@ declare function dataflowI:checkReport(
 
         {html:build2("NS", $labels:NAMESPACES, $labels:NAMESPACES_SHORT, $NSinvalid, "All values are valid", "record", $errors:NS)}
         {html:build3("I0", $labels:I0, $labels:I0_SHORT, $I0table, string($I0table/td), errors:getMaxError($I0table))}
-        {html:build1("I01", $labels:I01, $labels:I01_SHORT, $tblAllSources, "", string($countSources), "", "", $errors:I01)}
-        {html:buildSimple("I02", $labels:I02, $labels:I02_SHORT, $I02table, "", "report", $I02errorLevel)}
-        {html:buildSimple("I03", $labels:I03, $labels:I03_SHORT, $I03table, "", "", $I03errorLevel)}
-        {html:build1("I04", $labels:I04, $labels:I04_SHORT, $I04table, "", string(count($I04table)), " ", "", $errors:I04)}
-        {html:build1("I05", $labels:I05, $labels:I05_SHORT, $I05, "RESERVE", "RESERVE", "RESERVE", "RESERVE", $errors:I05)}
-        {html:build1("I06", $labels:I06, $labels:I06_SHORT, $I06, "RESERVE", "RESERVE", "RESERVE", "RESERVE", $errors:I06)}
-        {html:build2("I07", $labels:I07, $labels:I07_SHORT, $I07, "No duplicate values found", " duplicate value", $errors:I07)}
-        {html:build2("I08", $labels:I08, $labels:I08_SHORT, $I08invalid, "No duplicate values found", " duplicate value", $errors:I08)}
-        {html:build2("I09", $labels:I09, $labels:I09_SHORT, $I09table, "namespace", "", $errors:I09)}
-        { (: TODO: I don't think the label is ok here :) }
+        {html:build1("I1", $labels:I1, $labels:I1_SHORT, $tblAllSources, "", string($countSources), "", "", $errors:I1)}
+        {html:buildSimple("I2", $labels:I2, $labels:I2_SHORT, $I2table, "", "report", $I2errorLevel)}
+        {html:buildSimple("I3", $labels:I3, $labels:I3_SHORT, $I3table, "", "", $I3errorLevel)}
+        {html:build1("I4", $labels:I4, $labels:I4_SHORT, $I4table, "", string(count($I4table)), " ", "", $errors:I4)}
+        {html:build1("I5", $labels:I5, $labels:I5_SHORT, $I5, "RESERVE", "RESERVE", "RESERVE", "RESERVE", $errors:I5)}
+        {html:build1("I6", $labels:I6, $labels:I6_SHORT, $I6, "RESERVE", "RESERVE", "RESERVE", "RESERVE", $errors:I6)}
+        {html:build2("I7", $labels:I7, $labels:I7_SHORT, $I7, "No duplicate values found", " duplicate value", $errors:I7)}
+        {html:build2("I8", $labels:I8, $labels:I8_SHORT, $I8invalid, "No duplicate values found", " duplicate value", $errors:I8)}
+        {html:build2("I9", $labels:I9, $labels:I9_SHORT, $I9table, "namespace", "", $errors:I9)}
         {html:build2("I10", $labels:I10, $labels:I10_SHORT, $I10invalid, "All values are valid", " not conform to vocabulary", $errors:I10)}
 
         {html:build2("I11", $labels:I11, $labels:I11_SHORT, $I11,
