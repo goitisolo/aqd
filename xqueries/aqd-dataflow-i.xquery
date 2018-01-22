@@ -56,6 +56,7 @@ declare variable $dataflowI:ISO2_CODES as xs:string* := ("AL","AT","BA","BE","BG
 declare variable $dataflowI:OBLIGATIONS as xs:string* :=
     ($vocabulary:ROD_PREFIX || "681");
 
+
 (: Rule implementations :)
 declare function dataflowI:checkReport(
     $source_url as xs:string,
@@ -1178,6 +1179,9 @@ declare function dataflowI:checkReport(
         html:createErrorRow($err:code, $err:description)
     }
 
+
+    let $latestEnvelopesG := query:getLatestEnvelopesForObligation("679")
+
     (: I31
 
     The subject of
@@ -1203,30 +1207,37 @@ declare function dataflowI:checkReport(
 
     WARNING
 
-    TODO: check implementation
+    TODO: check implementation - TIBI
+    TODO: changed implementation, now should work - LACI
 
     :)
 
     let $I31 := try {
         for $node in $sources
-            let $mu := $node/aqd:macroExceedanceSituation/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:modelUsed
             let $att-url := $node/aqd:parentExceedanceSituation/@xlink:href
-            let $model := query:get-used-model-for-attainment($att-url)
-            let $ok :=
-                if (exists($mu))
-                then
-                    $mu/@xlink:href = $model
-                else
-                    true()
-        return common:conditionalReportRow(
-            $ok,
-            [
-                ("gml:id", data($node/ancestor-or-self::aqd:AQD_SourceApportionment/@gml:id)),
-                (node-name($mu), $mu/@xlink:href),
-                ("parentExceedanceSituation", $att-url),
-                ("found model", $model)
-            ]
-        )
+            for $modelUsed in $node/aqd:macroExceedanceSituation/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:modelUsed
+                (:let $model := query:get-used-model-for-attainment($att-url):)
+                let $attainmentsFound := query:getAttainmentForExceedanceArea($att-url,local-name($modelUsed), $modelUsed/@xlink:href)
+                let $attainmentLatest :=
+                    for $attainment in $attainmentsFound
+                        return
+                        if(functx:substring-before-last($attainment, "/") = $latestEnvelopesG)
+                        then 1
+                        else ()
+                let $ok := (
+                    count($attainmentsFound) > 0
+                    and
+                    count($attainmentLatest) > 0
+                )
+                return common:conditionalReportRow(
+                    $ok,
+                    [
+                        ("gml:id", data($node/ancestor-or-self::aqd:AQD_SourceApportionment/@gml:id)),
+                        (node-name($modelUsed), $modelUsed/@xlink:href),
+                        ("parentExceedanceSituation", $att-url)
+                        (:("found model", $model):)
+                    ]
+                )
     } catch * {
         html:createErrorRow($err:code, $err:description)
     }
@@ -1261,21 +1272,32 @@ declare function dataflowI:checkReport(
     :)
 
     let $I32 := try {
-
-        for $mu in $sources/aqd:macroExceedanceSituation/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:modelUsed
-            let $node := $mu/ancestor-or-self::aqd:AQD_SourceApportionment
+        for $node in $sources
             let $att-url := $node/aqd:parentExceedanceSituation/@xlink:href
-            let $station := query:get-used-station-for-attainment($att-url)
-            let $ok := $mu/@xlink:href = $station
+            for $stationUsed in $node/aqd:macroExceedanceSituation/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:stationUsed
+                (:let $model := query:get-used-model-for-attainment($att-url):)
+                let $attainmentsFound := query:getAttainmentForExceedanceArea($att-url,local-name($stationUsed), $stationUsed/@xlink:href)
+                let $attainmentLatest :=
+                    for $attainment in $attainmentsFound
+                        return
+                        if(functx:substring-before-last($attainment, "/") = $latestEnvelopesG)
+                        then 1
+                        else ()
+                let $ok := (
+                    count($attainmentsFound) > 0
+                    and
+                    count($attainmentLatest) > 0
+                )
+                return common:conditionalReportRow(
+                    $ok,
+                    [
+                        ("gml:id", data($node/ancestor-or-self::aqd:AQD_SourceApportionment/@gml:id)),
+                        (node-name($stationUsed), $stationUsed/@xlink:href),
+                        ("parentExceedanceSituation", $att-url)
+                        (:("found model", $model):)
+                    ]
+                )
 
-        return common:conditionalReportRow(
-            $ok,
-            [
-                ("gml:id", data($node/ancestor-or-self::aqd:AQD_SourceApportionment/@gml:id)),
-                (node-name($mu), $mu/@xlink:href),
-                ("used station", $station)
-            ]
-        )
     } catch * {
         html:createErrorRow($err:code, $err:description)
     }

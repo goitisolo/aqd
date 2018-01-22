@@ -26,3 +26,21 @@ declare function functx:if-empty
         then data($arg)
         else $value
 };
+
+declare function functx:substring-after-last(
+    $arg as xs:string? ,
+    $delim as xs:string
+)  as xs:string {
+   replace ($arg,concat('^.*',functx:escape-for-regex($delim)),'')
+ } ;
+
+declare function functx:substring-before-last
+  ( $arg as xs:string? ,
+    $delim as xs:string )  as xs:string {
+
+   if (matches($arg, functx:escape-for-regex($delim)))
+   then replace($arg,
+            concat('^(.*)', functx:escape-for-regex($delim),'.*'),
+            '$1')
+   else ''
+ } ;
