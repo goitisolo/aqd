@@ -668,7 +668,7 @@ let $K26 := try {
         if (not(common:isInVocabulary($uri, $vocabulary:MEASUREIMPLEMENTATIONSTATUS_VOCABULARY)))
         then
             <tr>
-                ("gml:id", $el/ancestor-or-self::*[name() = $ancestor-name]/@gml:id),
+                <td title="gml:id">{data($el/ancestor-or-self::*[name() = $ancestor-name]/@gml:id)}</td>
                 <td title="{node-name($el)}"> not conform to vocabulary</td>
             </tr>
         else

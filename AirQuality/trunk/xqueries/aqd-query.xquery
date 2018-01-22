@@ -217,6 +217,28 @@ declare function query:getAttainment($url as xs:string) as xs:string {
    }"
 };
 
+(: H :)
+(: H24 :)
+declare function query:getPollutants(
+        $type as xs:string,
+        $label as xs:string
+) as xs:string* {
+    let $query := "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX aq: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+       SELECT distinct ?pollutant
+       WHERE {
+?scenariosXMLURI a aq:" || $type ||";
+aq:inspireId ?inspireId ;
+aq:pollutant ?pollutant .
+?inspireId rdfs:label ?label .
+?inspireId aq:namespace ?name .
+?inspireId aq:localId ?localId .
+FILTER (concat(?name,'/',?localId) = '" || $label || "')
+   }"
+    let $res := sparqlx:run($query)
+    return data($res//sparql:binding[@name='pollutant']/sparql:uri)
+};
+
 (:~ Creates a SPARQL query string to query all objects of given type in a URL
 
 The result is a list of inspireLabels
@@ -939,10 +961,74 @@ WHERE {
 }
 "
     let $res := sparqlx:run($query)
-    return data($res//sparql:binding[@name='model_used']/sparql:literal)
+    return data($res//sparql:binding[@name='model_used']/sparql:uri)
 
 (: http://environment.data.gov.uk/air-quality/so/GB_Attainment_4934 :)
 };
+declare function query:getAttainmentForExceedanceArea(
+    $uri as xs:string,
+    $objectName as xs:string,
+    $objectlUsed as xs:string
+) as item()* {
+    let $query := "
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX aq: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+
+SELECT ?attainment
+WHERE {
+
+?sourceApportionment a aq:AQD_SourceApportionment;
+    aq:parentExceedanceSituation ?parentExceedanceSituation;
+    aq:macroExceedanceSituation ?macroExceedanceSituation.
+?macroExceedanceSituation aq:exceedanceArea ?exceedanceArea.
+?exceedanceArea aq:" || $objectName || " ?modelUsed.
+
+?attainment a aq:AQD_Attainment;
+    aq:exceedanceDescriptionFinal ?exceedanceDescriptionFinal;
+    aq:inspireId ?inspireId.
+?inspireId rdfs:label ?label.
+?exceedanceDescriptionFinal aq:exceedanceArea ?exceedanceAreaAttainment.
+?exceedanceAreaAttainment aq:" || $objectName || " ?modelUsedAttainment.
+
+FILTER(regex(?parentExceedanceSituation, ?label))
+FILTER(?modelUsedAttainment = ?modelUsed)
+FILTER(regex(?modelUsedAttainment, '" || $objectlUsed || "'))
+FILTER(?label = '" || $uri || "')
+}
+"
+    return data(sparqlx:run($query)//sparql:binding[@name='attainment']/sparql:uri)
+};
+declare function query:getLatestEnvelopesForObligation(
+    $obligation as xs:string
+) as item()* {
+    let $query := "
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rod: <http://rod.eionet.europa.eu/schema.rdf#>
+PREFIX obligation: <http://rod.eionet.europa.eu/obligations/>
+
+SELECT DISTINCT
+?envelope
+WHERE {{
+  SELECT DISTINCT
+    ?Country
+    YEAR(?startOfPeriod) as ?reportingYear
+    max(?released) as ?released
+  WHERE {
+    ?envelope rod:released ?released .
+    ?envelope rod:startOfPeriod ?startOfPeriod .
+    ?envelope rod:obligation ?obligation .
+    ?envelope rod:locality ?locality .
+    FILTER (?obligation = obligation:" || $obligation || ")
+    ?locality rod:localityName ?Country .
+  } GROUP BY ?Country YEAR(?startOfPeriod)
+}
+?envelope rod:released ?released .
+?envelope rdf:type rod:Delivery .
+}
+"
+    return data(sparqlx:run($query)//sparql:binding[@name='envelope']/sparql:uri)
+};
+
 
 (:~ Returns the URIs for the aqd:stationUsed used for the given Attainment
 
