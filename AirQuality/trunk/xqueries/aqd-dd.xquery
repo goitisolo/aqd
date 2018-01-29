@@ -26,7 +26,7 @@ declare variable $dd:QAQCMAP as element(QAQCMap) := dd:getQAQCMap();
 declare function dd:getValid($url as xs:string) {
     doc($url || "rdf")//skos:Concept[adms:status/@rdf:resource = $dd:VALIDRESOURCE]
 };
-declare function dd:getNameFromPollutantCode($code as xs:string) as xs:string? {
+declare function dd:getNameFromPollutantCode($code as xs:string?) as xs:string? {
     let $code := tokenize($code, "/")[last()]
     let $codes := doc(concat($vocabulary:POLLUTANT_VOCABULARY, "/rdf"))    
     let $num := concat($vocabulary:POLLUTANT_VOCABULARY, $code)

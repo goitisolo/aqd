@@ -67,6 +67,9 @@ let $latestEnvelopeByYearH := query:getLatestEnvelope($cdrUrl || "k/", $reportin
 
 let $nameSpaces := distinct-values($docRoot//base:namespace)
 
+let $latestEnvelopesG := query:getLatestEnvelopesForObligation("679")
+let $latestEnvelopesH := query:getLatestEnvelopesForObligation("680")
+
 (: File prefix/namespace check :)
 let $NSinvalid := try {
     let $XQmap := inspect:static-context((), 'namespaces')
@@ -178,7 +181,7 @@ let $H02errorLevel :=
                 count(
                         for $x in $docRoot//aqd:AQD_Plan/aqd:inspireId/base:Identifier
                         let $id := $x/base:namespace || "/" || $x/base:localId
-                        where query:existsViaNameLocalId($id, 'AQD_Plan')
+                        where query:existsViaNameLocalId($id, 'AQD_Plan', $latestEnvelopesH)
                         return 1
                 ) > 0
     )
@@ -194,7 +197,7 @@ let $H03 := try {
     let $main := $docRoot//aqd:AQD_Plan
     for $x in $main/aqd:inspireId/base:Identifier
     let $inspireId := concat(data($x/base:namespace), "/", data($x/base:localId))
-    let $ok := not(query:existsViaNameLocalId($inspireId, 'AQD_Plan'))
+    let $ok := not(query:existsViaNameLocalId($inspireId, 'AQD_Plan', $latestEnvelopesH))
     return
         common:conditionalReportRow(
                 $ok,
@@ -366,8 +369,7 @@ let $H10 := try {
     return common:conditionalReportRow(
             $ok,
             [
-            ("gml:id", data($x/ancestor-or-self::*[name() = $node-name]/@gml:id)),
-            ("base:namespace", $x)
+                ("base:namespace", $x)
             ]
     )
 } catch * {
@@ -388,12 +390,15 @@ let $H11 := try{
     for $el in $docRoot//aqd:AQD_Plan/aqd:exceedanceSituation
 
     let $label := data($el/@xlink:href)
-    let $ok := (query:existsViaNameLocalId(
-            $label,
-            'AQD_Attainment')
-            and
-            ($year >= 2013)
-    )
+    let $ok := if($year>=2013)
+        then
+            query:existsViaNameLocalId(
+                $label,
+                'AQD_Attainment',
+                $latestEnvelopesG
+            )
+        else
+            true()
 
     return common:conditionalReportRow(
             $ok,
@@ -455,7 +460,8 @@ We recommend you start you codes with the 2-digit country code according to ISO 
 :)
 
 let $H14 := try {
-    let $el := $docRoot//aqd:AQD_Plan/aqd:code
+    let $seq := $docRoot//aqd:AQD_Plan/aqd:code
+    for $el in $seq
     let $ok := fn:lower-case($countryCode) = fn:lower-case(fn:substring(data($el), 1, 2))
     return common:conditionalReportRow(
             $ok,
@@ -643,7 +649,8 @@ let $H22 := try {
 }
 
 (: H23
-Check and count expected combinations of Pollutant and ProtectionTarget at /gml:FeatureCollection/gml:featureMember/aqd:AQD_Plan/aqd:pollutants/aqd:Pollutant
+Check and count expected combinations of Pollutant and ProtectionTarget at
+/gml:FeatureCollection/gml:featureMember/aqd:AQD_Plan/aqd:pollutants/aqd:Pollutant
 Sulphur dioxide (1) + health
 Sulphur dioxide (1) + vegetation
 Ozone (7) + health
@@ -690,8 +697,10 @@ let $H23 := try {
     let $pollutantCode := $polluant/aqd:pollutantCode/@xlink:href
     let $protectionTarget := $polluant/aqd:protectionTarget/@xlink:href
     return
-        if (($protectionTarget = 'http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H' and not($pollutantCode = $accepted_health))
-            or ($protectionTarget = 'http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V' and not($pollutantCode = $accepted_vegetation)))
+        if (($protectionTarget = 'http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H'
+                and not($pollutantCode = $accepted_health))
+            or ($protectionTarget = 'http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V'
+                and not($pollutantCode = $accepted_vegetation)))
         then
             <tr>
                 <td title="gml:id">{data($polluant/ancestor-or-self::*[name() = $node-name]/@gml:id)}</td>
@@ -707,47 +716,19 @@ let $H23 := try {
 
 (: H24
 aqd:AQD_Plan/aqd:pollutants/aqd:Pollutant/aqd:pollutantCode xlink:href attribute (may be multiple)
-shall be the same as those in the referenced data flow G xlinked via aqd:AQD_Plan/aqd:exceedanceSituation@xlink:href
+shall be the same as those in the referenced data flow G
+xlinked via aqd:AQD_Plan/aqd:exceedanceSituation@xlink:href
 attribute (maybe multiple)
 
 AQ plan pollutant's should match those in the exceedance situation (G)
 :)
-
-(: OLD H24
-let $H24 := try {
-    for $plan in $docRoot//aqd:AQD_Plan
-        let $dataflow-g-pollutant :=
-            for $ex in $plan/aqd:exceedanceSituation
-                return try {
-                    doc($ex/@xlink:href/string())//aqd:pollutant/@xlink:href/string()
-                } catch * {
-                    ('Exceedance Situation - broken link')
-                }
-        return
-            if ($dataflow-g-pollutant = 'Exceedance Situation - broken link')
-            then
-                html:createErrorRow('404', 'Exceedance Situation - broken link')
-            else
-                for $polluant in $plan/aqd:pollutants/aqd:Pollutant/aqd:pollutantCode
-                    return if (not($polluant/@xlink:href/string() = $dataflow-g-pollutant))
-                    then
-                        <tr>
-                            <td title="gml:id">{data($polluant/ancestor-or-self::*[name() = $node-name]/@gml:id)}</td>
-                            <td title="pollutantCode xlink:href">{data($polluant/@xlink:href)}</td>
-                            <td title="error"> not in dataflow G</td>
-                        </tr>
-                    else
-                        ()
-} catch * {
-    html:createErrorRow($err:code, $err:description)
-}:)
 
 let $H24 := try {
     for $plan in $docRoot//aqd:AQD_Plan
         let $pollutantCodes := $plan/aqd:pollutants/aqd:Pollutant/aqd:pollutantCode/@xlink:href
         for $exceedanceSituation in $plan/aqd:exceedanceSituation/@xlink:href
             let $pollutants := query:getPollutants("AQD_Attainment", $exceedanceSituation)
-            let $ok := count(index-of($pollutantCodes, functx:if-empty($pollutants, ""))) = 1
+            let $ok := count(index-of($pollutantCodes, functx:if-empty($pollutants, ""))) > 0
             return
                 if(not($ok))
                     then

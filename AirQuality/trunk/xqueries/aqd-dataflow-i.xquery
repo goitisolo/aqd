@@ -70,6 +70,10 @@ declare function dataflowI:checkReport(
     let $namespaces := distinct-values($docRoot//base:namespace)
 
     let $latestEnvelopeByYearI := query:getLatestEnvelope($cdrUrl || "i/", $reportingYear)
+    let $latestEnvelopesD := query:getLatestEnvelopesForObligation("672")
+    let $latestEnvelopesD1 := query:getLatestEnvelopesForObligation("742")
+    let $latestEnvelopesG := query:getLatestEnvelopesForObligation("679")
+    let $latestEnvelopesH := query:getLatestEnvelopesForObligation("680")
 
     let $node-name := 'aqd:AQD_SourceApportionment'
     let $sources := $docRoot//aqd:AQD_SourceApportionment
@@ -500,7 +504,8 @@ declare function dataflowI:checkReport(
             let $ok := query:existsViaNameLocalIdYear(
                 $label,
                 'AQD_Plan',
-                $reportingYear
+                $reportingYear,
+                $latestEnvelopesH
             )
 
         return common:conditionalReportRow(
@@ -534,7 +539,8 @@ declare function dataflowI:checkReport(
             let $ok := query:existsViaNameLocalIdYear(
                     $link,
                     'AQD_Attainment',
-                    $reportingYear
+                    $reportingYear,
+                    $latestEnvelopesG
             )
 
         return common:conditionalReportRow(
@@ -1018,20 +1024,28 @@ declare function dataflowI:checkReport(
     :)
 
     let $I25 := try {
-        for $node in $sources
-            let $el := $node/aqd:macroExceedanceSituation/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:areaClassification
-            let $ac := data($el/@xlink:href)
-            let $parent := $node/aqd:parentExceedanceSituation/@xlink:href
-            let $parent-ac := query:get-area-classifications-for-attainment($parent)
+        for $node in $sources/aqd:macroExceedanceSituation/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:areaClassification
+            let $areaClassification := data($node/@xlink:href)
+            let $parent := $node/ancestor::aqd:AQD_SourceApportionment/aqd:parentExceedanceSituation/@xlink:href
+            let $parentAreaClassification := query:get-area-classifications-for-attainment($parent)
 
-            let $ok := $ac = $parent-ac
+            let $latestParentAreaClassifications :=
+                for $result in $parentAreaClassification
+                    let $envelope := functx:substring-before-last($result/sparql:binding[@name="aqd_attainment"]/sparql:uri, "/")
+                    return
+                    if($envelope = $latestEnvelopesG)
+                    then
+                        $result/sparql:binding[@name="areaClassification"]/sparql:uri
+                    else
+                        ()
+            let $ok := $areaClassification = $latestParentAreaClassifications
 
         return common:conditionalReportRow(
             $ok,
             [
-                (node-name($node), data($node/@gml:id)),
-                (node-name($el), $ac),
-                ('AQD_Attainment classification', $parent-ac)
+                (node-name($node/ancestor::aqd:AQD_SourceApportionment), data($node/ancestor::aqd:AQD_SourceApportionment/@gml:id)),
+                (node-name($node), $areaClassification),
+                ('AQD_Attainment classification', string-join($latestParentAreaClassifications, "&#xa;"))
             ]
         )
     } catch * {
@@ -1143,44 +1157,50 @@ declare function dataflowI:checkReport(
 
     If SamplingPoint(s) and/or Model(s) are provided, these must be valid
 
-    TODO: double check the existsViaNameLocalId
-
     ERROR
     :)
     let $I30 := try {
-        for $node in $sources
-            let $a := $node//aqd:stationUsed
-            let $a-ok :=
-                if (exists($a/@xlink:href))
+        let $elements := (
+            "stationUsed",
+            "modelUsed"
+        )
+        for $elem in $sources//*[local-name() = $elements]
+        let $ok :=
+            if (local-name($elem) = "stationUsed")
+            then
+                let $allResults :=
+                    query:getAllEnvelopesForObjectViaLabel($elem/@xlink:href, "AQD_SamplingPoint")
+                for $result in $allResults
+                let $envelope := functx:substring-before-last($result/sparql:binding[@name="s"]/sparql:uri, "/")
+                return
+                    if($envelope = $latestEnvelopesD)
+                    then $envelope
+                    else ()
+            else if(local-name($elem) = "modelUsed")
                 then
-                    query:existsViaNameLocalId($a/@xlink:href, "AQD_SamplingPoint")
-                else
-                    true()
-
-            let $b := $node//aqd:modelUsed
-            let $b-ok :=
-                if (exists($b/@xlink:href))
-                then
-                    query:existsViaNameLocalId($b/@xlink:href, "AQD_Model")
-                else
-                    true()
-
-            let $ok := $a-ok and $b-ok
+                    let $allResults :=
+                        query:getAllEnvelopesForObjectViaLabel($elem/@xlink:href, "AQD_Model")
+                    for $result in $allResults
+                    let $envelope := functx:substring-before-last($result/sparql:binding[@name="s"]/sparql:uri, "/")
+                    return
+                        if($envelope = $latestEnvelopesD1)
+                        then $envelope
+                        else ()
+            else
+                ()
 
         return common:conditionalReportRow(
-            $ok,
+            exists($ok),
             [
-                ("gml:id", data($node/@gml:id)),
-                ("aqd:stationUsed", $a/@xlink:href),
-                ("aqd:modelUsed", $b/@xlink:href)
+                ("gml:id", data($elem/ancestor::aqd:AQD_SourceApportionment/@gml:id)),
+                ("element name", node-name($elem)),
+                ("element value", $elem/@xlink:href)
             ]
         )
     } catch * {
         html:createErrorRow($err:code, $err:description)
     }
 
-
-    let $latestEnvelopesG := query:getLatestEnvelopesForObligation("679")
 
     (: I31
 
@@ -1207,8 +1227,8 @@ declare function dataflowI:checkReport(
 
     WARNING
 
-    TODO: check implementation - TIBI
-    TODO: changed implementation, now should work - LACI
+    TODO: check implementation
+    TODO: implementation changed, now works but not 100% sure if it's OK
 
     :)
 
@@ -1269,6 +1289,7 @@ declare function dataflowI:checkReport(
 
     WARNING
     TODO: check implementation
+    TODO: implementation changed, now works but not 100% sure if it's OK
     :)
 
     let $I32 := try {
@@ -1509,7 +1530,8 @@ declare function dataflowI:checkReport(
 
 
     (: I39
-    /aqd:AQD_SourceApportionment/aqd:macroExceedanceSituation/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod
+    /aqd:AQD_SourceApportionment/aqd:macroExceedanceSituation/aqd:ExceedanceDescription
+    /aqd:deductionAssessmentMethod/aqd:AdjustmentMethod
     may be populated if ./aqd:pollutant xlink:href attribute EQUALs
     http://dd.eionet.europa.eu/vocabulary/aq/pollutant/[1,5,10,6001]  (via
     …/aqd:parentExceedanceSituation)
@@ -1666,41 +1688,61 @@ declare function dataflowI:checkReport(
 
     TODO: check implementation. The implementation has not been check properly
 
-    TODO: $samplingPointAssessmentMetadata and $assessmentMetadata are not
-    filled in
+    TODO: $samplingPointAssessmentMetadata and $assessmentMetadata are not filled in
     :)
 
     let $I42 := try {
-        for $node in $sources/aqd:macroExceedanceSituation/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:assessmentMethod/aqd:AssessmentMethods
+        let $pollutants := (
+            "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1",
+            "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5",
+            "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/10",
+            "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/6001"
+        )
+        let $seq :=
+            $sources/aqd:macroExceedanceSituation/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:assessmentMethod/aqd:AssessmentMethods
 
-            let $a := $node/aqd:samplingPointAssessmentMetadata
-            let $a-m := $a/@xlink:href
-            let $a-ok := common:has-content($a-m)
-            (: TODO: this implements the "correctly link in D/D1b :)
-            (: and ($a-m = $samplingPointAssessmentMetadata) :)
-
-            let $b := $node/aqd:modelAssessmentMetadata
-            let $b-m := $b/@xlink:href
-            let $b-ok := common:has-content($b-m)
-            (: TODO: this implements the "correctly link in D/D1b :)
-            (: and ($b-m = $assessmentMetadata) :)
-
-            let $parent := $node/ancestor::aqd:AQD_SourceApportionment/aqd:parentExceedanceSituation/@xlink:href
-            let $pollutant := query:get-pollutant-for-attainment($parent)
-            let $needed := common:is-polutant-air($pollutant)
-
+        (: modelAssessmentMetadata :)
+        (: samplingPointAssessmentMetadata :)
+        for $node in $seq
+            let $parentExceedanceSituation := $node/ancestor::aqd:AQD_SourceApportionment/aqd:parentExceedanceSituation/@xlink:href
+            let $pollutant := query:get-pollutant-for-attainment($parentExceedanceSituation)
             let $ok :=
-                if (not($needed))
+                if($pollutant = $pollutants)
                 then
-                    true()
+                    let $samplingPointAssessmentMetadata := $node/aqd:samplingPointAssessmentMetadata/@xlink:href
+                    let $ok-spa := if(functx:if-empty($samplingPointAssessmentMetadata, "") != "")
+                        then
+                            query:existsViaNameLocalId(
+                            $samplingPointAssessmentMetadata,
+                            "AQD_SamplingPoint",
+                            $latestEnvelopesD
+                            )
+                        else
+                            true()
+
+                    let $modelAssessmentMetadata := $node/aqd:modelAssessmentMetadata/@xlink:href
+                    let $ok-ma := if(functx:if-empty($modelAssessmentMetadata, "") != "")
+                        then
+                            query:existsViaNameLocalId(
+                            $modelAssessmentMetadata,
+                            "AQD_Model",
+                            $latestEnvelopesD1
+                            )
+                        else
+                            true()
+
+                    return $ok-spa and $ok-ma
                 else
-                    $a-ok or $b-ok
+                    true()
+
         return common:conditionalReportRow(
             $ok,
             [
                 ("gml:id", data($node/ancestor-or-self::aqd:AQD_SourceApportionment/@gml:id)),
-                ("aqd:samplingPointAssessmentMetadata", $a-m),
-                ("aqd:modelAssessmentMetadata", $b-m)
+                ("aqd:pollutant", $pollutant),
+                ("aqd:parentExceedanceSituation", $parentExceedanceSituation),
+                ("aqd:samplingPointAssessmentMetadata", $node/aqd:samplingPointAssessmentMetadata/@xlink:href),
+                ("aqd:modelAssessmentMetadata", $node/aqd:modelAssessmentMetadata/@xlink:href)
             ]
         )
     } catch * {
