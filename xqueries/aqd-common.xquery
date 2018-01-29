@@ -571,3 +571,19 @@ declare function common:is-status-in-progress(
     )
     return $uri = $okv
 };
+
+(: Given a list of envelopes, returns true if is lates envelope :)
+declare function common:isLatestEnvelope(
+    $envelopes as xs:string*,
+    $latestEnvelopes as xs:string*
+) as xs:boolean {
+    let $result :=
+        for $envelope in $envelopes
+            return
+            if($envelope = $latestEnvelopes)
+            then
+                $envelope
+            else
+                ()
+    return exists($result)
+};

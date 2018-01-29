@@ -78,6 +78,11 @@ let $zonesNamespaces := distinct-values($docRoot//aqd:AQD_Zone/am:inspireId/base
 
 let $latestEnvelopeByYearK := query:getLatestEnvelope($cdrUrl || "k/", $reportingYear)
 
+let $latestEnvelopesG := query:getLatestEnvelopesForObligation("679")
+let $latestEnvelopesI := query:getLatestEnvelopesForObligation("681")
+let $latestEnvelopesJ := query:getLatestEnvelopesForObligation("682")
+let $latestEnvelopesK := query:getLatestEnvelopesForObligation("683")
+
 let $namespaces := distinct-values($docRoot//base:namespace)
 let $ancestor-name := "aqd:AQD_Measures"
 
@@ -176,7 +181,7 @@ let $K02errorLevel :=
             for $x in $docRoot//aqd:AQD_Measures/aqd:inspireId/base:Identifier
                 let $id := $x/base:namespace || "/" || $x/base:localId
                 (:where ($allMeasures = $id):)
-                where query:existsViaNameLocalId($id, 'AQD_Measures')
+                where query:existsViaNameLocalId($id, 'AQD_Measures', $latestEnvelopesK)
                 return 1
         ) > 0
         )
@@ -186,13 +191,14 @@ let $K02errorLevel :=
         $errors:INFO
 
 (: K03 Compile & feedback upon the total number of updated Measures included in the delivery.
-ERROR will be returned if XML is an update and ALL localId (100%) are different to previous delivery (for the same YEAR). :)
+ERROR will be returned if XML is an update and ALL localId (100%)
+are different to previous delivery (for the same YEAR). :)
 
 let $K03table := try {
     for $main in $docRoot//aqd:AQD_Measures
         let $x := $main/aqd:inspireId/base:Identifier
         let $inspireId := concat(data($x/base:namespace), "/", data($x/base:localId))
-        let $ok := not(query:existsViaNameLocalId($inspireId, 'AQD_Measures'))
+        let $ok := not(query:existsViaNameLocalId($inspireId, 'AQD_Measures', $latestEnvelopesK))
         return
             common:conditionalReportRow(
             $ok,
@@ -213,7 +219,10 @@ let $K03errorLevel :=
         $errors:INFO
 
 (: K04 Compile & feedback a list of the unique identifier information for all Measures records included in the delivery.
-Feedback report shall include the gml:id attribute, ./aqd:inspireId, aqd:AQD_SourceApportionment (via ./exceedanceAffected), aqd:AQD_Scenario (via aqd:usedForScenario) :)
+Feedback report shall include the gml:id attribute,
+./aqd:inspireId,
+aqd:AQD_SourceApportionment (via ./exceedanceAffected),
+aqd:AQD_Scenario (via aqd:usedForScenario) :)
 
 let $K04table := try {
     let $gmlIds := $docRoot//aqd:AQD_Measures/lower-case(normalize-space(@gml:id))
@@ -271,14 +280,6 @@ let $K07 := try {
     let $errors := array {
 
         for $name in $checks
-        (: TODO: would be nice to have something like this, but we have no value for error row
-            return
-                if has-duplicate-children-values($main, $name)
-                then
-                    [$name, $name]
-                else
-                    ()
-        :)
             let $name := lower-case(normalize-space($name))
             let $values := $main//(*[lower-case(normalize-space(name())) = $name] |
                                    @*[lower-case(normalize-space(name())) = $name])
@@ -297,31 +298,6 @@ let $K07 := try {
         $errors
     )
 
-    (:
-    let $gmlIds := $main//lower-case(normalize-space(@gml:id))
-    let $inspireIds := $main//lower-case(normalize-space(aqd:inspireId))
-    let $efInspireIds := $main//lower-case(normalize-space(ef:inspireId))
-    for $el in $main
-        let $id := $el/@gml:id
-        let $inspireId := $el/aqd:inspireId
-        let $efInspireId := $el/ef:inspireId
-
-        let $ok := (
-            c:has-one($gmlIds, $id)
-            and
-            c:has-one($inspireIds, $inspireId)
-            and
-            c:has-one($efInspireIds, $efInspireId)
-        )
-        return c:conditionalReportRow(
-            $ok,
-            [
-                (name($id), data($id)),
-                (node-name($inspireId), data($inspireId)),
-                (node-name($efInspireId), data($efInspireId))
-            ]
-        )
-    :)
 } catch * {
     html:createErrorRow($err:code, $err:description)
 }
@@ -351,7 +327,8 @@ let $K08invalid:= try {
     html:createErrorRow($err:code, $err:description)
 }
 
-(: K09 ./aqd:inspireId/base:Identifier/base:namespace List base:namespace and count the number of base:localId assigned to each base:namespace.  :)
+(: K09 ./aqd:inspireId/base:Identifier/base:namespace List base:namespace
+and count the number of base:localId assigned to each base:namespace.  :)
 
 let $K09table := try {
     for $namespace in distinct-values($docRoot//aqd:AQD_Measures/aqd:inspireId/base:Identifier/base:namespace)
@@ -368,7 +345,8 @@ let $K09table := try {
     html:createErrorRow($err:code, $err:description)
 }
 
-(: K10 Check that namespace is registered in vocabulary (http://dd.eionet.europa.eu/vocabulary/aq/namespace/view) :)
+(: K10 Check that namespace is registered in vocabulary
+(http://dd.eionet.europa.eu/vocabulary/aq/namespace/view) :)
 
 let $K10invalid := try {
     let $vocDoc := doc($vocabulary:NAMESPACE || "rdf")
@@ -400,7 +378,7 @@ let $K11 := try{
     let $main := $docRoot//aqd:AQD_Measures/aqd:exceedanceAffected
     for $el in $main
         let $label := data($el/@xlink:href)
-        let $ok := query:existsViaNameLocalId($label, 'AQD_SourceApportionment')
+        let $ok := query:existsViaNameLocalId($label, 'AQD_SourceApportionment', $latestEnvelopesI)
 
         return common:conditionalReportRow(
             $ok,
@@ -425,7 +403,7 @@ let $K12 := try {
     let $main := $docRoot//aqd:AQD_Measures/aqd:usedForScenario
     for $el in $main
         let $label := data($el/@xlink:href)
-        let $ok := query:existsViaNameLocalId($label, 'AQD_EvaluationScenario')
+        let $ok := query:existsViaNameLocalId($label, 'AQD_EvaluationScenario', $latestEnvelopesJ)
 
         return common:conditionalReportRow(
             $ok,

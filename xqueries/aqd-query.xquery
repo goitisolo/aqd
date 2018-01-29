@@ -9,6 +9,7 @@ xquery version "3.0" encoding "UTF-8";
 module namespace query = "aqd-query";
 import module namespace sparqlx = "aqd-sparql" at "aqd-sparql.xquery";
 import module namespace common = "aqd-common" at "aqd-common.xquery";
+import module namespace functx = "http://www.functx.com" at "functx-1.0-doc-2007-01.xq";
 declare namespace sparql = "http://www.w3.org/2005/sparql-results#";
 
 (: Normal InspireId Fetch - This should be the default :)
@@ -146,59 +147,61 @@ declare function query:getModel($url as xs:string) as xs:string {
 (: TODO: look at this for inspiration on how to find the AQD_Attainment for a AQD_SourceApportionment :)
 declare function query:existsViaNameLocalId(
         $label as xs:string,
-        $name as xs:string
+        $name as xs:string,
+        $latestEnvelopes as xs:string*
 ) as xs:boolean {
     let $query := "
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX aq: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
 
-SELECT count(?label) as ?cnt
+SELECT ?subject
 WHERE {
-    ?scenariosXMLURI a aq:" || $name ||";
+    ?subject a aq:" || $name ||";
     aq:inspireId ?inspireId.
     ?inspireId rdfs:label ?label.
     ?inspireId aq:namespace ?name.
     ?inspireId aq:localId ?localId
-    FILTER (concat(?name,'/',?localId) = '" || $label || "')
+    FILTER (?label = '" || $label || "')
 }"
 
-    let $res := sparqlx:run($query)
-    let $count := data($res//sparql:binding[@name='cnt']/sparql:literal)
-    return
-        if ($count > 0)
-            then
-                true()
-            else
-                false()
+    let $results := sparqlx:run($query)
+
+    let $envelopes :=
+        for $result in $results
+        return functx:substring-before-last($result/sparql:binding[@name="subject"]/sparql:uri, "/")
+
+    return common:isLatestEnvelope($envelopes, $latestEnvelopes)
 };
 
 (: Checks if X references an existing Y via namespace/localid and reporting year :)
 declare function query:existsViaNameLocalIdYear(
-        $label as xs:string,
-        $type as xs:string,
-        $year as xs:string
+    $label as xs:string,
+    $type as xs:string,
+    $year as xs:string,
+    $latestEnvelopes as xs:string*
 ) as xs:boolean {
-
     let $query := "
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX aq: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
 
-SELECT count(?label) as ?cnt
+SELECT ?subject
 WHERE {
-    ?scenariosXMLURI a aq:" || $type ||";
+    ?subject a aq:" || $type ||";
     aq:inspireId ?inspireId.
     ?inspireId rdfs:label ?label.
     ?inspireId aq:namespace ?name.
     ?inspireId aq:localId ?localId
-    FILTER (concat(?name,'/',?localId) = '" || $label || "')
-    FILTER (CONTAINS(str(?scenariosXMLURI), '" || $year || "'))
+    FILTER (?label = '" || $label || "')
+    FILTER (CONTAINS(str(?subject), '" || $year || "'))
 }
 "
+    let $results := sparqlx:run($query)
 
-(: TODO: is correct to use scenariosXMLURI  ? :)
+    let $envelopes :=
+        for $result in $results
+        return functx:substring-before-last($result/sparql:binding[@name="subject"]/sparql:uri, "/")
 
-    let $count := data(sparqlx:run($query)//sparql:binding[@name='cnt']/sparql:literal)
-    return $count > 0
+    return common:isLatestEnvelope($envelopes, $latestEnvelopes)
 };
 
 
@@ -233,7 +236,7 @@ aq:pollutant ?pollutant .
 ?inspireId rdfs:label ?label .
 ?inspireId aq:namespace ?name .
 ?inspireId aq:localId ?localId .
-FILTER (concat(?name,'/',?localId) = '" || $label || "')
+FILTER (?label = '" || $label || "')
    }"
     let $res := sparqlx:run($query)
     return data($res//sparql:binding[@name='pollutant']/sparql:uri)
@@ -263,6 +266,26 @@ declare function query:sparql-objects-in-subject(
       FILTER (CONTAINS(str(?s), '" || $url || "'))
    }"
 };
+
+declare function query:getAllEnvelopesForObjectViaLabel(
+        $label as xs:string,
+        $type as xs:string
+) as element()* {
+    let $query :="
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
+    PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+
+    SELECT ?s
+    WHERE {
+        ?s a aqd:" || $type || ";
+        aqd:inspireId ?inspireId .
+        ?inspireId rdfs:label ?label .
+        FILTER(?label = '" || $label || "')
+    }"
+    let $res := sparqlx:run($query)
+    return $res
+} ;
 
 (:~ Creates a SPARQL query to return all inspireIds for given aqd:namespace
 
@@ -303,6 +326,40 @@ declare function query:getEvaluationScenarios($url as xs:string) as xs:string {
       ?inspireId rdfs:label ?inspireLabel .
       FILTER (CONTAINS(str(?EvaluationScenario), '" || $url || "'))
    }"
+};
+
+(: J22 :)
+declare function query:isTimePositionValid(
+    $object as xs:string,
+    $label as xs:string,
+    $timePosition as xs:integer,
+    $latestEnvelopes as xs:string*
+) as xs:boolean {
+    let $query := "
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX aq: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+
+SELECT ?subject
+WHERE {
+?subject a aq:" || $object || ";
+    aq:inspireId ?inspireId;
+    aq:referenceYear ?referenceYear.
+?referenceYear aq:timePosition ?timePosition.
+?inspireId rdfs:label ?label.
+?inspireId aq:namespace ?name.
+?inspireId aq:localId ?localId
+FILTER (?label = '" || $label || "')
+FILTER(?timePosition = " || $timePosition || ")
+}
+"
+    let $results := sparqlx:run($query)
+
+    let $envelopes :=
+        for $result in $results
+        return functx:substring-before-last($result/sparql:binding[@name="subject"]/sparql:uri, "/")
+
+    return common:isLatestEnvelope($envelopes, $latestEnvelopes)
+
 };
 
 (: K :)
@@ -553,33 +610,22 @@ declare function query:getAllAttainmentIds2($namespaces as xs:string*) as xs:str
 };
 
 (:~ Returns the pollutants for an attainment
-TODO: rewrite query, I think it runs slow
 :)
 declare function query:get-pollutant-for-attainment(
-    $subj-url as xs:string
-) as xs:string {
+    $url as xs:string?
+) as xs:string? {
     let $query := "
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
-PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+PREFIX aq: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
 
-SELECT distinct
-
-  ?pollutant
-
+SELECT distinct(?pollutant)
 WHERE {
- ?s ?p ?o .
-
- aqd:inspireId ?inspireId .
- ?inspireId rdfs:label ?inspireLabel .
- optional { ?s aqd:declarationFor ?uf}
- optional { ?s aqd:pollutant ?pollutant}
-
- filter(?p = <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>).
- filter(?o = aqd:AQD_Attainment) .
- filter(contains(str(?uf), '" || $subj-url || "'))
-
-} LIMIT 50
+?sourceApportionment a aq:AQD_Attainment;
+    aq:pollutant ?pollutant;
+    aq:inspireId ?inspireId.
+?inspireId rdfs:label ?label
+FILTER(?label = '" || $url || "')
+}
 "
   let $res := sparqlx:run($query)
   return data($res//sparql:binding[@name='pollutant']/sparql:uri)
@@ -1072,30 +1118,26 @@ WHERE {
     aqd:exceedanceArea/aqd:ExceedanceArea/aqd:areaClassification
 :)
 declare function query:get-area-classifications-for-attainment(
-    $uri as xs:string
-) as item()* {
+    $uri as xs:string?
+) as element()* {
 
     let $query := "
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
 PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
 
-SELECT DISTINCT ?area_classification
+SELECT DISTINCT ?aqd_attainment, ?areaClassification
 WHERE {
     ?aqd_attainment a aqd:AQD_Attainment .
-
-    ?aqd_attainment aqd:declarationFor ?attainment .
-    ?aqd_attainment aqd:exceedanceDescriptionFinal ?desc_final .
-    ?desc_final aqd:exceedanceArea ?exceedance_area .
-    ?excedance_area aqd:areaClassification ?area_classification .
-
-    # optional, just for double-checking
-
-    ?source_apportionment aqd:parentExceedanceSituation ?attainment .
-
-    filter(contains(str(?attainment), '" || $uri || "'))
+    ?aqd_attainment aqd:inspireId ?inspireId.
+    ?aqd_attainment aqd:exceedanceDescriptionFinal ?exceedanceDescriptionFinal .
+    ?inspireId rdfs:label ?label.
+    ?exceedanceDescriptionFinal aqd:exceedanceArea ?exceedanceArea .
+    ?exceedanceArea aqd:areaClassification ?areaClassification .
+    FILTER(?label = '" || $uri || "')
 }
 "
     let $res := sparqlx:run($query)
-    return data($res//sparql:binding[@name='area_classification']/sparql:uri)
+    return $res
 };
+

@@ -70,6 +70,11 @@ let $cdrUrl := common:getCdrUrl($countryCode)
 let $latestEnvelopeByYearJ := query:getLatestEnvelope($cdrUrl || "j/", $reportingYear)
 let $ancestor-name := "aqd:AQD_EvaluationScenario"
 
+let $latestEnvelopesH := query:getLatestEnvelopesForObligation("680")
+let $latestEnvelopesI := query:getLatestEnvelopesForObligation("681")
+let $latestEnvelopesJ := query:getLatestEnvelopesForObligation("682")
+let $latestEnvelopesK := query:getLatestEnvelopesForObligation("683")
+
 (: NS
 Check prefix and namespaces of the gml:featureCollection according to expected root elements
 (More information at http://www.eionet.europa.eu/aqportal/datamodel)
@@ -185,7 +190,7 @@ let $J2errorLevel :=
         count(
             for $x in $docRoot//aqd:AQD_EvaluationScenario/aqd:inspireId/base:Identifier
                 let $id := $x/base:namespace || "/" || $x/base:localId
-                where query:existsViaNameLocalId($id, 'AQD_EvaluationScenario')
+                where query:existsViaNameLocalId($id, 'AQD_EvaluationScenario', $latestEnvelopesJ)
                 return 1
         ) > 0
         )
@@ -208,7 +213,7 @@ let $J3 := try {
     for $main in $docRoot//aqd:AQD_EvaluationScenario
         let $x := $main/aqd:inspireId/base:Identifier
         let $inspireId := concat(data($x/base:namespace), "/", data($x/base:localId))
-        let $ok := not(query:existsViaNameLocalId($inspireId, 'AQD_EvaluationScenario'))
+        let $ok := not(query:existsViaNameLocalId($inspireId, 'AQD_EvaluationScenario', $latestEnvelopesJ))
         return
             common:conditionalReportRow(
             $ok,
@@ -396,7 +401,8 @@ let $J11 := try {
         let $ok := query:existsViaNameLocalIdYear(
                 $label,
                 'AQD_Plan',
-                $reportingYear
+                $reportingYear,
+                $latestEnvelopesH
         )
         return common:conditionalReportRow(
                 $ok,
@@ -424,7 +430,8 @@ let $J12 := try {
         let $ok := query:existsViaNameLocalIdYear(
                 $label,
                 'AQD_SourceApportionment',
-                $reportingYear
+                $reportingYear,
+                $latestEnvelopesI
         )
         return common:conditionalReportRow(
                 $ok,
@@ -663,25 +670,26 @@ Check aqd:AQD_EvaluationScenario/aqd:startYear/gml:TimeInstant/gml:timePosition 
 aqd:AQD_SourceApportionment/aqd:referenceYear/gml:TimeInstant/gml:timePosition
 referenced via the xlink of (aqd:AQD_EvaluationScenario/aqd:sourceApportionment)
 
-Check if start year of the evaluation scenario is the same as the source apportionment reference year
+Check if start year of the evaluation scenario is the same as
+the source apportionment reference year
 :)
-
 let $J22 := try {
     for $node in $evaluationScenario
         let $el := $node/aqd:sourceApportionment
         let $year := $node/aqd:startYear/gml:TimeInstant/gml:timePosition
-        let $ok := query:existsViaNameLocalIdYear(
-                $el/@xlink:href,
-                'AQD_SourceApportionment',
-                $year
+        let $ok := query:isTimePositionValid(
+            'AQD_SourceApportionment',
+            $el/@xlink:href,
+            $year,
+            $latestEnvelopesI
         )
         return common:conditionalReportRow(
-                    $ok,
-                    [
-                        ("gml:id", $el/ancestor-or-self::*[name() = $ancestor-name]/@gml:id),
-                        (node-name($el), $el/@xlink:href)
-                    ]
-                )
+            $ok,
+            [
+                ("gml:id", $el/ancestor-or-self::*[name() = $ancestor-name]/@gml:id),
+                (node-name($el), $el/@xlink:href)
+            ]
+        )
 
 } catch * {
     html:createErrorRow($err:code, $err:description)
@@ -832,7 +840,8 @@ let $J27 := try{
         let $ok := query:existsViaNameLocalIdYear(
                 $el/@xlink:href,
                 'AQD_Measures',
-                $reportingYear
+                $reportingYear,
+                $latestEnvelopesK
         )
         return common:conditionalReportRow(
                 $ok,
@@ -992,7 +1001,8 @@ let $J32 := try{
         let $ok := query:existsViaNameLocalIdYear(
                 $el/@xlink:href,
                 'AQD_Measures',
-                $reportingYear
+                $reportingYear,
+                $latestEnvelopesK
         )
         return common:conditionalReportRow(
                 $ok,
