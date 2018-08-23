@@ -46,6 +46,7 @@ declare variable $vocabulary:OBJECTIVETYPE_VOCABULARY as xs:string := "http://dd
 declare variable $vocabulary:OBLIGATIONS := "http://rod.eionet.europa.eu/obligations/";
 declare variable $vocabulary:OBSERVATIONS_PRIMARY as xs:string := "http://dd.eionet.europa.eu/vocabulary/aq/primaryObservation/";
 declare variable $vocabulary:OBSERVATIONS_RANGE as xs:string := "http://dd.eionet.europa.eu/vocabulary/aq/primaryObservationRange/";
+declare variable $vocabulary:OBSERVATIONS_RANGE_COUNTRY as xs:string := "http://dd.eionet.europa.eu/vocabulary/aq/primaryObservationRangeCountry/";
 declare variable $vocabulary:OBSERVATIONS_VALIDITY as xs:string := "http://dd.eionet.europa.eu/vocabulary/aq/observationvalidity/";
 declare variable $vocabulary:OBSERVATIONS_VERIFICATION as xs:string := "http://dd.eionet.europa.eu/vocabulary/aq/observationverification/";
 declare variable $vocabulary:ORGANISATIONAL_LEVEL_VOCABULARY := "http://dd.eionet.europa.eu/vocabulary/aq/organisationallevel/";
