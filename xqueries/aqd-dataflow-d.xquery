@@ -256,6 +256,18 @@ let $D3count :=
         "NaN"
     }
 
+let $D03bfunc := function() {
+    let $featureTypes := remove($dataflowD:FEATURE_TYPES, index-of($dataflowD:FEATURE_TYPES, "aqd:AQD_RepresentativeArea"))
+    for $featureType at $pos in $featureTypes
+    for $x in $docRoot//descendant::*[name() = $featureType]
+    let $inspireId := $x//base:Identifier/base:namespace/string() || "/" || $x//base:Identifier/base:localId/string()
+    where not($knownFeatures = $inspireId)
+    return
+        <tr>
+            <td title="base:localId">{$x//base:Identifier/base:localId/string()}</td>
+        </tr>
+}
+let $D03binvalid := errors:trycatch($D03bfunc)
 
 (: D04 :)
 let $D04table :=
@@ -2009,6 +2021,7 @@ return
         {html:build1("D01", $labels:D01, $labels:D01_SHORT, $D01table, "", $D1sum, "", "",$errors:D01)}
         {html:buildSimple("D02", $labels:D02, $labels:D02_SHORT, $D02table, "", "feature type", $D02errorLevel)}
         {html:buildSimple("D03", $labels:D03, $labels:D03_SHORT, $D03table, $D3count, "feature type", $D03errorLevel)}
+        {html:build2("D03b", $labels:D03b, $labels:D03b_SHORT, $D03binvalid, "All values are valid", "feature type", $errors:D03b)}
         {html:build1("D04", $labels:D04, $labels:D04_SHORT, $D04table, string(count($D04table)), "", "", "", $errors:D04)}
         {html:build2("D05", $labels:D05, $labels:D05_SHORT, $D05invalid, "All values are valid", "record", $errors:D05)}
         {html:buildInfoTR("Specific checks on AQD_Network feature(s) within this XML")}
