@@ -265,6 +265,7 @@ let $D03bfunc := function() {
     return
         <tr>
             <td title="base:localId">{$x//base:Identifier/base:localId/string()}</td>
+            <td title="Feature type">{$featureType}</td>
         </tr>
 }
 let $D03binvalid := errors:trycatch($D03bfunc)
