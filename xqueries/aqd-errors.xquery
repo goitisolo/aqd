@@ -595,3 +595,16 @@ declare function errors:hasFailed($records as element()*) as xs:boolean {
 declare function errors:getError($notation as xs:string) {
     dd:getQAQCErrorType($notation)
 };
+
+
+(:$checkFunc as function(xs:string, xs:string, element()) as element()*:)
+declare function errors:trycatch($checkFunc) {
+    try {
+        $checkFunc()
+    } catch * {
+        <tr class="{$errors:FAILED}">
+            <td title="Error code"> {$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
+};

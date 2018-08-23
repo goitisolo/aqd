@@ -13,6 +13,7 @@
           <exclude name="aqd-main.xquery"/>
           <exclude name="aqd-xref.xquery"/>
           <exclude name="aqd-envelope-main.xquery"/>
+          <exclude name="aqd-test.xq"/>
           <exclude name="dist/*.xquery"/>
           <exclude name="deprecated/*.xquery"/>
           <exclude name="old/*.xquery"/>
@@ -32,6 +33,7 @@
         <exclude name="aqd-main.xquery"/>
         <exclude name="aqd-envelope-main.xquery"/>
         <exclude name="aqd-xref.xquery"/>
+        <exclude name="aqd-test.xq"/>
         <exclude name="dist/*.xquery"/>
         <exclude name="deprecated/*.xquery"/>
         <exclude name="old/*.xquery"/>
@@ -86,6 +88,7 @@ declare variable $xmlconv:TEST_ENV := false();${line.separator}
         <exclude name="aqd-envelope-main.xquery"/>
         <exclude name="aqd-multiple.xq"/>
         <exclude name="aqd-xref.xquery"/>
+        <exclude name="aqd-test.xq"/>
       </fileset>
       <filterchain>
         <tokenfilter>
@@ -107,6 +110,7 @@ declare variable $xmlconv:TEST_ENV := false();${line.separator}
         <exclude name="aqd-envelope-main.xquery"/>
         <exclude name="aqd-multiple.xq"/>
         <exclude name="aqd-xref.xquery"/>
+        <exclude name="aqd-test.xq"/>
       </fileset>
       <filterchain>
         <tokenfilter>
