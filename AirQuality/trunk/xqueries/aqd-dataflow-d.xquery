@@ -258,14 +258,17 @@ let $D3count :=
 
 let $D03bfunc := function() {
     let $featureTypes := remove($dataflowD:FEATURE_TYPES, index-of($dataflowD:FEATURE_TYPES, "aqd:AQD_RepresentativeArea"))
+    let $currentIds :=
     for $featureType at $pos in $featureTypes
     for $x in $docRoot//descendant::*[name() = $featureType]
     let $inspireId := $x//base:Identifier/base:namespace/string() || "/" || $x//base:Identifier/base:localId/string()
-    where not($knownFeatures = $inspireId)
+    return $inspireId
+
+    for $x in $knownFeatures
+    where not($x = $currentIds)
     return
         <tr>
-            <td title="base:localId">{$x//base:Identifier/base:localId/string()}</td>
-            <td title="Feature type">{$featureType}</td>
+            <td title="inspireId">{$x}</td>
         </tr>
 }
 let $D03binvalid := errors:trycatch($D03bfunc)
