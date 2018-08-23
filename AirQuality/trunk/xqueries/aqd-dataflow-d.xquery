@@ -1550,23 +1550,19 @@ let $D61invalid :=
         </tr>
     }
 
-(: D62 :)
-let $D62invalid :=
-    try {
+(: D62 - ./ompr:processParameter/ompr:ProcessParameter/ompr:name must correspond to a valid code under http://dd.eionet.europa.eu/vocabulary/aq/processparameter/ :)
+let $D62func :=
+    function() {
         let $valid := dd:getValidConcepts($vocabulary:PROCESS_PARAMETER || "rdf")
-        for $x in $docRoot//ompr:name
+        for $x in $docRoot//ompr:ProcessParameter/ompr:name
         where not($x/@xlink:href = $valid)
         return
             <tr>
                 <td title="aqd:AQD_SamplingPointProcess">{data($x/../../../ompr:inspireId/base:Identifier/base:localId)}</td>
                 <td title="ompr:name">{data($x/@xlink:href)}</td>
             </tr>
-    } catch * {
-        <tr class="{$errors:FAILED}">
-            <td title="Error code"> {$err:code}</td>
-            <td title="Error description">{$err:description}</td>
-        </tr>
     }
+let $D62invalid := errors:trycatch($D62func)
 
 (: D63 :)
 let $D63invalid :=
