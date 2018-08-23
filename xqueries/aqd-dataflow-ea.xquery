@@ -924,6 +924,33 @@ let $E32invalid :=
         </tr>
     }
 
+let $E33func := function() {
+    (for $x at $xpos in $docRoot//om:OM_Observation/om:result
+
+    let $blockSeparator := string($x//swe:encoding/swe:TextEncoding/@blockSeparator)
+    let $decimalSeparator := string($x//swe:encoding/swe:TextEncoding/@decimalSeparator)
+    let $tokenSeparator := string($x//swe:encoding/swe:TextEncoding/@tokenSeparator)
+    let $fields := data($x//swe:elementType/swe:DataRecord/swe:field/@name)
+    let $count := $x//swe:value => xs:decimal()
+    let $values :=
+        for $i at $ipos in tokenize(replace($x//swe:values, $blockSeparator || "$", ""), $blockSeparator)
+        let $values := tokenize($i, $tokenSeparator)
+        let $validity := $values[index-of($fields, "Validity")]
+        let $value := $values[index-of($fields, "Value")]
+        where $validity castable as xs:decimal and not(xs:decimal($validity) < 0) and $value castable as xs:decimal
+        return xs:decimal($value)
+    let $values := $values => sum()
+    let $mean := $values div $count
+    where $mean <= 0
+    return
+        <tr>
+            <td title="OM_Observation">{string($x/../@gml:id)}</td>
+            <td title="Mean">{$mean}</td>
+        </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
+}
+let $E33invalid := errors:trycatch($E33func)
+let $E34invalid := ()
+
 return
     <table class="maintable hover">
         {html:build2("NS", $labels:NAMESPACES, $labels:NAMESPACES_SHORT, $NSinvalid, "All values are valid", "record", $errors:NS)}
@@ -961,6 +988,8 @@ return
         {html:build2("E30b", $labels:E30b, $labels:E30b_SHORT, $E30binvalid, "All records are valid", "record", $errors:E30b)}
         {html:build2("E31", $labels:E31, $labels:E31_SHORT, $E31invalid, "All records are valid", "record", $errors:E31)}
         {html:build2("E32", $labels:E32, $labels:E32_SHORT, $E32invalid, "All records are valid", "record", $errors:E32)}
+        {html:build2("E33", $labels:E33, $labels:E33_SHORT, $E33invalid, "All records are valid", "record", $errors:E33)}
+        {html:build2("E34", $labels:E34, $labels:E34_SHORT, $E34invalid, "All records are valid", "record", $errors:E34)}
     </table>
 
 };
