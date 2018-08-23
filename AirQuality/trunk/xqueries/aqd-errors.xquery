@@ -113,6 +113,7 @@ declare variable $errors:D0 := errors:getError("D0");
 declare variable $errors:D01 := errors:getError("D01");
 declare variable $errors:D02 := errors:getError("D02");
 declare variable $errors:D03 := errors:getError("D03");
+declare variable $errors:D03b := errors:getError("D03b");
 declare variable $errors:D04 := errors:getError("D04");
 declare variable $errors:D05 := errors:getError("D05");
 declare variable $errors:D06 := errors:getError("D06");
