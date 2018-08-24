@@ -681,6 +681,84 @@ xsd:date(substr(str(?endPosition),1,10)) >= xsd:date('" || $reportingYear || "-1
   }"
 };
 
+declare function query:getE34($reportingYear as xs:string) {
+    "PREFIX rod: <http://rod.eionet.europa.eu/schema.rdf#>
+    PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+    PREFIX dcterms: <http://purl.org/dc/terms/>
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
+    PREFIX aq: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+    PREFIX aqr: <http://reference.eionet.europa.eu/aq/ontology/>
+    PREFIX dd: <http://dd.eionet.europa.eu/property/>
+
+    SELECT DISTINCT
+
+    md5(concat(?CountryOrTerritory, ?Namespace, xsd:string(?StationLocalId_URI), xsd:string(?SamplingPointLocalId_URI), xsd:string(?SamplingPoint_Latitude), xsd:string(?SamplingPoint_Longitude), ?AggregationType,?Pollutant, xsd:string(?AQValue), xsd:string(?Unit_URI), xsd:string(?BeginPosition), xsd:string(?EndPosition), xsd:string(?Validity), xsd:string(?Verification),xsd:string(?DataCoverage),xsd:string(?DataCapture), xsd:string(?TimeCoverage), xsd:string(?UpdateTime)))  as ?_id
+
+    #?statsURI as ?_id
+    ?CountryOrTerritory
+    ?Namespace
+    year(xsd:dateTime(?BeginPosition)) as ?ReportingYear
+    replace(replace(replace(str(?StationLocalId_URI), 'http://reference.eionet.europa.eu/aq/',''),?Namespace,''),'/','') as ?StationLocalId
+    replace(replace(replace(str(?SamplingPointLocalId_URI),'http://reference.eionet.europa.eu/aq/',''),?Namespace,''),'/','') as ?SamplingPointLocalId
+    #?Station_Latitude
+    #?Station_Longitude
+    ?SamplingPoint_Latitude
+    ?SamplingPoint_Longitude
+    ?Pollutant
+    ?AggregationType
+    ?AQValue
+    #replace(str(?Unit_URI),'http://dd.eionet.europa.eu/vocabulary/uom/concentration/','') as ?Unit
+    (bif:either(substr(str(?Unit_URI),1,56) = 'http://dd.eionet.europa.eu/vocabulary/uom/concentration/',REPLACE(str(?Unit_URI),'http://dd.eionet.europa.eu/vocabulary/uom/concentration/',''),REPLACE(str(?Unit_URI),'http://dd.eionet.europa.eu/vocabulary/uom/statistics/','')) as ?Unit)
+    ?BeginPosition
+    ?EndPosition
+    ?Validity
+    ?Verification
+    ?DataCoverage
+    ?DataCapture
+    ?TimeCoverage
+    ?UpdateTime
+
+    WHERE {
+
+      ?statsURI a aqr:ValidatedExceedence .
+      ?statsURI aqr:inspireNamespace ?Namespace .
+      ?statsURI aqr:station ?StationLocalId_URI .
+      ?statsURI aqr:samplingPoint ?SamplingPointLocalId_URI .
+      ?statsURI aqr:station_lat ?Station_Latitude .
+      ?statsURI aqr:station_lon ?Station_Longitude .
+      ?statsURI aqr:samplingpoint_lat ?SamplingPoint_Latitude .
+      ?statsURI aqr:samplingpoint_lon ?SamplingPoint_Longitude .
+      ?statsURI aqr:pollutant ?Pollutant_URI .
+      ?statsURI aqr:aggregationType ?AggregationType_URI .
+      ?statsURI aqr:airqualityValue ?AQValue .
+      ?statsURI aqr:unit ?Unit_URI .
+      ?statsURI aqr:beginPosition ?BeginPosition .
+      ?statsURI aqr:endPosition ?EndPosition .
+      ?statsURI aqr:observationValidity ?Validity_URI .
+      ?statsURI aqr:observationVerification ?Verification_URI .
+      ?statsURI aqr:datacoveragePct ?DataCoverage .
+      ?statsURI aqr:datacapturePct ?DataCapture .
+      ?statsURI aqr:timecoveragePct ?TimeCoverage .
+      ?statsURI aqr:inserted ?UpdateTime .
+
+      ?Pollutant_URI rdfs:label ?Pollutant .
+      ?AggregationType_URI rdfs:label ?AggregationType .
+      ?AggregationType_URI skos:notation ?DataAggregationType .
+      ?Validity_URI rdfs:label ?Validity .
+      ?Verification_URI rdfs:label ?Verification .
+
+      ?namespaces rdfs:label ?Namespace .
+      ?namespaces skos:inScheme <http://dd.eionet.europa.eu/vocabulary/aq/namespace/> .
+      ?namespaces dd:inCountry ?cntry_URI .
+      ?cntry_URI rdfs:label ?CountryOrTerritory .
+
+      FILTER (year(xsd:dateTime(?BeginPosition)) = " || $reportingYear || ") .
+      FILTER regex(?CountryOrTerritory, 'Poland') .
+      FILTER (?DataAggregationType = 'P1Y' || ?DataAggregationType = 'P1Y-WA-avg') .
+    }"
+};
+
 declare function query:getG14(
     $envelopeB as xs:string,
     $envelopeC as xs:string,

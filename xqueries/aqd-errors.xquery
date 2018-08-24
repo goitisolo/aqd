@@ -12,6 +12,7 @@ import module namespace dd = "aqd-dd" at "aqd-dd.xquery";
 
 declare variable $errors:XML := errors:getError("XML");
 declare variable $errors:NS := errors:getError("NS");
+declare variable $errors:VOCAB := errors:getError("VOCAB");
 
 declare variable $errors:B0 := errors:getError("B0");
 declare variable $errors:B01 := errors:getError("B1");

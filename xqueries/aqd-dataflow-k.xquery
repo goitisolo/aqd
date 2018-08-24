@@ -21,6 +21,7 @@ import module namespace vocabulary = "aqd-vocabulary" at "aqd-vocabulary.xquery"
 import module namespace query = "aqd-query" at "aqd-query.xquery";
 import module namespace errors = "aqd-errors" at "aqd-errors.xquery";
 import module namespace dd = "aqd-dd" at "aqd-dd.xquery";
+import module namespace checks = "aqd-checks" at "aqd-checks.xq";
 import module namespace functx = "http://www.functx.com" at "functx-1.0-doc-2007-01.xq";
 
 (:import module namespace filter = "aqd-filter" at "aqd-filter.xquery";:)
@@ -109,6 +110,9 @@ let $NSinvalid := try {
 } catch * {
     html:createErrorRow($err:code, $err:description)
 }
+
+(: VOCAB check:)
+let $VOCABinvalid := checks:vocab($docRoot)
 
 (: K0 Checks if this delivery is new or an update (on same reporting year) :)
 
@@ -1040,6 +1044,7 @@ return
 (
     <table class="maintable hover">
         {html:build2("NS", $labels:NAMESPACES, $labels:NAMESPACES_SHORT, $NSinvalid, "All values are valid", "record", $errors:NS)}
+        {html:build2("VOCAB", $labels:VOCAB, $labels:VOCAB_SHORT, $VOCABinvalid, "All values are valid", "record", $errors:VOCAB)}
         {html:build3("K0", $labels:K0, $labels:K0_SHORT, $K0table, string($K0table/td), errors:getMaxError($K0table))}
         {html:build1("K01", $labels:K01, $labels:K01_SHORT, $K01, "", string($countMeasures), "", "", $errors:K01)}
         {html:buildSimple("K02", $labels:K02, $labels:K02_SHORT, $K02table, "", "", $K02errorLevel)}

@@ -25,6 +25,7 @@ import module namespace dd = "aqd-dd" at "aqd-dd.xquery";
 import module namespace schemax = "aqd-schema" at "aqd-schema.xquery";
 import module namespace geox = "aqd-geo" at "aqd-geo.xquery";
 import module namespace functx = "http://www.functx.com" at "functx-1.0-doc-2007-01.xq";
+import module namespace checks = "aqd-checks" at "aqd-checks.xq";
 
 declare namespace aqd = "http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0";
 declare namespace gml = "http://www.opengis.net/gml/3.2";
@@ -92,6 +93,9 @@ let $NSinvalid := try {
 } catch * {
     html:createErrorRow($err:code, $err:description)
 }
+
+(: VOCAB check:)
+let $VOCABinvalid := checks:vocab($docRoot)
 
 (: H0 Checks if this delivery is new or an update (on same reporting year) :)
 
@@ -1050,6 +1054,7 @@ let $H35 := try {
 return
     <table class="maintable hover">
         {html:build2("NS", $labels:NAMESPACES, $labels:NAMESPACES_SHORT, $NSinvalid, "All values are valid", "record", $errors:NS)}
+        {html:build2("VOCAB", $labels:VOCAB, $labels:VOCAB_SHORT, $VOCABinvalid, "All values are valid", "record", $errors:VOCAB)}
         {html:build3("H0", $labels:H0, $labels:H0_SHORT, $H0, string($H0/td), errors:getMaxError($H0))}
         {html:build1("H01", $labels:H01, $labels:H01_SHORT, $H01, "", string($countPlans), "", "", $errors:H01)}
         {html:buildSimple("H02", $labels:H02, $labels:H02_SHORT, $H02, "", "", $H02errorLevel)}

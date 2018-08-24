@@ -24,6 +24,7 @@ import module namespace filter = "aqd-filter" at "aqd-filter.xquery";
 import module namespace dd = "aqd-dd" at "aqd-dd.xquery";
 import module namespace schemax = "aqd-schema" at "aqd-schema.xquery";
 import module namespace geox = "aqd-geo" at "aqd-geo.xquery";
+import module namespace checks = "aqd-checks" at "aqd-checks.xq";
 import module namespace functx = "http://www.functx.com" at "functx-1.0-doc-2007-01.xq";
 
 declare namespace aqd = "http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0";
@@ -138,6 +139,9 @@ declare function dataflowI:checkReport(
         } catch * {
             html:createErrorRow($err:code, $err:description)
         }
+
+    (: VOCAB check:)
+    let $VOCABinvalid := checks:vocab($docRoot)
 
     (: I0 Check
     Check if delivery if this is a new delivery or updated delivery (via
@@ -1925,6 +1929,7 @@ declare function dataflowI:checkReport(
         <table class="maintable hover">
 
         {html:build2("NS", $labels:NAMESPACES, $labels:NAMESPACES_SHORT, $NSinvalid, "All values are valid", "record", $errors:NS)}
+        {html:build2("VOCAB", $labels:VOCAB, $labels:VOCAB_SHORT, $VOCABinvalid, "All values are valid", "record", $errors:VOCAB)}
         {html:build3("I0", $labels:I0, $labels:I0_SHORT, $I0table, string($I0table/td), errors:getMaxError($I0table))}
         {html:build1("I1", $labels:I1, $labels:I1_SHORT, $tblAllSources, "", string($countSources), "", "", $errors:I1)}
         {html:buildSimple("I2", $labels:I2, $labels:I2_SHORT, $I2table, "", "report", $I2errorLevel)}
