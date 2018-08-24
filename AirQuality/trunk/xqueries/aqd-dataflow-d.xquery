@@ -25,6 +25,7 @@ import module namespace geox = "aqd-geo" at "aqd-geo.xquery";
 import module namespace query = "aqd-query" at "aqd-query.xquery";
 import module namespace errors = "aqd-errors" at "aqd-errors.xquery";
 import module namespace schemax = "aqd-schema" at "aqd-schema.xquery";
+import module namespace checks = "aqd-checks" at "aqd-checks.xq";
 
 declare namespace aqd = "http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0";
 declare namespace gml = "http://www.opengis.net/gml/3.2";
@@ -111,6 +112,8 @@ let $NSinvalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+(: VOCAB check:)
+let $VOCABinvalid := checks:vocab($docRoot)
 
 (: D0 :)
 let $D0table :=
@@ -948,14 +951,16 @@ let $D34invalid :=
 let $D35invalid :=
     try {
         for $x in $docRoot//aqd:AQD_SamplingPoint
-        let $invalidOrder :=
+        let $missing := empty($x/ef:geometry/gml:Point/gml:pos)
+        let $invalid :=
             for $i in $x/ef:geometry/gml:Point/gml:pos
             let $latlongToken := tokenize($i, "\s+")
             let $lat := number($latlongToken[1])
             let $long := number($latlongToken[2])
-            where ($long > $lat)
+            let $missing := string($lat) = 'NaN' or string($long) = 'NaN'
+            where ($long > $lat) or $missing
             return 1
-        where (not($countryCode = "fr") and ($x/ef:geometry/gml:Point/gml:pos/@srsDimension != "2" or $invalidOrder = 1))
+        where (not($countryCode = "fr") and ($x/ef:geometry/gml:Point/gml:pos/@srsDimension != "2" or $invalid = 1 or $missing))
         return
             <tr>
                 <td title="base:localId">{string($x/ef:inspireId/base:Identifier/base:localId)}</td>
@@ -2021,6 +2026,7 @@ let $D94invalid :=
 return
     <table class="maintable hover">
         {html:build2("NS", $labels:NAMESPACES, $labels:NAMESPACES_SHORT, $NSinvalid, "All values are valid", "record", $errors:NS)}
+        {html:build2("VOCAB", $labels:VOCAB, $labels:VOCAB_SHORT, $VOCABinvalid, "All values are valid", "record", $errors:VOCAB)}
         {html:build3("D0", $labels:D0, $labels:D0_SHORT, $D0table, string($D0table/td), errors:getMaxError($D0table))}
         {html:build1("D01", $labels:D01, $labels:D01_SHORT, $D01table, "", $D1sum, "", "",$errors:D01)}
         {html:buildSimple("D02", $labels:D02, $labels:D02_SHORT, $D02table, "", "feature type", $D02errorLevel)}

@@ -24,6 +24,7 @@ import module namespace filter = "aqd-filter" at "aqd-filter.xquery";
 import module namespace dd = "aqd-dd" at "aqd-dd.xquery";
 import module namespace schemax = "aqd-schema" at "aqd-schema.xquery";
 import module namespace geox = "aqd-geo" at "aqd-geo.xquery";
+import module namespace checks = "aqd-checks" at "aqd-checks.xq";
 import module namespace functx = "http://www.functx.com" at "functx-1.0-doc-2007-01.xq";
 
 declare namespace aqd = "http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0";
@@ -104,6 +105,9 @@ let $NSinvalid := try {
 } catch * {
     html:createErrorRow($err:code, $err:description)
 }
+
+(: VOCAB check:)
+let $VOCABinvalid := checks:vocab($docRoot)
 
 (: J0
 Check if delivery if this is a new delivery or updated delivery (via reporting year)
@@ -1019,6 +1023,7 @@ return
 (
     <table class="maintable hover">
         {html:build2("NS", $labels:NAMESPACES, $labels:NAMESPACES_SHORT, $NSinvalid, "All values are valid", "record", $errors:NS)}
+        {html:build2("VOCAB", $labels:VOCAB, $labels:VOCAB_SHORT, $VOCABinvalid, "All values are valid", "record", $errors:VOCAB)}
         {html:build3("J0", $labels:J0, $labels:J0_SHORT, $J0, string($J0/td), errors:getMaxError($J0))}
         {html:build1("J1", $labels:J1, $labels:J1_SHORT, $J1, "", string($countEvaluationScenario), "", "", $errors:J1)}
         {html:buildSimple("J2", $labels:J2, $labels:J2_SHORT, $J2, "", "", $J2errorLevel)}

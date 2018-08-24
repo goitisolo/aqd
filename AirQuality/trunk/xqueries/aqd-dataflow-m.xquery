@@ -23,6 +23,7 @@ import module namespace vocabulary = "aqd-vocabulary" at "aqd-vocabulary.xquery"
 import module namespace query = "aqd-query" at "aqd-query.xquery";
 import module namespace errors = "aqd-errors" at "aqd-errors.xquery";
 import module namespace schemax = "aqd-schema" at "aqd-schema.xquery";
+import module namespace checks = "aqd-checks" at "aqd-checks.xq";
 
 declare namespace aqd = "http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0";
 declare namespace gml = "http://www.opengis.net/gml/3.2";
@@ -97,6 +98,9 @@ let $NSinvalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+
+(: VOCAB check:)
+let $VOCABinvalid := checks:vocab($docRoot)
 
 (: M0 :)
 let $M0table :=
@@ -806,6 +810,7 @@ let $M46message :=
     return
     <table class="maintable hover">
         {html:build2("NS", $labels:NAMESPACES, $labels:NAMESPACES_SHORT, $NSinvalid, "All values are valid", "record", $errors:WARNING)}
+        {html:build2("VOCAB", $labels:VOCAB, $labels:VOCAB_SHORT, $VOCABinvalid, "All values are valid", "record", $errors:VOCAB)}
         {html:build3("M0", $labels:M0, $labels:M0_SHORT, $M0table, string($M0table/td), errors:getMaxError($M0table))}
         {html:build2("M01", $labels:M01, $labels:M01_SHORT, $M01table, "All values are valid", "record", errors:getMaxError($M01table))}
         {html:buildSimple("M02", $labels:M02, $labels:M02_SHORT, $M02table, $M02count, "feature type", errors:getMaxError($M02table))}

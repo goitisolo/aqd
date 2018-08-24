@@ -10,6 +10,7 @@ import module namespace vocabulary = "aqd-vocabulary" at "aqd-vocabulary.xquery"
 import module namespace query = "aqd-query" at "aqd-query.xquery";
 import module namespace errors = "aqd-errors" at "aqd-errors.xquery";
 import module namespace schemax = "aqd-schema" at "aqd-schema.xquery";
+import module namespace checks = "aqd-checks" at "aqd-checks.xq";
 (:import module namespace functx = "http://www.functx.com" at "aqd-functx.xq";:)
 import module namespace functx = "http://www.functx.com" at "functx-1.0-doc-2007-01.xq";
 
@@ -72,6 +73,8 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
                 <td title="Error description">{$err:description}</td>
             </tr>
         }
+    (: VOCAB check:)
+    let $VOCABinvalid := checks:vocab($docRoot)
 
     (: Eb0 - Check if delivery if this is a new delivery or updated delivery (via reporting year) :)
     let $Eb0table :=
@@ -1107,6 +1110,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
     return
         <table class="maintable hover">
             {html:build2("NS", $labels:NAMESPACES, $labels:NAMESPACES_SHORT, $NSinvalid, "All values are valid", "record", $errors:NS)}
+            {html:build2("VOCAB", $labels:VOCAB, $labels:VOCAB_SHORT, $VOCABinvalid, "All values are valid", "record", $errors:VOCAB)}
             {html:build3("Eb0", $labels:Eb0, $labels:Eb0_SHORT, $Eb0table, data($Eb0table/td), errors:getMaxError($Eb0table))}
             {html:build1("Eb01", $labels:Eb01, $labels:Eb01_SHORT, $Eb01table, "", string(count($Eb01table)), "record", "", $errors:Eb01)}
             {html:build2("Eb02", $labels:Eb02, $labels:Eb02_SHORT, $Eb02invalid, "All records are valid", "record", $errors:Eb02)}

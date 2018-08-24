@@ -16,6 +16,7 @@ import module namespace vocabulary = "aqd-vocabulary" at "aqd-vocabulary.xquery"
 import module namespace query = "aqd-query" at "aqd-query.xquery";
 import module namespace sparqlx = "aqd-sparql" at "aqd-sparql.xquery";
 import module namespace schemax = "aqd-schema" at "aqd-schema.xquery";
+import module namespace checks = "aqd-checks" at "aqd-checks.xq";
 
 declare namespace aqd = "http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0";
 declare namespace gml = "http://www.opengis.net/gml/3.2";
@@ -75,6 +76,8 @@ let $NSinvalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+
+let $VOCABinvalid := checks:vocab($docRoot)
 
 (: E0 :)
 let $E0table :=
@@ -828,9 +831,9 @@ let $E30bfunc := function() {
     let $uom := $x//swe:field[@name = "Value"]/swe:Quantity/swe:uom/@xlink:href/string()
     let $pollutant := $x/../om:observedProperty/@xlink:href/string()
     let $inCountry := "http://dd.eionet.europa.eu/vocabulary/common/countries/" || upper-case($countryCode)
-    let $combinationMissing := $valid[prop:inCountry = $countryCode and prop:recommendedUnit/@rdf:resource = $uom and prop:relatedPollutant/@rdf:resource = $pollutant and prop:primaryObservationTime/@rdf:resource = $definition] => empty()
-    let $minValue := $valid[prop:inCountry = $inCountry and prop:recommendedUnit/@rdf:resource = $uom and prop:relatedPollutant/@rdf:resource = $pollutant and prop:primaryObservationTime/@rdf:resource = $definition]/prop:minimumValue/string()
-    let $maxValue := $valid[prop:inCountry = $inCountry and prop:recommendedUnit/@rdf:resource = $uom and prop:relatedPollutant/@rdf:resource = $pollutant and prop:primaryObservationTime/@rdf:resource = $definition]/prop:maximumValue/string()
+    let $combinationMissing := $valid[prop:inCountry/@rdf:resource = $inCountry and prop:recommendedUnit/@rdf:resource = $uom and prop:relatedPollutant/@rdf:resource = $pollutant and prop:primaryObservationTime/@rdf:resource = $definition] => empty()
+    let $minValue := $valid[prop:inCountry/@rdf:resource = $inCountry and prop:recommendedUnit/@rdf:resource = $uom and prop:relatedPollutant/@rdf:resource = $pollutant and prop:primaryObservationTime/@rdf:resource = $definition]/prop:minimumValue/string()
+    let $maxValue := $valid[prop:inCountry/@rdf:resource = $inCountry and prop:recommendedUnit/@rdf:resource = $uom and prop:relatedPollutant/@rdf:resource = $pollutant and prop:primaryObservationTime/@rdf:resource = $definition]/prop:maximumValue/string()
     where ($minValue castable as xs:double and $maxValue castable as xs:double and not($combinationMissing))
 
     for $i at $ipos in tokenize(replace($x//swe:values, $blockSeparator || "$", ""), $blockSeparator)
@@ -949,11 +952,13 @@ let $E33func := function() {
         </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
 }
 let $E33invalid := errors:trycatch($E33func)
+
 let $E34invalid := ()
 
 return
     <table class="maintable hover">
         {html:build2("NS", $labels:NAMESPACES, $labels:NAMESPACES_SHORT, $NSinvalid, "All values are valid", "record", $errors:NS)}
+        {html:build2("VOCAB", $labels:VOCAB, $labels:VOCAB, $VOCABinvalid, "All values are valid", "record", $errors:VOCAB)}
         {html:build3("E0", $labels:E0, $labels:E0_SHORT, $E0table, data($E0table/td), errors:getMaxError($E0table))}
         {html:build1("E01a", $labels:E01a, $labels:E01a_SHORT, $E01atable, "", string(count($E01atable)), "record", "", $errors:E01a)}
         {html:build2("E01b", $labels:E01b, $labels:E01b_SHORT, $E01binvalid, "All records are valid", "record", $errors:E01b)}

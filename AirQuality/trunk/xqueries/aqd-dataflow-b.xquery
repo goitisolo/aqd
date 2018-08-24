@@ -26,6 +26,7 @@ import module namespace filter = "aqd-filter" at "aqd-filter.xquery";
 import module namespace dd = "aqd-dd" at "aqd-dd.xquery";
 import module namespace schemax = "aqd-schema" at "aqd-schema.xquery";
 import module namespace geox = "aqd-geo" at "aqd-geo.xquery";
+import module namespace checks = "aqd-checks" at "aqd-checks.xq";
 
 declare namespace aqd = "http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0";
 declare namespace gml = "http://www.opengis.net/gml/3.2";
@@ -95,6 +96,8 @@ let $NSinvalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+
+let $VOCABinvalid := checks:vocab($docRoot)
 
 (: B0 :)
 let $B0table :=
@@ -1061,6 +1064,7 @@ let $B47invalid :=
 return
     <table class="maintable hover">
         {html:build2("NS", $labels:NAMESPACES, $labels:NAMESPACES_SHORT, $NSinvalid, "All values are valid", "record", $errors:NS)}
+        {html:build2("VOCAB", $labels:VOCAB, $labels:VOCAB_SHORT, $VOCABinvalid, "All values are valid", "record", $errors:VOCAB)}
         {html:build3("B0", $labels:B0, $labels:B0_SHORT, $B0table, string($B0table/td), errors:getMaxError($B0table))}
         {html:buildCountRow0("B01", $labels:B01, $labels:B01_SHORT, $countZones, "", "record", $errors:B01)}
         {html:buildSimple("B02", $labels:B02, $labels:B02_SHORT, $B02table, "", "record", $B02errorLevel)}
