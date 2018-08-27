@@ -934,21 +934,21 @@ let $E33func := function() {
     let $decimalSeparator := string($x//swe:encoding/swe:TextEncoding/@decimalSeparator)
     let $tokenSeparator := string($x//swe:encoding/swe:TextEncoding/@tokenSeparator)
     let $fields := data($x//swe:elementType/swe:DataRecord/swe:field/@name)
-    let $count := $x//swe:value => xs:decimal()
     let $values :=
         for $i at $ipos in tokenize(replace($x//swe:values, $blockSeparator || "$", ""), $blockSeparator)
         let $values := tokenize($i, $tokenSeparator)
         let $validity := $values[index-of($fields, "Validity")]
         let $value := $values[index-of($fields, "Value")]
-        where $validity castable as xs:decimal and not(xs:decimal($validity) < 0) and $value castable as xs:decimal
+        where $validity castable as xs:decimal and xs:decimal($validity) >= 0 and $value castable as xs:decimal
         return xs:decimal($value)
+    let $count := count($values)
     let $values := $values => sum()
     let $mean := $values div $count
     where $mean <= 0
     return
         <tr>
             <td title="OM_Observation">{string($x/../@gml:id)}</td>
-            <td title="Mean">{$mean}</td>
+            <td title="Mean">{format-number($mean, "0.1")}</td>
         </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
 }
 let $E33invalid := errors:trycatch($E33func)
