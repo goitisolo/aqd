@@ -391,7 +391,7 @@ declare function query:getAllZoneIds($namespaces as xs:string*) as xs:string {
      }"
 };
 
-declare function query:getAllFeatureIds($featureTypes as xs:string*, $namespaces as xs:string*) as xs:string {
+declare function query:getAllFeatureIds($featureTypes as xs:string*, $latestEnvelopeD as xs:string, $namespaces as xs:string*) as xs:string {
   let $pre := "PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
     SELECT ?inspireLabel WHERE {"
@@ -404,6 +404,7 @@ declare function query:getAllFeatureIds($featureTypes as xs:string*, $namespaces
       ?inspireid rdfs:label ?inspireLabel .
       ?inspireid aqd:namespace ?namespace
       FILTER (?namespace in ('" || string-join($namespaces, "' , '") || "'))
+      FILTER (CONTAINS(STR(?zone), '" || $latestEnvelopeD || "'))
      }", " UNION ")
   let $end := "}"
   return $pre || $mid || $end

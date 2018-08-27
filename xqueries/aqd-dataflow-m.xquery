@@ -60,12 +60,15 @@ declare function dataflowM:checkReport($source_url as xs:string, $countryCode as
 let $docRoot := doc($source_url)
 let $cdrUrl := common:getCdrUrl($countryCode)
 let $reportingYear := common:getReportingYear($docRoot)
+
 let $latestEnvelopeB := query:getLatestEnvelope($cdrUrl || "b/")
+let $latestEnvelopeD1b := query:getLatestEnvelope($cdrUrl || "d1b/")
+
 let $modelNamespaces := distinct-values($docRoot//aqd:AQD_Model/ef:inspireId/base:Identifier/base:namespace)
 let $modelProcessNamespaces := distinct-values($docRoot//aqd:AQD_ModelProcess/ompr:inspireId/base:Identifier/base:namespace)
 let $modelAreaNamespaces := distinct-values($docRoot//aqd:AQD_ModelArea/aqd:inspireId/base:Identifier/base:namespace)
 let $namespaces := distinct-values($docRoot//base:namespace)
-let $knownFeatures := distinct-values(data(sparqlx:run(query:getAllFeatureIds($dataflowM:FEATURE_TYPES, $namespaces))//sparql:binding[@name = 'inspireLabel']/sparql:literal))
+let $knownFeatures := distinct-values(data(sparqlx:run(query:getAllFeatureIds($dataflowM:FEATURE_TYPES, $latestEnvelopeD1b, $namespaces))//sparql:binding[@name = 'inspireLabel']/sparql:literal))
 
 let $MCombinations :=
     for $featureType in $dataflowM:FEATURE_TYPES
