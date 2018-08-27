@@ -964,7 +964,50 @@ let $E33func := function() {
 }
 let $E33invalid := errors:trycatch($E33func)
 
-let $E34invalid := ()
+let $E34func := function() {
+
+    (let $previousData := sparqlx:run(query:getE34($countryCode, $reportingYear))
+    for $x at $xpos in $docRoot//om:OM_Observation/om:result
+
+    let $samplingPoint := ($x/../om:parameter/om:NamedValue[om:name/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/processparameter/SamplingPoint"]/om:value/@xlink:href => tokenize("/"))[last()]
+    let $previousMean := $previousData[sparql:binding[@name = "SamplingPointLocalId"]/sparql:literal = $samplingPoint]/sparql:binding[@name = "AQValue"]/sparql:literal/string() => number()
+
+    let $blockSeparator := string($x//swe:encoding/swe:TextEncoding/@blockSeparator)
+    let $decimalSeparator := string($x//swe:encoding/swe:TextEncoding/@decimalSeparator)
+    let $tokenSeparator := string($x//swe:encoding/swe:TextEncoding/@tokenSeparator)
+    let $fields := data($x//swe:elementType/swe:DataRecord/swe:field/@name)
+    let $observationType := (string($x//swe:field[@name = "Value"]/swe:Quantity/@definition) => tokenize("/"))[last()]
+    let $coverageType := if ($observationType = "hour") then "Hourly" else "Daily"
+    let $values :=
+        for $i at $ipos in tokenize(replace($x//swe:values, $blockSeparator || "$", ""), $blockSeparator)
+        let $values := tokenize($i, $tokenSeparator)
+        let $validity := $values[index-of($fields, "Validity")]
+        let $value := $values[index-of($fields, "Value")]
+        where $validity castable as xs:decimal and xs:decimal($validity) >= 0 and $value castable as xs:decimal
+        return xs:decimal($value)
+    let $count := count($values)
+    let $values := $values => sum()
+    let $mean := $values div $count
+    let $dataCoverage :=
+        let $dc :=
+            if ($observationType = "day") then
+                ($count div common:getYearDaysCount($reportingYear)) => format-number("0.01")
+            else
+                ($count div common:getYearHoursCount($reportingYear)) => format-number("0.01")
+        let $dc := number($dc) * 100
+        return $dc || "%"
+    let $higherLimit := $previousMean * 3
+    let $lowerLimit := $previousMean div 3
+    where $mean > $higherLimit or $mean < $lowerLimit
+    return
+        <tr>
+            <td title="OM_Observation">{string($x/../@gml:id)}</td>
+            <td title="Mean">{format-number($mean, "0.1")}</td>
+            <td title="Previous Mean">{format-number($previousMean, "0.1")}</td>
+            <td title="Data coverage">{$coverageType || " coverage: " || $dataCoverage}</td>
+        </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
+}
+let $E34invalid := errors:trycatch($E34func)
 
 return
     <table class="maintable hover">
