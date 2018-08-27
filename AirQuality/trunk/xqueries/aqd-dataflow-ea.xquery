@@ -934,6 +934,8 @@ let $E33func := function() {
     let $decimalSeparator := string($x//swe:encoding/swe:TextEncoding/@decimalSeparator)
     let $tokenSeparator := string($x//swe:encoding/swe:TextEncoding/@tokenSeparator)
     let $fields := data($x//swe:elementType/swe:DataRecord/swe:field/@name)
+    let $observationType := (string($x//swe:field[@name = "Value"]/swe:Quantity/@definition) => tokenize("/"))[last()]
+    let $coverageType := if ($observationType = "hour") then "Hourly" else "Daily"
     let $values :=
         for $i at $ipos in tokenize(replace($x//swe:values, $blockSeparator || "$", ""), $blockSeparator)
         let $values := tokenize($i, $tokenSeparator)
@@ -944,11 +946,20 @@ let $E33func := function() {
     let $count := count($values)
     let $values := $values => sum()
     let $mean := $values div $count
+    let $dataCoverage :=
+        let $dc :=
+        if ($observationType = "day") then
+            ($count div common:getYearDaysCount($reportingYear)) => format-number("0.01")
+        else
+            ($count div common:getYearHoursCount($reportingYear)) => format-number("0.01")
+        let $dc := number($dc) * 100
+        return $dc || "%"
     where $mean <= 0
     return
         <tr>
             <td title="OM_Observation">{string($x/../@gml:id)}</td>
             <td title="Mean">{format-number($mean, "0.1")}</td>
+            <td title="Data coverage">{$coverageType || " coverage: " || $dataCoverage}</td>
         </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
 }
 let $E33invalid := errors:trycatch($E33func)
