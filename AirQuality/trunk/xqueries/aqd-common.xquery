@@ -494,14 +494,14 @@ declare function common:isDateFullISOReport(
         }
 };
 
-declare function common:getYearDaysCount($reportingYear as xs:integer) {
+declare function common:getYearDaysCount($reportingYear as xs:string) {
     if (functx:is-leap-year($reportingYear)) then
         366
     else
         365
 };
 
-declare function common:getYearHoursCount($reportingYear as xs:integer) {
+declare function common:getYearHoursCount($reportingYear as xs:string) {
     if (functx:is-leap-year($reportingYear)) then
         8784
     else

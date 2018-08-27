@@ -682,7 +682,7 @@ xsd:date(substr(str(?endPosition),1,10)) >= xsd:date('" || $reportingYear || "-1
   }"
 };
 
-declare function query:getE34($reportingYear as xs:string) {
+declare function query:getE34($countryCode as xs:string, $reportingYear as xs:string) {
     "PREFIX rod: <http://rod.eionet.europa.eu/schema.rdf#>
     PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
     PREFIX dcterms: <http://purl.org/dc/terms/>
@@ -719,6 +719,7 @@ declare function query:getE34($reportingYear as xs:string) {
     ?DataCapture
     ?TimeCoverage
     ?UpdateTime
+    ?cntry_URI
 
     WHERE {
 
@@ -755,7 +756,7 @@ declare function query:getE34($reportingYear as xs:string) {
       ?cntry_URI rdfs:label ?CountryOrTerritory .
 
       FILTER (year(xsd:dateTime(?BeginPosition)) = " || $reportingYear || ") .
-      FILTER regex(?CountryOrTerritory, 'Poland') .
+      FILTER (STRENDS(STR(?cntry_URI), '/" || upper-case($countryCode) || "'))
       FILTER (?DataAggregationType = 'P1Y' || ?DataAggregationType = 'P1Y-WA-avg') .
     }"
 };
