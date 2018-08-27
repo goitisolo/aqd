@@ -971,6 +971,7 @@ let $E34func := function() {
 
     let $samplingPoint := ($x/../om:parameter/om:NamedValue[om:name/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/processparameter/SamplingPoint"]/om:value/@xlink:href => tokenize("/"))[last()]
     let $previousMean := $previousData[sparql:binding[@name = "SamplingPointLocalId"]/sparql:literal = $samplingPoint]/sparql:binding[@name = "AQValue"]/sparql:literal/string() => number()
+    let $previousMean := if (string($previousMean) = 'NaN') then 0 else $previousMean
 
     let $blockSeparator := string($x//swe:encoding/swe:TextEncoding/@blockSeparator)
     let $decimalSeparator := string($x//swe:encoding/swe:TextEncoding/@decimalSeparator)
