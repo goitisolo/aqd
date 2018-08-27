@@ -494,6 +494,20 @@ declare function common:isDateFullISOReport(
         }
 };
 
+declare function common:getYearDaysCount($reportingYear as xs:integer) {
+    if (functx:is-leap-year($reportingYear)) then
+        366
+    else
+        365
+};
+
+declare function common:getYearHoursCount($reportingYear as xs:integer) {
+    if (functx:is-leap-year($reportingYear)) then
+        8784
+    else
+        8760
+};
+
 (:~ returns True if $seq has one one given node :)
 declare function common:has-one-node(
     $seq as item()*,
