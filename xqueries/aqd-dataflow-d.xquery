@@ -2063,6 +2063,7 @@ return
         {html:build2("D28", $labels:D28, $labels:D28_SHORT, $D28invalid, "All values are valid", "", $errors:D28)}
         {html:build2("D29", $labels:D29, $labels:D29_SHORT, $D29invalid, "All values are valid", "", $errors:D29)}
         {html:build2("D30", $labels:D30, $labels:D30_SHORT, $D30invalid, "All values are valid", "", $errors:D30)}
+        {html:buildInfoTR("Specific checks on AQD_SamplingPoint feature(s) within this XML")}
         {html:build2("D31", $labels:D31, $labels:D31_SHORT, $D31invalid, "All values are valid", "", $errors:D31)}
         {html:buildUnique("D32", $labels:D32, $labels:D32_SHORT, $D32table, "namespace", $errors:D32)}
         {html:build2("D32.1", $labels:D32.1, $labels:D32.1_SHORT, $D32.1invalid, "All values are valid", " invalid namespaces", $errors:D32.1)}
