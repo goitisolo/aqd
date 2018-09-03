@@ -585,11 +585,24 @@ let $C26table :=
 (: C27 - return all zones listed in the doc :)
 let $C27table :=
     try {
+        let $results := sparqlx:run(query:getC27($latestEnvelopeB))
+        let $latestZones := data($results//sparql:binding[@name = 'inspireLabel']/sparql:literal)
+        let $validZones := if ((fn:string-length($countryCode) = 2) and exists($latestEnvelopeB)) then
+            for $zone in $results
+            let $zoneId := $zone//sparql:binding[@name = 'inspireLabel']/sparql:literal => string()
+            let $beginPosition := $zone//sparql:binding[@name = 'beginPosition']/sparql:literal => string()
+            let $endPosition := $zone//sparql:binding[@name = 'endPosition']/sparql:literal => string()
+            let $beginYear := year-from-dateTime(common:getUTCDateTime($beginPosition))
+            let $endYear := if ($endPosition = '') then () else year-from-dateTime(common:getUTCDateTime($endPosition))
+            let $reportingYear := xs:integer($reportingYear)
+            where $beginYear <= $reportingYear and (empty($endYear) or $endYear >= $reportingYear)
+            return $zoneId
+        else ()
         (: return zones not listed in B :)
         let $invalidEqual :=
             for $regime in $docRoot//aqd:AQD_AssessmentRegime
             let $zoneId := string($regime/aqd:zone/@xlink:href)
-            where ($zoneId != "" and not($zoneIds = $zoneId))
+            where ($zoneId != "" and $zoneId = $latestZones and not($validZones = $zoneId))
             return
                 <tr>
                     <td title="AQD_AssessmentRegime">{data($regime/aqd:inspireId/base:Identifier/base:localId)}</td>
@@ -597,7 +610,7 @@ let $C27table :=
                     <td title="AQD_Zone">Not existing</td>
                 </tr>
         let $invalidEqual2 :=
-            for $zoneId in $zoneIds
+            for $zoneId in $validZones
             where ($zoneId != "" and count($docRoot//aqd:AQD_AssessmentRegime/aqd:zone[@xlink:href = $zoneId]) = 0)
             return
                 <tr>

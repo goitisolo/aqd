@@ -87,6 +87,11 @@ declare function common:getReportingYear($xml as document-node()) as xs:string {
         else ""
 };
 
+(: Transforms local dateTime to UTC dateTime :)
+declare function common:getUTCDateTime($dateTime as xs:string) {
+    adjust-dateTime-to-timezone(xs:dateTime($dateTime), xs:dayTimeDuration("PT0H"))
+};
+
 (:~ Returns true if $seq1 contains any element from $seq2 :)
 declare function common:containsAny(
     $seq1 as xs:string*,
