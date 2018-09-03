@@ -700,6 +700,33 @@ xsd:date(substr(str(?endPosition),1,10)) >= xsd:date('" || $reportingYear || "-1
   }"
 };
 
+declare function query:getE26b($url as xs:string*) as xs:string {
+    let $filters :=
+        for $x in $url
+        return "STRSTARTS(str(?samplingPoint), '" || $x || "')"
+    let $filters := "FILTER(" || string-join($filters, " OR ") || ")"
+    return
+        "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+   PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
+   PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+
+   SELECT ?localId ?featureOfInterest ?procedure ?observedProperty ?inspireLabel ?beginPosition ?endPosition
+   WHERE {
+         ?samplingPoint a aqd:AQD_SamplingPoint;
+         aqd:observingCapability ?observingCapability;
+         aqd:inspireId ?inspireId .
+         ?inspireId rdfs:label ?inspireLabel .
+         ?inspireId aqd:localId ?localId .
+         ?inspireId aqd:namespace ?namespace .
+         ?observingCapability aqd:observingTime ?observingTime .
+         ?observingTime aqd:beginPosition ?beginPosition .
+         OPTIONAL { ?observingTime aqd:endPosition ?endPosition } .
+         ?observingCapability aqd:featureOfInterest ?featureOfInterest .
+         ?observingCapability aqd:procedure ?procedure .
+         ?observingCapability aqd:observedProperty ?observedProperty . " || $filters ||"
+   }"
+};
+
 declare function query:getE34($countryCode as xs:string, $reportingYear as xs:string) {
     "PREFIX rod: <http://rod.eionet.europa.eu/schema.rdf#>
     PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
