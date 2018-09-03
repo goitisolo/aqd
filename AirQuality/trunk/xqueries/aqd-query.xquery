@@ -126,6 +126,24 @@ declare function query:getSamplingPoint($cdrUrl as xs:string) as xs:string {
    }"
 };
 
+declare function query:getC27($url as xs:string?) as xs:string {
+    "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+  PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
+  PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+  PREFIX aq: <http://reference.eionet.europa.eu/aq/ontology/>
+
+  SELECT ?inspireLabel ?beginPosition ?endPosition
+  WHERE {
+      ?zone a aqd:AQD_Zone ;
+      aqd:inspireId ?inspireId .
+      ?inspireId rdfs:label ?inspireLabel .
+      ?zone aqd:designationPeriod ?period .
+      ?period aqd:beginPosition ?beginPosition .
+      OPTIONAL { ?period aqd:endPosition ?endPosition } .
+      FILTER (CONTAINS(str(?zone), '" || $url || "'))
+  }"
+};
+
 (: M :)
 declare function query:getModel($url as xs:string) as xs:string {
   "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
