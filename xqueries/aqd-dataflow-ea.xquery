@@ -941,7 +941,7 @@ let $E33func := function() {
         let $values := tokenize($i, $tokenSeparator)
         let $validity := $values[index-of($fields, "Validity")]
         let $value := $values[index-of($fields, "Value")]
-        where $validity castable as xs:decimal and xs:decimal($validity) >= 0 and $value castable as xs:decimal
+        where $validity castable as xs:decimal and xs:decimal($validity) > 0 and $value castable as xs:decimal
         return xs:decimal($value)
     let $count := count($values)
     let $values := $values => sum()
