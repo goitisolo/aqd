@@ -1107,6 +1107,21 @@ let $D37invalid :=
         </tr>
     }
 
+(: D38 - Check if superseded Sampling Point can be found in the data flow D delivered in the past. :)
+let $D38func := function() {
+    let $historicSamplingPoints := data(sparqlx:run(query:getSamplingPoint($cdrUrl))/sparql:binding[@name = 'inspireLabel']/sparql:literal)
+    for $x in $docRoot//aqd:AQD_SamplingPoint[ef:supersedes]
+    let $xlink := string($x/ef:supersedes/@xlink:href)
+    where $xlink = "" or not($xlink = $historicSamplingPoints)
+    return
+        <tr>
+            <td title="aqd:AQD_SamplingPoint">{data($x/ef:inspireId/base:Identifier/base:localId)}</td>
+            <td title="xlink:href">{$xlink}</td>
+        </tr>
+
+}
+let $D38invalid := errors:trycatch($D38func)
+
 (: D40 :)
 let $D40invalid :=
     try {
@@ -2072,6 +2087,7 @@ return
         {html:build2("D35", $labels:D35, $labels:D35_SHORT, $D35invalid, $D35message, " invalid elements", $errors:D35)}
         {html:build2("D36", $labels:D36, $labels:D36_SHORT, $D36invalid, "All attributes are valid", " invalid attribute", $errors:D36)}
         {html:build2("D37", $labels:D37, $labels:D37_SHORT, $D37invalid, "All values are valid", "", $errors:D37)}
+        {html:build2("D38", $labels:D38, $labels:D38_SHORT, $D38invalid, "All values are valid", "", $errors:D38)}
         {html:build2("D40", $labels:D40, $labels:D40_SHORT, $D40invalid, "All values are valid", "invalid pollutant", $errors:D40)}
         {html:buildInfoTR("Internal XML cross-checks between AQD_SamplingPoint and AQD_Sample;AQD_SamplingPointProcess;AQD_Station;AQD_Network")}
         {html:buildInfoTR("Please note that the qa might give you warning if different features have been submitted in separate XMLs")}
