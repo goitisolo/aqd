@@ -711,6 +711,48 @@ let $E26invalid :=
         </tr>
     }
 
+let $E26bfunc := function() {
+    (let $result := sparqlx:run(query:getE26b($latestEnvelopeD))
+    let $operationalResults :=
+        for $x in $result
+        let $beginPosition := string($x/sparql:binding[@name="beginPosition"]/sparql:literal)
+        let $endPosition := string($x/sparql:binding[@name="endPosition"]/sparql:literal)
+        let $beginYear := year-from-dateTime(common:getUTCDateTime($beginPosition))
+        let $endYear := if ($endPosition = "") then () else year-from-dateTime(common:getUTCDateTime($endPosition))
+        let $reportingYear := xs:integer($reportingYear)
+        where $beginYear <= $reportingYear and (empty($endYear) or $endYear >= $reportingYear)
+        return $x/sparql:binding[@name="localId"]/sparql:literal/string() || $x/sparql:binding[@name="procedure"]/sparql:uri/string() ||
+        $x/sparql:binding[@name="featureOfInterest"]/sparql:uri/string() || $x/sparql:binding[@name="observedProperty"]/sparql:uri/string()
+
+    for $x in $docRoot//om:OM_Observation
+    let $namedValue := $x/om:parameter/om:NamedValue[om:name/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/processparameter/SamplingPoint"]
+    let $samplingPoint := tokenize(common:if-empty($namedValue/om:value, $namedValue/om:value/@xlink:href), "/")[last()]
+    let $procedure := $x/om:procedure/@xlink:href/string()
+    let $procedure :=
+        if (not($procedure = "") and not(starts-with($procedure, "http://"))) then
+            "http://reference.eionet.europa.eu/aq/" || $procedure
+        else
+            $procedure
+    let $featureOfInterest := $x/om:featureOfInterest/@xlink:href/string()
+    let $featureOfInterest :=
+        if (not($featureOfInterest = "") and not(starts-with($featureOfInterest, "http://"))) then
+            "http://reference.eionet.europa.eu/aq/" || $featureOfInterest
+        else
+            $featureOfInterest
+    let $observedProperty := $x/om:observedProperty/@xlink:href/string()
+    let $concat := $samplingPoint || $procedure || $featureOfInterest || $observedProperty
+    where not($concat = $operationalResults)
+    return
+        <tr>
+            <td title="om:OM_Observation">{string($x/@gml:id)}</td>
+            <td title="aqd:AQD_SamplingPoint">{string($samplingPoint)}</td>
+            <td title="aqd:AQD_SamplingPointProcess">{$procedure}</td>
+            <td title="aqd:AQD_Sample">{$featureOfInterest}</td>
+            <td title="Pollutant">{$observedProperty}</td>
+        </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
+}
+let $E26binvalid := errors:trycatch($E26bfunc)
+
 (: E27 :)
 let $E27invalid :=
     try {
@@ -1041,6 +1083,7 @@ return
         {html:build2("E24", $labels:E24, $labels:E24_SHORT, $E24invalid, "All records are valid", "record", $errors:E24)}
         {html:build2("E25", $labels:E25, $labels:E25_SHORT, $E25invalid, "All records are valid", "record", $errors:E25)}
         {html:build2("E26", $labels:E26, $labels:E26_SHORT, $E26invalid, "All records are valid", "record", $errors:E26)}
+        {html:build2("E26b", $labels:E26b, $labels:E26b_SHORT, $E26binvalid, "All records are valid", "record", $errors:E26b)}
         {html:build2("E27", $labels:E27, $labels:E27_SHORT, $E27invalid, "All records are valid", "record", $errors:E27)}
         {html:build2("E28", $labels:E28, $labels:E28_SHORT, $E28invalid, "All records are valid", "record", $errors:E28)}
         {html:build2("E29", $labels:E29, $labels:E29_SHORT, $E29invalid, "All records are valid", "record", $errors:E29)}
