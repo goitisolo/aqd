@@ -85,6 +85,7 @@ let $cdir := if (contains($source_url, "c_preliminary")) then "c_preliminary/" e
 let $zonesUrl := concat($cdrUrl, $bdir)
 let $reportingYear := common:getReportingYear($docRoot)
 let $latestEnvelopeB := query:getLatestEnvelope($zonesUrl, $reportingYear)
+let $prelimEnvelopeC := query:getLatestEnvelope($cdrUrl || "c_preliminary/", $reportingYear)
 let $namespaces := distinct-values($docRoot//base:namespace)
 
 let $zoneIds := if ((fn:string-length($countryCode) = 2) and exists($latestEnvelopeB)) then distinct-values(data(sparqlx:run(query:getZone($latestEnvelopeB))//sparql:binding[@name = 'inspireLabel']/sparql:literal)) else ()
@@ -246,6 +247,24 @@ let $C03errorLevel :=
         $errors:C03
     else
         $errors:INFO
+
+let $C03bfunc := function() {
+    let $previousCombinations := query:getC03b($prelimEnvelopeC)
+    for $x in $docRoot//aqd:AQD_AssessmentRegime
+
+    let $localId := $x//base:localId => string()
+    let $namespace := $x//base:namespace => string()
+    for $i in $x/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata/@xlink:href
+    let $samplingpoint := substring-after($i, $namespace || "/")
+    let $combination := string-join(($localId || "#" || $samplingpoint))
+    where not($combination = $previousCombinations)
+    return
+        <tr>
+            <td title="base:localId">{$localId}</td>
+            <td title="aqd:AQD_SamplingPoint">{$samplingpoint}</td>
+        </tr>
+}
+let $C03binvalid := errors:trycatch($C03bfunc)
 
 (: C04 - duplicate @gml:ids :)
 let $C04invalid :=
