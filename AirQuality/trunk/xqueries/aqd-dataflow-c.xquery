@@ -250,18 +250,24 @@ let $C03errorLevel :=
 
 let $C03bfunc := function() {
     let $previousCombinations := query:getC03b($prelimEnvelopeC)
+    let $currentCombinations :=
     for $x in $docRoot//aqd:AQD_AssessmentRegime
 
     let $localId := $x//base:localId => string()
     let $namespace := $x//base:namespace => string()
     for $i in $x/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata/@xlink:href
     let $samplingpoint := substring-after($i, $namespace || "/")
-    let $combination := string-join(($localId || "#" || $samplingpoint))
-    where not($combination = $previousCombinations)
+    let $combination := string-join(($localId || "###" || $samplingpoint))
+    return $combination
+
+    for $x in $previousCombinations
+    let $localId := tokenize($x, "###")[1]
+    let $samplingPoint := tokenize($x, "###")[2]
+    where not($x = $currentCombinations)
     return
         <tr>
             <td title="base:localId">{$localId}</td>
-            <td title="aqd:AQD_SamplingPoint">{$samplingpoint}</td>
+            <td title="aqd:AQD_SamplingPoint">{$samplingPoint}</td>
         </tr>
 }
 let $C03binvalid := errors:trycatch($C03bfunc)

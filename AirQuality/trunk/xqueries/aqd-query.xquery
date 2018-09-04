@@ -692,7 +692,7 @@ declare function query:getC03b($cdrUrl as xs:string) as xs:string* {
     }"
     let $result := sparqlx:run($query)
     for $x in $result
-    return string-join(($x/sparql:binding[@name = 'localId']/sparql:literal, $x/sparql:binding[@name = 'samplingPoint']/sparql:literal), "#")
+    return string-join(($x/sparql:binding[@name = 'localId']/sparql:literal, $x/sparql:binding[@name = 'samplingPoint']/sparql:literal), "###")
 };
 
 declare function query:getC31($cdrUrl as xs:string, $reportingYear as xs:string) as xs:string {
