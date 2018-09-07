@@ -753,6 +753,8 @@ declare function query:getE26b($url as xs:string*) as xs:string {
 };
 
 declare function query:getE34($countryCode as xs:string, $reportingYear as xs:string) {
+    let $reportingYear := xs:integer($reportingYear) - 1
+    return
     "PREFIX rod: <http://rod.eionet.europa.eu/schema.rdf#>
     PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
     PREFIX dcterms: <http://purl.org/dc/terms/>
