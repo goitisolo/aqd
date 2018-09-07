@@ -986,6 +986,7 @@ let $E33func := function() {
         where $validity castable as xs:decimal and xs:decimal($validity) > 0 and $value castable as xs:decimal
         return xs:decimal($value)
     let $count := count($values)
+    return if ($count = 0) then () else
     let $values := $values => sum()
     let $mean := $values div $count
     let $dataCoverage :=
@@ -1029,6 +1030,7 @@ let $E34func := function() {
         where $validity castable as xs:decimal and xs:decimal($validity) >= 0 and $value castable as xs:decimal
         return xs:decimal($value)
     let $count := count($values)
+    return if ($count = 0) then () else
     let $values := $values => sum()
     let $mean := $values div $count
     let $dataCoverage :=
