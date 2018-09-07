@@ -826,7 +826,8 @@ declare function query:getE34($countryCode as xs:string, $reportingYear as xs:st
       ?cntry_URI rdfs:label ?CountryOrTerritory .
 
       FILTER (year(xsd:dateTime(?BeginPosition)) = " || $reportingYear || ") .
-      FILTER (STRENDS(STR(?cntry_URI), '/" || upper-case($countryCode) || "'))
+      FILTER (STRENDS(STR(?cntry_URI), '/" || upper-case($countryCode) || "')) .
+      FILTER (?Validity = 'Valid') .
       FILTER (?DataAggregationType = 'P1Y' || ?DataAggregationType = 'P1Y-WA-avg') .
     }"
 };
