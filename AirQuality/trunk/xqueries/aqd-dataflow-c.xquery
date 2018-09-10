@@ -561,11 +561,20 @@ let $C25invalid :=
 (: C26 - :)
 let $C26table :=
     try {
-        let $startDate := substring(data($docRoot//aqd:reportingPeriod/gml:TimePeriod/gml:beginPosition),1,10)
-        let $endDate := substring(data($docRoot//aqd:reportingPeriod/gml:TimePeriod/gml:endPosition),1,10)
+        let $startDate := $reportingYear || "-01-01"
+        let $endDate := $reportingYear || "-12-31"
+        let $modelMethods := distinct-values(data(sparqlx:run(query:getModelEndPosition($modelsEnvelope, $startDate, $endDate))//sparql:binding[@name='inspireLabel']/sparql:literal))
+        let $sampingPointMethods := distinct-values(data(sparqlx:run(query:getSamplingPointEndPosition($latestEnvelopeD,$startDate,$endDate))//sparql:binding[@name='inspireLabel']/sparql:literal))
 
-        let $modelMethods := if (fn:string-length($countryCode) = 2) then distinct-values(data(sparqlx:run(query:getModelEndPosition($modelsEnvelope, $startDate, $endDate))//sparql:binding[@name='inspireLabel']/sparql:literal)) else ()
-        let $sampingPointMethods := if (fn:string-length($countryCode) = 2) then distinct-values(data(sparqlx:run(query:getSamplingPointEndPosition($latestEnvelopeD,$startDate,$endDate))//sparql:binding[@name='inspireLabel']/sparql:literal)) else ()
+        let $startDate := xs:string(xs:integer($reportingYear) - 2) || "-01-01"
+        let $endDate := $reportingYear || "-12-31"
+        let $modelMethods2Y := distinct-values(data(sparqlx:run(query:getModelEndPosition($modelsEnvelope, $startDate, $endDate))//sparql:binding[@name='inspireLabel']/sparql:literal))
+        let $sampingPointMethods2Y := distinct-values(data(sparqlx:run(query:getSamplingPointEndPosition($latestEnvelopeD,$startDate,$endDate))//sparql:binding[@name='inspireLabel']/sparql:literal))
+
+        let $startDate := xs:string(xs:integer($reportingYear) - 4) || "-01-01"
+        let $endDate := $reportingYear || "-12-31"
+        let $modelMethods4Y := distinct-values(data(sparqlx:run(query:getModelEndPosition($modelsEnvelope, $startDate, $endDate))//sparql:binding[@name='inspireLabel']/sparql:literal))
+        let $sampingPointMethods4Y := distinct-values(data(sparqlx:run(query:getSamplingPointEndPosition($latestEnvelopeD,$startDate,$endDate))//sparql:binding[@name='inspireLabel']/sparql:literal))
 
         for $method in $docRoot//aqd:AQD_AssessmentRegime/aqd:assessmentMethods/aqd:AssessmentMethods
         let $modelMetaCount := count($method/aqd:modelAssessmentMetadata)
@@ -573,7 +582,17 @@ let $C26table :=
 
         let $invalidModel :=
             for $meta1 in $method/aqd:modelAssessmentMetadata
-            where (empty(index-of($modelMethods, data($meta1/@xlink:href))))
+            let $samplingPoint := $meta1/@xlink:href => string()
+
+            let $reportingMetric := $meta1/../../../aqd:assessmentThreshold//aqd:reportingMetric/@xlink:href => string()
+            let $missing :=
+                if ($reportingMetric = "http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/daysAbove-3yr") then
+                    if (not($samplingPoint = $modelMethods2Y)) then 1 else 0
+                else if ($reportingMetric = "http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/AOT40c-5yr") then
+                    if (not($samplingPoint = $modelMethods4Y)) then 1 else 0
+                else
+                    if (not($samplingPoint = $modelMethods)) then 1 else 0
+            where ($missing = 1)
             return
                 <tr>
                     <td title="AQD_AssessmentRegime">{data($meta1/../../../aqd:inspireId/base:Identifier/base:localId)}</td>
@@ -583,7 +602,17 @@ let $C26table :=
 
         let $invalidSampingPoint :=
             for $meta2 in $method/aqd:samplingPointAssessmentMetadata
-            where (empty(index-of($sampingPointMethods, data($meta2/@xlink:href))))
+            let $samplingPoint := $meta2/@xlink:href => string()
+
+            let $reportingMetric := $meta2/../../../aqd:assessmentThreshold//aqd:reportingMetric/@xlink:href => string()
+            let $missing :=
+                if ($reportingMetric = "http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/daysAbove-3yr") then
+                    if (not($samplingPoint = $sampingPointMethods2Y)) then 1 else 0
+                else if ($reportingMetric = "http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/AOT40c-5yr") then
+                    if (not($samplingPoint = $sampingPointMethods4Y)) then 1 else 0
+                else
+                    if (not($samplingPoint = $sampingPointMethods)) then 1 else 0
+            where ($missing = 1)
             return
                 <tr>
                     <td title="AQD_AssessmentRegime">{data($meta2/../../../aqd:inspireId/base:Identifier/base:localId)}</td>
