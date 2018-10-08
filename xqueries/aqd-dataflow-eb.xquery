@@ -508,9 +508,9 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
     let $Eb19invalid :=
         try {
             (let $defs := (dd:getValidConceptsLC($vocabulary:OBSERVATIONS_PRIMARY || "rdf"), dd:getValidConceptsLC($vocabulary:AGGREGATION_PROCESS || "rdf"))
-            let $cons := dd:getValidConceptsLC($vocabulary:UOM_CONCENTRATION_VOCABULARY || "rdf")
+            let $concepts := (dd:getValidConceptsLC($vocabulary:UOM_CONCENTRATION_VOCABULARY || "rdf"), dd:getValidConceptsLC($vocabulary:UOM_STATISTICS || "rdf"))
             for $x in $docRoot//om:OM_Observation/om:result[swe:DataArray]//swe:elementType/swe:DataRecord/swe:field[@name = "Value"
-                    and (not(swe:Quantity/lower-case(@definition) = $defs) or not(swe:Quantity/swe:uom/lower-case(@xlink:href) = $cons))]
+                    and (not(swe:Quantity/lower-case(@definition) = $defs) or not(swe:Quantity/swe:uom/lower-case(@xlink:href) = $concepts))]
             return
                 <tr>
                     <td title="@gml:id">{string($x/../../../../../@gml:id)}</td>
