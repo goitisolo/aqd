@@ -766,71 +766,27 @@ declare function query:getE34($countryCode as xs:string, $reportingYear as xs:st
 
     SELECT DISTINCT
 
-    md5(concat(?CountryOrTerritory, ?Namespace, xsd:string(?StationLocalId_URI), xsd:string(?SamplingPointLocalId_URI), xsd:string(?SamplingPoint_Latitude), xsd:string(?SamplingPoint_Longitude), ?AggregationType,?Pollutant, xsd:string(?AQValue), xsd:string(?Unit_URI), xsd:string(?BeginPosition), xsd:string(?EndPosition), xsd:string(?Validity), xsd:string(?Verification),xsd:string(?DataCoverage),xsd:string(?DataCapture), xsd:string(?TimeCoverage), xsd:string(?UpdateTime)))  as ?_id
-
-    #?statsURI as ?_id
-    ?CountryOrTerritory
-    ?Namespace
-    year(xsd:dateTime(?BeginPosition)) as ?ReportingYear
-    replace(replace(replace(str(?StationLocalId_URI), 'http://reference.eionet.europa.eu/aq/',''),?Namespace,''),'/','') as ?StationLocalId
     replace(replace(replace(str(?SamplingPointLocalId_URI),'http://reference.eionet.europa.eu/aq/',''),?Namespace,''),'/','') as ?SamplingPointLocalId
-    #?Station_Latitude
-    #?Station_Longitude
-    ?SamplingPoint_Latitude
-    ?SamplingPoint_Longitude
-    ?Pollutant
-    ?AggregationType
     ?AQValue
-    #replace(str(?Unit_URI),'http://dd.eionet.europa.eu/vocabulary/uom/concentration/','') as ?Unit
-    (bif:either(substr(str(?Unit_URI),1,56) = 'http://dd.eionet.europa.eu/vocabulary/uom/concentration/',REPLACE(str(?Unit_URI),'http://dd.eionet.europa.eu/vocabulary/uom/concentration/',''),REPLACE(str(?Unit_URI),'http://dd.eionet.europa.eu/vocabulary/uom/statistics/','')) as ?Unit)
-    ?BeginPosition
-    ?EndPosition
-    ?Validity
-    ?Verification
-    ?DataCoverage
-    ?DataCapture
-    ?TimeCoverage
-    ?UpdateTime
-    ?cntry_URI
-
     WHERE {
-
-      ?statsURI a aqr:ValidatedExceedence .
       ?statsURI aqr:inspireNamespace ?Namespace .
-      ?statsURI aqr:station ?StationLocalId_URI .
       ?statsURI aqr:samplingPoint ?SamplingPointLocalId_URI .
-      ?statsURI aqr:station_lat ?Station_Latitude .
-      ?statsURI aqr:station_lon ?Station_Longitude .
-      ?statsURI aqr:samplingpoint_lat ?SamplingPoint_Latitude .
-      ?statsURI aqr:samplingpoint_lon ?SamplingPoint_Longitude .
-      ?statsURI aqr:pollutant ?Pollutant_URI .
       ?statsURI aqr:aggregationType ?AggregationType_URI .
       ?statsURI aqr:airqualityValue ?AQValue .
-      ?statsURI aqr:unit ?Unit_URI .
       ?statsURI aqr:beginPosition ?BeginPosition .
-      ?statsURI aqr:endPosition ?EndPosition .
       ?statsURI aqr:observationValidity ?Validity_URI .
-      ?statsURI aqr:observationVerification ?Verification_URI .
-      ?statsURI aqr:datacoveragePct ?DataCoverage .
-      ?statsURI aqr:datacapturePct ?DataCapture .
-      ?statsURI aqr:timecoveragePct ?TimeCoverage .
-      ?statsURI aqr:inserted ?UpdateTime .
+      ?Validity_URI rdfs:label ?Validity .
+      FILTER (?Validity = 'Valid') .
+      FILTER (year(xsd:dateTime(?BeginPosition)) = " || $reportingYear || ") .
 
-      ?Pollutant_URI rdfs:label ?Pollutant .
       ?AggregationType_URI rdfs:label ?AggregationType .
       ?AggregationType_URI skos:notation ?DataAggregationType .
-      ?Validity_URI rdfs:label ?Validity .
-      ?Verification_URI rdfs:label ?Verification .
+      FILTER (?DataAggregationType = 'P1Y' || ?DataAggregationType = 'P1Y-WA-avg') .
 
       ?namespaces rdfs:label ?Namespace .
       ?namespaces skos:inScheme <http://dd.eionet.europa.eu/vocabulary/aq/namespace/> .
       ?namespaces dd:inCountry ?cntry_URI .
-      ?cntry_URI rdfs:label ?CountryOrTerritory .
-
-      FILTER (year(xsd:dateTime(?BeginPosition)) = " || $reportingYear || ") .
       FILTER (STRENDS(STR(?cntry_URI), '/" || upper-case($countryCode) || "')) .
-      FILTER (?Validity = 'Valid') .
-      FILTER (?DataAggregationType = 'P1Y' || ?DataAggregationType = 'P1Y-WA-avg') .
     }"
 };
 
