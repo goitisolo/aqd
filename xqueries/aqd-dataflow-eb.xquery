@@ -398,39 +398,34 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
      IF resultencoding = external resultformat can only be http://dd.eionet.europa.eu/vocabulary/aq/resultformat/ascii-grid ,
        http://dd.eionet.europa.eu/vocabulary/aq/resultformat/esri-shp or http://dd.eionet.europa.eu/vocabulary/aq/resultformat/geotiff
     :)
-    let $Eb14binvalid :=
-        try {
-            (let $ir := "http://dd.eionet.europa.eu/vocabulary/aq/resultencoding/inline"
-            let $er := "http://dd.eionet.europa.eu/vocabulary/aq/resultencoding/external"
-            let $validInline := ($ir || "http://dd.eionet.europa.eu/vocabulary/aq/resultformat/swe-array")
-            let $validExternal := ($er || "http://dd.eionet.europa.eu/vocabulary/aq/resultformat/ascii-grid",
-            $er || "http://dd.eionet.europa.eu/vocabulary/aq/resultformat/esri-shp", $er || "http://dd.eionet.europa.eu/vocabulary/aq/resultformat/geotiff")
-            for $x in $docRoot//om:OM_Observation
-            let $encoding := $x/om:parameter/om:NamedValue[om:name/@xlink:href = $vocabulary:PROCESSPARAMETER_RESULTENCODING]
-            let $encoding := common:if-empty($encoding/om:value, $encoding/om:value/@xlink:href)
-            let $format := $x/om:parameter/om:NamedValue[om:name/@xlink:href = $vocabulary:PROCESSPARAMETER_RESULTFORMAT]
-            let $format := common:if-empty($format/om:value, $format/om:value/@xlink:href)
-            let $combination := $encoding || $format
-            let $condition :=
-                if ($encoding = "http://dd.eionet.europa.eu/vocabulary/aq/resultencoding/inline") then
-                    $combination = $validInline and exists($x/om:result/swe:DataArray)
-                else if ($encoding = "http://dd.eionet.europa.eu/vocabulary/aq/resultencoding/external") then
-                    $combination = $validExternal and exists($x/om:result/gml:File)
-                else
-                    false()
-            where not($condition)
-            return
-                <tr>
-                    <td title="gml:id">{data($x/@gml:id)}</td>
-                    <td title="Result Encoding">{$encoding}</td>
-                    <td title="Result Formatting">{$format}</td>
-                </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
-        } catch * {
-            <tr class="{$errors:FAILED}">
-                <td title="Error code">{$err:code}</td>
-                <td title="Error description">{$err:description}</td>
-            </tr>
-        }
+    let $Eb14func := function() {
+        (let $ir := "http://dd.eionet.europa.eu/vocabulary/aq/resultencoding/inline"
+        let $er := "http://dd.eionet.europa.eu/vocabulary/aq/resultencoding/external"
+        let $validInline := ($ir || "http://dd.eionet.europa.eu/vocabulary/aq/resultformat/swe-array")
+        let $validExternal := ($er || "http://dd.eionet.europa.eu/vocabulary/aq/resultformat/ascii-grid",
+        $er || "http://dd.eionet.europa.eu/vocabulary/aq/resultformat/esri-shp", $er || "http://dd.eionet.europa.eu/vocabulary/aq/resultformat/geotiff")
+        for $x in $docRoot//om:OM_Observation
+        let $encoding := $x/om:parameter/om:NamedValue[om:name/@xlink:href = $vocabulary:PROCESSPARAMETER_RESULTENCODING]
+        let $encoding := common:if-empty($encoding/om:value, $encoding/om:value/@xlink:href)
+        let $format := $x/om:parameter/om:NamedValue[om:name/@xlink:href = $vocabulary:PROCESSPARAMETER_RESULTFORMAT]
+        let $format := common:if-empty($format/om:value, $format/om:value/@xlink:href)
+        let $combination := $encoding || $format
+        let $condition :=
+            if ($encoding = "http://dd.eionet.europa.eu/vocabulary/aq/resultencoding/inline") then
+                $combination = $validInline and exists($x/om:result[@xsi:type = "ns:DataArrayType" or swe:DataArray])
+            else if ($encoding = "http://dd.eionet.europa.eu/vocabulary/aq/resultencoding/external") then
+                $combination = $validExternal and exists($x/om:result/gml:File)
+            else
+                false()
+        where not($condition)
+        return
+            <tr>
+                <td title="gml:id">{data($x/@gml:id)}</td>
+                <td title="Result Encoding">{$encoding}</td>
+                <td title="Result Formatting">{$format}</td>
+            </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
+    }
+    let $Eb14binvalid := errors:trycatch($Eb14func)
 
     (: Eb15 - IF resultformat is http://dd.eionet.europa.eu/vocabulary/aq/resultformat/swe-array (Eb14) then ./om:result/swe:DataArray/swe:elementType/swe:DataRecord/swe:field name="startTime" attribute THEN
     swe:Time definition=http://www.opengis.net/def/property/OGC/0/SamplingTime swe:uom xlink:href=http://www.opengis.net/def/uom/ISO-8601/0/Gregorian:)
