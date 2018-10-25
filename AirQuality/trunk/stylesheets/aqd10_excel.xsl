@@ -37,7 +37,7 @@
   <xsl:output method="xml"/>
 
   <xsl:variable name="language">en</xsl:variable>
-  <xsl:variable name="labels" select="document('http://converters.eionet.europa.eu/xmlfile/aqd-labels.xml')"/>
+  <xsl:variable name="labels" select="document('https://converters.eionet.europa.eu/xmlfile/aqd-labels.xml')"/>
   <xsl:variable name="schema" select="document('http://dd.eionet.europa.eu/schemas/aqd10/aqd10.xsd')/xs:schema"/>
 
   <xsl:template match="gml:FeatureCollection">

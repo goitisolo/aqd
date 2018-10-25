@@ -35,7 +35,7 @@
   -->
 <!-- SPARQL Endpoint URL variable -->
 <xsl:variable name="sparqlEndpointUrl" select="'http://cr.eionet.europa.eu/sparql'"/>
-<xsl:variable name="labelsFile" select="'http://converters.eionet.europa.eu/xmlfile/aqd-labels.xml'"/>
+<xsl:variable name="labelsFile" select="'https://converters.eionet.europa.eu/xmlfile/aqd-labels.xml'"/>
 
 <xsl:output method='html' encoding='UTF-8' indent='yes'/>
 
