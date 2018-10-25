@@ -13,7 +13,7 @@ declare namespace sparql = "http://www.w3.org/2005/sparql-results#";
 declare variable $sparqlx:CR_SPARQL_URL := "http://cr.eionet.europa.eu/sparql";
 
 declare function sparqlx:run($sparql as xs:string) as element(sparql:result)* {
-    doc("http://cr.eionet.europa.eu/sparql?query=" || encode-for-uri($sparql) || "&amp;format=application/xml")//sparql:result
+    doc("https://cr.eionet.europa.eu/sparql?query=" || encode-for-uri($sparql) || "&amp;format=application/xml")//sparql:result
 };
 
 (:~
