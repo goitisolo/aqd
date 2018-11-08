@@ -31,7 +31,7 @@
      For schema http://dd.eionet.europa.eu/schemas/id2011850eu-1.0/AirQualityReporting.xsd
   -->
 <!-- SPARQL Endpoint URL variable -->
-<xsl:variable name="sparqlEndpointUrl" select="'http://cr.eionet.europa.eu/sparql'"/>
+<xsl:variable name="sparqlEndpointUrl" select="'https://cr.eionet.europa.eu/sparql'"/>
 <xsl:variable name="labelsFile" select="'https://converters.eionet.europa.eu/xmlfile/aqd-labels.xml'"/>
 <!--
 <xsl:variable name="labelsFile" select="'aqd-labels.xml'"/>
