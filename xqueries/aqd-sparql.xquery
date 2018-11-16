@@ -1,16 +1,9 @@
 xquery version "3.0";
 
-(:~
-: User: dev-gso
-: Date: 5/31/2016
-: Time: 12:44 PM
-: To change this template use File | Settings | File Templates.
-:)
-
 module namespace sparqlx = "aqd-sparql";
 declare namespace sparql = "http://www.w3.org/2005/sparql-results#";
 (:~ declare Content Registry SPARQL endpoint :)
-declare variable $sparqlx:CR_SPARQL_URL := "http://cr.eionet.europa.eu/sparql";
+declare variable $sparqlx:CR_SPARQL_URL := "https://cr.eionet.europa.eu/sparql";
 
 declare function sparqlx:run($sparql as xs:string) as element(sparql:result)* {
     doc("https://cr.eionet.europa.eu/sparql?query=" || encode-for-uri($sparql) || "&amp;format=application/xml")//sparql:result
