@@ -163,7 +163,7 @@ declare function envelope:checkFileReportingHeader($envelope as element(envelope
 };
 
 declare function envelope:getObligationMinMaxYear($envelope as element(envelope)) as element(year) {
-    let $deadline := 2018
+    let $deadline := 2019
     let $part1_deadline := xs:date(concat($deadline, "-01-31"))
     let $part3_deadline := xs:date(concat($deadline, "-03-31"))
     let $id := substring-after($envelope/obligation, $vocabulary:OBLIGATIONS)
