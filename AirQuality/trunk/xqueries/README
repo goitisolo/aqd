@@ -1,0 +1,4 @@
+In order to build the concatenated xQuery files run the respective ant target (you may need to create a folder named "dist" where the files will be produced):
+
+e.g. ant "Start Main"
+     ant "Start Envelope" 
