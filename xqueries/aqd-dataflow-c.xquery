@@ -101,6 +101,10 @@ let $knownRegimes := distinct-values(data(sparqlx:run(query:getAssessmentRegime(
 let $allRegimes := query:getAllRegimeIds($namespaces)
 let $countRegimes := count($docRoot//aqd:AQD_AssessmentRegime)
 
+let $headerBeginPosition := $docRoot//aqd:AQD_ReportingHeader/aqd:reportingPeriod/gml:TimePeriod/gml:beginPosition
+let $headerEndPosition := $docRoot//aqd:AQD_ReportingHeader/aqd:reportingPeriod/gml:TimePeriod/gml:endPosition
+
+
 let $latestModels :=
     try {
         distinct-values(data(sparqlx:run(query:getModel($latestEnvelopeD1b))//sparql:binding[@name = 'inspireLabel']/sparql:literal))
@@ -152,6 +156,10 @@ let $C0table :=
         if ($reportingYear = "") then
             <tr class="{$errors:ERROR}">
                 <td title="Status">Reporting Year is missing.</td>
+            </tr>
+        else if($headerBeginPosition > $headerEndPosition) then
+            <tr class="{$errors:ERROR}">
+                <td title="Status">Start position must be less than end position</td>
             </tr>
         else if (query:deliveryExists($dataflowC:OBLIGATIONS, $countryCode, $cdir, $reportingYear)) then
             <tr class="{$errors:WARNING}">
@@ -248,6 +256,7 @@ let $C03errorLevel :=
     else
         $errors:INFO
 
+(: C03b :)
 let $C03bfunc := function() {
     let $previousCombinations := query:getC03b($prelimEnvelopeC)
     let $currentCombinations :=
