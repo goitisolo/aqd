@@ -50,6 +50,9 @@ let $reportingYear := common:getReportingYear($docRoot)
 let $cdrUrl := common:getCdrUrl($countryCode)
 let $latestEnvelopeD := query:getLatestEnvelope($cdrUrl || "d/")
 
+let $headerBeginPosition := $docRoot//aqd:AQD_ReportingHeader/aqd:reportingPeriod/gml:TimePeriod/gml:beginPosition
+let $headerEndPosition := $docRoot//aqd:AQD_ReportingHeader/aqd:reportingPeriod/gml:TimePeriod/gml:endPosition
+
 (: File prefix/namespace check :)
 let $NSinvalid :=
     try {
@@ -85,6 +88,10 @@ let $E0table :=
         if ($reportingYear = "") then
             <tr class="{$errors:ERROR}">
                 <td title="Status">Reporting Year is missing.</td>
+            </tr>
+        else if($headerBeginPosition > $headerEndPosition) then
+            <tr class="{$errors:ERROR}">
+                <td title="Status">Start position must be less than end position</td>
             </tr>
         else if (query:deliveryExists($dataflowEa:OBLIGATIONS, $countryCode, "e1a/", $reportingYear)) then
             <tr class="{$errors:WARNING}">
@@ -553,7 +560,7 @@ let $E23invalid :=
 
         let $actual := count(tokenize(replace($x//swe:values, $blockSeparator || "$", ""), $blockSeparator))
         let $expected := number($x//swe:elementCount/swe:Count/swe:value)
-        where not($actual = $expected)
+        where not($actual = $expected) or ($expected = 0)
         return
             <tr>
                 <td title="OM_Observation">{string($x/../@gml:id)}</td>
@@ -873,6 +880,7 @@ let $E30bfunc := function() {
     let $uom := $x//swe:field[@name = "Value"]/swe:Quantity/swe:uom/@xlink:href/string()
     let $pollutant := $x/../om:observedProperty/@xlink:href/string()
     let $inCountry := "http://dd.eionet.europa.eu/vocabulary/common/countries/" || upper-case($countryCode)
+
     let $combinationMissing := $valid[prop:inCountry/@rdf:resource = $inCountry and prop:recommendedUnit/@rdf:resource = $uom and prop:relatedPollutant/@rdf:resource = $pollutant and prop:primaryObservationTime/@rdf:resource = $definition] => empty()
     let $minValue := $valid[prop:inCountry/@rdf:resource = $inCountry and prop:recommendedUnit/@rdf:resource = $uom and prop:relatedPollutant/@rdf:resource = $pollutant and prop:primaryObservationTime/@rdf:resource = $definition]/prop:minimumValue/string()
     let $maxValue := $valid[prop:inCountry/@rdf:resource = $inCountry and prop:recommendedUnit/@rdf:resource = $uom and prop:relatedPollutant/@rdf:resource = $pollutant and prop:primaryObservationTime/@rdf:resource = $definition]/prop:maximumValue/string()

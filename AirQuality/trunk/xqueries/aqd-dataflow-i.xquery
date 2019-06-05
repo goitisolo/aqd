@@ -75,6 +75,9 @@ declare function dataflowI:checkReport(
     let $latestEnvelopesD1 := query:getLatestEnvelopesForObligation("742")
     let $latestEnvelopesG := query:getLatestEnvelopesForObligation("679")
     let $latestEnvelopesH := query:getLatestEnvelopesForObligation("680")
+    let $headerBeginPosition := $docRoot//aqd:AQD_ReportingHeader/aqd:reportingPeriod/gml:TimePeriod/gml:beginPosition
+    let $headerEndPosition := $docRoot//aqd:AQD_ReportingHeader/aqd:reportingPeriod/gml:TimePeriod/gml:endPosition
+
 
     let $node-name := 'aqd:AQD_SourceApportionment'
     let $sources := $docRoot//aqd:AQD_SourceApportionment
@@ -157,6 +160,10 @@ declare function dataflowI:checkReport(
             if ($reportingYear = "") then
                 <tr class="{$errors:ERROR}">
                     <td title="Status">Reporting Year is missing.</td>
+                </tr>
+            else if($headerBeginPosition > $headerEndPosition) then
+               <tr class="{$errors:ERROR}">
+                    <td title="Status">Start position must be less than end position</td>
                 </tr>
             else if (query:deliveryExists($dataflowI:OBLIGATIONS, $countryCode, "i/", $reportingYear)) then
                 <tr class="{$errors:WARNING}">

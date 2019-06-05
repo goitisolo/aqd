@@ -65,6 +65,9 @@ let $docRoot := doc($source_url)
 let $cdrUrl := common:getCdrUrl($countryCode)
 let $reportingYear := common:getReportingYear($docRoot)
 
+let $headerBeginPosition := $docRoot//aqd:AQD_ReportingHeader/aqd:reportingPeriod/gml:TimePeriod/gml:beginPosition
+let $headerEndPosition := $docRoot//aqd:AQD_ReportingHeader/aqd:reportingPeriod/gml:TimePeriod/gml:endPosition
+
 (: COMMON variables used in many QCs :)
 let $countFeatureTypesMap :=
     map:merge((
@@ -124,6 +127,10 @@ let $D0table :=
         if ($reportingYear = "") then
             <tr class="{$errors:ERROR}">
                 <td title="Status">Reporting Year is missing.</td>
+            </tr>
+        else if($headerBeginPosition > $headerEndPosition) then
+            <tr class="{$errors:ERROR}">
+                <td title="Status">Start position must be less than end position</td>
             </tr>
         else if (query:deliveryExists($dataflowD:OBLIGATIONS, $countryCode, "d/", $reportingYear)) then
             <tr class="{$errors:WARNING}">

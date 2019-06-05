@@ -70,6 +70,9 @@ let $modelAreaNamespaces := distinct-values($docRoot//aqd:AQD_ModelArea/aqd:insp
 let $namespaces := distinct-values($docRoot//base:namespace)
 let $knownFeatures := distinct-values(data(sparqlx:run(query:getAllFeatureIds($dataflowM:FEATURE_TYPES, $latestEnvelopeD1b, $namespaces))//sparql:binding[@name = 'inspireLabel']/sparql:literal))
 
+let $headerBeginPosition := $docRoot//aqd:AQD_ReportingHeader/aqd:reportingPeriod/gml:TimePeriod/gml:beginPosition
+let $headerEndPosition := $docRoot//aqd:AQD_ReportingHeader/aqd:reportingPeriod/gml:TimePeriod/gml:endPosition
+
 let $MCombinations :=
     for $featureType in $dataflowM:FEATURE_TYPES
     return
@@ -111,6 +114,10 @@ let $M0table :=
         if ($reportingYear = "") then
             <tr class="{$errors:ERROR}">
                 <td title="Status">Reporting Year is missing.</td>
+            </tr>
+        else if($headerBeginPosition > $headerEndPosition) then
+            <tr class="{$errors:ERROR}">
+                <td title="Status">Start position must be less than end position</td>
             </tr>
         else if (query:deliveryExists($dataflowM:OBLIGATIONS, $countryCode, "d/", $reportingYear)) then
             <tr class="{$errors:WARNING}">

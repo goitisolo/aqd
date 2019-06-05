@@ -47,6 +47,9 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
     let $reportingYear := common:getReportingYear($docRoot)
     let $latestEnvelopeD1b := query:getLatestEnvelope($cdrUrl || "d1b/")
 
+    let $headerBeginPosition := $docRoot//aqd:AQD_ReportingHeader/aqd:reportingPeriod/gml:TimePeriod/gml:beginPosition
+    let $headerEndPosition := $docRoot//aqd:AQD_ReportingHeader/aqd:reportingPeriod/gml:TimePeriod/gml:endPosition
+
     (: File prefix/namespace check :)
     let $NSinvalid :=
         try {
@@ -82,6 +85,10 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
             if ($reportingYear = "") then
                 <tr class="{$errors:ERROR}">
                     <td title="Status">Reporting Year is missing.</td>
+                </tr>
+            else if($headerBeginPosition > $headerEndPosition) then
+                <tr class="{$errors:ERROR}">
+                    <td title="Status">Start position must be less than end position</td>
                 </tr>
             else if (query:deliveryExists($dataflowEb:OBLIGATIONS, $countryCode, "e1b/", $reportingYear)) then
                 <tr class="{$errors:WARNING}">
@@ -203,7 +210,8 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
     let $Eb06invalid :=
         try {
             (let $parameters := for $i in ("model", "objective") return $vocabulary:PROCESS_PARAMETER || $i
-            let $result := sparqlx:run(query:getModelFromFiles($latestEnvelopeD1b))
+            (:let $result := sparqlx:run(query:getModelFromFiles($latestEnvelopeD1b)):)
+            let $result := sparqlx:run(query:getModelFromFiles($cdrUrl))
             let $all := $result/sparql:binding[@name = "inspireLabel"]/sparql:literal/string()
             for $x in $docRoot//om:OM_Observation/om:parameter/om:NamedValue[om:name/@xlink:href = $parameters]
             let $name := $x/om:name/@xlink:href/string()
@@ -755,7 +763,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
     (: Eb26 :)
     let $Eb26invalid :=
         try {
-            (let $result := sparqlx:run(query:getModelMetadataFromFiles($latestEnvelopeD1b))
+            (let $result := sparqlx:run(query:getModelMetadataFromFiles($cdrUrl))
             let $resultsConcat :=
                 for $x in $result
                 return $x/sparql:binding[@name="localId"]/sparql:literal/string() || $x/sparql:binding[@name="procedure"]/sparql:uri/string() ||

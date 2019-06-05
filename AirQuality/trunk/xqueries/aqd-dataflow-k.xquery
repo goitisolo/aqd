@@ -84,6 +84,9 @@ let $latestEnvelopesI := query:getLatestEnvelopesForObligation("681")
 let $latestEnvelopesJ := query:getLatestEnvelopesForObligation("682")
 let $latestEnvelopesK := query:getLatestEnvelopesForObligation("683")
 
+let $headerBeginPosition := $docRoot//aqd:AQD_ReportingHeader/aqd:reportingPeriod/gml:TimePeriod/gml:beginPosition
+let $headerEndPosition := $docRoot//aqd:AQD_ReportingHeader/aqd:reportingPeriod/gml:TimePeriod/gml:endPosition
+
 let $namespaces := distinct-values($docRoot//base:namespace)
 let $ancestor-name := "aqd:AQD_Measures"
 
@@ -120,6 +123,10 @@ let $K0table := try {
     if ($reportingYear = "")
     then
         common:checkDeliveryReport($errors:ERROR, "Reporting Year is missing.")
+    else if($headerBeginPosition > $headerEndPosition) then
+        <tr class="{$errors:ERROR}">
+            <td title="Status">Start position must be less than end position</td>
+        </tr>
     else
         if (query:deliveryExists($dataflowK:OBLIGATIONS, $countryCode, "k/", $reportingYear))
             then

@@ -70,6 +70,9 @@ let $latestEnvelopeB := query:getLatestEnvelope($cdrUrl || $bdir, $reportingYear
 let $nameSpaces := distinct-values($docRoot//base:namespace)
 let $zonesNamespaces := distinct-values($docRoot//aqd:AQD_Zone/am:inspireId/base:Identifier/base:namespace)
 
+let $headerBeginPosition := $docRoot//aqd:AQD_ReportingHeader/aqd:reportingPeriod/gml:TimePeriod/gml:beginPosition
+let $headerEndPosition := $docRoot//aqd:AQD_ReportingHeader/aqd:reportingPeriod/gml:TimePeriod/gml:endPosition
+
 (: File prefix/namespace check :)
 let $NSinvalid :=
     try {
@@ -105,6 +108,10 @@ let $B0table :=
         if ($reportingYear = "") then
             <tr class="{$errors:ERROR}">
                 <td title="Status">Reporting Year is missing.</td>
+            </tr>
+        else if($headerBeginPosition > $headerEndPosition) then
+            <tr class="{$errors:ERROR}">
+                <td title="Status">Start position must be less than end position</td>
             </tr>
         else if (query:deliveryExists($dataflowB:OBLIGATIONS, $countryCode, "b/", $reportingYear)) then
             <tr class="{$errors:WARNING}">
@@ -1061,6 +1068,29 @@ let $B47invalid :=
         </tr>
     }
 
+(: B48 - Date :)
+let $B48invalid :=
+    try {
+         for $timePeriod in $docRoot//aqd:AQD_Zone/am:designationPeriod/gml:TimePeriod
+         (: XQ does not support 24h that is supported by xsml schema validation :)
+         (: TODO: comment by sofiageo - the above statement is not true, fix this if necessary :)
+         let $beginDate := $timePeriod/gml:beginPosition
+         let $endDate := $timePeriod/gml:endPosition
+         where (not($endDate = "") and not($endDate castable as xs:dateTime)) or (not($beginDate = "") and not($beginDate castable as xs:dateTime)) 
+         return
+             <tr>
+                <td title="aqd:AQD_Zone">{string($timePeriod/../../am:inspireId/base:Identifier/base:localId)}</td>
+                <td title="gml:beginPosition">{$beginDate}</td>
+                <td title="gml:endPosition">{$endDate}</td>
+            </tr>
+    } catch * {
+        <tr class="{$errors:FAILED}">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
+    
+
 return
     <table class="maintable hover">
         {html:build2("NS", $labels:NAMESPACES, $labels:NAMESPACES_SHORT, $NSinvalid, "All values are valid", "record", $errors:NS)}
@@ -1106,6 +1136,7 @@ return
         {html:build2("B45", $labels:B45, $labels:B45_SHORT, $B45invalid, "All values are valid", " invalid value", $errors:B45)}
         {html:build2("B46", $labels:B46, $labels:B46_SHORT, $B46invalid, "All values are valid", " invalid value", $errors:B46)}
         {html:build2("B47", $labels:B47, $labels:B47_SHORT, $B47invalid, "All values are valid", "invalid value", $errors:B47)}
+        {html:build2("B48", $labels:B48, $labels:B48_SHORT, $B48invalid, "All values are valid", "invalid value", $errors:B48)}
     </table>
 };
 declare function dataflowB:proceed($source_url as xs:string, $countryCode as xs:string) as element(div) {

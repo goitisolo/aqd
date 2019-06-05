@@ -71,6 +71,9 @@ let $cdrUrl := common:getCdrUrl($countryCode)
 let $latestEnvelopeByYearJ := query:getLatestEnvelope($cdrUrl || "j/", $reportingYear)
 let $ancestor-name := "aqd:AQD_EvaluationScenario"
 
+let $headerBeginPosition := $docRoot//aqd:AQD_ReportingHeader/aqd:reportingPeriod/gml:TimePeriod/gml:beginPosition
+let $headerEndPosition := $docRoot//aqd:AQD_ReportingHeader/aqd:reportingPeriod/gml:TimePeriod/gml:endPosition
+
 let $latestEnvelopesH := query:getLatestEnvelopesForObligation("680")
 let $latestEnvelopesI := query:getLatestEnvelopesForObligation("681")
 let $latestEnvelopesJ := query:getLatestEnvelopesForObligation("682")
@@ -119,6 +122,10 @@ let $J0 := try {
     if ($reportingYear = "")
     then
         common:checkDeliveryReport($errors:ERROR, "Reporting Year is missing.")
+    else if($headerBeginPosition > $headerEndPosition) then
+        <tr class="{$errors:ERROR}">
+            <td title="Status">Start position must be less than end position</td>
+        </tr>
     else
         if(query:deliveryExists($dataflowJ:OBLIGATIONS, $countryCode, "j/", $reportingYear))
         then

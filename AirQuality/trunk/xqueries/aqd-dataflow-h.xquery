@@ -65,6 +65,8 @@ let $cdrUrl := common:getCdrUrl($countryCode)
 let $reportingYear := common:getReportingYear($docRoot)
 let $node-name := 'aqd:AQD_Plan'
 let $latestEnvelopeByYearH := query:getLatestEnvelope($cdrUrl || "k/", $reportingYear)
+let $headerBeginPosition := $docRoot//aqd:AQD_ReportingHeader/aqd:reportingPeriod/gml:TimePeriod/gml:beginPosition
+let $headerEndPosition := $docRoot//aqd:AQD_ReportingHeader/aqd:reportingPeriod/gml:TimePeriod/gml:endPosition
 
 let $nameSpaces := distinct-values($docRoot//base:namespace)
 
@@ -103,6 +105,14 @@ let $H0 := try {
     if ($reportingYear = "")
     then
         common:checkDeliveryReport($errors:ERROR, "Reporting Year is missing.")
+    else if($headerBeginPosition > $headerEndPosition) then
+        <tr class="{$errors:ERROR}">
+            <td title="Status">Start position must be less than end position</td>
+        </tr>
+    else if($headerBeginPosition > $headerEndPosition) then
+        <tr class="{$errors:ERROR}">
+            <td title="Status">Start position must be less than end position</td>
+        </tr>
     else
         if (query:deliveryExists($dataflowH:OBLIGATIONS, $countryCode, "h/", $reportingYear))
         then
