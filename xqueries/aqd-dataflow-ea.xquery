@@ -675,6 +675,55 @@ let $E25invalid :=
         </tr>
     }
 
+(: E25b :)
+let $E25binvalid :=
+    try {
+        (for $x at $xpos in $docRoot//om:OM_Observation
+        
+        let $headerBeginPosition := xs:dateTime($x/../..//aqd:AQD_ReportingHeader/aqd:reportingPeriod/gml:TimePeriod/gml:beginPosition)
+        let $headerEndPosition := xs:dateTime($x/../..//aqd:AQD_ReportingHeader/aqd:reportingPeriod/gml:TimePeriod/gml:endPosition)
+        
+        let $fields := data($x//om:result/swe:elementType/swe:DataRecord/swe:field/@name)
+
+        let $field := $x//om:result/swe:DataArray/swe:elementType/swe:DataRecord/swe:field
+
+        let $beginPosition := xs:dateTime($x//om:phenomenonTime/gml:TimePeriod/gml:beginPosition)
+        let $endPosition := xs:dateTime($x//om:phenomenonTime/gml:TimePeriod/gml:endPosition)
+
+        
+         return
+            if(contains($field[@name = "Value"]/swe:Quantity/@definition, '/day') or contains($field[@name = "Value"]/swe:Quantity/@definition, '/hour'))then 
+                  if(($headerBeginPosition - xs:dayTimeDuration("P1D")) > $beginPosition or ($headerEndPosition + xs:dayTimeDuration("P1D")) < $endPosition ) then
+                    <tr>
+                        <td title="@gml:id">{string($x/@gml:id)}</td>
+                        <td title="gml:headerBeginPosition">{$headerBeginPosition}</td>
+                        <td title="gml:headerEndPosition">{$headerEndPosition}</td>
+                        <td title="gml:beginPosition">{$beginPosition}</td>
+                        <td title="gml:endPosition">{$endPosition}</td>
+                        
+                    </tr>
+                           else()
+            else if (($headerBeginPosition - xs:dayTimeDuration("P28D")) > $beginPosition or ($headerEndPosition + xs:dayTimeDuration("P28D")) < $endPosition ) then
+                
+                    <tr>
+                        <td title="@gml:id">{string($x/@gml:id)}</td>
+                        <td title="gml:headerBeginPosition">{$headerBeginPosition}</td>
+                        <td title="gml:headerEndPosition">{$headerEndPosition}</td>
+                        <td title="gml:beginPosition">{$beginPosition}</td>
+                        <td title="gml:endPosition">{$endPosition}</td>
+                        
+                    </tr>
+         else()
+
+        )
+    } catch * {
+        <tr class="{$errors:FAILED}">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
+
+
 (: E26 :)
 let $E26invalid :=
     try {
@@ -830,36 +879,73 @@ let $E29invalid :=
 let $E30invalid :=
     try {
         (let $valid := dd:getValid($vocabulary:OBSERVATIONS_RANGE)
+         let $validCountry := dd:getValid($vocabulary:OBSERVATIONS_RANGE_COUNTRY)
+          
+            for $x at $xpos in $docRoot//om:OM_Observation/om:result
+            let $blockSeparator := string($x//swe:encoding/swe:TextEncoding/@blockSeparator)
+            let $decimalSeparator := string($x//swe:encoding/swe:TextEncoding/@decimalSeparator)
+            let $tokenSeparator := string($x//swe:encoding/swe:TextEncoding/@tokenSeparator)
+            let $fields := data($x//swe:elementType/swe:DataRecord/swe:field/@name)
 
-        for $x at $xpos in $docRoot//om:OM_Observation/om:result
-        let $blockSeparator := string($x//swe:encoding/swe:TextEncoding/@blockSeparator)
-        let $decimalSeparator := string($x//swe:encoding/swe:TextEncoding/@decimalSeparator)
-        let $tokenSeparator := string($x//swe:encoding/swe:TextEncoding/@tokenSeparator)
-        let $fields := data($x//swe:elementType/swe:DataRecord/swe:field/@name)
+            let $definition := $x//swe:field[@name = "Value"]/swe:Quantity/@definition/string()
+            let $uom := $x//swe:field[@name = "Value"]/swe:Quantity/swe:uom/@xlink:href/string()
+            let $pollutant := $x/../om:observedProperty/@xlink:href/string()
+            let $minValue := $valid[prop:recommendedUnit/@rdf:resource = $uom and prop:relatedPollutant/@rdf:resource = $pollutant and prop:primaryObservationTime/@rdf:resource = $definition]/prop:minimumValue/string()
+            let $maxValue := $valid[prop:recommendedUnit/@rdf:resource = $uom and prop:relatedPollutant/@rdf:resource = $pollutant and prop:primaryObservationTime/@rdf:resource = $definition]/prop:maximumValue/string()
+            
+            let $inCountry := "http://dd.eionet.europa.eu/vocabulary/common/countries/" || upper-case($countryCode)
 
-        let $definition := $x//swe:field[@name = "Value"]/swe:Quantity/@definition/string()
-        let $uom := $x//swe:field[@name = "Value"]/swe:Quantity/swe:uom/@xlink:href/string()
-        let $pollutant := $x/../om:observedProperty/@xlink:href/string()
-        let $minValue := $valid[prop:recommendedUnit/@rdf:resource = $uom and prop:relatedPollutant/@rdf:resource = $pollutant and prop:primaryObservationTime/@rdf:resource = $definition]/prop:minimumValue/string()
-        let $maxValue := $valid[prop:recommendedUnit/@rdf:resource = $uom and prop:relatedPollutant/@rdf:resource = $pollutant and prop:primaryObservationTime/@rdf:resource = $definition]/prop:maximumValue/string()
-        where ($minValue castable as xs:double and $maxValue castable as xs:double)
+            let $combinationMissing := $validCountry[prop:inCountry/@rdf:resource = $inCountry and prop:recommendedUnit/@rdf:resource = $uom and prop:relatedPollutant/@rdf:resource = $pollutant and prop:primaryObservationTime/@rdf:resource = $definition] = ""(:empty():)
+            let $countryMinValue := $validCountry[prop:inCountry/@rdf:resource = $inCountry and prop:recommendedUnit/@rdf:resource = $uom and prop:relatedPollutant/@rdf:resource = $pollutant and prop:primaryObservationTime/@rdf:resource = $definition]/prop:minimumValue/string()
+            let $countryMaxValue := $validCountry[prop:inCountry/@rdf:resource = $inCountry and prop:recommendedUnit/@rdf:resource = $uom and prop:relatedPollutant/@rdf:resource = $pollutant and prop:primaryObservationTime/@rdf:resource = $definition]/prop:maximumValue/string()
+           
+            
+            (:where ($minValue castable as xs:double and $maxValue castable as xs:double)
+            where ($minValue castable as xs:double and $maxValue castable as xs:double and not($combinationMissing)):)
+            return 
+            if($countryMinValue castable as xs:double and $countryMaxValue castable as xs:double and not($combinationMissing))then
+                for $i at $ipos in tokenize(replace($x//swe:values, $blockSeparator || "$", ""), $blockSeparator)
+                let $tokens := tokenize($i, $tokenSeparator)
+                let $validity := $tokens[index-of($fields, "Validity")]
+                let $value := $tokens[index-of($fields, "Value")]
 
-        for $i at $ipos in tokenize(replace($x//swe:values, $blockSeparator || "$", ""), $blockSeparator)
-        let $tokens := tokenize($i, $tokenSeparator)
-        let $validity := $tokens[index-of($fields, "Validity")]
-        let $value := $tokens[index-of($fields, "Value")]
-        where (($validity castable as xs:integer) and xs:integer($validity) >= 1) and (not($value castable as xs:double) or (xs:double($value) < xs:double($minValue)) or (xs:double($value) > xs:double($maxValue)))
-        return
-            <tr>
-                <td title="OM_Observation">{string($x/../@gml:id)}</td>
-                <td title="Data record position">{$ipos}</td>
-                <td title="Pollutant">{tokenize($pollutant, "/")[last()]}</td>
-                <td title="Concentration">{tokenize($uom, "/")[last()]}</td>
-                <td title="Primary Observation">{tokenize($definition, "/")[last()]}</td>
-                <td title="Minimum value">{$minValue}</td>
-                <td title="Maximum value">{$maxValue}</td>
-                <td title="Actual value">{$value}</td>
-            </tr>)[position() = 1 to $errors:MAX_LIMIT]
+                let $errors:E30 := errors:getError("E30b")
+                let $labels:E30 := labels:getDefinition("E30b")
+                let $labels:E30_SHORT := labels:getPrefLabel("E30b")
+                where (($validity castable as xs:integer) and xs:integer($validity) >= 1) and (not($value castable as xs:double) or (xs:double($value) < xs:double($minValue)) or (xs:double($value) > xs:double($maxValue)))
+                return
+                    <tr>
+                        <td title="OM_Observation">{string($x/../@gml:id)}</td>
+                        <td title="Data record position">{$ipos}</td>
+                        <td title="Pollutant">{tokenize($pollutant, "/")[last()]}</td>
+                        <td title="Concentration">{tokenize($uom, "/")[last()]}</td>
+                        <td title="Primary Observation">{tokenize($definition, "/")[last()]}</td>
+                        <td title="Minimum value">{$minValue}</td>
+                        <td title="Maximum value">{$maxValue}</td>
+                        <td title="Actual value">{$value}</td>
+                    </tr>
+              else if($minValue castable as xs:double and $maxValue castable as xs:double)then 
+                    for $i at $ipos in tokenize(replace($x//swe:values, $blockSeparator || "$", ""), $blockSeparator)
+                      let $tokens := tokenize($i, $tokenSeparator)
+                      let $validity := $tokens[index-of($fields, "Validity")]
+                      let $value := $tokens[index-of($fields, "Value")]
+
+                      let $errors:E30 := errors:getError("E30")
+                      let $labels:E30 := labels:getDefinition("E30")
+                      let $labels:E30_SHORT := labels:getPrefLabel("E30")
+                      where (($validity castable as xs:integer) and xs:integer($validity) >= 1) and (not($value castable as xs:double) or (xs:double($value) < xs:double($minValue)) or (xs:double($value) > xs:double($maxValue)))
+                      return
+                          <tr>
+                              <td title="OM_Observation">{string($x/../@gml:id)}</td>
+                              <td title="Data record position">{$ipos}</td>
+                              <td title="Pollutant">{tokenize($pollutant, "/")[last()]}</td>
+                              <td title="Concentration">{tokenize($uom, "/")[last()]}</td>
+                              <td title="Primary Observation">{tokenize($definition, "/")[last()]}</td>
+                              <td title="Minimum value">{$minValue}</td>
+                              <td title="Maximum value">{$maxValue}</td>
+                              <td title="Actual value">{$value}</td>
+                          </tr>
+                else())[position() = 1 to $errors:MAX_LIMIT]
     } catch * {
         <tr class="{$errors:FAILED}">
             <td title="Error code">{$err:code}</td>
@@ -867,7 +953,7 @@ let $E30invalid :=
         </tr>
     }
 
-let $E30bfunc := function() {
+let $E30bfunc := function() { 
     (let $valid := dd:getValid($vocabulary:OBSERVATIONS_RANGE_COUNTRY)
 
     for $x at $xpos in $docRoot//om:OM_Observation/om:result
@@ -1092,6 +1178,7 @@ return
         {html:build2("E23", $labels:E23, $labels:E23_SHORT, $E23invalid, "All records are valid", "record", $errors:E23)}
         {html:build2("E24", $labels:E24, $labels:E24_SHORT, $E24invalid, "All records are valid", "record", $errors:E24)}
         {html:build2("E25", $labels:E25, $labels:E25_SHORT, $E25invalid, "All records are valid", "record", $errors:E25)}
+        {html:build2("E25b", $labels:E25b, $labels:E25b_SHORT, $E25binvalid, "All records are valid", "record", $errors:E25b)}
         {html:build2("E26", $labels:E26, $labels:E26_SHORT, $E26invalid, "All records are valid", "record", $errors:E26)}
         {html:build2("E26b", $labels:E26b, $labels:E26b_SHORT, $E26binvalid, "All records are valid", "record", $errors:E26b)}
         {html:build2("E27", $labels:E27, $labels:E27_SHORT, $E27invalid, "All records are valid", "record", $errors:E27)}
