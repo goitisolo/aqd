@@ -879,6 +879,46 @@ let $E29invalid :=
 let $E30invalid :=
     try {
         (let $valid := dd:getValid($vocabulary:OBSERVATIONS_RANGE)
+
+        for $x at $xpos in $docRoot//om:OM_Observation/om:result
+        let $blockSeparator := string($x//swe:encoding/swe:TextEncoding/@blockSeparator)
+        let $decimalSeparator := string($x//swe:encoding/swe:TextEncoding/@decimalSeparator)
+        let $tokenSeparator := string($x//swe:encoding/swe:TextEncoding/@tokenSeparator)
+        let $fields := data($x//swe:elementType/swe:DataRecord/swe:field/@name)
+
+        let $definition := $x//swe:field[@name = "Value"]/swe:Quantity/@definition/string()
+        let $uom := $x//swe:field[@name = "Value"]/swe:Quantity/swe:uom/@xlink:href/string()
+        let $pollutant := $x/../om:observedProperty/@xlink:href/string()
+        let $minValue := $valid[prop:recommendedUnit/@rdf:resource = $uom and prop:relatedPollutant/@rdf:resource = $pollutant and prop:primaryObservationTime/@rdf:resource = $definition]/prop:minimumValue/string()
+        let $maxValue := $valid[prop:recommendedUnit/@rdf:resource = $uom and prop:relatedPollutant/@rdf:resource = $pollutant and prop:primaryObservationTime/@rdf:resource = $definition]/prop:maximumValue/string()
+        where ($minValue castable as xs:double and $maxValue castable as xs:double)
+
+        for $i at $ipos in tokenize(replace($x//swe:values, $blockSeparator || "$", ""), $blockSeparator)
+        let $tokens := tokenize($i, $tokenSeparator)
+        let $validity := $tokens[index-of($fields, "Validity")]
+        let $value := $tokens[index-of($fields, "Value")]
+        where (($validity castable as xs:integer) and xs:integer($validity) >= 1) and (not($value castable as xs:double) or (xs:double($value) < xs:double($minValue)) or (xs:double($value) > xs:double($maxValue)))
+        return
+            <tr>
+                <td title="OM_Observation">{string($x/../@gml:id)}</td>
+                <td title="Data record position">{$ipos}</td>
+                <td title="Pollutant">{tokenize($pollutant, "/")[last()]}</td>
+                <td title="Concentration">{tokenize($uom, "/")[last()]}</td>
+                <td title="Primary Observation">{tokenize($definition, "/")[last()]}</td>
+                <td title="Minimum value">{$minValue}</td>
+                <td title="Maximum value">{$maxValue}</td>
+                <td title="Actual value">{$value}</td>
+            </tr>)[position() = 1 to $errors:MAX_LIMIT]
+    } catch * {
+        <tr class="{$errors:FAILED}">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
+
+let $E30ainvalid :=
+    try {
+        (let $valid := dd:getValid($vocabulary:OBSERVATIONS_RANGE)
          let $validCountry := dd:getValid($vocabulary:OBSERVATIONS_RANGE_COUNTRY)
           
             for $x at $xpos in $docRoot//om:OM_Observation/om:result
@@ -908,11 +948,7 @@ let $E30invalid :=
                 let $tokens := tokenize($i, $tokenSeparator)
                 let $validity := $tokens[index-of($fields, "Validity")]
                 let $value := $tokens[index-of($fields, "Value")]
-
-                let $errors:E30 := errors:getError("E30b")
-                let $labels:E30 := labels:getDefinition("E30b")
-                let $labels:E30_SHORT := labels:getPrefLabel("E30b")
-                where (($validity castable as xs:integer) and xs:integer($validity) >= 1) and (not($value castable as xs:double) or (xs:double($value) < xs:double($minValue)) or (xs:double($value) > xs:double($maxValue)))
+                where (($validity castable as xs:integer) and xs:integer($validity) >= 1) and (not($value castable as xs:double) or (xs:double($value) < xs:double($countryMinValue)) or (xs:double($value) > xs:double($countryMaxValue)))
                 return
                     <tr>
                         <td title="OM_Observation">{string($x/../@gml:id)}</td>
@@ -929,10 +965,6 @@ let $E30invalid :=
                       let $tokens := tokenize($i, $tokenSeparator)
                       let $validity := $tokens[index-of($fields, "Validity")]
                       let $value := $tokens[index-of($fields, "Value")]
-
-                      let $errors:E30 := errors:getError("E30")
-                      let $labels:E30 := labels:getDefinition("E30")
-                      let $labels:E30_SHORT := labels:getPrefLabel("E30")
                       where (($validity castable as xs:integer) and xs:integer($validity) >= 1) and (not($value castable as xs:double) or (xs:double($value) < xs:double($minValue)) or (xs:double($value) > xs:double($maxValue)))
                       return
                           <tr>
@@ -1185,6 +1217,7 @@ return
         {html:build2("E28", $labels:E28, $labels:E28_SHORT, $E28invalid, "All records are valid", "record", $errors:E28)}
         {html:build2("E29", $labels:E29, $labels:E29_SHORT, $E29invalid, "All records are valid", "record", $errors:E29)}
         {html:build2("E30", $labels:E30, $labels:E30_SHORT, $E30invalid, "All records are valid", "record", $errors:E30)}
+        {html:build2("E30a", $labels:E30a, $labels:E30a_SHORT, $E30ainvalid, "All records are valid", "record", $errors:E30a)}
         {html:build2("E30b", $labels:E30b, $labels:E30b_SHORT, $E30binvalid, "All records are valid", "record", $errors:E30b)}
         {html:build2("E31", $labels:E31, $labels:E31_SHORT, $E31invalid, "All records are valid", "record", $errors:E31)}
         {html:build2("E32", $labels:E32, $labels:E32_SHORT, $E32invalid, "All records are valid", "record", $errors:E32)}
