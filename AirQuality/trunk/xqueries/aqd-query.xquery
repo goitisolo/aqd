@@ -985,6 +985,42 @@ declare function query:getSamplingPointFromFiles($url as xs:string*) as xs:strin
    }"
 };
 
+declare function query:getModelSampling($url as xs:string) as xs:string {
+  "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+   PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
+   PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+
+   SELECT ?samplingPoint ?inspireLabel
+   WHERE {
+         ?samplingPoint a aqd:AQD_Model;
+         aqd:inspireId ?inspireId .
+         ?inspireId rdfs:label ?inspireLabel .
+         ?inspireId aqd:localId ?localId .
+         ?inspireId aqd:namespace ?namespace .
+   FILTER(CONTAINS(str(?samplingPoint), '" || $url || "'))
+   }"
+};
+
+declare function query:getModelMetadataSampling($url as xs:string*) as xs:string {
+  "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+   PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
+   PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+
+   SELECT ?localId ?featureOfInterest ?procedure ?observedProperty ?inspireLabel
+   WHERE {
+         ?samplingPoint a aqd:AQD_Model;
+         aqd:observingCapability ?observingCapability;
+         aqd:inspireId ?inspireId .
+         ?inspireId rdfs:label ?inspireLabel .
+         ?inspireId aqd:localId ?localId .
+         ?inspireId aqd:namespace ?namespace .
+         ?observingCapability aqd:featureOfInterest ?featureOfInterest .
+         ?observingCapability aqd:procedure ?procedure .
+         ?observingCapability aqd:observedProperty ?observedProperty . 
+         FILTER(CONTAINS(str(?samplingPoint), '" || $url || "'))
+   }"
+};
+
 declare function query:getModelFromFiles($url as xs:string*) as xs:string {
   let $filters :=
     for $x in $url
