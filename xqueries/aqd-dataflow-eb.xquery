@@ -211,7 +211,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
         try {
             (let $parameters := for $i in ("model", "objective") return $vocabulary:PROCESS_PARAMETER || $i
             (:let $result := sparqlx:run(query:getModelFromFiles($latestEnvelopeD1b)):)
-            let $result := sparqlx:run(query:getModelFromFiles($cdrUrl))
+            let $result := sparqlx:run(query:getModelSampling($cdrUrl))
             let $all := $result/sparql:binding[@name = "inspireLabel"]/sparql:literal/string()
             for $x in $docRoot//om:OM_Observation/om:parameter/om:NamedValue[om:name/@xlink:href = $parameters]
             let $name := $x/om:name/@xlink:href/string()
@@ -763,7 +763,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
     (: Eb26 :)
     let $Eb26invalid :=
         try {
-            (let $result := sparqlx:run(query:getModelMetadataFromFiles($cdrUrl))
+            (let $result := sparqlx:run(query:getModelMetadataSampling($cdrUrl))
             let $resultsConcat :=
                 for $x in $result
                 return $x/sparql:binding[@name="localId"]/sparql:literal/string() || $x/sparql:binding[@name="procedure"]/sparql:uri/string() ||
