@@ -277,9 +277,76 @@ let $C03bfunc := function() {
         <tr>
             <td title="base:localId">{$localId}</td>
             <td title="aqd:AQD_SamplingPoint">{$samplingPoint}</td>
+           
         </tr>
 }
 let $C03binvalid := errors:trycatch($C03bfunc)
+
+(: C03c :)
+let $C03cfunc := function() {
+   
+  let $previousCombinations := sparqlx:run(query:getC03c($prelimEnvelopeC))
+                let $previousCombinationsConcat :=
+                for $x in $previousCombinations
+                
+               
+                return $x/sparql:binding[@name="localId"]/sparql:literal || "###" || $x/sparql:binding[@name="samplingPoint"]/sparql:literal || "###" || substring-after($x/sparql:binding[@name="assessmentType"]/sparql:uri, "http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/")
+             
+
+    let $currentCombinations :=
+    for $x in $docRoot//aqd:AQD_AssessmentRegime
+
+    let $localId := $x//base:localId => string()
+    let $namespace := $x//base:namespace => string()
+    for $i in $x/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata/@xlink:href
+    let $samplingpoint := substring-after($i, $namespace || "/")
+    for $i in $x/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:assessmentType/@xlink:href
+    let $assessmentType := substring-after($i, "http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/")
+    
+    let $combination := string-join(($localId || "###" || $samplingpoint|| "###" || $assessmentType))
+    return $combination
+
+     for $x in $previousCombinationsConcat
+    let $localId := tokenize($x, "###")[1]
+    let $samplingPoint := tokenize($x, "###")[2]    
+    let $type := tokenize($x, "###")[3] 
+    
+    where not($x = $currentCombinations)
+    return
+        <tr>
+            <td title="base:localId">{$localId}</td>
+            <td title="aqd:AQD_SamplingPoint">{$samplingPoint}</td>
+            <td title="aqd:assessmentType">{$type}</td>
+
+        </tr>
+}
+let $C03cinvalid := errors:trycatch($C03cfunc)
+
+(: C03d :)
+let $C03dfunc := function() {
+    let $previousCombinations := query:getC03b($prelimEnvelopeC)
+    let $currentCombinations :=
+    for $x in $docRoot//aqd:AQD_AssessmentRegime
+
+    let $localId := $x//base:localId => string()
+    let $namespace := $x//base:namespace => string()
+    for $i in $x/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata/@xlink:href
+    let $samplingpoint := substring-after($i, $namespace || "/")
+    let $combination := string-join(($localId || "###" || $samplingpoint))
+    return $combination
+
+    for $x in $currentCombinations
+    let $localId := tokenize($x, "###")[1]
+    let $samplingPoint := tokenize($x, "###")[2]
+    where not($x = $previousCombinations)
+    return
+        <tr>
+            <td title="base:localId">{$localId}</td>
+            <td title="aqd:AQD_SamplingPoint">{$samplingPoint}</td>         
+          
+        </tr>
+}
+let $C03dinvalid := errors:trycatch($C03dfunc)
 
 (: C04 - duplicate @gml:ids :)
 let $C04invalid :=
@@ -1085,6 +1152,9 @@ return
         {html:build1("C01", $labels:C01, $labels:C01_SHORT, $C01table, "", string(count($C01table)), "", "", $errors:C01)}
         {html:buildSimple("C02", $labels:C02, $labels:C02_SHORT, $C02table, "", "record", $C02errorLevel)}
         {html:buildSimple("C03", $labels:C03, $labels:C03_SHORT, $C03table, "", "record", $C03errorLevel)}
+        {html:buildSimple("C03b", $labels:C03b, $labels:C03b_SHORT, $C03binvalid, "", "record", $C03errorLevel)}
+        {html:buildSimple("C03c", $labels:C03c, $labels:C03c_SHORT, $C03cinvalid, "", "record", $C03errorLevel)}
+        {html:buildSimple("C03d", $labels:C03d, $labels:C03d_SHORT, $C03dinvalid, "", "record", $C03errorLevel)}
         {html:build2("C04", $labels:C04, $labels:C04_SHORT, $C04invalid, "No duplicates found", " duplicate", $errors:C04)}
         {html:build2("C05", $labels:C05, $labels:C05_SHORT, $C05invalid, "No duplicates found", " duplicate", $errors:C05)}
         {html:build2("C06", $labels:C06, $labels:C06_SHORT, $C06table, string(count($C06table)), "", $errors:C06)}

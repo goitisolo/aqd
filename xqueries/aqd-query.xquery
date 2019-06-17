@@ -695,6 +695,31 @@ declare function query:getC03b($cdrUrl as xs:string) as xs:string* {
     return string-join(($x/sparql:binding[@name = 'localId']/sparql:literal, $x/sparql:binding[@name = 'samplingPoint']/sparql:literal), "###")
 };
 
+
+declare function query:getC03c($cdrUrl as xs:string) as xs:string* {
+    
+   "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+   PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
+   PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+   PREFIX aq: <http://reference.eionet.europa.eu/aq/ontology/>
+
+   SELECT ?localId ?samplingPoint ?assessmentType
+   WHERE {
+          ?assessmentRegime a aqd:AQD_AssessmentRegime;
+          aqd:inspireId ?inspireId .
+          ?inspireId rdfs:label ?inspireLabel .
+          ?inspireId aqd:localId ?localId .
+          ?assessmentRegime aqd:assessmentMethods ?assessmentMethods .
+          ?assessmentMethods aqd:samplingPointAssessmentMetadata ?samplingPointMetadata .
+          ?assessmentMethods aqd:assessmentType ?assessmentType .
+          ?samplingPointMetadata aq:hasDeclaration ?declaration .
+          ?declaration aqd:inspireId ?samplingPointId .
+          ?samplingPointId aqd:localId ?samplingPoint
+          FILTER CONTAINS(str(?assessmentRegime),'" || $cdrUrl || "')
+    }"
+   
+};
+
 declare function query:getC31($cdrUrl as xs:string, $reportingYear as xs:string) as xs:string {
   "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
   PREFIX aq: <http://reference.eionet.europa.eu/aq/ontology/>
