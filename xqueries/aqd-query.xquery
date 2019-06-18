@@ -750,6 +750,30 @@ xsd:date(substr(str(?endPosition),1,10)) >= xsd:date('" || $reportingYear || "-1
   }"
 };
 
+declare function query:getC31b($cdrUrl as xs:string) as xs:string {
+  "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+  PREFIX aq: <http://reference.eionet.europa.eu/aq/ontology/>
+  PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+
+  SELECT DISTINCT
+  ?Pollutant
+  ?ProtectionTarget
+  count(distinct bif:concat(str(?Zone), str(?pollURI), str(?ProtectionTarget))) AS ?countOnPrelimC
+
+  WHERE {
+  ?assessmentRegime a aqd:AQD_AssessmentRegime;
+  aqd:zone ?Zone;
+  aqd:pollutant ?pollURI;
+  aqd:assessmentThreshold ?assessmentThreshold .
+  
+  ?assessmentThreshold aqd:environmentalObjective ?environmentalObjective .
+  ?environmentalObjective aqd:protectionTarget ?ProtectionTarget .
+  ?pollURI rdfs:label ?Pollutant .
+  FILTER regex(?pollURI,'') .
+  FILTER CONTAINS(str(?assessmentRegime),'" || $cdrUrl || "') .
+  }"
+};
+
 declare function query:getE26b($url as xs:string*) as xs:string {
     let $filters :=
         for $x in $url

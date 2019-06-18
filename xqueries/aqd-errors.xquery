@@ -105,6 +105,7 @@ declare variable $errors:C27 := errors:getError("C27");
 declare variable $errors:C28 := errors:getError("C28");
 declare variable $errors:C29 := errors:getError("C29");
 declare variable $errors:C31 := errors:getError("C31");
+declare variable $errors:C31b := errors:getError("C31b");
 declare variable $errors:C32 := errors:getError("C32");
 declare variable $errors:C33 := errors:getError("C33");
 declare variable $errors:C35 := errors:getError("C35");
