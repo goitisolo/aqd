@@ -878,6 +878,67 @@ let $C31table :=
         </tr>
     }
 
+(: C31b :)
+let $C31btable :=
+    try {
+        let $C31ResultPrelimC :=
+            for $i in sparqlx:run(query:getC31b($prelimEnvelopeC))
+            return
+                <result>
+                    <pollutantName>{string($i/sparql:binding[@name = "Pollutant"]/sparql:literal)}</pollutantName>
+                    <protectionTarget>{string($i/sparql:binding[@name = "ProtectionTarget"]/sparql:uri)}</protectionTarget>
+                    <count>{
+                        let $x := string($i/sparql:binding[@name = "countOnPrelimC"]/sparql:literal)
+                        return if ($x castable as xs:integer) then xs:integer($x) else 0
+                    }</count>
+                </result>
+
+        let $C31tmp :=
+            for $x in $docRoot//aqd:AQD_AssessmentRegime/aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/
+                    aqd:EnvironmentalObjective/aqd:protectionTarget[not(../string(aqd:objectiveType/@xlink:href) = ("http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/MO",
+                    "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/ECO", "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/ALT", "http://dd.eionet.europa.eu/vocabulary/aq/objectivetype/INT"))]
+            let $pollutant := string($x/../../../../../aqd:pollutant/@xlink:href)
+            let $zone := string($x/../../../../../aqd:zone/@xlink:href)
+            let $protectionTarget := string($x/@xlink:href)
+            let $key := string-join(($zone, $pollutant, $protectionTarget), "#")
+            group by $pollutant, $protectionTarget
+            return
+                <result>
+                    <pollutantName>{dd:getNameFromPollutantCode($pollutant)}</pollutantName>
+                    <pollutantCode>{tokenize($pollutant, "/")[last()]}</pollutantCode>
+                    <protectionTarget>{$protectionTarget}</protectionTarget>
+                    <count>{count(distinct-values($key))}</count>
+                </result>
+        let $C31ResultC := filter:filterByName($C31tmp, "pollutantCode", (
+            "1", "7", "8", "9", "5", "6001", "10", "20", "5012", "5018", "5014", "5015", "5029"
+        ))
+        for $x in $C31ResultC
+            let $vsName := string($x/pollutantName)
+            let $vsCode := string($x/pollutantCode)
+            let $protectionTarget := string($x/protectionTarget)
+            let $countC := number($x/count)
+            let $countPrelimC := number($C31ResultPrelimC[pollutantName = $vsName and protectionTarget = $protectionTarget]/count)
+            let $errorClass :=
+                if ((string($countC), string($countPrelimC)) = "NaN") then $errors:C31b
+                else if ($countC > $countPrelimC) then $errors:C31b
+                else if ($countPrelimC > $countC) then $errors:WARNING
+                else $errors:INFO
+        order by $vsName
+        return
+            <tr class="{$errorClass}">
+                <td title="Pollutant Name">{$vsName}</td>
+                <td title="Pollutant Code">{$vsCode}</td>
+                <td title="Protection Target">{$protectionTarget}</td>
+                <td title="Count C">{string($countC)}</td>
+                <td title="Count C preliminary">{string($countPrelimC)}</td>
+            </tr>
+    } catch * {
+        <tr class="{$errors:FAILED}">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
+    
 (: C32 - :)
 let $C32table :=
     try {
@@ -1174,6 +1235,7 @@ return
         {html:build2("C28", $labels:C28, $labels:C28_SHORT, $C28invalid, "All values are valid", " invalid value", $errors:C28)}
         {html:build2("C29", $labels:C29, $labels:C29_SHORT,  $C29invalid, "All values are valid", " invalid value", $errors:C29)}
         {html:build2("C31", $labels:C31, $labels:C31_SHORT, $C31table, "", "record", errors:getMaxError($C31table))}
+		{html:build2("C31b", $labels:C31b, $labels:C31b_SHORT, $C31btable, "", "record", errors:getMaxError($C31btable))}
         {html:build2("C32", $labels:C32, $labels:C32_SHORT, $C32table, "All values are valid", " invalid value", $errors:C32)}
         {html:build2("C33", $labels:C33, $labels:C33_SHORT, $C33invalid, "All values are valid", " invalid value", $errors:C33)}
         {html:build2("C35", $labels:C35, $labels:C35_SHORT, $C35invalid, "All values are valid", " invalid value", $errors:C35)}
