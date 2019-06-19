@@ -106,11 +106,7 @@ let $H0 := try {
     then
         common:checkDeliveryReport($errors:ERROR, "Reporting Year is missing.")
     else if($headerBeginPosition > $headerEndPosition) then
-        <tr class="{$errors:ERROR}">
-            <td title="Status">Start position must be less than end position</td>
-        </tr>
-    else if($headerBeginPosition > $headerEndPosition) then
-        <tr class="{$errors:ERROR}">
+        <tr class="{$errors:BLOCKER}">
             <td title="Status">Start position must be less than end position</td>
         </tr>
     else

@@ -87,7 +87,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
                     <td title="Status">Reporting Year is missing.</td>
                 </tr>
             else if($headerBeginPosition > $headerEndPosition) then
-                <tr class="{$errors:ERROR}">
+                <tr class="{$errors:BLOCKER}">
                     <td title="Status">Start position must be less than end position</td>
                 </tr>
             else if (query:deliveryExists($dataflowEb:OBLIGATIONS, $countryCode, "e1b/", $reportingYear)) then
