@@ -116,7 +116,7 @@ let $M0table :=
                 <td title="Status">Reporting Year is missing.</td>
             </tr>
         else if($headerBeginPosition > $headerEndPosition) then
-            <tr class="{$errors:ERROR}">
+            <tr class="{$errors:BLOCKER}">
                 <td title="Status">Start position must be less than end position</td>
             </tr>
         else if (query:deliveryExists($dataflowM:OBLIGATIONS, $countryCode, "d/", $reportingYear)) then
