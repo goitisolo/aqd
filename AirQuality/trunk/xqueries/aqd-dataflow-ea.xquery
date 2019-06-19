@@ -90,7 +90,7 @@ let $E0table :=
                 <td title="Status">Reporting Year is missing.</td>
             </tr>
         else if($headerBeginPosition > $headerEndPosition) then
-            <tr class="{$errors:ERROR}">
+            <tr class="{$errors:BLOCKER}">
                 <td title="Status">Start position must be less than end position</td>
             </tr>
         else if (query:deliveryExists($dataflowEa:OBLIGATIONS, $countryCode, "e1a/", $reportingYear)) then
@@ -941,7 +941,7 @@ let $E30ainvalid :=
            
             
             (:where ($minValue castable as xs:double and $maxValue castable as xs:double)
-            where ($minValue castable as xs:double and $maxValue castable as xs:double and not($combinationMissing)):)
+              where ($minValue castable as xs:double and $maxValue castable as xs:double and not($combinationMissing)):)
             return 
             if($countryMinValue castable as xs:double and $countryMaxValue castable as xs:double and not($combinationMissing))then
                 for $i at $ipos in tokenize(replace($x//swe:values, $blockSeparator || "$", ""), $blockSeparator)
@@ -956,8 +956,8 @@ let $E30ainvalid :=
                         <td title="Pollutant">{tokenize($pollutant, "/")[last()]}</td>
                         <td title="Concentration">{tokenize($uom, "/")[last()]}</td>
                         <td title="Primary Observation">{tokenize($definition, "/")[last()]}</td>
-                        <td title="Minimum value">{$minValue}</td>
-                        <td title="Maximum value">{$maxValue}</td>
+                        <td title="Minimum value">{$countryMinValue}</td>
+                        <td title="Maximum value">{$countryMaxValue}</td>
                         <td title="Actual value">{$value}</td>
                     </tr>
               else if($minValue castable as xs:double and $maxValue castable as xs:double)then 
