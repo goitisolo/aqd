@@ -1129,6 +1129,23 @@ let $D38func := function() {
 }
 let $D38invalid := errors:trycatch($D38func)
 
+(: D39 :)
+let $D39invalid :=
+    try {
+        for $x in $docRoot//aqd:AQD_SamplingPoint
+        where ($x/ef:supersedes) or ($x/ef:supersededBy)
+        return
+            <tr class="{$errors:BLOCKER}">
+                <td title="aqd:AQD_SamplingPoint">{string($x/@gml:id)}</td>
+            </tr>
+    }  catch * {
+        <tr class="{$errors:FAILED}">
+            <td title="Error code"> {$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+            <td></td>
+        </tr>
+    }
+
 (: D40 :)
 let $D40invalid :=
     try {
@@ -2095,6 +2112,7 @@ return
         {html:build2("D36", $labels:D36, $labels:D36_SHORT, $D36invalid, "All attributes are valid", " invalid attribute", $errors:D36)}
         {html:build2("D37", $labels:D37, $labels:D37_SHORT, $D37invalid, "All values are valid", "", $errors:D37)}
         {html:build2("D38", $labels:D38, $labels:D38_SHORT, $D38invalid, "All values are valid", "", $errors:D38)}
+        {html:build2("D39", $labels:D39, $labels:D39_SHORT, $D39invalid, "All values are valid", "", $errors:D39)}
         {html:build2("D40", $labels:D40, $labels:D40_SHORT, $D40invalid, "All values are valid", "invalid pollutant", $errors:D40)}
         {html:buildInfoTR("Internal XML cross-checks between AQD_SamplingPoint and AQD_Sample;AQD_SamplingPointProcess;AQD_Station;AQD_Network")}
         {html:buildInfoTR("Please note that the qa might give you warning if different features have been submitted in separate XMLs")}
