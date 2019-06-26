@@ -670,6 +670,26 @@ declare function query:getPollutantCodeAndProtectionTarge(
     }")
 };
 
+declare function query:getC03a($cdrUrl as xs:string) as xs:string* {
+    let $query :=
+   "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+   PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
+   PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+   PREFIX aq: <http://reference.eionet.europa.eu/aq/ontology/>
+
+   SELECT ?localId 
+   WHERE {
+          ?assessmentRegime a aqd:AQD_AssessmentRegime;
+          aqd:inspireId ?inspireId .
+          ?inspireId rdfs:label ?inspireLabel .
+          ?inspireId aqd:localId ?localId           
+          FILTER CONTAINS(str(?assessmentRegime),'" || $cdrUrl || "')
+    }"
+    let $result := sparqlx:run($query)
+    for $x in $result
+    return string-join(($x/sparql:binding[@name = 'localId']/sparql:literal, $x/sparql:binding[@name = 'samplingPoint']/sparql:literal), "###")
+};
+
 declare function query:getC03b($cdrUrl as xs:string) as xs:string* {
     let $query :=
    "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -933,6 +953,50 @@ PREFIX aq: <http://reference.eionet.europa.eu/aq/ontology/>
            FILTER (strstarts(str(?reportingYear), '" || $reportingYear || "'))
 
        }"
+};
+
+
+declare function query:getG662($envelopeUrl as xs:string, $reportingYear as xs:string) as xs:string* {
+    
+   "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+   PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
+   PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+   PREFIX aq: <http://reference.eionet.europa.eu/aq/ontology/>
+
+   SELECT ?localId ?assessment 
+   WHERE {
+          ?assessmentRegime a aqd:AQD_AssessmentRegime;
+          aqd:inspireId ?inspireId .
+          ?inspireId rdfs:label ?inspireLabel .
+          ?inspireId aqd:localId ?localId .
+
+          ?assessmentRegime aqd:modelAssessmentMetadata ?assessment .
+          
+        
+          FILTER (CONTAINS(str(?assessmentRegime),'" || $envelopeUrl || "'))
+          
+    }"
+   
+};
+
+declare function query:getG66($cdrUrl as xs:string, $reportingYear as xs:string) as xs:string* {
+    
+   "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+   PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
+   PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+   PREFIX aq: <http://reference.eionet.europa.eu/aq/ontology/>
+
+   SELECT ?localId ?assessment
+   WHERE {
+          ?assessmentRegime a aqd:AQD_AssessmentRegime;
+          aqd:inspireId ?inspireId .
+          ?inspireId rdfs:label ?inspireLabel .
+          ?inspireId aqd:localId ?localId .
+          ?assessmentRegime aqd:assessmentMethods ?assessmentMethods .
+          ?assessmentMethods aqd:modelAssessmentMetadata ?assessment            
+          FILTER CONTAINS(str(?assessmentRegime),'" || $cdrUrl || "')
+    }"
+   
 };
 
 declare function query:getAssessmentMethods() as xs:string {
