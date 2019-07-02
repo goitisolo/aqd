@@ -238,6 +238,40 @@ declare function query:getAttainment($url as xs:string) as xs:string {
    }"
 };
 
+(: G89 :)
+declare function query:getAssessmentMethodsC($envelope as xs:string, $assessment as xs:string) as xs:string {
+  "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+   PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
+   PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+
+   SELECT DISTINCT ?samplingPointAssessmentMetadata ?modelAssessmentMetadata
+   WHERE {
+      ?assessmentRegime a aqd:AQD_AssessmentRegime;
+      aqd:inspireId ?inspireId;
+      aqd:assessmentMethods ?assessmentMethods .
+      ?inspireId aqd:localId ?localId .
+      OPTIONAL { ?assessmentMethods aqd:samplingPointAssessmentMetadata ?samplingPointAssessmentMetadata } .
+      OPTIONAL { ?assessmentMethods aqd:modelAssessmentMetadata ?modelAssessmentMetadata } .
+      FILTER (?localId = '" || $assessment || "') .
+      FILTER CONTAINS(str(?assessmentRegime),'" || $envelope || "') .
+   }"
+};
+
+declare function query:getAssessmentMethodsE($envelope as xs:string) {
+  "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+   PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
+   PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+   PREFIX om: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+
+   SELECT DISTINCT ?assessmentMethod
+   WHERE {
+      ?observation a om:OM_Observation;
+      om:parameter ?parameter .
+      ?parameter om:value ?assessmentMethod .
+      FILTER CONTAINS(str(?observation),'" || $envelope || "') .
+   }"
+};
+
 (: H :)
 (: H24 :)
 declare function query:getPollutants(
