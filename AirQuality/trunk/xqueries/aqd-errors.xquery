@@ -72,6 +72,7 @@ declare variable $errors:C0 := errors:getError("C0");
 declare variable $errors:C01 := errors:getError("C01");
 declare variable $errors:C02 := errors:getError("C02");
 declare variable $errors:C03 := errors:getError("C03");
+declare variable $errors:C03a := errors:getError("C03a");
 declare variable $errors:C03b := errors:getError("C03b");
 declare variable $errors:C03d := errors:getError("C03d");
 declare variable $errors:C03c := errors:getError("C03c");
