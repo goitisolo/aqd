@@ -71,6 +71,10 @@ let $latestEnvelopeD := query:getLatestEnvelope($cdrUrl || "d/")
 let $latestEnvelopeD1b := query:getLatestEnvelope($cdrUrl || "d1b/", $reportingYear)
 let $latestEnvelopeByYearG := query:getLatestEnvelope($cdrUrl || "g/", $reportingYear)
 
+let $envelopesC := query:getEnvelopes($cdrUrl || "c/", $reportingYear)
+let $envelopesE1a := query:getEnvelopes($cdrUrl || "e1a/", $reportingYear)
+let $envelopesE1b := query:getEnvelopes($cdrUrl || "e1b/", $reportingYear)
+
 let $headerBeginPosition := $docRoot//aqd:AQD_ReportingHeader/aqd:reportingPeriod/gml:TimePeriod/gml:beginPosition
 let $headerEndPosition := $docRoot//aqd:AQD_ReportingHeader/aqd:reportingPeriod/gml:TimePeriod/gml:endPosition
 
@@ -101,6 +105,22 @@ let $samplingPointAssessmentMetadata :=
     )
 let $namespaces := distinct-values($docRoot//base:namespace)
 let $allAttainments := query:getAllAttainmentIds2($namespaces)
+
+let $samplingPoints := 
+    for $envelopeE1a in $envelopesE1a 
+    let $results := sparqlx:run(query:getAssessmentMethodsE($envelopeE1a))
+    return distinct-values(
+            for $i in $results
+            return $i/sparql:binding[@name='assessmentMethod']/sparql:uri
+    )
+
+let $modelAssessments := 
+    for $envelopeE1b in $envelopesE1b 
+    let $results := sparqlx:run(query:getAssessmentMethodsE($envelopeE1b))
+    return distinct-values(
+            for $i in $results
+            return $i/sparql:binding[@name='assessmentMethod']/sparql:uri
+    )
 
 (: File prefix/namespace check :)
 let $NSinvalid :=
@@ -1576,6 +1596,35 @@ let $G86invalid :=
         </tr>
     }
 
+(: G89 :)
+let $G89invalid :=
+    try {
+        for $x in $docRoot//aqd:AQD_Attainment/aqd:assessment/@xlink:href
+        let $assessment := functx:substring-after-last($x, '/')        
+            for $envelopeC in $envelopesC
+            let $assessmentMethods := sparqlx:run(query:getAssessmentMethodsC($envelopeC, $assessment))
+                for $assessmentMethod in $assessmentMethods
+                    return
+                    if (not(empty($assessmentMethod/sparql:binding[@name='samplingPointAssessmentMetadata']/sparql:uri))) then  
+                        if ($samplingPoints = $assessmentMethod/sparql:binding[@name='samplingPointAssessmentMetadata']/sparql:uri) then ()
+                        else   
+                            <tr>
+                                <td title="Not found">{"Sampling Point Assessment for: " || functx:substring-after-last(string($assessmentMethod/sparql:binding[@name='samplingPointAssessmentMetadata']/sparql:uri), '/')}</td>
+                            </tr>                         
+                    else if (not(empty($assessmentMethod/sparql:binding[@name='modelAssessmentMetadata']/sparql:uri))) then
+                        if ($modelAssessments = $assessmentMethod/sparql:binding[@name='modelAssessmentMetadata']/sparql:uri) then ()
+                        else   
+                            <tr>
+                                <td title="Not found">{"Model Assessment for: " || functx:substring-after-last(string($assessmentMethod/sparql:binding[@name='modelAssessmentMetadata']/sparql:uri), '/')}</td>
+                            </tr>
+                    else () 
+    } catch * {
+        <tr class="{$errors:FAILED}">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
+
 return
     <table class="maintable hover">
         {html:build2("NS", $labels:NAMESPACES, $labels:NAMESPACES_SHORT, $NSinvalid, "All values are valid", "record", $errors:NS)}
@@ -1645,6 +1694,7 @@ return
         {html:build2("G81", $labels:G81, $labels:G81_SHORT, $G81invalid, "All values are valid", " invalid value", $errors:G81)}
         {html:build2("G85", $labels:G85, $labels:G85_SHORT, $G85invalid, "All values are valid", " invalid value", $errors:G85)}
         {html:build2("G86", $labels:G86, $labels:G86_SHORT, $G86invalid, "All values are valid", " invalid value", $errors:G86)}
+        {html:build2("G89", $labels:G89, $labels:G89_SHORT, $G89invalid, "All values are valid", " invalid value", $errors:G89)}
         {$G82invalid}
     </table>
 };
