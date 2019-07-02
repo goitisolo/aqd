@@ -324,37 +324,7 @@ try{
     }
 
     
-(:let $C03binvalid := errors:trycatch($C03bfunc)
-let $C03binvalid :=
-    if (count($C03bfunc) > 0) then
-        $errors:C03b
-    else
-        $errors:INFO:)
 
-(: C03b 
-let $C03bfunc := function() {
-    let $previousCombinations := query:getC03b($prelimEnvelopeC)
-    let $currentCombinations :=
-    for $x in $docRoot//aqd:AQD_AssessmentRegime
-
-    let $localId := $x//base:localId => string()
-    let $namespace := $x//base:namespace => string()
-    for $i in $x/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata/@xlink:href
-    let $samplingpoint := substring-after($i, $namespace || "/")
-    let $combination := string-join(($localId || "###" || $samplingpoint))
-    return $combination
-
-    for $x in $previousCombinations
-    let $localId := tokenize($x, "###")[1]
-    let $samplingPoint := tokenize($x, "###")[2]
-    where not($x = $currentCombinations)
-    return
-        <tr>
-            <td title="Assessment Regime (C)">{$localId}</td>
-            <td title="Missing SamplingPoint compared to C preliminary">{$samplingPoint}</td>
-        </tr>
-}
-let $C03binvalid := errors:trycatch($C03bfunc):)
 
 let $C03bfunc :=
 try{
@@ -384,15 +354,10 @@ try{
             <td title="Error description">{$err:description}</td>
         </tr>
     }
-(:let $C03binvalid := errors:trycatch($C03bfunc)
-let $C03binvalid :=
-    if (count($C03bfunc) > 0) then
-        $errors:C03b
-    else
-        $errors:INFO:)
+
 
 (: C03c :)
-let $C03cfunc := 
+(:let $C03cfunc := 
     try {   
         let $previousCombinations := sparqlx:run(query:getC03c($prelimEnvelopeC))
         let $previousCombinationsConcat :=
@@ -421,11 +386,7 @@ let $C03cfunc :=
             let $localId := tokenize($x, "###")[1]
             let $samplingPoint := tokenize($x, "###")[2]    
             let $typeCPrel := tokenize($x, "###")[3] 
-        (: let $typeC := number($currentCombinations[pollutantName = $vsName and protectionTarget = $protectionTarget]/count)
-        let $typeC := substring-after($currentCombinations, string-join($localId || "###" || $samplingPoint|| "###")):)
-
-       (: for $i in $currentCombinations
-        let $typeC := tokenize($i, "###")[3] :)
+       
         
         where not($x = $currentCombinations)
         
@@ -434,12 +395,143 @@ let $C03cfunc :=
             <tr>
                 <td title="Assessment Regime (C)">{$localId}</td>
                 <td title="aqd:AQD_SamplingPoint">{$samplingPoint}</td>
-                <!--<td title="Assessment Type in C">{$assessmentType}</td>
-    <td title="Assessment Type in C">{(substring-after($currentCombinations, string-join(($localId || "###" || $samplingpoint|| "###"))}</td>
+                <td title="Assessment Type in C preliminary">{$typeCPrel}</td> 
+              
+
+            </tr>
+    } catch * {
+        <tr class="{$errors:FAILED}">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }:)
+
+
+(: C03c 
+let $C03cfunc := 
+    try {   
+        let $previousCombinations := sparqlx:run(query:getC03c($prelimEnvelopeC))
+        let $previousCombinationsConcat :=
+            for $x in $previousCombinations
+            
+                 return
+                    <result>
+                        <localId>{string($x/sparql:binding[@name="localId"]/sparql:literal)}</localId>
+                        <samplingPoint>{string($x/sparql:binding[@name="samplingPoint"]/sparql:literal)}</samplingPoint>
+                        <assessmentType>{string(substring-after($x/sparql:binding[@name="assessmentType"]/sparql:uri, "http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/"))}</assessmentType>                        
+                    </result>
+            
+     
+
+        let $currentCombinations :=
+            for $x in $docRoot//aqd:AQD_AssessmentRegime
+
+                let $localId := $x//base:localId => string()
+                let $namespace := $x//base:namespace => string()
                 
-                <td title="Assessment Type in C">{$typeC}</td>           
-                <td title="Assessment Type in C preliminary">{$typeCPrel}</td>-->
-               
+                for $i in $x/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata/@xlink:href
+
+                    let $samplingpoint := substring-after($i, $namespace || "/")
+                        for $j in $x/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:assessmentType/@xlink:href
+                        let $assessmentType := substring-after($j, "http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/")
+                        return
+                         <result>
+                            <localId>{$localId}</localId>
+                            <samplingPoint>{$samplingpoint}</samplingPoint>
+                            <assessmentType>{$assessmentType}</assessmentType>                            
+                         </result>
+            
+           
+
+        for $x in $previousCombinationsConcat 
+            let $localId := string($x/localId)
+            let $samplingPoint := string($x/samplingPoint)  
+            let $typeCPrel :=string($x/assessmentType) 
+            let $typeC:=
+             for $i in $currentCombinations 
+                let $TypeTemp:=
+                     if ($i[localId = $localId and samplingPoint = $samplingPoint]) then 
+                         string($i/assessmentType)
+                    else ()
+                    return $TypeTemp
+        
+        where not($typeCPrel = $typeC)  and not($typeC='')    
+
+        return
+            <tr>
+                <td title="Assessment Regime (C)">{$localId}</td>
+                <td title="aqd:AQD_SamplingPoint">{$samplingPoint}</td>
+                <td title="Assessment Type in C preliminary">{$typeCPrel}</td> 
+                <td title="Assessment Type in C">{$typeC}</td>
+    
+
+            </tr>
+    } catch * {
+        <tr class="{$errors:FAILED}">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }:)
+
+
+(: C03c :)
+let $C03cfunc := 
+    try {   
+        let $previousCombinations := sparqlx:run(query:getC03c($prelimEnvelopeC))
+        let $previousCombinationsConcat :=
+            for $x in $previousCombinations
+            
+                 return
+                    <result>
+                        <localId>{string($x/sparql:binding[@name="localId"]/sparql:literal)}</localId>
+                        <samplingPoint>{string($x/sparql:binding[@name="samplingPoint"]/sparql:literal)}</samplingPoint>
+                        <assessmentType>{string(substring-after($x/sparql:binding[@name="assessmentType"]/sparql:uri, "http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/"))}</assessmentType>                        
+                    </result>
+
+        let $currentCombinations :=
+            for $x in $docRoot//aqd:AQD_AssessmentRegime
+
+                let $localId := $x//base:localId => string()
+                let $namespace := $x//base:namespace => string()
+                
+                for $i in $x/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata/@xlink:href
+
+                    let $samplingpoint := substring-after($i, $namespace || "/")
+                        for $j in $x/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:assessmentType/@xlink:href
+                        let $assessmentType := substring-after($j, "http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/")
+                        return
+                         <result>
+                            <localId>{$localId}</localId>
+                            <samplingPoint>{$samplingpoint}</samplingPoint>
+                            <assessmentType>{$assessmentType}</assessmentType>                            
+                         </result>
+            
+
+        for $x in $previousCombinationsConcat
+
+            let $localId := string($x/localId)
+            let $samplingPoint := string($x/samplingPoint)  
+            let $typeCPrel :=string($x/assessmentType) 
+            let $typeC:=
+
+             for $i in $currentCombinations
+                 let $TypeTemp:=
+                     if ($i[localId = $localId and samplingPoint = $samplingPoint]) then 
+                         string($i/assessmentType)
+                    else ()
+
+                    return $TypeTemp
+        
+            where not($typeC = $typeCPrel)  
+
+        return
+            <tr>
+                <td title="Assessment Regime">{$localId}</td>
+                <td title="aqd:AQD_SamplingPoint">{$samplingPoint}</td>
+                <td title="Assessment Type in C">{$typeC}</td>
+                <td title="Assessment Type in C preliminary">{$typeCPrel}</td> 
+                
+    
 
             </tr>
     } catch * {
@@ -448,7 +540,7 @@ let $C03cfunc :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
-(:let $C03cinvalid := errors:trycatch($C03cfunc):)
+
 
 (: C03d :)
 let $C03dinvalid := 
@@ -480,7 +572,7 @@ let $C03dinvalid :=
         </tr>
     }
 
-(:let $C03dinvalid := errors:trycatch($C03dfunc):)
+
 
 (: C04 - duplicate @gml:ids :)
 let $C04invalid :=
@@ -1349,8 +1441,8 @@ return
         {html:buildSimple("C03", $labels:C03, $labels:C03_SHORT, $C03table, "", "record", $C03errorLevel)}
         {html:build2("C03a", $labels:C03a, $labels:C03a_SHORT, ($C03afunc, $C03a2func), "All values are valid", " Assessment Methods missing", $errors:C03a)}
        <!-- {html:build2("C03b", $labels:C03b, $labels:C03b_SHORT, $C03bfunc, "All values are valid", " Assessment Methods missing", $errors:C03b)}-->
-        {html:buildSimple("C03b", $labels:C03b, $labels:C03b_SHORT, $C03bfunc, "", "record", $errors:C03b)}
-        {html:build2("C03c", $labels:C03c, $labels:C03c_SHORT, $C03cfunc, "All values are valid", " Different Assessment Types", $errors:C03c)}
+        {html:buildNoCount("C03b", $labels:C03b, $labels:C03b_SHORT, $C03bfunc, "", "Record", $errors:C03b)}
+        {html:buildNoCount("C03c", $labels:C03c, $labels:C03c_SHORT, $C03cfunc, "", "Record", $errors:C03c)}
         {html:build2("C03d", $labels:C03d, $labels:C03d_SHORT, $C03dinvalid, "All values are valid", " New Assessment Methods", $errors:C03d)}
         {html:build2("C04", $labels:C04, $labels:C04_SHORT, $C04invalid, "No duplicates found", " duplicate", $errors:C04)}
         {html:build2("C05", $labels:C05, $labels:C05_SHORT, $C05invalid, "No duplicates found", " duplicate", $errors:C05)}

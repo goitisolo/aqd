@@ -292,6 +292,22 @@ declare function html:buildSimple($ruleCode as xs:string, $longText, $text, $rec
     let $bulletType := $errorLevel
     return html:buildGeneric($ruleCode, $longText, $text, $records, $message, $bulletType)
 };
+
+declare function html:buildNoCount($ruleCode as xs:string, $longText, $text, $records as element(tr)*, $message as xs:string, $unit as xs:string, $errorLevel as xs:string) {
+    let $data := html:parseData($records, "data")
+
+    let $countRecords := count($records)
+    let $message :=
+        if ($countRecords = 0) then
+            "No records found"
+        else if ($message) then
+            $message
+        else
+            $unit || substring("s ", number(not($countRecords > 1)) * 2) || " found"
+    let $bulletType := $errorLevel
+    return html:buildGeneric($ruleCode, $longText, $text, $records, $message, $bulletType)
+};
+
 declare function html:build0($ruleCode as xs:string, $longText, $text, $records as element(tr)*, $unit as xs:string) {
     let $data := html:parseData($records, "data")
 

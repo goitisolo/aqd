@@ -990,28 +990,7 @@ PREFIX aq: <http://reference.eionet.europa.eu/aq/ontology/>
 };
 
 
-declare function query:getG662($envelopeUrl as xs:string, $reportingYear as xs:string) as xs:string* {
-    
-   "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-   PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
-   PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
-   PREFIX aq: <http://reference.eionet.europa.eu/aq/ontology/>
 
-   SELECT ?localId ?assessment 
-   WHERE {
-          ?assessmentRegime a aqd:AQD_AssessmentRegime;
-          aqd:inspireId ?inspireId .
-          ?inspireId rdfs:label ?inspireLabel .
-          ?inspireId aqd:localId ?localId .
-
-          ?assessmentRegime aqd:modelAssessmentMetadata ?assessment .
-          
-        
-          FILTER (CONTAINS(str(?assessmentRegime),'" || $envelopeUrl || "'))
-          
-    }"
-   
-};
 
 declare function query:getG66($cdrUrl as xs:string, $reportingYear as xs:string) as xs:string* {
     

@@ -876,7 +876,7 @@ let $E29invalid :=
         </tr>
     }
 
-let $E30invalid :=
+(:let $E30invalid :=
     try {
         (let $valid := dd:getValid($vocabulary:OBSERVATIONS_RANGE)
 
@@ -914,7 +914,7 @@ let $E30invalid :=
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
         </tr>
-    }
+    }:)
 
 let $E30ainvalid :=
     try {
@@ -985,7 +985,7 @@ let $E30ainvalid :=
         </tr>
     }
 
-let $E30bfunc := function() { 
+(:let $E30bfunc := function() { 
     (let $valid := dd:getValid($vocabulary:OBSERVATIONS_RANGE_COUNTRY)
 
     for $x at $xpos in $docRoot//om:OM_Observation/om:result
@@ -1021,7 +1021,7 @@ let $E30bfunc := function() {
             <td title="Actual value">{$value}</td>
         </tr>)[position() = 1 to $errors:MAX_LIMIT]
 }
-let $E30binvalid := errors:trycatch($E30bfunc)
+let $E30binvalid := errors:trycatch($E30bfunc):)
 
 let $E31invalid :=
     try {
@@ -1216,9 +1216,9 @@ return
         {html:build2("E27", $labels:E27, $labels:E27_SHORT, $E27invalid, "All records are valid", "record", $errors:E27)}
         {html:build2("E28", $labels:E28, $labels:E28_SHORT, $E28invalid, "All records are valid", "record", $errors:E28)}
         {html:build2("E29", $labels:E29, $labels:E29_SHORT, $E29invalid, "All records are valid", "record", $errors:E29)}
-        {html:build2("E30", $labels:E30, $labels:E30_SHORT, $E30invalid, "All records are valid", "record", $errors:E30)}
+        <!--{html:build2("E30", $labels:E30, $labels:E30_SHORT, $E30invalid, "All records are valid", "record", $errors:E30)}-->
         {html:build2("E30a", $labels:E30a, $labels:E30a_SHORT, $E30ainvalid, "All records are valid", "record", $errors:E30a)}
-        {html:build2("E30b", $labels:E30b, $labels:E30b_SHORT, $E30binvalid, "All records are valid", "record", $errors:E30b)}
+        <!--{html:build2("E30b", $labels:E30b, $labels:E30b_SHORT, $E30binvalid, "All records are valid", "record", $errors:E30b)}-->
         {html:build2("E31", $labels:E31, $labels:E31_SHORT, $E31invalid, "All records are valid", "record", $errors:E31)}
         {html:build2("E32", $labels:E32, $labels:E32_SHORT, $E32invalid, "All records are valid", "record", $errors:E32)}
         {html:build2("E33", $labels:E33, $labels:E33_SHORT, $E33invalid, "All records are valid", "record", $errors:E33)}
