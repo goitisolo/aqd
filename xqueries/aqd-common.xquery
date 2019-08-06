@@ -143,8 +143,8 @@ declare function common:is-a-number(
     $value as xs:anyAtomicType?
 ) as xs:boolean {
     let $n := string(number($value))
-    let $matches := matches($n, "^\d+(\.\d\d?){0,1}$")
-    let $positive := number($value) > 0
+    let $matches := matches($n, "^\d+(\.\d{0,9}?){0,1}$")
+    let $positive := number($value) >= 0
     return $matches and $positive
 };
 
@@ -575,6 +575,17 @@ declare function common:is-polutant-air(
         "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5",
         "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/10",
         "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/6001"
+        )
+    return $uri = $okv
+};
+
+declare function common:is-polutant-I40(
+    $uri as xs:string
+) as xs:boolean {
+    let $okv := (
+        "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1",
+        "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5",
+        "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/10"
         )
     return $uri = $okv
 };
