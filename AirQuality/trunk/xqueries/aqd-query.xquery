@@ -197,22 +197,22 @@ declare function query:existsViaNameLocalIdYear(
     $type as xs:string,
     $year as xs:string,
     $latestEnvelopes as xs:string*
-) as xs:boolean {
+    ) as xs:boolean {
     let $query := "
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX aq: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      PREFIX aq: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
 
-SELECT ?subject
-WHERE {
-    ?subject a aq:" || $type ||";
-    aq:inspireId ?inspireId.
-    ?inspireId rdfs:label ?label.
-    ?inspireId aq:namespace ?name.
-    ?inspireId aq:localId ?localId
-    FILTER (?label = '" || $label || "')
-    FILTER (CONTAINS(str(?subject), '" || $year || "'))
-}
-"
+      SELECT ?subject
+      WHERE {
+          ?subject a aq:" || $type ||";
+          aq:inspireId ?inspireId.
+          ?inspireId rdfs:label ?label.
+          ?inspireId aq:namespace ?name.
+          ?inspireId aq:localId ?localId
+          FILTER (?label = '" || $label || "')
+          FILTER (CONTAINS(str(?subject), '" || $year || "'))
+      }
+      "
     let $results := sparqlx:run($query)
 
     let $envelopes :=
@@ -1243,7 +1243,7 @@ declare function query:getObligationYears() {
            rod:nextdeadline  ?deadline ;
            dct:title ?obligation .
 
-   FILTER (year(?released) > 2014) .
+   FILTER (year(?released) >  2014) .
    } ORDER BY ?countryCode ?ReportingYear ?obligation_nr"
 };
 

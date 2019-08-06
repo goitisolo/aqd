@@ -64,7 +64,7 @@ let $docRoot := doc($source_url)
 let $cdrUrl := common:getCdrUrl($countryCode)
 let $reportingYear := common:getReportingYear($docRoot)
 let $node-name := 'aqd:AQD_Plan'
-let $latestEnvelopeByYearH := query:getLatestEnvelope($cdrUrl || "k/", $reportingYear)
+let $latestEnvelopeByYearH := query:getLatestEnvelope($cdrUrl || "h/", $reportingYear)
 let $headerBeginPosition := $docRoot//aqd:AQD_ReportingHeader/aqd:reportingPeriod/gml:TimePeriod/gml:beginPosition
 let $headerEndPosition := $docRoot//aqd:AQD_ReportingHeader/aqd:reportingPeriod/gml:TimePeriod/gml:endPosition
 
@@ -143,6 +143,7 @@ Number of AQ Plans reported
 :)
 
 let $countPlans := count($docRoot//aqd:AQD_Plan)
+
 let $H01 := try {
     for $rec in $docRoot//aqd:AQD_Plan
     let $el := $rec/aqd:inspireId/base:Identifier
@@ -172,13 +173,16 @@ let $H02 := try {
     for $el in $docRoot//aqd:AQD_Plan
     let $x := $el/aqd:inspireId/base:Identifier
     let $inspireId := concat(data($x/base:namespace), "/", data($x/base:localId))
-    let $ok := not($inspireId = $knownPlans)
+    let $ok := $inspireId = $knownPlans
+                
     return
         common:conditionalReportRow(
                 $ok,
                 [
-                ("gml:id", data($el/@gml:id)),
-                ("aqd:inspireId", $inspireId)
+                    ("gml:id", data($el/@gml:id)),
+                    ("aqd:inspireId", $inspireId),
+                    ("knownPlans", $isNewDelivery),
+                    ("deliveries", data($knownPlans))
                 ]
         )
 } catch * {
@@ -191,7 +195,7 @@ let $H02errorLevel :=
                 count(
                         for $x in $docRoot//aqd:AQD_Plan/aqd:inspireId/base:Identifier
                         let $id := $x/base:namespace || "/" || $x/base:localId
-                        where query:existsViaNameLocalId($id, 'AQD_Plan', $latestEnvelopesH)
+                        where query:existsViaNameLocalId($id, 'AQD_Plan', $latestEnvelopesH) 
                         return 1
                 ) > 0
     )
@@ -217,7 +221,7 @@ let $H03 := try {
                 ]
         )
 } catch * {
-    html:createErrorRow($err:code, $err:description)
+    html:createErrorRow($err:code, $err:description)    
 }
 let $H03errorLevel :=
     if (not($isNewDelivery) and count($H03) = 0)
@@ -236,13 +240,20 @@ Feedback report shall include the gml:id attribute, ./aqd:inspireId, ./aqd:pollu
 List of unique identifier information for all Plan records. Blocker if no Plans.
 :)
 
-let $H04 := try {
+let $H04 := try {(:)
     let $gmlIds := $docRoot//aqd:AQD_Plan/lower-case(normalize-space(@gml:id))
     let $inspireIds := $docRoot//aqd:AQD_Plan/lower-case(normalize-space(aqd:inspireId))
+
     for $x in $docRoot//aqd:AQD_Plan
         let $id := $x/@gml:id
         let $inspireId := $x/aqd:inspireId
+        let $pollutantCodes := 
+                            for $y in $x/aqd:pollutants/aqd:Pollutant/aqd:pollutantCode/@xlink:href
+                                return $y    
         let $aqdinspireId := concat($x/aqd:inspireId/base:Identifier/base:localId, "/", $x/aqd:inspireId/base:Identifier/base:namespace)
+
+    
+        
         let $ok := (count(index-of($gmlIds, lower-case(normalize-space($id)))) = 1
             and
             count(index-of($inspireIds, lower-case(normalize-space($inspireId)))) = 1
@@ -252,11 +263,37 @@ let $H04 := try {
             [
                 ("gml:id", data($x/@gml:id)),
                 ("aqd:inspireId", distinct-values($aqdinspireId)),
-                ("aqd:pollutant", data($x/aqd:pollutant)),
-                ("aqd:protectionTarget", data($x/aqd:protectionTarget)),
+                ("aqd:pollutant", data($pollutantCodes)),
+                ("aqd:protectionTarget", data($x/aqd:pollutants/aqd:Pollutant/aqd:protectionTarget/@xlink:href)),
                 ("aqd:firstExceedanceYear", data($x/aqd:firstExceedanceYear))
             ]
         )
+} catch * {
+    html:createErrorRow($err:code, $err:description)
+}:)
+
+     let $gmlIds := $docRoot//aqd:AQD_Plan/lower-case(normalize-space(@gml:id))
+     let $inspireIds := $docRoot//aqd:AQD_Plan/lower-case(normalize-space(aqd:inspireId))
+     for $x in $docRoot//aqd:AQD_Plan
+        let $pollutantCodes := $x/aqd:pollutants/aqd:Pollutant/aqd:pollutantCode/@xlink:href
+        let $id := $x/@gml:id
+        let $inspireId := $x/aqd:inspireId/base:Identifier
+        let $aqdinspireId := concat($x/aqd:inspireId/base:Identifier/base:localId, "/", $x/aqd:inspireId/base:Identifier/base:namespace)
+        let $ok := (count(index-of($gmlIds, lower-case(normalize-space($id)))) = 1
+            and
+            count(index-of($inspireIds, lower-case(normalize-space($inspireId)))) = 1)
+            return
+                if($ok)
+                    then
+                        <tr>
+                            <td title="gml:id">{data($x/@gml:id)}</td>
+                            <td title="aqd:inspireId">{distinct-values($aqdinspireId)}</td>
+                            <td title="aqd:pollutant">{data($pollutantCodes)}</td>
+                            <td title="aqd:protectionTarget">{distinct-values(data($x/aqd:pollutants/aqd:Pollutant/aqd:protectionTarget/@xlink:href))}</td>
+                            <td title="aqd:firstExceedanceYear">{data($x/aqd:firstExceedanceYear)}</td>
+                        </tr>
+                    else
+                        ()
 } catch * {
     html:createErrorRow($err:code, $err:description)
 }
@@ -293,7 +330,7 @@ let $H07 := try {
             return
                 if (common:has-one-node($values, $v))
                 then
-                    ()
+                    ([$name, data($v)])
                 else
                     [$name, data($v)]
     }
@@ -434,23 +471,40 @@ let $H12 := try {
         if ($reportingYear castable as xs:integer) then xs:integer($reportingYear) else ()
 
     for $el in $docRoot//aqd:AQD_Plan
-    let $main := $el/aqd:exceedanceSituation
-    let $comment := $el/aqd:comment
+        let $main := $el/aqd:exceedanceSituation/@xlink:href
+        let $mainEmpty := $el/aqd:exceedanceSituation[@xlink:href = ""]
+        let $allExceedanceEmpty := count($mainEmpty)
+        let $allExceedance := count($main)
+        let $comment := $el/aqd:comment
 
-    let $ok := (
-        not(empty($year))
-        and
-        $year < 2013
-        and
-        functx:if-empty(data($main),"") != ""
-        or
-        functx:if-empty(data($comment),"") != ""
-    )
+        let $test := if(not(empty($main)) and $main="" and $allExceedance = $allExceedanceEmpty) then 
+                        $main=""
+                        else 
+                        empty($main)
+        let $mainCommentEmpty := 
+                    
+                    $test
+                    and
+                    $comment = ""
+
+        let $yearComment :=
+                     
+                    not(empty($year))
+                    and
+                    $year < 2013
+                    and
+                    $mainCommentEmpty = true()
+
+        let $ok := (
+                
+                    $yearComment = false()
+                    
+        )
 
     return common:conditionalReportRow(
             $ok,
             [
-            ("gml:id", data($el/ancestor-or-self::*[name() = $node-name]/@gml:id)),
+            ("gml:id", data($el/@gml:id)),
             ("aqd:exceedanceSituation", data($main)),
             ("aqd:comment", data($comment))
             ]
@@ -467,7 +521,7 @@ let $H13 := ()
 aqd:AQD_Plan/aqd:code should begin with with the 2-digit country code according to ISO 3166-1.
 
 We recommend you start you codes with the 2-digit country code according to ISO 3166-1.
-:)
+
 
 let $H14 := try {
     let $seq := $docRoot//aqd:AQD_Plan/aqd:code
@@ -482,11 +536,33 @@ let $H14 := try {
     )
 } catch * {
     html:createErrorRow($err:code, $err:description)
-}
+}:)
 
 (: H15 RESERVE :)
 
-let $H15 := ()
+let $H15 := (
+    try {
+    for $el in $docRoot//aqd:AQD_Plan
+        let $codes := $docRoot//aqd:AQD_Plan[aqd:code = $el/aqd:code]
+        let $ok := (
+            not(count($codes) > 1)
+            and
+            $el/aqd:code != ""
+            
+        )
+    return common:conditionalReportRow(
+            $ok,
+            [
+            ("base:localId", $el/aqd:inspireId/base:Identifier/base:localId),
+            ("gml:id", data($el/ancestor-or-self::*[name() = $node-name]/@gml:id)),
+            ("aqd:Code", $el/aqd:code)
+            ]
+         )
+    } catch * {
+        html:createErrorRow($err:code, $err:description)
+    }
+
+    )
 
 (: H16
 aqd:AQD_Plan/aqd:competentAuthority/base2:RelatedParty/base2:organisationName/gco:CharacterString shall
@@ -682,7 +758,7 @@ Check and count expected combinations of Pollutant and ProtectionTarget
 :)
 
 let $H23 := try {
-    let $accepted_health := (
+    (:let $accepted_health := (
         'http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1',
         'http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5',
         'http://dd.eionet.europa.eu/vocabulary/aq/pollutant/7',
@@ -702,24 +778,42 @@ let $H23 := try {
         'http://dd.eionet.europa.eu/vocabulary/aq/pollutant/7',
         'http://dd.eionet.europa.eu/vocabulary/aq/pollutant/9'
     )
+    :)
+
+    let $rdf := doc($vocabulary:ENVIRONMENTALOBJECTIVE || "rdf")
+     let $EnviromentalObtiveDD := 
+        for $x in doc($vocabulary:ENVIRONMENTALOBJECTIVE || "rdf")//skos:Concept
+            
+            let $relatedPollutant := $x/prop:relatedPollutant/@rdf:resource
+            let $hasObjectiveType := $x/prop:hasObjectiveType/@rdf:resource
+            let $hasReportingMetric := $x/prop:hasReportingMetric/@rdf:resource
+            let $hasProtectionTarget := $x/prop:hasProtectionTarget/@rdf:resource
+
+            return $relatedPollutant || "#" || $hasProtectionTarget
+           
+
+
 
     for $polluant in $docRoot//aqd:AQD_Plan/aqd:pollutants/aqd:Pollutant
-    let $pollutantCode := $polluant/aqd:pollutantCode/@xlink:href
-    let $protectionTarget := $polluant/aqd:protectionTarget/@xlink:href
-    return
-        if (($protectionTarget = 'http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H'
-                and not($pollutantCode = $accepted_health))
-            or ($protectionTarget = 'http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V'
-                and not($pollutantCode = $accepted_vegetation)))
-        then
-            <tr>
-                <td title="gml:id">{data($polluant/ancestor-or-self::*[name() = $node-name]/@gml:id)}</td>
-                <td title="pollutantCode xlink:href">{data($pollutantCode)}</td>
-                <td title="protectionTarget xlink:href">{data($protectionTarget)}</td>
-                <td title="error"> not accepted</td>
-            </tr>
-        else
-            ()
+        let $pollutantCode := $polluant/aqd:pollutantCode/@xlink:href
+        let $protectionTarget := $polluant/aqd:protectionTarget/@xlink:href
+        let $codeAndTarget := $pollutantCode || "#" || $protectionTarget
+        return
+            if(not($codeAndTarget = $EnviromentalObtiveDD))
+
+            (:if (($protectionTarget = 'http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H'
+                    and not($pollutantCode = $accepted_health))
+                or ($protectionTarget = 'http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V'
+                    and not($pollutantCode = $accepted_vegetation))):)
+            then
+                <tr>
+                    <td title="gml:id">{data($polluant/ancestor-or-self::*[name() = $node-name]/@gml:id)}</td>
+                    <td title="pollutantCode xlink:href">{data($pollutantCode)}</td>
+                    <td title="protectionTarget xlink:href">{data($protectionTarget)}</td>
+                    <td title="error"> not accepted</td>
+                </tr>
+            else
+                ()
 } catch * {
     html:createErrorRow($err:code, $err:description)
 }
@@ -965,6 +1059,7 @@ Author(s) should be provided as text (If there are multiple authors, please prov
 let $H32 := try {
     let $main := $docRoot//aqd:AQD_Plan/aqd:publication/aqd:Publication/aqd:author
     for $el in $main
+    let $localId := $el/../../../aqd:inspireId/base:Identifier/base:localId
     let $ok := (data($el) castable as xs:string
             and
             functx:if-empty(data($el), "") != ""
@@ -973,6 +1068,8 @@ let $H32 := try {
             $ok,
             [
             ("gml:id", data($el/ancestor-or-self::*[name() = $node-name]/@gml:id)),
+            ("localId", $localId),
+            ("aqd:title", data($el/../aqd:title)),
             (node-name($el), $el)
             ]
     )
@@ -994,6 +1091,8 @@ let $H33 := try {
         data($node) castable as xs:date
         or
         not(common:isInvalidYear(data($node)))
+        or 
+        data($node) castable as xs:gYear
     )
     return common:conditionalReportRow(
             $ok,
@@ -1065,7 +1164,8 @@ return
         {html:build1("H01", $labels:H01, $labels:H01_SHORT, $H01, "", string($countPlans), "", "", $errors:H01)}
         {html:buildSimple("H02", $labels:H02, $labels:H02_SHORT, $H02, "", "", $H02errorLevel)}
         {html:buildSimple("H03", $labels:H03, $labels:H03_SHORT, $H03, "", "", $H03errorLevel)}
-        {html:build1("H04", $labels:H04, $labels:H04_SHORT, $H04, "", string(count($H04)), " ", "", $errors:H04)}
+        {html:build2("H04", $labels:H04, $labels:H04_SHORT, $H04, "All values are valid", "found", $errors:H04)}
+        <!--{html:build1("H04", $labels:H04, $labels:H04_SHORT, $H04, "", string(count($H04)), " ", "", $errors:H04)}-->
         {html:build1("H05", $labels:H05, $labels:H05_SHORT, $H05, "RESERVE", "RESERVE", "RESERVE", "RESERVE", $errors:H05)}
         {html:build1("H06", $labels:H06, $labels:H06_SHORT, $H06, "RESERVE", "RESERVE", "RESERVE", "RESERVE", $errors:H06)}
         {html:build2("H07", $labels:H07, $labels:H07_SHORT, $H07, "No duplicate values found", " duplicate value", $errors:H07)}
@@ -1075,8 +1175,8 @@ return
         {html:build2("H11", $labels:H11, $labels:H11_SHORT, $H11, "All values are valid", "needs valid input", $errors:H11)}
         {html:build2("H12", $labels:H12, $labels:H12_SHORT, $H12, "All values are valid", "needs valid input", $errors:H12)}
         {html:build1("H13", $labels:H13, $labels:H13_SHORT, $H13, "RESERVE", "RESERVE", "RESERVE", "RESERVE", $errors:H13)}
-        {html:build2("H14", $labels:H14, $labels:H14_SHORT, $H14, "All values are valid", "needs valid input", $errors:H14)}
-        {html:build1("H15", $labels:H15, $labels:H15_SHORT, $H15, "RESERVE", "RESERVE", "RESERVE", "RESERVE", $errors:H15)}
+    <!--{html:build2("H14", $labels:H14, $labels:H14_SHORT, $H14, "All values are valid", "needs valid input", $errors:H14)}:)-->
+        {html:build2("H15", $labels:H15, $labels:H15_SHORT, $H15, "All values are valid", "needs valid input", $errors:H15)}
         {html:build2("H16", $labels:H16, $labels:H16_SHORT, $H16, "All values are valid", "needs valid input", $errors:H16)}
         {html:build2("H17", $labels:H17, $labels:H17_SHORT, $H17, "All values are valid", "needs valid input", $errors:H17)}
         {html:build2("H18", $labels:H18, $labels:H18_SHORT, $H18, "All values are valid", "needs valid input", $errors:H18)}

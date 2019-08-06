@@ -409,7 +409,7 @@ declare function html:build2(
         else if ($countRecords = 0) then
             $validMsg
         else
-            $countRecords || " " || $unit || substring("s ", number(not($countRecords > 1)) * 2) || " found"
+            $countRecords || " " || $unit ||  " found"
 
     return html:buildGeneric(
         $ruleCode,
