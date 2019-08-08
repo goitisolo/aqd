@@ -226,7 +226,7 @@ let $H03 := try {
 let $H03errorLevel :=
     if (not($isNewDelivery) and count($H03) = 0)
     then
-        $errors:K03
+        $errors:H03
     else
         $errors:INFO
 
