@@ -202,6 +202,62 @@ let $B04table :=
         </tr>
     }
 
+
+(:B05a:)
+let $B05ainvalid :=
+    try {
+        for $zone in $docRoot//aqd:AQD_Zone
+            let $id := $zone/am:inspireId/base:Identifier/base:namespace || "/" || $zone/am:inspireId/base:Identifier/base:localId
+            let $protectionTarget := 
+                    for $pollutant in $zone/aqd:pollutants
+                        let $protectiontargetValue := $pollutant/aqd:Pollutant/aqd:protectionTarget/@xlink:href
+                    return $protectiontargetValue
+
+        where ($id = "/" or not($knownZones = $id) and empty($zone/aqd:predecessor) and $protectionTarget = 'http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/H')
+        return
+            <tr>
+                <td title="base:localId">{$zone/am:inspireId/base:Identifier/base:localId/string()}</td>
+                <td title="zoneName">{data($zone/am:name/gn:GeographicalName/gn:spelling/gn:SpellingOfName/gn:text)}</td>
+                <td title="zoneCode">{data($zone/aqd:zoneCode)}</td>
+                <td title="aqd:predecessor">{if (empty($zone/aqd:predecessor)) then "not specified" else data($zone/aqd:predecessor/@xlink:href)}</td>
+            </tr>
+    } catch * {
+        <tr class="{$errors:FAILED}">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
+
+   
+(:B05b:)
+let $B05binvalid :=
+    try {
+        for $zone in $docRoot//aqd:AQD_Zone
+            let $id := $zone/am:inspireId/base:Identifier/base:namespace || "/" || $zone/am:inspireId/base:Identifier/base:localId
+            let $protectionTarget := 
+                    for $pollutant in $zone/aqd:pollutants
+                        let $protectiontargetValue := $pollutant/aqd:Pollutant/aqd:protectionTarget/@xlink:href
+                    return $protectiontargetValue
+            let $protectionTargetVegetetation := 
+                    for $pollutant in $zone/aqd:pollutants
+                        let $protectiontargetValue := $pollutant/aqd:Pollutant/aqd:protectionTarget[@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V"]/@xlink:href
+                    return $protectiontargetValue
+        where ($id = "/" or not($knownZones = $id) and empty($zone/aqd:predecessor) and $protectionTarget = 'http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/V' and count($protectionTarget) = count($protectionTargetVegetetation))
+        return
+            <tr>
+                <td title="base:localId">{$zone/am:inspireId/base:Identifier/base:localId/string()}</td>
+                <td title="zoneName">{data($zone/am:name/gn:GeographicalName/gn:spelling/gn:SpellingOfName/gn:text)}</td>
+                <td title="zoneCode">{data($zone/aqd:zoneCode)}</td>
+                <td title="aqd:predecessor">{if (empty($zone/aqd:predecessor)) then "not specified" else data($zone/aqd:predecessor/@xlink:href)}</td>
+            </tr>
+    } catch * {
+        <tr class="{$errors:FAILED}">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
+
+
 (: B06a :)
 let $countZonesWithAmGeometry :=
     try {
@@ -1099,7 +1155,9 @@ return
         {html:buildCountRow0("B01", $labels:B01, $labels:B01_SHORT, $countZones, "", "record", $errors:B01)}
         {html:buildSimple("B02", $labels:B02, $labels:B02_SHORT, $B02table, "", "record", $B02errorLevel)}
         {html:build0("B03", $labels:B03, $labels:B03_SHORT, $B03table, "record")}
-        {html:build0("B04", $labels:B04, $labels:B04_SHORT, $B04table, "record")}
+        {html:build0("B04", $labels:B04, $labels:B04_SHORT, $B04table, "record")} 
+        {html:build2("B05a", $labels:B05a, $labels:B05a_SHORT, $B05ainvalid, "All values are valid", " invalid value", $errors:B05a)}
+        {html:build2("B05b", $labels:B05b, $labels:B05b_SHORT, $B05binvalid, "All values are valid", " invalid value", $errors:B05b)}
         {html:buildResultsSimpleRow("B06a", $labels:B06a, $labels:B06a_SHORT, $countZonesWithAmGeometry, $errors:B06a)}
         {html:buildResultsSimpleRow("B06b", $labels:B06b, $labels:B06b_SHORT, $countZonesWithLAU, $errors:B06b)}
         {html:build0("B07", $labels:B07, $labels:B07_SHORT, $B07table, "record")}

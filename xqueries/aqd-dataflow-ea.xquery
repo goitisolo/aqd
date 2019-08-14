@@ -452,6 +452,32 @@ let $E19invalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+
+(:E19a:)
+let $E19ainvalid :=
+    try {
+        (for $x in $docRoot//om:OM_Observation
+        let $pollutant := string($x/om:observedProperty/@xlink:href)
+        let $value := string($x//swe:field[@name = 'Value']/swe:Quantity/@definition)
+        where not($value = "http://dd.eionet.europa.eu/vocabulary/aq/primaryObservation/hour" 
+                or $value = "http://dd.eionet.europa.eu/vocabulary/aq/primaryObservation/day" 
+                or $value = "http://dd.eionet.europa.eu/vocabulary/aq/primaryObservation/var" 
+                )
+        return
+            <tr>
+                <td title="om:OM_Observation">{data($x/@gml:id)}</td>
+                <td title="Pollutant">{$pollutant}</td>
+                <td title="swe:Quantity">{$value}</td>
+            </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
+    } catch * {
+        <tr class="{$errors:FAILED}">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
+
+
+
 (: E19b :)
 let $E19binvalid :=
     try {
@@ -1203,6 +1229,7 @@ return
         {html:build2("E17", $labels:E17, $labels:E17_SHORT, $E17invalid, "All records are valid", "record", $errors:E17)}
         {html:build2("E18", $labels:E18, $labels:E18_SHORT, $E18invalid, "All records are valid", "record", $errors:E18)}
         {html:build2("E19", $labels:E19, $labels:E19_SHORT, $E19invalid, "All records are valid", "record", $errors:E19)}
+        {html:build2("E19a", $labels:E19a, $labels:E19a_SHORT, $E19ainvalid, "All records are valid", "record", $errors:E19a)}
         {html:build2("E19b", $labels:E19b, $labels:E19b_SHORT, $E19binvalid, "All records are valid", "record", $errors:E19b)}
         {html:build2("E20", $labels:E20, $labels:E20_SHORT, $E20invalid, "All records are valid", "record", $errors:E20)}
         {html:build2("E21", $labels:E21, $labels:E21_SHORT, $E21invalid, "All records are valid", "record", $errors:E21)}
