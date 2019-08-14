@@ -833,11 +833,12 @@ let $C23binvalid :=
         </tr>
     }
 
+(: C24 :)
 let $C24errorClass := if (contains($source_url, "c_preliminary")) then $errors:WARNING else $errors:C24
 let $C24invalid :=
     try {
         for $x in $docRoot//aqd:AQD_AssessmentRegime/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:modelAssessmentMetadata
-        where not($x/@xlink:href = $latestModels)
+        where not($x/@xlink:href = $latestModels) (:latest model coge el ultimo envelope de d1b:)
         return
             <tr>
                 <td title="aqd:AQD_AssessmentRegime">{string($x/../../../aqd:inspireId/base:Identifier/base:localId)}</td>
@@ -1358,11 +1359,13 @@ let $C38invalid :=
 
         for $x in $docRoot//aqd:AQD_AssessmentRegime/aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric[@xlink:href = $vocabulary:REPMETRIC_VOCABULARY || "AEI"]
         for $xlink in $x/../../../../../aqd:assessmentMethods/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata/@xlink:href
-        where not($xlink = $valid)
+       
+        where not($xlink = $valid) 
         return
             <tr>
                 <td title="aqd:AQD_AssessmentRegime">{data($x/../../../../../aqd:inspireId/base:Identifier/base:localId)}</td>
-                <td title="aqd:AQD_SamplingPoint">{$xlink}</td>
+                <td title="aqd:AQD_SamplingPoint">{data($xlink)}</td>
+
             </tr>
     } catch * {
         <tr class="{$errors:FAILED}">
@@ -1381,6 +1384,27 @@ let $C40invalid :=
         return
             <tr>
                 <td title="@gml:id">{string($aqdPollutantC40/@gml:id)}</td>
+            </tr>
+    } catch * {
+        <tr class="{$errors:FAILED}">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
+
+(: C40b :)
+let $C40binvalid :=
+    try {
+       
+       let $C40count := count($C40invalid)
+       let $C01count := count($C01table)
+      
+        
+        where $C01count = $C40count
+        return
+            <tr>
+                <td title="C01">{$C01count}</td>
+                <td title="C40">{$C40count}</td>
             </tr>
     } catch * {
         <tr class="{$errors:FAILED}">
@@ -1470,6 +1494,7 @@ return
         {html:build2("C37", $labels:C37, $labels:C37_SHORT, $C37invalid, "All values are valid", " invalid value", $errors:C37)}
         {html:build2("C38", $labels:C38, $labels:C38_SHORT, $C38invalid, "All values are valid", " invalid value", $errors:C38)}
         {html:build2("C40", $labels:C40, $labels:C40_SHORT, $C40invalid, "All values are valid", " invalid value", $errors:C40)}
+        {html:build2("C40b", $labels:C40b, $labels:C40b_SHORT, $C40binvalid, "All values are valid", " invalid value", $errors:C40b)}
         {html:build2("C41", $labels:C41, $labels:C41_SHORT, $C41invalid, "All values are valid", " invalid value", $errors:C41)}
         {html:build2("C42", $labels:C42, $labels:C42_SHORT, $C42invalid, "All values are valid", " invalid value", $errors:C42)}
     </table>

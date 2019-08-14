@@ -15,6 +15,7 @@ declare variable $vocabulary:AGGREGATION_PROCESS as xs:string := $vocabulary:BAS
 declare variable $vocabulary:ANALYTICALTECHNIQUE_VOCABULARY :=  "http://dd.eionet.europa.eu/vocabulary/aq/analyticaltechnique/";
 declare variable $vocabulary:AQ_MANAGEMENET_ZONE := "http://inspire.ec.europa.eu/codeList/ZoneTypeCode/airQualityManagementZone";
 declare variable $vocabulary:AQ_MANAGEMENET_ZONE_LC := "http://inspire.ec.europa.eu/codelist/ZoneTypeCode/airQualityManagementZone";
+declare variable $vocabulary:AQD_Namespace := "https://dd.eionet.europa.eu/vocabulary/aq/namespace/";
 declare variable $vocabulary:AREA_CLASSIFICATION_VOCABULARY := "http://dd.eionet.europa.eu/vocabulary/aq/areaclassification/";
 declare variable $vocabulary:ASSESSMENTTYPE_VOCABULARY as xs:string := "http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/";
 declare variable $vocabulary:BASE := "http://dd.eionet.europa.eu/vocabulary/aq/";

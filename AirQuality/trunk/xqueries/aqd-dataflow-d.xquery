@@ -688,6 +688,32 @@ let $invalidPosD21 :=
                     <td title="dimension">{string($i)}</td>
                 </tr>
 
+        let $NamespaceDD := 
+         for $x in doc($vocabulary:AQD_Namespace || "rdf")//skos:Concept
+          
+            let $currentCountry := string(fn:upper-case($countryCode))
+            let $countryyy := string($x/prop:inCountry/@rdf:resource)
+            let $length := fn:string-length($countryyy) - 1
+            let $sbst := fn:substring($countryyy, $length, 2)
+            let $LongitudeMax :=  $x/prop:LongitudeMax
+            let $LongitudeMin :=  $x/prop:LongitudeMin
+            let $LatitudeMax :=  $x/prop:LatitudeMax
+            let $LatitudeMin :=  $x/prop:LatitudeMin
+
+            where ($currentCountry = $sbst)            
+
+            return $LongitudeMax || "###"|| $LongitudeMin || "###"|| $LatitudeMax || "###"|| $LatitudeMin
+
+    
+
+        
+            let $LongitudeMax := number(tokenize($NamespaceDD, "###")[1])
+            let $LongitudeMin := number(tokenize($NamespaceDD, "###")[2])
+            let $LatitudeMax := number(tokenize($NamespaceDD, "###")[3])
+            let $LatitudeMin := number(tokenize($NamespaceDD, "###")[4])
+
+
+        
 
         let $aqdStationPos :=
             for $allPos in $docRoot//aqd:AQD_Station
@@ -708,7 +734,8 @@ let $invalidPosD21 :=
             let $samplingLong := if ($samplingLong castable as xs:decimal) then xs:decimal($samplingLong) else 0.00
 
             return
-                if ($samplingLat < $samplingLong and $countryCode != 'fr') then
+                if (not($samplingLat <= $LatitudeMax and $samplingLat >= $LatitudeMin) or
+                    not($samplingLong <= $LongitudeMax and $samplingLong >=$LongitudeMin) and $countryCode != 'fr') then
                     <tr>
                         <td title="lat/long">{concat($gmlPos/ef:inspireId/base:Identifier/base:localId, " : lat=", string($samplingLat), " :long=", string($samplingLong))}</td>
                     </tr>
@@ -962,13 +989,39 @@ let $D35invalid :=
     try {
         for $x in $docRoot//aqd:AQD_SamplingPoint
         let $missing := empty($x/ef:geometry/gml:Point/gml:pos)
+
+         let $NamespaceDD := 
+             for $x in doc($vocabulary:AQD_Namespace || "rdf")//skos:Concept
+              
+                let $currentCountry := string(fn:upper-case($countryCode))
+                let $countryyy := string($x/prop:inCountry/@rdf:resource)
+                let $length := fn:string-length($countryyy) - 1
+                let $sbst := fn:substring($countryyy, $length, 2)
+                let $LongitudeMax :=  $x/prop:LongitudeMax
+                let $LongitudeMin :=  $x/prop:LongitudeMin
+                let $LatitudeMax :=  $x/prop:LatitudeMax
+                let $LatitudeMin :=  $x/prop:LatitudeMin
+
+                where ($currentCountry = $sbst)            
+
+                return $LongitudeMax || "###"|| $LongitudeMin || "###"|| $LatitudeMax || "###"|| $LatitudeMin
+       
+        let $LongitudeMax := number(tokenize($NamespaceDD, "###")[1])
+        let $LongitudeMin := number(tokenize($NamespaceDD, "###")[2])
+        let $LatitudeMax := number(tokenize($NamespaceDD, "###")[3])
+        let $LatitudeMin := number(tokenize($NamespaceDD, "###")[4])
+
+
         let $invalid :=
+        
+
             for $i in $x/ef:geometry/gml:Point/gml:pos
             let $latlongToken := tokenize($i, "\s+")
             let $lat := number($latlongToken[1])
             let $long := number($latlongToken[2])
             let $missing := string($lat) = 'NaN' or string($long) = 'NaN'
-            where ($long > $lat) or $missing
+            where   not($lat <= $LatitudeMax and $lat >= $LatitudeMin) or
+                    not($long <= $LongitudeMax and $long >=$LongitudeMin)  or $missing
             return 1
         where (not($countryCode = "fr") and ($x/ef:geometry/gml:Point/gml:pos/@srsDimension != "2" or $invalid = 1 or $missing))
         return
