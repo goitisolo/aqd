@@ -87,7 +87,6 @@ let $reportingYear := common:getReportingYear($docRoot)
 let $latestEnvelopeB := query:getLatestEnvelope($zonesUrl, $reportingYear)
 let $prelimEnvelopeC := query:getLatestEnvelope($cdrUrl || "c_preliminary/", $reportingYear)
 let $namespaces := distinct-values($docRoot//base:namespace)
-
 let $zoneIds := if ((fn:string-length($countryCode) = 2) and exists($latestEnvelopeB)) then distinct-values(data(sparqlx:run(query:getZone($latestEnvelopeB))//sparql:binding[@name = 'inspireLabel']/sparql:literal)) else ()
 let $countZoneIds1 := count($zoneIds)
 let $countZoneIds2 := count(distinct-values($docRoot//aqd:AQD_AssessmentRegime/aqd:zone/@xlink:href))
@@ -97,6 +96,7 @@ let $latestEnvelopeB := query:getLatestEnvelope($cdrUrl || $bdir)
 let $latestEnvelopeC := query:getLatestEnvelope($cdrUrl || $cdir, $reportingYear)
 let $latestEnvelopeD := query:getLatestEnvelope($cdrUrl || "d/")
 let $latestEnvelopeD1b := query:getLatestEnvelope($cdrUrl || "d1b/", $reportingYear)
+let $getEnvelopeD1b := query:getEnvelopes($cdrUrl || "d1b/")
 let $knownRegimes := distinct-values(data(sparqlx:run(query:getAssessmentRegime($latestEnvelopeC))/sparql:binding[@name = 'inspireLabel']/sparql:literal))
 let $allRegimes := query:getAllRegimeIds($namespaces)
 let $countRegimes := count($docRoot//aqd:AQD_AssessmentRegime)
@@ -113,6 +113,8 @@ let $latestModels :=
     }
 let $modelsEnvelope := if (empty($latestModels)) then $latestEnvelopeD else $latestEnvelopeD1b
 
+
+
 let $latestModels :=
     try {
         if (empty($latestModels)) then distinct-values(data(sparqlx:run(query:getModel($latestEnvelopeD))//sparql:binding[@name = 'inspireLabel']/sparql:literal)) else $latestModels
@@ -120,6 +122,23 @@ let $latestModels :=
         ()
     }
 let $latestSamplingPoints := data(sparqlx:run(query:getSamplingPoint($latestEnvelopeD))/sparql:binding[@name = 'inspireLabel']/sparql:literal)
+
+
+let $models := 
+            for $x in $getEnvelopeD1b
+                let $test := data(sparqlx:run(query:getModelSampling2($x)))
+            return $test
+
+let $latestModels2 :=
+    try {
+        distinct-values(data($models))
+    } catch * {
+        ()
+    }
+let $modelsEnvelope2 := if (empty($latestModels2)) then $latestEnvelopeD else $getEnvelopeD1b
+
+
+
 
 (: File prefix/namespace check :)
 let $NSinvalid :=
@@ -522,11 +541,11 @@ let $C03cfunc :=
 
                     return $TypeTemp
         
-            where not($typeC = $typeCPrel)  
+            where not($typeCPrel = $typeC )  
 
         return
             <tr>
-                <td title="Assessment Regime">{$localId}</td>
+               <td title="Assessment Regime">{$localId}</td>
                 <td title="aqd:AQD_SamplingPoint">{$samplingPoint}</td>
                 <td title="Assessment Type in C">{$typeC}</td>
                 <td title="Assessment Type in C preliminary">{$typeCPrel}</td> 
@@ -838,7 +857,7 @@ let $C24errorClass := if (contains($source_url, "c_preliminary")) then $errors:W
 let $C24invalid :=
     try {
         for $x in $docRoot//aqd:AQD_AssessmentRegime/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:modelAssessmentMetadata
-        where not($x/@xlink:href = $latestModels) (:latest model coge el ultimo envelope de d1b:)
+        where not($x/@xlink:href = distinct-values($models)) 
         return
             <tr>
                 <td title="aqd:AQD_AssessmentRegime">{string($x/../../../aqd:inspireId/base:Identifier/base:localId)}</td>
@@ -866,18 +885,22 @@ let $C26table :=
     try {
         let $startDate := $reportingYear || "-01-01"
         let $endDate := $reportingYear || "-12-31"
-        let $modelMethods := distinct-values(data(sparqlx:run(query:getModelEndPosition($modelsEnvelope, $startDate, $endDate))//sparql:binding[@name='inspireLabel']/sparql:literal))
-        let $sampingPointMethods := distinct-values(data(sparqlx:run(query:getSamplingPointEndPosition($latestEnvelopeD,$startDate,$endDate))//sparql:binding[@name='inspireLabel']/sparql:literal))
+        let $modelMethods := 
+                            for $x in $modelsEnvelope2
+                                let $ModelsEndPosition := distinct-values(data(sparqlx:run(query:getModelEndPosition($modelsEnvelope, $startDate, $endDate))//sparql:binding[@name='inspireLabel']/sparql:literal))
+                            return $ModelsEndPosition
+
+        let $sampingPointMethods := distinct-values(data(sparqlx:run(query:getSamplingPointEndPosition($modelsEnvelope,$startDate,$endDate))//sparql:binding[@name='inspireLabel']/sparql:literal))
 
         let $startDate := xs:string(xs:integer($reportingYear) - 2) || "-01-01"
         let $endDate := $reportingYear || "-12-31"
         let $modelMethods2Y := distinct-values(data(sparqlx:run(query:getModelEndPosition($modelsEnvelope, $startDate, $endDate))//sparql:binding[@name='inspireLabel']/sparql:literal))
-        let $sampingPointMethods2Y := distinct-values(data(sparqlx:run(query:getSamplingPointEndPosition($latestEnvelopeD,$startDate,$endDate))//sparql:binding[@name='inspireLabel']/sparql:literal))
+        let $sampingPointMethods2Y := distinct-values(data(sparqlx:run(query:getSamplingPointEndPosition($modelsEnvelope, $startDate, $endDate))//sparql:binding[@name='inspireLabel']/sparql:literal))
 
         let $startDate := xs:string(xs:integer($reportingYear) - 4) || "-01-01"
         let $endDate := $reportingYear || "-12-31"
         let $modelMethods4Y := distinct-values(data(sparqlx:run(query:getModelEndPosition($modelsEnvelope, $startDate, $endDate))//sparql:binding[@name='inspireLabel']/sparql:literal))
-        let $sampingPointMethods4Y := distinct-values(data(sparqlx:run(query:getSamplingPointEndPosition($latestEnvelopeD,$startDate,$endDate))//sparql:binding[@name='inspireLabel']/sparql:literal))
+        let $sampingPointMethods4Y := distinct-values(data(sparqlx:run(query:getSamplingPointEndPosition($modelsEnvelope, $startDate, $endDate))//sparql:binding[@name='inspireLabel']/sparql:literal))
 
         for $method in $docRoot//aqd:AQD_AssessmentRegime/aqd:assessmentMethods/aqd:AssessmentMethods
         let $modelMetaCount := count($method/aqd:modelAssessmentMetadata)
@@ -1463,10 +1486,10 @@ return
         {html:build1("C01", $labels:C01, $labels:C01_SHORT, $C01table, "", string(count($C01table)), "", "", $errors:C01)}
         {html:buildSimple("C02", $labels:C02, $labels:C02_SHORT, $C02table, "", "record", $C02errorLevel)}
         {html:buildSimple("C03", $labels:C03, $labels:C03_SHORT, $C03table, "", "record", $C03errorLevel)}
-        {html:build2("C03a", $labels:C03a, $labels:C03a_SHORT, ($C03afunc, $C03a2func), "All values are valid", " Assessment Methods missing", $errors:C03a)}
+        {html:build2("C03a", $labels:C03a, $labels:C03a_SHORT, ($C03afunc, $C03a2func), "All values are valid", " Assessment Regime missing found", $errors:C03a)}
        <!-- {html:build2("C03b", $labels:C03b, $labels:C03b_SHORT, $C03bfunc, "All values are valid", " Assessment Methods missing", $errors:C03b)}-->
-        {html:buildNoCount("C03b", $labels:C03b, $labels:C03b_SHORT, $C03bfunc, "", "Record", $errors:C03b)}
-        {html:buildNoCount("C03c", $labels:C03c, $labels:C03c_SHORT, $C03cfunc, "", "Record", $errors:C03c)}
+        {html:buildNoCount("C03b", $labels:C03b, $labels:C03b_SHORT, $C03bfunc, "All values are valid", "missing Sampling Points found", $errors:C03b)}
+        {html:buildNoCount("C03c", $labels:C03c, $labels:C03c_SHORT, $C03cfunc, "All values are valid", "mismatches of assessment type found", $errors:C03c)}
         {html:build2("C03d", $labels:C03d, $labels:C03d_SHORT, $C03dinvalid, "All values are valid", " New Assessment Methods", $errors:C03d)}
         {html:build2("C04", $labels:C04, $labels:C04_SHORT, $C04invalid, "No duplicates found", " duplicate", $errors:C04)}
         {html:build2("C05", $labels:C05, $labels:C05_SHORT, $C05invalid, "No duplicates found", " duplicate", $errors:C05)}
