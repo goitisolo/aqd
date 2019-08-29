@@ -144,6 +144,8 @@ declare function query:getC27($url as xs:string?) as xs:string {
   }"
 };
 
+
+
 (: M :)
 declare function query:getModel($url as xs:string) as xs:string {
   "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -518,23 +520,33 @@ declare function query:getModelEndPosition(
   let $filters := string-join($filters, "")
   return
     concat("
+
+
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
 PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX rod: <http://rod.eionet.europa.eu/schema.rdf#>
 
-SELECT DISTINCT ?inspireLabel
-    WHERE {
-        ?zone a aqd:AQD_Model ;
-        aqd:inspireId ?inspireId .
-        ?inspireId rdfs:label ?inspireLabel .
-        ?zone aqd:observingCapability ?observingCapability .
-        ?observingCapability aqd:observingTime ?observingTime .
-        ?observingTime aqd:beginPosition ?beginPosition .
-        optional {?observingTime aqd:endPosition ?endPosition} .
-        FILTER(xsd:date(SUBSTR(xsd:string(?beginPosition),1,10)) <= xsd:date('", $endDate, "')) .
-        FILTER(!bound(?endPosition) or (xsd:date(SUBSTR(xsd:string(?endPosition),1,10)) > xsd:date('", $startDate, "'))) .
-        FILTER(", $filters, ")
-}")
+        SELECT DISTINCT ?inspireLabel
+        WHERE {
+        GRAPH ?file {
+            ?zone a aqd:AQD_SamplingPoint . 
+         }
+         ", $latestDEnvelopes ," rod:hasFile ?file.
+            ?zone aqd:inspireId ?inspireId .
+            ?inspireId rdfs:label ?inspireLabel .
+            ?zone aqd:observingCapability ?observingCapability .
+            ?observingCapability aqd:observingTime ?observingTime .
+            ?observingTime aqd:beginPosition ?beginPosition .
+            optional {?observingTime aqd:endPosition ?endPosition }
+            FILTER(xsd:date(SUBSTR(xsd:string(?beginPosition),1,10)) <= xsd:date('", $endDate, "')) .
+            FILTER(!bound(?endPosition) or (xsd:date(SUBSTR(xsd:string(?endPosition),1,10)) > xsd:date('", $startDate, "'))) .
+#           FILTER(", $filters ,")
+}
+
+
+")
 };
 
 declare function query:getSamplingPointEndPosition(
@@ -564,8 +576,8 @@ declare function query:getSamplingPointEndPosition(
             ?zone aqd:observingCapability ?observingCapability .
             ?observingCapability aqd:observingTime ?observingTime .
             ?observingTime aqd:beginPosition ?beginPosition .
-            optional {?observingTime aqd:endPosition ?endPosition }
-            FILTER(xsd:date(SUBSTR(xsd:string(?beginPosition),1,10)) <= xsd:date('", $endDate, "')) .
+            optional {?observingTime aqd:endPosition ?endPosition } .
+            FILTER(xsd:date(SUBSTR(xsd:string(?beginPosition),1,10)) <= xsd:date('", $startDate, "')) .
             FILTER(!bound(?endPosition) or (xsd:date(SUBSTR(xsd:string(?endPosition),1,10)) > xsd:date('", $startDate, "'))) .
             FILTER(", $filters, ")
     }")
@@ -606,6 +618,23 @@ declare function query:getLatestEnvelope($cdrUrl as xs:string) as xs:string {
 limit 1"
   let $result := data(sparqlx:run($query)//sparql:binding[@name='envelope']/sparql:uri)
   return if ($result) then $result else "FILENOTFOUND"
+};
+
+declare function query:getEnvelopes(
+    $cdrUrl as xs:string
+) as xs:string* {
+  let $query :=
+    "PREFIX aqd: <http://rod.eionet.europa.eu/schema.rdf#>
+     SELECT *
+     WHERE {
+        ?envelope a aqd:Delivery ;
+        aqd:released ?date ;
+        aqd:hasFile ?file ;
+        aqd:period ?period
+        FILTER(CONTAINS(str(?envelope), '" || $cdrUrl || "'))
+     } order by desc(?date)"
+     let $result := data(sparqlx:run($query)//sparql:binding[@name='envelope']/sparql:uri)
+  return $result
 };
 
 declare function query:getEnvelopes(
@@ -1117,6 +1146,22 @@ declare function query:getModelSampling($url as xs:string) as xs:string {
    PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
 
    SELECT ?samplingPoint ?inspireLabel
+   WHERE {
+         ?samplingPoint a aqd:AQD_Model;
+         aqd:inspireId ?inspireId .
+         ?inspireId rdfs:label ?inspireLabel .
+         ?inspireId aqd:localId ?localId .
+         ?inspireId aqd:namespace ?namespace .
+   FILTER(CONTAINS(str(?samplingPoint), '" || $url || "'))
+   }"
+};
+
+declare function query:getModelSampling2($url as xs:string) as xs:string {
+  "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+   PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
+   PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+
+   SELECT ?inspireLabel
    WHERE {
          ?samplingPoint a aqd:AQD_Model;
          aqd:inspireId ?inspireId .
