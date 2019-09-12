@@ -225,7 +225,7 @@ declare function query:existsViaNameLocalIdYear(
 };
 
 
-(: G :)
+(: G 
 declare function query:getAttainment($url as xs:string) as xs:string {
   "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
    PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
@@ -238,7 +238,47 @@ declare function query:getAttainment($url as xs:string) as xs:string {
       ?inspireId rdfs:label ?inspireLabel .
       FILTER (CONTAINS(str(?attainment), '" || $url || "'))
    }"
+};:)
+
+(: G :)
+declare function query:getAttainment($url as xs:string) as xs:string {
+  "PREFIX rod: <http://rod.eionet.europa.eu/schema.rdf#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
+PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+
+   SELECT ?inspireLabel
+   WHERE {
+     GRAPH ?file {
+      ?attainment a aqd:AQD_Attainment;
+      aqd:inspireId ?inspireId .
+      ?inspireId rdfs:label ?inspireLabel .
+  }
+     '" || $url || "' rod:hasFile ?file
+             
+   }"
 };
+(: G 
+declare function query:getAttainmentNew($countryCode as xs:string,$obligation as xs:string) as xs:string {
+  "PREFIX rod: <http://rod.eionet.europa.eu/schema.rdf#>
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
+    PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+
+       SELECT ?inspireLabel
+       WHERE {
+         GRAPH ?file {
+          ?attainment a aqd:AQD_Attainment;
+          aqd:inspireId ?inspireId .
+          ?inspireId rdfs:label ?inspireLabel .
+      }
+       ?envelope rod:hasFile ?file;
+                 rod:obligation <" || $obligation || ">;
+                 rod:locality _:locurl .
+       _:locurl rod:loccode '" || $countryCode || "'.
+       
+       }"
+};:)
 
 (: G89 :)
 declare function query:getAssessmentMethodsC($envelope as xs:string, $assessment as xs:string) as xs:string {
