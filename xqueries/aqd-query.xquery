@@ -225,7 +225,7 @@ declare function query:existsViaNameLocalIdYear(
 };
 
 
-(: G 
+(: G :)
 declare function query:getAttainment($url as xs:string) as xs:string {
   "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
    PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
@@ -238,9 +238,9 @@ declare function query:getAttainment($url as xs:string) as xs:string {
       ?inspireId rdfs:label ?inspireLabel .
       FILTER (CONTAINS(str(?attainment), '" || $url || "'))
    }"
-};:)
+};
 
-(: G :)
+(: G 
 declare function query:getAttainment($url as xs:string) as xs:string {
   "PREFIX rod: <http://rod.eionet.europa.eu/schema.rdf#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -257,7 +257,8 @@ PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
      '" || $url || "' rod:hasFile ?file
              
    }"
-};
+};:)
+
 (: G 
 declare function query:getAttainmentNew($countryCode as xs:string,$obligation as xs:string) as xs:string {
   "PREFIX rod: <http://rod.eionet.europa.eu/schema.rdf#>

@@ -729,7 +729,7 @@ let $E25binvalid :=
                         
                     </tr>
                            else()
-            else if (($headerBeginPosition - xs:dayTimeDuration("P28D")) > $beginPosition or ($headerEndPosition + xs:dayTimeDuration("P28D")) < $endPosition ) then
+            else if (($headerBeginPosition - xs:dayTimeDuration("P42D")) > $beginPosition or ($headerEndPosition + xs:dayTimeDuration("P42D")) < $endPosition ) then
                 
                     <tr>
                         <td title="@gml:id">{string($x/@gml:id)}</td>
@@ -748,8 +748,7 @@ let $E25binvalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
-
-
+    
 (: E26 :)
 let $E26invalid :=
     try {
