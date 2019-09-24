@@ -72,6 +72,7 @@ let $latestEnvelopeD1b := query:getLatestEnvelope($cdrUrl || "d1b/", $reportingY
 let $latestEnvelopeByYearG := query:getLatestEnvelope($cdrUrl || "g/", $reportingYear)
 
 let $envelopesC := query:getEnvelopes($cdrUrl || "c/", $reportingYear)
+let $latestEnvelopeC := query:getLatestEnvelope($cdrUrl || "c/", $reportingYear)
 let $envelopesE1a := query:getEnvelopes($cdrUrl || "e1a/", $reportingYear)
 let $envelopesE1b := query:getEnvelopes($cdrUrl || "e1b/", $reportingYear)
 
@@ -111,7 +112,7 @@ let $samplingPoints :=
     let $results := sparqlx:run(query:getAssessmentMethodsE($envelopeE1a))
     return distinct-values(
             for $i in $results
-            return $i/sparql:binding[@name='assessmentMethod']/sparql:uri
+            return $i
     )
 
 let $modelAssessments := 
@@ -119,7 +120,7 @@ let $modelAssessments :=
     let $results := sparqlx:run(query:getAssessmentMethodsE($envelopeE1b))
     return distinct-values(
             for $i in $results
-            return $i/sparql:binding[@name='assessmentMethod']/sparql:uri
+            return $i
     )
 
 (: File prefix/namespace check :)
@@ -1602,22 +1603,34 @@ let $G89invalid :=
         for $x in $docRoot//aqd:AQD_Attainment/aqd:assessment/@xlink:href
         let $assessment := functx:substring-after-last($x, '/')        
             for $envelopeC in $envelopesC
-            let $assessmentMethods := sparqlx:run(query:getAssessmentMethodsC($envelopeC, $assessment))
-                for $assessmentMethod in $assessmentMethods
+            let $sampling :=
+            let $assessmentMethodsSampling := sparqlx:run(query:getAssessmentMethodsCSamplingPoint($latestEnvelopeC, $assessment))
+                for $assessmentMethod in $assessmentMethodsSampling
                     return
-                    if (not(empty($assessmentMethod/sparql:binding[@name='samplingPointAssessmentMetadata']/sparql:uri))) then  
-                        if ($samplingPoints = $assessmentMethod/sparql:binding[@name='samplingPointAssessmentMetadata']/sparql:uri) then ()
+                    if (not(empty($assessmentMethod))) then  
+                        if ($samplingPoints = $assessmentMethod) then ()
                         else   
                             <tr>
-                                <td title="Not found">{"Sampling Point Assessment for: " || functx:substring-after-last(string($assessmentMethod/sparql:binding[@name='samplingPointAssessmentMetadata']/sparql:uri), '/')}</td>
-                            </tr>                         
-                    else if (not(empty($assessmentMethod/sparql:binding[@name='modelAssessmentMetadata']/sparql:uri))) then
-                        if ($modelAssessments = $assessmentMethod/sparql:binding[@name='modelAssessmentMetadata']/sparql:uri) then ()
+                                 <td title="Not found">{"Sampling Point Assessment for: " || functx:substring-after-last(string($assessmentMethod), '/')}</td>
+                            </tr>   
+            let $models := 
+            let $assessmentMethodsModels := sparqlx:run(query:getAssessmentMethodsCModels($latestEnvelopeC, $assessment))
+                for $assessmentMethod in $assessmentMethodsModels
+                    return
+                    if (not(empty($assessmentMethod))) then  
+                        if ($modelAssessments = $assessmentMethod) then ()
                         else   
                             <tr>
-                                <td title="Not found">{"Model Assessment for: " || functx:substring-after-last(string($assessmentMethod/sparql:binding[@name='modelAssessmentMetadata']/sparql:uri), '/')}</td>
-                            </tr>
-                    else () 
+                                 <td title="Not found">{"Model Point Assessment for: " || functx:substring-after-last(string($assessmentMethod), '/')}</td>
+                            </tr>                                         
+
+        let $countModels := count($models)
+        let $countSampling := count($sampling)
+        return 
+            if($countSampling = 0 and $countModels = 0) then () 
+            
+            else 
+            (($models), ($sampling))
     } catch * {
         <tr class="{$errors:FAILED}">
             <td title="Error code">{$err:code}</td>
@@ -1694,7 +1707,7 @@ return
         {html:build2("G81", $labels:G81, $labels:G81_SHORT, $G81invalid, "All values are valid", " invalid value", $errors:G81)}
         {html:build2("G85", $labels:G85, $labels:G85_SHORT, $G85invalid, "All values are valid", " invalid value", $errors:G85)}
         {html:build2("G86", $labels:G86, $labels:G86_SHORT, $G86invalid, "All values are valid", " invalid value", $errors:G86)}
-        {html:build2("G89", $labels:G89, $labels:G89_SHORT, $G89invalid, "All values are valid", " invalid value", $errors:G89)}
+        {html:buildNoCount2("G89", $labels:G89, $labels:G89_SHORT, $G89invalid, "All values are valid", "Invalid value found", $errors:G89)}
         {$G82invalid}
     </table>
 };

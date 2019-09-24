@@ -308,6 +308,20 @@ declare function html:buildNoCount($ruleCode as xs:string, $longText, $text, $re
     return html:buildGeneric($ruleCode, $longText, $text, $records, $message, $bulletType)
 };
 
+declare function html:buildNoCount2($ruleCode as xs:string, $longText, $text, $records as element(tr)*, $message as xs:string, $unit as xs:string, $errorLevel as xs:string) {
+    let $data := html:parseData($records, "data")
+
+    let $countRecords := count($records)
+    let $message :=
+        if ($countRecords = 0) then
+            $message
+        else 
+            $unit
+        
+    let $bulletType := $errorLevel
+    return html:buildGeneric($ruleCode, $longText, $text, $records, $message, $bulletType)
+};
+
 declare function html:build0($ruleCode as xs:string, $longText, $text, $records as element(tr)*, $unit as xs:string) {
     let $data := html:parseData($records, "data")
 
