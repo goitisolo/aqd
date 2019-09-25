@@ -341,7 +341,7 @@ declare function query:getAssessmentMethodsE($envelope as xs:string) {
    PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
    PREFIX om: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
 
-   SELECT DISTINCT ?assessmentMethod
+   SELECT DISTINCT replace(str(?assessmentMethod),'http://reference.eionet.europa.eu/aq/','') as ?assessmentMethod
    WHERE {
       ?observation a om:OM_Observation;
       om:parameter ?parameter .
