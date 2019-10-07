@@ -296,20 +296,30 @@ declare function html:buildSimple($ruleCode as xs:string, $longText, $text, $rec
 declare function html:buildNoCount($ruleCode as xs:string, $longText, $text, $records as element(tr)*, $message as xs:string, $unit as xs:string, $errorLevel as xs:string) {
     let $data := html:parseData($records, "data")
 
+    let $metadata := html:parseData($records, "metadata")
+    let $skipped := $metadata/count = "0"
+
     let $countRecords := count($records)
     let $message :=
         if ($countRecords = 0) then
-            "No records found"
-        else if ($message) then
             $message
+        else 
+            $unit || substring("s ", number(not($countRecords > 1)) * 2)
+    let $bulletType :=
+        if ($skipped) then
+            $errors:SKIPPED
+        else if (count($data) = 0) then
+            $errors:INFO
         else
-            $unit || substring("s ", number(not($countRecords > 1)) * 2) || " found"
-    let $bulletType := $errorLevel
+            $errorLevel
     return html:buildGeneric($ruleCode, $longText, $text, $records, $message, $bulletType)
 };
 
 declare function html:buildNoCount2($ruleCode as xs:string, $longText, $text, $records as element(tr)*, $message as xs:string, $unit as xs:string, $errorLevel as xs:string) {
     let $data := html:parseData($records, "data")
+
+    let $metadata := html:parseData($records, "metadata")
+    let $skipped := $metadata/count = "0"
 
     let $countRecords := count($records)
     let $message :=
@@ -317,8 +327,15 @@ declare function html:buildNoCount2($ruleCode as xs:string, $longText, $text, $r
             $message
         else 
             $unit
-        
-    let $bulletType := $errorLevel
+
+    let $bulletType :=
+        if ($skipped) then
+            $errors:SKIPPED
+        else if (count($data) = 0) then
+            $errors:INFO
+        else
+            $errorLevel
+
     return html:buildGeneric($ruleCode, $longText, $text, $records, $message, $bulletType)
 };
 
