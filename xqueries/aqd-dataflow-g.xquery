@@ -122,7 +122,6 @@ let $modelAssessments :=
             for $i in $results
             return $i
     )
-
 (: File prefix/namespace check :)
 let $NSinvalid :=
     try {
@@ -644,20 +643,23 @@ let $G14binvalid :=
         let $exception := ($vocabulary:OBJECTIVETYPE_VOCABULARY || "ALT", $vocabulary:OBJECTIVETYPE_VOCABULARY || "INT", $vocabulary:OBJECTIVETYPE_VOCABULARY || "MO")
         let $query :=
             "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-   PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
-   PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+           PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
+           PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+           PREFIX rod: <http://rod.eionet.europa.eu/schema.rdf#>
 
-   SELECT ?localId ?inspireLabel
-   WHERE {
-          ?regime a aqd:AQD_AssessmentRegime ;
-          aqd:inspireId ?inspireId ;
-          aqd:assessmentThreshold ?assessmentThreshold .
-          ?inspireId rdfs:label ?inspireLabel .
-          ?inspireId aqd:localId ?localId .
-          ?assessmentThreshold aqd:environmentalObjective ?objective .
-          ?objective aqd:objectiveType ?objectiveType .
-          FILTER (CONTAINS(str(?regime), '" || $latestEnvelopeByYearC || "'))
-          FILTER (!(str(?objectiveType) in ('" || string-join($exception, "','") || "')))
+           SELECT ?localId ?inspireLabel
+           WHERE {
+                GRAPH ?file{
+                  ?regime a aqd:AQD_AssessmentRegime ;
+                  aqd:inspireId ?inspireId ;
+                  aqd:assessmentThreshold ?assessmentThreshold .
+                  ?inspireId rdfs:label ?inspireLabel .
+                  ?inspireId aqd:localId ?localId .
+                  ?assessmentThreshold aqd:environmentalObjective ?objective .
+                  ?objective aqd:objectiveType ?objectiveType .
+                  FILTER (!(str(?objectiveType) in ('" || string-join($exception, "','") || "')))
+              }
+                <" || $latestEnvelopeByYearC || "> rod:hasFile ?file
    }"
         let $all := distinct-values(data(sparqlx:run($query)/sparql:binding[@name = 'inspireLabel']/sparql:literal))
         let $allLocal := data($docRoot//aqd:AQD_Attainment[not(aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType/@xlink:href = $exception)]/aqd:assessment/@xlink:href)
@@ -1627,10 +1629,13 @@ let $G89invalid :=
         let $countModels := count($models)
         let $countSampling := count($sampling)
         return 
-            if($countSampling = 0 and $countModels = 0) then () 
+            if($countSampling != 0) then 
+                $sampling
             
-            else 
-            (($models), ($sampling))
+            else if ($countModels != 0) then
+                $models 
+            else
+            ()
     } catch * {
         <tr class="{$errors:FAILED}">
             <td title="Error code">{$err:code}</td>
