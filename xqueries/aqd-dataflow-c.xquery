@@ -962,6 +962,10 @@ let $C26table :=
         </tr>
     }
 
+
+let $C26errorClass := if (contains($source_url, "c_preliminary")) then $errors:WARNING else $errors:C26
+
+
 (: C27 - return all zones listed in the doc :)
 let $C27table :=
     try {
@@ -1505,7 +1509,7 @@ return
         {html:build2("C23b", $labels:C23b, $labels:C23b_SHORT, $C23binvalid, "All values are valid", " invalid value", $errors:C23b)}
         {html:build2("C24", $labels:C24, $labels:C24_SHORT, $C24invalid, "All values are valid", "", $C24errorClass)}
         {html:build2("C25", $labels:C25, $labels:C25_SHORT, $C25invalid, "All values are valid", "", $errors:C25)}
-        {html:build2("C26", $labels:C26, $labels:C26_SHORT, $C26table, "All values are valid", " invalid value", $errors:C26)}
+        {html:build2("C26", $labels:C26, $labels:C26_SHORT, $C26table, "All values are valid", " invalid value", $C26errorClass)}
         {html:build2("C27", labels:interpolate($labels:C27, ($countZoneIds2, $countZoneIds1)), $labels:C27_SHORT, $C27table, "", " not unique zone", $errors:C27)}
         {html:build2("C28", $labels:C28, $labels:C28_SHORT, $C28invalid, "All values are valid", " invalid value", $errors:C28)}
         {html:build2("C29", $labels:C29, $labels:C29_SHORT,  $C29invalid, "All values are valid", " invalid value", $errors:C29)}
