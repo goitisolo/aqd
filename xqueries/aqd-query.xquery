@@ -607,9 +607,9 @@ PREFIX rod: <http://rod.eionet.europa.eu/schema.rdf#>
         SELECT DISTINCT ?inspireLabel
         WHERE {
         GRAPH ?file {
-            ?zone a aqd:AQD_SamplingPoint . 
+            ?zone a aqd:AQD_Model . 
          }
-         ", $latestDEnvelopes ," rod:hasFile ?file.
+         <", $latestDEnvelopes ,"> rod:hasFile ?file.
             ?zone aqd:inspireId ?inspireId .
             ?inspireId rdfs:label ?inspireLabel .
             ?zone aqd:observingCapability ?observingCapability .
@@ -640,23 +640,30 @@ declare function query:getSamplingPointEndPosition(
         concat("CONTAINS(str(?zone), '", $x , "')")
   let $filters := string-join($filters, "")
   return
-    concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    concat("
+
+        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
         PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
         PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+        PREFIX dct: <http://purl.org/dc/terms/>
+        PREFIX rod: <http://rod.eionet.europa.eu/schema.rdf#>
 
         SELECT DISTINCT ?inspireLabel
         WHERE {
-            ?zone a aqd:AQD_SamplingPoint ;
-            aqd:inspireId ?inspireId .
+        GRAPH ?file {
+            ?zone a aqd:AQD_SamplingPoint . 
+         }
+         <", $latestDEnvelopes ,"> rod:hasFile ?file.
+            ?zone aqd:inspireId ?inspireId .
             ?inspireId rdfs:label ?inspireLabel .
             ?zone aqd:observingCapability ?observingCapability .
             ?observingCapability aqd:observingTime ?observingTime .
             ?observingTime aqd:beginPosition ?beginPosition .
-            optional {?observingTime aqd:endPosition ?endPosition } .
-            FILTER(xsd:date(SUBSTR(xsd:string(?beginPosition),1,10)) <= xsd:date('", $startDate, "')) .
+            optional {?observingTime aqd:endPosition ?endPosition }
+            FILTER(xsd:date(SUBSTR(xsd:string(?beginPosition),1,10)) <= xsd:date('", $endDate, "')) .
             FILTER(!bound(?endPosition) or (xsd:date(SUBSTR(xsd:string(?endPosition),1,10)) > xsd:date('", $startDate, "'))) .
-            FILTER(", $filters, ")
-    }")
+#           FILTER(", $filters ,")
+}")
 };
 
 (: Returns latest report envelope for this country and Year :)

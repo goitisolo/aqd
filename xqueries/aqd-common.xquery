@@ -79,7 +79,10 @@ or
 gml:timePosition
 :)
 declare function common:getReportingYear($xml as document-node()) as xs:string {
-    let $year1 := year-from-dateTime($xml//aqd:AQD_ReportingHeader/aqd:reportingPeriod/gml:TimePeriod/gml:beginPosition)
+    let $year1 := if($xml//aqd:AQD_ReportingHeader/aqd:reportingPeriod/gml:TimePeriod/gml:beginPosition castable as xs:dateTime) then  
+                    year-from-dateTime($xml//aqd:AQD_ReportingHeader/aqd:reportingPeriod/gml:TimePeriod/gml:beginPosition)
+                else
+                    ""
     let $year2 := string($xml//aqd:AQD_ReportingHeader/aqd:reportingPeriod/gml:TimeInstant/gml:timePosition)
     return
         if (exists($year1) and $year1 castable as xs:integer) then xs:string($year1)

@@ -295,14 +295,12 @@ try{
     (:let $assessmentCPrelimi := tokenize($x, "###")[2]:)
     
     return
-
+        if(not(contains($source_url, "c_preliminary"))) then 
         <tr>
-            <td title="Assessment Regime (C)">{$localId}</td>
-            <td title="Asessment Regime List (C preliminary)">{$assesmentRegimeInC}</td> 
-            <td title="Assessment Regime (C preliminary)"></td>
-            <td title="Asessment Regime List (C)"></td>
+            <td title="Assessment Regime (C) not found in C preliminary">{$localId}</td>
+            <td title="Assessment Regime (C preliminary) not found in C"></td>
         </tr>
-   
+    else()
         }
         catch * {
         <tr class="{$errors:FAILED}">
@@ -326,14 +324,12 @@ try{
     where not($assesmentRegimeInCPreliminary = $localIdInC)
     
     return
-
+        if(not(contains($source_url, "c_preliminary"))) then
         <tr>
-            <td title="Assessment Regime (C)"></td>
-            <td title="Asessment Regime List (C preliminary)"></td> 
-            <td title="Assessment Regime (C preliminary)">{$localIdInC}</td>
-            <td title="Assessment Regime List (C)">{$assesmentRegimeInCPreliminary}</td>
+            <td title="Assessment Regime (C) not found in C preliminary"></td>
+            <td title="Assessment Regime (C preliminary) not found in C">{$localIdInC}</td>
         </tr>
-   
+        else()
         }
         catch * {
         <tr class="{$errors:FAILED}">
@@ -344,9 +340,7 @@ try{
 
     
 
-
-let $C03bfunc :=
-try{
+let $C03b :=
     let $previousCombinations := query:getC03b($prelimEnvelopeC)
     let $currentCombinations :=
      for $x in $docRoot//aqd:AQD_AssessmentRegime
@@ -362,10 +356,28 @@ try{
         let $samplingPoint := tokenize($x, "###")[2]
     where not($x = $currentCombinations)
     return
+         <result>
+                <xPreviousComb>{$x}</xPreviousComb>
+                <samplingPoint>{$samplingPoint}</samplingPoint>
+        </result>
+
+let $C03bfunc :=
+try{
+    
+    let $count := count($C03b)
+    for $i in $C03b
+         let $previousComb:= $i/xPreviousComb
+         let $samplin := $i/samplingPoint
+         
+    where not($count = 0)
+
+    return
+      if(not(contains($source_url, "c_preliminary"))) then 
         <tr>
-            <td title="Assessment Regime (C)">{$x}</td>
-            <td title="Missing SamplingPoint compared to C preliminary">{$samplingPoint}</td>
+            <td title="Assessment Regime (C)">{$previousComb}</td>
+            <td title="Missing SamplingPoint compared to C preliminary">{$samplin}</td>
         </tr>
+      else()
         }
         catch * {
         <tr class="{$errors:FAILED}">
@@ -524,13 +536,18 @@ let $C03cfunc :=
                             <samplingPoint>{$samplingpoint}</samplingPoint>
                             <assessmentType>{$assessmentType}</assessmentType>                            
                          </result>
-            
+        
+        let $C03Blist :=
+            for $x in $C03b
+                let $C03blisted := $x/xPreviousComb
+            return $C03blisted
 
         for $x in $previousCombinationsConcat
 
             let $localId := string($x/localId)
             let $samplingPoint := string($x/samplingPoint)  
             let $typeCPrel :=string($x/assessmentType) 
+            let $combination := string-join(($localId || "###" || $samplingPoint))
             let $typeC:=
 
              for $i in $currentCombinations
@@ -540,19 +557,18 @@ let $C03cfunc :=
                     else ()
 
                     return $TypeTemp
-        
-            where not($typeCPrel = $typeC )  
 
-        return
+                 
+            where not($typeCPrel = $typeC) and not($combination = $C03Blist)
+            return
+      if(not(contains($source_url, "c_preliminary"))) then 
             <tr>
                <td title="Assessment Regime">{$localId}</td>
                 <td title="aqd:AQD_SamplingPoint">{$samplingPoint}</td>
                 <td title="Assessment Type in C">{$typeC}</td>
                 <td title="Assessment Type in C preliminary">{$typeCPrel}</td> 
-                
-    
-
             </tr>
+        else()
     } catch * {
         <tr class="{$errors:FAILED}">
             <td title="Error code">{$err:code}</td>
@@ -579,11 +595,15 @@ let $C03dinvalid :=
         let $localId := tokenize($x, "###")[1]
         let $samplingPoint := tokenize($x, "###")[2]
         where not($x = $previousCombinations)
+
+     
         return
+         if(not(contains($source_url, "c_preliminary"))) then 
             <tr>
                 <td title="Assessment Regime (C)">{$localId}</td>
                 <td title="New SamplingPoint compared to C preliminary">{$samplingPoint}</td>
             </tr>
+      else()
     } catch * {
         <tr class="{$errors:FAILED}">
             <td title="Error code">{$err:code}</td>
@@ -885,22 +905,18 @@ let $C26table :=
     try {
         let $startDate := $reportingYear || "-01-01"
         let $endDate := $reportingYear || "-12-31"
-        let $modelMethods := 
-                            for $x in $modelsEnvelope2
-                                let $ModelsEndPosition := distinct-values(data(sparqlx:run(query:getModelEndPosition($modelsEnvelope, $startDate, $endDate))//sparql:binding[@name='inspireLabel']/sparql:literal))
-                            return $ModelsEndPosition
-
-        let $sampingPointMethods := distinct-values(data(sparqlx:run(query:getSamplingPointEndPosition($modelsEnvelope,$startDate,$endDate))//sparql:binding[@name='inspireLabel']/sparql:literal))
+        let $modelMethods := distinct-values(data(sparqlx:run(query:getModelEndPosition($modelsEnvelope, $startDate, $endDate))//sparql:binding[@name='inspireLabel']/sparql:literal))
+        let $sampingPointMethods := distinct-values(data(sparqlx:run(query:getSamplingPointEndPosition($latestEnvelopeD,$startDate,$endDate))//sparql:binding[@name='inspireLabel']/sparql:literal))
 
         let $startDate := xs:string(xs:integer($reportingYear) - 2) || "-01-01"
         let $endDate := $reportingYear || "-12-31"
         let $modelMethods2Y := distinct-values(data(sparqlx:run(query:getModelEndPosition($modelsEnvelope, $startDate, $endDate))//sparql:binding[@name='inspireLabel']/sparql:literal))
-        let $sampingPointMethods2Y := distinct-values(data(sparqlx:run(query:getSamplingPointEndPosition($modelsEnvelope, $startDate, $endDate))//sparql:binding[@name='inspireLabel']/sparql:literal))
+        let $sampingPointMethods2Y := distinct-values(data(sparqlx:run(query:getSamplingPointEndPosition($latestEnvelopeD,$startDate,$endDate))//sparql:binding[@name='inspireLabel']/sparql:literal))
 
         let $startDate := xs:string(xs:integer($reportingYear) - 4) || "-01-01"
         let $endDate := $reportingYear || "-12-31"
         let $modelMethods4Y := distinct-values(data(sparqlx:run(query:getModelEndPosition($modelsEnvelope, $startDate, $endDate))//sparql:binding[@name='inspireLabel']/sparql:literal))
-        let $sampingPointMethods4Y := distinct-values(data(sparqlx:run(query:getSamplingPointEndPosition($modelsEnvelope, $startDate, $endDate))//sparql:binding[@name='inspireLabel']/sparql:literal))
+        let $sampingPointMethods4Y := distinct-values(data(sparqlx:run(query:getSamplingPointEndPosition($latestEnvelopeD,$startDate,$endDate))//sparql:binding[@name='inspireLabel']/sparql:literal))
 
         for $method in $docRoot//aqd:AQD_AssessmentRegime/aqd:assessmentMethods/aqd:AssessmentMethods
         let $modelMetaCount := count($method/aqd:modelAssessmentMetadata)
@@ -964,7 +980,6 @@ let $C26table :=
 
 
 let $C26errorClass := if (contains($source_url, "c_preliminary")) then $errors:WARNING else $errors:C26
-
 
 (: C27 - return all zones listed in the doc :)
 let $C27table :=
@@ -1490,10 +1505,10 @@ return
         {html:build1("C01", $labels:C01, $labels:C01_SHORT, $C01table, "", string(count($C01table)), "", "", $errors:C01)}
         {html:buildSimple("C02", $labels:C02, $labels:C02_SHORT, $C02table, "", "record", $C02errorLevel)}
         {html:buildSimple("C03", $labels:C03, $labels:C03_SHORT, $C03table, "", "record", $C03errorLevel)}
-        {html:build2("C03a", $labels:C03a, $labels:C03a_SHORT, ($C03afunc, $C03a2func), "All values are valid", " Assessment Regime missing found", $errors:C03a)}
+        {html:build2("C03a", $labels:C03a, $labels:C03a_SHORT, ($C03afunc, $C03a2func), "All values are valid", " Assessment Regime missing", $errors:C03a)}
        <!-- {html:build2("C03b", $labels:C03b, $labels:C03b_SHORT, $C03bfunc, "All values are valid", " Assessment Methods missing", $errors:C03b)}-->
-        {html:buildNoCount("C03b", $labels:C03b, $labels:C03b_SHORT, $C03bfunc, "All values are valid", "missing Sampling Points found", $errors:C03b)}
-        {html:buildNoCount("C03c", $labels:C03c, $labels:C03c_SHORT, $C03cfunc, "All values are valid", "mismatches of assessment type found", $errors:C03c)}
+        {html:buildNoCount("C03b", $labels:C03b, $labels:C03b_SHORT, $C03bfunc, "All values are valid", "Missing Assessment Method", $errors:C03b)}
+        {html:buildNoCount2("C03c", $labels:C03c, $labels:C03c_SHORT, $C03cfunc, "All values are valid", "Mismatches of assessment type found", $errors:C03c)}
         {html:build2("C03d", $labels:C03d, $labels:C03d_SHORT, $C03dinvalid, "All values are valid", " New Assessment Methods", $errors:C03d)}
         {html:build2("C04", $labels:C04, $labels:C04_SHORT, $C04invalid, "No duplicates found", " duplicate", $errors:C04)}
         {html:build2("C05", $labels:C05, $labels:C05_SHORT, $C05invalid, "No duplicates found", " duplicate", $errors:C05)}

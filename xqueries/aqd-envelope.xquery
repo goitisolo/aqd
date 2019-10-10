@@ -135,6 +135,26 @@ declare function envelope:checkFileReportingHeader($envelope as element(envelope
                 <td title="Error description">{$err:description}</td>
             </tr>
         }
+    let $noXMLextension :=
+    try {
+         
+         
+        let $count := count($envelope/file[contains(@name,".xml")])
+            
+
+        return
+        if ($count = 0) then
+            <tr>
+                <td title="File">{$file}</td>
+            </tr>
+        else
+            ()
+    }  catch * {
+        <tr class="{$errors:FAILED}">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
     let $resultTable :=
         <table class="maintable hover" id="fileLink-{$pos}" style="display:none">
             {html:build2("1", $labels:ENV1, $labels:ENV1, $containsAqdReportingHeader, "Check passed", "", $errors:ERROR)}
@@ -142,6 +162,7 @@ declare function envelope:checkFileReportingHeader($envelope as element(envelope
             {html:build2("3", $labels:ENV3, $labels:ENV3, $missingAqdReportingHeaderSubElements, "Check passed", "", $errors:ERROR)}
             {html:build2("4", $labels:ENV4, $labels:ENV4, $missingElementsIfAqdChangeIsTrue, "Check passed", "", $errors:ERROR)}
             {html:build2("5", $labels:ENV5, $labels:ENV5, $appearingElementsIfAqdChangeIsFalse, "Check passed", "", $errors:ERROR)}
+            {html:build2("6", $labels:ENV6, $labels:ENV6, $noXMLextension, "Check passed", "", $errors:BLOCKER)}
         </table>
     let $resultErrorClass :=
         errors:getMaxError($resultTable//div)
@@ -163,7 +184,7 @@ declare function envelope:checkFileReportingHeader($envelope as element(envelope
 };
 
 declare function envelope:getObligationMinMaxYear($envelope as element(envelope)) as element(year) {
-    let $deadline := 2019
+    let $deadline := 2018
     let $part1_deadline := xs:date(concat($deadline, "-01-31"))
     let $part3_deadline := xs:date(concat($deadline, "-03-31"))
     let $id := substring-after($envelope/obligation, $vocabulary:OBLIGATIONS)
@@ -277,7 +298,7 @@ declare function envelope:validateEnvelope($source_url as xs:string) as element(
 
     let $errorCount := count($env1[tokenize(@class, "\s+") = $errors:ERROR]) + count($env1[tokenize(@class, "\s+") = $errors:FAILED]) +
             count($env2[tokenize(@class, "\s+") = $errors:ERROR]) + count($env2[tokenize(@class, "\s+") = $errors:FAILED]) +
-            count($env3//div[tokenize(@class, "\s+") = $errors:ERROR]) + count($env3//div[tokenize(@class, "\s+") = $errors:FAILED])
+            count($env3//div[tokenize(@class, "\s+") = $errors:ERROR or tokenize(@class, "\s+") = $errors:BLOCKER] ) + count($env3//div[tokenize(@class, "\s+") = $errors:FAILED])
     let $errorLevel :=
         if ($errorCount = 0) then
             "INFO"
