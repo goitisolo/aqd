@@ -22,6 +22,7 @@ declare variable $labels:ENV2 := "The (start) year value must be equal to the ye
 declare variable $labels:ENV3 := "aqd:AQD_ReportingHeader must include aqd:inspireId, aqd:reportingAuthority, aqd:change elements";
 declare variable $labels:ENV4 := "For aqd:AQD_ReportingHeader, if aqd:change='true', the following information must also be provided: aqd:AQD_ReportingHeader/aqd:changeDescription and aqd:AQD_ReportingHeader/aqd:content";
 declare variable $labels:ENV5 := "For aqd:AQD_ReportingHeader, if aqd:change='false', element aqd:content IS NOT expected.";
+declare variable $labels:ENV6 := labels:getDefinition("6");
 
 (: QC Labels :)
 declare variable $labels:XML := labels:getDefinition("XML");
