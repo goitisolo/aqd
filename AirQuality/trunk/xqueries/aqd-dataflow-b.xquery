@@ -464,6 +464,209 @@ let $B10.1invalid :=
         </tr>
     }
 
+    
+let $combinations :=
+            <combinations>
+                <combination pollutant="1" protectionTarget="H"/>
+                <combination pollutant="7" protectionTarget="H"/>
+                <combination pollutant="8" protectionTarget="H"/>
+                <combination pollutant="5" protectionTarget="H"/>
+                <combination pollutant="6001" protectionTarget="H"/>
+                <combination pollutant="10" protectionTarget="H"/>
+                <combination pollutant="20" protectionTarget="H"/>
+                <combination pollutant="5012" protectionTarget="H"/>
+                <combination pollutant="5018" protectionTarget="H"/>
+                <combination pollutant="5014" protectionTarget="H"/>
+                <combination pollutant="5015" protectionTarget="H"/>
+                <combination pollutant="5029" protectionTarget="H"/>
+            </combinations>
+
+let $conbicount := 
+    for $x in $combinations/combination
+        return count($x)
+(: B11 :)
+let $B11table :=
+
+    try {
+        let $B11tmp :=
+            for $x in $docRoot//aqd:AQD_Zone
+                let $beginPosition := geox:parseDateTime($x/am:designationPeriod//gml:beginPosition)
+                let $endPosition := geox:parseDateTime($x/am:designationPeriod//gml:endPosition)
+                let $population := $x/aqd:residentPopulation
+                    for $pollutantNode in $x/aqd:pollutants/aqd:Pollutant
+                    let $pollutant := string($pollutantNode/aqd:pollutantCode/@xlink:href)
+                    let $zone := string($pollutantNode/../../am:inspireId/base:Identifier/base:localId)
+                    let $protectionTarget := string($pollutantNode/aqd:protectionTarget/@xlink:href)
+                    let $key := string-join(($zone, $pollutant, $protectionTarget), "#")
+                    
+                    
+            where common:isDateTimeIncluded($reportingYear, $beginPosition, $endPosition)
+            (:group by $pollutant, $protectionTarget:)
+            return
+                <result>
+                    <pollutantName>{dd:getNameFromPollutantCode($pollutant)}</pollutantName>
+                    <pollutantCode>{tokenize($pollutant, "/")[last()]}</pollutantCode>
+                    <protectionTarget>{$protectionTarget}</protectionTarget>
+                    <population>{$population}</population>
+                    <count>{count(distinct-values($key))}</count>
+                </result>
+
+        
+
+            let $NamespaceDD := 
+             for $x in doc($vocabulary:AQD_Namespace || "rdf")//skos:Concept
+              
+                let $currentCountry := string(fn:upper-case($countryCode))
+                let $countryyy := string($x/prop:inCountry/@rdf:resource)
+                let $length := fn:string-length($countryyy) - 1
+                let $sbst := fn:substring($countryyy, $length, 2)
+                let $population :=  $x/prop:Population
+                
+                where ($currentCountry = $sbst)            
+
+                return $population
+            
+           
+            
+            for $x in $combinations/combination
+                let $pollutant := $x/@pollutant
+                let $protectionTarget := $vocabulary:PROTECTIONTARGET_VOCABULARY || $x/@protectionTarget
+                let $elem := $B11tmp[pollutantCode = $pollutant and protectionTarget = $protectionTarget]
+                let $count := string($elem/count)
+                let $pupulation := $elem/population 
+                let $pupulationSum := sum($pupulation)
+                let $pop5less := fn:round(distinct-values($NamespaceDD) * 0.95)
+                let $pop5more := fn:round(distinct-values($NamespaceDD) * 1.05)
+                let $goodOrNo := 
+                                let $test := sum($pupulation) > $pop5less and sum($pupulation) < $pop5more
+                                return  if(empty($pupulation) and $pupulationSum = 0) then 
+                                            "..."
+                                        else if($test = false())then 
+                                            "Fail"
+                                        else("OK")
+                
+                let $goodOrNocount := $goodOrNo 
+               return 
+                    if(count($goodOrNo = "OK" or $goodOrNo = "...") != 0 )then (:Revisar este If, proque sale siempre el error:)
+                <tr>
+                    <td title="pollutant">{data($pollutant)}</td> 
+                    <td title="protectionTarget">{$protectionTarget}</td>
+                    <td title="PopulationSum">{$pupulationSum}</td>
+                    <td title="Status">{$goodOrNo}</td>
+                    <td title="PopulationDD-5">{$pop5less}</td>
+                    <td title="PopulationDD+5">{$pop5more}</td>
+                </tr>
+                else()
+                
+    } catch * {
+        <tr class="{$errors:FAILED}">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
+
+    let $B11count := 
+                    for $x in $B11table/td[4]
+                            where $x = "OK" or $x = "..."
+                            return count($x)
+
+    let $B11errorLevel :=
+         
+        if (sum($B11count) = sum($conbicount)) then
+            $errors:INFO
+        else
+            $errors:B11
+
+    
+
+(:B12:)
+let $B12table :=
+
+    try {
+        let $B12tmp :=
+            for $x in $docRoot//aqd:AQD_Zone
+                let $beginPosition := geox:parseDateTime($x/am:designationPeriod//gml:beginPosition)
+                let $endPosition := geox:parseDateTime($x/am:designationPeriod//gml:endPosition)
+                let $area := $x/aqd:area
+                
+                    for $pollutantNode in $x/aqd:pollutants/aqd:Pollutant
+                    let $pollutant := string($pollutantNode/aqd:pollutantCode/@xlink:href)
+                    let $zone := string($pollutantNode/../../am:inspireId/base:Identifier/base:localId)
+                    let $protectionTarget := string($pollutantNode/aqd:protectionTarget/@xlink:href)
+                    let $key := string-join(($zone, $pollutant, $protectionTarget), "#")
+                    
+                    
+            where common:isDateTimeIncluded($reportingYear, $beginPosition, $endPosition)
+            (:group by $pollutant, $protectionTarget:)
+            return
+                <result>
+                    <pollutantName>{dd:getNameFromPollutantCode($pollutant)}</pollutantName>
+                    <pollutantCode>{tokenize($pollutant, "/")[last()]}</pollutantCode>
+                    <protectionTarget>{$protectionTarget}</protectionTarget>
+                    <area>{$area}</area>
+                    <count>{count(distinct-values($key))}</count>
+                </result>
+
+            let $NamespaceDD := 
+             for $x in doc($vocabulary:AQD_Namespace || "rdf")//skos:Concept
+              
+                let $currentCountry := string(fn:upper-case($countryCode))
+                let $countryyy := string($x/prop:inCountry/@rdf:resource)
+                let $length := fn:string-length($countryyy) - 1
+                let $sbst := fn:substring($countryyy, $length, 2)
+                let $area :=  $x/prop:Area
+                
+                where ($currentCountry = $sbst)            
+
+                return $area
+
+
+            for $x in $combinations/combination
+                let $pollutant := $x/@pollutant
+                let $protectionTarget := $vocabulary:PROTECTIONTARGET_VOCABULARY || $x/@protectionTarget
+                let $elem := $B12tmp[pollutantCode = $pollutant and protectionTarget = $protectionTarget]
+                let $count := string($elem/count)
+                let $area := $elem/area 
+                let $areaSum := sum($area)
+                let $area5less := round-half-to-even(distinct-values($NamespaceDD) * 0.95, 2)
+                let $area5more := round-half-to-even(distinct-values($NamespaceDD) * 1.05, 2)
+                let $goodOrNo := 
+                                let $test := sum($areaSum) > $area5less and sum($areaSum) < $area5more
+                                return  if(empty($area) and $areaSum = 0) then 
+                                            "..."
+                                        else if($test = false())then 
+                                            "Fail"
+                                        else("OK")
+                
+                let $goodOrNocount := $goodOrNo 
+                return
+
+                 <tr>
+                    <td title="pollutant">{data($pollutant)}</td> 
+                    <td title="protectionTarget">{$protectionTarget}</td>
+                    <td title="Area">{$areaSum}</td>
+                    <td title="Status">{$goodOrNo}</td>
+                    <td title="AreaDD-5">{$area5less}</td>
+                    <td title="AreaDD+5">{$area5more}</td>
+                </tr>
+    } catch * {
+        <tr class="{$errors:FAILED}">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
+
+    let $B12count := 
+           for $x in $B12table/td[4]
+                    where $x = "OK" or $x = "..."
+                    return count($x)
+
+    let $B12errorLevel :=
+     
+        if (sum($B12count) = sum($conbicount)) then
+            $errors:INFO
+        else
+            $errors:B12
 (: B13 :)
 let $B13invalid :=
     try {
@@ -1165,6 +1368,8 @@ return
         {html:build2("B09", $labels:B09, $labels:B09_SHORT, $B09invalid, "All values are valid", "record", $errors:B09)}
         {html:buildUnique("B10", $labels:B10, $labels:B10_SHORT, $B10table, "record", $errors:B10)}
         {html:build2("B10.1", $labels:B10.1, $labels:B10.1_SHORT, $B10.1invalid, "All values are valid", " invalid namespaces", $errors:B10.1)}
+        {html:build2("B11", $labels:B11, $labels:B11_SHORT, $B11table, "", "record", $B11errorLevel)}
+        {html:build2("B12", $labels:B12, $labels:B12_SHORT, $B12table, "", "record", $B12errorLevel)}
         {html:build2("B13", $labels:B13, $labels:B13_SHORT, $B13invalid, "All values are valid", " invalid value", $errors:B13)}
         {html:build2("B18", $labels:B18, $labels:B18_SHORT, $B18invalid, "All text are valid"," invalid attribute", $errors:B18)}
         {html:build2("B20", $labels:B20, $labels:B20_SHORT, $B20invalid, "All srsName attributes are valid"," invalid attribute", $errors:B20)}
