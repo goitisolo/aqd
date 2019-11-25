@@ -1193,6 +1193,7 @@ let $C31btable :=
                 else if ($countPrelimC > $countC) then $errors:WARNING
                 else $errors:INFO
         order by $vsName
+        where doc($envelopeUrl)/envelope/obligation != 'http://rod.eionet.europa.eu/obligations/694'
         return
             <tr class="{$errorClass}">
                 <td title="Pollutant Name">{$vsName}</td>
@@ -1529,7 +1530,7 @@ return
         {html:build2("C28", $labels:C28, $labels:C28_SHORT, $C28invalid, "All values are valid", " invalid value", $errors:C28)}
         {html:build2("C29", $labels:C29, $labels:C29_SHORT,  $C29invalid, "All values are valid", " invalid value", $errors:C29)}
         {html:build2("C31", $labels:C31, $labels:C31_SHORT, $C31table, "", "record", errors:getMaxError($C31table))}
-        {html:build2("C31b", $labels:C31b, $labels:C31b_SHORT, $C31btable, "", "record", errors:getMaxError($C31btable))}
+        {html:build4("C31b", $labels:C31b, $labels:C31b_SHORT, $C31btable, "", "record", errors:getMaxError($C31btable))}
         {html:build2("C32", $labels:C32, $labels:C32_SHORT, $C32table, "All values are valid", " invalid value", $errors:C32)}
         {html:build2("C33", $labels:C33, $labels:C33_SHORT, $C33invalid, "All values are valid", " invalid value", $errors:C33)}
         {html:build2("C35", $labels:C35, $labels:C35_SHORT, $C35invalid, "All values are valid", " invalid value", $errors:C35)}

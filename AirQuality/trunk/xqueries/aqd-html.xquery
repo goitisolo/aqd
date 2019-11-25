@@ -451,7 +451,49 @@ declare function html:build2(
         $bulletType
     )
 };
+declare function html:build4(
+    $ruleCode as xs:string,
+    $longText,
+    $text,
+    $records as element(tr)*,
+    $validMsg as xs:string,
+    $unit as xs:string,
+    $errorLevel as xs:string
+) as element(tr)* {
 
+    let $metadata := html:parseData($records, "metadata")
+    let $thead := html:parseData($records, "thead")
+    let $data := html:parseData($records, "data")
+
+    let $countRecords := count($data)
+    let $skipped := $records/@class = "INFO"
+
+    let $bulletType :=
+        if ($skipped) then
+            $errors:INFO   
+        else if(count($data) = 0) then 
+            $errors:SKIPPED   
+        else
+            $errorLevel
+
+    let $message :=
+        if ($countRecords = 0) then
+            $labels:SKIPPED
+        else 
+            if ($skipped) then
+            $validMsg
+        else
+            $countRecords || " " || $unit ||  " found"
+
+    return html:buildGeneric(
+        $ruleCode,
+        $longText,
+        $text,
+        $data,
+        $message,
+        $bulletType
+    )
+};
 declare function html:build3(
     $ruleCode as xs:string,
     $longText,
