@@ -1290,27 +1290,29 @@ let $G66invalid :=
 
 
         let $valuesInC := sparqlx:run(query:getG66($latestEnvelopeC, $reportingYear))
-                let $valuesInCConcat :=
-                for $x in $valuesInC             
-                    return $x/sparql:binding[@name="localId"]/sparql:literal || "###" || $x/sparql:binding[@name="assessment"]/sparql:uri || "##"
-                for $i in $valuesInCConcat
-                 let $localIdC := tokenize($i, "###")[1]
-                 let $assessmentC := tokenize($i, "###")[2]
-                 let $assessmentCsubs := substring-before(substring($assessmentC, string-length("http://reference.eionet.europa.eu/aq/")+1), "##")
-                
+        let $valuesInCConcat :=
+            for $x in $valuesInC             
+                return $x/sparql:binding[@name="localId"]/sparql:literal || "###" || $x/sparql:binding[@name="assessment"]/sparql:uri || "##"
+        
+        for $i in $valuesInCConcat
+             let $localIdC := tokenize($i, "###")[1]
+             let $assessmentC := tokenize($i, "###")[2]
+             let $assessmentCsubs := substring-before(substring($assessmentC, string-length("http://reference.eionet.europa.eu/aq/")+1), "##")
+                    
 
-        let $valuesInG :=
-        for $r in $validAssessment/../aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:assessmentMethod/aqd:AssessmentMethods/aqd:modelAssessmentMetadata[not(@xlink:href = $assessmentCsubs)]        
-        let $assesmentG := substring-after(data($r/../../../../../../../aqd:assessment/fn:normalize-space(@xlink:href)),"/")
-        where $assesmentG = $localIdC
-        return data($r/../../../../../../../@gml:id)|| "###"||substring-after(data($r/../../../../../../../aqd:assessment/fn:normalize-space(@xlink:href)),"/")|| "###"||data($r/fn:normalize-space(@xlink:href))
+            let $valuesInG :=
+                for $r in $validAssessment/../aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:assessmentMethod/aqd:AssessmentMethods/aqd:modelAssessmentMetadata[not(@xlink:href = $assessmentCsubs)]        
+                    let $assesmentG := substring-after(data($r/../../../../../../../aqd:assessment/fn:normalize-space(@xlink:href)),"/")
+
+                    where ($assesmentG = $localIdC)
+                return data($r/../../../../../../../@gml:id)|| "###"||substring-after(data($r/../../../../../../../aqd:assessment/fn:normalize-space(@xlink:href)),"/")|| "###"||data($r/fn:normalize-space(@xlink:href))
 
         for $x in $valuesInG
             let $localId := tokenize($x, "###")[1]
             let $assessment := tokenize($x, "###")[2]
             let $station := tokenize($x, "###")[3]
 
-      
+        (:where $station != $assessmentCsubs:)
         return
             <tr>
                 <td title="gml:id">{$localId}</td>
@@ -1318,7 +1320,6 @@ let $G66invalid :=
                 <td title="aqd:modelAssessmentMetadata">{$station}</td>
                 <td title="C gml:id">{$localIdC}</td>
                 <td title="C aqd:modelAssessmentMetadata">{$assessmentCsubs}</td>
-
             </tr>
     } catch * {
         <tr class="{$errors:FAILED}">
