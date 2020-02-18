@@ -365,6 +365,7 @@ let $B08table :=
                     <td title="Pollutant Code">{$vsCode}</td>
                     <td title="Protection Target">{$protectionTarget}</td>
                     <td title="Count">{$count}</td>
+
                 </tr>
     } catch * {
         <tr class="{$errors:FAILED}">
@@ -464,7 +465,7 @@ let $B10.1invalid :=
         </tr>
     }
 
-    
+
 let $combinations :=
             <combinations>
                 <combination pollutant="1" protectionTarget="H"/>
