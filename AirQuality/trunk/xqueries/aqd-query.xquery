@@ -202,17 +202,20 @@ declare function query:existsViaNameLocalIdYear(
     ) as xs:boolean {
     let $query := "
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-      PREFIX aq: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+      PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+      PREFIX aq: <http://reference.eionet.europa.eu/aq/ontology/>
 
       SELECT ?subject
       WHERE {
-          ?subject a aq:" || $type ||";
-          aq:inspireId ?inspireId.
+          ?subject a aqd:" || $type ||";
+          aqd:inspireId ?inspireId.
           ?inspireId rdfs:label ?label.
-          ?inspireId aq:namespace ?name.
-          ?inspireId aq:localId ?localId
+          ?inspireId aqd:namespace ?name.
+          ?inspireId aqd:localId ?localId.
+          ?subject aqd:declarationFor ?declaration.
+          ?declaration aq:reportingBegin ?reportingYear.
           FILTER (?label = '" || $label || "')
-          FILTER (CONTAINS(str(?subject), '" || $year || "'))
+          FILTER (CONTAINS(str(?reportingYear), '" || $year || "'))
       }
       "
     let $results := sparqlx:run($query)
@@ -221,7 +224,76 @@ declare function query:existsViaNameLocalIdYear(
         for $result in $results
         return functx:substring-before-last($result/sparql:binding[@name="subject"]/sparql:uri, "/")
 
-    return common:isLatestEnvelope($envelopes, $latestEnvelopes)
+    return common:isLatestEnvelope($envelopes, $latestEnvelopes) 
+};
+
+(: Checks if X references an existing Y via namespace/localid and reporting year :)
+declare function query:existsViaNameLocalIdYearI11(
+    $label as xs:string,
+    $type as xs:string,
+    $year as xs:string,
+    $latestEnvelopes as xs:string*
+    ) as xs:boolean {
+    let $query := "
+
+      PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+      PREFIX rod: <http://rod.eionet.europa.eu/schema.rdf#>
+      PREFIX obligation: <http://rod.eionet.europa.eu/obligations/>
+      PREFIX aq: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+
+      SELECT DISTINCT
+      ?Country
+      ?reportingYear
+      ?PlanId
+      ?envelope
+      WHERE 
+      {
+        {
+        SELECT DISTINCT
+          ?Country
+          YEAR(?endOfPeriod) as ?reportingYear
+          max(?released) as ?released
+          ?PlanId
+          ?envelope
+        WHERE 
+          {
+            ?envelope rod:released ?released .
+            ?envelope rod:endOfPeriod ?endOfPeriod .
+            ?envelope rod:obligation ?obligation .
+            ?envelope rod:hasFile ?source .
+            ?envelope rod:locality ?locality .
+            FILTER (?obligation = obligation:680) 
+            ?locality rod:localityName ?Country .
+
+            {
+              SELECT 
+              ?XMLURI
+              ?PlanId 
+              (IRI(substr(str(?XMLURI),1,bif:strchr(str(?XMLURI),'#'))) AS ?source) 
+
+              WHERE 
+              {
+                ?XMLURI a aq:" || $type ||" ;
+                          aq:inspireId ?inspireURI .
+                ?inspireURI aq:localId ?PlanId .
+              }
+            }
+
+          } GROUP BY ?Country YEAR(?endOfPeriod) ?PlanId ?envelope
+        }
+          ?envelope rod:released ?released .
+          ?envelope rdf:type rod:Delivery .
+          FILTER (?PlanId = '" || $label || "')
+          FILTER (?reportingYear = " || $year || ")
+      }
+      "
+    let $results := sparqlx:run($query)
+
+    let $envelopes :=
+        for $result in $results
+        return $result/sparql:binding[@name="envelope"]/sparql:uri
+
+    return common:isLatestEnvelope($envelopes, $latestEnvelopes) 
 };
 
 
@@ -287,7 +359,7 @@ declare function query:getAssessmentMethodsC($envelope as xs:string, $assessment
    PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
    PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
 
-   SELECT DISTINCT ?samplingPointAssessmentMetadata ?modelAssessmentMetadata
+   SELECT DISTINCT replace(str(?samplingPointAssessmentMetadata),'http://reference.eionet.europa.eu/aq/','') as ?samplingPointAssessmentMetadata
    WHERE {
       ?assessmentRegime a aqd:AQD_AssessmentRegime;
       aqd:inspireId ?inspireId;
@@ -333,7 +405,6 @@ declare function query:getAssessmentMethodsCModels($envelope as xs:string, $asse
       FILTER CONTAINS(str(?assessmentRegime),'" || $envelope || "') .
    }"
 };
-
 
 declare function query:getAssessmentMethodsE($envelope as xs:string) {
   "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -618,7 +689,7 @@ PREFIX rod: <http://rod.eionet.europa.eu/schema.rdf#>
             optional {?observingTime aqd:endPosition ?endPosition }
             FILTER(xsd:date(SUBSTR(xsd:string(?beginPosition),1,10)) <= xsd:date('", $endDate, "')) .
             FILTER(!bound(?endPosition) or (xsd:date(SUBSTR(xsd:string(?endPosition),1,10)) > xsd:date('", $startDate, "'))) .
-#           FILTER(", $filters ,")
+            FILTER(", $filters ,")
 }
 
 
@@ -641,12 +712,11 @@ declare function query:getSamplingPointEndPosition(
   let $filters := string-join($filters, "")
   return
     concat("
-
-        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-        PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
-        PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
-        PREFIX dct: <http://purl.org/dc/terms/>
-        PREFIX rod: <http://rod.eionet.europa.eu/schema.rdf#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
+PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX rod: <http://rod.eionet.europa.eu/schema.rdf#>
 
         SELECT DISTINCT ?inspireLabel
         WHERE {
@@ -662,8 +732,9 @@ declare function query:getSamplingPointEndPosition(
             optional {?observingTime aqd:endPosition ?endPosition }
             FILTER(xsd:date(SUBSTR(xsd:string(?beginPosition),1,10)) <= xsd:date('", $endDate, "')) .
             FILTER(!bound(?endPosition) or (xsd:date(SUBSTR(xsd:string(?endPosition),1,10)) > xsd:date('", $startDate, "'))) .
-#           FILTER(", $filters ,")
-}")
+#           FILTER(CONTAINS(str(?zone), 'http://cdr.eionet.europa.eu/lu/eu/aqd/d/envxydwfq'))
+}
+    ")
 };
 
 (: Returns latest report envelope for this country and Year :)
@@ -793,7 +864,12 @@ FILTER(?label = '" || $url || "')
 }
 "
   let $res := sparqlx:run($query)
-  return data($res//sparql:binding[@name='pollutant']/sparql:uri)
+
+  return 
+    if(empty($res)) then
+      ""
+    else
+      data($res//sparql:binding[@name='pollutant']/sparql:uri)
 };
 
 declare function query:getPollutantCodeAndProtectionTarge(
@@ -1254,6 +1330,20 @@ declare function query:getModelSampling2($url as xs:string) as xs:string {
    FILTER(CONTAINS(str(?samplingPoint), '" || $url || "'))
    }"
 };
+
+declare function query:getAllYear($url as xs:string) as xs:string {
+
+ "PREFIX aqd: <http://rod.eionet.europa.eu/schema.rdf#>
+SELECT DISTINCT SUBSTR(?period, 1, 4)
+   WHERE {
+        ?envelope a aqd:Delivery ;
+        aqd:released ?date ;
+        aqd:hasFile ?file ;
+        aqd:period ?period
+        FILTER(CONTAINS(str(?envelope), '" || $url ||"'))
+  } order by desc(?period)"
+};
+
 
 declare function query:getModelMetadataSampling($url as xs:string*) as xs:string {
   "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
