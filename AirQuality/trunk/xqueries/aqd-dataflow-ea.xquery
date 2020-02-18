@@ -1164,7 +1164,7 @@ let $E34func := function() {
     for $x at $xpos in $docRoot//om:OM_Observation/om:result
 
     let $samplingPoint := ($x/../om:parameter/om:NamedValue[om:name/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/processparameter/SamplingPoint"]/om:value/@xlink:href => tokenize("/"))[last()]
-    let $previousMean := $previousData[sparql:binding[@name = "SamplingPointLocalId"]/sparql:literal = $samplingPoint]/sparql:binding[@name = "AQValue"]/sparql:literal/string() => number()
+    (:let $previousMean := $previousData[sparql:binding[@name = "SamplingPointLocalId"]/sparql:literal = $samplingPoint]/sparql:binding[@name = "AQValue"]/sparql:literal/string() => number()
     return if (string($previousMean) = 'NaN') then () else
 
     let $blockSeparator := string($x//swe:encoding/swe:TextEncoding/@blockSeparator)
@@ -1194,13 +1194,15 @@ let $E34func := function() {
         return $dc || "%"
     let $higherLimit := $previousMean * 3
     let $lowerLimit := $previousMean div 3
-    where $mean > $higherLimit or $mean < $lowerLimit
+    where $mean > $higherLimit or $mean < $lowerLimit:)
     return
         <tr>
-            <td title="OM_Observation">{string($x/../@gml:id)}</td>
-            <td title="Mean">{format-number($mean, "0.1")}</td>
-            <td title="Previous Mean">{format-number($previousMean, "0.1")}</td>
-            <td title="Data coverage">{$coverageType || " coverage: " || $dataCoverage}</td>
+            <!--<td title="OM_Observation">{string($x/../@gml:id)}</td>-->
+             <td title="Mean">{$samplingPoint}</td>
+             <td title="Mean">{$countryCode}</td>
+             <td title="Mean">{$reportingYear}</td>
+            <!--<td title="Previous Mean">{$previousData}</td>
+            <td title="Data coverage">{$coverageType || " coverage: " || $dataCoverage}</td>-->
         </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
 }
 let $E34invalid := errors:trycatch($E34func)

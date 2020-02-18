@@ -182,7 +182,7 @@ let $J2 := try {
     for $el in $docRoot//aqd:AQD_EvaluationScenario
         let $x := $el/aqd:inspireId/base:Identifier
         let $inspireId := concat(data($x/base:namespace), "/", data($x/base:localId))
-        let $ok := not($inspireId = $knownEvaluationScenarios)
+        let $ok := $inspireId = $knownEvaluationScenarios
         return
             common:conditionalReportRow(
             $ok,
@@ -258,7 +258,7 @@ let $J4 := try {
     for $x in $docRoot//aqd:AQD_EvaluationScenario
         let $id := $x/@gml:id
         let $inspireId := $x/aqd:inspireId
-        let $aqdinspireId := concat($x/aqd:inspireId/base:Identifier/base:localId, "/", $x/aqd:inspireId/base:Identifier/base:namespace)
+        let $aqdinspireId := concat($x/aqd:inspireId/base:Identifier/base:namespace, "/",$x/aqd:inspireId/base:Identifier/base:localId)
         let $ok := (count(index-of($gmlIds, lower-case(normalize-space($id)))) = 1
             and
             count(index-of($inspireIds, lower-case(normalize-space($inspireId)))) = 1
@@ -266,10 +266,10 @@ let $J4 := try {
         return common:conditionalReportRow(
             not($ok),
             [
-                ("gml:id", data($x/@gml:id)),
+                ("gml:id", string($x/@gml:id)),
                 ("aqd:inspireId", distinct-values($aqdinspireId)),
-                ("aqd:pollutant", data($x/aqd:pollutant)),
-                ("aqd:protectionTarget", data($x/aqd:protectionTarget))
+                ("aqd:usedInPlan", data($x/aqd:usedInPlan/@xlink:href)),
+                ("aqd:sourceApportionment ", data($x/aqd:sourceApportionment/@xlink:href))
             ]
         )
 } catch * {
@@ -330,7 +330,7 @@ let $J8 := try {
     let $localIds := $docRoot//aqd:AQD_EvaluationScenario/aqd:inspireId/base:Identifier/lower-case(normalize-space(base:localId))
     for $x in $docRoot//aqd:AQD_EvaluationScenario
         let $localID := $x/aqd:inspireId/base:Identifier/base:localId
-        let $aqdinspireId := concat($x/aqd:inspireId/base:Identifier/base:localId, "/", $x/aqd:inspireId/base:Identifier/base:namespace)
+        let $aqdinspireId := concat($x/aqd:inspireId/base:Identifier/base:namespace, "/", $x/aqd:inspireId/base:Identifier/base:localId)
         let $ok := (
             count(index-of($localIds, lower-case(normalize-space($localID)))) = 1
             and
@@ -461,7 +461,7 @@ aqd:AQD_EvaluationScenario/aqd:codeOfScenario should begin with with the 2-digit
 A code of the scenario should be provided as nn alpha-numeric code starting with the country ISO code
 :)
 
-let $J13 := try {
+(:let $J13 := try {
     for $main in $evaluationScenario
         let $el := $main/aqd:codeOfScenario
         let $ok := fn:lower-case($countryCode) = fn:lower-case(fn:substring(data($el), 1, 2))
@@ -474,7 +474,7 @@ let $J13 := try {
             )
 } catch * {
     html:createErrorRow($err:code, $err:description)
-}
+}:)
 
 (: J14
 aqd:AQD_EvaluationScenario/aqd:publication/aqd:Publication/aqd:description shall be a text string
@@ -684,7 +684,7 @@ referenced via the xlink of (aqd:AQD_EvaluationScenario/aqd:sourceApportionment)
 Check if start year of the evaluation scenario is the same as
 the source apportionment reference year
 :)
-let $J22 := try {
+(:let $J22 := try {
     for $node in $evaluationScenario
         let $el := $node/aqd:sourceApportionment
         let $year := $node/aqd:startYear/gml:TimeInstant/gml:timePosition
@@ -704,7 +704,7 @@ let $J22 := try {
 
 } catch * {
     html:createErrorRow($err:code, $err:description)
-}
+}:)
 
 (: J23
 aqd:AQD_EvaluationScenario/aqd:baselineScenario/aqd:Scenario/aqd:description shall be a text string
@@ -742,7 +742,7 @@ let $J24 := try {
     for $node in $evaluationScenario
         let $el := $node/aqd:baselineScenario/aqd:Scenario/aqd:totalEmissions
         let $ok := (
-            $el/@uom eq "http://dd.eionet.europa.eu/vocabulary/uom/emission/kt.year-1"
+            $el/@uom = "http://dd.eionet.europa.eu/vocabulary/uom/emission/kt.year-1"
             and
             (data($el) castable as xs:float
             or
@@ -776,7 +776,7 @@ The expected concentration (under baseline scenario) should be provided as an in
 :)
 
 let $J25 := try {
-    let $main := $evaluationScenario/aqd:baselineScenario/aqd:AQD_Scenario/aqd:expectedConcentration
+    let $main := $evaluationScenario/aqd:baselineScenario/aqd:Scenario/aqd:expectedConcentration
     for $el in $main
         let $ok := (
             (data($el) castable as xs:float
@@ -784,6 +784,8 @@ let $J25 := try {
             data($el) castable as xs:integer)
             and
             data($el) >= 0
+            and 
+            data($el) <= 5000
             and
             common:isInVocabulary(
                     $el/@uom,
@@ -811,7 +813,7 @@ The number of exceecedance expected (under baseline scenario) should be provided
 :)
 
 let $J26 := try {
-    let $main := $evaluationScenario/aqd:baselineScenario/aqd:AQD_Scenario/aqd:expectedExceedances
+    let $main := $evaluationScenario/aqd:baselineScenario/aqd:Scenario/aqd:expectedExceedances
     for $el in $main
         let $ok := (
             (data($el) castable as xs:float
@@ -936,7 +938,7 @@ The expected concentration (under projection scenario) should be provided as an 
 :)
 (:  TODO CHECK IF $main node is not empty for all CHECKS  :)
 let $J30 := try {
-    let $main := $evaluationScenario/aqd:projectionScenario/aqd:AQD_Scenario/aqd:expectedConcentration
+    let $main := $evaluationScenario/aqd:projectionScenario/aqd:Scenario/aqd:expectedConcentration
     for $el in $main
         let $ok := (
             (data($el) castable as xs:float
@@ -1044,7 +1046,7 @@ return
         {html:build2("J10", $labels:J10, $labels:J10_SHORT, $J10, "All values are valid", " not conform to vocabulary", $errors:J10)}
         {html:build2("J11", $labels:J11, $labels:J11_SHORT, $J11, "All values are valid", "needs valid input", $errors:J11)}
         {html:build2("J12", $labels:J12, $labels:J12_SHORT, $J12, "All values are valid", "needs valid input", $errors:J12)}
-        {html:build2("J13", $labels:J13, $labels:J13_SHORT, $J13, "All values are valid", " not valid", $errors:J13)}
+        <!--{html:build2("J13", $labels:J13, $labels:J13_SHORT, $J13, "All values are valid", " not valid", $errors:J13)}-->
         {html:build2("J14", $labels:J14, $labels:J14_SHORT, $J14, "All values are valid", "needs valid input", $errors:J14)}
         {html:build2("J15", $labels:J15, $labels:J15_SHORT, $J15, "All values are valid", "needs valid input", $errors:J15)}
         {html:build2("J16", $labels:J16, $labels:J16_SHORT, $J16, "All values are valid", "needs valid input", $errors:J16)}
@@ -1053,7 +1055,7 @@ return
         {html:build2("J19", $labels:J19, $labels:J19_SHORT, $J19, "All values are valid", "not valid", $errors:J19)}
         {html:build2("J20", $labels:J20, $labels:J20_SHORT, $J20, "All values are valid", "not valid", $errors:J20)}
         {html:build2("J21", $labels:J21, $labels:J21_SHORT, $J21, "All values are valid", "not valid", $errors:J21)}
-        {html:build2("J22", $labels:J22, $labels:J22_SHORT, $J22, "All values are valid", "not valid", $errors:J22)}
+        <!--{html:build2("J22", $labels:J22, $labels:J22_SHORT, $J22, "All values are valid", "not valid", $errors:J22)}-->
         {html:build2("J23", $labels:J23, $labels:J23_SHORT, $J23, "All values are valid", "not valid", $errors:J23)}
         {html:build2("J24", $labels:J24, $labels:J24_SHORT, $J24, "All values are valid", "not valid", $errors:J24)}
         {html:build2("J25", $labels:J25, $labels:J25_SHORT, $J25, "All values are valid", "not valid", $errors:J25)}

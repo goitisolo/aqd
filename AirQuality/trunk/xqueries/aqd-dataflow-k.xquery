@@ -122,7 +122,8 @@ let $VOCABinvalid := checks:vocab($docRoot)
 let $K0table := try {
     if ($reportingYear = "")
     then
-        common:checkDeliveryReport($errors:ERROR, "Reporting Year is missing.")
+        common:checkDeliveryReport($errors:BLOCKER, "Reporting Year is missing.")
+   
     else if($headerBeginPosition > $headerEndPosition) then
         <tr class="{$errors:BLOCKER}">
             <td title="Status">Start position must be less than end position</td>
@@ -172,7 +173,7 @@ let $K02table := try {
     for $el in $docRoot//aqd:AQD_Measures
         let $x := $el/aqd:inspireId/base:Identifier
         let $inspireId := concat(data($x/base:namespace), "/", data($x/base:localId))
-        let $ok := not($inspireId = $knownMeasures)
+        let $ok := $inspireId = $knownMeasures
         return
             common:conditionalReportRow(
             $ok,
@@ -319,7 +320,7 @@ let $K08invalid:= try {
     let $localIds := $docRoot//aqd:AQD_Measures/aqd:inspireId/base:Identifier/lower-case(normalize-space(base:localId))
     for $x in $docRoot//aqd:AQD_Measures
         let $localID := $x/aqd:inspireId/base:Identifier/base:localId
-        let $aqdinspireId := concat($x/aqd:inspireId/base:Identifier/base:localId, "/", $x/aqd:inspireId/base:Identifier/base:namespace)
+        let $aqdinspireId := concat($x/aqd:inspireId/base:Identifier/base:namespace, "/", $x/aqd:inspireId/base:Identifier/base:localId)
         let $ok := (
             count(index-of($localIds, lower-case(normalize-space($localID)))) = 1
             and
@@ -328,8 +329,8 @@ let $K08invalid:= try {
         return common:conditionalReportRow(
             $ok,
             [
-                ("gml:id", data($x/@gml:id)),
-                ("aqd:inspireId", distinct-values($aqdinspireId)),
+                ("base:localId", data($x/aqd:inspireId/base:Identifier/base:localId)),
+                ("base:namespace", data($x/aqd:inspireId/base:Identifier/base:namespace)),
                 ("aqd:AQD_Measures", common:checkLink(distinct-values(data($x/aqd:exceedanceAffected/@xlink:href)))),
                 ("aqd:AQD_Scenario", distinct-values(data($x/aqd:usedForScenario/@xlink:href)))
             ]
@@ -602,18 +603,33 @@ vocabulary
 
 :)
 
-let $K23 := (
-    for $el in $docRoot//aqd:AQD_Measures/aqd:costs/aqd:Costs
-    return common:validateMaybeNodeWithValueReport(
-        $el,
-        'aqd:estimatedImplementationCosts',
-        common:isInVocabulary(
-            $el/aqd:currency/@xlink:href,
-            $vocabulary:CURRENCIES
-        ),
-        $ancestor-name
-    )
-)
+let $K23 := try {
+    let $main := $docRoot//aqd:AQD_Measures/aqd:costs/aqd:Costs
+    for $node in $main
+        let $ok := (
+                    if(lower-case($node/aqd:currency/@xsi:nil) = "true" and (lower-case($node/aqd:currency/@nilReason) = "unpopulated"))then
+                        true()
+                    else 
+                     common:isInVocabulary(
+                        $node/aqd:currency/@xlink:href,
+                        $vocabulary:CURRENCIES
+                    )
+                )
+
+        return common:conditionalReportRow(
+            $ok,
+            [
+                ("gml:id", $node/ancestor-or-self::*[name() = $ancestor-name]/@gml:id),
+                ("aqd:quantity", data($node/aqd:currency/@xlink:href)),
+                ("xsi:nil", common:isInVocabulary(
+                        $node/aqd:currency/@xlink:href,
+                        $vocabulary:CURRENCIES
+                    ))
+            ]
+        )
+} catch * {
+    html:createErrorRow($err:code, $err:description)
+}
 
 
 (: K24
@@ -947,15 +963,22 @@ let $K37 := try {
     let $main := $docRoot//aqd:AQD_Measures/aqd:reductionOfEmissions/aqd:QuantityCommented/aqd:quantity
     for $el in $main
         let $uri := data($el/@uom)
-        let $validUris := dd:getValidConcepts($vocabulary:UOM_EMISSION_VOCABULARY || "rdf")
-        let $ok := ($uri and $uri = $validUris)
+        let $uriFromVoc := dd:getValidConcepts($vocabulary:UOM_EMISSION_VOCABULARY || "rdf")
+        let $validUris := 
+                            if($uri= 'Unknown') then 
+                                'http://dd.eionet.europa.eu/vocabulary/uom/emission/Unknown'
+                            else 
+                                $uriFromVoc
+
+        let $ok := ($uri and $validUris = $uriFromVoc)(:) or ($uri="Unknown" and $el/@xsi:nil="true"):)
 
         return common:conditionalReportRow(
             $ok,
             [
                 ("gml:id", $el/ancestor-or-self::*[name() = $ancestor-name]/@gml:id),
                 ("aqd:quantity", data($el)),
-                ("uom", data($uri))
+                ("uom", data($uri)),
+                ("test0", $validUris)
             ]
         )
 
@@ -1015,8 +1038,7 @@ let $K39 := try {
     let $main := $docRoot//aqd:AQD_Measures/aqd:expectedImpact/aqd:ExpectedImpact/aqd:numberOfExceedances
     for $el in $main
         let $uri := data($el/@uom)
-        let $validVocabulary := common:isInVocabulary($uri, $vocabulary:UOM_STATISTICS)
-
+        
         let $isNum := (
             ($el castable as xs:integer)
             or
@@ -1024,9 +1046,7 @@ let $K39 := try {
         )
 
         let $ok := (
-            $validVocabulary
-            and
-            ($isNum and ($el cast as xs:float >= 0))
+           $isNum and ($el cast as xs:float >= 0)
         )
 
         return common:conditionalReportRow(
@@ -1045,7 +1065,26 @@ let $K39 := try {
 Reserve for specificationOfHours
 :)
 
-let $K40 := ()
+let $K40 :=
+    try {
+        (
+        for $x in $docRoot//aqd:AQD_Measures/aqd:expectedImpact/aqd:ExpectedImpact
+        let $specified := string($x/aqd:specificationOfHours/@xlink:href)
+        let $invoca := common:isInVocabulary($specified, $vocabulary:UOM_TIME)
+        let $elementExist := exists($x/aqd:specificationOfHours/@xlink:href)
+
+        where ($elementExist = true() and not($invoca and functx:substring-after-last($specified, "/") = "hour" or functx:substring-after-last($specified, "/") = "day"))
+        return
+            <tr>
+                <td title="gml:id">{data($x/../../@gml:id)}</td>
+                <td title="Pollutant">{$specified}</td>
+            </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
+    } catch * {
+        <tr class="{$errors:FAILED}">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
 
 return
 (
@@ -1061,8 +1100,8 @@ return
         {html:build1("K06", $labels:K06, $labels:K06_SHORT, $K06, "RESERVE", "RESERVE", "RESERVE", "RESERVE", $errors:K06)}
         {html:build2("K07", $labels:K07, $labels:K07_SHORT, $K07, "No duplicate values found", " duplicate value", $errors:K07)}
         {html:build2("K08", $labels:K08, $labels:K08_SHORT, $K08invalid, "No duplicate values found", " duplicate value", $errors:K08)}
-        <!-- {html:build2("K09", $labels:K09, $labels:K09_SHORT, $K09table, "namespace", "", $errors:K09)} !-->
-        {html:buildUnique("K09", $labels:K09, $labels:K09_SHORT, $K09table, "namespace", $errors:K09)}
+        {html:build2("K09", $labels:K09, $labels:K09_SHORT, $K09table, "namespace", "", $errors:K09)} 
+        <!-- {html:buildUnique("K09", $labels:K09, $labels:K09_SHORT, $K09table, "namespace", $errors:K09)}-->
         {html:build2("K10", $labels:K10, $labels:K10_SHORT, $K10invalid, "All values are valid", " not conform to vocabulary", $errors:K10)}
         {html:build2("K11", $labels:K11, $labels:K11_SHORT, $K11, "All values are valid", "needs valid input", $errors:K11)}
         {html:build2("K12", $labels:K12, $labels:K12_SHORT, $K12, "All values are valid", "needs valid input", $errors:K12)}
@@ -1093,8 +1132,7 @@ return
         {html:build2("K37", $labels:K37, $labels:K37_SHORT, $K37, "All values are valid", "not valid", $errors:K37)}
         {html:build2("K38", $labels:K38, $labels:K38_SHORT, $K38, "All values are valid", "not valid", $errors:K38)}
         {html:build2("K39", $labels:K39, $labels:K39_SHORT, $K39, "All values are valid", "not valid", $errors:K39)}
-        {html:build1("K40", $labels:K40, $labels:K40_SHORT, $K40, "RESERVE", "RESERVE", "RESERVE", "RESERVE", $errors:K40)}
-
+        {html:build2("K40", $labels:K40, $labels:K40_SHORT, $K40, "All values are valid", "not valid", $errors:K40)}
     </table>
 )
 

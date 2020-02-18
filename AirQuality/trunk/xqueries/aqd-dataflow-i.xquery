@@ -75,6 +75,7 @@ declare function dataflowI:checkReport(
     let $latestEnvelopesD1 := query:getLatestEnvelopesForObligation("742")
     let $latestEnvelopesG := query:getLatestEnvelopesForObligation("679")
     let $latestEnvelopesH := query:getLatestEnvelopesForObligation("680")
+    let $latestEnvelopeByCountryG := query:getLatestEnvelope($cdrUrl || "g/")
     let $headerBeginPosition := $docRoot//aqd:AQD_ReportingHeader/aqd:reportingPeriod/gml:TimePeriod/gml:beginPosition
     let $headerEndPosition := $docRoot//aqd:AQD_ReportingHeader/aqd:reportingPeriod/gml:TimePeriod/gml:endPosition
 
@@ -380,8 +381,8 @@ declare function dataflowI:checkReport(
     BLOCKER
 
     :)
-    let $I7 := try {
-        let $checks := ('gml:id', 'aqd:inspireId', 'ef:inspireId')
+    (:let $I7 := try {
+        let $checks := ('gml:id', 'base:localId base:namespace', 'ef:inspireId')
 
         let $errors := array {
 
@@ -389,6 +390,7 @@ declare function dataflowI:checkReport(
                 let $name := lower-case(normalize-space($name))
                 let $values := $sources//(*[lower-case(normalize-space(name())) = $name] |
                                             @*[lower-case(normalize-space(name())) = $name])
+
                 return
                     for $v in distinct-values($values)
                         return
@@ -398,13 +400,53 @@ declare function dataflowI:checkReport(
                             else
                                 [$name, data($v)]
         }
+        
         return common:conditionalReportRow(
             array:size($errors) = 0,
+            (:[
+                array:get($errors, 1),
+                array:get($errors, 2)
+            ]:)
             $errors
         )
     } catch * {
         html:createErrorRow($err:code, $err:description)
+    }:)
+
+let $I7 := try {
+        let $combinspireid:= (for  $x in $sources
+                                let $localId := $x/aqd:inspireId/base:Identifier/lower-case(normalize-space(base:localId))
+                                let $namespace := $x/aqd:inspireId/base:Identifier/lower-case(normalize-space(base:namespace))
+                                return concat($namespace,"/",$localId)
+                            )
+        let $combgmlid := $sources/lower-case(normalize-space(@gml:id))
+
+        for $y in $sources
+            let $localId := $y/aqd:inspireId/base:Identifier/lower-case(normalize-space(base:localId))
+            let $namespace := $y/aqd:inspireId/base:Identifier/lower-case(normalize-space(base:namespace))
+            let $aqdinspireId := concat($namespace,"/",$localId)
+            let $gmlid := $y/@gml:id
+            let $ok := (count(index-of($combinspireid, lower-case(normalize-space($aqdinspireId)))) = 1
+                and
+                functx:if-empty($aqdinspireId, "") != "")
+                and
+                (count(index-of($combgmlid, lower-case(normalize-space($gmlid)))) = 1
+                and
+                functx:if-empty($gmlid, "") != "")
+
+
+        
+            return common:conditionalReportRow(
+                    $ok,
+                    [
+                        ("gml:id", data($y/@gml:id)),
+                        ("aqd:inspireId", distinct-values($aqdinspireId))
+                    ]
+                )
+    } catch * {
+        html:createErrorRow($err:code, $err:description)
     }
+
 
     (: I8
 
@@ -419,7 +461,7 @@ declare function dataflowI:checkReport(
         let $localIds := $sources/aqd:inspireId/base:Identifier/lower-case(normalize-space(base:localId))
         for $x in $sources
             let $localID := $x/aqd:inspireId/base:Identifier/base:localId
-            let $aqdinspireId := concat($x/aqd:inspireId/base:Identifier/base:localId, "/", $x/aqd:inspireId/base:Identifier/base:namespace)
+            let $aqdinspireId := concat($x/aqd:inspireId/base:Identifier/base:namespace, "/", $x/aqd:inspireId/base:Identifier/base:localId )
             let $ok := (
                 count(index-of($localIds, lower-case(normalize-space($localID)))) = 1
                 and
@@ -511,19 +553,19 @@ declare function dataflowI:checkReport(
     let $I11 := try{
         for $el in $sources/aqd:usedInPlan
 
-            let $label := data($el/@xlink:href)
-            let $ok := query:existsViaNameLocalIdYear(
+            let $label := functx:if-empty(functx:substring-after-last($el/@xlink:href, "/"), "")
+            let $ok := query:existsViaNameLocalIdYearI11(
                 $label,
                 'AQD_Plan',
                 $reportingYear,
                 $latestEnvelopesH
-            )
+            ) 
 
         return common:conditionalReportRow(
             $ok,
             [
                 ("gml:id", data($el/../@gml:id)),
-                ("aqd:usedInPlan", $el/@xlink:href)
+                ("aqd:usedInPlan", $label)
             ]
         )
     } catch * {
@@ -551,14 +593,18 @@ declare function dataflowI:checkReport(
                     $link,
                     'AQD_Attainment',
                     $reportingYear,
-                    $latestEnvelopesG
+                    $latestEnvelopeByCountryG
             )
+            (:let $ok := 1 = -1:)
 
         return common:conditionalReportRow(
             $ok,
             [
                 ("gml:id", data($node/ancestor-or-self::aqd:AQD_SourceApportionment/@gml:id)),
-                (node-name($node), $node/@xlink:href)
+                (node-name($node), $node/@xlink:href),
+                ("test", $link),
+                ("test2", $latestEnvelopeByCountryG),
+                ("reportingYear", $reportingYear)
             ]
         )
     } catch * {
@@ -682,6 +728,7 @@ declare function dataflowI:checkReport(
             let $ok :=
                 if ($isnil)
                 then
+
                     $hascomment
                 else
                     true()
@@ -690,7 +737,9 @@ declare function dataflowI:checkReport(
             $ok,
             [
                 ("gml:id", data($node/ancestor-or-self::aqd:AQD_SourceApportionment/@gml:id)),
-                ("needs comment", node-name($node/..))
+                ("Source fraction", node-name($node/../..)),
+                ("aqd:comment missing for", node-name($node/..))
+
             ]
         )
     } catch * {
@@ -714,31 +763,95 @@ declare function dataflowI:checkReport(
     :)
 
     let $I18 := try {
+
+        (:let $sources := $docRoot//aqd:AQD_SourceApportionment:)
         for $quant in $sources//aqd:QuantityCommented/aqd:quantity
 
             let $uom := data($quant/@uom)
+            let $nil := data($quant/@xsi:nil)
 
             let $node := $quant/ancestor::aqd:AQD_SourceApportionment
             let $att-url := data($node/aqd:parentExceedanceSituation/@xlink:href)
-            let $pollutant-code := query:get-pollutant-for-attainment($att-url)
+            let $pollutant-code := query:get-pollutant-for-attainment($att-url) (:returns empty list:)
+
+            let $pollutant-code := functx:if-empty($pollutant-code,"")
+
             let $pollutant := dd:getNameFromPollutantCode($pollutant-code)
             let $rec-uom := dd:getRecommendedUnit($pollutant-code)
 
-            let $ok := $uom = $rec-uom
+            let $ok := (
+                        if ($uom = "Unknown" and $nil = "true")
+                        then (true())
+                        else (if ($pollutant-code = "")
+                                then (
+                                        false() (:blocker   "Consistency in uom between AQ Plans & Attainment cannot be checked because AQ Plan & Attainment pollutants do not match":)
+                                    )
+                                else ( 
+                                        $uom = $rec-uom (:warning:)
+                                    ) 
+                            ) 
+                        )
 
         return common:conditionalReportRow(
             $ok,
             [
                 ("gml:id", data($node/@gml:id)),
-                (node-name($quant), $uom),
-                ('recommended', $rec-uom)
+                ("Source App uom", $uom),
+                ("Attainment uom", $rec-uom)
             ]
-        )
+            )
+            
 
     } catch * {
         html:createErrorRow($err:code, $err:description)
     }
 
+
+    let $I18errorLevel :=
+
+    for $quant in $sources//aqd:QuantityCommented/aqd:quantity
+
+            let $uom := data($quant/@uom)
+            let $nil := data($quant/@xsi:nil)
+
+            let $node := $quant/ancestor::aqd:AQD_SourceApportionment
+            let $att-url := data($node/aqd:parentExceedanceSituation/@xlink:href)
+            let $pollutant-code := query:get-pollutant-for-attainment($att-url) (:returns empty list:)
+
+            let $pollutant-code := functx:if-empty($pollutant-code,"")
+
+            let $pollutant := dd:getNameFromPollutantCode($pollutant-code)
+            let $rec-uom := dd:getRecommendedUnit($pollutant-code)
+
+            return  
+            if ($uom = "Unknown" and $nil = "true")
+                then ()
+                else (if ($pollutant-code = "")
+                        then (
+                                $errors:BLOCKER
+                            )
+                        else (if ( $uom = $rec-uom)
+                                then()
+                                else(
+                                    $errors:I18
+                                ) 
+                        )
+                    ) 
+
+let $I18maxErrorLevel := (if ($I18errorLevel = $errors:BLOCKER)
+                            then( $errors:BLOCKER )
+                            else(if ($I18errorLevel = $errors:WARNING)
+                                then( $errors:WARNING )
+                                else( $errors:INFO )
+                                )
+                        )
+
+let $I18errorMessage := (
+                            if ($I18errorLevel = $errors:BLOCKER)
+                                then ("We could not find the uom in the cited Attainment record cited. Is the provided Attainment record ID correct?")
+
+                                else ($labels:I18)
+                            )
 
     (: I19
 
@@ -756,16 +869,16 @@ declare function dataflowI:checkReport(
 
     :)
 
-    let $I19 := try {
+   let $I19 := try {
         for $x in $sources
             let $rb := $x/aqd:regionalBackground/aqd:RegionalBackground
             let $quantity := $rb/aqd:total/aqd:QuantityCommented/aqd:quantity
-            let $total := data($quantity)
-
+            let $total := functx:if-empty(data($quantity), 0)
             let $fwm := $rb/aqd:fromWithinMS/aqd:QuantityCommented/aqd:quantity
             let $trans := $rb/aqd:transboundary/aqd:QuantityCommented/aqd:quantity
             let $natural := $rb/aqd:natural/aqd:QuantityCommented/aqd:quantity
             let $other := $rb/aqd:other/aqd:QuantityCommented/aqd:quantity
+            let $dec := string-length(substring-after(xs:string($total),"."))
 
             let $sum := common:sum-of-nodes((
                 $fwm,
@@ -774,18 +887,19 @@ declare function dataflowI:checkReport(
                 $other
             ))
 
-            let $ok := $sum = $total
+            let $sumRound := round-half-to-even($sum, $dec)
+            let $ok := $total = $sumRound
 
         return common:conditionalReportRow(
             $ok,
             [
                 ("gml:id", data($x/@gml:id)),
-                (node-name($quantity), $total),
-                ("Sum of nodes", $sum),
-                ('aqd:fromWithinMS', data($fwm)),
-                ('aqd:transboundary', data($trans)),
-                ('aqd:natural', data($natural)),
-                ('aqd:other', data($other))
+                ("aqd:total", $total),
+                ("sum-of-components", $sumRound),
+                ("aqd:fromWithinMS", data($fwm)),
+                ("aqd:transboundary", data($trans)),
+                ("aqd:natural", data($natural)),
+                ("aqd:other", data($other))
             ]
         )
     } catch * {
@@ -816,7 +930,7 @@ declare function dataflowI:checkReport(
         for $x in $sources
             let $ub := $x/aqd:urbanBackground/aqd:UrbanBackground
             let $quantity := $ub/aqd:total/aqd:QuantityCommented/aqd:quantity
-            let $total := data($quantity)
+            let $total := functx:if-empty(data($quantity), 0)
 
             let $trafic := $ub/aqd:traffic/aqd:QuantityCommented/aqd:quantity
             let $head := $ub/aqd:heatAndPowerProduction/aqd:QuantityCommented/aqd:quantity
@@ -827,6 +941,9 @@ declare function dataflowI:checkReport(
             let $natural := $ub/aqd:natural/aqd:QuantityCommented/aqd:quantity
             let $transb := $ub/aqd:transboundary/aqd:QuantityCommented/aqd:quantity
             let $other := $ub/aqd:other/aqd:QuantityCommented/aqd:quantity
+            let $dec := string-length(substring-after(xs:string($total),"."))
+
+
 
             let $sum := common:sum-of-nodes((
                 $trafic,
@@ -840,14 +957,16 @@ declare function dataflowI:checkReport(
                 $other
             ))
 
-            let $ok := $total = $sum
+            let $sumRound := round-half-to-even($sum, $dec)
+
+            let $ok := $total = $sumRound
 
         return common:conditionalReportRow(
             $ok,
             [
                 ("gml:id", data($x/@gml:id)),
-                (node-name($quantity), $total),
-                ("Sum of nodes", $sum),
+                ("aqd:total", $total),
+                ("sum-of-components", $sumRound),
                 ("aqd:traffic", data($trafic)),
                 ("aqd:heatAndPowerProduction", data($head)),
                 ("aqd:agriculture", data($agr)),
@@ -888,7 +1007,10 @@ declare function dataflowI:checkReport(
         for $x in $sources
             let $li := $x/aqd:localIncrement/aqd:LocalIncrement
             let $quantity := $li/aqd:total/aqd:QuantityCommented/aqd:quantity
-            let $total := data($quantity)
+            let $total := functx:if-empty(data($quantity), 0)
+
+            let $dec := string-length(substring-after(xs:string($total),"."))
+
             let $sum := common:sum-of-nodes((
                 $li/aqd:heatAndPowerProduction/aqd:QuantityCommented/aqd:quantity,
                 $li/aqd:agriculture/aqd:QuantityCommented/aqd:quantity,
@@ -899,14 +1021,23 @@ declare function dataflowI:checkReport(
                 $li/aqd:transboundary/aqd:QuantityCommented/aqd:quantity,
                 $li/aqd:other/aqd:QuantityCommented/aqd:quantity
             ))
-            let $ok := $total = $sum
+
+            let $sumRound := round-half-to-even($sum, $dec)
+
+            let $ok := $total = $sumRound
 
         return common:conditionalReportRow(
             $ok,
             [
                 ("gml:id", data($x/@gml:id)),
-                (node-name($quantity), $total),
-                ("Sum of nodes", $sum)
+                ("aqd:total", $total),
+                ("sum-of-components", $sumRound),
+                ("agriculture", $li/aqd:agriculture/aqd:QuantityCommented/aqd:quantity),
+                ("commercialAndResidential", $li/aqd:commercialAndResidential/aqd:QuantityCommented/aqd:quantity),
+                ("shipping", $li/aqd:shipping/aqd:QuantityCommented/aqd:quantity),
+                ("natural", $li/aqd:natural/aqd:QuantityCommented/aqd:quantity),
+                ("transboundary", $li/aqd:transboundary/aqd:QuantityCommented/aqd:quantity),
+                ("other", $li/aqd:other/aqd:QuantityCommented/aqd:quantity)
             ]
         )
     } catch * {
@@ -1245,7 +1376,7 @@ declare function dataflowI:checkReport(
 
     let $I31 := try {
         for $node in $sources
-            let $att-url := $node/aqd:parentExceedanceSituation/@xlink:href
+            let $att-url := functx:if-empty($node/aqd:parentExceedanceSituation/@xlink:href, "")
             for $modelUsed in $node/aqd:macroExceedanceSituation/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:modelUsed
                 (:let $model := query:get-used-model-for-attainment($att-url):)
                 let $attainmentsFound := query:getAttainmentForExceedanceArea($att-url,local-name($modelUsed), $modelUsed/@xlink:href)
@@ -1305,7 +1436,7 @@ declare function dataflowI:checkReport(
 
     let $I32 := try {
         for $node in $sources
-            let $att-url := $node/aqd:parentExceedanceSituation/@xlink:href
+            let $att-url := functx:if-empty($node/aqd:parentExceedanceSituation/@xlink:href,"")
             for $stationUsed in $node/aqd:macroExceedanceSituation/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:stationUsed
                 (:let $model := query:get-used-model-for-attainment($att-url):)
                 let $attainmentsFound := query:getAttainmentForExceedanceArea($att-url,local-name($stationUsed), $stationUsed/@xlink:href)
@@ -1498,6 +1629,8 @@ declare function dataflowI:checkReport(
                 gml:timePosition
 
             let $ok := data($node) castable as xs:gYear
+                       and 
+                       functx:between-inclusive($node, 2010, 2050)
 
         return common:conditionalReportRow(
             $ok,
@@ -1522,7 +1655,7 @@ declare function dataflowI:checkReport(
 
     :)
     let $I38 := try {
-        for $node in $sources/aqd:macroExceedanceSituation/aqd:ExceedanceDescription/aqd:exceedanceExposure/aqd:reason
+        for $node in $sources/aqd:macroExceedanceSituation/aqd:ExceedanceDescription/aqd:reason
             let $link := $node/@xlink:href
             let $ok := common:isInVocabulary(
                 $link,
@@ -1556,7 +1689,7 @@ declare function dataflowI:checkReport(
     let $I39 := try {
         for $node in $sources
             let $el := $node/aqd:macroExceedanceSituation/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod
-            let $parent := $node/aqd:parentExceedanceSituation/@xlink:href
+            let $parent := functx:if-empty($node/aqd:parentExceedanceSituation/@xlink:href,"")
             let $pollutant := query:get-pollutant-for-attainment($parent)
             let $needed := common:is-polutant-air($pollutant)
             let $ok :=
@@ -1595,24 +1728,36 @@ declare function dataflowI:checkReport(
 
     let $I40 := try {
         for $node in $sources
-            let $parent := $node/aqd:parentExceedanceSituation/@xlink:href
+            let $parent := functx:if-empty($node/aqd:parentExceedanceSituation/@xlink:href,"empty")
             let $pollutant := query:get-pollutant-for-attainment($parent)
-            let $needed := common:is-polutant-air($pollutant)
-            let $el := $node/aqd:macroExceedanceSituation/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:assessmentMethod/aqd:AssessmentMethods/aqd:assessmentType
+            let $ul := $node/aqd:macroExceedanceSituation/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:assessmentMethod/aqd:AssessmentMethods/aqd:assessmentType
+            let $linkAssesment := $ul/@xlink:href
+            
+            let $el := $node/aqd:macroExceedanceSituation/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:adjustmentType
             let $link := $el/@xlink:href
-            let $ok :=
-                if (not($needed))
+            let $needed := not(common:is-polutant-air($pollutant))(:) and ($link = "http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/fullyCorrected" or $link = "http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/noneApplied"):)
+            let $needed2 := common:is-polutant-air($pollutant) and ($link = "http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/noneApplicable" or $link = "")
+            
+
+
+            let $ok := 
+                if($needed)
                 then
+                    (:Skip check:)
                     true()
-                else
+                else if($needed2) then
+                        (:Skip check:)
+                        true()
+                else                 
                     common:isInVocabulary(
-                        $link,
+                        $linkAssesment,
                         $vocabulary:ASSESSMENTTYPE_VOCABULARY
                     )
         return common:conditionalReportRow(
             $ok,
             [
                 ("gml:id", data($node/ancestor-or-self::aqd:AQD_SourceApportionment/@gml:id)),
+                (("pollutant"), $pollutant),
                 (node-name($el), $link)
             ]
         )
@@ -1636,16 +1781,36 @@ declare function dataflowI:checkReport(
 
     let $I41 := try {
         for $node in $sources
-            let $el := $node/aqd:macroExceedanceSituation/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:assessmentMethod/aqd:AssessmentMethods/aqd:assessmentTypeDescription
-            let $parent := $node/aqd:parentExceedanceSituation/@xlink:href
-            let $pollutant := query:get-pollutant-for-attainment($parent)
-            let $needed := common:is-polutant-air($pollutant)
-            let $ok :=
-                if (not($needed))
+            let $el := $node/aqd:macroExceedanceSituation/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:assessmentTypeDescription
+            let $parent := functx:if-empty($node/aqd:parentExceedanceSituation/@xlink:href,"")
+            let $pollutant := functx:if-empty(query:get-pollutant-for-attainment($parent),"")
+
+            let $ul := $node/aqd:macroExceedanceSituation/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:adjustmentType
+            let $linkAjustment := $ul/@xlink:href
+            let $assessmentTypeDescriptionEmpty := functx:if-empty($node/aqd:macroExceedanceSituation/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:assessmentMethod/aqd:AssessmentMethods/aqd:assessmentTypeDescription, "")
+            
+            let $ul := $node/aqd:macroExceedanceSituation/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:adjustmentType
+            let $linkAjustment := $ul/@xlink:href
+            
+            let $needed := not(common:is-polutant-air($pollutant))(:) and ($link = "http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/fullyCorrected" or $link = "http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/noneApplied"):)
+            let $needed2 := common:is-polutant-air($pollutant) and ($linkAjustment = "http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/noneApplicable" or $linkAjustment = "")
+            
+            let $needed3 := common:is-polutant-air($pollutant)
+
+
+            let $ok := 
+                if($needed) 
                 then
+                    (:Skip check:)
                     true()
+                else if($needed2) 
+                     then
+                        (:Skip check:)
+                        true()
                 else
-                    $needed and common:has-content($el)
+                    common:has-content($el)
+
+
         return common:conditionalReportRow(
             $ok,
             [
@@ -1702,7 +1867,7 @@ declare function dataflowI:checkReport(
     TODO: $samplingPointAssessmentMetadata and $assessmentMetadata are not filled in
     :)
 
-    let $I42 := try {
+    (:let $I42 := try {
         let $pollutants := (
             "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1",
             "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5",
@@ -1717,21 +1882,22 @@ declare function dataflowI:checkReport(
         for $node in $seq
             let $parentExceedanceSituation := $node/ancestor::aqd:AQD_SourceApportionment/aqd:parentExceedanceSituation/@xlink:href
             let $pollutant := query:get-pollutant-for-attainment($parentExceedanceSituation)
-            let $ok :=
+            let $ok2 :=
                 if($pollutant = $pollutants)
                 then
                     let $samplingPointAssessmentMetadata := $node/aqd:samplingPointAssessmentMetadata/@xlink:href
-                    let $ok-spa := if(functx:if-empty($samplingPointAssessmentMetadata, "") != "")
+                    let $ok-spa := if(not(empty($samplingPointAssessmentMetadata)))
                         then
-                            query:existsViaNameLocalId(
+                            (:query:existsViaNameLocalId(
                             $samplingPointAssessmentMetadata,
                             "AQD_SamplingPoint",
                             $latestEnvelopesD
-                            )
+                            ):)
+                            $samplingPointAssessmentMetadata
                         else
                             true()
 
-                    let $modelAssessmentMetadata := $node/aqd:modelAssessmentMetadata/@xlink:href
+                    (:let $modelAssessmentMetadata := $node/aqd:modelAssessmentMetadata/@xlink:href
                     let $ok-ma := if(functx:if-empty($modelAssessmentMetadata, "") != "")
                         then
                             query:existsViaNameLocalId(
@@ -1740,11 +1906,13 @@ declare function dataflowI:checkReport(
                             $latestEnvelopesD1
                             )
                         else
-                            true()
+                            true():)
 
-                    return $ok-spa and $ok-ma
+                    (:return $ok-spa and $ok-ma:)
+                    return $ok-spa
                 else
                     true()
+                let $ok := 1 = -1
 
         return common:conditionalReportRow(
             $ok,
@@ -1753,13 +1921,224 @@ declare function dataflowI:checkReport(
                 ("aqd:pollutant", $pollutant),
                 ("aqd:parentExceedanceSituation", $parentExceedanceSituation),
                 ("aqd:samplingPointAssessmentMetadata", $node/aqd:samplingPointAssessmentMetadata/@xlink:href),
-                ("aqd:modelAssessmentMetadata", $node/aqd:modelAssessmentMetadata/@xlink:href)
+                ("aqd:modelAssessmentMetadata", $node/aqd:modelAssessmentMetadata/@xlink:href),
+                ("test", $ok2)
+            ]
+        )
+    } catch * {
+        html:createErrorRow($err:code, $err:description)
+    }:)
+    let $I42 := try {
+       
+        let $seq :=
+            $sources/aqd:macroExceedanceSituation/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:assessmentMethod/aqd:AssessmentMethods
+
+        (: modelAssessmentMetadata :)
+        (: samplingPointAssessmentMetadata :)
+        for $node in $seq
+            let $parentExceedanceSituation := $node/ancestor::aqd:AQD_SourceApportionment/aqd:parentExceedanceSituation/@xlink:href
+            let $pollutant := query:get-pollutant-for-attainment($parentExceedanceSituation)
+            let $modelAssessmentMetadata := $node/aqd:modelAssessmentMetadata/@xlink:href
+            let $ul := $node/../../aqd:adjustmentType
+            let $linkAjustment := $ul/@xlink:href
+            
+            let $needed := not(common:is-polutant-air($pollutant))(:) and ($link = "http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/fullyCorrected" or $link = "http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/noneApplied"):)
+            let $needed2 := common:is-polutant-air($pollutant) and ($linkAjustment = "http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/noneApplicable" or $linkAjustment = "")
+            
+
+            let $ok := 
+                            if($needed) 
+                            then
+                                (:Skip check:)
+                                true()
+                            else if($needed2) 
+                                 then
+                                    (:Skip check:)
+                                    true()
+                            else
+
+                                    let $modelAssessmentMetadata := $node/aqd:modelAssessmentMetadata/@xlink:href
+                                    let $ok-ma := if(functx:if-empty($modelAssessmentMetadata, "") != "")
+                                        then
+                                            query:existsViaNameLocalId(
+                                            $modelAssessmentMetadata,
+                                            "AQD_Model",
+                                            $latestEnvelopesD1
+                                            )
+                                        else
+                                            true()
+
+                                    return $ok-ma
+                                        
+
+            
+
+        return common:conditionalReportRow(
+            $ok,
+            [
+                ("gml:id", data($node/ancestor-or-self::aqd:AQD_SourceApportionment/@gml:id)),
+                ("aqd:pollutant", $pollutant),
+                ("aqd:parentExceedanceSituation", $parentExceedanceSituation),
+                ("test", $modelAssessmentMetadata)
             ]
         )
     } catch * {
         html:createErrorRow($err:code, $err:description)
     }
 
+    let $I42errorLevel := try {
+           
+            let $seq :=
+                $sources/aqd:macroExceedanceSituation/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:assessmentMethod/aqd:AssessmentMethods
+
+            (: modelAssessmentMetadata :)
+            (: samplingPointAssessmentMetadata :)
+            for $node in $seq
+              (:)  let $parentExceedanceSituation := $node/ancestor::aqd:AQD_SourceApportionment/aqd:parentExceedanceSituation/@xlink:href
+                let $pollutant := query:get-pollutant-for-attainment($parentExceedanceSituation)
+                let $modelAssessmentMetadata := $node/aqd:modelAssessmentMetadata/@xlink:href
+                let $samplingPointAssessmentMetadata := $node/aqd:samplingPointAssessmentMetadata/@xlink:href
+                let $poll := common:is-polutant-air($pollutant)
+                let $ok-ma := 
+                                if(fn:empty($modelAssessmentMetadata))
+                                then
+                                    false()
+                                else
+                                     for $ma in $modelAssessmentMetadata
+                                     return
+                                            query:existsViaNameLocalId(
+                                                $ma,
+                                                "AQD_Model",
+                                                $latestEnvelopesD1
+                                            )
+                                            
+
+                let $check := not(common:is-polutant-air($pollutant))
+           
+                    return 
+                        if (not($poll) and $modelAssessmentMetadata != "")
+                        then
+                            $errors:WARNING
+                        else if(not($poll) and $modelAssessmentMetadata = "" and $ok-ma = false())
+                        then 
+                            $errors:ERROR
+                        else
+                            $errors:INFO:)
+
+                let $parentExceedanceSituation := $node/ancestor::aqd:AQD_SourceApportionment/aqd:parentExceedanceSituation/@xlink:href
+                let $pollutant := query:get-pollutant-for-attainment($parentExceedanceSituation)
+                let $modelAssessmentMetadata := $node/aqd:modelAssessmentMetadata/@xlink:href
+                let $ul := $node/../../aqd:adjustmentType
+                let $linkAjustment := $ul/@xlink:href
+                
+                let $needed := not(common:is-polutant-air($pollutant))(:) and ($link = "http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/fullyCorrected" or $link = "http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/noneApplied"):)
+                let $needed2 := common:is-polutant-air($pollutant) and ($linkAjustment = "http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/noneApplicable" or $linkAjustment = "")
+                let $samplingPointAssessmentMetadata := $node/aqd:samplingPointAssessmentMetadata/@xlink:href
+                
+                let $modelAssessmentMetadata := $node/aqd:modelAssessmentMetadata/@xlink:href
+                let $ok-ma := if(functx:if-empty($modelAssessmentMetadata, "") != "")
+                    then
+                        query:existsViaNameLocalId(
+                        $modelAssessmentMetadata,
+                        "AQD_Model",
+                        $latestEnvelopesD1
+                        )
+                    else
+                        true()
+
+
+                return
+                            if($needed) 
+                            then
+                                (:Skip check:)
+                                $errors:INFO
+                            else if($needed2) 
+                                 then
+                                    (:Skip check:)
+                                    $errors:INFO
+                            else if ($ok-ma) then
+
+                                        $errors:ERROR
+
+                                    else 
+                                        $errors:INFO
+                
+          
+        } catch * {
+            html:createErrorRow($err:code, $err:description)
+        }
+
+        let $I42maxErrorLevel := (if ($I42errorLevel = $errors:ERROR)
+                            then( $errors:ERROR )
+                            else(if ($I42errorLevel = $errors:WARNING)
+                                then( $errors:WARNING )
+                                else( $errors:INFO )
+                                )
+                        )
+
+        let $I42errorMessage := (
+                            if ($I18errorLevel = $errors:WARNING)
+                                then ("No assessment information for NS and WSS correction is expected for this pollutant")
+
+                                else ($labels:I42)
+                            )
+     (:let $I42errorLevel :=
+
+            let $pollutants := (
+                        "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1",
+                        "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5",
+                        "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/10",
+                        "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/6001"
+                    )
+                    let $seq :=
+                        $sources/aqd:macroExceedanceSituation/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:assessmentMethod/aqd:AssessmentMethods
+
+                    (: modelAssessmentMetadata :)
+                    (: samplingPointAssessmentMetadata :)
+                    for $node in $seq
+                        let $parentExceedanceSituation := $node/ancestor::aqd:AQD_SourceApportionment/aqd:parentExceedanceSituation/@xlink:href
+                        let $pollutant := query:get-pollutant-for-attainment($parentExceedanceSituation)
+                        let $ok :=
+                            if($pollutant = $pollutants and )
+                            then
+                                let $samplingPointAssessmentMetadata := $node/aqd:samplingPointAssessmentMetadata/@xlink:href
+                                let $ok-spa := if(functx:if-empty($samplingPointAssessmentMetadata, "") != "")
+                                    then
+                                        query:existsViaNameLocalId(
+                                        $samplingPointAssessmentMetadata,
+                                        "AQD_SamplingPoint",
+                                        $latestEnvelopesD
+                                        )
+                                    else
+                                        true()
+
+                                let $modelAssessmentMetadata := $node/aqd:modelAssessmentMetadata/@xlink:href
+                                let $ok-ma := if(functx:if-empty($modelAssessmentMetadata, "") != "")
+                                    then
+                                        query:existsViaNameLocalId(
+                                        $modelAssessmentMetadata,
+                                        "AQD_Model",
+                                        $latestEnvelopesD1
+                                        )
+                                    else
+                                        true()
+
+                                return $ok-spa and $ok-ma
+                            else
+                                true()
+
+
+        if ($isNewDelivery and count(
+            for $x in $sources
+                let $id := $x/aqd:inspireId/base:Identifier/base:namespace
+                            || "/"
+                            || $x/aqd:inspireId/base:Identifier/base:localId
+            where ($allSources = $id)
+            return 1) > 0) then
+                $errors:I2
+            else
+                $errors:INFO
+:)
     (: I43
 
     WHERE ./aqd:pollutant xlink:href attribute does NOT EQUAL
@@ -1781,40 +2160,126 @@ declare function dataflowI:checkReport(
     :)
 
     let $I43 := try {
-        for $node in $sources
-            let $parent := $node/aqd:parentExceedanceSituation/@xlink:href
-            let $pollutant := query:get-pollutant-for-attainment($parent)
+        let $seq :=
+            $sources/aqd:macroExceedanceSituation/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:assessmentMethod/aqd:AssessmentMethods
+
+        (: modelAssessmentMetadata :)
+        (: samplingPointAssessmentMetadata :)
+        for $node in $seq
+            let $parentExceedanceSituation := $node/ancestor::aqd:AQD_SourceApportionment/aqd:parentExceedanceSituation/@xlink:href
+            let $pollutant := query:get-pollutant-for-attainment($parentExceedanceSituation)
+            let $samplingPointAssessmentMetadata := $node/aqd:samplingPointAssessmentMetadata/@xlink:href
+            let $poll := common:is-polutant-air($pollutant)
+
+            let $ok-spa := if(fn:empty($samplingPointAssessmentMetadata))
+                            then
+                                false()
+                            else
+                            for $sa in $samplingPointAssessmentMetadata
+                                return
+                                
+                                     query:existsViaNameLocalId(
+                                     $sa,
+                                     "AQD_SamplingPoint",
+                                     $latestEnvelopesD
+                                     )
+                                   
+            let $ul := $node/../../aqd:adjustmentType
+            let $linkAjustment := $ul/@xlink:href
+            
+            let $needed := not(common:is-polutant-air($pollutant))(:) and ($link = "http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/fullyCorrected" or $link = "http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/noneApplied"):)
+            let $needed2 := common:is-polutant-air($pollutant) and ($linkAjustment = "http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/noneApplicable" or $linkAjustment = "")
+            
+             
             let $check := not(common:is-polutant-air($pollutant))
+            let $ok :=
 
-            let $meths := $node/aqd:macroExceedanceSituation/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:assessmentMethod/aqd:AssessmentMethods
+                 if($needed) 
+                    then
+                        (:Skip check:)
+                        true()
+                    else if($needed2) 
+                         then
+                            (:Skip check:)
+                            true()            
+                   else if (not($poll) and $samplingPointAssessmentMetadata != "")
+                    then
+                        true()
+                    else if($poll and $samplingPointAssessmentMetadata = "" and $ok-spa = false())
+                    then 
+                        true()
+                    else
+                        false()
 
-            let $values := (
-                $meths/aqd:samplingPointAssessmentMetadata/@xlink:href,
-                $meths/aqd:modelAssessmentMetadata/@xlink:href,
-                $meths/aqd:assessmentTypeDescription,
-                $meths/aqd:assessmentType
-            )
+        return common:conditionalReportRow(
+            $ok,
+            [
+                ("gml:id", data($node/ancestor-or-self::aqd:AQD_SourceApportionment/@gml:id)),
+                ("aqd:pollutant", $pollutant),
+                ("aqd:parentExceedanceSituation", $parentExceedanceSituation),
+                ("aqd:samplingPointAssessmentMetadata", $ok-spa),
+                ("test", $samplingPointAssessmentMetadata)
+            ]
+        )
+    } catch * {
+        html:createErrorRow($err:code, $err:description)
+    }
 
+
+    let $I43errorLevel := try {
+        let $seq :=
+            $sources/aqd:macroExceedanceSituation/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:assessmentMethod/aqd:AssessmentMethods
+
+        (: modelAssessmentMetadata :)
+        (: samplingPointAssessmentMetadata :)
+        for $node in $seq
+            let $parentExceedanceSituation := $node/ancestor::aqd:AQD_SourceApportionment/aqd:parentExceedanceSituation/@xlink:href
+            let $pollutant := query:get-pollutant-for-attainment($parentExceedanceSituation)
+            let $samplingPointAssessmentMetadata := $node/aqd:samplingPointAssessmentMetadata/@xlink:href
+            let $poll := common:is-polutant-air($pollutant)
+
+            let $ok-spa := if(fn:empty($samplingPointAssessmentMetadata))
+                            then
+                                false()
+                            else
+                            for $sa in $samplingPointAssessmentMetadata
+                                return
+                                
+                                     query:existsViaNameLocalId(
+                                     $sa,
+                                     "AQD_SamplingPoint",
+                                     $latestEnvelopesD
+                                     )
+            
+
+            let $ul := $node/../../aqd:adjustmentType
+            let $linkAjustment := $ul/@xlink:href
+            
+            let $needed := not(common:is-polutant-air($pollutant))(:) and ($link = "http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/fullyCorrected" or $link = "http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/noneApplied"):)
+            let $needed2 := common:is-polutant-air($pollutant) and ($linkAjustment = "http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/noneApplicable" or $linkAjustment = "")
+            
+                               
+
+            let $check := not(common:is-polutant-air($pollutant))
             return
-                if ($check)
+                if($needed) 
+                    then
+                        (:Skip check:)
+                        $errors:INFO
+                else if($needed2) 
+                     then
+                        (:Skip check:)
+                        $errors:INFO           
+                else if (not($poll) and $samplingPointAssessmentMetadata != "")
                 then
-                    common:conditionalReportRow(
-                        not(exists($values)),
-                        [
-                            ("gml:id", data($node/@gml:id)),
-                            ("pollutant", $pollutant),
-                            ('aqd:samplingPointAssessmentMetadata',
-                             data($meths/aqd:samplingPointAssessmentMetadata/@xlink:href)),
-                            ('aqd:modelAssessmentMetadata',
-                             data($meths/aqd:modelAssessmentMetadata/@xlink:href)),
-                            ('aqd:assessmentTypeDescription',
-                             data($meths/aqd:assessmentTypeDescription)),
-                            ('aqd:assessmentType',
-                             data($meths/aqd:assessmentType))
-                        ]
-                    )
+                     $errors:ERROR
+                else if($poll and $samplingPointAssessmentMetadata = "" and $ok-spa = false())
+                then 
+                      $errors:ERROR
                 else
-                    ()
+                      $errors:INFO
+
+       
     } catch * {
         html:createErrorRow($err:code, $err:description)
     }
@@ -1843,6 +2308,33 @@ declare function dataflowI:checkReport(
     ERROR
     :)
 
+   (:) let $I44error := 
+            for $node in $sources
+            let $el := $node/
+                        aqd:macroExceedanceSituation/
+                        aqd:ExceedanceDescription/
+                        aqd:deductionAssessmentMethod/
+                        aqd:AdjustmentMethod/
+                        aqd:adjustmentType
+            let $link := $el/@xlink:href
+
+            let $parent := $node/aqd:parentExceedanceSituation/@xlink:href
+            let $pollutant := query:get-pollutant-for-attainment($parent)
+            let $needed := common:is-polutant-I40($pollutant)
+            let $validation1 := $needed and $link !="http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/noneApplicable"
+            let $validation2 := count(not($link ="http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/noneApplied" or $link = "http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/fullyCorrected"))
+
+            return 
+                if ($needed and $link !="http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/noneApplicable")
+                then
+                    1
+                else if (not($link ="http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/noneApplied" or $link = "http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/fullyCorrected"))
+                then
+                    2
+                else 
+                    0
+:)
+
     let $I44 := try {
         for $node in $sources
             let $el := $node/
@@ -1855,21 +2347,33 @@ declare function dataflowI:checkReport(
 
             let $parent := $node/aqd:parentExceedanceSituation/@xlink:href
             let $pollutant := query:get-pollutant-for-attainment($parent)
-            let $needed := common:is-polutant-air($pollutant)
-
-            let $check :=
-                if ($needed)
-                then
-                    $link = "http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/fullyCorrected"
-                else
-                    $link = "http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/noneApplicable"
-
+            let $needed := common:is-polutant-air($pollutant) and not($link = "http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/fullyCorrected" or $link = "http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/noneApplied")
+            let $needed2 := not(common:is-polutant-air($pollutant)) and $link = "http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/noneApplicable"
+            
+            let $ul := $node/aqd:macroExceedanceSituation/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:adjustmentType
+            let $linkAjustment := $ul/@xlink:href
+            
+            let $neededAll := not(common:is-polutant-air($pollutant))(:) and ($link = "http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/fullyCorrected" or $link = "http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/noneApplied"):)
+            let $neededAll2 := common:is-polutant-air($pollutant) and ($linkAjustment = "http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/noneApplicable" or $linkAjustment = "")
+            
+                    
             let $ok :=
-                if (not(exists($link)))
+               if($neededAll) 
+                    then
+                        (:Skip check:)
+                        true()
+                else if($neededAll2) 
+                    then
+                       (:Skip check:)
+                       true()       
+                else if($needed) 
+                    then
+                    false()
+                else if($needed2)
                 then
+                    false()
+                else 
                     true()
-                else
-                    $check
         return common:conditionalReportRow(
             $ok,
             [
@@ -1881,6 +2385,66 @@ declare function dataflowI:checkReport(
     } catch * {
         html:createErrorRow($err:code, $err:description)
     }
+    
+    let $I44errorLevel := try {
+        for $node in $sources
+            let $el := $node/
+                        aqd:macroExceedanceSituation/
+                        aqd:ExceedanceDescription/
+                        aqd:deductionAssessmentMethod/
+                        aqd:AdjustmentMethod/
+                        aqd:adjustmentType
+            let $link := $el/@xlink:href
+
+            let $parent := $node/aqd:parentExceedanceSituation/@xlink:href
+            let $pollutant := query:get-pollutant-for-attainment($parent)
+            let $needed := common:is-polutant-air($pollutant) and not($link = "http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/fullyCorrected" or $link = "http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/noneApplied")
+            let $needed2 := not(common:is-polutant-air($pollutant)) and $link = "http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/noneApplicable"
+            
+            let $ul := $node/aqd:macroExceedanceSituation/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:adjustmentType
+            let $linkAjustment := $ul/@xlink:href
+            
+            let $neededAll := not(common:is-polutant-air($pollutant))(:) and ($link = "http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/fullyCorrected" or $link = "http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/noneApplied"):)
+            let $neededAll2 := $linkAjustment = "http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/noneApplicable" or $linkAjustment = ""
+            
+                    
+            return
+               if($neededAll) 
+                    then
+                        (:Skip check:)
+                        $errors:INFO
+                else if($neededAll2) 
+                    then
+                       (:Skip check:)
+                       $errors:INFO       
+                else if ($needed)
+                then
+                    $errors:I44
+                else if($needed2)
+                then
+                    $errors:WARNING 
+                else 
+                    $errors:INFO
+     
+    } catch * {
+        html:createErrorRow($err:code, $err:description)
+    }
+
+
+let $I44maxErrorLevel := (if ($I44errorLevel = $errors:ERROR)
+                            then( $errors:I44 )
+                            else(if ($I44errorLevel = $errors:WARNING)
+                                then( $errors:WARNING )
+                                else( $errors:INFO )
+                                )
+                        )
+
+let $I44errorMessage := (
+                            if ($I44errorLevel = $errors:WARNING)
+                                then ("Only source apportionment information with all corrections available to you applied are expected or no corrections at all. If you excpect other NS or WSS contributions exist for which you have no details, please use fullyCorrected. If you have no information to correct for them use noneApplied")
+                                else ($labels:I44)
+                            )
+
 
     (:  I45
     "WHERE ./aqd:pollutant xlink:href attribute EQUALs
@@ -1898,11 +2462,12 @@ declare function dataflowI:checkReport(
     :)
     let $I45 := try {
         for $node in $sources
-            let $parent := $node/aqd:parentExceedanceSituation/@xlink:href
+            let $parent := functx:if-empty($node/aqd:parentExceedanceSituation/@xlink:href,"")
             let $pollutant := query:get-pollutant-for-attainment($parent)
             let $needed := common:is-polutant-air($pollutant)
 
-            let $el := $node/aqd:macroExceedanceSituation/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:adjustmentSource
+            for $el in $node/aqd:macroExceedanceSituation/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:adjustmentSource
+            
             let $is-populated := common:has-content($el)
             let $link := $el/@xlink:href
             let $conforms := common:isInVocabulary(
@@ -1920,7 +2485,7 @@ declare function dataflowI:checkReport(
                         true()
                     else
                         data($el) = "noneApplicable"
-
+                
         return common:conditionalReportRow(
             $ok,
             [
@@ -1951,16 +2516,13 @@ declare function dataflowI:checkReport(
 
         {html:build2("I11", $labels:I11, $labels:I11_SHORT, $I11,
                      "All values are valid", "needs valid input", $errors:I11)}
-        {html:build2("I12", $labels:I12, $labels:I12_SHORT, $I12,
-                     "All values are valid", "needs valid input", $errors:I12)}
+        <!--{html:build2("I12", $labels:I12, $labels:I12_SHORT, $I12,"All values are valid", "needs valid input", $errors:I12)}-->
 
         {html:build2("I13", $labels:I13, $labels:I13_SHORT, $I13, "All values are valid", "needs valid input", $errors:I13)}
         {html:build2("I15", $labels:I15, $labels:I15_SHORT, $I15, "All values are valid", "needs valid input", $errors:I15)}
         {html:build2("I16", $labels:I16, $labels:I16_SHORT, $I16, "All values are valid", "needs valid input", $errors:I16)}
-
         {html:build2("I17", $labels:I17, $labels:I17_SHORT, $I17, "All values are valid", "needs valid input", $errors:I17)}
-
-        {html:build2("I18", $labels:I18, $labels:I18_SHORT, $I18, "All values are valid", "needs valid input", $errors:I18)}
+        {html:build2("I18", $I18errorMessage, $labels:I18_SHORT, $I18, "All values are valid", "needs valid input", $I18maxErrorLevel)}
         {html:build2("I19", $labels:I19, $labels:I19_SHORT, $I19, "All values are valid", "needs valid input", $errors:I19)}
         {html:build2("I20", $labels:I20, $labels:I20_SHORT, $I20, "All values are valid", "needs valid input", $errors:I20)}
         {html:build2("I21", $labels:I21, $labels:I21_SHORT, $I21, "All values are valid", "needs valid input", $errors:I21)}
@@ -1976,22 +2538,22 @@ declare function dataflowI:checkReport(
         :)
         }
         {html:build2("I29", $labels:I29, $labels:I29_SHORT, $I29, "All values are valid", "needs valid input", $errors:I29)}
-        {html:build2("I30", $labels:I30, $labels:I30_SHORT, $I30, "All values are valid", "needs valid input", $errors:I30)}
+        <!--{html:build2("I30", $labels:I30, $labels:I30_SHORT, $I30, "All values are valid", "needs valid input", $errors:I30)}-->
         {html:build2("I31", $labels:I31, $labels:I31_SHORT, $I31, "All values are valid", "needs valid input", $errors:I31)}
         {html:build2("I32", $labels:I32, $labels:I32_SHORT, $I32, "All values are valid", "needs valid input", $errors:I32)}
         {html:build2("I33", $labels:I33, $labels:I33_SHORT, $I33, "All values are valid", "needs valid input", $errors:I33)}
         {html:build2("I34", $labels:I34, $labels:I34_SHORT, $I34, "All values are valid", "needs valid input", $errors:I34)}
         {html:build2("I35", $labels:I35, $labels:I35_SHORT, $I35, "All values are valid", "needs valid input", $errors:I35)}
-        {html:build2("I36", $labels:I36, $labels:I36_SHORT, $I36, "All values are valid", "needs valid input", $errors:I36)}
+        <!--{html:build2("I36", $labels:I36, $labels:I36_SHORT, $I36, "All values are valid", "needs valid input", $errors:I36)}-->
         {html:build2("I37", $labels:I37, $labels:I37_SHORT, $I37, "All values are valid", "needs valid input", $errors:I37)}
         {html:build2("I38", $labels:I38, $labels:I38_SHORT, $I38, "All values are valid", "needs valid input", $errors:I38)}
-        {html:build2("I39", $labels:I39, $labels:I39_SHORT, $I39, "All values are valid", "needs valid input", $errors:I39)}
+        <!--{html:build2("I39", $labels:I39, $labels:I39_SHORT, $I39, "All values are valid", "needs valid input", $errors:I39)}-->
         {html:build2("I40", $labels:I40, $labels:I40_SHORT, $I40, "All values are valid", "needs valid input", $errors:I40)}
         {html:build2("I41", $labels:I41, $labels:I41_SHORT, $I41, "All values are valid", "needs valid input", $errors:I41)}
         {html:build2("I42", $labels:I42, $labels:I42_SHORT, $I42, "All values are valid", "needs valid input", $errors:I42)}
         {html:build2("I43", $labels:I43, $labels:I43_SHORT, $I43, "All values are valid", "needs valid input", $errors:I43)}
-        {html:build2("I44", $labels:I44, $labels:I44_SHORT, $I44, "All values are valid", "needs valid input", $errors:I44)}
-        {html:build2("I45", $labels:I45, $labels:I45_SHORT, $I45, "All values are valid", "needs valid input", $errors:I45)}
+        {html:build2("I44", $I44errorMessage, $labels:I44_SHORT, $I44, "All values are valid", "needs valid input", $I44maxErrorLevel)}
+        <!--{html:build2("I45", $labels:I45, $labels:I45_SHORT, $I45, "All values are valid", "needs valid input", $errors:I45)}-->
 
     </table>
 };

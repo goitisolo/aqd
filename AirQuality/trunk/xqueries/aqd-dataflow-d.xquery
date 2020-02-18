@@ -83,8 +83,10 @@ let $DCombinations :=
 let $latestEnvelopeB := query:getLatestEnvelope($cdrUrl || "b/")
 let $latestEnvelopeD := query:getLatestEnvelope($cdrUrl || "d/")
 
+let $envelopeD := 'http://cdr.eionet.europa.eu/de/eu/aqd/d/colxtanlw/envxwpvea'
+
 let $namespaces := distinct-values($docRoot//base:namespace)
-let $knownFeatures := distinct-values(data(sparqlx:run(query:getAllFeatureIds($dataflowD:FEATURE_TYPES, $latestEnvelopeD, $namespaces))//sparql:binding[@name='inspireLabel']/sparql:literal))
+let $knownFeatures := distinct-values(data(sparqlx:run(query:getAllFeatureIds($dataflowD:FEATURE_TYPES, (:$latestEnvelopeD:)$envelopeD, $namespaces))//sparql:binding[@name='inspireLabel']/sparql:literal))
 let $SPOnamespaces := distinct-values($docRoot//aqd:AQD_SamplingPoint//base:Identifier/base:namespace)
 let $SPPnamespaces := distinct-values($docRoot//aqd:AQD_SamplingPointProcess/ompr:inspireId/base:Identifier/base:namespace)
 let $networkNamespaces := distinct-values($docRoot//aqd:AQD_Network/ef:inspireId/base:Identifier/base:namespace)
@@ -174,8 +176,9 @@ let $D01table :=
 (: D02 - :)
 let $D02table :=
     try {
+        let $featureTypes := remove($dataflowD:FEATURE_TYPES, index-of($dataflowD:FEATURE_TYPES, "aqd:AQD_RepresentativeArea"))
         let $all := map:merge((
-            for $featureType at $pos in $dataflowD:FEATURE_TYPES
+            for $featureType at $pos in $featureTypes
                 let $count := count(
                 for $x in $docRoot//descendant::*[name()=$featureType]
                     let $inspireId := $x//base:Identifier/base:namespace/string() || "/" || $x//base:Identifier/base:localId/string()
@@ -418,6 +421,8 @@ let $D07.1invalid :=
         return
             <tr>
                 <td title="base:namespace">{$x}</td>
+                <td title="base:pref">{$prefLabel}</td>
+                <td title="base:alt">{$altLabel}</td>
             </tr>
     }  catch * {
         <tr class="{$errors:FAILED}">
