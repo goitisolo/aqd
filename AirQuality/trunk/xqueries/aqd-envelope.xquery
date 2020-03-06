@@ -184,7 +184,7 @@ declare function envelope:checkFileReportingHeader($envelope as element(envelope
 };
 
 declare function envelope:getObligationMinMaxYear($envelope as element(envelope)) as element(year) {
-    let $deadline := 2018
+    let $deadline := 2020
     let $part1_deadline := xs:date(concat($deadline, "-01-31"))
     let $part3_deadline := xs:date(concat($deadline, "-03-31"))
     let $id := substring-after($envelope/obligation, $vocabulary:OBLIGATIONS)
@@ -269,7 +269,7 @@ declare function envelope:validateEnvelope($source_url as xs:string) as element(
                 </tr>
             else if ($envelope/year/number() < $minimumYear or $envelope/year/number() > $maximumYear) then
                 <tr class="{$errors:ERROR}">
-                    <p>Year specified in the envelope period is outside the allowed range of {$minimumYear} - {$maximumYear}! Keep in mind that the year value must be between {$minimumYear} - {$maximumYear} and it must be equal to the year in gml:beginPosition element (in aqd:AQD_ReportingHeader).</p>
+                    <p>Year specified in the envelope period is outside the allowed range of {current-date()} - {$maximumYear}! Keep in mind that the year value must be between {$minimumYear} - {$maximumYear} and it must be equal to the year in gml:beginPosition element (in aqd:AQD_ReportingHeader).</p>
                 </tr>
             else
                 ()
