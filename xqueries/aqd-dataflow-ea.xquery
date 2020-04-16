@@ -1160,11 +1160,17 @@ let $E33invalid := errors:trycatch($E33func)
 
 let $E34func := function() {
 
-    (let $previousData := sparqlx:run(query:getE34($countryCode, $reportingYear))
+    ((:let $previousData := sparqlx:run(query:getE34($countryCode, $reportingYear)):)
     for $x at $xpos in $docRoot//om:OM_Observation/om:result
 
     let $samplingPoint := ($x/../om:parameter/om:NamedValue[om:name/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/processparameter/SamplingPoint"]/om:value/@xlink:href => tokenize("/"))[last()]
+<<<<<<< .mine
+    let $previousMean := sparqlx:run(query:getE34Sampling($countryCode, $reportingYear, $samplingPoint))(:$previousData[sparql:binding[@name = "SamplingPointLocalId"]/sparql:literal = $samplingPoint]/sparql:binding[@name = "AQValue"]/sparql:literal/string() => number():)
+||||||| .r25397
+    let $previousMean := $previousData[sparql:binding[@name = "SamplingPointLocalId"]/sparql:literal = $samplingPoint]/sparql:binding[@name = "AQValue"]/sparql:literal/string() => number()
+=======
     (:let $previousMean := $previousData[sparql:binding[@name = "SamplingPointLocalId"]/sparql:literal = $samplingPoint]/sparql:binding[@name = "AQValue"]/sparql:literal/string() => number()
+>>>>>>> .r26006
     return if (string($previousMean) = 'NaN') then () else
 
     let $blockSeparator := string($x//swe:encoding/swe:TextEncoding/@blockSeparator)
