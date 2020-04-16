@@ -298,9 +298,29 @@ let $H04 := try {(:)
     html:createErrorRow($err:code, $err:description)
 }
 
-(: H05 RESERVE :)
+(: H05 
+aqd:AQD_Plan/aqd:pollutants/aqd:Pollutant/aqd:pollutantCode xlink:href attribute shall resolve to
+one of http://dd.eionet.europa.eu/vocabulary/aq/pollutant/
 
-let $H05 := ()
+Your plan status should use one of those listed at http://dd.eionet.europa.eu/vocabulary/aq/pollutant/
+ :)
+
+let $H05 := try {
+    for $el in $docRoot//aqd:AQD_Plan/aqd:pollutants/aqd:Pollutant/aqd:pollutantCode
+    let $uri := $el/@xlink:href
+    return
+        if (not(common:isInVocabulary($uri, $vocabulary:POLLUTANT_VOCABULARY)))
+        then
+            <tr>
+                <td title="gml:id">{data($el/ancestor-or-self::*[name() = $node-name]/@gml:id)}</td>
+                <td title="xlink:href"> {data($el/@xlink:href)}</td>
+                <td title="{node-name($el)}"> not conform to vocabulary</td>
+            </tr>
+        else
+            ()
+} catch * {
+    html:createErrorRow($err:code, $err:description)
+}
 
 (: H06 RESERVE :)
 
@@ -686,29 +706,9 @@ let $H20 := try {
     html:createErrorRow($err:code, $err:description)
 }
 
-(: H21
-aqd:AQD_Plan/aqd:pollutants/aqd:Pollutant/aqd:pollutantCode xlink:href attribute shall resolve to
-one of http://dd.eionet.europa.eu/vocabulary/aq/pollutant/
+(: H21 RESERVE:)
 
-Your plan status should use one of those listed at http://dd.eionet.europa.eu/vocabulary/aq/pollutant/
-:)
-
-let $H21 := try {
-    for $el in $docRoot//aqd:AQD_Plan/aqd:pollutants/aqd:Pollutant/aqd:pollutantCode
-    let $uri := $el/@xlink:href
-    return
-        if (not(common:isInVocabulary($uri, $vocabulary:POLLUTANT_VOCABULARY)))
-        then
-            <tr>
-                <td title="gml:id">{data($el/ancestor-or-self::*[name() = $node-name]/@gml:id)}</td>
-                <td title="xlink:href"> {data($el/@xlink:href)}</td>
-                <td title="{node-name($el)}"> not conform to vocabulary</td>
-            </tr>
-        else
-            ()
-} catch * {
-    html:createErrorRow($err:code, $err:description)
-}
+let $H21 := ()
 
 (: H22
 aqd:AQD_Plan/aqd:pollutants/aqd:Pollutant/aqd:protectionTarget xlink:href attribute shall resolve
@@ -1166,7 +1166,7 @@ return
         {html:buildSimple("H03", $labels:H03, $labels:H03_SHORT, $H03, "", "", $H03errorLevel)}
         {html:build2("H04", $labels:H04, $labels:H04_SHORT, $H04, "All values are valid", "found", $errors:H04)}
         <!--{html:build1("H04", $labels:H04, $labels:H04_SHORT, $H04, "", string(count($H04)), " ", "", $errors:H04)}-->
-        {html:build1("H05", $labels:H05, $labels:H05_SHORT, $H05, "RESERVE", "RESERVE", "RESERVE", "RESERVE", $errors:H05)}
+        {html:build2("H05", $labels:H05, $labels:H05_SHORT, $H05, "All values are valid", "needs valid input", $errors:H05)}
         {html:build1("H06", $labels:H06, $labels:H06_SHORT, $H06, "RESERVE", "RESERVE", "RESERVE", "RESERVE", $errors:H06)}
         {html:build2("H07", $labels:H07, $labels:H07_SHORT, $H07, "No duplicate values found", " duplicate value", $errors:H07)}
         {html:build2("H08", $labels:H08, $labels:H08_SHORT, $H08, "No duplicate values found", " duplicate value", $errors:H08)}
@@ -1182,7 +1182,7 @@ return
         {html:build2("H18", $labels:H18, $labels:H18_SHORT, $H18, "All values are valid", "needs valid input", $errors:H18)}
         {html:build2("H19", $labels:H19, $labels:H19_SHORT, $H19, "All values are valid", "needs valid input", $errors:H19)}
         {html:build2("H20", $labels:H20, $labels:H20_SHORT, $H20, "All values are valid", "needs valid input", $errors:H20)}
-        {html:build2("H21", $labels:H21, $labels:H21_SHORT, $H21, "All values are valid", "needs valid input", $errors:H21)}
+        {html:build1("H21", $labels:H21, $labels:H21_SHORT, $H21, "RESERVE", "RESERVE", "RESERVE", "RESERVE", $errors:H21)}
         {html:build2("H22", $labels:H22, $labels:H22_SHORT, $H22, "All values are valid", "needs valid input", $errors:H22)}
         {html:build2("H23", $labels:H23, $labels:H23_SHORT, $H23, "All values are valid", "needs valid input", $errors:H23)}
         {html:build2("H24", $labels:H24, $labels:H24_SHORT, $H24, "All values are valid", "needs valid input", $errors:H24)}

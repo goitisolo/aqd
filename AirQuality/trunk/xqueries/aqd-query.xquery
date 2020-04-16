@@ -1081,6 +1081,38 @@ declare function query:getE34($countryCode as xs:string, $reportingYear as xs:st
     }"
 };
 
+declare function query:getE34Sampling($countryCode as xs:string, $reportingYear as xs:string, $samplingPoint as xs:string) as xs:string {
+    let $reportingYear := xs:integer($reportingYear) - 1
+    return
+    "
+    PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    PREFIX aq: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+    PREFIX aqr: <http://reference.eionet.europa.eu/aq/ontology/>
+
+    SELECT DISTINCT
+
+    ?AQValue
+    WHERE {
+      ?statsURI aqr:inspireNamespace ?Namespace .
+      ?statsURI aqr:samplingPoint ?SamplingPointLocalId_URI .
+      ?statsURI aqr:aggregationType ?AggregationType_URI .
+      ?statsURI aqr:airqualityValue ?AQValue .
+      ?statsURI aqr:beginPosition ?BeginPosition .
+      ?statsURI aqr:observationValidity ?Validity_URI .
+      ?Validity_URI rdfs:label ?Validity .
+      FILTER(replace(replace(replace(str(?SamplingPointLocalId_URI),'http://reference.eionet.europa.eu/aq/',''),?Namespace,''),'/','') = '"|| $samplingPoint ||"')
+
+      FILTER (?Validity = 'Valid') .
+      FILTER (year(xsd:dateTime(?BeginPosition)) = " || $reportingYear || ") .
+
+      ?AggregationType_URI rdfs:label ?AggregationType .
+      ?AggregationType_URI skos:notation ?DataAggregationType .
+      FILTER (?DataAggregationType = 'P1Y' ) .
+
+    }"
+};
+
 declare function query:getG14(
     $envelopeB as xs:string,
     $envelopeC as xs:string,
@@ -1201,25 +1233,38 @@ declare function query:getG66($cdrUrl as xs:string, $reportingYear as xs:string)
 };
 
 declare function query:getAssessmentMethods() as xs:string {
-  "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-   PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
-   PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
-   PREFIX aq: <http://reference.eionet.europa.eu/aq/ontology/>
+  "PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
+  PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+  PREFIX aq: <http://reference.eionet.europa.eu/aq/ontology/>
 
-   SELECT ?assessmentRegime ?inspireId ?localId ?inspireLabel ?assessmentMethods  ?assessmentMetadata ?assessmentMetadataNamespace ?assessmentMetadataId ?samplingPointAssessmentMetadata ?metadataId ?metadataNamespace
-   WHERE {
-          ?assessmentRegime a aqd:AQD_AssessmentRegime ;
-          aqd:inspireId ?inspireId .
-          ?inspireId rdfs:label ?inspireLabel .
-          ?inspireId aqd:localId ?localId .
-          ?assessmentRegime aqd:assessmentMethods ?assessmentMethods .
-          ?assessmentMethods aqd:modelAssessmentMetadata ?assessmentMetadata .
-          ?assessmentMetadata aq:inspireNamespace ?assessmentMetadataNamespace .
-          ?assessmentMetadata aq:inspireId ?assessmentMetadataId .
-          OPTIONAL { ?assessmentMethods aqd:samplingPointAssessmentMetadata ?samplingPointAssessmentMetadata. }
-          OPTIONAL {?samplingPointAssessmentMetadata aq:inspireId ?metadataId. }
-          OPTIONAL {?samplingPointAssessmentMetadata aq:inspireNamespace ?metadataNamespace . }
-         }"
+  SELECT 
+  ?assessmentRegime 
+  ?inspireId 
+  ?localId 
+  ?inspireLabel 
+  ?assessmentMethods  
+  ?assessmentMetadata 
+  ?assessmentMetadataNamespace 
+  ?assessmentMetadataId 
+  ?samplingPointAssessmentMetadata 
+  ?metadataId 
+  ?metadataNamespace
+
+     WHERE {
+            ?assessmentRegime a aqd:AQD_AssessmentRegime .
+            ?assessmentRegime aqd:inspireId ?inspireId .
+            ?inspireId rdfs:label ?inspireLabel .
+            ?inspireId aqd:localId ?localId .
+            ?assessmentRegime aqd:assessmentMethods ?assessmentMethods .
+            ?assessmentMethods aqd:modelAssessmentMetadata ?assessmentMetadata .
+            ?assessmentMetadata aq:inspireNamespace ?assessmentMetadataNamespace .
+            ?assessmentMetadata aq:inspireId ?assessmentMetadataId .
+            OPTIONAL { 
+                       ?assessmentMethods aqd:samplingPointAssessmentMetadata ?samplingPointAssessmentMetadata. 
+                       ?samplingPointAssessmentMetadata aq:inspireId ?metadataId.                                     
+                       ?samplingPointAssessmentMetadata aq:inspireNamespace ?metadataNamespace . 
+            }
+     }"
 };
 
 declare function query:getSamplingPointAssessmentMetadata() as xs:string {
