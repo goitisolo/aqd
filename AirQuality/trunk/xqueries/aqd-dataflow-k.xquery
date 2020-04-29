@@ -932,12 +932,20 @@ let $K36 := try {
         let $comment := $main/aqd:comment
 
         let $ok := (
-            lower-case(functx:if-empty(data($quantity/@xsi:nil), "")) = "false"
+                lower-case(functx:if-empty(data($quantity/@xsi:nil), "")) = "false"
             or
             (
-            lower-case(functx:if-empty(data($quantity/@xsi:nil), "")) = "true"
-            and
-            functx:if-empty(data($comment), "") != ""
+                lower-case(functx:if-empty(data($quantity/@xsi:nil), "")) = "true"
+                and
+                functx:if-empty(data($comment), "") != ""
+            )
+            or 
+            (
+             lower-case(functx:if-empty(data($quantity/@xsi:nil), "")) = ""                             
+             and             
+             functx:if-empty(data($quantity), "") != ""
+             and
+             functx:if-empty(data($comment), "") != ""
             )
         )
 

@@ -437,7 +437,7 @@ via its namespace & localId (for the same reporting year)
 let $J12 := try {
     for $main in $evaluationScenario
         let $el := $main/aqd:sourceApportionment
-        let $label := $el/@xlink:href
+        let $label := functx:if-empty($el/@xlink:href, "")
         let $ok := query:existsViaNameLocalIdYear(
                 $label,
                 'AQD_SourceApportionment',

@@ -152,7 +152,7 @@ declare function common:is-a-number(
 };
 
 declare function common:includesURL($x as xs:string) {
-    contains($x, "http://") or contains($x, "https://")
+    contains($x, "http://") or contains($x, "https://") or contains($x, "ftp://") or contains($x, "www.")
 };
 
 declare function common:isInvalidYear($value as xs:string?) {
