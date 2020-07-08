@@ -84,7 +84,7 @@ let $latestEnvelopeB := query:getLatestEnvelope($cdrUrl || "b/")
 let $latestEnvelopeD := query:getLatestEnvelope($cdrUrl || "d/")
 
 let $namespaces := distinct-values($docRoot//base:namespace)
-let $knownFeatures := distinct-values(data(sparqlx:run(query:getAllFeatureIds($dataflowD:FEATURE_TYPES, $latestEnvelopeD, $namespaces))//sparql:binding[@name='inspireLabel']/sparql:literal))
+let $knownFeatures := "" (: distinct-values(data(sparqlx:run(query:getAllFeatureIds($dataflowD:FEATURE_TYPES, $latestEnvelopeD, $namespaces))//sparql:binding[@name='inspireLabel']/sparql:literal)) :)
 let $SPOnamespaces := distinct-values($docRoot//aqd:AQD_SamplingPoint//base:Identifier/base:namespace)
 let $SPPnamespaces := distinct-values($docRoot//aqd:AQD_SamplingPointProcess/ompr:inspireId/base:Identifier/base:namespace)
 let $networkNamespaces := distinct-values($docRoot//aqd:AQD_Network/ef:inspireId/base:Identifier/base:namespace)
@@ -1180,6 +1180,7 @@ let $D38func := function() {
         <tr>
             <td title="aqd:AQD_SamplingPoint">{data($x/ef:inspireId/base:Identifier/base:localId)}</td>
             <td title="xlink:href">{$xlink}</td>
+            <td title="Sparql">{sparqlx:getLink(query:getSamplingPoint($cdrUrl))}</td>
         </tr>
 
 }
@@ -1438,6 +1439,7 @@ let $D53invalid :=
             <tr>
                 <td title="aqd:AQD_SamplingPoint">{data($x/../ef:inspireId/base:Identifier/base:localId)}</td>
                 <td title="aqd:zone">{data($x/@xlink:href)}</td>
+                <td title="Sparql">{sparqlx:getLink(query:getZone($latestEnvelopeB))}</td>
             </tr>
     } catch * {
         <tr class="{$errors:FAILED}">
@@ -2167,7 +2169,7 @@ return
         {html:build2("D35", $labels:D35, $labels:D35_SHORT, $D35invalid, $D35message, " invalid elements", $errors:D35)}
         {html:build2("D36", $labels:D36, $labels:D36_SHORT, $D36invalid, "All attributes are valid", " invalid attribute", $errors:D36)}
         {html:build2("D37", $labels:D37, $labels:D37_SHORT, $D37invalid, "All values are valid", "", $errors:D37)}
-        {html:build2("D38", $labels:D38, $labels:D38_SHORT, $D38invalid, "All values are valid", "", $errors:D38)}
+        {html:build2Sparql("D38", $labels:D38, $labels:D38_SHORT, $D38invalid, "All values are valid", "", $errors:D38)}
         {html:build2("D39", $labels:D39, $labels:D39_SHORT, $D39invalid, "All values are valid", "", $errors:D39)}
         {html:build2("D40", $labels:D40, $labels:D40_SHORT, $D40invalid, "All values are valid", "invalid pollutant", $errors:D40)}
         {html:buildInfoTR("Internal XML cross-checks between AQD_SamplingPoint and AQD_Sample;AQD_SamplingPointProcess;AQD_Station;AQD_Network")}

@@ -182,7 +182,8 @@ let $H02 := try {
                     ("gml:id", data($el/@gml:id)),
                     ("aqd:inspireId", $inspireId),
                     ("knownPlans", $isNewDelivery),
-                    ("deliveries", data($knownPlans))
+                    ("deliveries", data($knownPlans)),
+                    ("Sparql", sparqlx:getLink(query:existsViaNameLocalIdQuery(data($el/@gml:id), 'AQD_Plan', $latestEnvelopesH)))
                 ]
         )
 } catch * {
@@ -195,7 +196,7 @@ let $H02errorLevel :=
                 count(
                         for $x in $docRoot//aqd:AQD_Plan/aqd:inspireId/base:Identifier
                         let $id := $x/base:namespace || "/" || $x/base:localId
-                        where query:existsViaNameLocalId($id, 'AQD_Plan', $latestEnvelopesH) 
+                        where query:existsViaNameLocalId($id, 'AQD_Plan', $latestEnvelopesH)
                         return 1
                 ) > 0
     )
@@ -217,7 +218,8 @@ let $H03 := try {
                 $ok,
                 [
                 ("gml:id", data($main/@gml:id)),
-                ("aqd:inspireId", $inspireId)
+                ("aqd:inspireId", $inspireId),
+                ("Sparql", sparqlx:getLink(query:existsViaNameLocalIdQuery($inspireId, 'AQD_Plan', $latestEnvelopesH)))
                 ]
         )
 } catch * {
@@ -457,7 +459,16 @@ let $H11 := try{
     for $el in $docRoot//aqd:AQD_Plan/aqd:exceedanceSituation
 
     let $label := data($el/@xlink:href)
-    let $ok := if($year>=2013)
+    (: let $ok := if($year>=2013)
+        then
+            query:existsViaNameLocalId(
+                $label,
+                'AQD_Attainment',
+                $latestEnvelopesG
+            )
+        else
+            true() :)
+    let $ok := if($year>=2013 and not(fn:empty($label)))
         then
             query:existsViaNameLocalId(
                 $label,
@@ -466,12 +477,20 @@ let $H11 := try{
             )
         else
             true()
-
+    
+    let $sparql_query := if(fn:empty($label))
+                         then
+                          "No label to execute this query"
+                         else
+                          sparqlx:getLink(query:existsViaNameLocalIdQuery($label, 'AQD_Attainment', $latestEnvelopesG))
+    
     return common:conditionalReportRow(
             $ok,
             [
             ("gml:id", data($el/ancestor-or-self::*[name() = $node-name]/@gml:id)),
-            ("aqd:exceedanceSituation", $el/@xlink:href)
+            ("aqd:exceedanceSituation", $el/@xlink:href),
+            (: ("Sparql", sparqlx:getLink(query:existsViaNameLocalIdQuery($label, 'AQD_Attainment', $latestEnvelopesG))) :)
+            ("Sparql", $sparql_query)
             ]
     )
 } catch * {
@@ -832,6 +851,7 @@ let $H24 := try {
         let $pollutantCodes := $plan/aqd:pollutants/aqd:Pollutant/aqd:pollutantCode/@xlink:href
         for $exceedanceSituation in $plan/aqd:exceedanceSituation/@xlink:href
             let $pollutants := query:getPollutants("AQD_Attainment", $exceedanceSituation)
+            let $pollutants_query := sparqlx:getLink(query:getPollutantsQuery("AQD_Attainment", $exceedanceSituation))
             let $ok := count(index-of($pollutantCodes, functx:if-empty($pollutants, ""))) > 0
             return
                 if(not($ok))
@@ -840,6 +860,7 @@ let $H24 := try {
                             <td title="gml:id">{data($plan/ancestor-or-self::*[name() = $node-name]/@gml:id)}</td>
                             <td title="aqd:exceedanceSituation">{data($exceedanceSituation)}</td>
                             <td title="pollutantCode xlink:href">{data($pollutantCodes)}</td>
+                            <td title="Sparql">{$pollutants_query}</td>
                         </tr>
                     else
                         ()
@@ -1162,8 +1183,8 @@ return
         {html:build2("VOCAB", $labels:VOCAB, $labels:VOCAB_SHORT, $VOCABinvalid, "All values are valid", "record", $errors:VOCAB)}
         {html:build3("H0", $labels:H0, $labels:H0_SHORT, $H0, string($H0/td), errors:getMaxError($H0))}
         {html:build1("H01", $labels:H01, $labels:H01_SHORT, $H01, "", string($countPlans), "", "", $errors:H01)}
-        {html:buildSimple("H02", $labels:H02, $labels:H02_SHORT, $H02, "", "", $H02errorLevel)}
-        {html:buildSimple("H03", $labels:H03, $labels:H03_SHORT, $H03, "", "", $H03errorLevel)}
+        {html:buildSimpleSparql("H02", $labels:H02, $labels:H02_SHORT, $H02, "", "", $H02errorLevel)}
+        {html:buildSimpleSparql("H03", $labels:H03, $labels:H03_SHORT, $H03, "", "", $H03errorLevel)}
         {html:build2("H04", $labels:H04, $labels:H04_SHORT, $H04, "All values are valid", "found", $errors:H04)}
         <!--{html:build1("H04", $labels:H04, $labels:H04_SHORT, $H04, "", string(count($H04)), " ", "", $errors:H04)}-->
         {html:build2("H05", $labels:H05, $labels:H05_SHORT, $H05, "All values are valid", "needs valid input", $errors:H05)}
@@ -1172,7 +1193,7 @@ return
         {html:build2("H08", $labels:H08, $labels:H08_SHORT, $H08, "No duplicate values found", " duplicate value", $errors:H08)}
         {html:buildUnique("H09", $labels:H09, $labels:H09_SHORT, $H09, "namespace", $errors:H09)}
         {html:build2("H10", $labels:H10, $labels:H10_SHORT, $H10, "All values are valid", " not conform to vocabulary", $errors:H10)}
-        {html:build2("H11", $labels:H11, $labels:H11_SHORT, $H11, "All values are valid", "needs valid input", $errors:H11)}
+        {html:build2Sparql("H11", $labels:H11, $labels:H11_SHORT, $H11, "All values are valid", "needs valid input", $errors:H11)}
         {html:build2("H12", $labels:H12, $labels:H12_SHORT, $H12, "All values are valid", "needs valid input", $errors:H12)}
         {html:build1("H13", $labels:H13, $labels:H13_SHORT, $H13, "RESERVE", "RESERVE", "RESERVE", "RESERVE", $errors:H13)}
     <!--{html:build2("H14", $labels:H14, $labels:H14_SHORT, $H14, "All values are valid", "needs valid input", $errors:H14)}:)-->
@@ -1185,7 +1206,7 @@ return
         {html:build1("H21", $labels:H21, $labels:H21_SHORT, $H21, "RESERVE", "RESERVE", "RESERVE", "RESERVE", $errors:H21)}
         {html:build2("H22", $labels:H22, $labels:H22_SHORT, $H22, "All values are valid", "needs valid input", $errors:H22)}
         {html:build2("H23", $labels:H23, $labels:H23_SHORT, $H23, "All values are valid", "needs valid input", $errors:H23)}
-        {html:build2("H24", $labels:H24, $labels:H24_SHORT, $H24, "All values are valid", "needs valid input", $errors:H24)}
+        {html:build2Sparql("H24", $labels:H24, $labels:H24_SHORT, $H24, "All values are valid", "needs valid input", $errors:H24)}
         {html:build2("H25", $labels:H25, $labels:H25_SHORT, $H25, "All values are valid", "needs valid input", $errors:H25)}
         {html:build2("H26", $labels:H26, $labels:H26_SHORT, $H26, "All values are valid", "needs valid input", $errors:H26)}
         {html:build2("H27", $labels:H27, $labels:H27_SHORT, $H27, "All values are valid", "needs valid input", $errors:H27)}

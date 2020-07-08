@@ -258,6 +258,9 @@ declare function dataflowI:checkReport(
                 <tr>
                     <td title="gml:id">{data($x/@gml:id)}</td>
                     <td title="aqd:inspireId">{$inspireId}</td>
+                    <td title="Sparql1">{sparqlx:getLink(query:sparql-objects-in-subject($cdrUrl || "g/", $node-name))}</td>
+                    <td title="Sparql2">{sparqlx:getLink(query:sparql-objects-in-subject($latestEnvelopeByYearI,$node-name))}</td>
+                    <td title="SparqlQuery">{sparqlx:getLink(query:sparql-objects-ids-query($namespaces, $node-name))}</td>
                 </tr>
         } catch * {
             html:createErrorRow($err:code, $err:description)
@@ -300,6 +303,8 @@ declare function dataflowI:checkReport(
                 <tr>
                     <td title="gml:id">{data($x/@gml:id)}</td>
                     <td title="aqd:inspireId">{$inspireId}</td>
+                    <td title="Sparql1">{sparqlx:getLink(query:sparql-objects-in-subject($cdrUrl || "g/", $node-name))}</td>
+                    <td title="Sparql2">{sparqlx:getLink(query:sparql-objects-in-subject($latestEnvelopeByYearI,$node-name))}</td>
                 </tr>
         } catch * {
             html:createErrorRow($err:code, $err:description)
@@ -360,6 +365,7 @@ declare function dataflowI:checkReport(
                         {common:checkLink(distinct-values(data($att-url)))}
                     </td>
                     <td title="aqd:pollutant">{$pollutant}</td>
+                    <td title="Sparql">{sparqlx:getLink(query:get-pollutant-for-attainment-query($att-url))}</td>
                 </tr>
         } catch * {
             html:createErrorRow($err:code, $err:description)
@@ -565,7 +571,8 @@ let $I7 := try {
             $ok,
             [
                 ("gml:id", data($el/../@gml:id)),
-                ("aqd:usedInPlan", $label)
+                ("aqd:usedInPlan", $label),
+                ("Sparql", sparqlx:getLink(query:existsViaNameLocalIdYearI11Query($label,'AQD_Plan',$reportingYear,$latestEnvelopesH)))
             ]
         )
     } catch * {
@@ -604,7 +611,8 @@ let $I7 := try {
                 (node-name($node), $node/@xlink:href),
                 ("test", $link),
                 ("test2", $latestEnvelopeByCountryG),
-                ("reportingYear", $reportingYear)
+                ("reportingYear", $reportingYear),
+                ("Sparql", sparqlx:getLink(query:existsViaNameLocalIdYearQuery($link,'AQD_Attainment',$reportingYear,$latestEnvelopeByCountryG)))
             ]
         )
     } catch * {
@@ -797,7 +805,8 @@ let $I7 := try {
             [
                 ("gml:id", data($node/@gml:id)),
                 ("Source App uom", $uom),
-                ("Attainment uom", $rec-uom)
+                ("Attainment uom", $rec-uom),
+                ("Sparql", sparqlx:getLink(query:get-pollutant-for-attainment-query($att-url)))
             ]
             )
             
@@ -1170,6 +1179,7 @@ let $I18errorMessage := (
             let $areaClassification := data($node/@xlink:href)
             let $parent := $node/ancestor::aqd:AQD_SourceApportionment/aqd:parentExceedanceSituation/@xlink:href
             let $parentAreaClassification := query:get-area-classifications-for-attainment($parent)
+            let $parentAreaClassification_query := sparqlx:getLink(query:get-area-classifications-for-attainment-query($parent))
 
             let $latestParentAreaClassifications :=
                 for $result in $parentAreaClassification
@@ -1187,7 +1197,8 @@ let $I18errorMessage := (
             [
                 (node-name($node/ancestor::aqd:AQD_SourceApportionment), data($node/ancestor::aqd:AQD_SourceApportionment/@gml:id)),
                 (node-name($node), $areaClassification),
-                ('AQD_Attainment classification', string-join($latestParentAreaClassifications, "&#xa;"))
+                ('AQD_Attainment classification', string-join($latestParentAreaClassifications, "&#xa;")),
+                ("Sparql", $parentAreaClassification_query)
             ]
         )
     } catch * {
@@ -1306,12 +1317,25 @@ let $I18errorMessage := (
             "stationUsed",
             "modelUsed"
         )
+        
+        (::)
+        for $elem in $sources//*[local-name() = $elements]
+        let $query :=
+            if (local-name($elem) = "stationUsed")
+            then
+                let $allResults_query :=
+                    sparqlx:getLink(query:getAllEnvelopesForObjectViaLabelQuery($elem/@xlink:href, "AQD_SamplingPoint"))
+                return $allResults_query
+        (::)     
+        
         for $elem in $sources//*[local-name() = $elements]
         let $ok :=
             if (local-name($elem) = "stationUsed")
             then
                 let $allResults :=
                     query:getAllEnvelopesForObjectViaLabel($elem/@xlink:href, "AQD_SamplingPoint")
+                let $allResults_query :=
+                    sparqlx:getLink(query:getAllEnvelopesForObjectViaLabelQuery($elem/@xlink:href, "AQD_SamplingPoint"))
                 for $result in $allResults
                 let $envelope := functx:substring-before-last($result/sparql:binding[@name="s"]/sparql:uri, "/")
                 return
@@ -1322,6 +1346,8 @@ let $I18errorMessage := (
                 then
                     let $allResults :=
                         query:getAllEnvelopesForObjectViaLabel($elem/@xlink:href, "AQD_Model")
+                    let $allResults_query :=
+                        sparqlx:getLink(query:getAllEnvelopesForObjectViaLabelQuery($elem/@xlink:href, "AQD_Model"))
                     for $result in $allResults
                     let $envelope := functx:substring-before-last($result/sparql:binding[@name="s"]/sparql:uri, "/")
                     return
@@ -1336,7 +1362,8 @@ let $I18errorMessage := (
             [
                 ("gml:id", data($elem/ancestor::aqd:AQD_SourceApportionment/@gml:id)),
                 ("element name", node-name($elem)),
-                ("element value", $elem/@xlink:href)
+                ("element value", $elem/@xlink:href),
+                ("Sparql", $query)
             ]
         )
     } catch * {
@@ -1378,8 +1405,10 @@ let $I18errorMessage := (
         for $node in $sources
             let $att-url := functx:if-empty($node/aqd:parentExceedanceSituation/@xlink:href, "")
             for $modelUsed in $node/aqd:macroExceedanceSituation/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:modelUsed
-                (:let $model := query:get-used-model-for-attainment($att-url):)
+                (: let $model := query:get-used-model-for-attainment($att-url)
+                let $model_query := sparqlx:getLink(query:get-used-model-for-attainment-query($att-url)) :)
                 let $attainmentsFound := query:getAttainmentForExceedanceArea($att-url,local-name($modelUsed), $modelUsed/@xlink:href)
+                let $attainmentsFound_query := sparqlx:getLink(query:getAttainmentForExceedanceAreaQuery($att-url,local-name($modelUsed), $modelUsed/@xlink:href))
                 let $attainmentLatest :=
                     for $attainment in $attainmentsFound
                         return
@@ -1391,13 +1420,16 @@ let $I18errorMessage := (
                     and
                     count($attainmentLatest) > 0
                 )
+               
                 return common:conditionalReportRow(
                     $ok,
                     [
                         ("gml:id", data($node/ancestor-or-self::aqd:AQD_SourceApportionment/@gml:id)),
                         (node-name($modelUsed), $modelUsed/@xlink:href),
-                        ("parentExceedanceSituation", $att-url)
-                        (:("found model", $model):)
+                        ("parentExceedanceSituation", $att-url),
+                        (:("found model", $model)
+                        ("SparqlModel", $model_query), :)
+                        ("Sparql", $attainmentsFound_query)  
                     ]
                 )
     } catch * {
@@ -1438,8 +1470,10 @@ let $I18errorMessage := (
         for $node in $sources
             let $att-url := functx:if-empty($node/aqd:parentExceedanceSituation/@xlink:href,"")
             for $stationUsed in $node/aqd:macroExceedanceSituation/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:stationUsed
-                (:let $model := query:get-used-model-for-attainment($att-url):)
+                (: let $model := query:get-used-model-for-attainment($att-url)
+                let $model_query := sparqlx:getLink(query:get-used-model-for-attainment-query($att-url)) :)
                 let $attainmentsFound := query:getAttainmentForExceedanceArea($att-url,local-name($stationUsed), $stationUsed/@xlink:href)
+                let $attainmentsFound_query := sparqlx:getLink(query:getAttainmentForExceedanceAreaQuery($att-url,local-name($stationUsed), $stationUsed/@xlink:href))
                 let $attainmentLatest :=
                     for $attainment in $attainmentsFound
                         return
@@ -1456,8 +1490,10 @@ let $I18errorMessage := (
                     [
                         ("gml:id", data($node/ancestor-or-self::aqd:AQD_SourceApportionment/@gml:id)),
                         (node-name($stationUsed), $stationUsed/@xlink:href),
-                        ("parentExceedanceSituation", $att-url)
-                        (:("found model", $model):)
+                        ("parentExceedanceSituation", $att-url),
+                        (:("found model", $model)
+                        ("SparqlModel", $model_query), :)
+                        ("Sparql", $attainmentsFound_query) 
                     ]
                 )
 
@@ -1704,7 +1740,8 @@ let $I18errorMessage := (
                 ("gml:id", data($node/ancestor-or-self::aqd:AQD_SourceApportionment/@gml:id)),
                 (node-name($el), data($el)),
                 ('pollutant', $pollutant),
-                ('needed', $needed)
+                ('needed', $needed),
+                ("Sparql", sparqlx:getLink(query:get-pollutant-for-attainment-query($parent)))
             ]
         )
     } catch * {
@@ -1758,7 +1795,8 @@ let $I18errorMessage := (
             [
                 ("gml:id", data($node/ancestor-or-self::aqd:AQD_SourceApportionment/@gml:id)),
                 (("pollutant"), $pollutant),
-                (node-name($el), $link)
+                (node-name($el), $link),
+                ("Sparql", sparqlx:getLink(query:get-pollutant-for-attainment-query($parent)))
             ]
         )
     } catch * {
@@ -1815,7 +1853,8 @@ let $I18errorMessage := (
             $ok,
             [
                 ("gml:id", data($node/ancestor-or-self::aqd:AQD_SourceApportionment/@gml:id)),
-                (node-name($node), data($node))
+                (node-name($node), data($node)),
+                ("Sparql", sparqlx:getLink(query:get-pollutant-for-attainment-query($parent)))
             ]
         )
     } catch * {
@@ -1938,7 +1977,41 @@ let $I18errorMessage := (
         for $node in $seq
             let $parentExceedanceSituation := $node/ancestor::aqd:AQD_SourceApportionment/aqd:parentExceedanceSituation/@xlink:href
             let $pollutant := query:get-pollutant-for-attainment($parentExceedanceSituation)
-            let $modelAssessmentMetadata := $node/aqd:modelAssessmentMetadata/@xlink:href
+            (:let $modelAssessmentMetadata := $node/aqd:modelAssessmentMetadata/@xlink:href:)
+            let $modelAssessmentMetadata := 
+                if(local-name($node) = "modelAssessmentMetadata")
+                then
+                    let $modelAssessmentMetadata := $node/aqd:modelAssessmentMetadata/@xlink:href
+                    return $modelAssessmentMetadata
+            
+            let $poll := common:is-polutant-air($pollutant)
+            
+            let $ok-ma := if(fn:empty($modelAssessmentMetadata))
+                          then
+                            false()
+                            (:for $ma in $modelAssessmentMetadata
+                              return
+                                query:existsViaNameLocalId(
+                                $ma,
+                                "AQD_Model",
+                                $latestEnvelopesD1
+                                ):)
+                          else
+                            for $ma in $modelAssessmentMetadata
+                              return
+                                query:existsViaNameLocalId(
+                                $ma,
+                                "AQD_Model",
+                                $latestEnvelopesD1
+                                )
+                                (:true():)
+            
+            let $sparql_query := if(fn:empty($modelAssessmentMetadata))
+                                   then
+                                    "No modelAssessmentMetadata to execute this query"
+                                   else
+                                    sparqlx:getLink(query:existsViaNameLocalIdQuery($modelAssessmentMetadata, "AQD_Model", $latestEnvelopesD1))
+            
             let $ul := $node/../../aqd:adjustmentType
             let $linkAjustment := $ul/@xlink:href
             
@@ -1946,6 +2019,7 @@ let $I18errorMessage := (
             let $needed2 := common:is-polutant-air($pollutant) and ($linkAjustment = "http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/noneApplicable" or $linkAjustment = "")
             
 
+            let $check := not(common:is-polutant-air($pollutant))
             let $ok := 
                             if($needed) 
                             then
@@ -1955,20 +2029,11 @@ let $I18errorMessage := (
                                  then
                                     (:Skip check:)
                                     true()
+                            else if($poll and $modelAssessmentMetadata = "" and $ok-ma = false())                           
+                            then
+                                true()
                             else
-
-                                    let $modelAssessmentMetadata := $node/aqd:modelAssessmentMetadata/@xlink:href
-                                    let $ok-ma := if(functx:if-empty($modelAssessmentMetadata, "") != "")
-                                        then
-                                            query:existsViaNameLocalId(
-                                            $modelAssessmentMetadata,
-                                            "AQD_Model",
-                                            $latestEnvelopesD1
-                                            )
-                                        else
-                                            true()
-
-                                    return $ok-ma
+                                false()
                                         
 
             
@@ -1979,7 +2044,11 @@ let $I18errorMessage := (
                 ("gml:id", data($node/ancestor-or-self::aqd:AQD_SourceApportionment/@gml:id)),
                 ("aqd:pollutant", $pollutant),
                 ("aqd:parentExceedanceSituation", $parentExceedanceSituation),
-                ("test", $modelAssessmentMetadata)
+                ("test", $modelAssessmentMetadata),
+                (: ("Sparql", sparqlx:getLink(query:existsViaNameLocalIdQuery($modelAssessmentMetadata, "AQD_Model", $latestEnvelopesD1))) :)
+                (: ("Sparql", sparqlx:getLink(query:existsViaNameLocalIdQuery(data($node/ancestor-or-self::aqd:AQD_SourceApportionment/@gml:id), "AQD_Model", $latestEnvelopesD1))), :)
+                ("Sparql", $sparql_query),
+                ("SparqlQueryPollutant", sparqlx:getLink(query:get-pollutant-for-attainment-query($parentExceedanceSituation)))
             ]
         )
     } catch * {
@@ -2183,7 +2252,13 @@ let $I18errorMessage := (
                                      "AQD_SamplingPoint",
                                      $latestEnvelopesD
                                      )
-                                   
+                                     
+            let $sparql_query := if(fn:empty($samplingPointAssessmentMetadata))
+                            then
+                                "No samplingPointAssessmentMetadata to execute this query"
+                            else
+                                sparqlx:getLink(query:existsViaNameLocalIdQuery($samplingPointAssessmentMetadata, "AQD_SamplingPoint", $latestEnvelopesD))
+                                                       
             let $ul := $node/../../aqd:adjustmentType
             let $linkAjustment := $ul/@xlink:href
             
@@ -2218,7 +2293,11 @@ let $I18errorMessage := (
                 ("aqd:pollutant", $pollutant),
                 ("aqd:parentExceedanceSituation", $parentExceedanceSituation),
                 ("aqd:samplingPointAssessmentMetadata", $ok-spa),
-                ("test", $samplingPointAssessmentMetadata)
+                ("test", $samplingPointAssessmentMetadata),
+                (: ("Sparql", sparqlx:getLink(query:existsViaNameLocalIdQuery($samplingPointAssessmentMetadata, "AQD_SamplingPoint", $latestEnvelopesD))) :)
+                (: ("Sparql", sparqlx:getLink(query:existsViaNameLocalIdQuery(data($node/ancestor-or-self::aqd:AQD_SourceApportionment/@gml:id), "AQD_SamplingPoint", $latestEnvelopesD))) :)
+                ("Sparql", $sparql_query)
+
             ]
         )
     } catch * {
@@ -2504,9 +2583,9 @@ let $I44errorMessage := (
         {html:build2("VOCAB", $labels:VOCAB, $labels:VOCAB_SHORT, $VOCABinvalid, "All values are valid", "record", $errors:VOCAB)}
         {html:build3("I0", $labels:I0, $labels:I0_SHORT, $I0table, string($I0table/td), errors:getMaxError($I0table))}
         {html:build1("I1", $labels:I1, $labels:I1_SHORT, $tblAllSources, "", string($countSources), "", "", $errors:I1)}
-        {html:buildSimple("I2", $labels:I2, $labels:I2_SHORT, $I2table, "", "report", $I2errorLevel)}
-        {html:buildSimple("I3", $labels:I3, $labels:I3_SHORT, $I3table, "", "", $I3errorLevel)}
-        {html:build1("I4", $labels:I4, $labels:I4_SHORT, $I4table, "", string(count($I4table)), " ", "", $errors:I4)}
+        {html:buildSimpleSparql("I2", $labels:I2, $labels:I2_SHORT, $I2table, "", "report", $I2errorLevel)}
+        {html:buildSimpleSparql("I3", $labels:I3, $labels:I3_SHORT, $I3table, "", "", $I3errorLevel)}
+        {html:build1Sparql("I4", $labels:I4, $labels:I4_SHORT, $I4table, "", string(count($I4table)), " ", "", $errors:I4)}
         {html:build1("I5", $labels:I5, $labels:I5_SHORT, $I5, "RESERVE", "RESERVE", "RESERVE", "RESERVE", $errors:I5)}
         {html:build1("I6", $labels:I6, $labels:I6_SHORT, $I6, "RESERVE", "RESERVE", "RESERVE", "RESERVE", $errors:I6)}
         {html:build2("I7", $labels:I7, $labels:I7_SHORT, $I7, "No duplicate values found", " duplicate value", $errors:I7)}
@@ -2514,22 +2593,22 @@ let $I44errorMessage := (
         {html:build2("I9", $labels:I9, $labels:I9_SHORT, $I9table, "namespace", "", $errors:I9)}
         {html:build2("I10", $labels:I10, $labels:I10_SHORT, $I10invalid, "All values are valid", " not conform to vocabulary", $errors:I10)}
 
-        {html:build2("I11", $labels:I11, $labels:I11_SHORT, $I11,
-                     "All values are valid", "needs valid input", $errors:I11)}
+        <!-- {html:build2Sparql("I11", $labels:I11, $labels:I11_SHORT, $I11,
+                     "All values are valid", "needs valid input", $errors:I11)} -->
         <!--{html:build2("I12", $labels:I12, $labels:I12_SHORT, $I12,"All values are valid", "needs valid input", $errors:I12)}-->
-
+        {html:build2Sparql("I12", $labels:I12, $labels:I12_SHORT, $I12,"All values are valid", "needs valid input", $errors:I12)}
         {html:build2("I13", $labels:I13, $labels:I13_SHORT, $I13, "All values are valid", "needs valid input", $errors:I13)}
         {html:build2("I15", $labels:I15, $labels:I15_SHORT, $I15, "All values are valid", "needs valid input", $errors:I15)}
         {html:build2("I16", $labels:I16, $labels:I16_SHORT, $I16, "All values are valid", "needs valid input", $errors:I16)}
         {html:build2("I17", $labels:I17, $labels:I17_SHORT, $I17, "All values are valid", "needs valid input", $errors:I17)}
-        {html:build2("I18", $I18errorMessage, $labels:I18_SHORT, $I18, "All values are valid", "needs valid input", $I18maxErrorLevel)}
+        {html:build2Sparql("I18", $I18errorMessage, $labels:I18_SHORT, $I18, "All values are valid", "needs valid input", $I18maxErrorLevel)}
         {html:build2("I19", $labels:I19, $labels:I19_SHORT, $I19, "All values are valid", "needs valid input", $errors:I19)}
         {html:build2("I20", $labels:I20, $labels:I20_SHORT, $I20, "All values are valid", "needs valid input", $errors:I20)}
         {html:build2("I21", $labels:I21, $labels:I21_SHORT, $I21, "All values are valid", "needs valid input", $errors:I21)}
         {html:build2("I22", $labels:I22, $labels:I22_SHORT, $I22, "All values are valid", "needs valid input", $errors:I22)}
         {html:build2("I23", $labels:I23, $labels:I23_SHORT, $I23, "All values are valid", "needs valid input", $errors:I23)}
         {html:build2("I24", $labels:I24, $labels:I24_SHORT, $I24, "All values are valid", "needs valid input", $errors:I24)}
-        {html:build2("I25", $labels:I25, $labels:I25_SHORT, $I25, "All values are valid", "needs valid input", $errors:I25)}
+        {html:build2Sparql("I25", $labels:I25, $labels:I25_SHORT, $I25, "All values are valid", "needs valid input", $errors:I25)}
         {html:build2("I26", $labels:I26, $labels:I26_SHORT, $I26, "All values are valid", "needs valid input", $errors:I26)}
         {html:build2("I27", $labels:I27, $labels:I27_SHORT, $I27, "All values are valid", "needs valid input", $errors:I27)}
         {
@@ -2538,9 +2617,10 @@ let $I44errorMessage := (
         :)
         }
         {html:build2("I29", $labels:I29, $labels:I29_SHORT, $I29, "All values are valid", "needs valid input", $errors:I29)}
-        <!--{html:build2("I30", $labels:I30, $labels:I30_SHORT, $I30, "All values are valid", "needs valid input", $errors:I30)}-->
-        {html:build2("I31", $labels:I31, $labels:I31_SHORT, $I31, "All values are valid", "needs valid input", $errors:I31)}
-        {html:build2("I32", $labels:I32, $labels:I32_SHORT, $I32, "All values are valid", "needs valid input", $errors:I32)}
+        <!-- {html:build2("I30", $labels:I30, $labels:I30_SHORT, $I30, "All values are valid", "needs valid input", $errors:I30)} -->
+        {html:build2Sparql("I30", $labels:I30, $labels:I30_SHORT, $I30, "All values are valid", "needs valid input", $errors:I30)}
+        {html:build2Sparql("I31", $labels:I31, $labels:I31_SHORT, $I31, "All values are valid", "needs valid input", $errors:I31)}
+        {html:build2Sparql("I32", $labels:I32, $labels:I32_SHORT, $I32, "All values are valid", "needs valid input", $errors:I32)}
         {html:build2("I33", $labels:I33, $labels:I33_SHORT, $I33, "All values are valid", "needs valid input", $errors:I33)}
         {html:build2("I34", $labels:I34, $labels:I34_SHORT, $I34, "All values are valid", "needs valid input", $errors:I34)}
         {html:build2("I35", $labels:I35, $labels:I35_SHORT, $I35, "All values are valid", "needs valid input", $errors:I35)}
@@ -2548,10 +2628,11 @@ let $I44errorMessage := (
         {html:build2("I37", $labels:I37, $labels:I37_SHORT, $I37, "All values are valid", "needs valid input", $errors:I37)}
         {html:build2("I38", $labels:I38, $labels:I38_SHORT, $I38, "All values are valid", "needs valid input", $errors:I38)}
         <!--{html:build2("I39", $labels:I39, $labels:I39_SHORT, $I39, "All values are valid", "needs valid input", $errors:I39)}-->
-        {html:build2("I40", $labels:I40, $labels:I40_SHORT, $I40, "All values are valid", "needs valid input", $errors:I40)}
-        {html:build2("I41", $labels:I41, $labels:I41_SHORT, $I41, "All values are valid", "needs valid input", $errors:I41)}
-        {html:build2("I42", $labels:I42, $labels:I42_SHORT, $I42, "All values are valid", "needs valid input", $errors:I42)}
-        {html:build2("I43", $labels:I43, $labels:I43_SHORT, $I43, "All values are valid", "needs valid input", $errors:I43)}
+        {html:build2Sparql("I39", $labels:I39, $labels:I39_SHORT, $I39, "All values are valid", "needs valid input", $errors:I39)}
+        {html:build2Sparql("I40", $labels:I40, $labels:I40_SHORT, $I40, "All values are valid", "needs valid input", $errors:I40)}
+        {html:build2Sparql("I41", $labels:I41, $labels:I41_SHORT, $I41, "All values are valid", "needs valid input", $errors:I41)}
+        {html:build2Sparql("I42", $labels:I42, $labels:I42_SHORT, $I42, "All values are valid", "needs valid input", $errors:I42)}
+        {html:build2Sparql("I43", $labels:I43, $labels:I43_SHORT, $I43, "All values are valid", "needs valid input", $errors:I43)}
         {html:build2("I44", $I44errorMessage, $labels:I44_SHORT, $I44, "All values are valid", "needs valid input", $I44maxErrorLevel)}
         <!--{html:build2("I45", $labels:I45, $labels:I45_SHORT, $I45, "All values are valid", "needs valid input", $errors:I45)}-->
 

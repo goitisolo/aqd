@@ -188,7 +188,8 @@ let $J2 := try {
             $ok,
             [
                 ("gml:id", data($el/@gml:id)),
-                ("aqd:inspireId", $inspireId)
+                ("aqd:inspireId", $inspireId),
+                ("Sparql", sparqlx:getLink(query:existsViaNameLocalIdQuery(data($el/@gml:id), 'AQD_EvaluationScenario', $latestEnvelopesJ)))
             ]
             )
 } catch * {
@@ -231,7 +232,8 @@ let $J3 := try {
             [
                 ("gml:id", data($main/@gml:id)),
                 ("aqd:inspireId", $inspireId),
-                ("aqd:classification", common:checkLink(distinct-values(data($main/aqd:classification/@xlink:href))))
+                ("aqd:classification", common:checkLink(distinct-values(data($main/aqd:classification/@xlink:href)))),
+                ("Sparql", sparqlx:getLink(query:existsViaNameLocalIdQuery($inspireId, 'AQD_EvaluationScenario', $latestEnvelopesJ)))
             ]
             )
 } catch * {
@@ -419,7 +421,8 @@ let $J11 := try {
                 $ok,
                 [
                     ("gml:id", $el/ancestor-or-self::*[name() = $ancestor-name]/@gml:id),
-                    (node-name($el), $label)
+                    (node-name($el), $label),
+                    ("Sparql", sparqlx:getLink(query:existsViaNameLocalIdYearQuery($label,'AQD_Plan',$reportingYear,$latestEnvelopesH)))
                 ]
             )
 } catch * {
@@ -448,7 +451,8 @@ let $J12 := try {
                 $ok,
                 [
                     ("gml:id", $el/ancestor-or-self::*[name() = $ancestor-name]/@gml:id),
-                    (node-name($el), $label)
+                    (node-name($el), $label),
+                    ("Sparql", sparqlx:getLink(query:existsViaNameLocalIdYearQuery($label,'AQD_SourceApportionment',$reportingYear,$latestEnvelopesI)))
                 ]
             )
 } catch * {
@@ -684,7 +688,7 @@ referenced via the xlink of (aqd:AQD_EvaluationScenario/aqd:sourceApportionment)
 Check if start year of the evaluation scenario is the same as
 the source apportionment reference year
 :)
-(:let $J22 := try {
+(: let $J22 := try {
     for $node in $evaluationScenario
         let $el := $node/aqd:sourceApportionment
         let $year := $node/aqd:startYear/gml:TimeInstant/gml:timePosition
@@ -698,13 +702,14 @@ the source apportionment reference year
             $ok,
             [
                 ("gml:id", $el/ancestor-or-self::*[name() = $ancestor-name]/@gml:id),
-                (node-name($el), $el/@xlink:href)
+                (node-name($el), $el/@xlink:href),
+                ("Sparql", sparqlx:getLink(query:isTimePositionValidQuery('AQD_SourceApportionment',$el/@xlink:href,$year,$latestEnvelopesI)))
             ]
         )
 
 } catch * {
     html:createErrorRow($err:code, $err:description)
-}:)
+} :)
 
 (: J23
 aqd:AQD_EvaluationScenario/aqd:baselineScenario/aqd:Scenario/aqd:description shall be a text string
@@ -860,7 +865,8 @@ let $J27 := try{
                 $ok,
                 [
                     ("gml:id", $el/ancestor-or-self::*[name() = $ancestor-name]/@gml:id),
-                    (node-name($el), $el/@xlink:href)
+                    (node-name($el), $el/@xlink:href),
+                    ("Sparql", sparqlx:getLink(query:existsViaNameLocalIdYearQuery($el/@xlink:href,'AQD_Measures',$reportingYear,$latestEnvelopesK)))
                 ]
             )
 } catch * {
@@ -1021,7 +1027,8 @@ let $J32 := try{
                 $ok,
                 [
                     ("gml:id", $el/ancestor-or-self::*[name() = $ancestor-name]/@gml:id),
-                    (node-name($el), $el/@xlink:href)
+                    (node-name($el), $el/@xlink:href),
+                    ("Sparql", sparqlx:getLink(query:existsViaNameLocalIdYearQuery($el/@xlink:href,'AQD_Measures',$reportingYear,$latestEnvelopesK)))
                 ]
             )
 } catch * {
@@ -1035,8 +1042,8 @@ return
         {html:build2("VOCAB", $labels:VOCAB, $labels:VOCAB_SHORT, $VOCABinvalid, "All values are valid", "record", $errors:VOCAB)}
         {html:build3("J0", $labels:J0, $labels:J0_SHORT, $J0, string($J0/td), errors:getMaxError($J0))}
         {html:build1("J1", $labels:J1, $labels:J1_SHORT, $J1, "", string($countEvaluationScenario), "", "", $errors:J1)}
-        {html:buildSimple("J2", $labels:J2, $labels:J2_SHORT, $J2, "", "", $J2errorLevel)}
-        {html:buildSimple("J3", $labels:J3, $labels:J3_SHORT, $J3, "", "", $J3errorLevel)}
+        {html:buildSimpleSparql("J2", $labels:J2, $labels:J2_SHORT, $J2, "", "", $J2errorLevel)}
+        {html:buildSimpleSparql("J3", $labels:J3, $labels:J3_SHORT, $J3, "", "", $J3errorLevel)}
         {html:build1("J4", $labels:J4, $labels:J4_SHORT, $J4, "", string(count($J4)), " ", "", $errors:J4)}
         {html:build1("J5", $labels:J5, $labels:J5_SHORT, $J5, "RESERVE", "RESERVE", "RESERVE", "RESERVE", $errors:J5)}
         {html:build1("J6", $labels:J6, $labels:J6_SHORT, $J6, "RESERVE", "RESERVE", "RESERVE", "RESERVE", $errors:J6)}
@@ -1044,8 +1051,8 @@ return
         {html:build2("J8", $labels:J8, $labels:J8_SHORT, $J8, "No duplicate values found", " duplicate value", $errors:J8)}
         {html:buildUnique("J9", $labels:J9, $labels:J9_SHORT, $J9, "namespace", $errors:J9)}
         {html:build2("J10", $labels:J10, $labels:J10_SHORT, $J10, "All values are valid", " not conform to vocabulary", $errors:J10)}
-        {html:build2("J11", $labels:J11, $labels:J11_SHORT, $J11, "All values are valid", "needs valid input", $errors:J11)}
-        {html:build2("J12", $labels:J12, $labels:J12_SHORT, $J12, "All values are valid", "needs valid input", $errors:J12)}
+        {html:build2Sparql("J11", $labels:J11, $labels:J11_SHORT, $J11, "All values are valid", "needs valid input", $errors:J11)}
+        {html:build2Sparql("J12", $labels:J12, $labels:J12_SHORT, $J12, "All values are valid", "needs valid input", $errors:J12)}
         <!--{html:build2("J13", $labels:J13, $labels:J13_SHORT, $J13, "All values are valid", " not valid", $errors:J13)}-->
         {html:build2("J14", $labels:J14, $labels:J14_SHORT, $J14, "All values are valid", "needs valid input", $errors:J14)}
         {html:build2("J15", $labels:J15, $labels:J15_SHORT, $J15, "All values are valid", "needs valid input", $errors:J15)}
@@ -1055,17 +1062,17 @@ return
         {html:build2("J19", $labels:J19, $labels:J19_SHORT, $J19, "All values are valid", "not valid", $errors:J19)}
         {html:build2("J20", $labels:J20, $labels:J20_SHORT, $J20, "All values are valid", "not valid", $errors:J20)}
         {html:build2("J21", $labels:J21, $labels:J21_SHORT, $J21, "All values are valid", "not valid", $errors:J21)}
-        <!--{html:build2("J22", $labels:J22, $labels:J22_SHORT, $J22, "All values are valid", "not valid", $errors:J22)}-->
+        <!-- {html:build2Sparql("J22", $labels:J22, $labels:J22_SHORT, $J22, "All values are valid", "not valid", $errors:J22)} -->
         {html:build2("J23", $labels:J23, $labels:J23_SHORT, $J23, "All values are valid", "not valid", $errors:J23)}
         {html:build2("J24", $labels:J24, $labels:J24_SHORT, $J24, "All values are valid", "not valid", $errors:J24)}
         {html:build2("J25", $labels:J25, $labels:J25_SHORT, $J25, "All values are valid", "not valid", $errors:J25)}
         {html:build2("J26", $labels:J26, $labels:J26_SHORT, $J26, "All values are valid", "not valid", $errors:J26)}
-        {html:build2("J27", $labels:J27, $labels:J27_SHORT, $J27, "All values are valid", "not valid", $errors:J27)}
+        {html:build2Sparql("J27", $labels:J27, $labels:J27_SHORT, $J27, "All values are valid", "not valid", $errors:J27)}
         {html:build2("J28", $labels:J28, $labels:J28_SHORT, $J28, "All values are valid", "not valid", $errors:J28)}
         {html:build2("J29", $labels:J29, $labels:J29_SHORT, $J29, "All values are valid", "not valid", $errors:J29)}
         {html:build2("J30", $labels:J30, $labels:J30_SHORT, $J30, "All values are valid", "not valid", $errors:J30)}
         {html:build2("J31", $labels:J31, $labels:J31_SHORT, $J31, "All values are valid", "not valid", $errors:J31)}
-        {html:build2("J32", $labels:J32, $labels:J32_SHORT, $J32, "All values are valid", "not valid", $errors:J32)}
+        {html:build2Sparql("J32", $labels:J32, $labels:J32_SHORT, $J32, "All values are valid", "not valid", $errors:J32)}
 
     </table>
 )

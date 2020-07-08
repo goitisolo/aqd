@@ -230,6 +230,7 @@ let $C02table :=
                 <td title="aqd:zone">{common:checkLink(data($x/aqd:zone/@xlink:href))}</td>
                 <td title="aqd:pollutant">{common:checkLink(data($x/aqd:pollutant/@xlink:href))}</td>
                 <td title="aqd:protectionTarget">{common:checkLink(data($x/aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/@xlink:href))}</td>
+                <td title="Sparql">{sparqlx:getLink(query:getAllRegimeIdsQuery($namespaces))}</td>
             </tr>
     } catch * {
         <tr class="{$errors:FAILED}">
@@ -281,6 +282,7 @@ let $C03errorLevel :=
 let $C03afunc :=
 try{
     let $previousCombinations := query:getC03a($prelimEnvelopeC)
+    let $previousCombinations_query := sparqlx:getLink(query:getC03aQuery($prelimEnvelopeC))
     let $assesmentRegimeInC :=
         for $x in $docRoot//aqd:AQD_AssessmentRegime
             let $localIdInC := $x//base:localId => string()
@@ -299,6 +301,7 @@ try{
         <tr>
             <td title="Assessment Regime (C) not found in C preliminary">{$localId}</td>
             <td title="Assessment Regime (C preliminary) not found in C"></td>
+            <td title="Sparql">{$previousCombinations_query}</td>
         </tr>
     else()
         }
@@ -313,6 +316,7 @@ try{
 let $C03a2func :=
 try{
     let $previousCombinations := query:getC03a($prelimEnvelopeC)
+    let $previousCombinations_query := sparqlx:getLink(query:getC03aQuery($prelimEnvelopeC))
     let $assesmentRegimeInCPreliminary :=
         for $x in $previousCombinations
         return $x
@@ -328,6 +332,7 @@ try{
         <tr>
             <td title="Assessment Regime (C) not found in C preliminary"></td>
             <td title="Assessment Regime (C preliminary) not found in C">{$localIdInC}</td>
+            <td title="Sparql">{$previousCombinations_query}</td>
         </tr>
         else()
         }
@@ -342,6 +347,7 @@ try{
 
 let $C03b :=
     let $previousCombinations := query:getC03b($prelimEnvelopeC)
+    let $previousCombinations_query := sparqlx:getLink(query:getC03bquery($prelimEnvelopeC))
     let $currentCombinations :=
      for $x in $docRoot//aqd:AQD_AssessmentRegime
         let $localId := $x//base:localId => string()
@@ -359,6 +365,7 @@ let $C03b :=
          <result>
                 <xPreviousComb>{$x}</xPreviousComb>
                 <samplingPoint>{$samplingPoint}</samplingPoint>
+                <query>{$previousCombinations_query}</query>
         </result>
 
 let $C03bfunc :=
@@ -368,6 +375,7 @@ try{
     for $i in $C03b
          let $previousComb:= $i/xPreviousComb
          let $samplin := $i/samplingPoint
+         let $sparql := $i/query
          
     where not($count = 0)
 
@@ -376,6 +384,7 @@ try{
         <tr>
             <td title="Assessment Regime (C)">{$previousComb}</td>
             <td title="Missing SamplingPoint compared to C preliminary">{$samplin}</td>
+            <td title="Sparql">{$sparql}</td>
         </tr>
       else()
         }
@@ -534,7 +543,7 @@ let $C03cfunc :=
                          <result>
                             <localId>{$localId}</localId>
                             <samplingPoint>{$samplingpoint}</samplingPoint>
-                            <assessmentType>{$assessmentType}</assessmentType>                            
+                            <assessmentType>{$assessmentType}</assessmentType>
                          </result>
         
         let $C03Blist :=
@@ -548,6 +557,12 @@ let $C03cfunc :=
             let $samplingPoint := string($x/samplingPoint)  
             let $typeCPrel :=string($x/assessmentType) 
             let $combination := string-join(($localId || "###" || $samplingPoint))
+            
+            let $C03Bquery :=
+            for $x in $C03b
+                let $C03blisted := $x[xPreviousComb != combination, 1]/query
+            return $C03blisted
+            
             let $typeC:=
 
              for $i in $currentCombinations
@@ -567,6 +582,7 @@ let $C03cfunc :=
                 <td title="aqd:AQD_SamplingPoint">{$samplingPoint}</td>
                 <td title="Assessment Type in C">{$typeC}</td>
                 <td title="Assessment Type in C preliminary">{$typeCPrel}</td> 
+                <td title="Sparql">{sparqlx:getLink(query:getC03c($prelimEnvelopeC))}</td>
             </tr>
         else()
     } catch * {
@@ -581,6 +597,7 @@ let $C03cfunc :=
 let $C03dinvalid := 
     try {
         let $previousCombinations := query:getC03b($prelimEnvelopeC)
+        let $previousCombinations_query := sparqlx:getLink(query:getC03bquery($prelimEnvelopeC))
         let $currentCombinations :=
         for $x in $docRoot//aqd:AQD_AssessmentRegime
 
@@ -602,6 +619,7 @@ let $C03dinvalid :=
             <tr>
                 <td title="Assessment Regime (C)">{$localId}</td>
                 <td title="New SamplingPoint compared to C preliminary">{$samplingPoint}</td>
+                <td title="Sparql">{sparqlx:getLink(query:getC03bquery($prelimEnvelopeC))}</td>
             </tr>
       else()
     } catch * {
@@ -1007,6 +1025,7 @@ let $C27table :=
                     <td title="AQD_AssessmentRegime">{data($regime/aqd:inspireId/base:Identifier/base:localId)}</td>
                     <td title="aqd:zoneId">{$zoneId}</td>
                     <td title="AQD_Zone">Not existing</td>
+                    <td title="Sparql">{sparqlx:getLink(query:getC27($latestEnvelopeB))}</td>
                 </tr>
         let $invalidEqual2 :=
             for $zoneId in $validZones
@@ -1016,6 +1035,7 @@ let $C27table :=
                     <td title="AQD_AssessmentRegime">Not existing</td>
                     <td title="aqd:zoneId"></td>
                     <td title="AQD_Zone">{$zoneId}</td>
+                    <td title="Sparql">{sparqlx:getLink(query:getC27($latestEnvelopeB))}</td>
                 </tr>
 
         return (($invalidEqual), ($invalidEqual2))
@@ -1059,6 +1079,7 @@ let $C29invalid :=
                     <td title="aqd:zone">{data($x//aqd:zone/@xlink:href)}</td>
                     <td title="aqd:pollutant">{data($x//aqd:pollutant/@xlink:href)}</td>
                     <td title="aqd:protectionTarget">{data($x//aqd:protectionTarget/@xlink:href)}</td>
+                    <td title="Sparql">{sparqlx:getLink(query:getPollutantCodeAndProtectionTarge($cdrUrl, $bdir))}</td>
                 </tr>
     } catch * {
         <tr class="{$errors:FAILED}">
@@ -1139,6 +1160,7 @@ let $C31table :=
                 <td title="Protection Target">{$protectionTarget}</td>
                 <td title="Count C">{string($countC)}</td>
                 <td title="Count B">{string($countB)}</td>
+                <td title="Sparql">{sparqlx:getLink(query:getC31($latestEnvelopeB, $reportingYear))}</td>
             </tr>
     } catch * {
         <tr class="{$errors:FAILED}">
@@ -1201,6 +1223,7 @@ let $C31btable :=
                 <td title="Protection Target">{$protectionTarget}</td>
                 <td title="Count C">{string($countC)}</td>
                 <td title="Count C preliminary">{string($countPrelimC)}</td>
+                <td title="Sparql">{sparqlx:getLink(query:getC31b($prelimEnvelopeC))}</td>
             </tr>
     } catch * {
         <tr class="{$errors:FAILED}">
@@ -1212,7 +1235,7 @@ let $C31btable :=
 (: C32 - :)
 let $C32table :=
     try {
-        let $query1 :=
+       (: let $query1 :=
         "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
          PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
          PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
@@ -1224,13 +1247,33 @@ let $C32table :=
             ?inspireId rdfs:label ?inspireLabel .
             ?zone aqd:assessmentType ?assessmentType
             FILTER (CONTAINS(str(?zone), '" || $latestEnvelopeD || "'))
-         }"
+         }":)
+          let $query1 :=
+                "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+                PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
+                PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+                PREFIX dcterms: <http://purl.org/dc/terms/>
+                PREfIX contreg: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
+
+                SELECT DISTINCT ?zone ?inspireId ?inspireLabel ?assessmentType
+                WHERE {
+
+                    values ?envelope { <" || $latestEnvelopeD || "> }
+                    ?graph dcterms:isPartOf ?envelope.
+                    ?graph contreg:xmlSchema ?xmlSchema .
+                        GRAPH ?graph {
+                         ?zone a aqd:AQD_SamplingPoint .
+                         ?zone aqd:inspireId ?inspireId .
+                         ?inspireId rdfs:label ?inspireLabel .
+                         ?zone aqd:assessmentType ?assessmentType                      
+                        }
+                }"
         let $aqdSamplingPointAssessMEntTypes :=
             for $i in sparqlx:run($query1)
             let $ii := concat($i/sparql:binding[@name = 'inspireLabel']/sparql:literal, "#", $i/sparql:binding[@name = 'assessmentType']/sparql:uri)
             return $ii
 
-        let $query2 :=
+       (: let $query2 :=
         "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
          PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
          PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
@@ -1242,7 +1285,30 @@ let $C32table :=
             ?inspireId rdfs:label ?inspireLabel .
             ?zone aqd:assessmentType ?assessmentType
             FILTER (CONTAINS(str(?zone), '" || $modelsEnvelope || "'))
-         }"
+         }":)
+
+         let $query2 :=
+        " PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+          PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
+          PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+          PREFIX dcterms: <http://purl.org/dc/terms/>
+          PREfIX contreg: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
+         
+          SELECT DISTINCT ?zone ?inspireId ?inspireLabel ?assessmentType
+          WHERE {
+          
+          values ?envelope { <" || $modelsEnvelope || "> }
+          ?graph dcterms:isPartOf ?envelope .
+          ?graph contreg:xmlSchema ?xmlSchema .
+                GRAPH ?graph {
+                ?zone a aqd:AQD_Model .
+                 ?zone aqd:inspireId ?inspireId .
+                }
+          
+          ?inspireId rdfs:label ?inspireLabel .
+          ?zone aqd:assessmentType ?assessmentType
+         
+          }"
 
         let $aqdModelAssessMentTypes :=
             for $i in sparqlx:run($query2)
@@ -1279,6 +1345,8 @@ let $C32table :=
                 <td title="AQD_AssessmentRegime">{string($sMetadata/../../../aqd:inspireId/base:Identifier/base:localId)}</td>
                 <td title="aqd:samplingPointAssessmentMetadata">{$id}</td>
                 <td title="aqd:assessmentType">{substring-after($docType, $vocabulary:ASSESSMENTTYPE_VOCABULARY)}</td>
+                <td title="Sparql1">{sparqlx:getLink($query1)}</td>
+                <td title="Sparql2">{sparqlx:getLink($query2)}</td>
             </tr>
     } catch * {
         <tr class="{$errors:FAILED}">
@@ -1384,7 +1452,7 @@ let $C37invalid :=
 (: C38 :)
 let $C38invalid :=
     try {
-        let $query :=
+        (:let $query :=
             "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
              PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
              PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
@@ -1397,6 +1465,32 @@ let $C38invalid :=
                     ?zone aqd:relevantEmissions ?relevantEmissions .
                     ?relevantEmissions aqd:stationClassification ?stationClassification
              FILTER (CONTAINS(str(?zone), '" || $latestEnvelopeD || "') and str(?stationClassification)='http://dd.eionet.europa.eu/vocabulary/aq/stationclassification/background')
+             }":)
+             let $query :=
+                 "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+                  PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
+                  PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+                  PREFIX dcterms: <http://purl.org/dc/terms/>
+                  PREfIX contreg: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
+                 
+                  SELECT DISTINCT ?zone ?inspireId ?inspireLabel ?relevantEmissions ?stationClassification
+                  WHERE {
+                  
+                  values ?envelope { <" || $latestEnvelopeD || "> }
+                    ?graph dcterms:isPartOf ?envelope .
+                    ?graph contreg:xmlSchema ?xmlSchema .
+                    GRAPH ?graph {
+                        ?zone a aqd:AQD_SamplingPoint .
+                        ?zone aqd:inspireId ?inspireId .
+                    }
+
+
+                 
+                  ?inspireId rdfs:label ?inspireLabel .
+                  ?zone aqd:relevantEmissions ?relevantEmissions .
+                  ?relevantEmissions aqd:stationClassification ?stationClassification
+                  
+                  FILTER str(?stationClassification)='http://dd.eionet.europa.eu/vocabulary/aq/stationclassification/background'))
              }"
         let $valid := distinct-values(data(sparqlx:run($query)/sparql:binding[@name = 'inspireLabel']/sparql:literal))
 
@@ -1408,7 +1502,7 @@ let $C38invalid :=
             <tr>
                 <td title="aqd:AQD_AssessmentRegime">{data($x/../../../../../aqd:inspireId/base:Identifier/base:localId)}</td>
                 <td title="aqd:AQD_SamplingPoint">{data($xlink)}</td>
-
+                <td title="Sparql">{sparqlx:getLink($query)}</td>
             </tr>
     } catch * {
         <tr class="{$errors:FAILED}">
@@ -1504,13 +1598,13 @@ return
         {html:build2("VOCAB", $labels:VOCAB, $labels:VOCAB_SHORT, $VOCABinvalid, "All values are valid", "record", $errors:VOCAB)}
         {html:build3("C0", $labels:C0, $labels:C0_SHORT, $C0table, string($C0table/td), errors:getMaxError($C0table))}
         {html:build1("C01", $labels:C01, $labels:C01_SHORT, $C01table, "", string(count($C01table)), "", "", $errors:C01)}
-        {html:buildSimple("C02", $labels:C02, $labels:C02_SHORT, $C02table, "", "record", $C02errorLevel)}
+        {html:buildSimpleSparql("C02", $labels:C02, $labels:C02_SHORT, $C02table, "", "record", $C02errorLevel)}
         {html:buildSimple("C03", $labels:C03, $labels:C03_SHORT, $C03table, "", "record", $C03errorLevel)}
-        {html:build2("C03a", $labels:C03a, $labels:C03a_SHORT, ($C03afunc, $C03a2func), "All values are valid", " Assessment Regime missing", $errors:C03a)}
+        {html:build2Sparql("C03a", $labels:C03a, $labels:C03a_SHORT, ($C03afunc, $C03a2func), "All values are valid", " Assessment Regime missing", $errors:C03a)}
        <!-- {html:build2("C03b", $labels:C03b, $labels:C03b_SHORT, $C03bfunc, "All values are valid", " Assessment Methods missing", $errors:C03b)}-->
-        {html:buildNoCount("C03b", $labels:C03b, $labels:C03b_SHORT, $C03bfunc, "All values are valid", "Missing Assessment Method", $errors:C03b)}
-        {html:buildNoCount2("C03c", $labels:C03c, $labels:C03c_SHORT, $C03cfunc, "All values are valid", "Mismatches of assessment type found", $errors:C03c)}
-        {html:build2("C03d", $labels:C03d, $labels:C03d_SHORT, $C03dinvalid, "All values are valid", " New Assessment Methods", $errors:C03d)}
+        {html:buildNoCountSparql("C03b", $labels:C03b, $labels:C03b_SHORT, $C03bfunc, "All values are valid", "Missing Assessment Method", $errors:C03b)}
+        {html:buildNoCount2Sparql("C03c", $labels:C03c, $labels:C03c_SHORT, $C03cfunc, "All values are valid", "Mismatches of assessment type found", $errors:C03c)}
+        {html:build2Sparql("C03d", $labels:C03d, $labels:C03d_SHORT, $C03dinvalid, "All values are valid", " New Assessment Methods", $errors:C03d)}
         {html:build2("C04", $labels:C04, $labels:C04_SHORT, $C04invalid, "No duplicates found", " duplicate", $errors:C04)}
         {html:build2("C05", $labels:C05, $labels:C05_SHORT, $C05invalid, "No duplicates found", " duplicate", $errors:C05)}
         {html:build2("C06", $labels:C06, $labels:C06_SHORT, $C06table, string(count($C06table)), "", $errors:C06)}
@@ -1526,16 +1620,16 @@ return
         {html:build2("C24", $labels:C24, $labels:C24_SHORT, $C24invalid, "All values are valid", "", $C24errorClass)}
         {html:build2("C25", $labels:C25, $labels:C25_SHORT, $C25invalid, "All values are valid", "", $errors:C25)}
         {html:build2("C26", $labels:C26, $labels:C26_SHORT, $C26table, "All values are valid", " invalid value", $C26errorClass)}
-        {html:build2("C27", labels:interpolate($labels:C27, ($countZoneIds2, $countZoneIds1)), $labels:C27_SHORT, $C27table, "", " not unique zone", $errors:C27)}
+        {html:build2Sparql("C27", labels:interpolate($labels:C27, ($countZoneIds2, $countZoneIds1)), $labels:C27_SHORT, $C27table, "", " not unique zone", $errors:C27)}
         {html:build2("C28", $labels:C28, $labels:C28_SHORT, $C28invalid, "All values are valid", " invalid value", $errors:C28)}
-        {html:build2("C29", $labels:C29, $labels:C29_SHORT,  $C29invalid, "All values are valid", " invalid value", $errors:C29)}
-        {html:build2("C31", $labels:C31, $labels:C31_SHORT, $C31table, "", "record", errors:getMaxError($C31table))}
-        {html:build4("C31b", $labels:C31b, $labels:C31b_SHORT, $C31btable, "", "record", errors:getMaxError($C31btable))}
-        {html:build2("C32", $labels:C32, $labels:C32_SHORT, $C32table, "All values are valid", " invalid value", $errors:C32)}
+        {html:build2Sparql("C29", $labels:C29, $labels:C29_SHORT,  $C29invalid, "All values are valid", " invalid value", $errors:C29)}
+        {html:build2Sparql("C31", $labels:C31, $labels:C31_SHORT, $C31table, "", "record", errors:getMaxError($C31table))}
+        {html:build4Sparql("C31b", $labels:C31b, $labels:C31b_SHORT, $C31btable, "", "record", errors:getMaxError($C31btable))}
+        {html:build2Sparql("C32", $labels:C32, $labels:C32_SHORT, $C32table, "All values are valid", " invalid value", $errors:C32)}
         {html:build2("C33", $labels:C33, $labels:C33_SHORT, $C33invalid, "All values are valid", " invalid value", $errors:C33)}
         {html:build2("C35", $labels:C35, $labels:C35_SHORT, $C35invalid, "All values are valid", " invalid value", $errors:C35)}
         {html:build2("C37", $labels:C37, $labels:C37_SHORT, $C37invalid, "All values are valid", " invalid value", $errors:C37)}
-        {html:build2("C38", $labels:C38, $labels:C38_SHORT, $C38invalid, "All values are valid", " invalid value", $errors:C38)}
+        {html:build2Sparql("C38", $labels:C38, $labels:C38_SHORT, $C38invalid, "All values are valid", " invalid value", $errors:C38)}
         {html:build2("C40", $labels:C40, $labels:C40_SHORT, $C40invalid, "All values are valid", " invalid value", $errors:C40)}
         {html:build2("C40b", $labels:C40b, $labels:C40b_SHORT, $C40binvalid, "All values are valid", " invalid value", $errors:C40b)}
         {html:build2("C41", $labels:C41, $labels:C41_SHORT, $C41invalid, "All values are valid", " invalid value", $errors:C41)}

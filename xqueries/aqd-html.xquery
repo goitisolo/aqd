@@ -293,6 +293,21 @@ declare function html:buildSimple($ruleCode as xs:string, $longText, $text, $rec
     return html:buildGeneric($ruleCode, $longText, $text, $records, $message, $bulletType)
 };
 
+declare function html:buildSimpleSparql($ruleCode as xs:string, $longText, $text, $records as element(tr)*, $message as xs:string, $unit as xs:string, $errorLevel as xs:string) {
+    let $data := html:parseData($records, "data")
+
+    let $countRecords := count($records)
+    let $message :=
+        if ($countRecords = 0) then
+            "No records found"
+        else if ($message) then
+            $message
+        else
+            $countRecords || " " || $unit || substring("s ", number(not($countRecords > 1)) * 2) || " found"
+    let $bulletType := $errorLevel
+    return html:buildGenericSparql($ruleCode, $longText, $text, $records, $message, $bulletType)
+};
+
 declare function html:buildNoCount($ruleCode as xs:string, $longText, $text, $records as element(tr)*, $message as xs:string, $unit as xs:string, $errorLevel as xs:string) {
     let $data := html:parseData($records, "data")
 
@@ -313,6 +328,28 @@ declare function html:buildNoCount($ruleCode as xs:string, $longText, $text, $re
         else
             $errorLevel
     return html:buildGeneric($ruleCode, $longText, $text, $records, $message, $bulletType)
+};
+
+declare function html:buildNoCountSparql($ruleCode as xs:string, $longText, $text, $records as element(tr)*, $message as xs:string, $unit as xs:string, $errorLevel as xs:string) {
+    let $data := html:parseData($records, "data")
+
+    let $metadata := html:parseData($records, "metadata")
+    let $skipped := $metadata/count = "0"
+
+    let $countRecords := count($records)
+    let $message :=
+        if ($countRecords = 0) then
+            $message
+        else 
+            $unit || substring("s ", number(not($countRecords > 1)) * 2)
+    let $bulletType :=
+        if ($skipped) then
+            $errors:SKIPPED
+        else if (count($data) = 0) then
+            $errors:INFO
+        else
+            $errorLevel
+    return html:buildGenericSparql($ruleCode, $longText, $text, $records, $message, $bulletType)
 };
 
 declare function html:buildNoCount2($ruleCode as xs:string, $longText, $text, $records as element(tr)*, $message as xs:string, $unit as xs:string, $errorLevel as xs:string) {
@@ -337,6 +374,30 @@ declare function html:buildNoCount2($ruleCode as xs:string, $longText, $text, $r
             $errorLevel
 
     return html:buildGeneric($ruleCode, $longText, $text, $records, $message, $bulletType)
+};
+
+declare function html:buildNoCount2Sparql($ruleCode as xs:string, $longText, $text, $records as element(tr)*, $message as xs:string, $unit as xs:string, $errorLevel as xs:string) {
+    let $data := html:parseData($records, "data")
+
+    let $metadata := html:parseData($records, "metadata")
+    let $skipped := $metadata/count = "0"
+
+    let $countRecords := count($records)
+    let $message :=
+        if ($countRecords = 0) then
+            $message
+        else 
+            $unit
+
+    let $bulletType :=
+        if ($skipped) then
+            $errors:SKIPPED
+        else if (count($data) = 0) then
+            $errors:INFO
+        else
+            $errorLevel
+
+    return html:buildGenericSparql($ruleCode, $longText, $text, $records, $message, $bulletType)
 };
 
 declare function html:build0($ruleCode as xs:string, $longText, $text, $records as element(tr)*, $unit as xs:string) {
@@ -409,6 +470,37 @@ declare function html:build1(
     return html:buildGeneric($ruleCode, $longText, $text, $data, $validMsg, $bulletType)
 };
 
+declare function html:build1Sparql(
+    $ruleCode as xs:string,
+    $longText,
+    $text,
+    $records as element(tr)*,
+    $valueHeading as xs:string,
+    $validMsg as xs:string,
+    $unit as xs:string,
+    $skippedMsg,
+    $errorLevel as xs:string
+) as element(tr)* {
+
+    let $data := html:parseData($records, "data")
+    let $countRecords := count($data)
+    let $bulletType :=
+        if (string-length($skippedMsg) > 0) then
+            $errors:SKIPPED
+        else if (count($data) > 0) then
+            $errors:INFO
+        else
+            $errorLevel
+    let $message :=
+        if (string-length($skippedMsg) > 0) then
+            $skippedMsg
+        else if ($countRecords > 0) then
+            $validMsg
+        else
+            $countRecords || " " || $unit || " found"
+    return html:buildGenericSparql($ruleCode, $longText, $text, $data, $validMsg, $bulletType)
+};
+
 declare function html:build2(
     $ruleCode as xs:string,
     $longText,
@@ -443,6 +535,48 @@ declare function html:build2(
             $countRecords || " " || $unit ||  " found"
 
     return html:buildGeneric(
+        $ruleCode,
+        $longText,
+        $text,
+        $data,
+        $message,
+        $bulletType
+    )
+};
+declare function html:build2Sparql(
+    $ruleCode as xs:string,
+    $longText,
+    $text,
+    $records as element(tr)*,
+    $validMsg as xs:string,
+    $unit as xs:string,
+    $errorLevel as xs:string
+) as element(tr)* {
+
+    let $metadata := html:parseData($records, "metadata")
+    let $thead := html:parseData($records, "thead")
+    let $data := html:parseData($records, "data")
+
+    let $countRecords := count($data)
+    let $skipped := $metadata/count = "0"
+
+    let $bulletType :=
+        if ($skipped) then
+            $errors:SKIPPED
+        else if (count($data) = 0) then
+            $errors:INFO
+        else
+            $errorLevel
+
+    let $message :=
+        if ($skipped) then
+            $labels:SKIPPED
+        else if ($countRecords = 0) then
+            $validMsg
+        else
+            $countRecords || " " || $unit ||  " found"
+
+    return html:buildGenericSparql(
         $ruleCode,
         $longText,
         $text,
@@ -494,7 +628,70 @@ declare function html:build4(
         $bulletType
     )
 };
+
+declare function html:build4Sparql(
+    $ruleCode as xs:string,
+    $longText,
+    $text,
+    $records as element(tr)*,
+    $validMsg as xs:string,
+    $unit as xs:string,
+    $errorLevel as xs:string
+) as element(tr)* {
+
+    let $metadata := html:parseData($records, "metadata")
+    let $thead := html:parseData($records, "thead")
+    let $data := html:parseData($records, "data")
+
+    let $countRecords := count($data)
+    let $skipped := $records/@class = "INFO"
+
+    let $bulletType :=
+        if ($skipped) then
+            $errors:INFO   
+        else if(count($data) = 0) then 
+            $errors:SKIPPED   
+        else
+            $errorLevel
+
+    let $message :=
+        if ($countRecords = 0) then
+            $labels:SKIPPED
+        else 
+            if ($skipped) then
+            $validMsg
+        else
+            $countRecords || " " || $unit ||  " found"
+
+    return html:buildGenericSparql(
+        $ruleCode,
+        $longText,
+        $text,
+        $data,
+        $message,
+        $bulletType
+    )
+};
+
 declare function html:build3(
+    $ruleCode as xs:string,
+    $longText,
+    $text,
+    $records as element(tr)*,
+    $message as xs:string,
+    $errorLevel as xs:string
+) as element(tr)* {
+    let $data := html:parseData($records, "data")
+    let $bulletType := $errorLevel
+    return
+        <tr>
+            <td class="bullet">{html:getBullet($ruleCode, $bulletType)}</td>
+            <th colspan="2">{$text} {html:getModalInfo($ruleCode, $longText)}</th>
+            <td><span class="largeText">{$message}</span></td>
+        </tr>
+};
+
+declare function html:build3Sparql(
     $ruleCode as xs:string,
     $longText,
     $text,
@@ -646,6 +843,72 @@ declare %private function html:buildGeneric(
     return $result
 
 };
+
+declare %private function html:buildGenericSparql(
+    $ruleCode as xs:string,
+    $longText,
+    $text,
+    $records as element(tr)*,
+    $message as xs:string,
+    $bulletType as xs:string
+) as element(tr)* {
+
+    let $countRecords := count($records)
+    let $hasFailed := errors:hasFailed(($records, $records//td))
+    let $bulletType := if ($hasFailed) then $errors:FAILED else $bulletType
+    let $result :=
+        (
+            <tr>
+                <td class="bullet">{html:getBullet($ruleCode, $bulletType)}</td>
+                <th colspan="2">{$text} {html:getModalInfo($ruleCode, $longText)}</th>
+                <td><span class="largeText">{$message}</span>{
+                    if ($countRecords > 0 or count($records)>0) then
+                        <a id='feedbackLink-{$ruleCode}' href='javascript:toggle("feedbackRow","feedbackLink", "{$ruleCode}")'>{$labels:SHOWRECORDS}</a>                     
+                    else
+                        ()
+              }
+                </td>
+                <td>
+                   {if ($countRecords = 0 or count($records) = 0) then
+                       for $td in $records[1]//td
+                       return
+                        if(fn:contains($td/@title, 'Sparql')) then 
+                          <a id='{$td/@title}' href='{$td}'>Sparql</a>
+                        else ()
+                    else()                          
+                    }
+                </td>
+            </tr>,
+            if (count($records) > 0) then
+                <tr>
+                    <td></td>
+                    <td colspan="3">
+                        <table class="datatable" id="feedbackRow-{$ruleCode}">
+                            <tr>{
+                                for $th in $records[1]//td return <th>{ data($th/@title) }</th>
+                            }</tr>
+                            <tr>
+                            { for $tr in $records
+                                return
+                                  <tr>{
+                                    for $td in $tr//td
+                                      return
+                                          if(data(fn:contains($td/@title, 'Sparql'))) then
+                                           <td title="{$td/@title}"><a id='sparql' target= "_blank" href='{$td}'>Sparql</a></td>                                 
+                                          else ($td)
+                                  }</tr>
+                            }
+                              </tr>
+                        </table>
+                    </td>
+                </tr>
+            else
+                ()
+        )
+    return $result
+
+};
+
 
 declare function html:buildResultsSimpleRow($ruleCode as xs:string, $longText, $text, $count, $errorLevel) {
     let $bulletType := $errorLevel
