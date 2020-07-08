@@ -179,7 +179,10 @@ let $K02table := try {
             $ok,
             [
                 ("gml:id", data($el/@gml:id)),
-                ("aqd:inspireId", $inspireId)
+                ("aqd:inspireId", $inspireId),
+                ("Sparql", <td title="Sparql">{sparqlx:getLink(query:getMeasures($latestEnvelopeByYearK))}</td>),
+                (: ("SparqlQuery", sparqlx:getLink(query:existsViaNameLocalIdQuery(data($el/@gml:id), 'AQD_Measures', $latestEnvelopesK))) :)
+                ("SparqlQuery", sparqlx:getLink(query:existsViaNameLocalIdQuery($inspireId, 'AQD_Measures', $latestEnvelopesK)))
             ]
             )
 } catch * {
@@ -217,7 +220,8 @@ let $K03table := try {
             [
                 ("gml:id", data($main/@gml:id)),
                 ("aqd:inspireId", $inspireId),
-                ("aqd:classification", common:checkLink(distinct-values(data($main/aqd:classification/@xlink:href))))
+                ("aqd:classification", common:checkLink(distinct-values(data($main/aqd:classification/@xlink:href)))),
+                ("Sparql", sparqlx:getLink(query:existsViaNameLocalIdQuery($inspireId, 'AQD_Measures', $latestEnvelopesK)))
             ]
             )
 } catch * {
@@ -390,13 +394,28 @@ let $K11 := try{
     let $main := $docRoot//aqd:AQD_Measures/aqd:exceedanceAffected
     for $el in $main
         let $label := data($el/@xlink:href)
-        let $ok := query:existsViaNameLocalId($label, 'AQD_SourceApportionment', $latestEnvelopesI)
+        (: let $ok := query:existsViaNameLocalId($label, 'AQD_SourceApportionment', $latestEnvelopesI) :)
+        let $ok := if(fn:empty($label))
+                    then
+                      false()
+                    else
+                      for $l in $label
+                        return
+                          query:existsViaNameLocalId($l, 'AQD_SourceApportionment', $latestEnvelopesI)                      
+                                
+        let $sparql_query := if(fn:empty($label))
+                             then
+                              "No label to execute this query"
+                             else
+                              sparqlx:getLink(query:existsViaNameLocalIdQuery($label, 'AQD_SourceApportionment', $latestEnvelopesI)) 
 
         return common:conditionalReportRow(
             $ok,
             [
                 ("gml:id", $el/ancestor-or-self::*[name() = $ancestor-name]/@gml:id),
-                (node-name($el), $el/@xlink:href)
+                (node-name($el), $el/@xlink:href),
+                (: ("Sparql", sparqlx:getLink(query:existsViaNameLocalIdQuery($label, 'AQD_SourceApportionment', $latestEnvelopesI))) :)
+                ("Sparql", $sparql_query)
             ]
         )
 } catch * {
@@ -421,7 +440,8 @@ let $K12 := try {
             $ok,
             [
                 ("gml:id", $el/ancestor-or-self::*[name() = $ancestor-name]/@gml:id),
-                (node-name($el), $el/@xlink:href)
+                (node-name($el), $el/@xlink:href),
+                ("Sparql", sparqlx:getLink(query:existsViaNameLocalIdQuery($label, 'AQD_EvaluationScenario', $latestEnvelopesJ)))
             ]
         )
 } catch * {
@@ -1101,8 +1121,8 @@ return
         {html:build2("VOCAB", $labels:VOCAB, $labels:VOCAB_SHORT, $VOCABinvalid, "All values are valid", "record", $errors:VOCAB)}
         {html:build3("K0", $labels:K0, $labels:K0_SHORT, $K0table, string($K0table/td), errors:getMaxError($K0table))}
         {html:build1("K01", $labels:K01, $labels:K01_SHORT, $K01, "", string($countMeasures), "", "", $errors:K01)}
-        {html:buildSimple("K02", $labels:K02, $labels:K02_SHORT, $K02table, "", "", $K02errorLevel)}
-        {html:buildSimple("K03", $labels:K03, $labels:K03_SHORT, $K03table, "", "", $K03errorLevel)}
+        {html:buildSimpleSparql("K02", $labels:K02, $labels:K02_SHORT, $K02table, "", "", $K02errorLevel)}
+        {html:buildSimpleSparql("K03", $labels:K03, $labels:K03_SHORT, $K03table, "", "", $K03errorLevel)}
         {html:build1("K04", $labels:K04, $labels:K04_SHORT, $K04table, "", string(count($K04table)), " ", "", $errors:K04)}
         {html:build1("K05", $labels:K05, $labels:K05_SHORT, $K05, "RESERVE", "RESERVE", "RESERVE", "RESERVE", $errors:K05)}
         {html:build1("K06", $labels:K06, $labels:K06_SHORT, $K06, "RESERVE", "RESERVE", "RESERVE", "RESERVE", $errors:K06)}
@@ -1111,8 +1131,8 @@ return
         {html:build2("K09", $labels:K09, $labels:K09_SHORT, $K09table, "namespace", "", $errors:K09)} 
         <!-- {html:buildUnique("K09", $labels:K09, $labels:K09_SHORT, $K09table, "namespace", $errors:K09)}-->
         {html:build2("K10", $labels:K10, $labels:K10_SHORT, $K10invalid, "All values are valid", " not conform to vocabulary", $errors:K10)}
-        {html:build2("K11", $labels:K11, $labels:K11_SHORT, $K11, "All values are valid", "needs valid input", $errors:K11)}
-        {html:build2("K12", $labels:K12, $labels:K12_SHORT, $K12, "All values are valid", "needs valid input", $errors:K12)}
+        {html:build2Sparql("K11", $labels:K11, $labels:K11_SHORT, $K11, "All values are valid", "needs valid input", $errors:K11)}
+        {html:build2Sparql("K12", $labels:K12, $labels:K12_SHORT, $K12, "All values are valid", "needs valid input", $errors:K12)}
         {html:build2("K13", $labels:K13, $labels:K13_SHORT, $K13invalid, "All values are valid", " code not equal", $errors:K13)}
         {html:build2("K14", $labels:K14, $labels:K14_SHORT, $K14invalid, "All values are valid", "needs valid input", $errors:K14)}
         {html:build2("K15", $labels:K15, $labels:K15_SHORT, $K15invalid, "All values are valid", "needs valid input", $errors:K15)}

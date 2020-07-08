@@ -49,6 +49,8 @@ declare namespace adms = "http://www.w3.org/ns/adms#";
 declare namespace prop = "http://dd.eionet.europa.eu/property/";
 declare namespace rdf = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
 
+declare namespace functx = "http://www.functx.com";
+
 declare variable $dataflowG:ISO2_CODES as xs:string* := ("AL","AT","BA","BE","BG","CH","CY","CZ","DE","DK","DZ","EE","EG","ES","FI",
     "FR","GB","GR","HR","HU","IE","IL","IS","IT","JO","LB","LI","LT","LU","LV","MA","ME","MK","MT","NL","NO","PL","PS","PT",
      "RO","RS","SE","SI","SK","TN","TR","XK","UK");
@@ -221,6 +223,7 @@ let $G02table :=
                 <td title="aqd:protectionTarget">{common:checkLink(distinct-values(data($x/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/@xlink:href)))}</td>
                 <td title="aqd:zone">{common:checkLink(distinct-values(data($x/aqd:zone/@xlink:href)))}</td>
                 <td title="aqd:assessment">{common:checkLink(distinct-values(data($x/aqd:assessment/@xlink:href)))}</td>
+                <td title="Sparql">{sparqlx:getLink(query:getAllAttainmentIds2Query($namespaces))}</td>
             </tr>
     } catch * {
         <tr class="{$errors:FAILED}">
@@ -511,6 +514,7 @@ let $G13invalid :=
             <tr>
                 <td title="aqd:AQD_Attainment">{data($x/aqd:inspireId/base:Identifier/base:localId)}</td>
                 <td title="aqd:assessment">{data($x/aqd:assessment/@xlink:href)}</td>
+                <td title="Sparql">{sparqlx:getLink(query:getG13($cdrUrl, $reportingYear))}</td>
             </tr>
     } catch * {
         <tr class="{$errors:FAILED}">
@@ -629,6 +633,7 @@ let $G14table :=
                 <td title="Count B">{string($countB)}</td>
                 <td title="Count C">{string($countC)}</td>
                 <td title="Count G">{string($countG)}</td>
+                <td title="Sparql">{sparqlx:getLink(query:getG14($latestEnvelopeB, $latestEnvelopeC, $reportingYear))}</td>
             </tr>
     } catch * {
         <tr class="{$errors:FAILED}">
@@ -668,6 +673,7 @@ let $G14binvalid :=
         return
             <tr>
                 <td title="aqd:AQD_AssessmentRegime">{$x}</td>
+                <td title="Sparql">{sparqlx:getLink($query)}</td>
             </tr>
     } catch * {
         <tr class="{$errors:FAILED}">
@@ -691,6 +697,7 @@ let $G15invalid :=
             <tr>
                 <td title="aqd:AQD_Attainment">{data($x/aqd:inspireId/base:Identifier/base:localId)}</td>
                 <td title="aqd:zone">{data($zone/@xlink:href)}</td>
+                <td title="Sparql">{sparqlx:getLink(query:getZone($latestEnvelopeByYearB))}</td>
             </tr>
     } catch * {
         <tr class="{$errors:FAILED}">
@@ -719,6 +726,8 @@ let $G17invalid :=
         <tr class="{$errors:FAILED}">
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
+            <td title="Sparql1">{sparqlx:getLink(query:getZone($cdrUrl))}</td>
+            <td title="Sparql2">{sparqlx:getLink(query:getPollutantlD($cdrUrl))}</td>
         </tr>
     }
 
@@ -739,6 +748,7 @@ let $G18invalid :=
                 <td title="aqd:objectiveType">{$objectiveType}</td>
                 <td title="aqd:reportingMetric">{$reportingMetric}</td>
                 <td title="aqd:protectionTarget">{$protectionTarget}</td>
+                <td title="Sparql">{sparqlx:getLink(query:getTimeExtensionExemption($cdrUrl))}</td>
             </tr>
     } catch * {
         <tr class="{$errors:FAILED}">
@@ -1320,6 +1330,7 @@ let $G66invalid :=
                 <td title="aqd:modelAssessmentMetadata">{$station}</td>
                 <td title="C gml:id">{$localIdC}</td>
                 <td title="C aqd:modelAssessmentMetadata">{$assessmentCsubs}</td>
+                <td title="Sparql">{sparqlx:getLink(query:getG66($latestEnvelopeC, $reportingYear))}</td>
             </tr>
     } catch * {
         <tr class="{$errors:FAILED}">
@@ -1615,6 +1626,7 @@ let $G89invalid :=
                         else   
                             <tr>
                                  <td title="Not found">{"Sampling Point Assessment for: " || functx:substring-after-last(string($assessmentMethod), '/')}</td>
+                                 <td title="Sparql1">{sparqlx:getLink(query:getAssessmentMethodsCSamplingPoint($latestEnvelopeC, $assessment))}</td>
                             </tr>   
             let $models := 
             let $assessmentMethodsModels := sparqlx:run(query:getAssessmentMethodsCModels($latestEnvelopeC, $assessment))
@@ -1625,14 +1637,14 @@ let $G89invalid :=
                         else   
                             <tr>
                                  <td title="Not found">{"Model Point Assessment for: " || functx:substring-after-last(string($assessmentMethod), '/')}</td>
+                                 <td title="Sparql2">{sparqlx:getLink(query:getAssessmentMethodsCModels($latestEnvelopeC, $assessment))}</td>
                             </tr>                                         
 
         let $countModels := count($models)
         let $countSampling := count($sampling)
         return 
-            if($countSampling != 0) then 
+            if($countSampling != 0) then
                 $sampling
-            
             else if ($countModels != 0) then
                 $models 
             else
@@ -1650,7 +1662,7 @@ return
         {html:build2("VOCAB", $labels:VOCAB, $labels:VOCAB_SHORT, $VOCABinvalid, "All values are valid", "record", $errors:VOCAB)}
         {html:build3("G0", $labels:G0, $labels:G0_SHORT, $G0table, string($G0table/td), errors:getMaxError($G0table))}
         {html:build1("G01", $labels:G01, $labels:G01_SHORT, $tblAllAttainments, "", string($countAttainments), "", "", $errors:G01)}
-        {html:buildSimple("G02", $labels:G02, $labels:G02_SHORT, $G02table, "", "", $G02errorLevel)}
+        {html:buildSimpleSparql("G02", $labels:G02, $labels:G02_SHORT, $G02table, "", "", $G02errorLevel)}
         {html:buildSimple("G03", $labels:G03, $labels:G03_SHORT, $G03table, "", "", $G03errorLevel)}
         {html:build1("G04", $labels:G04, $labels:G04_SHORT, $G04table, "", string(count($G04table)), " ", "", $errors:G04)}
         {html:build1("G05", $labels:G05, $labels:G05_SHORT, $G05table, "", string(count($G05table)), " exceedance", "", $errors:G05)}
@@ -1662,14 +1674,14 @@ return
         {html:build2("G10", $labels:G10, $labels:G10_SHORT, $G10invalid, "All values are valid", "", $errors:G10)}
         {html:build2("G11", $labels:G11, $labels:G11_SHORT, $G11invalid, "All values are valid", " invalid value", $errors:G11)}
         {html:build2("G12", $labels:G12, $labels:G12_SHORT, $G12invalid, "All values are valid", " invalid value", $errors:G12)}
-        {html:build2("G13", $labels:G13, $labels:G13_SHORT, $G13invalid, "All values are valid", " invalid value", $errors:G13)}
+        {html:build2Sparql("G13", $labels:G13, $labels:G13_SHORT, $G13invalid, "All values are valid", " invalid value", $errors:G13)}
         {html:build2("G13b", $labels:G13b, $labels:G13b_SHORT, $G13binvalid, "All values are valid", " invalid value", $errors:G13b)}
         {html:build2("G13c", $labels:G13c, $labels:G13c_SHORT, $G13cinvalid, "All values are valid", " invalid value", $errors:G13c)}
-        {html:build2("G14", $labels:G14, $labels:G14_SHORT, $G14table, "All values are valid", "record", errors:getMaxError($G14table))}
-        {html:build2("G14b", $labels:G14b, $labels:G14b_SHORT, $G14binvalid, "All assessment regimes are reported", " missing assessment regime", $errors:G14b)}
-        {html:build2("G15", $labels:G15, $labels:G15_SHORT, $G15invalid, "All values are valid", " invalid value", $errors:G15)}
-        {html:build2("G17", $labels:G17, $labels:G17_SHORT, $G17invalid, "All values are valid", " invalid value", $errors:G17)}
-        {html:build2("G18", $labels:G18, $labels:G18_SHORT, $G18invalid, "All values are valid", " invalid value", $errors:G18)}
+        {html:build2Sparql("G14", $labels:G14, $labels:G14_SHORT, $G14table, "All values are valid", "record", errors:getMaxError($G14table))}
+        {html:build2Sparql("G14b", $labels:G14b, $labels:G14b_SHORT, $G14binvalid, "All assessment regimes are reported", " missing assessment regime", $errors:G14b)}
+        {html:build2Sparql("G15", $labels:G15, $labels:G15_SHORT, $G15invalid, "All values are valid", " invalid value", $errors:G15)}
+        {html:build2Sparql("G17", $labels:G17, $labels:G17_SHORT, $G17invalid, "All values are valid", " invalid value", $errors:G17)}
+        {html:build2Sparql("G18", $labels:G18, $labels:G18_SHORT, $G18invalid, "All values are valid", " invalid value", $errors:G18)}
         {html:build2("G19", $labels:G19, $labels:G19_SHORT, $G19invalid, "All values are valid", "", $errors:G19)}
         {html:build2("G20", $labels:G20, $labels:G20_SHORT, $G20invalid, "All values are valid", "", $errors:G20)}
         {html:build2("G21", $labels:G21, $labels:G21_SHORT, $G21invalid, "No invalid protection target types found", " invalid value", $errors:G21)}
@@ -1697,7 +1709,7 @@ return
         {html:build2("G62", $labels:G62, $labels:G62_SHORT, $G62invalid, "All values are valid", "", $errors:G62)}
         {html:build2("G63", $labels:G63, $labels:G63_SHORT, $G63invalid, "All values are valid", "", $errors:G63)}
         {html:build2("G64", $labels:G64, $labels:G64_SHORT, $G64invalid, "All values are valid", " invalid value", $errors:G64)}
-        {html:build2("G66", $labels:G66, $labels:G66_SHORT, $G66invalid, "All values are valid", " invalid value", $errors:G66)}
+        {html:build2Sparql("G66", $labels:G66, $labels:G66_SHORT, $G66invalid, "All values are valid", " invalid value", $errors:G66)}
         {html:build2("G67", $labels:G67, $labels:G67_SHORT, $G67invalid, "All values are valid", " invalid value", $errors:G67)}
         {html:buildInfoTR("Specific checks on aqd:exceedanceDescriptionFinal")}
         {html:build2("G70", $labels:G70, $labels:G70_SHORT, $G70invalid, "All values are valid", " invalid value", $errors:G70)}
@@ -1713,7 +1725,7 @@ return
         {html:build2("G81", $labels:G81, $labels:G81_SHORT, $G81invalid, "All values are valid", " invalid value", $errors:G81)}
         {html:build2("G85", $labels:G85, $labels:G85_SHORT, $G85invalid, "All values are valid", " invalid value", $errors:G85)}
         {html:build2("G86", $labels:G86, $labels:G86_SHORT, $G86invalid, "All values are valid", " invalid value", $errors:G86)}
-        {html:buildNoCount2("G89", $labels:G89, $labels:G89_SHORT, $G89invalid, "All values are valid", "Invalid value found", $errors:G89)}
+        {html:buildNoCount2Sparql("G89", $labels:G89, $labels:G89_SHORT, $G89invalid, "All values are valid", "Invalid value found", $errors:G89)}
         {$G82invalid}
     </table>
 };

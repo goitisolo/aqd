@@ -36,9 +36,12 @@ declare function envelope:checkFileReportingHeader($envelope as element(envelope
     (:let $obligationYears := sparqlx:run(query:getObligationYears()):)
     let $docRoot := doc($file)
 
-    (: set variables for envelope year :)
+    (: set variables for envelope year
     let $minimumYear := number(envelope:getObligationMinMaxYear($envelope)/min)
-    let $maximumYear := number(envelope:getObligationMinMaxYear($envelope)/max)
+    let $maximumYear := number(envelope:getObligationMinMaxYear($envelope)/max):) 
+
+    let $minimumYear := data(sparqlx:run(query:getObligationYearsByEnvelope($envelope))/sparqlx:binding[@name = 'minimum']/sparqlx:literal)
+    let $maximumYear := data(sparqlx:run(query:getObligationYearsByEnvelope($envelope))/sparqlx:binding[@name = 'maximum']/sparqlx:literal)
 
     (:  If AQ e-Reporting XML files in the envelope, at least one must have an aqd:AQD_ReportingHeader element. :)
     let $containsAqdReportingHeader :=
@@ -232,8 +235,10 @@ declare function envelope:errorTable($pos, $file) {
 declare function envelope:validateEnvelope($source_url as xs:string) as element(div) {
 
     let $envelope := doc($source_url)/envelope
-    let $minimumYear := number(envelope:getObligationMinMaxYear($envelope)/min)
-    let $maximumYear := number(envelope:getObligationMinMaxYear($envelope)/max)
+    (:let $minimumYear := number(envelope:getObligationMinMaxYear($envelope)/min)
+    let $maximumYear := number(envelope:getObligationMinMaxYear($envelope)/max):)
+    let $minimumYear := data(sparqlx:run(query:getObligationYearsByEnvelope($envelope))/sparqlx:binding[@name = 'minimum']/sparqlx:literal)
+    let $maximumYear := data(sparqlx:run(query:getObligationYearsByEnvelope($envelope))/sparqlx:binding[@name = 'maximum']/sparqlx:literal)
     let $xmlFilesWithAQSchema := envelope:getAQFiles($source_url)
     let $filesWithAQSchema := $envelope/file[contains(@schema,'AirQualityReporting.xsd') and string-length(@link)>0]
 

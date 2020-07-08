@@ -197,6 +197,7 @@ let $E04invalid :=
         return
             <tr>
                 <td title="base:localId">{$x}</td>
+                <td title="Sparql">{sparqlx:getLink(query:getSamplingPointProcess($cdrUrl))}</td>
             </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
     } catch * {
         <tr class="{$errors:FAILED}">
@@ -233,6 +234,7 @@ let $E06invalid :=
             <tr>
                 <td title="om:OM_Observation">{string($x/../../@gml:id)}</td>
                 <td title="om:value">{$value}</td>
+                <td title="Sparql">{sparqlx:getLink(query:getSamplingPointFromFiles($latestEnvelopeD))}</td>
             </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
     } catch * {
         <tr class="{$errors:FAILED}">
@@ -340,6 +342,8 @@ let $E11invalid :=
                 <td title="@gml:id">{$x/@gml:id/string()}</td>
                 <td title="om:value">{$value}</td>
                 <td title="om:observedProperty">{$observedProperty}</td>
+                <td title="Sparql">{sparqlx:getLink(query:getSamplingPointMetadataFromFiles($latestEnvelopeD)
+)}</td>
             </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
     } catch * {
         <tr class="{$errors:FAILED}">
@@ -360,6 +364,7 @@ let $E12invalid :=
                 <td title="@gml:id">{$x/@gml:id/string()}</td>
                 <td title="om:featureOfInterest">{$featureOfInterest}</td>
                 <td title="om:observedProperty">{string($x/om:observedProperty/@xlink:href)}</td>
+                <td title="Sparql">{sparqlx:getLink(query:getSample($latestEnvelopeD))}</td>
             </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
     } catch * {
         <tr class="{$errors:FAILED}">
@@ -783,6 +788,7 @@ let $E26invalid :=
                 <td title="aqd:AQD_SamplingPointProcess">{$procedure}</td>
                 <td title="aqd:AQD_Sample">{$featureOfInterest}</td>
                 <td title="Pollutant">{$observedProperty}</td>
+                <td title="Sparql">{sparqlx:getLink(query:getSamplingPointMetadataFromFiles($latestEnvelopeD))}</td>
             </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
     }
     catch * {
@@ -830,6 +836,7 @@ let $E26bfunc := function() {
             <td title="aqd:AQD_SamplingPointProcess">{$procedure}</td>
             <td title="aqd:AQD_Sample">{$featureOfInterest}</td>
             <td title="Pollutant">{$observedProperty}</td>
+            <td title="Sparql">{sparqlx:getLink(query:getE26b($latestEnvelopeD))}</td>
         </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
 }
 let $E26binvalid := errors:trycatch($E26bfunc)
@@ -1163,15 +1170,28 @@ let $E34func := function() {
     ((:let $previousData := sparqlx:run(query:getE34($countryCode, $reportingYear)):)
     for $x at $xpos in $docRoot//om:OM_Observation/om:result
 
-    let $samplingPoint := ($x/../om:parameter/om:NamedValue[om:name/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/processparameter/SamplingPoint"]/om:value/@xlink:href => tokenize("/"))[last()]
+   
+   
+   let $previousTRT:=
+       for $y in $x/../om:parameter/om:NamedValue[om:name/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/processparameter/SamplingPoint"]
 
-    let $previousMean := sparqlx:run(query:getE34Sampling($countryCode, $reportingYear, $samplingPoint))(:$previousData[sparql:binding[@name = "SamplingPointLocalId"]/sparql:literal = $samplingPoint]/sparql:binding[@name = "AQValue"]/sparql:literal/string() => number():)
+        let $samplingPoint := tokenize(common:if-empty($y/om:value, 'no data'), "/")[last()]
 
+        let $previousMean := sparqlx:run(query:getE34Sampling($countryCode, $reportingYear, $samplingPoint))
 
+    return $previousMean
+    
+    let $previousTRTquery:=
+       for $y in $x/../om:parameter/om:NamedValue[om:name/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/processparameter/SamplingPoint"]
 
+        let $samplingPoint := tokenize(common:if-empty($y/om:value, 'no data'), "/")[last()]
 
+        let $previousMean := sparqlx:getLink(query:getE34Sampling($countryCode, $reportingYear, $samplingPoint))
 
-    return if (string($previousMean) = 'NaN') then () else
+    return $previousMean
+
+ 
+   return if (string($previousTRT) = 'NaN' ) then () else 
 
     let $blockSeparator := string($x//swe:encoding/swe:TextEncoding/@blockSeparator)
     let $decimalSeparator := string($x//swe:encoding/swe:TextEncoding/@decimalSeparator)
@@ -1198,20 +1218,19 @@ let $E34func := function() {
                 ($count div common:getYearHoursCount($reportingYear)) => format-number("0.01")
         let $dc := number($dc) * 100
         return $dc || "%"
-    let $higherLimit := $previousMean * 3
-    let $lowerLimit := $previousMean div 3
+    let $higherLimit := $previousTRT * 3
+    let $lowerLimit := $previousTRT div 3
     where $mean > $higherLimit or $mean < $lowerLimit
-    return
+    return    
         <tr>
             <td title="OM_Observation">{string($x/../@gml:id)}</td>
             <td title="Mean">{format-number($mean, "0.1")}</td>
-            <td title="Previous Mean">{format-number($previousMean, "0.1")}</td>
-
-
-
-
+            <td title="Previous Mean">{format-number($previousTRT, "0.1")}</td>
             <td title="Data coverage">{$coverageType || " coverage: " || $dataCoverage}</td>
+            <td title="Sparql1">{sparqlx:getLink(query:getE34($countryCode, $reportingYear))}</td>
+            <td title="Sparql2">{$previousTRTquery}</td>
         </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
+       
 }
 
 let $E34invalid := errors:trycatch($E34func)
@@ -1225,15 +1244,15 @@ return
         {html:build2("E01b", $labels:E01b, $labels:E01b_SHORT, $E01binvalid, "All records are valid", "record", $errors:E01b)}
         {html:build2("E02", $labels:E02, $labels:E02_SHORT, $E02invalid, "All records are valid", "record", $errors:E02)}
         {html:build2("E03", $labels:E03, $labels:E03_SHORT, $E03invalid, "All records are valid", "record", $errors:E03)}
-        {html:build2("E04", $labels:E04, $labels:E04_SHORT, $E04invalid, "All records are valid", "record", $errors:E04)}
+        {html:build2Sparql("E04", $labels:E04, $labels:E04_SHORT, $E04invalid, "All records are valid", "record", $errors:E04)}
         {html:build2("E05", $labels:E05, $labels:E05_SHORT, $E05invalid, "All records are valid", "record", $errors:E05)}
-        {html:build2("E06", $labels:E06, $labels:E06_SHORT, $E06invalid, "All records are valid", "record", $errors:E06)}
+        {html:build2Sparql("E06", $labels:E06, $labels:E06_SHORT, $E06invalid, "All records are valid", "record", $errors:E06)}
         {html:build2("E07", $labels:E07, $labels:E07_SHORT, $E07invalid, "All records are valid", "record", $errors:E07)}
         {html:build2("E08", $labels:E08, $labels:E08_SHORT, $E08invalid, "All records are valid", "record", $errors:E08)}
         {html:build2("E09", $labels:E09, $labels:E09_SHORT, $E09invalid, "All records are valid", "record", $errors:E09)}
         {html:build2("E10", $labels:E10, $labels:E10_SHORT, $E10invalid, "All records are valid", "record", $errors:E10)}
-        {html:build2("E11", $labels:E11, $labels:E11_SHORT, $E11invalid, "All records are valid", "record", $errors:E11)}
-        {html:build2("E12", $labels:E12, $labels:E12_SHORT, $E12invalid, "All records are valid", "record", $errors:E12)}
+        {html:build2Sparql("E11", $labels:E11, $labels:E11_SHORT, $E11invalid, "All records are valid", "record", $errors:E11)}
+        {html:build2Sparql("E12", $labels:E12, $labels:E12_SHORT, $E12invalid, "All records are valid", "record", $errors:E12)}
         {html:build2("E15", $labels:E15, $labels:E15_SHORT, $E15invalid, "All records are valid", "record", $errors:E15)}
         {html:build2("E16", $labels:E16, $labels:E16_SHORT, $E16invalid, "All records are valid", "record", $errors:E16)}
         {html:build2("E17", $labels:E17, $labels:E17_SHORT, $E17invalid, "All records are valid", "record", $errors:E17)}
@@ -1248,7 +1267,7 @@ return
         {html:build2("E24", $labels:E24, $labels:E24_SHORT, $E24invalid, "All records are valid", "record", $errors:E24)}
         {html:build2("E25", $labels:E25, $labels:E25_SHORT, $E25invalid, "All records are valid", "record", $errors:E25)}
         {html:build2("E25b", $labels:E25b, $labels:E25b_SHORT, $E25binvalid, "All records are valid", "record", $errors:E25b)}
-        {html:build2("E26", $labels:E26, $labels:E26_SHORT, $E26invalid, "All records are valid", "record", $errors:E26)}
+        {html:build2Sparql("E26", $labels:E26, $labels:E26_SHORT, $E26invalid, "All records are valid", "record", $errors:E26)}
         {html:build2("E26b", $labels:E26b, $labels:E26b_SHORT, $E26binvalid, "All records are valid", "record", $errors:E26b)}
         {html:build2("E27", $labels:E27, $labels:E27_SHORT, $E27invalid, "All records are valid", "record", $errors:E27)}
         {html:build2("E28", $labels:E28, $labels:E28_SHORT, $E28invalid, "All records are valid", "record", $errors:E28)}
@@ -1259,7 +1278,7 @@ return
         {html:build2("E31", $labels:E31, $labels:E31_SHORT, $E31invalid, "All records are valid", "record", $errors:E31)}
         {html:build2("E32", $labels:E32, $labels:E32_SHORT, $E32invalid, "All records are valid", "record", $errors:E32)}
         {html:build2("E33", $labels:E33, $labels:E33_SHORT, $E33invalid, "All records are valid", "record", $errors:E33)}
-        {html:build2("E34", $labels:E34, $labels:E34_SHORT, $E34invalid, "All records are valid", "record", $errors:E34)}
+        {html:build2Sparql("E34", $labels:E34, $labels:E34_SHORT, $E34invalid, "All records are valid", "record", $errors:E34)}
     </table>
 
 };

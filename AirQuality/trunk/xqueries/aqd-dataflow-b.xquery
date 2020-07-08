@@ -112,10 +112,12 @@ let $B0table :=
         else if($headerBeginPosition > $headerEndPosition) then
             <tr class="{$errors:BLOCKER}">
                 <td title="Status">Start position must be less than end position</td>
+                (: <td title="Sparql">{sparqlx:getLink(query:deliveryExistsQuery($dataflowB:OBLIGATIONS, $countryCode, "b/", $reportingYear))}</td> :)
             </tr>
         else if (query:deliveryExists($dataflowB:OBLIGATIONS, $countryCode, "b/", $reportingYear)) then
             <tr class="{$errors:WARNING}">
                 <td title="Status">Updating delivery for {$reportingYear}</td>
+                (: <td title="Sparql">{sparqlx:getLink(query:deliveryExistsQuery($dataflowB:OBLIGATIONS, $countryCode, "b/", $reportingYear))}</td> :)
             </tr>
         else
             <tr class="{$errors:INFO}">
@@ -680,6 +682,7 @@ let $B13invalid :=
             <tr>
                 <td title="aqd:AQD_Zone">{data($x/../../../am:inspireId/base:Identifier/base:localId)}</td>
                 <td title="gn:language">{data($x)}</td>
+                <td title="Sparql">{sparqlx:getLink(query:getLangCodesSparql())}</td>
             </tr>
     } catch * {
         <tr class="{$errors:FAILED}">
@@ -1371,7 +1374,7 @@ return
         {html:build2("B10.1", $labels:B10.1, $labels:B10.1_SHORT, $B10.1invalid, "All values are valid", " invalid namespaces", $errors:B10.1)}
         {html:build2("B11", $labels:B11, $labels:B11_SHORT, $B11table, "", "record", $B11errorLevel)}
         {html:build2("B12", $labels:B12, $labels:B12_SHORT, $B12table, "", "record", $B12errorLevel)}
-        {html:build2("B13", $labels:B13, $labels:B13_SHORT, $B13invalid, "All values are valid", " invalid value", $errors:B13)}
+        {html:build2Sparql("B13", $labels:B13, $labels:B13_SHORT, $B13invalid, "All values are valid", " invalid value", $errors:B13)}
         {html:build2("B18", $labels:B18, $labels:B18_SHORT, $B18invalid, "All text are valid"," invalid attribute", $errors:B18)}
         {html:build2("B20", $labels:B20, $labels:B20_SHORT, $B20invalid, "All srsName attributes are valid"," invalid attribute", $errors:B20)}
         {html:build2("B21", $labels:B21, $labels:B21_SHORT, $B21invalid, "All srsDimension attributes resolve to ""2""", " invalid attribute", $errors:B21)}

@@ -546,6 +546,7 @@ let $M26invalid :=
             <tr>
                 <td title="gml:id">{data($x/../ef:inspireId/base:Identifier/base:localId)}</td>
                 <td title="aqd:zone">{$xlink}</td>
+                <td title="Sparql">{sparqlx:getLink(query:getZone($latestEnvelopeB))}</td>
             </tr>
     } catch * {
         <tr class="{$errors:FAILED}">
@@ -838,7 +839,7 @@ let $M46message :=
         {html:build2("M20", $labels:M20, $labels:M20_SHORT, $M20invalid, "All values are valid", "record", $errors:M20)}
         {html:build2("M23", $labels:M23, $labels:M23_SHORT, $M23invalid, "All values are valid", "record", $errors:M23)}
         {html:build2("M24", $labels:M24, $labels:M24_SHORT, $M24invalid, "All values are valid", "record", $errors:M24)}
-        {html:build2("M26", $labels:M26, $labels:M26_SHORT, $M26invalid, "All values are valid", "record", $errors:M26)}
+        {html:build2Sparql("M26", $labels:M26, $labels:M26_SHORT, $M26invalid, "All values are valid", "record", $errors:M26)}
         {html:buildInfoTR("Specific checks on AQD_ModelProcess")}
         {html:build2("M27", $labels:M27, $labels:M27_SHORT, $M27invalid, "All values are valid", "record", $errors:M27)}
         {html:buildUnique("M28", $labels:M28, $labels:M28_SHORT, $M28table, "namespace", $errors:M28)}

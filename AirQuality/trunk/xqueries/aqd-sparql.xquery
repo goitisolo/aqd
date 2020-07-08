@@ -9,6 +9,10 @@ declare function sparqlx:run($sparql as xs:string) as element(sparql:result)* {
     doc("https://cr.eionet.europa.eu/sparql?query=" || encode-for-uri($sparql) || "&amp;format=application/xml")//sparql:result
 };
 
+declare function sparqlx:getLink($sparql as xs:string) as xs:string* {
+    "https://cr.eionet.europa.eu/sparql?query=" || encode-for-uri($sparql) || "&amp;format=application/html"
+};
+
 (:~
  : Get the SPARQL endpoint URL.
  : @param $sparql SPARQL query.

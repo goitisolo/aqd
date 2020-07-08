@@ -179,6 +179,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
             return
                 <tr>
                     <td title="base:localId">{$x}</td>
+                    <td title="Sparql">{sparqlx:getLink(query:getModelProcess($cdrUrl))}</td>
                 </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
         } catch * {
             <tr class="{$errors:FAILED}">
@@ -221,6 +222,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
                 <tr>
                     <td title="om:OM_Observation">{string($x/../../@gml:id)}</td>
                     <td title="om:value">{$value}</td>
+                    <td title="Sparql">{sparqlx:getLink(query:getModelSampling($cdrUrl))}</td>
                 </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
         } catch * {
             <tr class="{$errors:FAILED}">
@@ -331,6 +333,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
                     <td title="@gml:id">{$x/@gml:id/string()}</td>
                     <td title="om:value">{$value}</td>
                     <td title="om:observedProperty">{$observedProperty}</td>
+                    <td title="Sparql">{sparqlx:getLink(query:getModelMetadataFromFiles($latestEnvelopeD1b))}</td>
                 </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
         } catch * {
             <tr class="{$errors:FAILED}">
@@ -352,6 +355,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
                     <td title="@gml:id">{$x/@gml:id/string()}</td>
                     <td title="om:featureOfInterest">{$featureOfInterest}</td>
                     <td title="om:observedProperty">{string($x/om:observedProperty/@xlink:href)}</td>
+                    <td title="Sparql">{sparqlx:getLink(query:getModelArea($latestEnvelopeD1b))}</td>
                 </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
         } catch * {
             <tr class="{$errors:FAILED}">
@@ -794,6 +798,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
                     <td title="aqd:AQD_ModelProcess">{$procedure}</td>
                     <td title="aqd:AQD_ModelArea">{$featureOfInterest}</td>
                     <td title="Pollutant">{$observedProperty}</td>
+                    <td title="Sparql">{sparqlx:getLink(query:getModelMetadataSampling($cdrUrl))}</td>
                 </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
         }
         catch * {
@@ -1118,13 +1123,15 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
             {html:build1("Eb01", $labels:Eb01, $labels:Eb01_SHORT, $Eb01table, "", string(count($Eb01table)), "record", "", $errors:Eb01)}
             {html:build2("Eb02", $labels:Eb02, $labels:Eb02_SHORT, $Eb02invalid, "All records are valid", "record", $errors:Eb02)}
             {html:build2("Eb03", $labels:Eb03, $labels:Eb03_SHORT, $Eb03invalid, "All records are valid", "record", $errors:Eb03)}
-            {html:build2("Eb04", $labels:Eb04, $labels:Eb04_SHORT, $Eb04invalid, "All records are valid", "record", $errors:Eb04)}
+            {html:build2Sparql("Eb04", $labels:Eb04, $labels:Eb04_SHORT, $Eb04invalid, "All records are valid", "record", $errors:Eb04)}
             {html:build2("Eb05", $labels:Eb05, $labels:Eb05_SHORT, $Eb05invalid, "All records are valid", "record", $errors:Eb05)}
-            {html:build2("Eb06", $labels:Eb06, $labels:Eb06_SHORT, $Eb06invalid, "All records are valid", "record", $errors:Eb06)}
+            {html:build2Sparql("Eb06", $labels:Eb06, $labels:Eb06_SHORT, $Eb06invalid, "All records are valid", "record", $errors:Eb06)}
             {html:build2("Eb07", $labels:Eb07, $labels:Eb07_SHORT, $Eb07invalid, "All records are valid", "record", $errors:Eb07)}
             {html:build2("Eb08", $labels:Eb08, $labels:Eb08_SHORT, $Eb08invalid, "All records are valid", "record", $errors:Eb08)}
             {html:build2("Eb09", $labels:Eb09, $labels:Eb09_SHORT, $Eb09invalid, "All records are valid", "record", $errors:Eb09)}
             {html:build2("Eb10", $labels:Eb10, $labels:Eb10_SHORT, $Eb10invalid, "All records are valid", "record", $errors:Eb10)}
+            {html:build2Sparql("Eb11", $labels:Eb11, $labels:Eb11_SHORT, $Eb11invalid, "All records are valid", "record", $errors:Eb11)}
+            {html:build2Sparql("Eb12", $labels:Eb12, $labels:Eb12_SHORT, $Eb12invalid, "All records are valid", "record", $errors:Eb12)}
             {html:build2("Eb13", $labels:Eb13, $labels:Eb13_SHORT, $Eb13invalid, "All records are valid", "record", $errors:Eb13)}
             {html:build2("Eb14", $labels:Eb14, $labels:Eb14_SHORT, $Eb14invalid, "All records are valid", "record", $errors:Eb14)}
             {html:build2("Eb14b", $labels:Eb14b, $labels:Eb14b_SHORT, $Eb14binvalid, "All records are valid", "record", $errors:Eb14b)}
@@ -1140,7 +1147,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
             {html:build2("Eb23", $labels:Eb23, $labels:Eb23_SHORT, $Eb23invalid, "All records are valid", "record", $errors:Eb23)}
             {html:build2("Eb24", $labels:Eb24, $labels:Eb24_SHORT, $Eb24invalid, "All records are valid", "record", $errors:Eb24)}
             {html:build2("Eb25", $labels:Eb25, $labels:Eb25_SHORT, $Eb25invalid, "All records are valid", "record", $errors:Eb25)}
-            {html:build2("Eb26", $labels:Eb26, $labels:Eb26_SHORT, $Eb26invalid, "All records are valid", "record", $errors:Eb26)}
+            {html:build2Sparql("Eb26", $labels:Eb26, $labels:Eb26_SHORT, $Eb26invalid, "All records are valid", "record", $errors:Eb26)}
             {html:build2("Eb27", $labels:Eb27, $labels:Eb27_SHORT, $Eb27invalid, "All records are valid", "record", $errors:Eb27)}
             {html:build2("Eb28", $labels:Eb28, $labels:Eb28_SHORT, $Eb28invalid, "All records are valid", "record", $errors:Eb28)}
             {html:build2("Eb29", $labels:Eb29, $labels:Eb29_SHORT, $Eb29invalid, "All records are valid", "record", $errors:Eb29)}
