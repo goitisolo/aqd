@@ -118,7 +118,7 @@ declare function query:getSamplingPointProcess($url as xs:string) as xs:string {
 
    SELECT DISTINCT ?samplingPointProcess ?inspireId ?inspireLabel ?localId ?namespace
    WHERE {
-    FILTER(STRSTARTS(str(?graph), 'http://"|| $url ||"'))
+    FILTER(STRSTARTS(str(?graph), 'http://"|| $url ||"'))  
       GRAPH ?graph {
       ?samplingPointProcess a aqd:AQD_SamplingPointProcess.
       ?samplingPointProcess aqd:inspireId ?inspireId .
@@ -157,18 +157,18 @@ declare function query:getModelProcess($url as xs:string) as xs:string {
    WHERE {
    
      
-  values ?envelope{ <" || $url || "> }
-  ?graph dcterms:isPartOf ?envelope .
-  ?graph contreg:xmlSchema ?xmlSchema .
-  GRAPH ?graph {
-  ?samplingPointProcess a aqd:AQD_ModelProcess.
-   ?samplingPointProcess aqd:inspireId ?inspireId .
-  }
-           
-           ?inspireId rdfs:label ?inspireLabel .
-           ?inspireId aqd:localId ?localId .
-           ?inspireId aqd:namespace ?namespace .
-   
+      values ?envelope{ <" || $url || "> } 
+      ?graph dcterms:isPartOf ?envelope .
+      ?graph contreg:xmlSchema ?xmlSchema .
+        GRAPH ?graph {
+        ?samplingPointProcess a aqd:AQD_ModelProcess.
+         ?samplingPointProcess aqd:inspireId ?inspireId .
+        }
+                 
+                 ?inspireId rdfs:label ?inspireLabel .
+                 ?inspireId aqd:localId ?localId .
+                 ?inspireId aqd:namespace ?namespace .
+         
    }"
 };
 
@@ -636,7 +636,7 @@ declare function query:existsViaNameLocalIdYearI11(
     return common:isLatestEnvelope($envelopes, $latestEnvelopes) 
 };
 
-declare function query:existsViaNameLocalIdYearI11Query(
+(:declare function query:existsViaNameLocalIdYearI11Query(
     $label as xs:string,
     $type as xs:string,
     $year as xs:string,
@@ -692,7 +692,46 @@ declare function query:existsViaNameLocalIdYearI11Query(
           FILTER (?PlanId = '" || $label || "')
           FILTER (?reportingYear = " || $year || ")
       }" 
+};:)
+declare function query:existsViaNameLocalIdYearI11Query(
+    $label as xs:string,
+    $type as xs:string,
+    $year as xs:string,
+    $latestEnvelopes as xs:string*
+    ) as xs:string {
+    "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+      PREFIX aq: <http://reference.eionet.europa.eu/aq/ontology/>
+      PREFIX dcterms: <http://purl.org/dc/terms/>
+      PREFIX rod: <http://rod.eionet.europa.eu/schema.rdf#>
+
+      SELECT 
+        ?Country
+        YEAR(?endOfPeriod) as ?reportingYear
+        ?localId
+        ?envelope
+          
+        
+        WHERE {
+          VALUES ?localId{ '" || $label || "' } 
+            GRAPH ?source {
+              ?subject a aqd:" || $type ||" .
+              ?subject aqd:inspireId ?inspireId.
+              ?inspireId rdfs:label ?label.
+              ?inspireId aqd:namespace ?name.
+              ?inspireId aqd:localId ?localId.           
+            } 
+            ?source dcterms:isPartOf ?envelope .
+            ?envelope rod:startOfPeriod ?startOfPeriod .
+            ?envelope rod:endOfPeriod ?endOfPeriod .
+            ?envelope rod:locality ?locality.
+            ?locality rod:localityName ?Country .
+
+      FILTER ( year(?startOfPeriod) = " || $year || " )
+    }" 
 };
+
+
 
 
 (: G :)
@@ -1295,7 +1334,7 @@ PREFIX rod: <http://rod.eionet.europa.eu/schema.rdf#>
             optional {?observingTime aqd:endPosition ?endPosition }
             FILTER(xsd:date(SUBSTR(xsd:string(?beginPosition),1,10)) <= xsd:date('", $endDate, "')) .
             FILTER(!bound(?endPosition) or (xsd:date(SUBSTR(xsd:string(?endPosition),1,10)) > xsd:date('", $startDate, "'))) .
-#           FILTER(CONTAINS(str(?zone), 'http://cdr.eionet.europa.eu/lu/eu/aqd/d/envxydwfq'))
+
 }
     ")
 };
@@ -1929,7 +1968,7 @@ declare function query:getE26b($url as xs:string*) as xs:string {
    }"
 };
 
-declare function query:getE34($countryCode as xs:string, $reportingYear as xs:string) {
+(: declare function query:getE34($countryCode as xs:string, $reportingYear as xs:string) {
     let $reportingYear := xs:integer($reportingYear) - 1
     return
     "PREFIX rod: <http://rod.eionet.europa.eu/schema.rdf#>
@@ -1965,9 +2004,42 @@ declare function query:getE34($countryCode as xs:string, $reportingYear as xs:st
       ?namespaces dd:inCountry ?cntry_URI .
       FILTER (STRENDS(STR(?cntry_URI), '/" || upper-case($countryCode) || "')) .
     }"
+}; :)
+
+declare function query:getE34($countryCode as xs:string, $reportingYear as xs:string) {
+    let $reportingYear := xs:integer($reportingYear) - 1
+    return
+    "PREFIX rod: <http://rod.eionet.europa.eu/schema.rdf#>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
+PREFIX aq: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+PREFIX aqr: <http://reference.eionet.europa.eu/aq/ontology/>
+PREFIX dd: <http://dd.eionet.europa.eu/property/>
+PREFIX countries: <http://dd.eionet.europa.eu/vocabulary/common/countries/>
+PREFIX aggregationprocess: <http://dd.eionet.europa.eu/vocabulary/aq/aggregationprocess/>
+
+SELECT DISTINCT
+  REPLACE(REPLACE(REPLACE(STR(?SamplingPointLocalId_URI),'http://reference.eionet.europa.eu/aq/',''),?Namespace,''),'/','') as ?SamplingPointLocalId
+  ?AQValue
+  WHERE {
+    GRAPH ?g { ?statsURI aqr:inspireNamespace ?Namespace . 
+      ?statsURI aqr:samplingPoint ?SamplingPointLocalId_URI .
+      ?statsURI aqr:aggregationType ?AggregationType_URI .
+      FILTER (?AggregationType_URI IN (aggregationprocess:P1Y, aggregationprocess:P1Y-WA-avg)) .
+      ?statsURI aqr:airqualityValue ?AQValue .
+      ?statsURI aqr:beginPosition ?BeginPosition .
+      FILTER (YEAR(?BeginPosition) = " || $reportingYear || ")
+      ?statsURI aqr:observationValidity <http://dd.eionet.europa.eu/vocabulary/aq/observationvalidity/1> .
+    }
+    ?namespaces rdfs:label ?Namespace .
+    ?namespaces skos:inScheme <http://dd.eionet.europa.eu/vocabulary/aq/namespace/> .
+    ?namespaces dd:inCountry countries:" || upper-case($countryCode) || " .
+  }" 
 };
 
-declare function query:getE34Sampling($countryCode as xs:string, $reportingYear as xs:string, $samplingPoint as xs:string) as xs:string {
+(: declare function query:getE34Sampling($countryCode as xs:string, $reportingYear as xs:string, $samplingPoint as xs:string) as xs:string {
     let $reportingYear := xs:integer($reportingYear) - 1
     return
     "
@@ -1996,6 +2068,39 @@ declare function query:getE34Sampling($countryCode as xs:string, $reportingYear 
       ?AggregationType_URI skos:notation ?DataAggregationType .
       FILTER (?DataAggregationType = 'P1Y' ) .
 
+    }"
+};  :)
+
+declare function query:getE34Sampling($countryCode as xs:string, $reportingYear as xs:string, $samplingPoint as xs:string) as xs:string {
+    let $reportingYear := xs:integer($reportingYear) - 1
+    return
+    "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    PREFIX aq: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+    PREFIX aqr: <http://reference.eionet.europa.eu/aq/ontology/>
+    PREFIX dcterms: <http://purl.org/dc/terms/>
+    PREFIX aggregationprocess: <http://dd.eionet.europa.eu/vocabulary/aq/aggregationprocess/>
+
+    SELECT DISTINCT
+
+    ?AQValue
+    WHERE {
+      
+      FILTER(replace(replace(replace(str(?SamplingPointLocalId_URI),'http://reference.eionet.europa.eu/aq/',''),?Namespace,''),'/','') = '"|| $samplingPoint ||"') 
+      
+      GRAPH ?g {
+        ?statsURI aqr:inspireNamespace ?Namespace .
+        ?statsURI aqr:samplingPoint ?SamplingPointLocalId_URI .
+        ?statsURI aqr:aggregationType ?AggregationType_URI .
+        FILTER (?AggregationType_URI IN (aggregationprocess:P1Y)) .
+  
+        ?statsURI aqr:airqualityValue ?AQValue .
+        ?statsURI aqr:beginPosition ?BeginPosition .
+        
+        FILTER (YEAR(?BeginPosition) = " || $reportingYear || ") . 
+        
+        ?statsURI aqr:observationValidity <http://dd.eionet.europa.eu/vocabulary/aq/observationvalidity/1> .
+      } 
     }"
 };
 
@@ -2233,7 +2338,7 @@ declare function query:getPollutantlD($cdrUrl as xs:string) as xs:string {
           }")
 };
 
-declare function query:getSamplingPointFromFiles($url as xs:string*) as xs:string {
+(: declare function query:getSamplingPointFromFiles($url as xs:string*) as xs:string {
   let $filters :=
     for $x in $url
     return "STRSTARTS(str(?samplingPoint), '" || $x || "')"
@@ -2251,6 +2356,27 @@ declare function query:getSamplingPointFromFiles($url as xs:string*) as xs:strin
          ?inspireId aqd:localId ?localId .
          ?inspireId aqd:namespace ?namespace . " || $filters ||"
    }"
+}; :)
+
+declare function query:getSamplingPointFromFiles($url as xs:string*) as xs:string {
+  "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+  PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
+  PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+  
+  SELECT ?samplingPoint ?inspireLabel
+  WHERE {
+    BIND (IRI(CONCAT(STR('" || $url || "'), '/rdf')) AS ?g)
+    GRAPH ?g {
+      ?s cr:xmlSchema <http://dd.eionet.europa.eu/schemas/id2011850eu-1.0/AirQualityReporting.xsd> .
+    }
+    GRAPH ?s {
+      ?samplingPoint a aqd:AQD_SamplingPoint .
+      ?samplingPoint aqd:inspireId ?inspireId .
+      ?inspireId rdfs:label ?inspireLabel .
+      ?inspireId aqd:localId ?localId .
+      ?inspireId aqd:namespace ?namespace .  
+    }
+  }"
 };
 
 (:declare function query:getModelSampling($url as xs:string) as xs:string {
@@ -2367,7 +2493,7 @@ SELECT DISTINCT SUBSTR(?period, 1, 4)
    }"
 };:)
 
-declare function query:getModelMetadataSampling($url as xs:string*) as xs:string {
+declare function query:getModelMetadataSampling($url as xs:string*) as xs:string { 
   "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
    PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
    PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
