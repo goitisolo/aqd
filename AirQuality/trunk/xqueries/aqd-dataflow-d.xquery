@@ -2183,7 +2183,7 @@ return
         {html:build2("D48", $labels:D48, $labels:D48_SHORT, $D48invalid, "All values are valid", "record", $errors:D48)}
         {html:build2("D50", $labels:D50, $labels:D50_SHORT, $D50invalid, "All values are valid", "", $errors:D50)}
         {html:build2("D51", $labels:D51, $labels:D51_SHORT, $D51invalid, "All values are valid", " invalid attribute", $errors:D51)}
-        {html:build2("D53", $labels:D53, $labels:D53_SHORT, $D53invalid, "All values are valid", " invalid attribute", $errors:D53)}
+        {html:build2Sparql("D53", $labels:D53, $labels:D53_SHORT, $D53invalid, "All values are valid", " invalid attribute", $errors:D53)}
         {html:build2("D54", $labels:D54, $labels:D54_SHORT, $D54invalid, "All values are valid", " invalid attribute", $errors:D54)}
         {html:buildInfoTR("Specific checks on AQD_SamplingPointProcess feature(s) within this XML")}
         {html:buildUnique("D55", $labels:D55, $labels:D55_SHORT, $D55table, "namespace", $errors:D55)}

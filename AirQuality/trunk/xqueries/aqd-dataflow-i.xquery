@@ -2593,8 +2593,8 @@ let $I44errorMessage := (
         {html:build2("I9", $labels:I9, $labels:I9_SHORT, $I9table, "namespace", "", $errors:I9)}
         {html:build2("I10", $labels:I10, $labels:I10_SHORT, $I10invalid, "All values are valid", " not conform to vocabulary", $errors:I10)}
 
-        <!-- {html:build2Sparql("I11", $labels:I11, $labels:I11_SHORT, $I11,
-                     "All values are valid", "needs valid input", $errors:I11)} -->
+        {html:build2Sparql("I11", $labels:I11, $labels:I11_SHORT, $I11,
+                     "All values are valid", "needs valid input", $errors:I11)}
         <!--{html:build2("I12", $labels:I12, $labels:I12_SHORT, $I12,"All values are valid", "needs valid input", $errors:I12)}-->
         {html:build2Sparql("I12", $labels:I12, $labels:I12_SHORT, $I12,"All values are valid", "needs valid input", $errors:I12)}
         {html:build2("I13", $labels:I13, $labels:I13_SHORT, $I13, "All values are valid", "needs valid input", $errors:I13)}
