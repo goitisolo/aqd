@@ -112,12 +112,12 @@ let $B0table :=
         else if($headerBeginPosition > $headerEndPosition) then
             <tr class="{$errors:BLOCKER}">
                 <td title="Status">Start position must be less than end position</td>
-                (: <td title="Sparql">{sparqlx:getLink(query:deliveryExistsQuery($dataflowB:OBLIGATIONS, $countryCode, "b/", $reportingYear))}</td> :)
+                <!-- <td title="Sparql">{sparqlx:getLink(query:deliveryExistsQuery($dataflowB:OBLIGATIONS, $countryCode, "b/", $reportingYear))}</td> -->
             </tr>
         else if (query:deliveryExists($dataflowB:OBLIGATIONS, $countryCode, "b/", $reportingYear)) then
             <tr class="{$errors:WARNING}">
                 <td title="Status">Updating delivery for {$reportingYear}</td>
-                (: <td title="Sparql">{sparqlx:getLink(query:deliveryExistsQuery($dataflowB:OBLIGATIONS, $countryCode, "b/", $reportingYear))}</td> :)
+                <!-- <td title="Sparql">{sparqlx:getLink(query:deliveryExistsQuery($dataflowB:OBLIGATIONS, $countryCode, "b/", $reportingYear))}</td> -->
             </tr>
         else
             <tr class="{$errors:INFO}">
@@ -137,6 +137,12 @@ let $knownZones :=
         distinct-values(data(sparqlx:run(query:getZone(query:getLatestEnvelope($cdrUrl || $bdir, string(number($reportingYear) - 1))))//sparql:binding[@name = 'inspireLabel']/sparql:literal))
     else
         distinct-values(data(sparqlx:run(query:getZone($latestEnvelopeB))//sparql:binding[@name = 'inspireLabel']/sparql:literal))
+        
+let $knownZones2 :=
+    if ($isNewDelivery) then
+        sparqlx:getLink(query:getZone(query:getLatestEnvelope($cdrUrl || $bdir, string(number($reportingYear) - 1))))
+    else
+        sparqlx:getLink(query:getZone($latestEnvelopeB))
 
 (: B01 :)
 let $countZones := count($docRoot//aqd:AQD_Zone)
@@ -153,6 +159,7 @@ let $B02table :=
                 <td title="zoneName">{data($zone/am:name/gn:GeographicalName/gn:spelling/gn:SpellingOfName/gn:text)}</td>
                 <td title="zoneCode">{data($zone/aqd:zoneCode)}</td>
                 <td title="aqd:predecessor">{if (empty($zone/aqd:predecessor)) then "not specified" else data($zone/aqd:predecessor/@xlink:href)}</td>
+                <!-- <td title="Sparql getZone">{$knownZones2}</td> -->
             </tr>
     } catch * {
         <tr class="{$errors:FAILED}">
@@ -1360,7 +1367,7 @@ return
         {html:build2("VOCAB", $labels:VOCAB, $labels:VOCAB_SHORT, $VOCABinvalid, "All values are valid", "record", $errors:VOCAB)}
         {html:build3("B0", $labels:B0, $labels:B0_SHORT, $B0table, string($B0table/td), errors:getMaxError($B0table))}
         {html:buildCountRow0("B01", $labels:B01, $labels:B01_SHORT, $countZones, "", "record", $errors:B01)}
-        {html:buildSimple("B02", $labels:B02, $labels:B02_SHORT, $B02table, "", "record", $B02errorLevel)}
+        {html:buildSimpleSparql("B02", $labels:B02, $labels:B02_SHORT, $B02table, "", "record", $B02errorLevel)}
         {html:build0("B03", $labels:B03, $labels:B03_SHORT, $B03table, "record")}
         {html:build0("B04", $labels:B04, $labels:B04_SHORT, $B04table, "record")} 
         {html:build2("B05a", $labels:B05a, $labels:B05a_SHORT, $B05ainvalid, "All values are valid", " invalid value", $errors:B05a)}
