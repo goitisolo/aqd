@@ -855,18 +855,38 @@ Measures identified in the AQ-plan that are included in this baseline scenario s
 let $J27 := try{
     let $main := $evaluationScenario/aqd:baselineScenario/aqd:Scenario/aqd:measuresApplied
     for $el in $main
-        let $ok := query:existsViaNameLocalIdYear(
+        (: let $ok := query:existsViaNameLocalIdYear(
                 $el/@xlink:href,
                 'AQD_Measures',
                 $reportingYear,
                 $latestEnvelopesK
-        )
+        ) :)
+        
+        let $label := data($el/@xlink:href)
+        let $ok := if(fn:empty($label))
+        then
+            true()
+        else
+            query:existsViaNameLocalIdYear(
+                $el/@xlink:href,
+                'AQD_Measures',
+                $reportingYear,
+                $latestEnvelopesK
+            )
+        
+        let $sparql_query := if(fn:empty($label))
+                             then
+                              "No element to execute this query"
+                             else
+                              sparqlx:getLink(query:existsViaNameLocalIdYearQuery($el/@xlink:href, 'AQD_Measures', $reportingYear, $latestEnvelopesK))
+        
         return common:conditionalReportRow(
                 $ok,
                 [
                     ("gml:id", $el/ancestor-or-self::*[name() = $ancestor-name]/@gml:id),
                     (node-name($el), $el/@xlink:href),
-                    ("Sparql", sparqlx:getLink(query:existsViaNameLocalIdYearQuery($el/@xlink:href,'AQD_Measures',$reportingYear,$latestEnvelopesK)))
+                    (: ("Sparql", sparqlx:getLink(query:existsViaNameLocalIdYearQuery($el/@xlink:href,'AQD_Measures',$reportingYear,$latestEnvelopesK))) :)
+                    ("Sparql", $sparql_query)
                 ]
             )
 } catch * {
