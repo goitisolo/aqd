@@ -1162,7 +1162,7 @@ declare function query:getAllFeatureIds($featureTypes as xs:string*, $latestEnve
 
     SELECT distinct ?inspireLabel WHERE {
 
-    values ?envelope { <'" || $latestEnvelopeD || "''> }
+    values ?envelope { <" || $latestEnvelopeD || "> }
     ?graph dcterms:isPartOf ?envelope .
     ?graph contreg:xmlSchema ?xmlSchema .
 
@@ -1179,7 +1179,8 @@ declare function query:getAllFeatureIds($featureTypes as xs:string*, $latestEnve
       ?inspireid aqd:namespace ?namespace
      }", " UNION ")
   let $end := "FILTER (?namespace in ('" || string-join($namespaces, "' , '") || "'))
-  }"
+  }
+}"
   return $pre || $mid || $end
 };
 
