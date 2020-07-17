@@ -84,7 +84,7 @@ let $latestEnvelopeB := query:getLatestEnvelope($cdrUrl || "b/")
 let $latestEnvelopeD := query:getLatestEnvelope($cdrUrl || "d/")
 
 let $namespaces := distinct-values($docRoot//base:namespace)
-let $knownFeatures := "" (: distinct-values(data(sparqlx:run(query:getAllFeatureIds($dataflowD:FEATURE_TYPES, $latestEnvelopeD, $namespaces))//sparql:binding[@name='inspireLabel']/sparql:literal)) :)
+let $knownFeatures := distinct-values(data(sparqlx:run(query:getAllFeatureIds($dataflowD:FEATURE_TYPES, $latestEnvelopeD, $namespaces))//sparql:binding[@name='inspireLabel']/sparql:literal))
 let $SPOnamespaces := distinct-values($docRoot//aqd:AQD_SamplingPoint//base:Identifier/base:namespace)
 let $SPPnamespaces := distinct-values($docRoot//aqd:AQD_SamplingPointProcess/ompr:inspireId/base:Identifier/base:namespace)
 let $networkNamespaces := distinct-values($docRoot//aqd:AQD_Network/ef:inspireId/base:Identifier/base:namespace)
@@ -193,6 +193,7 @@ let $D02table :=
                     <tr>
                         <td title="Feature type">{$name}</td>
                         <td title="Total number">{$count}</td>
+                        <td title="Sparql getAllFeatureIds">{sparqlx:getLink(query:getAllFeatureIds($dataflowD:FEATURE_TYPES, $latestEnvelopeD, $namespaces))}</td>
                     </tr>
                 else
                     ()
@@ -246,6 +247,7 @@ let $D03table :=
                     <tr isvalid="{not($count=0)}">
                         <td title="Feature type">{$name}</td>
                         <td title="Total number">{$count}</td>
+                        <td title="Sparql getAllFeatureIds">{sparqlx:getLink(query:getAllFeatureIds($dataflowD:FEATURE_TYPES, $latestEnvelopeD, $namespaces))}</td>
                     </tr>
             })
     } catch * {
@@ -283,6 +285,7 @@ let $D03bfunc := function() {
     return
         <tr>
             <td title="inspireId">{$x}</td>
+            <td title="Sparql getAllFeatureIds">{sparqlx:getLink(query:getAllFeatureIds($dataflowD:FEATURE_TYPES, $latestEnvelopeD, $namespaces))}</td>
         </tr>
 }
 let $D03binvalid := errors:trycatch($D03bfunc)
@@ -2129,9 +2132,9 @@ return
         {html:build2("VOCAB", $labels:VOCAB, $labels:VOCAB_SHORT, $VOCABinvalid, "All values are valid", "record", $errors:VOCAB)}
         {html:build3("D0", $labels:D0, $labels:D0_SHORT, $D0table, string($D0table/td), errors:getMaxError($D0table))}
         {html:build1("D01", $labels:D01, $labels:D01_SHORT, $D01table, "", $D1sum, "", "",$errors:D01)}
-        {html:buildSimple("D02", $labels:D02, $labels:D02_SHORT, $D02table, "", "feature type", $D02errorLevel)}
-        {html:buildSimple("D03", $labels:D03, $labels:D03_SHORT, $D03table, $D3count, "feature type", $D03errorLevel)}
-        {html:build2("D03b", $labels:D03b, $labels:D03b_SHORT, $D03binvalid, "All values are valid", "feature type", $errors:D03b)}
+        {html:buildSimpleSparql("D02", $labels:D02, $labels:D02_SHORT, $D02table, "", "feature type", $D02errorLevel)}
+        {html:buildSimpleSparql("D03", $labels:D03, $labels:D03_SHORT, $D03table, $D3count, "feature type", $D03errorLevel)}
+        {html:build2Sparql("D03b", $labels:D03b, $labels:D03b_SHORT, $D03binvalid, "All values are valid", "feature type", $errors:D03b)}
         {html:build1("D04", $labels:D04, $labels:D04_SHORT, $D04table, string(count($D04table)), "", "", "", $errors:D04)}
         {html:build2("D05", $labels:D05, $labels:D05_SHORT, $D05invalid, "All values are valid", "record", $errors:D05)}
         {html:buildInfoTR("Specific checks on AQD_Network feature(s) within this XML")}
