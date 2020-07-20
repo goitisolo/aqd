@@ -1108,7 +1108,7 @@ let $C28invalid :=
     }
 
 (: C31 :)
-(: let $C31table :=
+let $C31table :=
     try {
         let $C31ResultB :=
             for $i in sparqlx:run(query:getC31($latestEnvelopeB, $reportingYear))
@@ -1167,7 +1167,7 @@ let $C28invalid :=
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
         </tr>
-    }:)
+    }
 
 (: C31b :)
 let $C31btable :=
@@ -1623,7 +1623,7 @@ return
         {html:build2Sparql("C27", labels:interpolate($labels:C27, ($countZoneIds2, $countZoneIds1)), $labels:C27_SHORT, $C27table, "", " not unique zone", $errors:C27)}
         {html:build2("C28", $labels:C28, $labels:C28_SHORT, $C28invalid, "All values are valid", " invalid value", $errors:C28)}
         {html:build2Sparql("C29", $labels:C29, $labels:C29_SHORT,  $C29invalid, "All values are valid", " invalid value", $errors:C29)}
-        <!-- {html:build2Sparql("C31", $labels:C31, $labels:C31_SHORT, $C31table, "", "record", errors:getMaxError($C31table))} -->
+        {html:build2Sparql("C31", $labels:C31, $labels:C31_SHORT, $C31table, "", "record", errors:getMaxError($C31table))}
         {html:build4Sparql("C31b", $labels:C31b, $labels:C31b_SHORT, $C31btable, "", "record", errors:getMaxError($C31btable))}
         {html:build2Sparql("C32", $labels:C32, $labels:C32_SHORT, $C32table, "All values are valid", " invalid value", $errors:C32)}
         {html:build2("C33", $labels:C33, $labels:C33_SHORT, $C33invalid, "All values are valid", " invalid value", $errors:C33)}

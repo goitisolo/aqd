@@ -573,7 +573,7 @@ let $G13cinvalid :=
     }
 
 (: G14 - COUNT number zone-pollutant-target comibantion to match those in dataset B and dataset C for the same reporting Year & compare it with Attainment. :)
-(: let $G14table :=
+let $G14table :=
     try {
         let $G14resultBC :=
             for $i in sparqlx:run(query:getG14($latestEnvelopeB, $latestEnvelopeC, $reportingYear))
@@ -640,7 +640,7 @@ let $G13cinvalid :=
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
         </tr>
-    } :)
+    }
 
 (: G14b :)
 let $G14binvalid :=
@@ -1677,7 +1677,7 @@ return
         {html:build2Sparql("G13", $labels:G13, $labels:G13_SHORT, $G13invalid, "All values are valid", " invalid value", $errors:G13)}
         {html:build2("G13b", $labels:G13b, $labels:G13b_SHORT, $G13binvalid, "All values are valid", " invalid value", $errors:G13b)}
         {html:build2("G13c", $labels:G13c, $labels:G13c_SHORT, $G13cinvalid, "All values are valid", " invalid value", $errors:G13c)}
-        <!-- {html:build2Sparql("G14", $labels:G14, $labels:G14_SHORT, $G14table, "All values are valid", "record", errors:getMaxError($G14table))} -->
+        {html:build2Sparql("G14", $labels:G14, $labels:G14_SHORT, $G14table, "All values are valid", "record", errors:getMaxError($G14table))}
         {html:build2Sparql("G14b", $labels:G14b, $labels:G14b_SHORT, $G14binvalid, "All assessment regimes are reported", " missing assessment regime", $errors:G14b)}
         {html:build2Sparql("G15", $labels:G15, $labels:G15_SHORT, $G15invalid, "All values are valid", " invalid value", $errors:G15)}
         {html:build2Sparql("G17", $labels:G17, $labels:G17_SHORT, $G17invalid, "All values are valid", " invalid value", $errors:G17)}
