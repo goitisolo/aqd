@@ -36,13 +36,14 @@ declare function envelope:checkFileReportingHeader($envelope as element(envelope
     (:let $obligationYears := sparqlx:run(query:getObligationYears()):)
     let $docRoot := doc($file)
 
+    let $obligationNumber := functx:substring-after-last($envelope/obligation, "/")
     (: set variables for envelope year
     let $minimumYear := number(envelope:getObligationMinMaxYear($envelope)/min)
     let $maximumYear := number(envelope:getObligationMinMaxYear($envelope)/max):) 
 
-    let $minimumYear := data(sparqlx:run(query:getObligationYearsByEnvelope($envelope))/sparqlx:binding[@name = 'minimum']/sparqlx:literal)
-    let $maximumYear := data(sparqlx:run(query:getObligationYearsByEnvelope($envelope))/sparqlx:binding[@name = 'maximum']/sparqlx:literal)
-
+    let $minimumYear := data(sparqlx:run(query:getObligationYearsObligations($obligationNumber))/sparql:binding[@name = 'minimum']/sparql:literal)
+    let $maximumYear := data(sparqlx:run(query:getObligationYearsObligations($obligationNumber))/sparql:binding[@name = 'maximum']/sparql:literal)
+    
     (:  If AQ e-Reporting XML files in the envelope, at least one must have an aqd:AQD_ReportingHeader element. :)
     let $containsAqdReportingHeader :=
         try {
@@ -50,6 +51,7 @@ declare function envelope:checkFileReportingHeader($envelope as element(envelope
                 <tr>
                     <td title="Element">aqd:AQD_ReportingHeader</td>
                     <td title="Status">Missing</td>
+                    <td title="Sparql">{sparqlx:getLink(query:getObligationYearsObligations($obligationNumber))}</td>
                 </tr>
             else
                 ()
@@ -66,7 +68,7 @@ declare function envelope:checkFileReportingHeader($envelope as element(envelope
             let $xmlYear := common:getReportingYear($docRoot)
             let $envelopeYear := $envelope/year
             return
-                if ($xmlYear = '' or $xmlYear != $envelopeYear) then
+                if ($xmlYear = '' or $xmlYear != $envelopeYear or $envelope/year/number() < $minimumYear or $envelope/year/number() > $maximumYear) then
                 <tr>
                     <td title="aqd:AQD_ReportingHeader">{data($xmlYear)}</td>
                     <td title="Envelope Year">{data($envelope/year)}</td>
@@ -235,10 +237,13 @@ declare function envelope:errorTable($pos, $file) {
 declare function envelope:validateEnvelope($source_url as xs:string) as element(div) {
 
     let $envelope := doc($source_url)/envelope
+    let $envelopeLink := doc($source_url)/envelope/link 
     (:let $minimumYear := number(envelope:getObligationMinMaxYear($envelope)/min)
     let $maximumYear := number(envelope:getObligationMinMaxYear($envelope)/max):)
-    let $minimumYear := data(sparqlx:run(query:getObligationYearsByEnvelope($envelope))/sparqlx:binding[@name = 'minimum']/sparqlx:literal)
-    let $maximumYear := data(sparqlx:run(query:getObligationYearsByEnvelope($envelope))/sparqlx:binding[@name = 'maximum']/sparqlx:literal)
+    let $obligationNumber := functx:substring-after-last($envelope/obligation, "/")
+
+    let $minimumYear := data(sparqlx:run(query:getObligationYearsObligations($obligationNumber))/sparql:binding[@name = 'minimum']/sparql:literal)
+    let $maximumYear := data(sparqlx:run(query:getObligationYearsObligations($obligationNumber))/sparql:binding[@name = 'maximum']/sparql:literal)
     let $xmlFilesWithAQSchema := envelope:getAQFiles($source_url)
     let $filesWithAQSchema := $envelope/file[contains(@schema,'AirQualityReporting.xsd') and string-length(@link)>0]
 
@@ -274,7 +279,7 @@ declare function envelope:validateEnvelope($source_url as xs:string) as element(
                 </tr>
             else if ($envelope/year/number() < $minimumYear or $envelope/year/number() > $maximumYear) then
                 <tr class="{$errors:ERROR}">
-                    <p>Year specified in the envelope period is outside the allowed range of {current-date()} - {$maximumYear}! Keep in mind that the year value must be between {$minimumYear} - {$maximumYear} and it must be equal to the year in gml:beginPosition element (in aqd:AQD_ReportingHeader).</p>
+                    <p>Year specified in the envelope period is outside the allowed range of {$minimumYear} - {$maximumYear}! Keep in mind that the year value must be between {$minimumYear} - {$maximumYear} and it must be equal to the year in gml:beginPosition element (in aqd:AQD_ReportingHeader).</p>
                 </tr>
             else
                 ()
