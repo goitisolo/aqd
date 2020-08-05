@@ -1376,7 +1376,7 @@ PREFIX aqd: <http://rod.eionet.europa.eu/schema.rdf#>
         aqd:hasFile ?file ;
         aqd:period ?period
   } 
-  FILTER(CONTAINS(str(?envelope), '", $cdrUrl, "'))
+  FILTER(CONTAINS(str(?period), '", $reportingYear, "'))
  } 
  order by desc(?date)
  limit 1
@@ -1529,6 +1529,26 @@ declare function query:getAllRegimeIds($namespaces as xs:string*) as xs:string* 
 
 declare function query:getAllRegimeIdsQuery($namespaces as xs:string*) as xs:string* {
    "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
+PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+PREFIX aq: <http://reference.eionet.europa.eu/aq/ontology/>
+
+SELECT 
+*
+WHERE {
+  VALUES ?namespace { '" || string-join($namespaces, " ") || "' }
+  GRAPH ?file {
+    ?inspireId aqd:namespace ?namespace .
+  }
+  ?regime a aqd:AQD_AssessmentRegime .
+  ?regime aqd:inspireId ?inspireId .
+  ?inspireId rdfs:label ?inspireLabel .
+  FILTER(!(CONTAINS(str(?regime), 'c_preliminary')))
+  }"
+};
+
+(:declare function query:getAllRegimeIdsQuery($namespaces as xs:string*) as xs:string* {
+   "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
    PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
    PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
    PREFIX aq: <http://reference.eionet.europa.eu/aq/ontology/>
@@ -1542,7 +1562,7 @@ declare function query:getAllRegimeIdsQuery($namespaces as xs:string*) as xs:str
         FILTER(!(CONTAINS(str(?regime), 'c_preliminary')))
         FILTER(str(?namespace) in ('" || string-join($namespaces, "','") || "'))
   }"
-};
+};:)
 
 (: declare function query:getAllAttainmentIds2($namespaces as xs:string*) as xs:string* {
   let $query := "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -2528,6 +2548,41 @@ declare function query:getSamplingPointMetadataFromFiles($url as xs:string*) as 
 declare function query:getModelMetadataFromFiles($url as xs:string*) as xs:string {
   let $filters :=
     for $x in $url
+    return "<" || $x || ">"
+  let $filters := string-join($filters, "  ")
+  return
+    "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
+PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+PREFIX rod: <http://rod.eionet.europa.eu/schema.rdf#>
+
+SELECT DISTINCT
+?localId 
+?featureOfInterest 
+?procedure 
+?observedProperty 
+?inspireLabel
+WHERE {
+  VALUES ?envelope { " || $filters || " }
+  ?envelope rod:hasFile ?file .
+  ?file cr:xmlSchema ?xmlSchema .
+  GRAPH ?file {
+    ?samplingPoint a aqd:AQD_Model .
+    ?samplingPoint aqd:observingCapability ?observingCapability .
+    ?samplingPoint aqd:inspireId ?inspireId .
+  }
+  ?inspireId rdfs:label ?inspireLabel .
+  ?inspireId aqd:localId ?localId .
+  ?inspireId aqd:namespace ?namespace .
+  ?observingCapability aqd:featureOfInterest ?featureOfInterest .
+  ?observingCapability aqd:procedure ?procedure .
+  ?observingCapability aqd:observedProperty ?observedProperty .
+}"
+};
+
+(:declare function query:getModelMetadataFromFiles($url as xs:string*) as xs:string {
+  let $filters :=
+    for $x in $url
     return "STRSTARTS(str(?samplingPoint), '" || $x || "')"
   let $filters := "FILTER(" || string-join($filters, " OR ") || ")"
   return
@@ -2547,7 +2602,7 @@ declare function query:getModelMetadataFromFiles($url as xs:string*) as xs:strin
          ?observingCapability aqd:procedure ?procedure .
          ?observingCapability aqd:observedProperty ?observedProperty . " || $filters ||"
    }"
-};
+};:)
 (:
 declare function query:getObligationYears() {
   "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
@@ -2995,5 +3050,15 @@ declare function query:get-area-classifications-for-attainment-query($uri as xs:
         ?exceedanceArea aqd:areaClassification ?areaClassification .
         FILTER(?label = '" || $uri || "')
     }"
+};
+
+
+declare function query:getNowTime(){
+  let $query := "select ?time
+    where { 
+  bind( now() as ?time)
+}"
+    let $res := sparqlx:run($query)
+    return data($res//sparql:binding[@name='time']/sparql:literal)
 };
 
