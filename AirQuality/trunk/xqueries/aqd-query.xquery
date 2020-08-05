@@ -1162,7 +1162,7 @@ declare function query:getAllFeatureIds($featureTypes as xs:string*, $latestEnve
 
     SELECT distinct ?inspireLabel WHERE {
 
-    values ?envelope { <'" || $latestEnvelopeD || "''> }
+    values ?envelope { <" || $latestEnvelopeD || "> }
     ?graph dcterms:isPartOf ?envelope .
     ?graph contreg:xmlSchema ?xmlSchema .
 
@@ -1178,10 +1178,11 @@ declare function query:getAllFeatureIds($featureTypes as xs:string*, $latestEnve
       ?inspireid rdfs:label ?inspireLabel .
       ?inspireid aqd:namespace ?namespace
      }", " UNION ")
-  let $end := "FILTER (?namespace in ('" || string-join($namespaces, "' , '") || "'))
+  let $end := "}FILTER (?namespace in ('" || string-join($namespaces, "' , '") || "'))
   }"
   return $pre || $mid || $end
 };
+
 
 (: Generic queries :)
 (: declare function query:deliveryExists(
@@ -1661,6 +1662,34 @@ declare function query:getPollutantCodeAndProtectionTarge(
     $cdrUrl as xs:string,
     $bDir as xs:string
 ) as xs:string {
+  concat(
+"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
+    PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+
+      SELECT distinct ?zone ?inspireId ?inspireLabel ?pollutants ?pollutantCode ?protectionTarget
+
+        WHERE {
+
+       FILTER (STRSTARTS(STR(?graph), 'http://", $cdrUrl, $bDir, "'))
+       GRAPH ?graph {  
+    
+              ?zone a aqd:AQD_Zone ;
+              aqd:inspireId ?inspireId .
+              ?inspireId rdfs:label ?inspireLabel .}
+              ?zone aqd:pollutants ?pollutants .
+              ?pollutants aqd:pollutantCode ?pollutantCode .
+              ?pollutants aqd:protectionTarget ?protectionTarget .
+
+      
+    }"
+    )
+};
+
+(:declare function query:getPollutantCodeAndProtectionTarge(
+    $cdrUrl as xs:string,
+    $bDir as xs:string
+) as xs:string {
   concat("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
     PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
     PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
@@ -1675,7 +1704,8 @@ declare function query:getPollutantCodeAndProtectionTarge(
               ?pollutants aqd:protectionTarget ?protectionTarget .
       FILTER (CONTAINS(str(?zone), '", $cdrUrl, $bDir, "'))
     }")
-};
+};:)
+
 
 declare function query:getC03a($cdrUrl as xs:string) as xs:string* {
    (: let $query :=
@@ -1961,6 +1991,43 @@ declare function query:getC31b($cdrUrl as xs:string) as xs:string {
 };
 
 
+
+   declare function query:getE26b($url as xs:string*) as xs:string {
+    let $filters :=
+        for $x in $url
+        return "STRSTARTS(str(?samplingPoint), '" || $x || "')"
+    let $filters := "FILTER(" || string-join($filters, " OR ") || ")"
+    return
+        "
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
+    PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+    PREFIX aq: <http://reference.eionet.europa.eu/aq/ontology/>
+    PREFIX dcterms: <http://purl.org/dc/terms/>
+    PREfIX contreg: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
+
+
+   SELECT ?localId ?featureOfInterest ?procedure ?observedProperty ?inspireLabel ?beginPosition ?endPosition
+   WHERE {
+       FILTER (STRSTARTS(STR(?graph), '"|| $url || "'))
+       GRAPH ?graph {
+
+         ?samplingPoint a aqd:AQD_SamplingPoint;
+         aqd:observingCapability ?observingCapability;
+         aqd:inspireId ?inspireId .}
+         ?inspireId rdfs:label ?inspireLabel .
+         ?inspireId aqd:localId ?localId .
+         ?inspireId aqd:namespace ?namespace .
+         ?observingCapability aqd:observingTime ?observingTime .
+         ?observingTime aqd:beginPosition ?beginPosition .
+         OPTIONAL { ?observingTime aqd:endPosition ?endPosition } .
+         ?observingCapability aqd:featureOfInterest ?featureOfInterest .
+         ?observingCapability aqd:procedure ?procedure .
+         ?observingCapability aqd:observedProperty ?observedProperty . 
+
+   }"
+};
+(:
 declare function query:getE26b($url as xs:string*) as xs:string {
     let $filters :=
         for $x in $url
@@ -1986,7 +2053,7 @@ declare function query:getE26b($url as xs:string*) as xs:string {
          ?observingCapability aqd:procedure ?procedure .
          ?observingCapability aqd:observedProperty ?observedProperty . " || $filters ||"
    }"
-};
+};:)
 
 (: declare function query:getE34($countryCode as xs:string, $reportingYear as xs:string) {
     let $reportingYear := xs:integer($reportingYear) - 1
