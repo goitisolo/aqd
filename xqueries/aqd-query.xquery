@@ -1841,7 +1841,8 @@ declare function query:getC03c($cdrUrl as xs:string) as xs:string* {
   PREFIX dcterms: <http://purl.org/dc/terms/>
   PREfIX contreg: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
 
-   SELECT ?localId ?samplingPoint ?assessmentType
+   SELECT DISTINCT
+    ?localId ?samplingPoint ?assessmentType
    WHERE {
     values ?envelope { <" || $cdrUrl || "> }
     ?graph dcterms:isPartOf ?envelope .
