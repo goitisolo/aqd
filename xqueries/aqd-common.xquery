@@ -620,3 +620,16 @@ declare function common:isLatestEnvelope(
                 ()
     return exists($result)
 };
+
+declare function common:runtime($queryName as xs:string ,$ns1 as xs:double ,$ns2 as xs:double ){
+
+  let $ms := ($ns2 - $ns1)
+  let $seconds := $ms div 1000
+  return  
+  <tr>
+    <td> {$queryName}</td>
+    <td>{$ms}  " ms."</td> 
+    <td>{$seconds}  "s."</td>
+</tr>
+};
+
