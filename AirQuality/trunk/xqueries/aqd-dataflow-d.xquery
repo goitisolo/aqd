@@ -93,6 +93,9 @@ let $stationNamespaces := distinct-values($docRoot//aqd:AQD_Station/ef:inspireId
 
 
 (: File prefix/namespace check :)
+
+let $ns1DNS := prof:current-ms()
+
 let $NSinvalid :=
     try {
         let $XQmap := inspect:static-context((), 'namespaces')
@@ -118,10 +121,21 @@ let $NSinvalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+
+    let $ns2DNS := prof:current-ms()
+
 (: VOCAB check:)
+
+let $ns1DVOCAB := prof:current-ms()
+
 let $VOCABinvalid := checks:vocab($docRoot)
 
+let $ns2DVOCAB := prof:current-ms()
+
 (: D0 :)
+
+let $ns1D0 := prof:current-ms()
+
 let $D0table :=
     try {
         if ($reportingYear = "") then
@@ -149,11 +163,17 @@ let $D0table :=
 let $isNewDelivery := errors:getMaxError($D0table) = $errors:INFO
 
 
+let $ns2D0 := prof:current-ms()
+
+
 let $D1sum := string(sum(
     for $featureType in $dataflowD:FEATURE_TYPES
     return
         count($docRoot//descendant::*[name()=$featureType])))
 (: D01 :)
+
+let $ns1D01 := prof:current-ms()
+
 let $D01table :=
     try {
         for $featureType at $pos in $dataflowD:FEATURE_TYPES
@@ -171,7 +191,13 @@ let $D01table :=
         </tr>
     }
 
+
+let $ns2D01 := prof:current-ms()
+
 (: D02 - :)
+
+let $ns1D02 := prof:current-ms()
+
 let $D02table :=
     try {
         let $featureTypes := remove($dataflowD:FEATURE_TYPES, index-of($dataflowD:FEATURE_TYPES, "aqd:AQD_RepresentativeArea"))
@@ -226,7 +252,13 @@ let $D02errorLevel :=
         $errors:FAILED
     }
 
+
+let $ns2D02 := prof:current-ms()
+
 (: D03 - :)
+
+let $ns1D03 := prof:current-ms()
+
 let $D03table :=
     try {
         let $featureTypes := remove($dataflowD:FEATURE_TYPES, index-of($dataflowD:FEATURE_TYPES, "aqd:AQD_RepresentativeArea"))
@@ -272,6 +304,13 @@ let $D3count :=
         "NaN"
     }
 
+
+let $ns2D03 := prof:current-ms()
+
+(:D03b:)
+
+let $ns1D03b := prof:current-ms()
+
 let $D03bfunc := function() {
     let $featureTypes := remove($dataflowD:FEATURE_TYPES, index-of($dataflowD:FEATURE_TYPES, "aqd:AQD_RepresentativeArea"))
     let $currentIds :=
@@ -290,7 +329,12 @@ let $D03bfunc := function() {
 }
 let $D03binvalid := errors:trycatch($D03bfunc)
 
+let $ns2D03b := prof:current-ms()
+
 (: D04 :)
+
+let $ns1D04 := prof:current-ms()
+
 let $D04table :=
     try {
         let $allD4Combinations :=
@@ -321,8 +365,14 @@ let $D04table :=
         </tr>
     }
 
+
+let $ns2D04 := prof:current-ms()
+
 (: D05 :)
 (: TODO: FIX TRY CATCH :)
+
+let $ns1D05 := prof:current-ms()
+
 let $all1 := $DCombinations/lower-case(normalize-space(@gml:id))
 let $part1 := distinct-values(
         for $id in $DCombinations/@gml:id
@@ -378,9 +428,13 @@ let $countefInspireIdDuplicates := count($part2)
 let $countaqdInspireIdDuplicates := count($part3)
 let $D05invalid := $part1 + $part2 + $part3
 
+let $ns2D05 := prof:current-ms()
 
 (: D06 Done by Rait ./ef:inspireId/base:Identifier/base:localId shall be an unique code for AQD_network and unique within the namespace.:)
 (: TODO FIX TRY CATCH :)
+
+let $ns1D06 := prof:current-ms()
+
     let $amInspireIds := $docRoot//aqd:AQD_Network/ef:inspireId/base:Identifier/concat(lower-case(normalize-space(base:namespace)), '##',
             lower-case(normalize-space(base:localId)))
     let $duplicateEUStationCode := distinct-values(
@@ -393,7 +447,13 @@ let $D05invalid := $part1 + $part2 + $part3
     let $countAmInspireIdDuplicates := count($duplicateEUStationCode)
     let $D06invalid := $countAmInspireIdDuplicates
 
+
+let $ns2D06 := prof:current-ms()
+
 (: D07 :)
+
+let $ns1D07 := prof:current-ms()
+
 let $D07table :=
     try {
         for $id in $networkNamespaces
@@ -411,7 +471,13 @@ let $D07table :=
         </tr>
     }
 
+
+let $ns2D07 := prof:current-ms()
+
 (: D07.1 :)
+
+let $ns1D07.1 := prof:current-ms()
+
 let $D07.1invalid :=
     try {
         let $vocDoc := doc($vocabulary:NAMESPACE || "rdf")
@@ -432,7 +498,13 @@ let $D07.1invalid :=
         </tr>
     }
 
+
+let $ns2D07.1 := prof:current-ms()
+
 (: D08 :)
+
+let $ns1D08 := prof:current-ms()
+
 let $D08invalid :=
     try {
         let $valid := ($vocabulary:MEDIA_VALUE_VOCABULARY_BASE_URI || "air", $vocabulary:MEDIA_VALUE_VOCABULARY_BASE_URI_UC || "air")
@@ -450,7 +522,13 @@ let $D08invalid :=
         </tr>
     }
 
+
+let $ns2D08 := prof:current-ms()
+
 (: D09 :)
+
+let $ns1D09 := prof:current-ms()
+
 let $D09invalid :=
     try {
         let $valid := dd:getValidConcepts($vocabulary:ORGANISATIONAL_LEVEL_VOCABULARY || "rdf")
@@ -468,7 +546,13 @@ let $D09invalid :=
         </tr>
     }
 
+
+let $ns2D09 := prof:current-ms()
+
 (: D10 :)
+
+let $ns1D10 := prof:current-ms()
+
 let $D10invalid :=
     try {
         let $valid := dd:getValidConcepts($vocabulary:NETWORK_TYPE_VOCABULARY || "rdf")
@@ -486,7 +570,12 @@ let $D10invalid :=
         </tr>
     }
 
+    let $ns2D10 := prof:current-ms()
+
 (: D11 :)
+
+let $ns1D11 := prof:current-ms()
+
 let $D11invalid :=
     try {
         let $D11tmp := distinct-values(
@@ -504,7 +593,13 @@ let $D11invalid :=
         </tr>
     }
 
+
+let $ns2D11 := prof:current-ms()
+
 (: D12 aqd:AQD_Network/ef:name shall return a string :)
+
+let $ns1D12 := prof:current-ms()
+
 let $D12invalid :=
     try {
         for $x in $docRoot//aqd:AQD_Network[string(ef:name) = ""]
@@ -519,7 +614,13 @@ let $D12invalid :=
         </tr>
     }
 
+
+let $ns2D12 := prof:current-ms()
+
 (: D14 - ./aqd:aggregationTimeZone attribute shall resolve to a valid code in http://dd.eionet.europa.eu/vocabulary/aq/timezone/ :)
+
+let $ns1D14 := prof:current-ms()
+
 let $D14invalid :=
     try {
         let $validTimezones := dd:getValidConcepts("http://dd.eionet.europa.eu/vocabulary/aq/timezone/rdf")
@@ -540,7 +641,13 @@ let $D14invalid :=
             <td></td>
         </tr>
     }
+
+let $ns2D14 := prof:current-ms()
+
 (: D15 Done by Rait :)
+
+let $ns1D15 := prof:current-ms()
+
 let $D15invalid :=
     try {
         let $amInspireIds := $docRoot//aqd:AQD_Station/ef:inspireId/base:Identifier/concat(lower-case(normalize-space(base:namespace)), '##',
@@ -569,7 +676,12 @@ let $D15invalid :=
         </tr>
     }
 
+let $ns2D15 := prof:current-ms()
+
 (: D16 :)
+
+let $ns1D16 := prof:current-ms()
+
 let $D16table :=
     try {
         for $id in $networkNamespaces
@@ -588,7 +700,12 @@ let $D16table :=
         </tr>
     }
 
+let $ns2D16 := prof:current-ms()
+
 (: D16.1 :)
+
+let $ns1D16.1 := prof:current-ms()
+
 let $D16.1invalid :=
     try {
         let $vocDoc := doc($vocabulary:NAMESPACE || "rdf")
@@ -607,7 +724,13 @@ let $D16.1invalid :=
         </tr>
     }
 
+let $ns2D16.1 := prof:current-ms()
+
+
 (: D17 aqd:AQD_Station/ef:name shall return a string :)
+
+let $ns1D17 := prof:current-ms()
+
 let $D17invalid :=
     try {
         for $x in $docRoot//aqd:AQD_Station[string(ef:name) = ""]
@@ -623,7 +746,13 @@ let $D17invalid :=
         </tr>
     }
 
+
+let $ns2D17 := prof:current-ms()
+
 (: D18 Cross-check with AQD_Network (aqd:AQD_Station/ef:belongsTo shall resolve to a traversable local of global URI to ../AQD_Network) :)
+
+let $ns1D18 := prof:current-ms()
+
 let $D18invalid :=
     try {
         let $aqdNetworkLocal :=
@@ -645,7 +774,13 @@ let $D18invalid :=
             <td></td>
         </tr>
     }
+
+let $ns2D18 := prof:current-ms()
+
 (: D19 :)
+
+let $ns1D19 := prof:current-ms()
+
 let $D19invalid :=
     try {
         let $valid := ($vocabulary:MEDIA_VALUE_VOCABULARY_BASE_URI || "air", $vocabulary:MEDIA_VALUE_VOCABULARY_BASE_URI_UC || "air")
@@ -664,7 +799,13 @@ let $D19invalid :=
         </tr>
     }
 
+let $ns2D19 := prof:current-ms()
+
+
 (: D20 ./ef:geometry/gml:Points the srsName attribute shall be a recognisable URN :)
+
+let $ns1D20 := prof:current-ms()
+
 let $D20invalid :=
     try {
         let $D20validURN := ("urn:ogc:def:crs:EPSG::3035", "urn:ogc:def:crs:EPSG::4258", "urn:ogc:def:crs:EPSG::4326")
@@ -681,8 +822,12 @@ let $D20invalid :=
         </tr>
     }
 
+let $ns2D20 := prof:current-ms()
 
 (: D21 - The Dimension attribute shall resolve to "2." :)
+
+let $ns1D21 := prof:current-ms()
+
 let $invalidPosD21 :=
     try {
         let $D21tmp := distinct-values($docRoot//aqd:AQD_Station/ef:geometry/gml:Point/gml:pos[@srsDimension != "2"]/
@@ -756,7 +901,13 @@ let $invalidPosD21 :=
         </tr>
     }
 
+
+let $ns2D21 := prof:current-ms()
+
 (: D23 Done by Rait :)
+
+let $ns1D23 := prof:current-ms()
+
 let $D23invalid :=
     try {
         let $allEfOperationActivityPeriod :=
@@ -782,7 +933,13 @@ let $D23invalid :=
         </tr>
     }
 
+let $ns2D23 := prof:current-ms()
+
+
 (: D24 - List the total number of aqd:AQD_Station which are operational :)
+
+let $ns1D24 := prof:current-ms()
+
 let $D24table :=
     try {
         for $operationActivityPeriod in $docRoot//aqd:AQD_Station/ef:operationalActivityPeriod
@@ -803,7 +960,13 @@ let $D24table :=
         </tr>
     }
 
+
+let $ns2D24 := prof:current-ms()
+
 (: D26 Done by Rait:)
+
+let $ns1D26 := prof:current-ms()
+
 let $D26invalid :=
     try {
         let $localEUStationCode := $docRoot//aqd:AQD_Station/upper-case(normalize-space(aqd:EUStationCode))
@@ -826,7 +989,12 @@ let $D26invalid :=
         </tr>
     }
 
+let $ns2D26 := prof:current-ms()
+
 (: D27 :)
+
+let $ns1D27 := prof:current-ms()
+
 let $D27invalid :=
     try {
         ()
@@ -839,7 +1007,12 @@ let $D27invalid :=
         </tr>
     }
 
+let $ns2D27 := prof:current-ms()
+
 (: D28 :)
+
+let $ns1D28 := prof:current-ms()
+
 let $D28invalid :=
     try {
         let $valid := dd:getValidConcepts($vocabulary:AREA_CLASSIFICATION_VOCABULARY || "rdf")
@@ -858,7 +1031,12 @@ let $D28invalid :=
         </tr>
     }
 
+let $ns2D28 := prof:current-ms()
+
 (: D29 :)
+
+let $ns1D29 := prof:current-ms()
+
 let $D29invalid :=
     try {
         let $valid := dd:getValidConcepts($vocabulary:DISPERSION_LOCAL_VOCABULARY || "rdf")
@@ -877,7 +1055,12 @@ let $D29invalid :=
         </tr>
     }
 
+let $ns2D29 := prof:current-ms()
+
 (: D30 :)
+
+let $ns1D30 := prof:current-ms()
+
 let $D30invalid :=
     try {
         let $valid := dd:getValidConcepts($vocabulary:DISPERSION_REGIONAL_VOCABULARY || "rdf")
@@ -896,7 +1079,12 @@ let $D30invalid :=
         </tr>
     }
 
+let $ns2D30 := prof:current-ms()
+
 (: D31 Done by Rait:)
+
+let $ns1D31 := prof:current-ms()
+
 let $D31invalid :=
     try {
         let $localSamplingPointIds := $docRoot//aqd:AQD_SamplingPoint/ef:inspireId/base:Identifier/base:localId
@@ -916,7 +1104,13 @@ let $D31invalid :=
         </tr>
     }
 
+
+let $ns2D31 := prof:current-ms()
+
 (: D32 :)
+
+let $ns1D32 := prof:current-ms()
+
 let $D32table :=
     try {
         for $id in $networkNamespaces
@@ -935,7 +1129,12 @@ let $D32table :=
         </tr>
     }
 
+let $ns2D32 := prof:current-ms()
+
 (: D32.1 :)
+
+let $ns1D32.1 := prof:current-ms()
+
 let $D32.1invalid :=
     try {
         let $vocDoc := doc($vocabulary:NAMESPACE || "rdf")
@@ -954,7 +1153,12 @@ let $D32.1invalid :=
         </tr>
     }
 
+let $ns2D32.1 := prof:current-ms()
+
 (: D33 :)
+
+let $ns1D33 := prof:current-ms()
+
 let $D33invalid :=
     try {
         let $valid := ($vocabulary:MEDIA_VALUE_VOCABULARY_BASE_URI || "air", $vocabulary:MEDIA_VALUE_VOCABULARY_BASE_URI_UC || "air")
@@ -973,7 +1177,13 @@ let $D33invalid :=
         </tr>
     }
 
+
+let $ns2D33 := prof:current-ms()
+
 (: D34 :)
+
+let $ns1D34 := prof:current-ms()
+
 let $D34invalid :=
     try {
         let $D34validURN := ("urn:ogc:def:crs:EPSG::3035", "urn:ogc:def:crs:EPSG::4258", "urn:ogc:def:crs:EPSG::4326")
@@ -990,7 +1200,12 @@ let $D34invalid :=
         </tr>
     }
 
+let $ns2D34 := prof:current-ms()
+
 (: D35 :)
+
+let $ns1D35 := prof:current-ms()
+
 let $D35invalid :=
     try {
         for $x in $docRoot//aqd:AQD_SamplingPoint
@@ -1049,7 +1264,13 @@ let $D35message :=
     else
         "All srsDimension attributes resolve to '2'"
 
+
+let $ns2D35 := prof:current-ms()
+
 (: D36 :)
+
+let $ns1D36 := prof:current-ms()
+
 let $D36invalid :=
     try {
         let $approximity := 0.0003
@@ -1099,7 +1320,13 @@ let $D36invalid :=
         </tr>
     }
 
+
+let $ns2D36 := prof:current-ms()
+
 (: D37 - check for invalid data or if beginPosition > endPosition :)
+
+let $ns1D37 := prof:current-ms()
+
 let $D37invalid :=
     try {
         let $invalidPosition :=
@@ -1173,7 +1400,13 @@ let $D37invalid :=
         </tr>
     }
 
+let $ns2D37 := prof:current-ms()
+
+
 (: D38 - Check if superseded Sampling Point can be found in the data flow D delivered in the past. :)
+
+let $ns1D38 := prof:current-ms()
+
 let $D38func := function() {
     let $historicSamplingPoints := data(sparqlx:run(query:getSamplingPoint($cdrUrl))/sparql:binding[@name = 'inspireLabel']/sparql:literal)
     for $x in $docRoot//aqd:AQD_SamplingPoint[ef:supersedes]
@@ -1189,7 +1422,13 @@ let $D38func := function() {
 }
 let $D38invalid := errors:trycatch($D38func)
 
+
+let $ns2D38 := prof:current-ms()
+
 (: D39 :)
+
+let $ns1D39 := prof:current-ms()
+
 let $D39invalid :=
     try {
         for $x in $docRoot//aqd:AQD_SamplingPoint
@@ -1206,7 +1445,13 @@ let $D39invalid :=
         </tr>
     }
 
+let $ns2D39 := prof:current-ms()
+
+
 (: D40 :)
+
+let $ns1D40 := prof:current-ms()
+
 let $D40invalid :=
     try {
         for $x in $docRoot//aqd:AQD_SamplingPoint
@@ -1224,7 +1469,13 @@ let $D40invalid :=
         </tr>
     }
 
+let $ns2D40 := prof:current-ms()
+
+
 (: D41 Updated by Jaume Targa following working logic of D44 :)
+
+let $ns1D41 := prof:current-ms()
+
 let $D41invalid :=
     try {
         let $aqdSampleLocal :=
@@ -1248,7 +1499,13 @@ let $D41invalid :=
         </tr>
     }
 
+
+let $ns2D41 := prof:current-ms()
+
 (: D42 :)
+
+let $ns1D42 := prof:current-ms()
+
 let $D42invalid :=
     try {
         let $aqdProcessLocal :=
@@ -1272,7 +1529,12 @@ let $D42invalid :=
         </tr>
     }
 
+let $ns2D42 := prof:current-ms()
+
 (: D43 Updated by Jaume Targa following working logic of D44 :)
+
+let $ns1D43 := prof:current-ms()
+
 let $D43invalid :=
     try {
         let $aqdStationLocal :=
@@ -1296,7 +1558,13 @@ let $D43invalid :=
         </tr>
     }
 
+let $ns2D43 := prof:current-ms()
+
+
 (: D44 :)
+
+let $ns1D44 := prof:current-ms()
+
 let $D44invalid :=
     try {
         let $aqdNetworkLocal :=
@@ -1320,7 +1588,13 @@ let $D44invalid :=
         </tr>
     }
 
+let $ns2D44 := prof:current-ms()
+
+
 (: D45 - Find all period with out end period :)
+
+let $ns1D45 := prof:current-ms()
+
 let $D45invalid :=
     try {
         let $allNotNullEndOperationActivityPeriods :=
@@ -1347,7 +1621,13 @@ let $D45invalid :=
         </tr>
     }
 
+let $ns2D45 := prof:current-ms()
+
+
 (: D46 :)
+
+let $ns1D46 := prof:current-ms()
+
 let $D46invalid :=
     try {
         for $operationActivityPeriod in $docRoot//aqd:AQD_SamplingPoint/ef:operationalActivityPeriod
@@ -1367,7 +1647,13 @@ let $D46invalid :=
             <td></td>
         </tr>
     }
+
+let $ns2D46 := prof:current-ms()
+
 (: D48 :)
+
+let $ns1D48 := prof:current-ms()
+
 let $D48invalid :=
     try {
         let $valid := dd:getValidConcepts($vocabulary:ASSESSMENTTYPE_VOCABULARY || "rdf")
@@ -1384,7 +1670,13 @@ let $D48invalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+
+let $ns2D48 := prof:current-ms()
+
 (: D50 :)
+
+let $ns1D50 := prof:current-ms()
+
 let $D50invalid :=
     try {
         let $rdf := doc("http://dd.eionet.europa.eu/vocabulary/aq/stationclassification/rdf")
@@ -1404,7 +1696,13 @@ let $D50invalid :=
         </tr>
     }
 
+let $ns2D50 := prof:current-ms()
+
+
 (: D51 :)
+
+let $ns1D51 := prof:current-ms()
+
 let $D51invalid :=
     try {
         let $exceptions := ($vocabulary:OBJECTIVETYPE_VOCABULARY || "MO")
@@ -1432,7 +1730,13 @@ let $D51invalid :=
         </tr>
     }
 
+let $ns2D51 := prof:current-ms()
+
+
 (: D53 :)
+
+let $ns1D53 := prof:current-ms()
+
 let $D53invalid :=
     try {
         let $zones := distinct-values(data(sparqlx:run(query:getZone($latestEnvelopeB))/sparql:binding[@name = 'inspireLabel']/sparql:literal))
@@ -1452,7 +1756,13 @@ let $D53invalid :=
         </tr>
     }
 
+let $ns2D53 := prof:current-ms()
+
+
 (: D54 - aqd:AQD_SamplingPointProcess/ompr:inspireId/base:Identifier/base:localId not unique codes :)
+
+let $ns1D54 := prof:current-ms()
+
 let $D54invalid :=
     try {
         let $localSamplingPointProcessIds := $docRoot//aqd:AQD_SamplingPointProcess/ompr:inspireId/base:Identifier
@@ -1473,7 +1783,12 @@ let $D54invalid :=
         </tr>
     }
 
+let $ns2D54 := prof:current-ms()
+
 (: D55 :)
+
+let $ns1D55 := prof:current-ms()
+
 let $D55table :=
     try {
         for $id in $SPPnamespaces
@@ -1491,7 +1806,13 @@ let $D55table :=
             <td></td>
         </tr>
     }
+
+let $ns2D55 := prof:current-ms()
+
 (: D55.1 :)
+
+let $ns1D55.1 := prof:current-ms()
+
 let $D55.1invalid :=
     try {
         let $vocDoc := doc($vocabulary:NAMESPACE || "rdf")
@@ -1510,7 +1831,13 @@ let $D55.1invalid :=
         </tr>
     }
 
+let $ns2D55.1 := prof:current-ms()
+
+
 (: D56 :)
+
+let $ns1D56 := prof:current-ms()
+
 let $D56invalid :=
     try {
         let $valid := dd:getValidConcepts($vocabulary:MEASUREMENTTYPE_VOCABULARY || "rdf")
@@ -1529,7 +1856,13 @@ let $D56invalid :=
         </tr>
     }
 
+let $ns2D56 := prof:current-ms()
+
+
 (: D57 :)
+
+let $ns1D57 := prof:current-ms()
+
 let $D57table :=
     try {
         let $valid := dd:getValidConcepts($vocabulary:MEASUREMENTMETHOD_VOCABULARY || "rdf")
@@ -1560,7 +1893,13 @@ let $D57table :=
         </tr>
     }
 
+let $ns2D57 := prof:current-ms()
+
+
 (: D58 Done by Rait :)
+
+let $ns1D58 := prof:current-ms()
+
 let $D58table :=
     try {
         let $allConceptUrl58 :=
@@ -1589,8 +1928,14 @@ let $D58table :=
         </tr>
     }
 
+let $ns2D58 := prof:current-ms()
+
+
 (: D59 Done by Rait:)
 (: TODO FIND OUT WHAT IS CORRECT PATH:)
+
+let $ns1D59 := prof:current-ms()
+
 let $D59invalid :=
     try {
         let $valid := dd:getValidConcepts($vocabulary:ANALYTICALTECHNIQUE_VOCABULARY || "rdf")
@@ -1609,7 +1954,13 @@ let $D59invalid :=
         </tr>
     }
 
+let $ns2D59 := prof:current-ms()
+
+
 (: D60a  :)
+
+let $ns1D60a := prof:current-ms()
+
 let $D60ainvalid :=
     try {
         let $valid := dd:getValidConcepts($vocabulary:MEASUREMENTTYPE_VOCABULARY || "rdf")
@@ -1628,7 +1979,13 @@ let $D60ainvalid :=
         </tr>
     }
 
+let $ns2D60a := prof:current-ms()
+
+
 (: D60b :)
+
+let $ns1D60b := prof:current-ms()
+
 let $D60binvalid :=
     try {
         let $valid := dd:getValidConcepts($vocabulary:SAMPLINGEQUIPMENT_VOCABULARY || "rdf")
@@ -1647,7 +2004,13 @@ let $D60binvalid :=
         </tr>
     }
 
+let $ns2D60b := prof:current-ms()
+
+
 (: D61 :)
+
+let $ns1D61 := prof:current-ms()
+
 let $D61invalid :=
     try {
         for $x in $docRoot//aqd:AQD_SamplingPointProcess
@@ -1674,7 +2037,13 @@ let $D61invalid :=
         </tr>
     }
 
+let $ns2D61 := prof:current-ms()
+
+
 (: D62 - ./ompr:processParameter/ompr:ProcessParameter/ompr:name must correspond to a valid code under http://dd.eionet.europa.eu/vocabulary/aq/processparameter/ :)
+
+let $ns1D62 := prof:current-ms()
+
 let $D62func :=
     function() {
         let $valid := dd:getValidConcepts($vocabulary:PROCESS_PARAMETER || "rdf")
@@ -1688,7 +2057,12 @@ let $D62func :=
     }
 let $D62invalid := errors:trycatch($D62func)
 
+let $ns2D62 := prof:current-ms()
+
 (: D63 :)
+
+let $ns1D63 := prof:current-ms()
+
 let $D63invalid :=
     try {
         let $valid := dd:getValidConcepts($vocabulary:UOM_CONCENTRATION_VOCABULARY || "rdf")
@@ -1708,7 +2082,13 @@ let $D63invalid :=
         </tr>
     }
 
+let $ns2D63 := prof:current-ms()
+
+
 (: D65 :)
+
+let $ns1D65 := prof:current-ms()
+
 let $D65invalid :=
     try {
         let $valid := dd:getValidConcepts($vocabulary:UOM_TIME || "rdf")
@@ -1726,7 +2106,13 @@ let $D65invalid :=
         </tr>
     }
 
+let $ns2D65 := prof:current-ms()
+
+
 (: D67a :)
+
+let $ns1D67a := prof:current-ms()
+
 let $D67ainvalid :=
     try {
         let $rdf := doc("http://dd.eionet.europa.eu/vocabulary/aq/equivalencedemonstrated/rdf")
@@ -1754,8 +2140,14 @@ let $D67ainvalid :=
         </tr>
     }
 
+let $ns2D67a := prof:current-ms()
+
+
 (: D67b - ./aqd:equivalenceDemonstration/aqd:EquivalenceDemonstration/aqd:equivalenceDemonstrated should resolve to
  : http://dd.eionet.europa.eu/vocabulary/aq/equivalencedemonstrated/ for all SamplingPointProcess :)
+
+let $ns1D67b := prof:current-ms()
+
 let $D67binvalid :=
     try {
         let $rdf := doc("http://dd.eionet.europa.eu/vocabulary/aq/equivalencedemonstrated/rdf")
@@ -1783,7 +2175,13 @@ let $D67binvalid :=
         </tr>
     }
 
+let $ns2D67b := prof:current-ms()
+
+
 (: D68 Jaume Targa :)
+
+let $ns1D68 := prof:current-ms()
+
 let $D68invalid :=
     try {
         let $allProcNotMatchingCondition68 :=
@@ -1817,7 +2215,13 @@ let $D68invalid :=
         </tr>
     }
 
+let $ns2D68 := prof:current-ms()
+
+
 (: D69 :)
+
+let $ns1D69 := prof:current-ms()
+
 let $D69invalid :=
     try {
         let $all :=
@@ -1843,7 +2247,13 @@ let $D69invalid :=
         </tr>
     }
 
+let $ns2D69 := prof:current-ms()
+
+
 (: D71 - ./aqd:inspireId/base:Identifier/base:localId shall be unique for AQD_Sample and unique within the namespace :)
+
+let $ns1D71 := prof:current-ms()
+
 let $D71invalid :=
     try {
         let $localSampleIds := data($docRoot//aqd:AQD_Sample/aqd:inspireId/base:Identifier/base:localId)
@@ -1863,7 +2273,12 @@ let $D71invalid :=
         </tr>
     }
 
+let $ns2D71 := prof:current-ms()
+
 (: D72 - :)
+
+let $ns1D72 := prof:current-ms()
+
 let $D72table :=
     try {
         for $id in $sampleNamespaces
@@ -1879,7 +2294,13 @@ let $D72table :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+
+let $ns2D72 := prof:current-ms()
+
 (: D72.1 :)
+
+let $ns1D72.1 := prof:current-ms()
+
 let $D72.1invalid :=
     try {
         let $vocDoc := doc($vocabulary:NAMESPACE || "rdf")
@@ -1898,7 +2319,13 @@ let $D72.1invalid :=
         </tr>
     }
 
+let $ns2D72.1 := prof:current-ms()
+
+
 (: D73 :)
+
+let $ns1D73 := prof:current-ms()
+
 let $allGmlPoint := $docRoot//aqd:AQD_Sample/sams:shape/gml:Point
 let $D73validURN := ("urn:ogc:def:crs:EPSG::3035", "urn:ogc:def:crs:EPSG::4258", "urn:ogc:def:crs:EPSG::4326")
 let $D73invalid :=
@@ -1920,7 +2347,14 @@ let $isInvalidInvalidD73 := if (count($allGmlPoint) > 0) then fn:true() else fn:
 let $errLevelD73 := if (count($allGmlPoint) > 0) then $errors:ERROR else $errors:WARNING
 let $errMsg73 := if (count($allGmlPoint) > 0) then " errors found" else " gml:Point elements found"
 
+
+let $ns2D73 := prof:current-ms()
+
+
 (: D74 :)
+
+let $ns1D74 := prof:current-ms()
+
 let $D74invalid :=
     try {
         let $all := distinct-values(
@@ -1941,7 +2375,13 @@ let $D74invalid :=
         </tr>
     }
 
+let $ns2D74 := prof:current-ms()
+
+
 (: D75 :)
+
+let $ns1D75 := prof:current-ms()
+
 let $D75invalid :=
     try {
         let $approximity := 0.0003
@@ -1982,7 +2422,13 @@ let $D75invalid :=
         </tr>
     }
 
+let $ns2D75 := prof:current-ms()
+
+
 (: D76 :)
+
+let $ns1D76 := prof:current-ms()
+
 let $D76invalid :=
     try {
         let $sampleDistanceMap :=
@@ -2010,7 +2456,13 @@ let $D76invalid :=
         </tr>
     }
 
+let $ns2D76 := prof:current-ms()
+
+
 (: D77 :)
+
+let $ns1D77 := prof:current-ms()
+
 let $D77invalid :=
     try {
         let $sampleDistanceMap :=
@@ -2038,8 +2490,12 @@ let $D77invalid :=
         </tr>
     }
 
+let $ns2D77 := prof:current-ms()
 
 (: D78 :)
+
+let $ns1D78 := prof:current-ms()
+
 let $D78invalid :=
     try {
         for $inletHeigh in $docRoot//aqd:AQD_Sample/aqd:inletHeight
@@ -2057,7 +2513,13 @@ let $D78invalid :=
         </tr>
     }
 
+let $ns2D78 := prof:current-ms()
+
+
 (: D91 - Each aqd:AQD_Sample reported within the XML shall be xlinked (at least once) via aqd:AQD_SamplingPoint/ef:observingCapability/ef:ObservingCapability/ef:featureOfInterest/@xlink:href :)
+
+let $ns1D91 := prof:current-ms()
+
 let $D91invalid :=
     try {
         let $x := data($docRoot//aqd:AQD_SamplingPoint/ef:observingCapability/ef:ObservingCapability/ef:featureOfInterest/@xlink:href)
@@ -2074,7 +2536,13 @@ let $D91invalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+
+let $ns2D91 := prof:current-ms()
+
 (: D92 - Each aqd:AQD_SamplingPointProcess reported within the XML shall be xlinked (at least once) via /aqd:AQD_SamplingPoint/ef:observingCapability/ef:ObservingCapability/ef:procedure/@xlink:href :)
+
+let $ns1D92 := prof:current-ms()
+
 let $D92invalid :=
     try {
         let $x := data($docRoot//aqd:AQD_SamplingPoint/ef:observingCapability/ef:ObservingCapability/ef:procedure/@xlink:href)
@@ -2091,7 +2559,13 @@ let $D92invalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+
+let $ns2D92 := prof:current-ms()
+
 (: D93 - Each aqd:AQD_Station reported within the XML shall be xlinked (at least once) via aqd:AQD_SamplingPoint/ef:broader/@xlink:href :)
+
+let $ns1D93 := prof:current-ms()
+
 let $D93invalid :=
     try {
         let $x := data($docRoot//aqd:AQD_SamplingPoint/ef:broader/@xlink:href)
@@ -2108,7 +2582,13 @@ let $D93invalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+
+let $ns2D93 := prof:current-ms()
+
 (: D94 - Each aqd:AQD_Netwok reported within the XML shall be xlinked (at least once) via /aqd:AQD_SamplingPoint/ef:belongsTo/@xlink:href or aqd:AQD_Station/ef:belongsTo/@xlink:href :)
+
+let $ns1D94 := prof:current-ms()
+
 let $D94invalid :=
     try {
         let $x := (data($docRoot//aqd:AQD_SamplingPoint/ef:belongsTo/@xlink:href), data($docRoot//aqd:AQD_Station/ef:belongsTo/@xlink:href))
@@ -2126,8 +2606,12 @@ let $D94invalid :=
         </tr>
     }
 
+let $ns2D94 := prof:current-ms()
+
+
 return
     <table class="maintable hover">
+    <table>
         {html:build2("NS", $labels:NAMESPACES, $labels:NAMESPACES_SHORT, $NSinvalid, "All values are valid", "record", $errors:NS)}
         {html:build2("VOCAB", $labels:VOCAB, $labels:VOCAB_SHORT, $VOCABinvalid, "All values are valid", "record", $errors:VOCAB)}
         {html:build3("D0", $labels:D0, $labels:D0_SHORT, $D0table, string($D0table/td), errors:getMaxError($D0table))}
@@ -2220,6 +2704,99 @@ return
         {html:build2("D92", $labels:D92, $labels:D92_SHORT, $D92invalid, "All values are valid"," invalid attribute", $errors:D92)}
         {html:build2("D93", $labels:D93, $labels:D93_SHORT, $D93invalid, "All values are valid"," invalid attribute", $errors:D93)}
         {html:build2("D94", $labels:D94, $labels:D94_SHORT, $D94invalid, "All values are valid"," invalid attribute", $errors:D94)}
+    </table>     
+    <table>
+        <tr>
+            <th>Query</th>
+            <th>Process time in miliseconds</th>
+            <th>Process time in seconds</th>
+        </tr>
+       {common:runtime("NS", $ns1DNS, $ns2DNS)}
+       {common:runtime("VOCAB", $ns1DVOCAB, $ns2DVOCAB)}
+       {common:runtime("D0",  $ns1D0, $ns2D0)}
+       {common:runtime("D01", $ns1D01, $ns2D01)}
+       {common:runtime("D02", $ns1D02, $ns2D02)}
+       {common:runtime("D03", $ns1D03, $ns2D03)}
+       {common:runtime("D03b", $ns1D03b, $ns2D03b)}
+       {common:runtime("D04",  $ns1D04, $ns2D04)}
+       {common:runtime("D05", $ns1D05, $ns2D05)}
+       {common:runtime("D06",  $ns1D06, $ns2D06)}
+       {common:runtime("D07",  $ns1D07, $ns2D07)}
+       {common:runtime("D07.1",  $ns1D07.1, $ns2D07.1)}
+       {common:runtime("D08",  $ns1D08, $ns2D08)}
+       {common:runtime("D09",  $ns1D09, $ns2D09)}
+       {common:runtime("D10",  $ns1D10, $ns2D10)}
+       {common:runtime("D11",  $ns1D11, $ns2D11)}
+       {common:runtime("D12",  $ns1D12, $ns2D12)}
+       {common:runtime("D14",  $ns1D14, $ns2D14)}
+       {common:runtime("D15",  $ns1D15, $ns2D15)}
+       {common:runtime("D16",  $ns1D16, $ns2D16)}
+       {common:runtime("D16.1",  $ns1D16.1, $ns2D16.1)}
+       {common:runtime("D17",  $ns1D17, $ns2D17)}
+       {common:runtime("D18",  $ns1D18, $ns2D18)}
+       {common:runtime("D19",  $ns1D19, $ns2D19)}
+       {common:runtime("D20", $ns1D20, $ns2D20)}
+       {common:runtime("D21",  $ns1D21, $ns2D21)}
+       {common:runtime("D23",  $ns1D23, $ns2D23)}
+       {common:runtime("D24",  $ns1D24, $ns2D24)}
+       {common:runtime("D26",  $ns1D26, $ns2D26)}
+       {common:runtime("D27",  $ns1D27, $ns2D27)}
+       {common:runtime("D28",  $ns1D28, $ns2D28)}
+       {common:runtime("D29",  $ns1D29, $ns2D29)}
+       {common:runtime("D30",  $ns1D30, $ns2D30)}
+       {common:runtime("D31",  $ns1D31, $ns2D31)}
+       {common:runtime("D32",  $ns1D32, $ns2D32)}
+       {common:runtime("D32.1",  $ns1D32.1, $ns2D32.1)}
+       {common:runtime("D33",  $ns1D33, $ns2D33)}
+       {common:runtime("D34",  $ns1D34, $ns2D34)}
+       {common:runtime("D35",  $ns1D35, $ns2D35)}
+       {common:runtime("D36",  $ns1D36, $ns2D36)}
+       {common:runtime("D37",  $ns1D37, $ns2D37)}
+       {common:runtime("D38",  $ns1D38, $ns2D38)}
+       {common:runtime("D39",  $ns1D39, $ns2D39)}
+       {common:runtime("D40",  $ns1D40, $ns2D40)}
+       {common:runtime("D41",  $ns1D41, $ns2D41)}
+       {common:runtime("D42",  $ns1D42, $ns2D42)}
+       {common:runtime("D43",  $ns1D43, $ns2D43)}
+       {common:runtime("D44",  $ns1D44, $ns2D44)}
+       {common:runtime("D45",  $ns1D45, $ns2D45)}
+       {common:runtime("D46",  $ns1D46, $ns2D46)}
+       {common:runtime("D48",  $ns1D48, $ns2D48)}
+       {common:runtime("D50",  $ns1D50, $ns2D50)}
+       {common:runtime("D51",  $ns1D51, $ns2D51)}
+       {common:runtime("D53",  $ns1D53, $ns2D53)}
+       {common:runtime("D54",  $ns1D54, $ns2D54)}
+       {common:runtime("D55",  $ns1D55, $ns2D55)}
+       {common:runtime("D55.1",  $ns1D55.1, $ns2D55.1)}
+       {common:runtime("D56",  $ns1D56, $ns2D56)}
+       {common:runtime("D57",  $ns1D57, $ns2D57)}
+       {common:runtime("D58",  $ns1D58, $ns2D58)}
+       {common:runtime("D50",  $ns1D59, $ns2D59)}
+       {common:runtime("D60a",  $ns1D60a, $ns2D60a)}
+       {common:runtime("D60b",  $ns1D60b, $ns2D60b)}
+       {common:runtime("D61",  $ns1D61, $ns2D61)}
+       {common:runtime("D62",  $ns1D62, $ns2D62)}
+       {common:runtime("D63",  $ns1D63, $ns2D63)}
+       {common:runtime("D65",  $ns1D65, $ns2D65)}
+       {common:runtime("D67a",  $ns1D67a, $ns2D67a)}
+       {common:runtime("D67b",  $ns1D67b, $ns2D67b)}
+       {common:runtime("D68",  $ns1D68, $ns2D68)}
+       {common:runtime("D69",  $ns1D69, $ns2D69)}
+       {common:runtime("D71",  $ns1D71, $ns2D71)}
+       {common:runtime("D72",  $ns1D72, $ns2D72)}
+       {common:runtime("D72.1",  $ns1D72.1, $ns2D72.1)}
+       {common:runtime("D73",  $ns1D73, $ns2D73)}
+       {common:runtime("D74",  $ns1D74, $ns2D74)}
+       {common:runtime("D75",  $ns1D75, $ns2D75)}
+       {common:runtime("D76",  $ns1D76, $ns2D76)}
+       {common:runtime("D77",  $ns1D77, $ns2D77)}
+       {common:runtime("D78",  $ns1D78, $ns2D78)}
+       {common:runtime("D91",  $ns1D91, $ns2D91)}
+       {common:runtime("D92",  $ns1D92, $ns2D92)}
+       {common:runtime("D93",  $ns1D93, $ns2D93)}
+       {common:runtime("D94",  $ns1D94, $ns2D94)}
+
+    </table>
     </table>
 };
 

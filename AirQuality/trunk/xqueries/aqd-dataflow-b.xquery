@@ -74,6 +74,7 @@ let $headerBeginPosition := $docRoot//aqd:AQD_ReportingHeader/aqd:reportingPerio
 let $headerEndPosition := $docRoot//aqd:AQD_ReportingHeader/aqd:reportingPeriod/gml:TimePeriod/gml:endPosition
 
 (: File prefix/namespace check :)
+let $ns1NS := prof:current-ms()
 let $NSinvalid :=
     try {
         let $XQmap := inspect:static-context((), 'namespaces')
@@ -99,10 +100,12 @@ let $NSinvalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
-
+let $ns2NS := prof:current-ms()
 let $VOCABinvalid := checks:vocab($docRoot)
 
 (: B0 :)
+let $ns1B0 := prof:current-ms()
+
 let $B0table :=
     try {
         if ($reportingYear = "") then
@@ -130,6 +133,7 @@ let $B0table :=
         </tr>
     }
 let $isNewDelivery := errors:getMaxError($B0table) = $errors:INFO
+let $ns2B0 := prof:current-ms()
 
 (: Generic variables :)
 let $knownZones :=
@@ -145,9 +149,16 @@ let $knownZones2 :=
         sparqlx:getLink(query:getZone($latestEnvelopeB))
 
 (: B01 :)
+
+let $ns1B01 := prof:current-ms()
+
 let $countZones := count($docRoot//aqd:AQD_Zone)
 
+let $ns2B01 := prof:current-ms()
+
 (: B02 :)
+let $ns1B02 := prof:current-ms()
+
 let $B02table :=
     try {
         for $zone in $docRoot//aqd:AQD_Zone
@@ -173,7 +184,10 @@ let $B02errorLevel :=
     else
         $errors:INFO
 
+let $ns2B02 := prof:current-ms()
+
 (: B03 :)
+let $ns1B03 := prof:current-ms()
 let $B03table :=
     try {
         for $zone in $docRoot//aqd:AQD_Zone
@@ -193,7 +207,11 @@ let $B03table :=
         </tr>
     }
 
+let $ns2B03 := prof:current-ms()
+
 (: B04 :)
+let $ns1B04 := prof:current-ms()
+
 let $B04table :=
     try {
         for $rec in $docRoot//aqd:AQD_Zone
@@ -211,8 +229,12 @@ let $B04table :=
         </tr>
     }
 
+let $ns2B04 := prof:current-ms()
 
 (:B05a:)
+
+let $ns1B05a := prof:current-ms()
+
 let $B05ainvalid :=
     try {
         for $zone in $docRoot//aqd:AQD_Zone
@@ -237,8 +259,12 @@ let $B05ainvalid :=
         </tr>
     }
 
+let $ns2B05a := prof:current-ms()
    
 (:B05b:)
+
+let $ns1B05b := prof:current-ms()
+
 let $B05binvalid :=
     try {
         for $zone in $docRoot//aqd:AQD_Zone
@@ -266,8 +292,12 @@ let $B05binvalid :=
         </tr>
     }
 
+let $ns2B05b := prof:current-ms()
 
 (: B06a :)
+
+let $ns1B06a := prof:current-ms()
+
 let $countZonesWithAmGeometry :=
     try {
         count($docRoot//aqd:AQD_Zone/am:geometry)
@@ -278,7 +308,12 @@ let $countZonesWithAmGeometry :=
         </tr>
     }
 
+let $ns2B06a := prof:current-ms()
+
 (: B06b :)
+
+let $ns1B06b := prof:current-ms()
+
 let $countZonesWithLAU :=
     try {
         count($docRoot//aqd:AQD_Zone[not(empty(aqd:LAU)) or not(empty(aqd:shapefileLink))])
@@ -289,7 +324,12 @@ let $countZonesWithLAU :=
         </tr>
     }
 
+let $ns2B06b := prof:current-ms()
+
 (: B07 - Compile & feedback a list of aqd:aqdZoneType, aqd:pollutantCode, aqd:protectionTarget combinations in the delivery :)
+
+let $ns1B07 := prof:current-ms()
+
 let $B07table :=
     try {
         let $allB7Combinations :=
@@ -315,7 +355,11 @@ let $B07table :=
         </tr>
     }
 
+    let $ns2B07 := prof:current-ms()
+
 (: B08 :)
+let $ns1B08 := prof:current-ms()
+
 let $B08table :=
     try {
         let $B08tmp :=
@@ -383,8 +427,13 @@ let $B08table :=
         </tr>
     }
 
+    let $ns2B08 := prof:current-ms()
+
 (: B09 :)
 (:TODO: ADD TRY CATCH :)
+
+let $ns1B09 := prof:current-ms()
+
 let $all1 := $docRoot//aqd:AQD_Zone/lower-case(@gml:id)
 let $part1 := distinct-values(
     for $id in $docRoot//aqd:AQD_Zone/@gml:id
@@ -438,7 +487,12 @@ let $countamInspireIdDuplicates := count($part2)
 let $countaqdInspireIdDuplicates := count($part3)
 let $B09invalid := ($part1, $part2, $part3)
 
+let $ns2B09 := prof:current-ms()
+
 (: B10 :)
+
+let $ns1B10 := prof:current-ms()
+
 let $B10table :=
     try {
         for $id in $zonesNamespaces
@@ -455,7 +509,12 @@ let $B10table :=
         </tr>
     }
 
+let $ns2B10 := prof:current-ms()
+
 (: B10.1 :)
+
+let $ns1B10.1 := prof:current-ms()
+
 let $B10.1invalid :=
     try {
         let $vocDoc := doc($vocabulary:NAMESPACE || "rdf")
@@ -494,7 +553,13 @@ let $combinations :=
 let $conbicount := 
     for $x in $combinations/combination
         return count($x)
+
+let $ns2B10.1 := prof:current-ms()
+
 (: B11 :)
+
+let $ns1B11 := prof:current-ms()
+
 let $B11table :=
 
     try {
@@ -587,9 +652,12 @@ let $B11table :=
         else
             $errors:B11
 
+let $ns2B11 := prof:current-ms()
     
 
 (:B12:)
+let $ns1B12 := prof:current-ms()
+
 let $B12table :=
 
     try {
@@ -677,7 +745,13 @@ let $B12table :=
             $errors:INFO
         else
             $errors:B12
+
+    let $ns2B12 := prof:current-ms()
+
 (: B13 :)
+
+let $ns1B13 := prof:current-ms()
+
 let $B13invalid :=
     try {
         let $langSkippedMsg := "The test was skipped - ISO 639-3 and ISO 639-5 language codes are not available in Content Registry."
@@ -698,7 +772,12 @@ let $B13invalid :=
         </tr>
     }
 
+    let $ns2B13 := prof:current-ms()
+
 (: B18 :)
+
+let $ns1B18 := prof:current-ms()
+
 let $B18invalid :=
     try {
         for $x in $docRoot//aqd:AQD_Zone[string(am:name/gn:GeographicalName/gn:spelling/gn:SpellingOfName/gn:text) = ""]
@@ -713,7 +792,12 @@ let $B18invalid :=
         </tr>
     }
 
+let $ns2B18 := prof:current-ms()
+
 (: B20 :)
+
+let $ns1B20 := prof:current-ms()
+
 let $B20invalid :=
     try {
         let $validSrsNames := ("urn:ogc:def:crs:EPSG::3035", "urn:ogc:def:crs:EPSG::4326", "urn:ogc:def:crs:EPSG::4258")
@@ -735,7 +819,12 @@ let $B20invalid :=
         </tr>
     }
 
+let $ns2B20 := prof:current-ms()
+
 (: B21 :)
+
+let $ns1B21 := prof:current-ms()
+
 let $B21invalid  :=
     try {
         let $count := count($docRoot//aqd:AQD_Zone/am:geometry//gml:posList[@srsDimension != "2"])
@@ -756,7 +845,12 @@ let $B21invalid  :=
         </tr>
     }
 
+let $ns2B21 := prof:current-ms()
+
 (: B22 - generalized by Hermann :)
+
+let $ns1B22 := prof:current-ms()
+
 let $B22invalid :=
     try {
         for $posList in $docRoot//gml:posList
@@ -773,10 +867,15 @@ let $B22invalid :=
         </tr>
     }
 
+    let $ns2B22 := prof:current-ms()
+
 (: B23 - generalized by Hermann
  : In Europe, lat values tend to be bigger than lon values. We use this observation as a poor farmer's son test to check that in a coordinate value pair,
  : the lat value comes first, as defined in the GML schema
 :)
+
+let $ns1B23 := prof:current-ms()
+
 let $B23invalid :=
     try {
         for $latLong in $docRoot//gml:posList
@@ -803,7 +902,12 @@ let $B23message :=
     else
         "All values are valid"
 
+let $ns2B23 := prof:current-ms()
+
 (: B24 - ./am:zoneType value shall resolve to http://inspire.ec.europa.eu/codeList/ZoneTypeCode/airQualityManagementZone :)
+
+let $ns1B24 := prof:current-ms()
+
  let $B24invalid  :=
      try {
          for $x in $docRoot//aqd:AQD_Zone/am:zoneType
@@ -820,8 +924,13 @@ let $B23message :=
          </tr>
      }
 
+let $ns2B24 := prof:current-ms()
+
 (: B25 :)
 (: ./am:designationPeriod/gml:TimePeriod/gml:beginPosition shall be less than ./am:designationPeri/gml:TimePeriod/gml:endPosition. :)
+
+let $ns1B25 := prof:current-ms()
+
  let $B25invalid  :=
      try {
          for $timePeriod in $docRoot//aqd:AQD_Zone/am:designationPeriod/gml:TimePeriod
@@ -846,8 +955,13 @@ let $B23message :=
          </tr>
      }
 
+let $ns2B25 := prof:current-ms()
+
 (: B28 - ./am:beginLifespanVersion shall be a valid historical date for the start of the version of the zone in extended ISO format.
 If an am:endLifespanVersion exists its value shall be greater than the am:beginLifespanVersion :)
+
+let $ns1B28 := prof:current-ms()
+
 let $B28invalid :=
     try {
         for $x in $docRoot//aqd:AQD_Zone
@@ -869,7 +983,12 @@ let $B28invalid :=
         </tr>
     }
 
+let $ns2B28 := prof:current-ms()
+
 (: B30 :)
+
+let $ns1B30 := prof:current-ms()
+
 let $B30invalid :=
     try {
         for $x in $docRoot//am:environmentalDomain
@@ -886,7 +1005,12 @@ let $B30invalid :=
         </tr>
     }
 
+    let $ns2B30 := prof:current-ms()
+
 (: B31 :)
+
+let $ns1B31 := prof:current-ms()
+
 let $B31invalid :=
     try {
         for $x in $docRoot//aqd:AQD_Zone/am:legalBasis/base2:LegislationCitation[normalize-space(base2:name) != "2011/850/EC"]
@@ -902,7 +1026,13 @@ let $B31invalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+
+let $ns2B31 := prof:current-ms()
+
 (: B32 :)
+
+let $ns1B32 := prof:current-ms()
+
 let $B32invalid :=
     try {
         for $x in $docRoot//aqd:AQD_Zone/am:legalBasis/base2:LegislationCitation[normalize-space(base2:date) != "2011-12-12"]
@@ -919,7 +1049,13 @@ let $B32invalid :=
         </tr>
     }
 
+
+let $ns2B32 := prof:current-ms()
+
 (: B33 :)
+
+let $ns1B33 := prof:current-ms()
+
 let $B33invalid :=
     try {
         for $x in $docRoot//aqd:AQD_Zone/am:legalBasis/base2:LegislationCitation[normalize-space(base2:link) != "http://rod.eionet.europa.eu/instruments/650"]
@@ -935,7 +1071,13 @@ let $B33invalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+
+let $ns2B33 := prof:current-ms()
+
 (: B34 :)
+
+let $ns1B34 := prof:current-ms()
+
 let $B34invalid :=
     try {
         for $x in $docRoot//base2:level
@@ -952,7 +1094,13 @@ let $B34invalid :=
         </tr>
     }
 
+let $ns2B34 := prof:current-ms()
+
+
 (: B35 :)
+
+let $ns1B35 := prof:current-ms()
+
 let $amNamespaceAndaqdZoneCodeIds := $docRoot//aqd:AQD_Zone/concat(am:inspireId/base:Identifier/lower-case(normalize-space(base:namespace)), '##', lower-case(normalize-space(aqd:zoneCode)))
 let $dublicateAmNamespaceAndaqdZoneCodeIds := distinct-values(
         for $identifier in $docRoot//aqd:AQD_Zone
@@ -972,7 +1120,12 @@ let $countB35duplicates :=
         </tr>
     }
 
+let $ns2B35 := prof:current-ms()
+
 (: B36 :)
+
+let $ns1B36 := prof:current-ms()
+
 let $B36invalid :=
     try {
         for $x in $docRoot//aqd:AQD_Zone[not(count(aqd:residentPopulation)>0 and aqd:residentPopulation castable as xs:integer and number(aqd:residentPopulation) >= 0)]
@@ -989,7 +1142,13 @@ let $B36invalid :=
         </tr>
     }
 
+let $ns2B36 := prof:current-ms()
+
+
 (: B37 - ./aqd:residentPopulationYear/gml:TimeInstant/gml:timePosition shall cite the year in which the resident population was estimated in yyyy format :)
+
+let $ns1B37 := prof:current-ms()
+
 let $B37invalid :=
     try {
         for $x in $docRoot//aqd:AQD_Zone
@@ -1006,7 +1165,14 @@ let $B37invalid :=
         </tr>
     }
 
+
+let $ns2B37 := prof:current-ms()
+
 (: B38 :)
+
+
+let $ns1B38 := prof:current-ms()
+
 let $B38invalid :=
     try {
         for $x in $docRoot//aqd:AQD_Zone[not(count(aqd:area)>0 and number(aqd:area) and number(aqd:area) > 0)]
@@ -1023,7 +1189,13 @@ let $B38invalid :=
         </tr>
     }
 
+
+let $ns2B38 := prof:current-ms()
+
 (: B39a - Find invalid combinations :)
+
+let $ns1B39a := prof:current-ms()
+
 let $pollutantCombinations :=
     <combinations>
         <combination>
@@ -1108,7 +1280,12 @@ let $B39aItemsList :=
         }</tbody>
     </table>
 
+
+
 (: B39a :)
+
+
+
 let $B39ainvalid :=
     for $x in $docRoot//aqd:AQD_Zone/aqd:pollutants/aqd:Pollutant
         let $code := string($x/aqd:pollutantCode/@xlink:href)
@@ -1120,7 +1297,14 @@ let $B39ainvalid :=
             <td title="Pollutant">{string($code)}</td>
             <td title="Protection target">{string($target)}</td>
         </tr>
+
+let $ns2B39a := prof:current-ms()
+
 (: B39b - Count combination occurrences  :)
+
+
+let $ns1B39b := prof:current-ms()
+
 let $B39binvalid :=
     try {
         let $pollutantOccurrences := <results> {
@@ -1156,7 +1340,12 @@ let $B39binvalid :=
         </tr>
     }
 
+let $ns2B39b := prof:current-ms()
+
 (: B39c - Combination cannot be repeated in individual zone :)
+
+let $ns1B39c := prof:current-ms()
+
 let $B39cinvalid :=
     try {
         for $x in $docRoot//aqd:AQD_Zone
@@ -1180,7 +1369,13 @@ let $B39cinvalid :=
         </tr>
     }
 
+
+let $ns2B39c := prof:current-ms()
+
 (: B40 - /aqd:timeExtensionExemption attribute must resolve to one of concept within http://dd.eionet.europa.eu/vocabulary/aq/timeextensiontypes/ :)
+
+let $ns1B40 := prof:current-ms()
+
 let $B40invalid :=
     try {
         let $year := xs:integer(common:getReportingYear($docRoot))
@@ -1204,7 +1399,13 @@ let $B40invalid :=
         </tr>
     }
 
+
+let $ns2B40 := prof:current-ms()
+
 (: B41 :)
+
+let $ns1B41 := prof:current-ms()
+
 let $B41invalid :=
     try {
         let $zoneIds :=
@@ -1231,7 +1432,14 @@ let $B41invalid :=
         </tr>
     }
 
+
+let $ns2B41 := prof:current-ms()
+
+
 (: B42 :)
+
+let $ns1B42 := prof:current-ms()
+
 let $B42invalid :=
     try {
         let $zoneIds :=
@@ -1258,8 +1466,12 @@ let $B42invalid :=
         </tr>
     }
 
+let $ns2B42 := prof:current-ms()
 
 (: B43 :)
+
+let $ns1B43 := prof:current-ms()
+
 let $B43invalid :=
     try {
         let $zoneIds :=
@@ -1283,7 +1495,13 @@ let $B43invalid :=
         </tr>
     }
 
+
+let $ns2B43 := prof:current-ms()
+
 (: B45 :)
+
+let $ns1B45 := prof:current-ms()
+
 let $B45invalid :=
     try {
         for $x in $docRoot//aqd:AQD_Zone[count(am:geometry/@xlink:href) > 0]
@@ -1298,7 +1516,13 @@ let $B45invalid :=
         </tr>
     }
 
+
+let $ns2B45 := prof:current-ms()
+
 (: B46 - Where ./aqd:shapefileLink has been used the xlink should return a link to a valid and existing file located in the same cdr envelope as this XML :)
+
+let $ns1B46 := prof:current-ms()
+
 let $B46invalid :=
     try {
         let $aqdShapeFileLink := $docRoot//aqd:AQD_Zone[not(normalize-space(aqd:shapefileLink) = '')]/aqd:shapefileLink
@@ -1320,7 +1544,13 @@ let $B46invalid :=
         </tr>
     }
 
+let $ns2B46 := prof:current-ms()
+
 (: B47 :)
+
+
+let $ns1B47 := prof:current-ms()
+
 let $B47invalid :=
     try {
         let $all := dd:getValidConcepts($vocabulary:ZONETYPE_VOCABULARY || "rdf")
@@ -1338,7 +1568,13 @@ let $B47invalid :=
         </tr>
     }
 
+
+let $ns2B47 := prof:current-ms()
+
 (: B48 - Date :)
+
+let $ns1B48 := prof:current-ms()
+
 let $B48invalid :=
     try {
          for $timePeriod in $docRoot//aqd:AQD_Zone/am:designationPeriod/gml:TimePeriod
@@ -1359,10 +1595,15 @@ let $B48invalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+
+
+let $ns2B48 := prof:current-ms()
+
     
 
 return
     <table class="maintable hover">
+    <table>
         {html:build2("NS", $labels:NAMESPACES, $labels:NAMESPACES_SHORT, $NSinvalid, "All values are valid", "record", $errors:NS)}
         {html:build2("VOCAB", $labels:VOCAB, $labels:VOCAB_SHORT, $VOCABinvalid, "All values are valid", "record", $errors:VOCAB)}
         {html:build3("B0", $labels:B0, $labels:B0_SHORT, $B0table, string($B0table/td), errors:getMaxError($B0table))}
@@ -1411,6 +1652,60 @@ return
         {html:build2("B46", $labels:B46, $labels:B46_SHORT, $B46invalid, "All values are valid", " invalid value", $errors:B46)}
         {html:build2("B47", $labels:B47, $labels:B47_SHORT, $B47invalid, "All values are valid", "invalid value", $errors:B47)}
         {html:build2("B48", $labels:B48, $labels:B48_SHORT, $B48invalid, "All values are valid", "invalid value", $errors:B48)}
+    </table>
+     <table>
+        <tr>
+            <th>Query</th>
+            <th>Process time in miliseconds</th>
+            <th>Process time in seconds</th>
+        </tr>
+       {common:runtime("NS", $ns1NS, $ns2NS)}
+       {common:runtime("B0",  $ns1B0, $ns2B0)}
+       {common:runtime("B01", $ns1B01, $ns2B01)}
+       {common:runtime("B02", $ns1B02, $ns2B02)}
+       {common:runtime("B03", $ns1B03, $ns2B03)}
+       {common:runtime("B04",  $ns1B04, $ns2B04)}
+       {common:runtime("B05a", $ns1B05a, $ns2B05a)}
+       {common:runtime("B05b", $ns1B05b, $ns2B05b)}
+       {common:runtime("B06a",  $ns1B06a, $ns2B06a)}
+       {common:runtime("B06b",  $ns1B06b, $ns2B06b)}
+       {common:runtime("B07",  $ns1B07, $ns2B07)}
+       {common:runtime("B08",  $ns1B08, $ns2B08)}
+       {common:runtime("B09",  $ns1B09, $ns2B09)}
+       {common:runtime("B10",  $ns1B10, $ns2B10)}
+       {common:runtime("B10.1",  $ns1B10.1, $ns2B10.1)}
+       {common:runtime("B11",  $ns1B11, $ns2B11)}
+       {common:runtime("B12",  $ns1B12, $ns2B12)}
+       {common:runtime("B13",  $ns1B13, $ns2B13)}
+       {common:runtime("B18",  $ns1B18, $ns2B18)}
+       {common:runtime("B20", $ns1B20, $ns2B20)}
+       {common:runtime("B21",  $ns1B21, $ns2B21)}
+       {common:runtime("B22",  $ns1B22, $ns2B22)}
+       {common:runtime("B23",  $ns1B23, $ns2B23)}
+       {common:runtime("B24",  $ns1B24, $ns2B24)}
+       {common:runtime("B25",  $ns1B25, $ns2B25)}
+       {common:runtime("B28",  $ns1B28, $ns2B28)}
+       {common:runtime("B30",  $ns1B30, $ns2B30)}
+       {common:runtime("B31",  $ns1B31, $ns2B31)}
+       {common:runtime("B32",  $ns1B32, $ns2B32)}
+       {common:runtime("B33",  $ns1B33, $ns2B33)}
+       {common:runtime("B34",  $ns1B34, $ns2B34)}
+       {common:runtime("B35",  $ns1B35, $ns2B35)}
+       {common:runtime("B36",  $ns1B36, $ns2B36)}
+       {common:runtime("B37",  $ns1B37, $ns2B37)}
+       {common:runtime("B38",  $ns1B38, $ns2B38)}
+       {common:runtime("B39a",  $ns1B39a, $ns2B39a)}
+       {common:runtime("B39b",  $ns1B39b, $ns2B39b)}
+       {common:runtime("B39c",  $ns1B39c, $ns2B39c)}
+       {common:runtime("B40",  $ns1B40, $ns2B40)}
+       {common:runtime("B41",  $ns1B41, $ns2B41)}
+       {common:runtime("B42",  $ns1B42, $ns2B42)}
+       {common:runtime("B43",  $ns1B43, $ns2B43)}
+       {common:runtime("B45",  $ns1B45, $ns2B45)}
+       {common:runtime("B46",  $ns1B46, $ns2B46)}
+       {common:runtime("B47",  $ns1B47, $ns2B47)}
+       {common:runtime("B48",  $ns1B48, $ns2B48)}
+    </table>
     </table>
 };
 declare function dataflowB:proceed($source_url as xs:string, $countryCode as xs:string) as element(div) {
