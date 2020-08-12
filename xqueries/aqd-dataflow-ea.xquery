@@ -54,6 +54,8 @@ let $headerBeginPosition := $docRoot//aqd:AQD_ReportingHeader/aqd:reportingPerio
 let $headerEndPosition := $docRoot//aqd:AQD_ReportingHeader/aqd:reportingPeriod/gml:TimePeriod/gml:endPosition
 
 (: File prefix/namespace check :)
+
+let $ms1NS := prof:current-ms()
 let $NSinvalid :=
     try {
         let $XQmap := inspect:static-context((), 'namespaces')
@@ -79,10 +81,18 @@ let $NSinvalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+   let $ms2NS := prof:current-ms()
+
+
+let $ms1EVOCAB := prof:current-ms()
 
 let $VOCABinvalid := checks:vocab($docRoot)
 
+let $ms2EVOCAB := prof:current-ms()
+
 (: E0 :)
+let $ms1E0 := prof:current-ms()
+
 let $E0table :=
     try {
         if ($reportingYear = "") then
@@ -109,7 +119,12 @@ let $E0table :=
     }
 let $isNewDelivery := errors:getMaxError($E0table) = $errors:INFO
 
+let $ms2E0 := prof:current-ms()
+
 (: E01a :)
+
+let $ms1E01a := prof:current-ms()
+
 let $E01atable :=
     try {
         for $x in $docRoot//om:OM_Observation
@@ -129,7 +144,11 @@ let $E01atable :=
         </tr>
     }
 
+let $ms2E01a := prof:current-ms()
+
 (: E01b - /om:OM_Observation gml:id attribute shall be unique code for the group of observations enclosed by /OM_Observation within the delivery. :)
+
+let $ms1E01b := prof:current-ms()
 let $E01binvalid :=
     try {
         (let $all := data($docRoot//om:OM_Observation/@gml:id)
@@ -146,7 +165,12 @@ let $E01binvalid :=
         </tr>
     }
 
+let $ms2E01b := prof:current-ms()
+
 (:E02 - /om:phenomenonTime/gml:TimePeriod/gml:beginPosition shall be LESS THAN ./om:phenomenonTime/gml:TimePeriod/gml:endPosition. -:)
+
+let $ms1E02 := prof:current-ms()
+
 let $E02invalid :=
     try {
         (let $all := $docRoot//om:phenomenonTime/gml:TimePeriod
@@ -168,7 +192,12 @@ let $E02invalid :=
         </tr>
     }
 
+let $ms2E02 := prof:current-ms()
+
 (:E03 - ./om:resultTime/gml:TimeInstant/gml:timePosition shall be GREATER THAN ./om:phenomenonTime/gml:TimePeriod/gml:endPosition :)
+
+let $ms1E03 := prof:current-ms()
+
 let $E03invalid :=
     try {
         (let $all := $docRoot//om:OM_Observation
@@ -187,7 +216,13 @@ let $E03invalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+
+let $ms2E03 := prof:current-ms()
+
 (: E04 - ./om:procedure xlink:href attribute shall resolve to a traversable link process configuration in Data flow D: /aqd:AQD_SamplingPointProcess/ompr:inspireld/base:Identifier/base:localId:)
+
+let $ms1E04 := prof:current-ms()
+
 let $E04invalid :=
     try {
         (let $result := sparqlx:run(query:getSamplingPointProcess($cdrUrl))
@@ -205,7 +240,13 @@ let $E04invalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+
+let $ms2E04 := prof:current-ms()
+
 (: E05 - A valid delivery MUST provide an om:parameter with om:name/@xlink:href to http://dd.eionet.europa.eu/vocabulary/aq/processparameter/SamplingPoint :)
+
+let $ms1E05 := prof:current-ms()
+
 let $E05invalid :=
     try {
         (for $x in $docRoot//om:OM_Observation
@@ -221,7 +262,12 @@ let $E05invalid :=
         </tr>
     }
 
+let $ms2E05 := prof:current-ms()
+
 (: E06 :)
+
+let $ms1E06 := prof:current-ms()
+
 let $E06invalid :=
     try {
         (let $result := sparqlx:run(query:getSamplingPointFromFiles($latestEnvelopeD))
@@ -243,7 +289,12 @@ let $E06invalid :=
         </tr>
     }
 
+let $ms2E06 := prof:current-ms()
+
 (: E07 :)
+
+let $ms1E07 := prof:current-ms()
+
 let $E07invalid :=
     try {
         (for $x in $docRoot//om:OM_Observation
@@ -260,7 +311,12 @@ let $E07invalid :=
         </tr>
     }
 
+let $ms2E07 := prof:current-ms()
+
 (: E08 :)
+
+let $ms1E08 := prof:current-ms()
+
 let $E08invalid :=
     try {
         (let $valid := dd:getValidConcepts($vocabulary:ASSESSMENTTYPE_VOCABULARY || "rdf")
@@ -280,8 +336,13 @@ let $E08invalid :=
         </tr>
     }
 
+let $ms2E08 := prof:current-ms()
+
 (: E09 :)
 (: TODO Check ticket for implementation :)
+
+let $ms1E09 := prof:current-ms()
+
 let $E09invalid :=
     try {
         (let $valid := dd:getValidConcepts($vocabulary:PROCESS_PARAMETER || "rdf")
@@ -299,7 +360,12 @@ let $E09invalid :=
         </tr>
     }
 
+let $ms2E09 := prof:current-ms()
+
 (: E10 - /om:observedProperty xlink:href attribute shall resolve to a traversable link to http://dd.eionet.europa.eu/vocabulary/aq/pollutant/ :)
+
+let $ms1E10 := prof:current-ms()
+
 let $E10invalid :=
     try {
         (let $all := dd:getValidConcepts("http://dd.eionet.europa.eu/vocabulary/aq/pollutant/rdf")
@@ -319,7 +385,13 @@ let $E10invalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+
+let $ms2E10 := prof:current-ms()
+
 (: E11 - The pollutant xlinked via /om:observedProperty must match the pollutant code declared via /aqd:AQD_SamplingPoint/ef:observingCapability/ef:ObservingCapability/ef:observedProperty :)
+
+let $ms1E11 := prof:current-ms()
+
 let $E11invalid :=
     try {
         (let $result := sparqlx:run(query:getSamplingPointMetadataFromFiles($latestEnvelopeD))
@@ -352,7 +424,12 @@ let $E11invalid :=
         </tr>
     }
 
-(: E12 :)
+let $ms2E11 := prof:current-ms()
+
+(: E12 :) 
+
+let $ms1E12 := prof:current-ms()
+
 let $E12invalid :=
     try {
         (let $samples := data(sparqlx:run(query:getSample($latestEnvelopeD))/sparql:binding[@name = "localId"]/sparql:literal)
@@ -373,7 +450,12 @@ let $E12invalid :=
         </tr>
     }
 
+let $ms2E12 := prof:current-ms()
+
 (: E15 :)
+
+let $ms1E15 := prof:current-ms()
+
 let $E15invalid :=
     try {
         (for $x in $docRoot//om:OM_Observation/om:result//swe:elementType/swe:DataRecord/swe:field[@name = "StartTime"
@@ -390,7 +472,12 @@ let $E15invalid :=
         </tr>
     }
 
+let $ms2E15 := prof:current-ms()
+
 (: E16 :)
+
+let $ms1E16 := prof:current-ms()
+
 let $E16invalid :=
     try {
         (for $x in $docRoot//om:OM_Observation/om:result//swe:elementType/swe:DataRecord/swe:field[@name = "EndTime"
@@ -406,7 +493,13 @@ let $E16invalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+
+let $ms2E16 := prof:current-ms()
+
 (: E17 :)
+
+let $ms1E17 := prof:current-ms()
+
 let $E17invalid :=
     try {
         (for $x in $docRoot//om:OM_Observation/om:result//swe:elementType/swe:DataRecord/swe:field[@name="Validity"
@@ -422,7 +515,13 @@ let $E17invalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+
+let $ms2E17 := prof:current-ms()
+
 (: E18 :)
+
+let $ms1E18 := prof:current-ms()
+
 let $E18invalid :=
     try {
         (for $x in $docRoot//om:OM_Observation/om:result//swe:elementType/swe:DataRecord/swe:field[@name = "Verification"
@@ -438,7 +537,13 @@ let $E18invalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+
+let $ms2E18 := prof:current-ms()
+
 (: E19 :)
+
+let $ms1E19 := prof:current-ms()
+
 let $E19invalid :=
     try {
         (let $obs := dd:getValidConceptsLC("http://dd.eionet.europa.eu/vocabulary/aq/primaryObservation/rdf")
@@ -458,7 +563,12 @@ let $E19invalid :=
         </tr>
     }
 
+let $ms2E19 := prof:current-ms()
+
 (:E19a:)
+
+let $ms1E19a := prof:current-ms()
+
 let $E19ainvalid :=
     try {
         (for $x in $docRoot//om:OM_Observation
@@ -481,9 +591,13 @@ let $E19ainvalid :=
         </tr>
     }
 
+let $ms2E19a := prof:current-ms()
 
 
 (: E19b :)
+
+let $ms1E19b := prof:current-ms()
+
 let $E19binvalid :=
     try {
         (for $x in $docRoot//om:OM_Observation
@@ -505,7 +619,12 @@ let $E19binvalid :=
         </tr>
     }
 
+let $ms2E19b := prof:current-ms()
+
 (: E20 :)
+
+let $ms1E20 := prof:current-ms()
+
 let $E20invalid :=
     try {
         (let $all := $docRoot//om:result//swe:elementType/swe:DataRecord/swe:field[@name="DataCapture"]
@@ -527,7 +646,12 @@ let $E20invalid :=
         </tr>
     }
 
+let $ms2E20 := prof:current-ms()
+
 (: E21 - /om:result/swe:DataArray/swe:encoding/swe:TextEncoding shall resolve to decimalSeparator="." tokenSeparator="," blockSeparator="@@" :)
+
+let $ms1E21 := prof:current-ms()
+
 let $E21invalid :=
     try {
         (for $x in $docRoot//om:result//swe:encoding/swe:TextEncoding[not(@decimalSeparator=".") or not(@tokenSeparator=",") or not(@blockSeparator="@@")]
@@ -545,6 +669,12 @@ let $E21invalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+
+let $ms2E21 := prof:current-ms()
+
+
+
+let $ms1E22 := prof:current-ms()
 
 let $E22invalid :=
     try {
@@ -582,6 +712,11 @@ let $E22invalid :=
         </tr>
     }
 
+let $ms2E22 := prof:current-ms()
+
+
+let $ms1E23 := prof:current-ms()
+
 let $E23invalid :=
     try {
         (for $x at $xpos in $docRoot//om:OM_Observation/om:result
@@ -605,6 +740,9 @@ let $E23invalid :=
         </tr>
     }
 
+let $ms2E23 := prof:current-ms()
+
+let $ms1E24 := prof:current-ms()
 
 let $E24invalid :=
     try {
@@ -667,6 +805,12 @@ let $E24invalid :=
         </tr>
     }
 
+
+let $ms2E24 := prof:current-ms()
+
+let $ms1E25 := prof:current-ms()
+
+
 let $E25invalid :=
     try {
         (for $x at $xpos in $docRoot//om:OM_Observation/om:result
@@ -706,7 +850,13 @@ let $E25invalid :=
         </tr>
     }
 
+
+let $ms2E25 := prof:current-ms()
+
 (: E25b :)
+
+let $ms1E25b := prof:current-ms()
+
 let $E25binvalid :=
     try {
         (for $x at $xpos in $docRoot//om:OM_Observation
@@ -754,7 +904,12 @@ let $E25binvalid :=
         </tr>
     }
     
+let $ms2E25b := prof:current-ms()
+
 (: E26 :)
+
+let $ms1E26 := prof:current-ms()
+
 let $E26invalid :=
     try {
         (let $result := sparqlx:run(query:getSamplingPointMetadataFromFiles($latestEnvelopeD))
@@ -797,6 +952,11 @@ let $E26invalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+
+let $ms2E26 := prof:current-ms()
+
+
+let $ms1E26b := prof:current-ms()
 
 let $E26bfunc := function() {
     (let $result := sparqlx:run(query:getE26b($latestEnvelopeD))
@@ -841,7 +1001,13 @@ let $E26bfunc := function() {
 }
 let $E26binvalid := errors:trycatch($E26bfunc)
 
+
+let $ms2E26b := prof:current-ms()
+
 (: E27 :)
+
+let $ms1E27 := prof:current-ms()
+
 let $E27invalid :=
     try {
         (for $x at $xpos in $docRoot//om:OM_Observation/om:result
@@ -867,6 +1033,12 @@ let $E27invalid :=
         </tr>
     }
 
+
+let $ms2E27 := prof:current-ms()
+
+
+let $ms1E28 := prof:current-ms()
+
 let $E28invalid :=
     try {
         (for $x at $xpos in $docRoot//om:OM_Observation/om:result
@@ -882,6 +1054,13 @@ let $E28invalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+
+
+let $ms2E28 := prof:current-ms()
+
+
+
+let $ms1E29 := prof:current-ms()
 
 let $E29invalid :=
     try {
@@ -908,6 +1087,7 @@ let $E29invalid :=
         </tr>
     }
 
+let $ms2E29 := prof:current-ms()
 (:let $E30invalid :=
     try {
         (let $valid := dd:getValid($vocabulary:OBSERVATIONS_RANGE)
@@ -947,6 +1127,8 @@ let $E29invalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }:)
+
+let $ms1E30a := prof:current-ms()
 
 let $E30ainvalid :=
     try {
@@ -1017,6 +1199,8 @@ let $E30ainvalid :=
         </tr>
     }
 
+let $ms2E30a := prof:current-ms()
+
 (:let $E30bfunc := function() { 
     (let $valid := dd:getValid($vocabulary:OBSERVATIONS_RANGE_COUNTRY)
 
@@ -1054,6 +1238,8 @@ let $E30ainvalid :=
         </tr>)[position() = 1 to $errors:MAX_LIMIT]
 }
 let $E30binvalid := errors:trycatch($E30bfunc):)
+
+let $ms1E31 := prof:current-ms()
 
 let $E31invalid :=
     try {
@@ -1097,6 +1283,11 @@ let $E31invalid :=
         </tr>
     }
 
+let $ms2E31 := prof:current-ms()
+
+
+let $ms1E32 := prof:current-ms()
+
 let $E32invalid :=
     try {
         (for $x at $xpos in $docRoot//om:OM_Observation/om:result
@@ -1126,6 +1317,11 @@ let $E32invalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+
+let $ms2E32 := prof:current-ms()
+
+
+let $ms1E33 := prof:current-ms()
 
 let $E33func := function() {
     (for $x at $xpos in $docRoot//om:OM_Observation/om:result
@@ -1164,6 +1360,11 @@ let $E33func := function() {
         </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
 }
 let $E33invalid := errors:trycatch($E33func)
+
+let $ms2E33 := prof:current-ms()
+
+
+let $ms1E34 := prof:current-ms()
 
 let $E34func := function() {
 
@@ -1235,8 +1436,11 @@ let $E34func := function() {
 
 let $E34invalid := errors:trycatch($E34func)
 
+let $ms2E34 := prof:current-ms()
+
 return
     <table class="maintable hover">
+    <table>
         {html:build2("NS", $labels:NAMESPACES, $labels:NAMESPACES_SHORT, $NSinvalid, "All values are valid", "record", $errors:NS)}
         {html:build2("VOCAB", $labels:VOCAB, $labels:VOCAB, $VOCABinvalid, "All values are valid", "record", $errors:VOCAB)}
         {html:build3("E0", $labels:E0, $labels:E0_SHORT, $E0table, data($E0table/td), errors:getMaxError($E0table))}
@@ -1279,6 +1483,54 @@ return
         {html:build2("E32", $labels:E32, $labels:E32_SHORT, $E32invalid, "All records are valid", "record", $errors:E32)}
         {html:build2("E33", $labels:E33, $labels:E33_SHORT, $E33invalid, "All records are valid", "record", $errors:E33)}
         {html:build2Sparql("E34", $labels:E34, $labels:E34_SHORT, $E34invalid, "All records are valid", "record", $errors:E34)}
+    </table>
+    <table>
+        <tr>
+            <th>Query</th>
+            <th>Process time in miliseconds</th>
+            <th>Process time in seconds</th>
+        </tr>
+       {common:runtime("NS", $ms1NS, $ms2NS)}
+       {common:runtime("VOCAB", $ms1EVOCAB, $ms2EVOCAB)}
+       {common:runtime("E0",  $ms1E0, $ms2E0)}
+       {common:runtime("E01a", $ms1E01a, $ms2E01a)}
+       {common:runtime("E01b", $ms1E01b, $ms2E01b)}
+       {common:runtime("E02", $ms1E02, $ms2E02)}
+       {common:runtime("E03", $ms1E03, $ms2E03)}
+       {common:runtime("E04",  $ms1E04, $ms2E04)}
+       {common:runtime("E05", $ms1E05, $ms2E05)}
+       {common:runtime("E06",  $ms1E06, $ms2E06)}
+       {common:runtime("E07",  $ms1E07, $ms2E07)}
+       {common:runtime("E08",  $ms1E08, $ms2E08)}
+       {common:runtime("E09",  $ms1E09, $ms2E09)}
+       {common:runtime("E10",  $ms1E10, $ms2E10)}
+       {common:runtime("E11",  $ms1E11, $ms2E11)}
+       {common:runtime("E12",  $ms1E12, $ms2E12)}
+       {common:runtime("E15",  $ms1E15, $ms2E15)}
+       {common:runtime("E16",  $ms1E16, $ms2E16)}
+       {common:runtime("E17",  $ms1E17, $ms2E17)}
+       {common:runtime("E18",  $ms1E18, $ms2E18)}
+       {common:runtime("E19",  $ms1E19, $ms2E19)}
+       {common:runtime("E19a",  $ms1E19a, $ms2E19a)}
+       {common:runtime("E19b",  $ms1E19b, $ms2E19b)}
+       {common:runtime("E20", $ms1E20, $ms2E20)}
+       {common:runtime("E21",  $ms1E21, $ms2E21)}
+       {common:runtime("E22",  $ms1E22, $ms2E22)}
+       {common:runtime("E23",  $ms1E23, $ms2E23)}
+       {common:runtime("E24",  $ms1E24, $ms2E24)}
+       {common:runtime("E25",  $ms1E25, $ms2E25)}
+       {common:runtime("E25b",  $ms1E25b, $ms2E25b)}
+       {common:runtime("E26",  $ms1E26, $ms2E26)}
+       {common:runtime("E26b",  $ms1E26b, $ms2E26b)}
+       {common:runtime("E27",  $ms1E27, $ms2E27)}
+       {common:runtime("E28",  $ms1E28, $ms2E28)}
+       {common:runtime("E29",  $ms1E29, $ms2E29)}
+       {common:runtime("E30a",  $ms1E30a, $ms2E30a)}
+       {common:runtime("E31",  $ms1E31, $ms2E31)}
+       {common:runtime("E32",  $ms1E32, $ms2E32)}
+       {common:runtime("E33",  $ms1E33, $ms2E33)}
+       {common:runtime("E34",  $ms1E34, $ms2E34)}
+    </table>
     </table>
 
 };

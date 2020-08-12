@@ -125,6 +125,7 @@ let $modelAssessments :=
             return $i
     )
 (: File prefix/namespace check :)
+let $ms1NS := prof:current-ms()
 let $NSinvalid :=
     try {
         let $XQmap := inspect:static-context((), 'namespaces')
@@ -151,10 +152,19 @@ let $NSinvalid :=
         </tr>
     }
 
+let $ms2NS := prof:current-ms()
+
 (: VOCAB check:)
+let $ms1VOCAB := prof:current-ms()
+
 let $VOCABinvalid := checks:vocab($docRoot)
 
+let $ms2VOCAB := prof:current-ms()
+
 (: G0 :)
+
+let $ms1G0 := prof:current-ms()
+
 let $G0table :=
     try {
         if ($reportingYear = "") then
@@ -186,7 +196,13 @@ let $knownAttainments :=
     else
         distinct-values(data(sparqlx:run(query:getAttainment($latestEnvelopeByYearG))//sparql:binding[@name='inspireLabel']/sparql:literal))
 
+
+let $ms2G0 := prof:current-ms()
+
 (: G01 :)
+
+let $ms1G01 := prof:current-ms()
+
 let $countAttainments := count($docRoot//aqd:AQD_Attainment)
 let $tblAllAttainments :=
     try {
@@ -207,7 +223,13 @@ let $tblAllAttainments :=
         </tr>
     }
 
+
+let $ms2G01 := prof:current-ms()
+
 (: G02 :)
+
+let $ms1G02 := prof:current-ms()
+
 let $G02table :=
     try {
         for $x in $docRoot//aqd:AQD_Attainment
@@ -241,7 +263,13 @@ let $G02errorLevel :=
         else
             $errors:INFO
 
+
+let $ms2G02 := prof:current-ms()
+
 (: G03 - :)
+
+let $ms1G03 := prof:current-ms()
+
 let $G03table :=
     try {
         for $x in $docRoot//aqd:AQD_Attainment
@@ -270,7 +298,13 @@ let $G03errorLevel :=
     else
         $errors:INFO
 
+
+let $ms2G03 := prof:current-ms()
+
 (: G04 - :)
+
+let $ms1G04 := prof:current-ms()
+
 let $G04table :=
     try {
         let $gmlIds := $docRoot//aqd:AQD_Attainment/lower-case(normalize-space(@gml:id))
@@ -299,8 +333,14 @@ let $G04table :=
         </tr>
     }
 
+
+let $ms2G04 := prof:current-ms()
+
 (: G05 Compile & feedback a list of the exceedances situations based on the content of ./aqd:zone, ./aqd:pollutant, ./aqd:objectiveType, ./aqd:reportingMetric,
    ./aqd:protectionTarget, aqd:exceedanceDescription_Final/aqd:ExceedanceDescription/aqd:exceedance :)
+
+let $ms1G05 := prof:current-ms()
+
 let $G05table :=
     try {
         for $rec in $docRoot//aqd:AQD_Attainment[aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedance = "true"]
@@ -322,7 +362,13 @@ let $G05table :=
         </tr>
     }
 
+
+let $ms2G05 := prof:current-ms()
+
 (: G06 :)
+
+let $ms1G06 := prof:current-ms()
+
 let $G06table :=
     try {
         let $errorClass := if (number($reportingYear) >= 2015) then $errors:G06 else $errors:INFO
@@ -343,8 +389,14 @@ let $G06table :=
         </tr>
     }
 
+
+let $ms2G06 := prof:current-ms()
+
 (: G07 duplicate @gml:ids and aqd:inspireIds and ef:inspireIds :)
 (: Feedback report shall include the gml:id attribute, ef:inspireId, aqd:inspireId, ef:name and/or ompr:name elements as available. :)
+
+let $ms1G07 := prof:current-ms()
+
 let $G07invalid :=
     try {
         let $gmlIds := $docRoot//aqd:AQD_Attainment/lower-case(normalize-space(@gml:id))
@@ -377,7 +429,12 @@ let $G07invalid :=
         </tr>
     }
 
+let $ms2G07 := prof:current-ms()
+
 (: G08 ./aqd:inspireId/base:Identifier/base:localId shall be an unique code for the attainment records starting with ISO2-country code :)
+
+let $ms1G08 := prof:current-ms()
+
 let $G08invalid :=
     try {
         let $localIds :=  $docRoot//aqd:AQD_Attainment/aqd:inspireId/base:Identifier/lower-case(normalize-space(base:localId))
@@ -397,7 +454,13 @@ let $G08invalid :=
         </tr>
     }
 
+
+let $ms2G08 := prof:current-ms()
+
 (: G09 ./ef:inspireId/base:Identifier/base:namespace shall resolve to a unique namespace identifier for the data source (within an annual e-Reporting cycle). :)
+
+let $ms1G09 := prof:current-ms()
+
 let $G09table :=
     try {
         for $id in distinct-values($docRoot//aqd:AQD_Attainment/aqd:inspireId/base:Identifier/base:namespace)
@@ -414,7 +477,13 @@ let $G09table :=
         </tr>
     }
 
+
+let $ms2G09 := prof:current-ms()
+
 (: G09.1 :)
+
+let $ms1G09.1 := prof:current-ms()
+
 let $G09.1invalid :=
     try {
         let $vocDoc := doc($vocabulary:NAMESPACE || "rdf")
@@ -433,7 +502,13 @@ let $G09.1invalid :=
         </tr>
     }
 
+
+let $ms2G09.1 := prof:current-ms()
+
 (: G10 pollutant codes :)
+
+let $ms1G10 := prof:current-ms()
+
 let $G10invalid :=
     try {
         let $valid := ($vocabulary:POLLUTANT_VOCABULARY || "1", $vocabulary:POLLUTANT_VOCABULARY || "7", $vocabulary:POLLUTANT_VOCABULARY || "8", $vocabulary:POLLUTANT_VOCABULARY || "9", $vocabulary:POLLUTANT_VOCABULARY || "5",
@@ -456,7 +531,13 @@ let $G10invalid :=
         </tr>
     }
 
+
+let $ms2G10 := prof:current-ms()
+
 (: G11 :)
+
+let $ms1G11 := prof:current-ms()
+
 let $G11invalid :=
     try {
         let $valid := ($vocabulary:POLLUTANT_VOCABULARY || "1", $vocabulary:POLLUTANT_VOCABULARY || "5", $vocabulary:POLLUTANT_VOCABULARY || "6001", $vocabulary:POLLUTANT_VOCABULARY || "10")
@@ -474,7 +555,13 @@ let $G11invalid :=
         </tr>
     }
 
+
+let $ms2G11 := prof:current-ms()
+
 (: G12 :)
+
+let $ms1G12 := prof:current-ms()
+
 let $G12invalid :=
     try {
         for $x in $docRoot//aqd:AQD_Attainment/aqd:pollutant
@@ -492,7 +579,12 @@ let $G12invalid :=
         </tr>
     }
 
+let $ms2G12 := prof:current-ms()
+
 (: G13 - :)
+
+let $ms1G13 := prof:current-ms()
+
 let $G13Results :=
     try {
         sparqlx:run(query:getG13($cdrUrl, $reportingYear))
@@ -523,7 +615,13 @@ let $G13invalid :=
             <td></td>
         </tr>
     }
+
+let $ms2G13 := prof:current-ms()
+
 (: G13b :)
+
+let $ms1G13b := prof:current-ms()
+
 let $G13binvalid :=
     try {
         let $remoteConcats :=
@@ -546,7 +644,13 @@ let $G13binvalid :=
             <td></td>
         </tr>
     }
+
+let $ms2G13b := prof:current-ms()
+
 (: G13c :)
+
+let $ms1G13c := prof:current-ms()
+
 let $G13cinvalid :=
     try {
         let $remoteConcats :=
@@ -572,7 +676,12 @@ let $G13cinvalid :=
         </tr>
     }
 
+let $ms2G13c := prof:current-ms()
+
 (: G14 - COUNT number zone-pollutant-target comibantion to match those in dataset B and dataset C for the same reporting Year & compare it with Attainment. :)
+
+let $ms1G14 := prof:current-ms()
+
 let $G14table :=
     try {
         let $G14resultBC :=
@@ -642,7 +751,13 @@ let $G14table :=
         </tr>
     }
 
+
+let $ms2G14 := prof:current-ms()
+
 (: G14b :)
+
+let $ms1G14b := prof:current-ms()
+
 let $G14binvalid :=
     try {
         let $exception := ($vocabulary:OBJECTIVETYPE_VOCABULARY || "ALT", $vocabulary:OBJECTIVETYPE_VOCABULARY || "INT", $vocabulary:OBJECTIVETYPE_VOCABULARY || "MO")
@@ -682,7 +797,13 @@ let $G14binvalid :=
         </tr>
     }
 
+let $ms2G14b := prof:current-ms()
+
+
 (: G15 :)
+
+let $ms1G15 := prof:current-ms()
+
 let $G15invalid :=
     try {
         let $exceptions := ($vocabulary:OBJECTIVETYPE_VOCABULARY || "ALT", $vocabulary:OBJECTIVETYPE_VOCABULARY || "INT", $vocabulary:OBJECTIVETYPE_VOCABULARY || "ECO", $vocabulary:OBJECTIVETYPE_VOCABULARY || "ERT")
@@ -706,7 +827,13 @@ let $G15invalid :=
         </tr>
     }
 
+let $ms2G15 := prof:current-ms()
+
+
 (: G17 :)
+
+let $ms1G17 := prof:current-ms()
+
 let $G17invalid :=
     try {
         let $zones := if (fn:string-length($countryCode) = 2) then distinct-values(data(sparqlx:run(query:getZone($cdrUrl))//sparql:binding[@name='inspireLabel']/sparql:literal)) else ()
@@ -731,8 +858,11 @@ let $G17invalid :=
         </tr>
     }
 
+let $ms2G17 := prof:current-ms()
 
 (: G18 :)
+let $ms1G18 := prof:current-ms()
+
 let $G18invalid :=
     try {
         let $localId :=  if (fn:string-length($countryCode) = 2) then distinct-values(data(sparqlx:run(query:getTimeExtensionExemption($cdrUrl))//sparql:binding[@name='localId']/sparql:literal)) else ""
@@ -757,7 +887,11 @@ let $G18invalid :=
         </tr>
     }
 
+let $ms2G18 := prof:current-ms()
+
 (: G19 .//aqd:ExceedanceDescription/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType xlink:href attribute shall resolve to one of :)
+
+let $ms1G19 := prof:current-ms()
 let $G19invalid :=
     try {
         let $valid := ($vocabulary:OBJECTIVETYPE_VOCABULARY || "TV", $vocabulary:OBJECTIVETYPE_VOCABULARY || "LV",$vocabulary:OBJECTIVETYPE_VOCABULARY || "CL",
@@ -780,8 +914,12 @@ let $G19invalid :=
         </tr>
     }
 
+let $ms2G19 := prof:current-ms()
+
 (: G20 - ./aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric xlink:href attribute shall resolve to one of
 ... :)
+let $ms1G20 := prof:current-ms()
+
 let $G20invalid :=
     try {
         let $valid := ($vocabulary:REPMETRIC_VOCABULARY || "3hAbove", $vocabulary:REPMETRIC_VOCABULARY || "aMean", $vocabulary:REPMETRIC_VOCABULARY || "wMean",
@@ -803,7 +941,12 @@ let $G20invalid :=
         </tr>
     }
 
+let $ms2G20 := prof:current-ms()
+
 (: G21 - aqd:protectionTarget match with vocabulary codes :)
+
+let $ms1G21 := prof:current-ms()
+
 let $G21invalid :=
     try {
         let $valid := dd:getValidConcepts($vocabulary:PROTECTIONTARGET_VOCABULARY || "rdf")
@@ -823,7 +966,12 @@ let $G21invalid :=
         </tr>
     }
 
+let $ms2G21 := prof:current-ms()
+
 (: G22 :)
+
+let $ms1G22 := prof:current-ms()
+
 let $G22invalid :=
     try {
         let $environmentalObjectiveCombinations := doc("http://dd.eionet.europa.eu/vocabulary/aq/environmentalobjective/rdf")
@@ -848,7 +996,12 @@ let $G22invalid :=
         </tr>
     }
 
+let $ms2G22 := prof:current-ms()
+
 (: G38 :)
+
+let $ms1G38 := prof:current-ms()
+
 let $G38invalid :=
     try {
         let $valid := ($vocabulary:AREA_CLASSIFICATION_VOCABULARY || "rural", $vocabulary:AREA_CLASSIFICATION_VOCABULARY || "rural-nearcity", $vocabulary:AREA_CLASSIFICATION_VOCABULARY || "rural-regional",
@@ -869,7 +1022,12 @@ let $G38invalid :=
         </tr>
     }
 
+let $ms2G38 := prof:current-ms()
+
 (: G39 :)
+
+let $ms1G39 := prof:current-ms()
+
 let $G39invalid :=
     try {
         for $x in $docRoot//aqd:AQD_Attainment/aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:modelUsed
@@ -887,7 +1045,12 @@ let $G39invalid :=
         </tr>
     }
 
+let $ms2G39 := prof:current-ms()
+
 (: G40 - :)
+
+let $ms1G40 := prof:current-ms()
+
 let $G40invalid  :=
     try {
         for $r in $validAssessment/../aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:modelUsed[@xlink:href = $assessmentMetadata]
@@ -905,7 +1068,12 @@ let $G40invalid  :=
         </tr>
     }
 
+let $ms2G40 := prof:current-ms()
+
 (: G41 - :)
+
+let $ms1G41 := prof:current-ms()
+
 let $G41invalid :=
     try {
         for $r in $docRoot//aqd:AQD_Attainment/aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:stationUsed[not(@xlink:href = $latestSamplingPoints)]
@@ -921,7 +1089,12 @@ let $G41invalid :=
         </tr>
     }
 
+let $ms2G41 := prof:current-ms()
+
 (: G42 - :)
+
+let $ms1G42 := prof:current-ms()
+
 let $G42invalid  :=
     try {
         for $r in $validAssessment/../aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:stationlUsed[not(@xlink:href = $samplingPointAssessmentMetadata)]
@@ -939,7 +1112,12 @@ let $G42invalid  :=
         </tr>
     }
 
+let $ms2G42 := prof:current-ms()
+
 (: G44 - aqd:AQD_Attainment/aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:exceedance shall EQUAL “true” or “false” :)
+
+let $ms1G44 := prof:current-ms()
+
 let $G44invalid :=
     try {
         for $x in $docRoot//aqd:AQD_Attainment/aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:exceedance[not(string() = ("true", "false"))]
@@ -954,8 +1132,14 @@ let $G44invalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+
+let $ms2G44 := prof:current-ms()
+
 (: G45 - If ./aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:exceedance is TRUE EITHER ./aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:numericalExceedance
 OR ./aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:numberExceedances must be provided AS an integer number :)
+
+let $ms1G45 := prof:current-ms()
+
 let $G45invalid :=
     try {
         for $x in $docRoot//aqd:AQD_Attainment[aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:exceedance = "true"]
@@ -974,7 +1158,12 @@ let $G45invalid :=
         </tr>
     }
 
+let $ms2G45 := prof:current-ms()
+
 (: G46 :)
+
+let $ms1G46 := prof:current-ms()
+
 let $G46invalid :=
     try {
         for $x in $docRoot//aqd:AQD_Attainment[aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:exceedance = "false"]
@@ -993,7 +1182,12 @@ let $G46invalid :=
         </tr>
     }
 
+let $ms2G46 := prof:current-ms()
+
 (: G47 :)
+
+let $ms1G47 := prof:current-ms()
+
 let $G47invalid :=
     try {
         for $x in $docRoot//aqd:AQD_Attainment[aqd:exceedanceDescriptionBase/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:adjustmentType/fn:normalize-space(@xlink:href) != "http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/noneApplied"]
@@ -1008,7 +1202,12 @@ let $G47invalid :=
         </tr>
     }
 
+let $ms2G47 := prof:current-ms()
+
 (: G52 :)
+
+let $ms1G52 := prof:current-ms()
+
 let $G52invalid :=
     try {
         let $valid := ($vocabulary:AREA_CLASSIFICATION_VOCABULARY || "rural", $vocabulary:AREA_CLASSIFICATION_VOCABULARY || "rural-nearcity", $vocabulary:AREA_CLASSIFICATION_VOCABULARY || "rural-regional",
@@ -1029,7 +1228,12 @@ let $G52invalid :=
         </tr>
     }
 
+let $ms2G52 := prof:current-ms()
+
 (: G53 :)
+
+let $ms1G53 := prof:current-ms()
+
 let $G53invalid :=
     try {
         for $r in $docRoot//aqd:AQD_Attainment/aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:modelUsed[not(@xlink:href = $latestModels)]
@@ -1045,7 +1249,12 @@ let $G53invalid :=
         </tr>
     }
 
+let $ms2G53 := prof:current-ms()
+
 (: G54 - :)
+
+let $ms1G54 := prof:current-ms()
+
 let $G54invalid :=
     try {
         for $r in $validAssessment/../aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:modelUsed[not(@xlink:href = $assessmentMetadata)]
@@ -1062,7 +1271,12 @@ let $G54invalid :=
         </tr>
     }
 
+let $ms2G54 := prof:current-ms()
+
 (: G55 :)
+
+let $ms1G55 := prof:current-ms()
+
 let $G55invalid :=
     try {
         for $r in $docRoot//aqd:AQD_Attainment/aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:stationUsed[not(@xlink:href = $latestSamplingPoints)]
@@ -1078,7 +1292,12 @@ let $G55invalid :=
         </tr>
     }
 
+let $ms2G55 := prof:current-ms()
+
 (: G56 :)
+
+let $ms1G56 := prof:current-ms()
+
 let $G56invalid :=
     try {
         for $r in $validAssessment/../aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:stationlUsed[not(@xlink:href = $samplingPointAssessmentMetadata)]
@@ -1096,8 +1315,12 @@ let $G56invalid :=
         </tr>
     }
 
+let $ms2G56 := prof:current-ms()
 
 (: G57 - :)
+
+let $ms1G57 := prof:current-ms()
+
 let $G57invalid :=
     try {
         for $x in $docRoot//aqd:AQD_Attainment
@@ -1115,7 +1338,12 @@ let $G57invalid :=
         </tr>
     }
 
+let $ms2G57 := prof:current-ms()
+
 (: G58 - aqd:AQD_Attainment/aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:exceedance shall EQUAL “true” or “false” :)
+
+let $ms1G58 := prof:current-ms()
+
 let $G58invalid :=
     try {
         for $x in $docRoot//aqd:AQD_Attainment/aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:exceedance[not(string() = ("true", "false"))]
@@ -1131,8 +1359,13 @@ let $G58invalid :=
         </tr>
     }
 
+let $ms2G58 := prof:current-ms()
+
 (: G59 - If ./aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:exceedance is TRUE EITHER ./aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:numericalExceedance
 OR ./aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:numberExceedances must be provided AS an integer number :)
+
+let $ms1G59 := prof:current-ms()
+
 let $G59invalid :=
     try {
         for $x in $docRoot//aqd:AQD_Attainment/aqd:exceedanceDescriptionAdjustment[/aqd:ExceedanceDescription/aqd:exceedance = "true"]
@@ -1151,8 +1384,13 @@ let $G59invalid :=
         </tr>
     }
 
+let $ms2G59 := prof:current-ms()
+
 (: G60 - If ./aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:exceedance is FALSE EITHER ./aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:numericalExceedance
 OR ./aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:numberExceedances must be provided AS an integer number :)
+
+let $ms1G60 := prof:current-ms()
+
 let $G60invalid :=
     try {
         for $x in $docRoot//aqd:AQD_Attainment/aqd:exceedanceDescriptionAdjustment[aqd:ExceedanceDescription/aqd:exceedance = "false"]
@@ -1171,7 +1409,12 @@ let $G60invalid :=
         </tr>
     }
 
+let $ms2G60 := prof:current-ms()
+
 (: G61 :)
+
+let $ms1G61 := prof:current-ms()
+
 let $G61invalid :=
     try {
         let $valid := ($vocabulary:ADJUSTMENTTYPE_VOCABULARY || "nsCorrection", $vocabulary:ADJUSTMENTTYPE_VOCABULARY || "wssCorrection")
@@ -1191,7 +1434,12 @@ let $G61invalid :=
         </tr>
     }
 
+let $ms2G61 := prof:current-ms()
+
 (: G62 - :)
+
+let $ms1G62 := prof:current-ms()
+
 let $G62invalid :=
     try {
         let $valid := ($vocabulary:ADJUSTMENTSOURCE_VOCABULARY || "A1", $vocabulary:ADJUSTMENTSOURCE_VOCABULARY || "A2", $vocabulary:ADJUSTMENTSOURCE_VOCABULARY || "B", $vocabulary:ADJUSTMENTSOURCE_VOCABULARY || "B1",
@@ -1214,7 +1462,12 @@ let $G62invalid :=
         </tr>
     }
 
+let $ms2G62 := prof:current-ms()
+
 (: G63 :)
+
+let $ms1G63 := prof:current-ms()
+
 let $G63invalid :=
     try {
         let $valid := ($vocabulary:ASSESSMENTTYPE_VOCABULARY || "fixed", $vocabulary:ASSESSMENTTYPE_VOCABULARY || "model", $vocabulary:ASSESSMENTTYPE_VOCABULARY || "indicative", $vocabulary:ASSESSMENTTYPE_VOCABULARY || "objective")
@@ -1234,7 +1487,12 @@ let $G63invalid :=
         </tr>
     }
 
+let $ms2G63 := prof:current-ms()
+
 (: G64 :)
+
+let $ms1G64 := prof:current-ms()
+
 let $G64invalid :=
     try {
         let $types := ($vocabulary:ADJUSTMENTTYPE_VOCABULARY || "nsCorrection", $vocabulary:ADJUSTMENTTYPE_VOCABULARY || "wssCorrection")
@@ -1254,6 +1512,8 @@ let $G64invalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+
+let $ms2G64 := prof:current-ms()
 
 (: G65
 let $G65invalid :=
@@ -1295,6 +1555,9 @@ let $G66invalid :=
     }:)
 
 (: G66 :)
+
+let $ms1G66 := prof:current-ms()
+
 let $G66invalid :=
     try {
 
@@ -1340,8 +1603,13 @@ let $G66invalid :=
     }
 
 
+let $ms2G66 := prof:current-ms()
+
 
 (: G67 - :)
+
+let $ms1G67 := prof:current-ms()
+
 let $G67invalid :=
     try {
         for $x in $validAssessment/../aqd:exceedanceDescriptionAdjustment/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:assessmentMethod/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata[not(@xlink:href = $samplingPointAssessmentMetadata)]
@@ -1358,7 +1626,12 @@ let $G67invalid :=
         </tr>
     }
 
+let $ms2G67 := prof:current-ms()
+
 (: G70 :)
+
+let $ms1G70 := prof:current-ms()
+
 let $G70invalid :=
     try {
         for $x in $docRoot//aqd:AQD_Attainment[aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:surfaceArea[count(@uom) > 0 and fn:normalize-space(@uom) != "http://dd.eionet.europa.eu/vocabulary/uom/area/km2" and fn:normalize-space(@uom) != "http://dd.eionet.europa.eu/vocabularyconcept/uom/area/km2"]]
@@ -1373,7 +1646,12 @@ let $G70invalid :=
         </tr>
     }
 
+let $ms2G70 := prof:current-ms()
+
 (: G71 :)
+
+let $ms1G71 := prof:current-ms()
+
 let $G71invalid :=
     try {
         for $x in $docRoot//aqd:AQD_Attainment[aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:roadLength[count(@uom) > 0 and fn:normalize-space(@uom) != "http://dd.eionet.europa.eu/vocabulary/uom/length/km" and fn:normalize-space(@uom) != "http://dd.eionet.europa.eu/vocabularyconcept/uom/length/km"]]
@@ -1388,7 +1666,12 @@ let $G71invalid :=
         </tr>
     }
 
+let $ms2G71 := prof:current-ms()
+
 (: G72 :)
+
+let $ms1G72 := prof:current-ms()
+
 let $G72invalid :=
     try {
         let $valid := ($vocabulary:AREA_CLASSIFICATION_VOCABULARY || "rural", $vocabulary:AREA_CLASSIFICATION_VOCABULARY || "rural-nearcity", $vocabulary:AREA_CLASSIFICATION_VOCABULARY ||"rural-regional",
@@ -1409,7 +1692,12 @@ let $G72invalid :=
         </tr>
     }
 
+let $ms2G72 := prof:current-ms()
+
 (: G73 :)
+
+let $ms1G73 := prof:current-ms()
+
 let $G73invalid :=
     try {
         for $x in $docRoot//aqd:AQD_Attainment/aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:modelUsed
@@ -1427,7 +1715,12 @@ let $G73invalid :=
         </tr>
     }
 
+let $ms2G73 := prof:current-ms()
+
 (: G74 :)
+
+let $ms1G74 := prof:current-ms()
+
 let $modelUsed_74  :=
     try {
         for $r in $validAssessment/../aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:modelUsed[not(@xlink:href = $assessmentMetadata)]
@@ -1444,7 +1737,13 @@ let $modelUsed_74  :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+
+let $ms2G74 := prof:current-ms()
+
 (: G75 :)
+
+let $ms1G75 := prof:current-ms()
+
 let $G75invalid  :=
     try {
         for $r in $docRoot//aqd:AQD_Attainment//aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:stationUsed
@@ -1461,7 +1760,12 @@ let $G75invalid  :=
         </tr>
     }
 
+let $ms2G75 := prof:current-ms()
+
 (: G76 :)
+
+let $ms1G76 := prof:current-ms()
+
 let $G76invalid  :=
     try {
         for $r in $validAssessment/../aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:stationlUsed[not(@xlink:href = $samplingPointAssessmentMetadata)]
@@ -1479,7 +1783,12 @@ let $G76invalid  :=
         </tr>
     }
 
+let $ms2G76 := prof:current-ms()
+
 (: G78 - ./aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedance shall EQUAL “true” or “false” :)
+
+let $ms1G78 := prof:current-ms()
+
 let $G78invalid :=
     try {
         for $x in $docRoot//aqd:AQD_Attainment/aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedance[not(string() = ("true", "false"))]
@@ -1494,8 +1803,14 @@ let $G78invalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+
+let $ms2G78 := prof:current-ms()
+
 (: G79 - If ./aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedance is TRUE EITHER ./aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:numericalExceedance
 OR ./aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:numberExceedances must be provided AS an integer number :)
+
+let $ms1G79 := prof:current-ms()
+
 let $G79invalid :=
     try {
         for $x in $docRoot//aqd:AQD_Attainment[aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedance = "true"]
@@ -1513,8 +1828,14 @@ let $G79invalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+
+let $ms2G79 := prof:current-ms()
+
 (: G80 - If ./aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedance is FALSE EITHER ./aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:numericalExceedance
 OR ./aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:numberExceedances must be provided AS an integer number :)
+
+let $ms1G80 := prof:current-ms()
+
 let $G80invalid :=
     try {
         for $x in $docRoot//aqd:AQD_Attainment[aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedance = "false"]
@@ -1533,7 +1854,12 @@ let $G80invalid :=
         </tr>
     }
 
+let $ms2G80 := prof:current-ms()
+
 (: G81 :)
+
+let $ms1G81 := prof:current-ms()
+
 let $G81invalid :=
     try {
         for $x in $docRoot//aqd:AQD_Attainment[aqd:exceedanceDescriptionAdjustmen/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:adjustmentType/fn:normalize-space(@xlink:href)!="http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/fullyCorrected"]
@@ -1548,7 +1874,12 @@ let $G81invalid :=
         </tr>
     }
 
+let $ms2G81 := prof:current-ms()
+
 (: G82 - :)
+
+let $ms1G82 := prof:current-ms()
+
 let $G82invalid :=
     try {
         let $valid := ("http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/noneApplied","http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/noneApplicable", "http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/fullyCorrected")
@@ -1565,10 +1896,15 @@ let $G82invalid :=
         </tr>
     }
 
+let $ms2G82 := prof:current-ms()
+
 (:~ G85 - WHERE ./aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedance shall EQUAL “true”
  :  ./aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:stationUsed OR
  :  ./aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:modelUsed MUST be populated (At least 1 xlink must be found)
  :)
+
+let $ms1G85 := prof:current-ms()
+
 let $G85invalid :=
     try {
         for $x in $docRoot//aqd:AQD_Attainment[aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedance = "true"]
@@ -1585,7 +1921,13 @@ let $G85invalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+
+let $ms2G85 := prof:current-ms()
+
 (: G86 :)
+
+let $ms1G86 := prof:current-ms()
+
 let $G86invalid :=
     try {
         for $x in $docRoot//aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea[aqd:stationUsed/@xlink:href or aqd:modelUsed/@xlink:href]
@@ -1611,7 +1953,12 @@ let $G86invalid :=
         </tr>
     }
 
+let $ms2G86 := prof:current-ms()
+
 (: G89 :)
+
+let $ms1G89 := prof:current-ms()
+
 let $G89invalid :=
     try {
         for $x in $docRoot//aqd:AQD_Attainment/aqd:assessment/@xlink:href
@@ -1656,8 +2003,12 @@ let $G89invalid :=
         </tr>
     }
 
+let $ms2G89 := prof:current-ms()
+
+
 return
     <table class="maintable hover">
+    <table>
         {html:build2("NS", $labels:NAMESPACES, $labels:NAMESPACES_SHORT, $NSinvalid, "All values are valid", "record", $errors:NS)}
         {html:build2("VOCAB", $labels:VOCAB, $labels:VOCAB_SHORT, $VOCABinvalid, "All values are valid", "record", $errors:VOCAB)}
         {html:build3("G0", $labels:G0, $labels:G0_SHORT, $G0table, string($G0table/td), errors:getMaxError($G0table))}
@@ -1727,6 +2078,80 @@ return
         {html:build2("G86", $labels:G86, $labels:G86_SHORT, $G86invalid, "All values are valid", " invalid value", $errors:G86)}
         {html:buildNoCount2Sparql("G89", $labels:G89, $labels:G89_SHORT, $G89invalid, "All values are valid", "Invalid value found", $errors:G89)}
         {$G82invalid}
+    </table>
+     <table>
+        <tr>
+            <th>Query</th>
+            <th>Process time in miliseconds</th>
+            <th>Process time in seconds</th>
+        </tr>
+       {common:runtime("NS", $ms1NS, $ms2NS)}
+       {common:runtime("VOCAB", $ms1VOCAB, $ms2VOCAB)}
+       {common:runtime("G0",  $ms1G0, $ms2G0)}
+       {common:runtime("G01", $ms1G01, $ms2G01)}
+       {common:runtime("G02", $ms1G02, $ms2G02)}
+       {common:runtime("G03", $ms1G03, $ms2G03)}
+       {common:runtime("G04",  $ms1G04, $ms2G04)}
+       {common:runtime("G05", $ms1G05, $ms2G05)}
+       {common:runtime("G06",  $ms1G06, $ms2G06)}
+       {common:runtime("G07",  $ms1G07, $ms2G07)}
+       {common:runtime("G08",  $ms1G08, $ms2G08)}
+       {common:runtime("G09",  $ms1G09, $ms2G09)}
+       {common:runtime("G09.1",  $ms1G09.1, $ms2G09.1)}
+       {common:runtime("G10",  $ms1G10, $ms2G10)}
+       {common:runtime("G11",  $ms1G11, $ms2G11)}
+       {common:runtime("G12",  $ms1G12, $ms2G12)}
+       {common:runtime("G13",  $ms1G13, $ms2G13)}
+       {common:runtime("G13b",  $ms1G13b, $ms2G13b)}
+       {common:runtime("G13c",  $ms1G13c, $ms2G13c)}
+       {common:runtime("G14",  $ms1G14, $ms2G14)}
+       {common:runtime("G14b",  $ms1G14b, $ms2G14b)}
+       {common:runtime("G15",  $ms1G15, $ms2G15)}
+       {common:runtime("G17",  $ms1G17, $ms2G17)}
+       {common:runtime("G18",  $ms1G18, $ms2G18)}
+       {common:runtime("G19",  $ms1G19, $ms2G19)}
+       {common:runtime("G20", $ms1G20, $ms2G20)}
+       {common:runtime("G21",  $ms1G21, $ms2G21)}
+       {common:runtime("G22",  $ms1G22, $ms2G22)}
+       {common:runtime("G38",  $ms1G38, $ms2G38)}
+       {common:runtime("G39",  $ms1G39, $ms2G39)}
+       {common:runtime("G40",  $ms1G40, $ms2G40)}
+       {common:runtime("G41",  $ms1G41, $ms2G41)}
+       {common:runtime("G42",  $ms1G42, $ms2G42)}
+       {common:runtime("G44",  $ms1G44, $ms2G44)}
+       {common:runtime("G45",  $ms1G45, $ms2G45)}
+       {common:runtime("G46",  $ms1G46, $ms2G46)}
+       {common:runtime("G47",  $ms1G47, $ms2G47)}
+       {common:runtime("G52",  $ms1G52, $ms2G52)}
+       {common:runtime("G53",  $ms1G53, $ms2G53)}
+       {common:runtime("G54",  $ms1G54, $ms2G54)}
+       {common:runtime("G55",  $ms1G55, $ms2G55)}
+       {common:runtime("G56",  $ms1G56, $ms2G56)}
+       {common:runtime("G58",  $ms1G58, $ms2G58)}
+       {common:runtime("G59",  $ms1G59, $ms2G59)}
+       {common:runtime("G60",  $ms1G60, $ms2G60)}
+       {common:runtime("G61",  $ms1G61, $ms2G61)}
+       {common:runtime("G62",  $ms1G62, $ms2G62)}
+       {common:runtime("G63",  $ms1G63, $ms2G63)}
+       {common:runtime("G64",  $ms1G64, $ms2G64)}
+       {common:runtime("G66",  $ms1G66, $ms2G66)}
+       {common:runtime("G67",  $ms1G67, $ms2G67)}
+       {common:runtime("G70",  $ms1G70, $ms2G70)}
+       {common:runtime("G71",  $ms1G71, $ms2G71)}
+       {common:runtime("G72",  $ms1G72, $ms2G72)}
+       {common:runtime("G73",  $ms1G73, $ms2G73)}
+       {common:runtime("G74",  $ms1G74, $ms2G74)}
+       {common:runtime("G75",  $ms1G75, $ms2G75)}
+       {common:runtime("G76",  $ms1G76, $ms2G76)}
+       {common:runtime("G78",  $ms1G78, $ms2G78)}
+       {common:runtime("G79",  $ms1G79, $ms2G79)}
+       {common:runtime("G80",  $ms1G80, $ms2G80)}
+       {common:runtime("G81",  $ms1G81, $ms2G81)}
+       {common:runtime("G82",  $ms1G82, $ms2G82)}
+       {common:runtime("G85",  $ms1G85, $ms2G85)}
+       {common:runtime("G86",  $ms1G86, $ms2G86)}
+       {common:runtime("G89",  $ms1G80, $ms2G89)}
+    </table>
     </table>
 };
 

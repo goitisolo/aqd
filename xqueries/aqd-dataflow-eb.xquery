@@ -51,6 +51,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
     let $headerEndPosition := $docRoot//aqd:AQD_ReportingHeader/aqd:reportingPeriod/gml:TimePeriod/gml:endPosition
 
     (: File prefix/namespace check :)
+    let $ms1NS := prof:current-ms()
     let $NSinvalid :=
         try {
             let $XQmap := inspect:static-context((), 'namespaces')
@@ -76,10 +77,17 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
                 <td title="Error description">{$err:description}</td>
             </tr>
         }
+    let $ms2NS := prof:current-ms()
     (: VOCAB check:)
+    let $ms1VOCAB := prof:current-ms()
+
     let $VOCABinvalid := checks:vocab($docRoot)
 
+    let $ms2VOCAB := prof:current-ms()
+
     (: Eb0 - Check if delivery if this is a new delivery or updated delivery (via reporting year) :)
+
+    let $ms1Eb0 := prof:current-ms()
     let $Eb0table :=
         try {
             if ($reportingYear = "") then
@@ -106,7 +114,12 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
         }
     let $isNewDelivery := errors:getMaxError($Eb0table) = $errors:INFO
 
+    let $ms2Eb0 := prof:current-ms()
+    
     (: Eb01 - Compile & feedback upon the total number of observations included in the delivery :)
+
+    let $ms1Eb01 := prof:current-ms()
+    
     let $Eb01table :=
         try {
             let $parameters := for $i in ("model", "objective") return $vocabulary:PROCESS_PARAMETER || $i
@@ -127,7 +140,12 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
             </tr>
         }
 
+    let $ms2Eb01 := prof:current-ms()
+    
     (:Eb02 ./om:phenomenonTime/gml:TimePeriod/gml:beginPosition shall be LESS THAN ./om:phenomenonTime/gml:TimePeriod/gml:endPosition. :)
+    
+    let $ms1Eb02 := prof:current-ms()
+    
     let $Eb02invalid :=
         try {
             (let $all := $docRoot//om:phenomenonTime/gml:TimePeriod
@@ -148,7 +166,12 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
             </tr>
         }
 
-    (:Eb03 - ./om:resultTime/gml:TimeInstant/gml:timePosition shall be GREATER THAN ./om:phenomenonTime/gml:TimePeriod/gml:endPosition :)
+    let $ms2Eb02 := prof:current-ms()
+    
+    (:Eb03 - ./om:resultTime/gml:TimeInstant/gml:timePosition shall be GREATER THAN ./om:phenomenonTime/gml:TimePeriod/gml:endPosition :)  
+
+    let $ms1Eb03 := prof:current-ms()
+    
     let $Eb03invalid :=
         try {
             (let $all := $docRoot//om:OM_Observation
@@ -168,8 +191,14 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
             </tr>
         }
 
+    let $ms2Eb03 := prof:current-ms()
+    
+    
     (: Eb04 -  All om:OM_Observation/ must provide a valid /om:procedure xlink (can not be empty) & ./om:procedure xlink:href attribute
      shall resolve to a traversable link process configuration in Data flow D1b: /aqd:AQD_ModelProcess/ompr:inspireld/base:Identifier/base:localId :)
+    
+    let $ms1Eb04 := prof:current-ms()
+    
     let $Eb04invalid :=
         try {
             (let $result := sparqlx:run(query:getModelProcess($cdrUrl))
@@ -188,8 +217,14 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
             </tr>
         }
 
+    let $ms2Eb04 := prof:current-ms()
+    
+    
     (: Eb05 A valid delivery MUST provide an om:parameter/om:NamedValue/om:name xlink:href to
     either http://dd.eionet.europa.eu/vocabulary/aq/processparameter/model or http://dd.eionet.europa.eu/vocabulary/aq/processparameter/objective :)
+    
+    let $ms1Eb05 := prof:current-ms()
+    
     let $Eb05invalid :=
         try {
             (let $parameters := for $i in ("model", "objective") return $vocabulary:PROCESS_PARAMETER || $i
@@ -206,8 +241,14 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
             </tr>
         }
 
+    let $ms2Eb05 := prof:current-ms()
+    
+    
     (: Eb06 - If ./om:parameter/om:NamedValue/om:name xlink:href  resolves to http://dd.eionet.europa.eu/vocabulary/aq/processparameter/model or .../objective
 /om:parameter/om:NamedValue/om:value xlink:href attribute shall resolve to a traversable link to a unique AQD_Model (“namespace/localId” of the object) :)
+    
+    let $ms1Eb06 := prof:current-ms()
+    
     let $Eb06invalid :=
         try {
             (let $parameters := for $i in ("model", "objective") return $vocabulary:PROCESS_PARAMETER || $i
@@ -231,7 +272,13 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
             </tr>
         }
 
+    let $ms2Eb06 := prof:current-ms()
+    
+    
     (: Eb07 - A valid delivery should provide  an om:parameter with om:name xlink:href to http://dd.eionet.europa.eu/vocabulary/aq/processparameter/AssessmentType :)
+    
+    let $ms1Eb07 := prof:current-ms()
+    
     let $Eb07invalid :=
         try {
             (for $x in $docRoot//om:OM_Observation
@@ -248,8 +295,14 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
             </tr>
         }
 
+    let $ms2Eb07 := prof:current-ms()
+    
+    
     (: Eb08 - If ./om:parameter/om:NamedValue/om:name links to http://dd.eionet.europa.eu/vocabulary/aq/processparameter/AssessmentType
      /om:parameter/om:NamedValue/om:value xlink:href attribute shall resolve to  valid code for http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/ :)
+    
+    let $ms1Eb08 := prof:current-ms()
+    
     let $Eb08invalid :=
         try {
             (let $valid := dd:getValidConcepts($vocabulary:ASSESSMENTTYPE_VOCABULARY || "rdf")
@@ -269,8 +322,14 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
             </tr>
         }
 
+    let $ms2Eb08 := prof:current-ms()
+    
+    
     (: Eb09 - OM observations shall contain several om:parameters to further define the model/objective estimation results
 ./om:parameter/om:NamedValue/om:name xlink:href attribute shall resolve to a traversable link to http://dd.eionet.europa.eu/vocabulary/aq/processparameter/ :)
+    
+    let $ms1Eb09 := prof:current-ms()
+    
     let $Eb09invalid :=
         try {
             (let $valid := (dd:getValidConcepts($vocabulary:MODEL_PARAMETER || "rdf"), dd:getValidConcepts($vocabulary:PROCESS_PARAMETER || "rdf"))
@@ -288,7 +347,12 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
             </tr>
         }
 
+    let $ms2Eb09 := prof:current-ms()
+    
     (: Eb10 - . /om:observedProperty xlink:href attribute shall resolve to a traversable link to http://dd.eionet.europa.eu/vocabulary/aq/pollutant/ :)
+    
+    let $ms1Eb10 := prof:current-ms()
+    
     let $Eb10invalid :=
         try {
             (let $all := dd:getValidConcepts("http://dd.eionet.europa.eu/vocabulary/aq/pollutant/rdf")
@@ -309,8 +373,13 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
             </tr>
         }
 
+    let $ms2Eb10 := prof:current-ms()
+    
     (: Eb11 - The pollutant xlinked via /om:observedProperty must match the pollutant code declared via /aqd:AQD_Model/ef:observingCapability/ef:ObservingCapability/ef:observedProperty
       (See Eb6 on linkages between the Observations & the SamplingPoint) :)
+    
+    let $ms1Eb11 := prof:current-ms()
+    
     let $Eb11invalid :=
         try {
             (let $result := sparqlx:run(query:getModelMetadataFromFiles($latestEnvelopeD1b))
@@ -342,8 +411,13 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
             </tr>
         }
 
+    let $ms2Eb11 := prof:current-ms()
+    
     (: Eb12 - All om:OM_Observation/ must provide a valid /om:featureOfInterest xlink (can not be empty)& 
      /om:featureOfInterest xlink:href attribute shall resolve to a traversable link to /aqd:AQD_modelArea/ompr:inspireld/base:Identifier/base:localId :)
+    
+    let $ms1Eb12 := prof:current-ms()
+    
     let $Eb12invalid :=
         try {
             (let $areas := data(sparqlx:run(query:getModelArea($latestEnvelopeD1b))/sparql:binding[@name = "localId"]/sparql:literal)
@@ -364,8 +438,13 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
             </tr>
         }
 
+    let $ms2Eb12 := prof:current-ms()
+    
     (: Eb13 - A valid delivery MUST provide an om:parameter/om:NamedValue/om:name xlink:href to http://dd.eionet.europa.eu/vocabulary/aq/processparameter/resultencoding &
     om:parameter/om:NamedValue/om:value xlink:href attribute shall resolve to  valid code for http://dd.eionet.europa.eu/vocabulary/aq/resultencoding/ :)
+    
+    let $ms1Eb13 := prof:current-ms()
+    
     let $Eb13invalid :=
         try {
             (let $valid := dd:getValidConcepts($vocabulary:RESULT_ENCODING || "rdf")
@@ -385,8 +464,14 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
             </tr>
         }
 
+    let $ms2Eb13 := prof:current-ms()
+    
+    
     (: Eb14 - A valid delivery MUST provide an om:parameter/om:NamedValue/om:name xlink:href to http://dd.eionet.europa.eu/vocabulary/aq/processparameter/resultformat &
     om:parameter/om:NamedValue/om:value xlink:href attribute attribute shall resolve to  valid code for http://dd.eionet.europa.eu/vocabulary/aq/resultformat/ :)
+    
+    let $ms1Eb14 := prof:current-ms()
+    
     let $Eb14invalid :=
         try {
             (let $valid := dd:getValidConcepts($vocabulary:RESULT_FORMAT || "rdf")
@@ -406,11 +491,17 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
             </tr>
         }
 
+
+    
+    let $ms2Eb14 := prof:current-ms()
+    
     (: IF resultencoding = inline, resultformat can only be http://dd.eionet.europa.eu/vocabulary/aq/resultformat/swe-array
      IF resultencoding = external resultformat can only be http://dd.eionet.europa.eu/vocabulary/aq/resultformat/ascii-grid ,
        http://dd.eionet.europa.eu/vocabulary/aq/resultformat/esri-shp or http://dd.eionet.europa.eu/vocabulary/aq/resultformat/geotiff
     :)
-    let $Eb14func := function() {
+    let $ms1Eb14b := prof:current-ms()
+    
+   let $Eb14func := function() {
         (let $ir := "http://dd.eionet.europa.eu/vocabulary/aq/resultencoding/inline"
         let $er := "http://dd.eionet.europa.eu/vocabulary/aq/resultencoding/external"
         let $validInline := ($ir || "http://dd.eionet.europa.eu/vocabulary/aq/resultformat/swe-array")
@@ -439,9 +530,16 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
     }
     let $Eb14binvalid := errors:trycatch($Eb14func)
 
+let $ms2Eb14b := prof:current-ms()
+    
+   
+
     (: Eb15 - IF resultformat is http://dd.eionet.europa.eu/vocabulary/aq/resultformat/swe-array (Eb14) then ./om:result/swe:DataArray/swe:elementType/swe:DataRecord/swe:field name="startTime" attribute THEN
     swe:Time definition=http://www.opengis.net/def/property/OGC/0/SamplingTime swe:uom xlink:href=http://www.opengis.net/def/uom/ISO-8601/0/Gregorian:)
     (: TODO FIX :)
+
+    let $ms1Eb15 := prof:current-ms()
+    
     let $Eb15invalid :=
         try {
             (for $x in $docRoot//om:OM_Observation/om:result[swe:DataArray]//swe:elementType/swe:DataRecord/swe:field[@name = "StartTime"
@@ -458,8 +556,13 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
             </tr>
         }
 
+    let $ms2Eb15 := prof:current-ms()
+    
     (: Eb16 - IF resultformat is http://dd.eionet.europa.eu/vocabulary/aq/resultformat/swe-array (Eb14) then ./om:result/swe:DataArray/swe:elementType/swe:DataRecord/swe:field name="endTime" attribute THEN
     swe:Time definition=http://www.opengis.net/def/property/OGC/0/SamplingTime swe:uom xlink:href=http://www.opengis.net/def/uom/ISO-8601/0/Gregorian :)
+    
+    let $ms1Eb16 := prof:current-ms()
+    
     let $Eb16invalid :=
         try {
             (for $x in $docRoot//om:OM_Observation/om:result[swe:DataArray]//swe:elementType/swe:DataRecord/swe:field[@name = "EndTime"
@@ -476,8 +579,13 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
             </tr>
         }
 
+    let $ms2Eb16 := prof:current-ms()
+    
     (: Eb17 - IF resultformat is http://dd.eionet.europa.eu/vocabulary/aq/resultformat/swe-array (Eb14) then ./om:result/swe:DataArray/swe:elementType/swe:DataRecord/swe:field name="validity" attribute THEN
      swe:Category definition is defined by http://dd.eionet.europa.eu/vocabulary/aq/observationvalidity:)
+    
+    let $ms1Eb17 := prof:current-ms()
+    
     let $Eb17invalid :=
         try {
             (for $x in $docRoot//om:OM_Observation/om:result[swe:DataArray]//swe:elementType/swe:DataRecord/swe:field[@name="Validity"
@@ -493,8 +601,14 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
                 <td title="Error description">{$err:description}</td>
             </tr>
         }
+    
+    let $ms2Eb17 := prof:current-ms()
+    
     (: Eb18 - IF resultformat is http://dd.eionet.europa.eu/vocabulary/aq/resultformat/swe-array (Eb14) then ./om:result/swe:DataArray/swe:elementType/swe:DataRecord/swe:field name="verification" attribute THEN
      swe:Category definition is defined by http://dd.eionet.europa.eu/vocabulary/aq/observationverification :)
+    
+    let $ms1Eb18 := prof:current-ms()
+    
     let $Eb18invalid :=
         try {
             (for $x in $docRoot//om:OM_Observation/om:result[swe:DataArray]//swe:elementType/swe:DataRecord/swe:field[@name = "Verification"
@@ -510,8 +624,14 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
                 <td title="Error description">{$err:description}</td>
             </tr>
         }
+    
+    let $ms2Eb18 := prof:current-ms()
+    
     (: Eb19 - IF resultformat is http://dd.eionet.europa.eu/vocabulary/aq/resultformat/swe-array (Eb14) then ./om:result/swe:DataArray/swe:elementType/swe:DataRecord/swe:field name="Value" attribute THEN swe:Quantity definition is defined by
     http://dd.eionet.europa.eu/vocabulary/aq/primaryObservation/[code] or http://dd.eionet.europa.eu/vocabulary/aq/aggregationprocess/[code] & the swe:uom resolves to an xlink to http://dd.eionet.europa.eu/vocabulary/uom/concentration/[code]:)
+    
+    let $ms1Eb19 := prof:current-ms()
+    
     let $Eb19invalid :=
         try {
             (let $defs := (dd:getValidConceptsLC($vocabulary:OBSERVATIONS_PRIMARY || "rdf"), dd:getValidConceptsLC($vocabulary:AGGREGATION_PROCESS || "rdf"))
@@ -531,8 +651,14 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
             </tr>
         }
 
+    
+    let $ms2Eb19 := prof:current-ms()
+    
     (: Eb19b - Check if the unit of measure reporting via (swe:uom) corresponds to the recommended unit of measure in vocabulary
      http://dd.eionet.europa.eu/vocabulary/uom/concentration/[code] depending on pollutant reported via /om:observedProperty :)
+    
+    let $ms1Eb19b := prof:current-ms()
+    
     let $Eb19binvalid :=
         try {
             (for $x in $docRoot//om:OM_Observation/om:result[swe:DataArray]
@@ -554,8 +680,13 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
             </tr>
         }
 
+    let $ms2Eb19b := prof:current-ms()
+    
     (: Eb20 - IF resultformat is http://dd.eionet.europa.eu/vocabulary/aq/resultformat/swe-array (Eb14) then a fifth element might be included. IF ./om:result/swe:DataArray/swe:elementType/swe:DataRecord/swe:field name="DataCapture" attribute THEN swe:Category definition is defined by
      http://dd.eionet.europa.eu/vocabulary/aq/primaryObservation/dc & the swe:uom resolves to an xlink to http://dd.eionet.europa.eu/vocabulary/uom/statistics/percentage :)
+    
+    let $ms1Eb20 := prof:current-ms()
+    
     let $Eb20invalid :=
         try {
             (let $all := $docRoot//om:OM_Observation/om:result[swe:DataArray]//swe:elementType/swe:DataRecord/swe:field[@name="DataCapture"]
@@ -577,7 +708,13 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
             </tr>
         }
 
+    
+    let $ms2Eb20 := prof:current-ms()
+    
     (: Eb21 - IF resultformat is http://dd.eionet.europa.eu/vocabulary/aq/resultformat/swe-array (Eb14) then /om:result/swe:DataArray/swe:encoding/swe:TextEncoding shall resolve to decimalSeparator="." tokenSeparator="," blockSeparator="@@" :)
+    
+    let $ms1Eb21 := prof:current-ms()
+    
     let $Eb21invalid :=
         try {
             (for $x in $docRoot//om:OM_Observation/om:result[swe:DataArray]//swe:encoding/swe:TextEncoding[not(@decimalSeparator=".") or not(@tokenSeparator=",") or not(@blockSeparator="@@")]
@@ -596,7 +733,13 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
             </tr>
         }
 
+    
+    let $ms2Eb21 := prof:current-ms()
+    
     (: Eb22 - IF resultformat is http://dd.eionet.europa.eu/vocabulary/aq/resultformat/swe-array (Eb14) then the order of the fields within individual data blocks (swe:values) must correspond to the order described within the swe:DataRecord/swe:field(multiple). :)
+    
+    let $ms1Eb22 := prof:current-ms()
+    
     let $Eb22invalid :=
         try {
             (let $validVerifications := dd:getValidNotations($vocabulary:OBSERVATIONS_VERIFICATION || "rdf")
@@ -633,8 +776,13 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
             </tr>
         }
 
+    let $ms2Eb22 := prof:current-ms()
+    
     (: Eb23 - IF resultformat is http://dd.eionet.europa.eu/vocabulary/aq/resultformat/swe-array (Eb14)
      then the count of elements under <swe:elementCount><swe:Count><swe:value> should match the count of data blocks under <swe:values>. :)
+    
+    let $ms1Eb23 := prof:current-ms()
+    
     let $Eb23invalid :=
         try {
             (for $x at $xpos in $docRoot//om:OM_Observation/om:result[swe:DataArray]
@@ -658,11 +806,16 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
             </tr>
         }
 
+    let $ms2Eb23 := prof:current-ms()
+    
     (: Eb24 - IF resultformat is http://dd.eionet.europa.eu/vocabulary/aq/resultformat/swe-array (Eb14) then difference between endTime & startTime must correspond to the definition under <swe:field name="Value"><swe:Quantity definition=> .Difference between endTime & startTime must correspond to the definition:
     http://dd.eionet.europa.eu/vocabulary/aq/primaryObservation/hour must be 1 h
     http://dd.eionet.europa.eu/vocabulary/aq/primaryObservation/day must be 24 hours
     http://dd.eionet.europa.eu/vocabulary/aq/primaryObservation/year must be 8760 hours or 8784
     http://dd.eionet.europa.eu/vocabulary/aq/primaryObservation/var can be anything :)
+    
+    let $ms1Eb24 := prof:current-ms()
+    
     let $Eb24invalid :=
         try {
             (for $x at $xpos in $docRoot//om:OM_Observation/om:result[swe:DataArray//swe:field[@name = "Value"]/swe:Quantity/contains(@definition, $vocabulary:OBSERVATIONS_PRIMARY) = true()]
@@ -723,8 +876,14 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
                 <td title="Error description">{$err:description}</td>
             </tr>
         }
+    
+    let $ms2Eb24 := prof:current-ms()
+    
     (: Eb25 - IF resultformat is http://dd.eionet.europa.eu/vocabulary/aq/resultformat/swe-array (Eb14)
      then the temporal envelopes of the swe:values (reported via starTime and EndTime) shall reconcile with ./om:phenomenonTime/gml:TimePeriod/gml:beginPosition :)
+    
+    let $ms1Eb25 := prof:current-ms()
+    
     let $Eb25invalid :=
         try {
             (for $x at $xpos in $docRoot//om:OM_Observation/om:result[swe:DataArray]
@@ -764,7 +923,13 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
             </tr>
         }
 
+    
+    let $ms2Eb25 := prof:current-ms()
+    
     (: Eb26 :)
+    
+    let $ms1Eb26 := prof:current-ms()
+    
     let $Eb26invalid :=
         try {
             (let $result := sparqlx:run(query:getModelMetadataSampling($cdrUrl))
@@ -808,7 +973,13 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
             </tr>
         }
 
+    
+    let $ms2Eb26 := prof:current-ms()
+    
     (: Eb27 -  IF resultformat is http://dd.eionet.europa.eu/vocabulary/aq/resultformat/swe-array (Eb14) then check that all values (between @@) include as many fields as declared under swe:DataRecord :)
+    
+    let $ms1Eb27 := prof:current-ms()
+    
     let $Eb27invalid :=
         try {
             (for $x at $xpos in $docRoot//om:OM_Observation/om:result[swe:DataArray]
@@ -834,7 +1005,13 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
             </tr>
         }
 
+    
+    let $ms2Eb27 := prof:current-ms()
+    
     (: Eb28 - IF resultformat is http://dd.eionet.europa.eu/vocabulary/aq/resultformat/swe-array (Eb14) then the data array should not end with "@@". Please note that @@ is a block separator. :)
+    
+    let $ms1Eb28 := prof:current-ms()
+    
     let $Eb28invalid :=
         try {
             (for $x at $xpos in $docRoot//om:OM_Observation/om:result[swe:DataArray]
@@ -851,7 +1028,13 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
             </tr>
         }
 
+    
+    let $ms2Eb28 := prof:current-ms()
+    
     (: Eb29 - IF resultformat is http://dd.eionet.europa.eu/vocabulary/aq/resultformat/swe-array (Eb14) then check for unexpected spaces  around all values (between comma separator) under swe:values :)
+    
+    let $ms1Eb29 := prof:current-ms()
+    
     let $Eb29invalid :=
         try {
             (for $x at $xpos in $docRoot//om:OM_Observation/om:result[swe:DataArray]
@@ -877,8 +1060,14 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
             </tr>
         }
 
+    
+    let $ms2Eb29 := prof:current-ms()
+    
     (: Eb31 - IF resultformat is http://dd.eionet.europa.eu/vocabulary/aq/resultformat/swe-array (Eb14) then check for date overlaps
      between consecutive data blocks within swe:values :)
+    
+    let $ms1Eb31 := prof:current-ms()
+    
     let $Eb31invalid :=
         try {
             (let $valid := dd:getValid($vocabulary:OBSERVATIONS_RANGE)
@@ -919,7 +1108,13 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
             </tr>
         }
 
+    
+    let $ms2Eb31 := prof:current-ms()
+    
     (: Eb32 - IF resultformat is http://dd.eionet.europa.eu/vocabulary/aq/resultformat/swe-array (Eb14) then check that all data submitted via CDR has been fully verified. The verification flag must be 1 for all data. :)
+    
+    let $ms1Eb32 := prof:current-ms()
+    
     let $Eb32invalid :=
         try {
             (for $x at $xpos in $docRoot//om:OM_Observation/om:result[swe:DataArray]
@@ -962,7 +1157,13 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
             </tr>
         }
 
+    
+    let $ms2Eb32 := prof:current-ms()
+    
     (: Eb35 - IF resultformat is ascii-grid ;  esri-shp or geotiff (Eb14) then ./om:result/gml:File/gml:rangeParameters MUST be populated :)
+    
+    let $ms1Eb35 := prof:current-ms()
+    
     let $Eb35invalid :=
         try {
             (for $x in $docRoot//om:OM_Observation/om:result[gml:File]
@@ -979,8 +1180,14 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
             </tr>
         }
 
+    
+    let $ms2Eb35 := prof:current-ms()
+    
     (: Eb36 - IF resultformat is ascii-grid ;  esri-shp or geotiff (Eb14) then ./om:result/gml:File/gml:rangeParameters/swe:Quantity@Definition MUST match a code under
      http://dd.eionet.europa.eu/vocabulary/aq/aggregationprocess/ :)
+    
+    let $ms1Eb36 := prof:current-ms()
+    
     let $Eb36invalid :=
         try {
             (let $valid := dd:getValidConcepts($vocabulary:AGGREGATION_PROCESS || "rdf")
@@ -999,7 +1206,13 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
             </tr>
         }
 
+    
+    let $ms2Eb36 := prof:current-ms()
+    
     (: Eb37 - IF resultformat is ascii-grid ;  esri-shp or geotiff (Eb14) then ./om:result/gml:File/gml:rangeParameters/swe:label should be populated :)
+    
+    let $ms1Eb37 := prof:current-ms()
+    
     let $Eb37invalid :=
         try {
             (for $x in $docRoot//om:OM_Observation/om:result[gml:File]
@@ -1016,7 +1229,13 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
             </tr>
         }
 
+    
+    let $ms2Eb37 := prof:current-ms()
+    
     (: Eb38 - IF resultformat is ascii-grid ;  esri-shp or geotiff (Eb14) then ./om:result/gml:File/gml:rangeParameters/swe:description MUST be provided :)
+    
+    let $ms1Eb38 := prof:current-ms()
+    
     let $Eb38invalid :=
         try {
             (for $x in $docRoot//om:OM_Observation/om:result[gml:File]
@@ -1033,8 +1252,14 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
             </tr>
         }
 
+    
+    let $ms2Eb38 := prof:current-ms()
+    
     (: Eb39 - IF resultformat is ascii-grid ;  esri-shp or geotiff (Eb14) then ./om:result/gml:File/gml:rangeParameters/swe:uom xlink
      MUST match a code under http://dd.eionet.europa.eu/vocabulary/uom/concentration/ :)
+    
+    let $ms1Eb39 := prof:current-ms()
+    
     let $Eb39invalid :=
         try {
             (let $valid := (dd:getValidConcepts($vocabulary:UOM_CONCENTRATION_VOCABULARY || "rdf"), dd:getValidConcepts($vocabulary:UOM_STATISTICS || "rdf"))
@@ -1053,8 +1278,14 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
             </tr>
         }
 
+    
+    let $ms2Eb39 := prof:current-ms()
+    
     (: Eb40 - Check if the unit of measure reporting via (/om:result/gml:File/gml:rangeParameters/swe:uom) corresponds to the recommended unit of measure in
     vocabulary http://dd.eionet.europa.eu/vocabulary/uom/concentration/[code] depending on pollutant reported via /om:observedProperty :)
+    
+    let $ms1Eb40 := prof:current-ms()
+    
     let $Eb40invalid :=
         try {
             (let $valid := dd:getValidConcepts($vocabulary:UOM_CONCENTRATION_VOCABULARY || "rdf")
@@ -1074,7 +1305,13 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
                 <td title="Error description">{$err:description}</td>
             </tr>
         }
+    
+    let $ms2Eb40 := prof:current-ms()
+    
     (: Eb41 - IF resultformat is ascii-grid ;  esri-shp or geotiff (Eb14) then ./om:result/gml:File/gml:fileReference MUST be provided :)
+    
+    let $ms1Eb41 := prof:current-ms()
+    
     let $Eb41invalid :=
         try {
             (for $x in $docRoot//om:OM_Observation/om:result[gml:File]
@@ -1091,12 +1328,18 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
             </tr>
         }
 
+    
+    let $ms2Eb41 := prof:current-ms()
+    
     (: Eb42 - ./om:result/gml:File/gml:fileReference MUST provide appropiate reference following this format:
         A valid cdr URL matching the cdr location where the XML files is located  (e.g. http://cdr.eionet.europa.eu/es/eu/aqd/e1b/.../)
         +
         File including extension (e.g. model.zip)
         +
         Variable using a # (e.g. #no2) :)
+    
+    let $ms1Eb42 := prof:current-ms()
+    
     let $Eb42invalid :=
         try {
             (let $regex := functx:escape-for-regex($cdrUrl || "e1b") || ".+\.[a-z]{3,3}#.*"
@@ -1115,8 +1358,12 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
             </tr>
         }
 
+    
+    let $ms2Eb42 := prof:current-ms()
+    
     return
         <table class="maintable hover">
+        <table>
             {html:build2("NS", $labels:NAMESPACES, $labels:NAMESPACES_SHORT, $NSinvalid, "All values are valid", "record", $errors:NS)}
             {html:build2("VOCAB", $labels:VOCAB, $labels:VOCAB_SHORT, $VOCABinvalid, "All values are valid", "record", $errors:VOCAB)}
             {html:build3("Eb0", $labels:Eb0, $labels:Eb0_SHORT, $Eb0table, data($Eb0table/td), errors:getMaxError($Eb0table))}
@@ -1162,7 +1409,58 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
             {html:build2("Eb41", $labels:Eb41, $labels:Eb41_SHORT, $Eb41invalid, "All records are valid", "record", $errors:Eb41)}
             {html:build2("Eb42", $labels:Eb42, $labels:Eb42_SHORT, $Eb42invalid, "All records are valid", "record", $errors:Eb42)}
         </table>
-
+    <table>
+        <tr>
+            <th>Query</th>
+            <th>Process time in miliseconds</th>
+            <th>Process time in seconds</th>
+        </tr>
+       {common:runtime("NS", $ms1NS, $ms2NS)}
+       {common:runtime("VOCAB", $ms1VOCAB, $ms2VOCAB)}
+       {common:runtime("Eb0",  $ms1Eb0, $ms2Eb0)}
+       {common:runtime("Eb01", $ms1Eb01, $ms2Eb01)}
+       {common:runtime("Eb02", $ms1Eb02, $ms2Eb02)}
+       {common:runtime("Eb03", $ms1Eb03, $ms2Eb03)}
+       {common:runtime("Eb04",  $ms1Eb04, $ms2Eb04)}
+       {common:runtime("Eb05", $ms1Eb05, $ms2Eb05)}
+       {common:runtime("Eb06",  $ms1Eb06, $ms2Eb06)}
+       {common:runtime("Eb07",  $ms1Eb07, $ms2Eb07)}
+       {common:runtime("Eb08",  $ms1Eb08, $ms2Eb08)}
+       {common:runtime("Eb09",  $ms1Eb09, $ms2Eb09)}
+       {common:runtime("Eb10",  $ms1Eb10, $ms2Eb10)}
+       {common:runtime("Eb11",  $ms1Eb11, $ms2Eb11)}
+       {common:runtime("Eb12",  $ms1Eb12, $ms2Eb12)}
+       {common:runtime("Eb13",  $ms1Eb13, $ms2Eb13)}
+       {common:runtime("Eb14",  $ms1Eb14, $ms2Eb14)}
+       {common:runtime("Eb14b",  $ms1Eb14b, $ms2Eb14b)}
+       {common:runtime("Eb15",  $ms1Eb15, $ms2Eb15)}
+       {common:runtime("Eb16",  $ms1Eb16, $ms2Eb16)}
+       {common:runtime("Eb17",  $ms1Eb17, $ms2Eb17)}
+       {common:runtime("Eb18",  $ms1Eb18, $ms2Eb18)}
+       {common:runtime("Eb19",  $ms1Eb19, $ms2Eb19)}
+       {common:runtime("Eb19b",  $ms1Eb19b, $ms2Eb19b)}
+       {common:runtime("Eb20", $ms1Eb20, $ms2Eb20)}
+       {common:runtime("Eb21",  $ms1Eb21, $ms2Eb21)}
+       {common:runtime("Eb22",  $ms1Eb22, $ms2Eb22)}
+       {common:runtime("Eb23",  $ms1Eb23, $ms2Eb23)}
+       {common:runtime("Eb24",  $ms1Eb24, $ms2Eb24)}
+       {common:runtime("Eb25",  $ms1Eb25, $ms2Eb25)}
+       {common:runtime("Eb26",  $ms1Eb26, $ms2Eb26)}
+       {common:runtime("Eb27",  $ms1Eb27, $ms2Eb27)}
+       {common:runtime("Eb28",  $ms1Eb28, $ms2Eb28)}
+       {common:runtime("Eb29",  $ms1Eb29, $ms2Eb29)}
+       {common:runtime("Eb31",  $ms1Eb31, $ms2Eb31)}
+       {common:runtime("Eb32",  $ms1Eb32, $ms2Eb32)}
+       {common:runtime("Eb35",  $ms1Eb35, $ms2Eb35)}
+       {common:runtime("Eb36",  $ms1Eb36, $ms2Eb36)}
+       {common:runtime("Eb37",  $ms1Eb37, $ms2Eb37)}
+       {common:runtime("Eb38",  $ms1Eb38, $ms2Eb38)}
+       {common:runtime("Eb39",  $ms1Eb39, $ms2Eb39)}
+       {common:runtime("Eb40",  $ms1Eb40, $ms2Eb40)}
+       {common:runtime("Eb41",  $ms1Eb41, $ms2Eb41)}
+       {common:runtime("Eb42",  $ms1Eb42, $ms2Eb42)}
+    </table>
+    </table>
 };
 
 

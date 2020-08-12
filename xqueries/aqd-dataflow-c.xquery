@@ -142,7 +142,7 @@ let $modelsEnvelope2 := if (empty($latestModels2)) then $latestEnvelopeD else $g
 
 (: File prefix/namespace check :)
 
-let $ns1NS := prof:current-ms()
+let $ms1NS := prof:current-ms()
 let $NSinvalid :=
     try {
         let $XQmap := inspect:static-context((), 'namespaces')
@@ -168,12 +168,12 @@ let $NSinvalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
-   let $ns2NS := prof:current-ms()
+   let $ms2NS := prof:current-ms()
 (: VOCAB check:)
 let $VOCABinvalid := checks:vocab($docRoot)
 
 (: C0 :)
-let $ns1C0 := prof:current-ms()
+let $ms1C0 := prof:current-ms()
 let $C0table :=
     try {
         if ($reportingYear = "") then
@@ -198,11 +198,11 @@ let $C0table :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
-    let $ns2C0 := prof:current-ms()
+    let $ms2C0 := prof:current-ms()
 let $isNewDelivery := errors:getMaxError($C0table) = $errors:INFO
 
 (: C01 :)
-let $ns1C01 := prof:current-ms()
+let $ms1C01 := prof:current-ms()
 let $C01table :=
     try {
         for $rec in $docRoot//aqd:AQD_AssessmentRegime
@@ -222,11 +222,11 @@ let $C01table :=
         </tr>
     }
 
-let $ns2C01 := prof:current-ms()
+let $ms2C01 := prof:current-ms()
 
 (: C02 :)
 
-let $ns1C02 := prof:current-ms()
+let $ms1C02 := prof:current-ms()
 let $C02table :=
     try {
         for $x in $docRoot//aqd:AQD_AssessmentRegime
@@ -259,11 +259,11 @@ let $C02errorLevel :=
         $errors:INFO
 
 
-let $ns2C02 := prof:current-ms()
+let $ms2C02 := prof:current-ms()
 
 (: C03 :)
 
-let $ns1C03 := prof:current-ms()
+let $ms1C03 := prof:current-ms()
 let $C03table :=
     try {
         for $x in $docRoot//aqd:AQD_AssessmentRegime
@@ -292,12 +292,12 @@ let $C03errorLevel :=
         $errors:INFO
 
 
-let $ns2C03 := prof:current-ms()
+let $ms2C03 := prof:current-ms()
 
 (:C03a:)
 (:Compare CPreliminary assesment method vs list of C assesment method:)
 
-let $ns1C03a := prof:current-ms()
+let $ms1C03a := prof:current-ms()
 
 let $C03afunc :=
 try{
@@ -332,11 +332,11 @@ try{
         </tr>
     }
 
-let $ns2C03a := prof:current-ms()
+let $ms2C03a := prof:current-ms()
 
 (:Compare  C assesment method vs list of CPreliminary assesment method:)
 
-let $ns1C03a2 := prof:current-ms()
+let $ms1C03a2 := prof:current-ms()
 
 let $C03a2func :=
 try{
@@ -369,10 +369,10 @@ try{
     }
 
     
-    let $ns2C03a2 := prof:current-ms()
+    let $ms2C03a2 := prof:current-ms()
 
 
-let $ns1C03b := prof:current-ms()
+let $ms1C03b := prof:current-ms()
 let $C03b :=
     let $previousCombinations := query:getC03b($prelimEnvelopeC)
     let $previousCombinations_query := sparqlx:getLink(query:getC03bquery($prelimEnvelopeC))
@@ -423,7 +423,7 @@ try{
         </tr>
     }
 
-let $ns2C03b := prof:current-ms()
+let $ms2C03b := prof:current-ms()
 
 (: C03c :)
 (:let $C03cfunc := 
@@ -545,9 +545,9 @@ let $C03cfunc :=
 
 (: C03c :)
 
-let $ns1C03c := prof:current-ms()
+let $ms1C03c := prof:current-ms()
 
-let $C03cfunc := 
+(:let $C03cfunc := 
     try {   
         let $previousCombinations := sparqlx:run(query:getC03c($prelimEnvelopeC))
         let $previousCombinationsConcat :=
@@ -622,13 +622,91 @@ let $C03cfunc :=
             <td title="Error code">{$err:code}</td>
             <td title="Error description">{$err:description}</td>
         </tr>
+    }:)
+let $C03cfunc :=
+    try {  
+        let $previousCombinations := sparqlx:run(query:getC03c($prelimEnvelopeC))
+        let $previousCombinationsConcat :=
+            for $x in $previousCombinations
+           
+                 return
+                    <result>
+                        <localId>{string($x/sparql:binding[@name="localId"]/sparql:literal)}</localId>
+                        <samplingPoint>{string($x/sparql:binding[@name="samplingPoint"]/sparql:literal)}</samplingPoint>
+                        <assessmentType>{string(substring-after($x/sparql:binding[@name="assessmentType"]/sparql:uri, "http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/"))}</assessmentType>          
+                        <combination>string-join(string($x/sparql:binding[@name="localId"]/sparql:literal) || "###" || string(substring-after($x/sparql:binding[@name="assessmentType"]/sparql:uri, "http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/"))</combination>              
+                    </result>
+
+        let $currentCombinations :=
+            for $x in $docRoot//aqd:AQD_AssessmentRegime
+
+                let $localId := $x//base:localId => string()
+                let $namespace := $x//base:namespace => string()
+               
+                for $i in $x/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata/@xlink:href
+
+                    let $samplingpoint := substring-after($i, $namespace || "/")
+                        for $j in $x/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:assessmentType/@xlink:href
+                        let $assessmentType := substring-after($j, "http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/")
+                        return
+                         <result>
+                            <localId>{$localId}</localId>
+                            <samplingPoint>{$samplingpoint}</samplingPoint>
+                            <assessmentType>{$assessmentType}</assessmentType>
+                         </result>
+
+       
+      for $x in $currentCombinations
+
+            let $localId := string($x/localId)
+            let $samplingPoint := string($x/samplingPoint)  
+            let $typeCPrel :=string($x/assessmentType) 
+            let $combination := string-join(($localId || "###" || $samplingPoint))
+            
+            
+            
+            let $typeC:=
+
+             for $i in $previousCombinationsConcat
+                 let $TypeTemp:=
+                     if ($i[localId = $localId and samplingPoint = $samplingPoint]) then 
+                         string($i/assessmentType)
+                    else ()
+                    where $i/localId = $localId and $i/samplingPoint = $samplingPoint
+                    return 
+                    <result>
+                            <localId>{$i/localId}</localId>
+                            <samplingPoint>{$i/samplingPoint}</samplingPoint>
+                            <assessmentType>{$i/assessmentType}</assessmentType>
+                         </result>
+
+                 
+            where not($typeCPrel = $typeC/assessmentType) and not(functx:if-empty($typeC/assessmentType, '') = '') 
+            
+            return
+      if(not(contains($source_url, "c_preliminary"))) then
+            <tr>
+               <td title="Assessment Regime XML">{$localId}</td>
+                <td title="aqd:AQD_SamplingPoint  XML">{$samplingPoint}</td>
+                <td title="Assessment Type in C  XML">{$typeCPrel}</td>
+                <td title="Assessment Regime SPARQL">{$typeC/localId}</td>
+                <td title="aqd:AQD_SamplingPoint SPARQL">{$typeC/samplingPoint}</td>
+                <td title="Assessment Type in C preliminary SPARQL">{$typeC/assessmentType}</td>
+                <td title="Sparql">{sparqlx:getLink(query:getC03c($prelimEnvelopeC))}</td>
+            </tr>
+        else()
+    } catch * {
+        <tr class="{$errors:FAILED}">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
     }
 
-  let $ns2C03c := prof:current-ms()
+  let $ms2C03c := prof:current-ms()
 
 (: C03d :)
 
-let $ns1C03d := prof:current-ms()
+let $ms1C03d := prof:current-ms()
 
 let $C03dinvalid := 
     try {
@@ -666,11 +744,11 @@ let $C03dinvalid :=
     }
 
 
-let $ns2C03d := prof:current-ms()
+let $ms2C03d := prof:current-ms()
 
 (: C04 - duplicate @gml:ids :)
 
-let $ns1C04 := prof:current-ms()
+let $ms1C04 := prof:current-ms()
 
 let $C04invalid :=
     try {
@@ -688,11 +766,11 @@ let $C04invalid :=
         </tr>
     }
 
-let $ns2C04 := prof:current-ms()
+let $ms2C04 := prof:current-ms()
 
 (: C05 - duplicate ./aqd:inspireId/base:Identifier/base:localId :)
 
-let $ns1C05 := prof:current-ms()
+let $ms1C05 := prof:current-ms()
 
 let $C05invalid :=
     try {
@@ -710,11 +788,11 @@ let $C05invalid :=
         </tr>
     }
 
-    let $ns2C05 := prof:current-ms()
+    let $ms2C05 := prof:current-ms()
 
 (: C06 - :)
 
-let $ns1C06 := prof:current-ms()
+let $ms1C06 := prof:current-ms()
 
 let $C06table :=
     try {
@@ -733,11 +811,11 @@ let $C06table :=
         </tr>
     }
 
-let $ns2C06 := prof:current-ms()
+let $ms2C06 := prof:current-ms()
         
 (: C06.1 :)
 
-let $ns1C06.1 := prof:current-ms()
+let $ms1C06.1 := prof:current-ms()
 
 let $C06.1invalid :=
     try {
@@ -757,10 +835,10 @@ let $C06.1invalid :=
         </tr>
     }
 
-let $ns2C06.1 := prof:current-ms()
+let $ms2C06.1 := prof:current-ms()
 
 (: C07 :)
-let $ns1C07 := prof:current-ms()
+let $ms1C07 := prof:current-ms()
 
 let $C07invalid :=
     try {
@@ -777,11 +855,11 @@ let $C07invalid :=
         </tr>
     }
 
-let $ns2C07 := prof:current-ms()
+let $ms2C07 := prof:current-ms()
 
 (: C08 - if a regime is missing for a pollutant in the list, warning should be thrown :)
 
-let $ns1C08 := prof:current-ms()
+let $ms1C08 := prof:current-ms()
 
 let $C08invalid :=
     try {
@@ -803,11 +881,11 @@ let $C08invalid :=
         </tr>
     }
 
-let $ns2C08 := prof:current-ms()
+let $ms2C08 := prof:current-ms()
 
 (: C09 - Provides a count of unique pollutants and lists them :)
 
-let $ns1C09 := prof:current-ms()
+let $ms1C09 := prof:current-ms()
 
 let $C09table :=
     try {
@@ -826,11 +904,11 @@ let $C09table :=
         </tr>
     }
 
-let $ns2C09 := prof:current-ms()
+let $ms2C09 := prof:current-ms()
 
 (: C10 :)
 
-let $ns1C10 := prof:current-ms()
+let $ms1C10 := prof:current-ms()
 
 let $C10invalid :=
     try {
@@ -861,10 +939,10 @@ let $C10invalid :=
         </tr>
     }
 
-let $ns2C10 := prof:current-ms()
+let $ms2C10 := prof:current-ms()
 (: C20 :)
 
-let $ns1C20 := prof:current-ms()
+let $ms1C20 := prof:current-ms()
 
 let $C20invalid :=
     try {
@@ -901,11 +979,11 @@ let $C20invalid :=
         </tr>
     }
 
-let $ns2C20 := prof:current-ms()
+let $ms2C20 := prof:current-ms()
 
 (: C21 :)
 
-let $ns1C21 := prof:current-ms()
+let $ms1C21 := prof:current-ms()
 
 let $C21invalid :=
     try {
@@ -935,11 +1013,11 @@ let $C21invalid :=
         </tr>
     }
 
-let $ns2C21 := prof:current-ms()
+let $ms2C21 := prof:current-ms()
 
 (: C23a :)
 
-let $ns1C23a := prof:current-ms()
+let $ms1C23a := prof:current-ms()
 
 let $C23ainvalid :=
     try {
@@ -958,11 +1036,11 @@ let $C23ainvalid :=
         </tr>
     }
 
-    let $ns2C23a := prof:current-ms()
+    let $ms2C23a := prof:current-ms()
 
 (: C23B - Warning :)
 
-let $ns1C23b := prof:current-ms()
+let $ms1C23b := prof:current-ms()
 
 let $C23binvalid :=
     try {
@@ -982,11 +1060,11 @@ let $C23binvalid :=
         </tr>
     }
 
-let $ns2C23b := prof:current-ms()
+let $ms2C23b := prof:current-ms()
 
 (: C24 :)
 
-let $ns1C24 := prof:current-ms()
+let $ms1C24 := prof:current-ms()
 
 let $C24errorClass := if (contains($source_url, "c_preliminary")) then $errors:WARNING else $errors:C24
 let $C24invalid :=
@@ -1007,10 +1085,10 @@ let $C24invalid :=
         </tr>
     }
 
-    let $ns2C24 := prof:current-ms()
+    let $ms2C24 := prof:current-ms()
     
     (: C25 :)
-    let $ns1C25 := prof:current-ms()
+    let $ms1C25 := prof:current-ms()
 
     let $C25invalid :=
     for $x in $docRoot//aqd:AQD_AssessmentRegime/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata
@@ -1021,11 +1099,11 @@ let $C24invalid :=
             <td title="aqd:samplingPointAssessmentMetadata">{data($x/@xlink:href)}</td>
         </tr>
 
-let $ns2C25 := prof:current-ms()
+let $ms2C25 := prof:current-ms()
 
 (: C26 - :)
 
-let $ns1C26 := prof:current-ms()
+let $ms1C26 := prof:current-ms()
 
 let $C26table :=
     try {
@@ -1107,11 +1185,11 @@ let $C26table :=
 
 let $C26errorClass := if (contains($source_url, "c_preliminary")) then $errors:WARNING else $errors:C26
 
-let $ns2C26 := prof:current-ms()
+let $ms2C26 := prof:current-ms()
 
 (: C27 - return all zones listed in the doc :)
 
-let $ns1C27 := prof:current-ms()
+let $ms1C27 := prof:current-ms()
 
 let $C27table :=
     try {
@@ -1159,11 +1237,11 @@ let $C27table :=
         </tr>
     }
 
-let $ns2C27 := prof:current-ms()
+let $ms2C27 := prof:current-ms()
 
 (: C29 - :)
 
-let $ns1C29 := prof:current-ms()
+let $ms1C29 := prof:current-ms()
 
 let $C29invalid :=
     try {
@@ -1206,11 +1284,11 @@ let $C29invalid :=
         </tr>
     }
 
-let $ns2C29 := prof:current-ms()
+let $ms2C29 := prof:current-ms()
 
 (: C28 If ./aqd:zone xlink:href shall be current, then ./AQD_zone/aqd:operationActivityPeriod/gml:endPosition shall be equal to “9999-12-31 23:59:59Z” or nulled (blank)  :)
 
-let $ns1C28 := prof:current-ms()
+let $ms1C28 := prof:current-ms()
 
 let $C28invalid :=
     try {
@@ -1230,11 +1308,11 @@ let $C28invalid :=
         </tr>
     }
 
-let $ns2C28 := prof:current-ms()
+let $ms2C28 := prof:current-ms()
 
 (: C31 :)
 
-let $ns1C31 := prof:current-ms()
+let $ms1C31 := prof:current-ms()
 
 let $C31table :=
     try {
@@ -1297,11 +1375,11 @@ let $C31table :=
         </tr>
     }
 
-    let $ns2C31 := prof:current-ms()
+    let $ms2C31 := prof:current-ms()
 
 (: C31b :)
 
-let $ns1C31b := prof:current-ms()
+let $ms1C31b := prof:current-ms()
 
 let $C31btable :=
     try {
@@ -1366,11 +1444,11 @@ let $C31btable :=
     }
  
 
-    let $ns2C31b := prof:current-ms()
+    let $ms2C31b := prof:current-ms()
 
 (: C32 - :)
 
-let $ns1C32 := prof:current-ms()
+let $ms1C32 := prof:current-ms()
 
 let $C32table :=
     try {
@@ -1495,12 +1573,12 @@ let $C32table :=
     }
         
 
-let $ns2C32 := prof:current-ms()
+let $ms2C32 := prof:current-ms()
 
 (: C33 If The lifecycle information of ./aqd:assessmentMethods/aqd:AssessmentMethods/aqd:*AssessmentMetadata xlink:href shall be current,
     then /AQD_SamplingPoint/aqd:operationActivityPeriod/gml:endPosition or /AQD_ModelType/aqd:operationActivityPeriod/gml:endPosition shall be equal to “9999-12-31 23:59:59Z” or nulled (blank):)
 
-    let $ns1C33 := prof:current-ms()
+    let $ms1C33 := prof:current-ms()
 
     let $C33invalid :=
     try {
@@ -1538,11 +1616,11 @@ let $ns2C32 := prof:current-ms()
     }
 
 
-let $ns2C33 := prof:current-ms()
+let $ms2C33 := prof:current-ms()
 
 (: C35 /aqd:AQD_SamplingPoint/aqd:usedAQD or /aqd:AQD_ModelType/aqd:used shall EQUAL “true” for all ./aqd:assessmentMethods/aqd:AssessmentMethods/aqd:*AssessmentMetadata xlink:href citations :)
 
-let $ns1C35 := prof:current-ms()
+let $ms1C35 := prof:current-ms()
 
 let $C35invalid :=
     try {
@@ -1580,11 +1658,11 @@ let $C35invalid :=
         </tr>
     }
 
-let $ns2C35 := prof:current-ms()
+let $ms2C35 := prof:current-ms()
 
 (: C37 - :)
 
-let $ns1C37 := prof:current-ms()
+let $ms1C37 := prof:current-ms()
 
 let $C37invalid :=
     try {
@@ -1603,11 +1681,11 @@ let $C37invalid :=
         </tr>
     }
 
-let $ns2C37 := prof:current-ms()
+let $ms2C37 := prof:current-ms()
 
 (: C38 :)
 
-let $ns1C38 := prof:current-ms()
+let $ms1C38 := prof:current-ms()
 
 let $C38invalid :=
     try {
@@ -1670,11 +1748,11 @@ let $C38invalid :=
         </tr>
     }
 
-    let $ns2C38 := prof:current-ms()
+    let $ms2C38 := prof:current-ms()
 
 (: C40 :)
 
-let $ns1C40 := prof:current-ms()
+let $ms1C40 := prof:current-ms()
 
 let $C40invalid :=
     try {
@@ -1693,11 +1771,11 @@ let $C40invalid :=
         </tr>
     }
 
-let $ns2C40 := prof:current-ms()
+let $ms2C40 := prof:current-ms()
 
 (: C40b :)
 
-let $ns1C40b := prof:current-ms()
+let $ms1C40b := prof:current-ms()
 
 let $C40binvalid :=
     try {
@@ -1719,11 +1797,11 @@ let $C40binvalid :=
         </tr>
     }
 
-let $ns2C40b := prof:current-ms()
+let $ms2C40b := prof:current-ms()
 
 (: C41 gml:timePosition MUST be provided and must be equal or greater than (aqd:reportingPeriod – 5 years) included in the ReportingHeader :)
 
-let $ns1C41 := prof:current-ms()
+let $ms1C41 := prof:current-ms()
 
 let $C41invalid :=
     try {
@@ -1750,10 +1828,10 @@ let $C41invalid :=
         </tr>
     }
 
-    let $ns2C41 := prof:current-ms()
+    let $ms2C41 := prof:current-ms()
 
 (: C42 - :)
-    let $ns1C42 := prof:current-ms()
+    let $ms1C42 := prof:current-ms()
 
 let $C42invalid :=
     try {
@@ -1770,7 +1848,7 @@ let $C42invalid :=
         </tr>
     }
 
-    let $ns2C42 := prof:current-ms()
+    let $ms2C42 := prof:current-ms()
 
 return
     <table class="maintable hover">
@@ -1822,44 +1900,44 @@ return
             <th>Process time in miliseconds</th>
             <th>Process time in seconds</th>
         </tr>
-       {common:runtime("NS", $ns1NS, $ns2NS)}
-       {common:runtime("C0",  $ns1C0, $ns2C0)}
-       {common:runtime("C01", $ns1C01, $ns2C01)}
-       {common:runtime("C02", $ns1C02, $ns2C02)}
-       {common:runtime("C03", $ns1C03, $ns2C03)}
-       {common:runtime("C03a",  $ns1C03a, $ns2C03a)}  
-       {common:runtime("C03a2",  $ns1C03a2, $ns2C03a2)} 
-       {common:runtime("C03b",  $ns1C03b, $ns2C03b)}
-       {common:runtime("C03c", $ns1C03c, $ns2C03c)}
-       {common:runtime("C03d",  $ns1C03d, $ns2C03d)}
-       {common:runtime("C04",  $ns1C04, $ns2C04)}
-       {common:runtime("C05", $ns1C05, $ns2C05)}
-       {common:runtime("C06",  $ns1C06, $ns2C06)}
-       {common:runtime("C06.1",  $ns1C06.1, $ns2C06.1)}
-       {common:runtime("C07",  $ns1C07, $ns2C07)}
-       {common:runtime("C08",  $ns1C08, $ns2C08)}
-       {common:runtime("C09",  $ns1C09, $ns2C09)}
-       {common:runtime("C10",  $ns1C10, $ns2C10)}
-       {common:runtime("C20", $ns1C20, $ns2C20)}
-       {common:runtime("C21",  $ns1C21, $ns2C21)}
-       {common:runtime("C23a",  $ns1C23a, $ns2C23a)}
-       {common:runtime("C23b",  $ns1C23b, $ns2C23b)}
-       {common:runtime("C24",  $ns1C24, $ns2C24)}
-       {common:runtime("C25",  $ns1C25, $ns2C25)}
-       {common:runtime("C26",  $ns1C26, $ns2C26)}
-       {common:runtime("C28",  $ns1C28, $ns2C28)}
-       {common:runtime("C29",  $ns1C29, $ns2C29)}
-       {common:runtime("C31",  $ns1C31, $ns2C31)}
-       {common:runtime("C31b",  $ns1C31b, $ns2C31b)}
-       {common:runtime("C32",  $ns1C32, $ns2C32)}
-       {common:runtime("C33",  $ns1C33, $ns2C33)}
-       {common:runtime("C35",  $ns1C35, $ns2C35)}
-       {common:runtime("C37",  $ns1C37, $ns2C37)}
-       {common:runtime("C38",  $ns1C38, $ns2C38)}
-       {common:runtime("C40",  $ns1C40, $ns2C40)}
-       {common:runtime("C40b",  $ns1C40b, $ns2C40b)}
-       {common:runtime("C41",  $ns1C41, $ns2C41)}
-       {common:runtime("C42",  $ns1C42, $ns2C42)}
+       {common:runtime("NS", $ms1NS, $ms2NS)}
+       {common:runtime("C0",  $ms1C0, $ms2C0)}
+       {common:runtime("C01", $ms1C01, $ms2C01)}
+       {common:runtime("C02", $ms1C02, $ms2C02)}
+       {common:runtime("C03", $ms1C03, $ms2C03)}
+       {common:runtime("C03a",  $ms1C03a, $ms2C03a)}  
+       {common:runtime("C03a2",  $ms1C03a2, $ms2C03a2)} 
+       {common:runtime("C03b",  $ms1C03b, $ms2C03b)}
+       {common:runtime("C03c", $ms1C03c, $ms2C03c)}
+       {common:runtime("C03d",  $ms1C03d, $ms2C03d)}
+       {common:runtime("C04",  $ms1C04, $ms2C04)}
+       {common:runtime("C05", $ms1C05, $ms2C05)}
+       {common:runtime("C06",  $ms1C06, $ms2C06)}
+       {common:runtime("C06.1",  $ms1C06.1, $ms2C06.1)}
+       {common:runtime("C07",  $ms1C07, $ms2C07)}
+       {common:runtime("C08",  $ms1C08, $ms2C08)}
+       {common:runtime("C09",  $ms1C09, $ms2C09)}
+       {common:runtime("C10",  $ms1C10, $ms2C10)}
+       {common:runtime("C20", $ms1C20, $ms2C20)}
+       {common:runtime("C21",  $ms1C21, $ms2C21)}
+       {common:runtime("C23a",  $ms1C23a, $ms2C23a)}
+       {common:runtime("C23b",  $ms1C23b, $ms2C23b)}
+       {common:runtime("C24",  $ms1C24, $ms2C24)}
+       {common:runtime("C25",  $ms1C25, $ms2C25)}
+       {common:runtime("C26",  $ms1C26, $ms2C26)}
+       {common:runtime("C28",  $ms1C28, $ms2C28)}
+       {common:runtime("C29",  $ms1C29, $ms2C29)}
+       {common:runtime("C31",  $ms1C31, $ms2C31)}
+       {common:runtime("C31b",  $ms1C31b, $ms2C31b)}
+       {common:runtime("C32",  $ms1C32, $ms2C32)}
+       {common:runtime("C33",  $ms1C33, $ms2C33)}
+       {common:runtime("C35",  $ms1C35, $ms2C35)}
+       {common:runtime("C37",  $ms1C37, $ms2C37)}
+       {common:runtime("C38",  $ms1C38, $ms2C38)}
+       {common:runtime("C40",  $ms1C40, $ms2C40)}
+       {common:runtime("C40b",  $ms1C40b, $ms2C40b)}
+       {common:runtime("C41",  $ms1C41, $ms2C41)}
+       {common:runtime("C42",  $ms1C42, $ms2C42)}
     </table>
     </table>
 };
