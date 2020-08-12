@@ -121,6 +121,9 @@ declare function dataflowI:checkReport(
 
     BLOCKER
     :)
+    
+    let $ms1NS := prof:current-ms()
+    
     let $NSinvalid :=
         try {
             let $XQmap := inspect:static-context((), 'namespaces')
@@ -144,8 +147,12 @@ declare function dataflowI:checkReport(
             html:createErrorRow($err:code, $err:description)
         }
 
+        let $ms2NS := prof:current-ms()
+
     (: VOCAB check:)
+    let $ms1VOCAB := prof:current-ms()
     let $VOCABinvalid := checks:vocab($docRoot)
+    let $ms2VOCAB := prof:current-ms()
 
     (: I0 Check
     Check if delivery if this is a new delivery or updated delivery (via
@@ -156,6 +163,8 @@ declare function dataflowI:checkReport(
     WARNING
     :)
 
+    let $ms1I0 := prof:current-ms()
+    
     let $I0table :=
         try {
             if ($reportingYear = "") then
@@ -211,6 +220,8 @@ declare function dataflowI:checkReport(
         else
             distinct-values(data($latest-attainment))
 
+    let $ms2I0 := prof:current-ms()
+    
     (: I1
 
     Compile & feedback upon the total number of Source Apportionments included
@@ -218,6 +229,9 @@ declare function dataflowI:checkReport(
 
     Number of Source Apportionments reported
     :)
+    
+    let $ms1I01 := prof:current-ms()
+    
     let $countSources := count($sources)
     let $tblAllSources :=
         try {
@@ -232,6 +246,8 @@ declare function dataflowI:checkReport(
             html:createErrorRow($err:code, $err:description)
         }
 
+        let $ms2I01 := prof:current-ms()
+
     (: I2
 
     Compile & feedback upon the total number of new  Source Apportionments
@@ -245,6 +261,9 @@ declare function dataflowI:checkReport(
     BLOCKER
 
     :)
+    
+    let $ms1I02 := prof:current-ms()
+    
     let $I2table :=
         try {
             for $x in $sources
@@ -276,7 +295,9 @@ declare function dataflowI:checkReport(
                 $errors:I2
             else
                 $errors:INFO
-
+    
+    let $ms2I02 := prof:current-ms()
+    
     (: I3
 
     Compile & feedback upon the total number of updated Source Apportionments
@@ -292,6 +313,9 @@ declare function dataflowI:checkReport(
     TODO: please check
 
     - :)
+    
+    let $ms1I03 := prof:current-ms()
+    
     let $I3table :=
         try {
             for $x in $sources
@@ -315,6 +339,8 @@ declare function dataflowI:checkReport(
         else
             $errors:INFO
 
+    let $ms2I03 := prof:current-ms()
+    
     (: I4
 
     Compile & feedback a list of the unique identifier information for all
@@ -333,6 +359,9 @@ declare function dataflowI:checkReport(
     BLOCKER
 
     :)
+    
+    let $ms1I04 := prof:current-ms()
+    
     let $I4table :=
         try {
             let $gmlIds := $sources/lower-case(normalize-space(@gml:id))
@@ -371,11 +400,17 @@ declare function dataflowI:checkReport(
             html:createErrorRow($err:code, $err:description)
         }
 
+        let $ms2I04 := prof:current-ms()
+        
     (: I5 reserved :)
+    let $ms1I05 := prof:current-ms()
     let $I5 := ()
+    let $ms2I05 := prof:current-ms()
 
     (: I6 reserved :)
+    let $ms1I06 := prof:current-ms()
     let $I6 := ()
+    let $ms2I06 := prof:current-ms()
 
     (: I7
 
@@ -419,6 +454,8 @@ declare function dataflowI:checkReport(
         html:createErrorRow($err:code, $err:description)
     }:)
 
+let $ms1I07 := prof:current-ms()
+
 let $I7 := try {
         let $combinspireid:= (for  $x in $sources
                                 let $localId := $x/aqd:inspireId/base:Identifier/lower-case(normalize-space(base:localId))
@@ -453,7 +490,8 @@ let $I7 := try {
         html:createErrorRow($err:code, $err:description)
     }
 
-
+    let $ms2I07 := prof:current-ms()
+    
     (: I8
 
     ./aqd:inspireId/base:Identifier/base:localId must be unique code for the
@@ -463,6 +501,8 @@ let $I7 := try {
 
     BLOCKER
     :)
+    let $ms1I08 := prof:current-ms()
+    
     let $I8invalid:= try {
         let $localIds := $sources/aqd:inspireId/base:Identifier/lower-case(normalize-space(base:localId))
         for $x in $sources
@@ -484,6 +524,7 @@ let $I7 := try {
         html:createErrorRow($err:code, $err:description)
     }
 
+    let $ms2I08 := prof:current-ms()
 
     (: I9
 
@@ -497,6 +538,8 @@ let $I7 := try {
     BLOCKER
     :)
 
+    let $ms1I09 := prof:current-ms()
+    
     let $I9table := try {
         for $namespace in distinct-values($sources/aqd:inspireId/base:Identifier/base:namespace)
             let $localIds := $sources/aqd:inspireId/base:Identifier[base:namespace = $namespace]/base:localId
@@ -511,7 +554,9 @@ let $I7 := try {
     } catch * {
         html:createErrorRow($err:code, $err:description)
     }
-
+     
+    let $ms2I09 := prof:current-ms()
+     
     (: I10
 
     Check that namespace is registered in vocabulary
@@ -521,7 +566,9 @@ let $I7 := try {
 
     ERROR
     :)
-
+    
+    let $ms1I10 := prof:current-ms()
+    
     let $I10invalid := try {
 
         let $vocDoc := doc($vocabulary:NAMESPACE || "rdf")
@@ -544,7 +591,9 @@ let $I7 := try {
     } catch * {
         html:createErrorRow($err:code, $err:description)
     }
-
+    
+    let $ms2I10 := prof:current-ms()
+    
     (: I11
 
     aqd:AQD_SourceApportionment/aqd:usedInPlan shall reference an existing
@@ -556,6 +605,9 @@ let $I7 := try {
 
     BLOCKER
     :)
+    
+    let $ms1I11 := prof:current-ms()
+    
     let $I11 := try{
         for $el in $sources/aqd:usedInPlan
 
@@ -579,6 +631,7 @@ let $I7 := try {
         html:createErrorRow($err:code, $err:description)
     }
 
+    let $ms2I11 := prof:current-ms()
 
     (: I11b
 
@@ -592,6 +645,9 @@ let $I7 := try {
 
     BLOCKER
     :)
+    
+    let $ms1I12 := prof:current-ms()
+    
     let $I12 := try{
         for $node in $sources/aqd:parentExceedanceSituation
             let $link := data($node/@xlink:href)
@@ -619,6 +675,8 @@ let $I7 := try {
         html:createErrorRow($err:code, $err:description)
     }
 
+    let $ms2I12 := prof:current-ms()
+    
     (: I13
 
     aqd:AQD_SourceApportionment/aqd:referenceYear/gml:TimeInstant/gml:timePosition
@@ -629,6 +687,8 @@ let $I7 := try {
     BLOCKER
     :)
 
+    let $ms1I13 := prof:current-ms()
+      
     let $I13 := try {
         for $node in $sources
             let $el := $node/aqd:referenceYear/gml:TimeInstant/gml:timePosition
@@ -645,6 +705,8 @@ let $I7 := try {
         html:createErrorRow($err:code, $err:description)
     }
 
+    let $ms2I13 := prof:current-ms()
+    
     (: I13, I14 are missing in xls file :)
 
     (: I15
@@ -662,6 +724,9 @@ let $I7 := try {
 
     BLOCKER
     :)
+    
+    let $ms1I15 := prof:current-ms()
+    
     let $I15 := try {
 
         for $node in $sources//aqd:QuantityCommented/aqd:quantity[@xsi:nil="false"]
@@ -677,7 +742,9 @@ let $I7 := try {
     } catch * {
         html:createErrorRow($err:code, $err:description)
     }
-
+    
+    let $ms2I15 := prof:current-ms()
+    
     (: I16
 
     Across all the delivery, check that the element
@@ -692,7 +759,9 @@ let $I7 := try {
 
     BLOCKER
     :)
-
+    
+    let $ms1I16 := prof:current-ms()
+    
     let $I16 := try {
         for $node in $docRoot//aqd:QuantityCommented/aqd:quantity
             let $reason := $node/@nilReason
@@ -718,6 +787,8 @@ let $I7 := try {
         html:createErrorRow($err:code, $err:description)
     }
 
+    let $ms2I16 := prof:current-ms()
+    
     (: I17
 
     Across all the delivery, If aqd:QuantityCommented/aqd:quantity attribute
@@ -728,6 +799,8 @@ let $I7 := try {
     ERROR
     :)
 
+    let $ms1I17 := prof:current-ms()
+    
     let $I17 := try {
         for $node in $docRoot//aqd:QuantityCommented
             let $isnil := $node/aqd:quantity[@xsi:nil = "true"]
@@ -754,6 +827,7 @@ let $I7 := try {
         html:createErrorRow($err:code, $err:description)
     }
 
+    let $ms2I17 := prof:current-ms()
 
     (: I18
 
@@ -770,6 +844,8 @@ let $I7 := try {
     BLOCKER
     :)
 
+    let $ms1I18 := prof:current-ms()
+    
     let $I18 := try {
 
         (:let $sources := $docRoot//aqd:AQD_SourceApportionment:)
@@ -862,6 +938,8 @@ let $I18errorMessage := (
                                 else ($labels:I18)
                             )
 
+    let $ms2I18 := prof:current-ms()
+    
     (: I19
 
     aqd:AQD_SourceApportionment/aqd:regionalBackground/aqd:RegionalBackground/aqd:total/aqd:QuantityCommented/aqd:quantity
@@ -877,7 +955,9 @@ let $I18errorMessage := (
     BLOCKER
 
     :)
-
+    
+    let $ms1I19 := prof:current-ms()
+    
    let $I19 := try {
         for $x in $sources
             let $rb := $x/aqd:regionalBackground/aqd:RegionalBackground
@@ -914,7 +994,9 @@ let $I18errorMessage := (
     } catch * {
         html:createErrorRow($err:code, $err:description)
     }
-
+    
+    let $ms2I19 := prof:current-ms()
+    
     (: I20
 
     aqd:AQD_SourceApportionment/aqd:urbanBackground/aqd:UrbanBackground/aqd:total/aqd:QuantityCommented/aqd:quantity
@@ -934,6 +1016,8 @@ let $I18errorMessage := (
     BLOCKER
 
     :)
+
+    let $ms1I20 := prof:current-ms()
 
     let $I20 := try {
         for $x in $sources
@@ -991,6 +1075,8 @@ let $I18errorMessage := (
         html:createErrorRow($err:code, $err:description)
     }
 
+    let $ms2I20 := prof:current-ms()
+
     (: I21
 
     aqd:AQD_SourceApportionment/aqd:localIncrement/aqd:LocalIncrement/aqd:total/aqd:QuantityCommented/aqd:quantity
@@ -1012,6 +1098,8 @@ let $I18errorMessage := (
 
     :)
 
+    let $ms1I21 := prof:current-ms()
+    
     let $I21 := try {
         for $x in $sources
             let $li := $x/aqd:localIncrement/aqd:LocalIncrement
@@ -1053,7 +1141,8 @@ let $I18errorMessage := (
         html:createErrorRow($err:code, $err:description)
     }
 
-
+    let $ms2I21 := prof:current-ms()
+    
 
     (: I22
 
@@ -1067,6 +1156,8 @@ let $I18errorMessage := (
 
     :)
 
+    let $ms1I22 := prof:current-ms()
+    
     let $I22 := try {
         for $node in $sources
             let $ok := exists($node/aqd:macroExceedanceSituation)
@@ -1081,6 +1172,8 @@ let $I18errorMessage := (
     } catch * {
         html:createErrorRow($err:code, $err:description)
     }
+    
+    let $ms2I22 := prof:current-ms()
 
 
     (: I23
@@ -1097,6 +1190,9 @@ let $I18errorMessage := (
     ERROR
 
     :)
+    
+    let $ms1I23 := prof:current-ms()
+    
     let $I23 := try {
 
         for $node in $sources/aqd:macroExceedanceSituation
@@ -1115,6 +1211,8 @@ let $I18errorMessage := (
     } catch * {
         html:createErrorRow($err:code, $err:description)
     }
+    
+    let $ms2I23 := prof:current-ms()
 
     (: I24
 
@@ -1128,6 +1226,9 @@ let $I18errorMessage := (
     BLOCKER
 
     :)
+    
+    let $ms1I24 := prof:current-ms()
+    
     let $I24 := try {
         for $el in $sources/aqd:macroExceedanceSituation/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:areaClassification
             let $uri := $el/@xlink:href
@@ -1144,6 +1245,8 @@ let $I18errorMessage := (
     } catch * {
         html:createErrorRow($err:code, $err:description)
     }
+    
+    let $ms2I24 := prof:current-ms()
 
     (: I25
 
@@ -1173,7 +1276,9 @@ let $I18errorMessage := (
     See comments on ticket https://taskman.eionet.europa.eu/issues/89179
 
     :)
-
+    
+    let $ms1I25 := prof:current-ms()
+    
     let $I25 := try {
         for $node in $sources/aqd:macroExceedanceSituation/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:areaClassification
             let $areaClassification := data($node/@xlink:href)
@@ -1204,6 +1309,8 @@ let $I18errorMessage := (
     } catch * {
         html:createErrorRow($err:code, $err:description)
     }
+    
+    let $ms2I25 := prof:current-ms()
 
     (: I26
     /aqd:macroExceedanceSituation/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:surfaceArea
@@ -1214,6 +1321,8 @@ let $I18errorMessage := (
 
     ERROR
     :)
+    
+    let $ms1I26 := prof:current-ms()
 
     let $I26 := try {
         for $node in $sources
@@ -1235,6 +1344,8 @@ let $I18errorMessage := (
     } catch * {
         html:createErrorRow($err:code, $err:description)
     }
+    
+    let $ms2I26 := prof:current-ms()
 
     (: I27
 
@@ -1245,6 +1356,9 @@ let $I18errorMessage := (
 
     ERROR
     :)
+    
+    let $ms1I27 := prof:current-ms()
+    
     let $I27 := try {
         for $node in $sources
             let $length := $node/aqd:macroExceedanceSituation/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea/aqd:roadLength
@@ -1265,9 +1379,13 @@ let $I18errorMessage := (
     } catch * {
         html:createErrorRow($err:code, $err:description)
     }
+    
+    let $ms2I27 := prof:current-ms()
 
     (: I28 is missing in XLS :)
+    let $ms1I28 := prof:current-ms()
     let $I28 := ()
+    let $ms2I28 := prof:current-ms()
 
     (: I29
 
@@ -1282,6 +1400,9 @@ let $I18errorMessage := (
     ERROR
 
     :)
+    
+    let $ms1I29 := prof:current-ms()
+    
     let $I29 := try {
         for $node in $sources
             let $area := $node/aqd:macroExceedanceSituation/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea
@@ -1299,6 +1420,8 @@ let $I18errorMessage := (
     } catch * {
         html:createErrorRow($err:code, $err:description)
     }
+    
+    let $ms2I29 := prof:current-ms()
 
     (: I30
 
@@ -1312,6 +1435,9 @@ let $I18errorMessage := (
 
     ERROR
     :)
+    
+    let $ms1I30 := prof:current-ms()
+    
     let $I30 := try {
         let $elements := (
             "stationUsed",
@@ -1369,6 +1495,8 @@ let $I18errorMessage := (
     } catch * {
         html:createErrorRow($err:code, $err:description)
     }
+    
+    let $ms2I30 := prof:current-ms()
 
 
     (: I31
@@ -1400,6 +1528,8 @@ let $I18errorMessage := (
     TODO: implementation changed, now works but not 100% sure if it's OK
 
     :)
+    
+    let $ms1I31 := prof:current-ms()
 
     let $I31 := try {
         for $node in $sources
@@ -1435,6 +1565,8 @@ let $I18errorMessage := (
     } catch * {
         html:createErrorRow($err:code, $err:description)
     }
+    
+    let $ms2I31 := prof:current-ms()
 
 
     (: I32
@@ -1466,6 +1598,8 @@ let $I18errorMessage := (
     TODO: implementation changed, now works but not 100% sure if it's OK
     :)
 
+    let $ms1I32 := prof:current-ms()
+    
     let $I32 := try {
         for $node in $sources
             let $att-url := functx:if-empty($node/aqd:parentExceedanceSituation/@xlink:href,"")
@@ -1500,6 +1634,8 @@ let $I18errorMessage := (
     } catch * {
         html:createErrorRow($err:code, $err:description)
     }
+    
+    let $ms2I32 := prof:current-ms()
 
 
     (: I33
@@ -1514,6 +1650,9 @@ let $I18errorMessage := (
     RESERVE
 
     :)
+    
+    let $ms1I33 := prof:current-ms()
+    
     let $I33 := try {
         for $node in $sources
             let $area := $node/aqd:macroExceedanceSituation/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea
@@ -1534,6 +1673,8 @@ let $I18errorMessage := (
     } catch * {
         html:createErrorRow($err:code, $err:description)
     }
+    
+    let $ms2I33 := prof:current-ms()
 
     (: I34
 
@@ -1547,6 +1688,8 @@ let $I18errorMessage := (
     RESERVE
     :)
 
+    let $ms1I34 := prof:current-ms()
+    
     let $I34 := try {
         for $node in $sources
             let $area := $node/aqd:macroExceedanceSituation/aqd:ExceedanceDescription/aqd:exceedanceArea/aqd:ExceedanceArea
@@ -1564,6 +1707,8 @@ let $I18errorMessage := (
     } catch * {
         html:createErrorRow($err:code, $err:description)
     }
+    
+    let $ms2I34 := prof:current-ms()
 
     (: I35
     WHERE
@@ -1577,6 +1722,8 @@ let $I18errorMessage := (
     RESERVE
 
     :)
+    
+    let $ms1I35 := prof:current-ms()
 
     let $I35 := try {
         for $node in $sources
@@ -1601,6 +1748,8 @@ let $I18errorMessage := (
     } catch * {
         html:createErrorRow($err:code, $err:description)
     }
+    
+    let $ms2I35 := prof:current-ms()
 
     (: I36
 
@@ -1612,6 +1761,8 @@ let $I18errorMessage := (
     RESERVE
 
     :)
+    
+    let $ms1I36 := prof:current-ms()
 
     let $I36 := try {
         for $node in $sources
@@ -1634,7 +1785,8 @@ let $I18errorMessage := (
     } catch * {
         html:createErrorRow($err:code, $err:description)
     }
-
+    
+    let $ms2I36 := prof:current-ms()
 
     (: I37
 
@@ -1654,6 +1806,9 @@ let $I18errorMessage := (
     ERROR
 
     :)
+    
+    let $ms1I37 := prof:current-ms()
+    
     let $I37 := try {
         for $node in $sources/
                 aqd:macroExceedanceSituation/
@@ -1679,6 +1834,8 @@ let $I18errorMessage := (
         html:createErrorRow($err:code, $err:description)
     }
 
+    let $ms2I37 := prof:current-ms()
+
     (: I38
 
     aqd:AQD_SourceApportionment/aqd:macroExceedanceSituation/aqd:ExceedanceDescription/aqd:exceedanceExposure/aqd:reason
@@ -1690,6 +1847,9 @@ let $I18errorMessage := (
     ERROR
 
     :)
+    
+    let $ms1I38 := prof:current-ms()
+    
     let $I38 := try {
         for $node in $sources/aqd:macroExceedanceSituation/aqd:ExceedanceDescription/aqd:reason
             let $link := $node/@xlink:href
@@ -1707,6 +1867,8 @@ let $I18errorMessage := (
     } catch * {
         html:createErrorRow($err:code, $err:description)
     }
+    
+    let $ms2I38 := prof:current-ms()
 
 
     (: I39
@@ -1721,6 +1883,8 @@ let $I18errorMessage := (
 
     RESERVE
     :)
+    
+    let $ms1I39 := prof:current-ms()
 
     let $I39 := try {
         for $node in $sources
@@ -1747,6 +1911,8 @@ let $I18errorMessage := (
     } catch * {
         html:createErrorRow($err:code, $err:description)
     }
+    
+    let $ms2I39 := prof:current-ms()
 
 
     (: I40
@@ -1762,6 +1928,8 @@ let $I18errorMessage := (
 
     BLOCKER
     :)
+    
+    let $ms1I40 := prof:current-ms()
 
     let $I40 := try {
         for $node in $sources
@@ -1802,6 +1970,8 @@ let $I18errorMessage := (
     } catch * {
         html:createErrorRow($err:code, $err:description)
     }
+    
+    let $ms2I40 := prof:current-ms()
 
 
     (: I41
@@ -1816,6 +1986,8 @@ let $I18errorMessage := (
 
     ERROR
     :)
+    
+    let $ms1I41 := prof:current-ms()
 
     let $I41 := try {
         for $node in $sources
@@ -1860,6 +2032,8 @@ let $I18errorMessage := (
     } catch * {
         html:createErrorRow($err:code, $err:description)
     }
+    
+    let $ms2I41 := prof:current-ms()
 
 
     (: I42
@@ -1967,6 +2141,9 @@ let $I18errorMessage := (
     } catch * {
         html:createErrorRow($err:code, $err:description)
     }:)
+    
+    let $ms1I42 := prof:current-ms()
+    
     let $I42 := try {
        
         let $seq :=
@@ -2151,6 +2328,9 @@ let $I18errorMessage := (
 
                                 else ($labels:I42)
                             )
+                            
+     let $ms2I42 := prof:current-ms()                     
+                            
      (:let $I42errorLevel :=
 
             let $pollutants := (
@@ -2227,6 +2407,8 @@ let $I18errorMessage := (
 
     ERROR
     :)
+    
+    let $ms1I43 := prof:current-ms()
 
     let $I43 := try {
         let $seq :=
@@ -2362,6 +2544,8 @@ let $I18errorMessage := (
     } catch * {
         html:createErrorRow($err:code, $err:description)
     }
+    
+    let $ms2I43 := prof:current-ms()
 
     (: I44
 
@@ -2414,6 +2598,8 @@ let $I18errorMessage := (
                     0
 :)
 
+    let $ms1I44 := prof:current-ms()
+    
     let $I44 := try {
         for $node in $sources
             let $el := $node/
@@ -2524,6 +2710,7 @@ let $I44errorMessage := (
                                 else ($labels:I44)
                             )
 
+    let $ms2I44 := prof:current-ms()
 
     (:  I45
     "WHERE ./aqd:pollutant xlink:href attribute EQUALs
@@ -2539,6 +2726,9 @@ let $I44errorMessage := (
     Error
 
     :)
+    
+    let $ms1I45 := prof:current-ms()
+    
     let $I45 := try {
         for $node in $sources
             let $parent := functx:if-empty($node/aqd:parentExceedanceSituation/@xlink:href,"")
@@ -2575,10 +2765,13 @@ let $I44errorMessage := (
     } catch * {
         html:createErrorRow($err:code, $err:description)
     }
+    
+    let $ms2I45 := prof:current-ms()
 
     return
         <table class="maintable hover">
-
+        
+        <table>
         {html:build2("NS", $labels:NAMESPACES, $labels:NAMESPACES_SHORT, $NSinvalid, "All values are valid", "record", $errors:NS)}
         {html:build2("VOCAB", $labels:VOCAB, $labels:VOCAB_SHORT, $VOCABinvalid, "All values are valid", "record", $errors:VOCAB)}
         {html:build3("I0", $labels:I0, $labels:I0_SHORT, $I0table, string($I0table/td), errors:getMaxError($I0table))}
@@ -2635,6 +2828,62 @@ let $I44errorMessage := (
         {html:build2Sparql("I43", $labels:I43, $labels:I43_SHORT, $I43, "All values are valid", "needs valid input", $errors:I43)}
         {html:build2("I44", $I44errorMessage, $labels:I44_SHORT, $I44, "All values are valid", "needs valid input", $I44maxErrorLevel)}
         <!--{html:build2("I45", $labels:I45, $labels:I45_SHORT, $I45, "All values are valid", "needs valid input", $errors:I45)}-->
+        </table>
+        
+        <table>
+              <tr>
+                  <th>Query</th>
+                  <th>Process time in miliseconds</th>
+                  <th>Process time in seconds</th>
+              </tr>
+             {common:runtime("NS", $ms1NS, $ms2NS)}
+             {common:runtime("VOCAB", $ms1VOCAB, $ms2VOCAB)}
+             {common:runtime("I0", $ms1I0, $ms2I0)}
+             {common:runtime("I01", $ms1I01, $ms2I01)}
+             {common:runtime("I02", $ms1I02, $ms2I02)}
+             {common:runtime("I03", $ms1I03, $ms2I03)} 
+             {common:runtime("I04", $ms1I04, $ms2I04)}
+             {common:runtime("I05", $ms1I05, $ms2I05)}
+             {common:runtime("I06", $ms1I06, $ms2I06)}
+             {common:runtime("I07", $ms1I07, $ms2I07)}
+             {common:runtime("I08", $ms1I08, $ms2I08)}
+             {common:runtime("I09", $ms1I09, $ms2I09)}
+             {common:runtime("I10", $ms1I10, $ms2I10)}
+             {common:runtime("I11", $ms1I11, $ms2I11)}
+             {common:runtime("I12", $ms1I12, $ms2I12)}
+             {common:runtime("I13", $ms1I13, $ms2I13)}
+             {common:runtime("I15", $ms1I15, $ms2I15)}
+             {common:runtime("I16", $ms1I16, $ms2I16)}
+             {common:runtime("I17", $ms1I17, $ms2I17)}
+             {common:runtime("I18", $ms1I18, $ms2I18)}
+             {common:runtime("I19", $ms1I19, $ms2I19)}
+             {common:runtime("I20", $ms1I20, $ms2I20)}
+             {common:runtime("I21", $ms1I21, $ms2I21)}
+             {common:runtime("I22", $ms1I22, $ms2I22)}
+             {common:runtime("I23", $ms1I23, $ms2I23)}
+             {common:runtime("I24", $ms1I24, $ms2I24)}
+             {common:runtime("I25", $ms1I25, $ms2I25)}
+             {common:runtime("I26", $ms1I26, $ms2I26)}
+             {common:runtime("I27", $ms1I27, $ms2I27)}
+             <!-- {common:runtime("I28", $ms1I28, $ms2I28)} -->
+             {common:runtime("I29", $ms1I29, $ms2I29)}
+             {common:runtime("I30", $ms1I30, $ms2I30)}
+             {common:runtime("I31", $ms1I31, $ms2I31)}
+             {common:runtime("I32", $ms1I32, $ms2I32)}
+             {common:runtime("I33", $ms1I33, $ms2I33)}
+             {common:runtime("I34", $ms1I34, $ms2I34)}
+             {common:runtime("I35", $ms1I35, $ms2I35)}
+             <!-- {common:runtime("I36", $ms1I36, $ms2I36)} -->
+             {common:runtime("I37", $ms1I37, $ms2I37)}
+             {common:runtime("I38", $ms1I38, $ms2I38)}
+             {common:runtime("I39", $ms1I39, $ms2I39)}
+             {common:runtime("I40", $ms1I40, $ms2I40)}
+             {common:runtime("I41", $ms1I41, $ms2I41)}
+             {common:runtime("I42", $ms1I42, $ms2I42)}
+             {common:runtime("I43", $ms1I43, $ms2I43)}
+             {common:runtime("I44", $ms1I44, $ms2I44)}
+             <!-- {common:runtime("I45", $ms1I45, $ms2I45)} -->
+        </table>
 
     </table>
 };

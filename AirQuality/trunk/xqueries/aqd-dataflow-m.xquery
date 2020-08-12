@@ -79,6 +79,7 @@ let $MCombinations :=
         doc($source_url)//gml:featureMember/descendant::*[name()=$featureType]
 
 (: File prefix/namespace check :)
+let $ms1NS := prof:current-ms()
 let $NSinvalid :=
     try {
         let $XQmap := inspect:static-context((), 'namespaces')
@@ -104,11 +105,15 @@ let $NSinvalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+let $ms2NS := prof:current-ms()
 
 (: VOCAB check:)
+let $ms1VOCAB := prof:current-ms()
 let $VOCABinvalid := checks:vocab($docRoot)
+let $ms2VOCAB := prof:current-ms()
 
 (: M0 :)
+let $ms1M0 := prof:current-ms()
 let $M0table :=
     try {
         if ($reportingYear = "") then
@@ -137,13 +142,17 @@ let $M0table :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+       
 let $isNewDelivery := errors:getMaxError($M0table) = $errors:INFO
+
+let $ms2M0 := prof:current-ms() 
 
 (: M01 :)
 let $countFeatureTypes :=
     for $featureType in $dataflowM:FEATURE_TYPES
     return
-        count(doc($source_url)//gml:featureMember/descendant::*[name()=$featureType])
+        count(doc($source_url)//gml:featureMember/descendant::*[name()=$featureType])        
+let $ms1M01 := prof:current-ms()        
 let $M01table :=
     try {
         for $featureType at $pos in $dataflowM:FEATURE_TYPES
@@ -163,8 +172,10 @@ let $M01table :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+let $ms2M01 := prof:current-ms() 
 
 (: M02 - :)
+let $ms1M02 := prof:current-ms() 
 let $M02table :=
     try {
         for $featureType at $pos in $dataflowM:FEATURE_TYPES
@@ -193,14 +204,18 @@ let $M02table :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+    
 let $M02count :=
     try {
         string(sum($M02table/td[2]))
     } catch * {
         "NaN"
     }
+    
+let $ms2M02 := prof:current-ms()    
 
 (: M03 - :)
+let $ms1M03 := prof:current-ms()
 let $M03table :=
     try {
         let $featureTypes := $dataflowM:FEATURE_TYPES
@@ -236,8 +251,10 @@ let $M03count :=
     } catch * {
         "NaN"
     }
+let $ms2M03 := prof:current-ms()    
 
 (: M04 :)
+let $ms1M04 := prof:current-ms()
 let $M04table :=
     try {
         let $allM4Combinations :=
@@ -261,9 +278,11 @@ let $M04table :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+let $ms2M04 := prof:current-ms()
 
 (: M05 :)
 (: TODO: FIX TRY CATCH CODE :)
+let $ms1M05 := prof:current-ms()
 let $all1 := $MCombinations/lower-case(normalize-space(@gml:id))
 let $part1 := distinct-values(
         for $id in $MCombinations/@gml:id
@@ -327,9 +346,11 @@ let $part4 :=
         </tr>
 
 let $M05invalid := ($part1, $part2, $part3, $part4)
+let $ms2M05 := prof:current-ms()
 
 (: M06 - ./ef:inspireId/base:Identifier/base:localId shall be an unique code for AQD_Model and unique within the namespace.
  It is recommended to start with “MOD” and may include ISO2-country code (e.g.: MOD-ES0001) :)
+let $ms1M06 := prof:current-ms()
 let $M06invalid :=
     try {
         let $all := $docRoot//aqd:AQD_Model/ef:inspireId/base:Identifier/concat(base:namespace, base:localId)
@@ -350,8 +371,10 @@ let $M06invalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+let $ms2M06 := prof:current-ms()
 
 (: M07 :)
+let $ms1M07 := prof:current-ms()
 let $M07table :=
     try {
         for $id in $modelNamespaces
@@ -367,8 +390,10 @@ let $M07table :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+let $ms2M07 := prof:current-ms()
 
 (: M07.1 :)
+let $ms1M07.1 := prof:current-ms()
 let $M07.1invalid :=
     try {
         let $vocDoc := doc($vocabulary:NAMESPACE || "rdf")
@@ -386,8 +411,10 @@ let $M07.1invalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+let $ms2M07.1 := prof:current-ms()
 
 (: M08 aqd:AQD_Model/ef:name shall return a string :)
+let $ms1M08 := prof:current-ms()
 let $M08invalid :=
     try {
         for $x in $docRoot//aqd:AQD_Model[string(ef:name) = ""]
@@ -402,8 +429,10 @@ let $M08invalid :=
             <td></td>
         </tr>
     }
+let $ms2M08 := prof:current-ms()
 
 (: M15 :)
+let $ms1M15 := prof:current-ms()
 let $M15invalid :=
     try {
         let $allNotNullEndPeriods :=
@@ -427,8 +456,10 @@ let $M15invalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+let $ms2M15 := prof:current-ms()
 
 (: M18 :)
+let $ms1M18 := prof:current-ms()
 let $M18invalid :=
     try {
         for $x in $docRoot//aqd:AQD_Model
@@ -445,8 +476,10 @@ let $M18invalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+let $ms2M18 := prof:current-ms()
 
 (: M19 :)
+let $ms1M19 := prof:current-ms()
 let $M19invalid :=
     try {
         let $all := data($docRoot//aqd:AQD_ModelArea/aqd:inspireId/base:Identifier/concat(base:namespace, "/", base:localId))
@@ -465,7 +498,10 @@ let $M19invalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+let $ms2M19 := prof:current-ms()
+
 (: M20 :)
+let $ms1M20 := prof:current-ms()
 let $M20invalid :=
     try {
         let $all := $docRoot//aqd:AQD_ModelProcess/ompr:inspireId/base:Identifier/concat(base:namespace, "/", base:localId)
@@ -483,8 +519,10 @@ let $M20invalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+let $ms2M20 := prof:current-ms()
 
 (: M23 :)
+let $ms1M23 := prof:current-ms()
 let $M23invalid :=
     try {
         let $exceptions := ($vocabulary:OBJECTIVETYPE_VOCABULARY || "MO")
@@ -515,8 +553,10 @@ let $M23invalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+let $ms2M23 := prof:current-ms()
 
 (: M24 :)
+let $ms1M24 := prof:current-ms()
 let $M24invalid :=
     try {
         for $x in $docRoot//aqd:AQD_Model/aqd:assessmentType
@@ -534,8 +574,10 @@ let $M24invalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+let $ms2M24 := prof:current-ms()
 
 (: M26 :)
+let $ms1M26 := prof:current-ms()
 let $M26invalid :=
     try {
         let $all := data(sparqlx:run(query:getZone($latestEnvelopeB))//sparql:binding[@name = 'inspireLabel']/sparql:literal)
@@ -554,8 +596,10 @@ let $M26invalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+let $ms2M26 := prof:current-ms()
 
 (: M27 - :)
+let $ms1M27 := prof:current-ms()
 let $M27invalid :=
     try {
         let $localModelProcessIds := $docRoot//aqd:AQD_ModelProcess/ompr:inspireId/base:Identifier
@@ -575,8 +619,10 @@ let $M27invalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+let $ms2M27 := prof:current-ms()
 
 (: M28 :)
+let $ms1M28 := prof:current-ms()
 let $M28table :=
     try {
         for $id in $modelProcessNamespaces
@@ -592,8 +638,10 @@ let $M28table :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+let $ms2M28 := prof:current-ms()
 
 (: M28 :)
+let $ms1M28.1 := prof:current-ms()
 let $M28.1invalid :=
     try {
         let $vocDoc := doc($vocabulary:NAMESPACE || "rdf")
@@ -611,8 +659,10 @@ let $M28.1invalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+let $ms2M28.1 := prof:current-ms()
 
 (: M29 :)
+let $ms1M29 := prof:current-ms()
 let $M29invalid :=
     try {
         for $baseLink in $docRoot//aqd:AQD_ModelProcess/ompr:documentation/base2:DocumentationCitation/base2:link
@@ -629,8 +679,10 @@ let $M29invalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+let $ms2M29 := prof:current-ms()
 
 (: M30 :)
+let $ms1M30 := prof:current-ms()
 let $M30invalid :=
     try {
         for $x in $docRoot//aqd:AQD_ModelProcess[string(ompr:name) = ""]
@@ -644,8 +696,10 @@ let $M30invalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+let $ms2M30 := prof:current-ms()
 
 (: M34 :)
+let $ms1M34 := prof:current-ms()
 let $M34invalid :=
     try {
         for $x in $docRoot//aqd:AQD_ModelProcess[string(aqd:description) = ""]
@@ -659,8 +713,10 @@ let $M34invalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+let $ms2M34 := prof:current-ms()
 
 (: M35 :)
+let $ms1M35 := prof:current-ms()
 let $M35invalid :=
     try {
         let $valid := dd:getValidConcepts($vocabulary:UOM_TIME || "rdf")
@@ -678,8 +734,10 @@ let $M35invalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+let $ms2M35 := prof:current-ms()
 
 (: M39 :)
+let $ms1M39 := prof:current-ms()
 let $M39invalid :=
     try {
         for $dataQualityReport in $docRoot//aqd:AQD_ModelProcess/dataQualityReport
@@ -696,8 +754,10 @@ let $M39invalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+let $ms2M39 := prof:current-ms()
 
 (: M40 - :)
+let $ms1M40 := prof:current-ms()
 let $M40invalid :=
     try {
         let $localModelAreaIds := $docRoot//aqd:AQD_ModelArea/ompr:inspireId/base:Identifier
@@ -717,8 +777,10 @@ let $M40invalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+let $ms2M40 := prof:current-ms()
 
 (: M41 - :)
+let $ms1M41 := prof:current-ms()
 let $M41table :=
     try {
         for $id in $modelAreaNamespaces
@@ -734,8 +796,10 @@ let $M41table :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+let $ms2M41 := prof:current-ms()
 
 (: M41 :)
+let $ms1M41.1 := prof:current-ms()
 let $M41.1invalid :=
     try {
         let $vocDoc := doc($vocabulary:NAMESPACE || "rdf")
@@ -753,8 +817,10 @@ let $M41.1invalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+let $ms2M41.1 := prof:current-ms()
 
 (: M43 :)
+let $ms1M43 := prof:current-ms()
 let $M43invalid :=
     try {
         let $valid := ("urn:ogc:def:crs:EPSG::4258", "urn:ogc:def:crs:EPSG::4326", "urn:ogc:def:crs:EPSG::3035")
@@ -772,8 +838,10 @@ let $M43invalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+let $ms2M43 := prof:current-ms()
 
 (: M45 :)
+let $ms1M45 := prof:current-ms()
 let $M45invalid :=
     try {
         for $posList in $docRoot//gml:posList
@@ -789,11 +857,14 @@ let $M45invalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+let $ms2M45 := prof:current-ms()
+    
 (:
  : M46 - generalized by Hermann
  : In Europe, lat values tend to be bigger than lon values. We use this observation as a poor farmer's son test to check that in a coordinate value pair,
  : the lat value comes first, as defined in the GML schema
 :)
+let $ms1M46 := prof:current-ms()
 let $M46invalid :=
     try {
         for $latLong in $docRoot//gml:posList
@@ -817,9 +888,11 @@ let $M46message :=
         "Temporary turned off"
     else
         "All values are valid"
+let $ms2M46 := prof:current-ms()
 
     return
     <table class="maintable hover">
+    <table>
         {html:build2("NS", $labels:NAMESPACES, $labels:NAMESPACES_SHORT, $NSinvalid, "All values are valid", "record", $errors:WARNING)}
         {html:build2("VOCAB", $labels:VOCAB, $labels:VOCAB_SHORT, $VOCABinvalid, "All values are valid", "record", $errors:VOCAB)}
         {html:build3("M0", $labels:M0, $labels:M0_SHORT, $M0table, string($M0table/td), errors:getMaxError($M0table))}
@@ -856,6 +929,47 @@ let $M46message :=
         {html:build2("M43", $labels:M43, $labels:M43_SHORT, $M43invalid, "All records are valid", "record", $errors:M43)}
         {html:build2("M45", $labels:M45, $labels:M45_SHORT, $M45invalid, "All records are valid", "record", $errors:M45)}
         {html:build2("M46", $labels:M46, $labels:M46_SHORT, $M46invalid, $M46message, "record", $errors:M46)}
+    </table>
+    <table>
+        <tr>
+            <th>Query</th>
+            <th>Process time in miliseconds</th>
+            <th>Process time in seconds</th>
+        </tr>
+       {common:runtime("NS", $ms1NS, $ms2NS)}
+       {common:runtime("VOCAB", $ms1VOCAB, $ms2VOCAB)}
+       {common:runtime("M0",  $ms1M0, $ms2M0)}
+       {common:runtime("M01", $ms1M01, $ms2M01)}
+       {common:runtime("M02", $ms1M02, $ms2M02)}
+       {common:runtime("M03", $ms1M03, $ms2M03)}
+       {common:runtime("M04",  $ms1M04, $ms2M04)}
+       {common:runtime("M05", $ms1M05, $ms2M05)}
+       {common:runtime("M06",  $ms1M06, $ms2M06)}
+       {common:runtime("M07",  $ms1M07, $ms2M07)}
+       {common:runtime("M07.1",  $ms1M07.1, $ms2M07.1)}
+       {common:runtime("M08",  $ms1M08, $ms2M08)}
+       {common:runtime("M15",  $ms1M15, $ms2M15)}
+       {common:runtime("M18",  $ms1M18, $ms2M18)}
+       {common:runtime("M19",  $ms1M19, $ms2M19)}
+       {common:runtime("M20", $ms1M20, $ms2M20)}
+       {common:runtime("M23",  $ms1M23, $ms2M23)}
+       {common:runtime("M24",  $ms1M24, $ms2M24)}
+       {common:runtime("M26",  $ms1M26, $ms2M26)}
+       {common:runtime("M27",  $ms1M27, $ms2M27)}
+       {common:runtime("M28",  $ms1M28, $ms2M28)}
+       {common:runtime("M28.1",  $ms1M28.1, $ms2M28.1)}
+       {common:runtime("M29",  $ms1M29, $ms2M29)}
+       {common:runtime("M30",  $ms1M30, $ms2M30)}
+       {common:runtime("M34",  $ms1M34, $ms2M34)}
+       {common:runtime("M35",  $ms1M35, $ms2M35)}
+       {common:runtime("M39",  $ms1M39, $ms2M39)}
+       {common:runtime("M40",  $ms1M40, $ms2M40)}
+       {common:runtime("M41",  $ms1M41, $ms2M41)}
+       {common:runtime("M41.1",  $ms1M41.1, $ms2M41.1)}
+       {common:runtime("M43",  $ms1M43, $ms2M43)}
+       {common:runtime("M45",  $ms1M45, $ms2M45)}
+       {common:runtime("M46",  $ms1M43, $ms2M46)}
+    </table>
     </table>
 };
 
