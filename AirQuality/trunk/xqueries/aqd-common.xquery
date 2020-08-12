@@ -628,8 +628,8 @@ declare function common:runtime($queryName as xs:string ,$ns1 as xs:double ,$ns2
   return  
   <tr>
     <td> {$queryName}</td>
-    <td>{$ms}  " ms."</td> 
-    <td>{$seconds}  "s."</td>
+    <td>{$ms} ms.</td> 
+    <td>{$seconds} s.</td>
 </tr>
 };
 

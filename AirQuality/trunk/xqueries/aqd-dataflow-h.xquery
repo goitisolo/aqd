@@ -74,6 +74,7 @@ let $latestEnvelopesG := query:getLatestEnvelopesForObligation("679")
 let $latestEnvelopesH := query:getLatestEnvelopesForObligation("680")
 
 (: File prefix/namespace check :)
+let $ms1NS := prof:current-ms()
 let $NSinvalid := try {
     let $XQmap := inspect:static-context((), 'namespaces')
     let $fileMap := map:merge((
@@ -96,10 +97,18 @@ let $NSinvalid := try {
     html:createErrorRow($err:code, $err:description)
 }
 
+let $ms2NS := prof:current-ms()
+
 (: VOCAB check:)
+
+let $ms1VOCAB := prof:current-ms()
+
 let $VOCABinvalid := checks:vocab($docRoot)
 
+let $ms2VOCAB := prof:current-ms()
 (: H0 Checks if this delivery is new or an update (on same reporting year) :)
+
+let $ms1H0 := prof:current-ms()
 
 let $H0 := try {
     if ($reportingYear = "")
@@ -120,6 +129,8 @@ let $H0 := try {
 }
 
 let $isNewDelivery := errors:getMaxError($H0) = $errors:INFO
+
+let $ms2H0 := prof:current-ms()
 
 let $deliveries := sparqlx:run(
         query:sparql-objects-in-subject($cdrUrl || "h/", $node-name)
@@ -142,6 +153,8 @@ let $knownPlans :=
 Number of AQ Plans reported
 :)
 
+let $ms1H01 := prof:current-ms()
+
 let $countPlans := count($docRoot//aqd:AQD_Plan)
 
 let $H01 := try {
@@ -162,12 +175,16 @@ let $H01 := try {
     html:createErrorRow($err:code, $err:description)
 }
 
+let $ms2H01 := prof:current-ms()
+
 (: H02
 Compile & feedback upon the total number of new plans records included in the delivery
 (compared to any delivery for the same reporting year)
 
 Number of new Plans compared to previous report(s).
 :)
+
+let $ms1H02 := prof:current-ms()
 
 let $H02 := try {
     for $el in $docRoot//aqd:AQD_Plan
@@ -205,8 +222,12 @@ let $H02errorLevel :=
     else
         $errors:INFO
 
+let $ms2H02 := prof:current-ms()
+
 (: H03 Number of existing Plans compared to previous report (same reporting year). Blocker will be returned if
 XML is an update and ALL localId (100%) are different to previous delivery (for the same YEAR). :)
+
+let $ms1H03 := prof:current-ms()
 
 let $H03 := try {
     let $main := $docRoot//aqd:AQD_Plan
@@ -232,6 +253,8 @@ let $H03errorLevel :=
     else
         $errors:INFO
 
+let $ms2H03 := prof:current-ms()
+
 (: H4
 
 Compile & feedback a list of the unique identifier information for all Plans records included in the delivery.
@@ -241,6 +264,8 @@ Feedback report shall include the gml:id attribute, ./aqd:inspireId, ./aqd:pollu
 
 List of unique identifier information for all Plan records. Blocker if no Plans.
 :)
+
+let $ms1H04 := prof:current-ms()
 
 let $H04 := try {(:)
     let $gmlIds := $docRoot//aqd:AQD_Plan/lower-case(normalize-space(@gml:id))
@@ -300,12 +325,16 @@ let $H04 := try {(:)
     html:createErrorRow($err:code, $err:description)
 }
 
+let $ms2H04 := prof:current-ms()
+
 (: H05 
 aqd:AQD_Plan/aqd:pollutants/aqd:Pollutant/aqd:pollutantCode xlink:href attribute shall resolve to
 one of http://dd.eionet.europa.eu/vocabulary/aq/pollutant/
 
 Your plan status should use one of those listed at http://dd.eionet.europa.eu/vocabulary/aq/pollutant/
  :)
+
+let $ms1H05 := prof:current-ms()
 
 let $H05 := try {
     for $el in $docRoot//aqd:AQD_Plan/aqd:pollutants/aqd:Pollutant/aqd:pollutantCode
@@ -324,9 +353,15 @@ let $H05 := try {
     html:createErrorRow($err:code, $err:description)
 }
 
+let $ms2H05 := prof:current-ms()
+
 (: H06 RESERVE :)
 
+let $ms1H06 := prof:current-ms()
+
 let $H06 := ()
+
+let $ms2H06 := prof:current-ms()
 
 (: H07
 
@@ -337,6 +372,8 @@ let $H06 := ()
 
     BLOCKER
 :)
+
+let $ms1H07 := prof:current-ms()
 
 let $H07 := try {
     let $checks := ('gml:id', 'aqd:inspireId', 'ef:inspireId')
@@ -364,6 +401,8 @@ let $H07 := try {
     html:createErrorRow($err:code, $err:description)
 }
 
+let $ms2H07 := prof:current-ms()
+
 (: H08
 
     ./aqd:inspireId/base:Identifier/base:localId must be unique code for the
@@ -373,6 +412,8 @@ let $H07 := try {
 
     BLOCKER
 :)
+
+let $ms1H08 := prof:current-ms()
 
 let $H08:= try {
     let $localIds := $docRoot//aqd:AQD_Plan/aqd:inspireId/base:Identifier/lower-case(normalize-space(base:localId))
@@ -395,12 +436,16 @@ let $H08:= try {
     html:createErrorRow($err:code, $err:description)
 }
 
+let $ms2H08 := prof:current-ms()
+
 (: H09
  ./aqd:inspireId/base:Identifier/base:namespace List base:namespace
  and count the number of base:localId assigned to each base:namespace.
 
  List unique namespaces used and count number of elements
 :)
+
+let $ms1H09 := prof:current-ms()
 
 let $H09 := try {
     for $namespace in distinct-values($docRoot//aqd:AQD_Plan/aqd:inspireId/base:Identifier/base:namespace)
@@ -417,11 +462,15 @@ let $H09 := try {
     html:createErrorRow($err:code, $err:description)
 }
 
+let $ms2H09 := prof:current-ms()
+
 (: H10
 Check that namespace is registered in vocabulary (http://dd.eionet.europa.eu/vocabulary/aq/namespace/view)
 
 Check namespace is registered
 :)
+
+let $ms1H10 := prof:current-ms()
 
 let $H10 := try {
     let $vocDoc := doc($vocabulary:NAMESPACE || "rdf")
@@ -445,12 +494,17 @@ let $H10 := try {
     html:createErrorRow($err:code, $err:description)
 }
 
+let $ms2H10 := prof:current-ms()
+
 (: H11
 If aqd:AQD_ReportingHeader/aqd:reportingPeriod => 2013 aqd:AQD_Plan/aqd:exceedanceSituation@xlink:href
 attribute shall resolve to at least one  exceedance situation in dataset G via namespace/localId.
 
 If reporting period equal or greater than 2013, AQ must link to a valid exceedande situation (G)
 :)
+
+let $ms1H11 := prof:current-ms()
+
 let $H11 := try{
     let $year := if (empty($reportingYear)) then ()
     else
@@ -497,12 +551,16 @@ let $H11 := try{
     html:createErrorRow($err:code, $err:description)
 }
 
+let $ms2H11 := prof:current-ms()
+
 (: H12
 If aqd:reportingPeriod < 2013 and aqd:AQD_Plan/aqd:exceedanceSituation is empty aqd:comment must be populated
 
 If reporting period before than 2013 and a valid exceedande situation is not provided, aqd:comment should be
 provided instead
 :)
+
+let $ms1H12 := prof:current-ms()
 
 let $H12 := try {
     let $year := if (empty($reportingYear)) then ()
@@ -552,9 +610,15 @@ let $H12 := try {
     html:createErrorRow($err:code, $err:description)
 }
 
+let $ms2H12 := prof:current-ms()
+
 (: H13 RESERVE :)
 
+let $ms1H13 := prof:current-ms()
+
 let $H13 := ()
+
+let $ms2H13 := prof:current-ms()
 
 (: H14
 aqd:AQD_Plan/aqd:code should begin with with the 2-digit country code according to ISO 3166-1.
@@ -578,6 +642,8 @@ let $H14 := try {
 }:)
 
 (: H15 RESERVE :)
+
+let $ms1H15 := prof:current-ms()
 
 let $H15 := (
     try {
@@ -603,12 +669,16 @@ let $H15 := (
 
     )
 
+let $ms2H15 := prof:current-ms()
+
 (: H16
 aqd:AQD_Plan/aqd:competentAuthority/base2:RelatedParty/base2:organisationName/gco:CharacterString shall
 not be NULL or voided
 
 You must provide the name of the organisation responsible for the plan
 :)
+
+let $ms1H16 := prof:current-ms()
 
 let $H16 := try {
     let $main := $docRoot//aqd:AQD_Plan/aqd:competentAuthority/base2:RelatedParty/base2:organisationName/gco:CharacterString
@@ -628,12 +698,16 @@ let $H16 := try {
     html:createErrorRow($err:code, $err:description)
 }
 
+let $ms2H16 := prof:current-ms()
+
 (: H17
 aqd:AQD_Plan/aqd:competentAuthority/base2:RelatedParty/base2:individualName/gco:CharacterString shall not
 be NULL or voided
 
 You must provide a contact point within the organisation responsible for the plan, this may be a generic contact point.
 :)
+
+let $ms1H17 := prof:current-ms()
 
 let $H17 := try {
     let $main := $docRoot//aqd:AQD_Plan/aqd:competentAuthority/base2:RelatedParty/base2:individualName/gco:CharacterString
@@ -653,6 +727,8 @@ let $H17 := try {
     html:createErrorRow($err:code, $err:description)
 }
 
+let $ms2H17 := prof:current-ms()
+
 (: H18
 aqd:AQD_Plan/aqd:competentAuthority/base2:RelatedParty/base2:contact/base2:Contact/base2:electronicMailAddress shall
 not be NULL or voided
@@ -660,6 +736,8 @@ not be NULL or voided
 You must provide an email address for the contact point within the organisation responsible for the plan, this may be
 a generic telephone number.
 :)
+
+let $ms1H18 := prof:current-ms()
 
 let $H18 := try {
     let $main := $docRoot//aqd:AQD_Plan/aqd:competentAuthority/base2:RelatedParty/base2:contact/base2:Contact/base2:electronicMailAddress
@@ -679,11 +757,15 @@ let $H18 := try {
     html:createErrorRow($err:code, $err:description)
 }
 
+let $ms2H18 := prof:current-ms()
+
 (: H19
 aqd:AQD_Plan/aqd:firstExceedanceYear/gml:TimeInstant/gml:timePosition shall not be voided, NULL or an empty tag & shall contain content in yyyy format
 
 Your reference year must be in yyyy format
 :)
+
+let $ms1H19 := prof:current-ms()
 
 let $H19 := try {
     for $el in $docRoot//aqd:AQD_Plan/aqd:firstExceedanceYear/gml:TimeInstant/gml:timePosition
@@ -702,11 +784,15 @@ let $H19 := try {
     html:createErrorRow($err:code, $err:description)
 }
 
+let $ms2H19 := prof:current-ms()
+
 (: H20
 aqd:AQD_Plan/aqd:status  xlink:href attribute shall resolve to one of http://dd.eionet.europa.eu/vocabulary/aq/statusaqplan/
 
 Your plan status should use one of those listed at http://dd.eionet.europa.eu/vocabulary/aq/statusaqplan/
 :)
+
+let $ms1H20 := prof:current-ms()
 
 let $H20 := try {
     for $el in $docRoot//aqd:AQD_Plan/aqd:status
@@ -725,9 +811,15 @@ let $H20 := try {
     html:createErrorRow($err:code, $err:description)
 }
 
+let $ms2H20 := prof:current-ms()
+
 (: H21 RESERVE:)
 
+let $ms1H21 := prof:current-ms()
+
 let $H21 := ()
+
+let $ms2H21 := prof:current-ms()
 
 (: H22
 aqd:AQD_Plan/aqd:pollutants/aqd:Pollutant/aqd:protectionTarget xlink:href attribute shall resolve
@@ -735,6 +827,8 @@ to one of http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/
 
 Your protection target should use one of those listed at http://dd.eionet.europa.eu/vocabulary/aq/protectiontarget/
 :)
+
+let $ms1H22 := prof:current-ms()
 
 let $H22 := try {
     for $el in $docRoot//aqd:AQD_Plan/aqd:pollutants/aqd:Pollutant/aqd:protectionTarget
@@ -752,6 +846,8 @@ let $H22 := try {
 } catch * {
     html:createErrorRow($err:code, $err:description)
 }
+
+let $ms2H22 := prof:current-ms()
 
 (: H23
 Check and count expected combinations of Pollutant and ProtectionTarget at
@@ -775,6 +871,8 @@ Benzo(a)pyrene in PM10 (5029) + health
 
 Check and count expected combinations of Pollutant and ProtectionTarget
 :)
+
+let $ms1H23 := prof:current-ms()
 
 let $H23 := try {
     (:let $accepted_health := (
@@ -837,6 +935,8 @@ let $H23 := try {
     html:createErrorRow($err:code, $err:description)
 }
 
+let $ms2H23 := prof:current-ms()
+
 (: H24
 aqd:AQD_Plan/aqd:pollutants/aqd:Pollutant/aqd:pollutantCode xlink:href attribute (may be multiple)
 shall be the same as those in the referenced data flow G
@@ -845,6 +945,8 @@ attribute (maybe multiple)
 
 AQ plan pollutant's should match those in the exceedance situation (G)
 :)
+
+let $ms1H24 := prof:current-ms()
 
 let $H24 := try {
     for $plan in $docRoot//aqd:AQD_Plan
@@ -868,6 +970,8 @@ let $H24 := try {
     html:createErrorRow($err:code, $err:description)
 }
 
+let $ms2H24 := prof:current-ms()
+
 (: H25
 aqd:AQD_Plan/aqd:adoptionDate/gml:TimeInstant/gml:timePosition MUST be populated and its content in
 yyyy-mm-dd format if /gml:FeatureCollection/gml:featureMember/aqd:AQD_Plan/aqd:status  xlink:href
@@ -877,6 +981,8 @@ http://dd.eionet.europa.eu/vocabulary/aq/statusaqplan/under-revision
 
 Your reference year must be in yyyy-mm-dd format - rephrase it
 :)
+
+let $ms1H25 := prof:current-ms()
 
 let $H25 := try {
     for $node in $docRoot//aqd:AQD_Plan
@@ -908,6 +1014,8 @@ let $H25 := try {
     html:createErrorRow($err:code, $err:description)
 }
 
+let $ms2H25 := prof:current-ms()
+
 (: H26
 if /gml:FeatureCollection/gml:featureMember/aqd:AQD_Plan/aqd:status  xlink:href attribute equal
 http://dd.eionet.europa.eu/vocabulary/aq/statusaqplan/preparation,
@@ -916,6 +1024,8 @@ http://dd.eionet.europa.eu/vocabulary/aq/statusaqplan/under-revision
 
 aqd:AQD_Plan/aqd:adoptionDate/gml:TimeInstant/gml:timePosition should not be populated
 :)
+
+let $ms1H26 := prof:current-ms()
 
 let $H26 := try {
     for $node in $docRoot//aqd:AQD_Plan
@@ -943,12 +1053,16 @@ let $H26 := try {
     html:createErrorRow($err:code, $err:description)
 }
 
+let $ms2H26 := prof:current-ms()
+
 
 (: H27
 aqd:AQD_Plan/aqd:timeTable shall contain a text string
 
 Must contain a short textual description of timetable for the implementation of the air quality plan
 :)
+
+let $ms1H27 := prof:current-ms()
 
 let $H27 := try {
     let $main := $docRoot//aqd:AQD_Plan/aqd:timeTable
@@ -968,12 +1082,16 @@ let $H27 := try {
     html:createErrorRow($err:code, $err:description)
 }
 
+let $ms2H27 := prof:current-ms()
+
 (: H28
 aqd:AQD_Plan/aqd:referenceImplementation shall contain a URL to document  or web resource describing the
 latest version of full air quality plan. This MUST be valid.
 
 Must contain a URL to document  or web resource describing the last version of full air quality plan
 :)
+
+let $ms1H28 := prof:current-ms()
 
 let $H28 := try {
     let $main :=  $docRoot//aqd:AQD_Plan/aqd:referenceImplementation
@@ -995,6 +1113,8 @@ let $H28 := try {
     html:createErrorRow($err:code, $err:description)
 }
 
+let $ms2H28 := prof:current-ms()
+
 (: H29
 aqd:AQD_Plan/aqd:referenceImplementation must contain a URL to a document or web resource where
 information about the implementation of the air quality plan can be found.
@@ -1002,6 +1122,8 @@ information about the implementation of the air quality plan can be found.
 Must contain a URL to a document or web resource where information about the implementation of the air quality
 plan can be found.
 :)
+
+let $ms1H29 := prof:current-ms()
 
 let $H29 := try {
     let $main :=  $docRoot//aqd:AQD_Plan/aqd:referenceImplementation
@@ -1023,11 +1145,15 @@ let $H29 := try {
     html:createErrorRow($err:code, $err:description)
 }
 
+let $ms2H29 := prof:current-ms()
+
 (: H30
 aqd:AQD_Plan/aqd:publication/aqd:Publication/aqd:description must contain a text string describing the publication
 
 Brief textual description of the published AQ Plan should be provided. If available, include the ISBN number.
 :)
+
+let $ms1H30 := prof:current-ms()
 
 let $H30 := try {
     let $main := $docRoot//aqd:AQD_Plan/aqd:publication/aqd:Publication/aqd:description
@@ -1047,11 +1173,15 @@ let $H30 := try {
     html:createErrorRow($err:code, $err:description)
 }
 
+let $ms2H30 := prof:current-ms()
+
 (: H31
 aqd:AQD_Plan/aqd:publication/aqd:Publication/aqd:title must contain the title of the publication
 
 Title as written in the published AQ Plan.
 :)
+
+let $ms1H31 := prof:current-ms()
 
 let $H31 := try {
     let $main := $docRoot//aqd:AQD_Plan/aqd:publication/aqd:Publication/aqd:title
@@ -1071,11 +1201,15 @@ let $H31 := try {
     html:createErrorRow($err:code, $err:description)
 }
 
+let $ms2H31 := prof:current-ms()
+
 (: H32
 aqd:AQD_Plan/aqd:publication/aqd:Publication/aqd:author must contain the author(s) of the publication
 
 Author(s) should be provided as text (If there are multiple authors, please provide in one field separated by commas)
 :)
+
+let $ms1H32 := prof:current-ms()
 
 let $H32 := try {
     let $main := $docRoot//aqd:AQD_Plan/aqd:publication/aqd:Publication/aqd:author
@@ -1098,12 +1232,16 @@ let $H32 := try {
     html:createErrorRow($err:code, $err:description)
 }
 
+let $ms2H32 := prof:current-ms()
+
 (: H33
 aqd:AQD_Plan/aqd:publication/aqd:Publication/aqd:publicationDate/gml:TimeInstant/gml:timePosition must contaong the
 date of publication in yyyy-mm-dd format
 
 The publication date of the AQ Plan should be provided in yyyy or yyyy-mm-dd format
 :)
+
+let $ms1H33 := prof:current-ms()
 
 let $H33 := try {
     let $main := $docRoot//aqd:AQD_Plan/aqd:publication/aqd:Publication/aqd:publicationDate/gml:TimeInstant/gml:timePosition
@@ -1126,11 +1264,15 @@ let $H33 := try {
     html:createErrorRow($err:code, $err:description)
 }
 
+let $ms2H33 := prof:current-ms()
+
 (: H34
 aqd:AQD_Plan/aqd:publication/aqd:Publication/aqd:publisher must container a text string describing the publisher
 
 Publisher should be provided as a text (Publishing institution, academic jourmal, etc.)
 :)
+
+let $ms1H34 := prof:current-ms()
 
 let $H34 := try {
     let $main := $docRoot//aqd:AQD_Plan/aqd:publication/aqd:Publication/aqd:publisher
@@ -1150,12 +1292,16 @@ let $H34 := try {
     html:createErrorRow($err:code, $err:description)
 }
 
+let $ms2H34 := prof:current-ms()
+
 (: H35
 aqd:AQD_Plan/aqd:publication/aqd:Publication/aqd:webLink must contain a URL to document  or web resource
 describing the last version of full air quality plan
 
 Provided url to the published AQ Plan should be valid
 :)
+
+let $ms1H35 := prof:current-ms()
 
 let $H35 := try {
     let $main :=  $docRoot//aqd:AQD_Plan/aqd:publication/aqd:Publication/aqd:webLink
@@ -1177,8 +1323,11 @@ let $H35 := try {
     html:createErrorRow($err:code, $err:description)
 }
 
+let $ms2H35 := prof:current-ms()
+
 return
     <table class="maintable hover">
+    <table>
         {html:build2("NS", $labels:NAMESPACES, $labels:NAMESPACES_SHORT, $NSinvalid, "All values are valid", "record", $errors:NS)}
         {html:build2("VOCAB", $labels:VOCAB, $labels:VOCAB_SHORT, $VOCABinvalid, "All values are valid", "record", $errors:VOCAB)}
         {html:build3("H0", $labels:H0, $labels:H0_SHORT, $H0, string($H0/td), errors:getMaxError($H0))}
@@ -1218,6 +1367,51 @@ return
         {html:build2("H33", $labels:H33, $labels:H33_SHORT, $H33, "All values are valid", "not valid", $errors:H33)}
         {html:build2("H34", $labels:H34, $labels:H34_SHORT, $H34, "All values are valid", "needs valid input", $errors:H34)}
         {html:build2("H35", $labels:H35, $labels:H35_SHORT, $H35, "All values are valid", "not valid", $errors:H35)}
+    </table>
+     <table>
+        <tr>
+            <th>Query</th>
+            <th>Process time in miliseconds</th>
+            <th>Process time in seconds</th>
+        </tr>
+       {common:runtime("NS", $ms1NS, $ms2NS)}
+       {common:runtime("VOCAB", $ms1VOCAB, $ms2VOCAB)}
+       {common:runtime("H0",  $ms1H0, $ms2H0)}
+       {common:runtime("H01", $ms1H01, $ms2H01)}
+       {common:runtime("H02", $ms1H02, $ms2H02)}
+       {common:runtime("H03", $ms1H03, $ms2H03)}
+       {common:runtime("H04",  $ms1H04, $ms2H04)}
+       {common:runtime("H05", $ms1H05, $ms2H05)}
+       {common:runtime("H06",  $ms1H06, $ms2H06)}
+       {common:runtime("H07",  $ms1H07, $ms2H07)}
+       {common:runtime("H08",  $ms1H08, $ms2H08)}
+       {common:runtime("H09",  $ms1H09, $ms2H09)}
+       {common:runtime("H10",  $ms1H10, $ms2H10)}
+       {common:runtime("H11",  $ms1H11, $ms2H11)}
+       {common:runtime("H12",  $ms1H12, $ms2H12)}
+       {common:runtime("H13",  $ms1H13, $ms2H13)}
+       {common:runtime("H15",  $ms1H15, $ms2H15)}
+       {common:runtime("H16",  $ms1H16, $ms2H16)}
+       {common:runtime("H17",  $ms1H17, $ms2H17)}
+       {common:runtime("H18",  $ms1H18, $ms2H18)}
+       {common:runtime("H19",  $ms1H19, $ms2H19)}
+       {common:runtime("H20",  $ms1H20, $ms2H20)}
+       {common:runtime("H21",  $ms1H21, $ms2H21)}
+       {common:runtime("H22",  $ms1H22, $ms2H22)}
+       {common:runtime("H23",  $ms1H23, $ms2H23)}
+       {common:runtime("H24",  $ms1H24, $ms2H24)}
+       {common:runtime("H25",  $ms1H25, $ms2H25)}
+       {common:runtime("H26",  $ms1H26, $ms2H26)}
+       {common:runtime("H27",  $ms1H27, $ms2H27)}
+       {common:runtime("H28",  $ms1H28, $ms2H28)}
+       {common:runtime("H29",  $ms1H29, $ms2H29)}
+       {common:runtime("H30",  $ms1H30, $ms2H30)}
+       {common:runtime("H31",  $ms1H31, $ms2H31)}
+       {common:runtime("H32",  $ms1H32, $ms2H32)}
+       {common:runtime("H33",  $ms1H33, $ms2H33)}
+       {common:runtime("H34",  $ms1H34, $ms2H34)}
+       {common:runtime("H35",  $ms1H35, $ms2H35)}
+    </table>
     </table>
 };
 
