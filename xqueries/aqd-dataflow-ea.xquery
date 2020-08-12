@@ -1472,7 +1472,7 @@ return
         {html:build2("E25", $labels:E25, $labels:E25_SHORT, $E25invalid, "All records are valid", "record", $errors:E25)}
         {html:build2("E25b", $labels:E25b, $labels:E25b_SHORT, $E25binvalid, "All records are valid", "record", $errors:E25b)}
         {html:build2Sparql("E26", $labels:E26, $labels:E26_SHORT, $E26invalid, "All records are valid", "record", $errors:E26)}
-        {html:build2("E26b", $labels:E26b, $labels:E26b_SHORT, $E26binvalid, "All records are valid", "record", $errors:E26b)}
+        {html:build2Sparql("E26b", $labels:E26b, $labels:E26b_SHORT, $E26binvalid, "All records are valid", "record", $errors:E26b)}
         {html:build2("E27", $labels:E27, $labels:E27_SHORT, $E27invalid, "All records are valid", "record", $errors:E27)}
         {html:build2("E28", $labels:E28, $labels:E28_SHORT, $E28invalid, "All records are valid", "record", $errors:E28)}
         {html:build2("E29", $labels:E29, $labels:E29_SHORT, $E29invalid, "All records are valid", "record", $errors:E29)}
