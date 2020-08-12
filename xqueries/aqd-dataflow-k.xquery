@@ -92,6 +92,7 @@ let $ancestor-name := "aqd:AQD_Measures"
 
 (: File prefix/namespace check :)
 
+let $ms1NS := prof:current-ms()
 let $NSinvalid := try {
     let $XQmap := inspect:static-context((), 'namespaces')
     let $fileMap := map:merge((
@@ -113,11 +114,16 @@ let $NSinvalid := try {
 } catch * {
     html:createErrorRow($err:code, $err:description)
 }
+let $ms2NS := prof:current-ms()
 
 (: VOCAB check:)
+let $ms1VOCAB := prof:current-ms()
 let $VOCABinvalid := checks:vocab($docRoot)
+let $ms2VOCAB := prof:current-ms()
 
 (: K0 Checks if this delivery is new or an update (on same reporting year) :)
+
+let $ms1K0 := prof:current-ms()
 
 let $K0table := try {
     if ($reportingYear = "")
@@ -137,6 +143,7 @@ let $K0table := try {
 } catch * {
     html:createErrorRow($err:code, $err:description)
 }
+
 let $isNewDelivery := errors:getMaxError($K0table) = $errors:INFO
 let $knownMeasures :=
     if ($isNewDelivery)
@@ -144,9 +151,11 @@ let $knownMeasures :=
         distinct-values(data(sparqlx:run(query:getMeasures($cdrUrl || "k/"))//sparql:binding[@name='inspireLabel']/sparql:literal))
     else
         distinct-values(data(sparqlx:run(query:getMeasures($latestEnvelopeByYearK))//sparql:binding[@name='inspireLabel']/sparql:literal))
+        
+let $ms2K0 := prof:current-ms()        
 
 (: K01 Number of Measures reported :)
-
+let $ms1K01 := prof:current-ms()
 let $countMeasures := count($docRoot//aqd:AQD_Measures)
 let $K01 := try {
     for $rec in $docRoot//aqd:AQD_Measures
@@ -165,10 +174,12 @@ let $K01 := try {
 } catch * {
     html:createErrorRow($err:code, $err:description)
 }
+let $ms2K01 := prof:current-ms()
 
 (: K02 Compile & feedback upon the total number of new Measures records included in the delivery.
 ERROR will be returned if XML is a new delivery and localId are not new compared to previous deliveries. :)
 
+let $ms1K02 := prof:current-ms()
 let $K02table := try {
     for $el in $docRoot//aqd:AQD_Measures
         let $x := $el/aqd:inspireId/base:Identifier
@@ -204,11 +215,14 @@ let $K02errorLevel :=
         $errors:K02
     else
         $errors:INFO
+        
+let $ms2K02 := prof:current-ms()
 
 (: K03 Compile & feedback upon the total number of updated Measures included in the delivery.
 ERROR will be returned if XML is an update and ALL localId (100%)
 are different to previous delivery (for the same YEAR). :)
 
+let $ms1K03 := prof:current-ms()
 let $K03table := try {
     for $main in $docRoot//aqd:AQD_Measures
         let $x := $main/aqd:inspireId/base:Identifier
@@ -234,12 +248,15 @@ let $K03errorLevel :=
     else
         $errors:INFO
 
+let $ms2K03 := prof:current-ms()
+
 (: K04 Compile & feedback a list of the unique identifier information for all Measures records included in the delivery.
 Feedback report shall include the gml:id attribute,
 ./aqd:inspireId,
 aqd:AQD_SourceApportionment (via ./exceedanceAffected),
 aqd:AQD_Scenario (via aqd:usedForScenario) :)
 
+let $ms1K04 := prof:current-ms()
 let $K04table := try {
     let $gmlIds := $docRoot//aqd:AQD_Measures/lower-case(normalize-space(@gml:id))
     let $inspireIds := $docRoot//aqd:AQD_Measures/lower-case(normalize-space(aqd:inspireId))
@@ -263,16 +280,21 @@ let $K04table := try {
 } catch * {
     html:createErrorRow($err:code, $err:description)
 }
+let $ms2K04 := prof:current-ms()
 
 (: K05
 RESERVE
 :)
+let $ms1K05 := prof:current-ms()
 let $K05 := ()
+let $ms2K05 := prof:current-ms()
 
 (: K06
 RESERVE
 :)
+let $ms1K06 := prof:current-ms()
 let $K06 := ()
+let $ms2K06 := prof:current-ms()
 
 (: K07
 All gml:id attributes, ef:inspireId and aqd:inspireId elements shall have unique content
@@ -288,6 +310,7 @@ All gml ID attributes shall have unique code
 
 :)
 
+let $ms1K07 := prof:current-ms()
 let $K07 := try {
     let $main := $docRoot//aqd:AQD_Measures
 
@@ -317,9 +340,11 @@ let $K07 := try {
 } catch * {
     html:createErrorRow($err:code, $err:description)
 }
+let $ms2K07 := prof:current-ms()
 
 (: K08 ./aqd:inspireId/base:Identifier/base:localId must be unique code for the Measure records :)
 
+let $ms1K08 := prof:current-ms()
 let $K08invalid:= try {
     let $localIds := $docRoot//aqd:AQD_Measures/aqd:inspireId/base:Identifier/lower-case(normalize-space(base:localId))
     for $x in $docRoot//aqd:AQD_Measures
@@ -342,10 +367,12 @@ let $K08invalid:= try {
 } catch * {
     html:createErrorRow($err:code, $err:description)
 }
+let $ms2K08 := prof:current-ms()
 
 (: K09 ./aqd:inspireId/base:Identifier/base:namespace List base:namespace
 and count the number of base:localId assigned to each base:namespace.  :)
 
+let $ms1K09 := prof:current-ms()
 let $K09table := try {
     for $namespace in distinct-values($docRoot//aqd:AQD_Measures/aqd:inspireId/base:Identifier/base:namespace)
         let $localIds := $docRoot//aqd:AQD_Measures/aqd:inspireId/base:Identifier[base:namespace = $namespace]/base:localId
@@ -360,10 +387,12 @@ let $K09table := try {
 } catch * {
     html:createErrorRow($err:code, $err:description)
 }
+let $ms2K09 := prof:current-ms()
 
 (: K10 Check that namespace is registered in vocabulary
 (http://dd.eionet.europa.eu/vocabulary/aq/namespace/view) :)
 
+let $ms1K10 := prof:current-ms()
 let $K10invalid := try {
     let $vocDoc := doc($vocabulary:NAMESPACE || "rdf")
     let $prefLabel := $vocDoc//skos:Concept[adms:status/@rdf:resource = $dd:VALIDRESOURCE
@@ -382,6 +411,7 @@ let $K10invalid := try {
 } catch * {
     html:createErrorRow($err:code, $err:description)
 }
+let $ms2K10 := prof:current-ms()
 
 (: K11
 aqd:AQD_Measures/aqd:exceedanceAffected MUST reference
@@ -389,7 +419,7 @@ an existing Source Apportionment (I) document via namespace/localId
 
 You must provide a link to a source apportionment document from data flow I via its namespace & localId.
 :)
-
+let $ms1K11 := prof:current-ms()
 let $K11 := try{
     let $main := $docRoot//aqd:AQD_Measures/aqd:exceedanceAffected
     for $el in $main
@@ -421,6 +451,7 @@ let $K11 := try{
 } catch * {
     html:createErrorRow($err:code, $err:description)
 }
+let $ms2K11 := prof:current-ms()
 
 
 (: K12
@@ -429,6 +460,8 @@ delivered within a data flow J  via namespace/localId.
 
 A link may be provided to Evaluation Scenario (J). This must be valid via namespace & localId
 :)
+
+let $ms1K12 := prof:current-ms()
 
 let $K12 := try {
     let $main := $docRoot//aqd:AQD_Measures/aqd:usedForScenario
@@ -448,12 +481,16 @@ let $K12 := try {
     html:createErrorRow($err:code, $err:description)
 }
 
+let $ms2K12:= prof:current-ms()
+
 (: K13
 aqd:AQD_Measures/aqd:code should be a unique local identifier for each measure record.
 For convenience the same code as localId may be used
 
 So, the aqd:code should be unique within XML
 :)
+
+let $ms1K13 := prof:current-ms()
 
 let $K13invalid := try {
     let $codes := $docRoot//aqd:AQD_Measures/aqd:code
@@ -477,68 +514,82 @@ let $K13invalid := try {
     html:createErrorRow($err:code, $err:description)
 }
 
+let $ms2K13 := prof:current-ms()
 
 (: K14 aqd:AQD_Measures/aqd:name must be populated with a text string
 A short name for the measure :)
+let $ms1K14 := prof:current-ms()
 let $K14invalid := common:needsValidString(
         $docRoot//aqd:AQD_Measures, 'aqd:name',
         $ancestor-name
         )
+let $ms2K14 := prof:current-ms()
 
 (: K15 aqd:AQD_Measures/aqd:name must be populated with a text string
 A short name for the measure :)
+
+let $ms1K15 := prof:current-ms()
 let $K15invalid := common:needsValidString(
         $docRoot//aqd:AQD_Measures,
         'aqd:description',
         $ancestor-name
         )
+let $ms2K15 := prof:current-ms()
 
 (: K16 aqd:AQD_Measures/aqd:classification shall resolve to the codelist http://dd.eionet.europa.eu/vocabulary/aq/measureclassification/
 Measure classification should conform to vocabulary :)
+let $ms1K16 := prof:current-ms()
 let $K16 := common:isInVocabularyReport(
         $docRoot//aqd:AQD_Measures/aqd:classification,
         $vocabulary:MEASURECLASSIFICATION_VOCABULARY,
         $ancestor-name
         )
+let $ms2K16 := prof:current-ms()
 
 (: K17 aqd:AQD_Measures/aqd:measureType shall resolve to the codelist http://dd.eionet.europa.eu/vocabulary/aq/measuretype/
 Measure type should conform to vocabulary :)
+let $ms1K17 := prof:current-ms()
 let $K17 := common:isInVocabularyReport(
         $docRoot//aqd:AQD_Measures/aqd:measureType,
         $vocabulary:MEASURETYPE_VOCABULARY,
         $ancestor-name
         )
-
+let $ms2K17 := prof:current-ms()
 
 (: K18 aqd:AQD_Measures/aqd:administrativeLevel shall resolve to the codelist
 http://dd.eionet.europa.eu/vocabulary/aq/administrativelevel/
 Administrative level should conform to vocabulary
 :)
+let $ms1K18 := prof:current-ms()
 let $K18 := common:isInVocabularyReport(
         $docRoot//aqd:AQD_Measures/aqd:administrativeLevel,
         $vocabulary:ADMINISTRATIVE_LEVEL_VOCABULARY,
         $ancestor-name
         )
+let $ms2K18 := prof:current-ms()
 
 (: K19
 aqd:AQD_Measures/aqd:timeScale shall resolve to the codelist http://dd.eionet.europa.eu/vocabulary/aq/timescale/
 The measure's timescale should conform to vocabulary
 :)
+let $ms1K19 := prof:current-ms()
 let $K19 := common:isInVocabularyReport(
         $docRoot//aqd:AQD_Measures/aqd:timeScale,
         $vocabulary:TIMESCALE_VOCABULARY,
         $ancestor-name
         )
-
+let $ms2K19 := prof:current-ms()
 
 (: K20 aqd:AQD_Measures/aqd:costs/ should be provided
 Information on the cost of the measure should be provided
 :)
+let $ms1K20 := prof:current-ms()
 let $K20 := common:isNodeNotInParentReport(
         $docRoot//aqd:AQD_Measures,
         'aqd:costs',
         $ancestor-name
         )
+let $ms2K20 := prof:current-ms()
 
 (: K21
 If aqd:costs provided
@@ -550,6 +601,7 @@ The estimated total costs should be provided. If not, an explanation on the
 reasons for not providing it should be included.
 :)
 
+let $ms1K21 := prof:current-ms()
 let $K21 := try {
     let $root := $docRoot//aqd:AQD_Measures
     for $el in $root
@@ -596,6 +648,7 @@ let $K21 := try {
 } catch * {
     html:createErrorRow($err:code, $err:description)
 }
+let $ms2K21 := prof:current-ms()
 
 (: K22
 If populated,
@@ -605,12 +658,14 @@ If the final total costs of the measure is provided, this nneeds to be a number
 
 :)
 
+let $ms1K22 := prof:current-ms()
 let $K22 := common:validatePossibleNodeValueReport(
     $docRoot//aqd:AQD_Measures/aqd:costs/aqd:Costs,
     'aqd:finalImplementationCosts',
     common:is-a-number#1,
     $ancestor-name
 )
+let $ms2K22 := prof:current-ms()
 
 (: K23
 If aqd:AQD_Measures/aqd:costs/aqd:Costs/aqd:estimatedImplementationCosts is
@@ -623,6 +678,7 @@ vocabulary
 
 :)
 
+let $ms1K23 := prof:current-ms()
 let $K23 := try {
     let $main := $docRoot//aqd:AQD_Measures/aqd:costs/aqd:Costs
     for $node in $main
@@ -650,6 +706,7 @@ let $K23 := try {
 } catch * {
     html:createErrorRow($err:code, $err:description)
 }
+let $ms2K23 := prof:current-ms()
 
 
 (: K24
@@ -659,11 +716,13 @@ http://dd.eionet.europa.eu/vocabulary/aq/sourcesectors/
 Source sector should conform to vocabulary
 :)
 
+let $ms1K24 := prof:current-ms()
 let $K24 := common:isInVocabularyReport(
     $docRoot//aqd:AQD_Measures/aqd:sourceSectors,
     $vocabulary:SOURCESECTORS_VOCABULARY,
     $ancestor-name
     )
+let $ms2K24 := prof:current-ms()
 
 (: K25
 aqd:AQD_Measures/aqd:spatialScale shall resolve to the codelist
@@ -672,11 +731,13 @@ http://dd.eionet.europa.eu/vocabulary/aq/spatialscale/
 Spatial scale should conform to vocabulary
 :)
 
+let $ms1K25 := prof:current-ms()
 let $K25 := common:isInVocabularyReport(
     $docRoot//aqd:AQD_Measures/aqd:spatialScale,
     $vocabulary:SPACIALSCALE_VOCABULARY,
     $ancestor-name
     )
+let $ms2K25 := prof:current-ms()
 
 (: K26
 aqd:AQD_Measures/aqd:plannedImplementation/aqd:PlannedImplementation/aqd:status shall resolve to the codelist
@@ -685,6 +746,7 @@ http://dd.eionet.europa.eu/vocabulary/aq/measureimplementationstatus/
 Measure Implementation Status should conform to vocabulary
 :)
 
+let $ms1K26 := prof:current-ms()
 let $K26 := try {
     let $main := $docRoot//aqd:AQD_Measures/aqd:plannedImplementation/aqd:PlannedImplementation/aqd:status
     for $el in $main
@@ -701,6 +763,7 @@ let $K26 := try {
 } catch * {
     html:createErrorRow($err:code, $err:description)
 }
+let $ms2K26 := prof:current-ms()
 
 (: K27
 aqd:AQD_Measures/aqd:plannedImplementation/aqd:PlannedImplementation/aqd:implementationPlannedTimePeriod/gml:TimePeriod/gml:beginPosition
@@ -708,11 +771,12 @@ must be a date in full ISO date format
 
 The planned start date for the measure should be provided
 :)
-
+let $ms1K27 := prof:current-ms()
 let $K27 := common:isDateFullISOReport(
     $docRoot//aqd:AQD_Measures/aqd:plannedImplementation/aqd:PlannedImplementation/aqd:implementationPlannedTimePeriod/gml:TimePeriod/gml:beginPosition,
     $ancestor-name
 )
+let $ms2K27 := prof:current-ms()
 
 (: K28
 If not voided, aqd:AQD_Measures/aqd:plannedImplementation/aqd:PlannedImplementation/aqd:implementationPlannedTimePeriod/gml:TimePeriod/gml:endPosition
@@ -723,6 +787,7 @@ If voided it should be indeterminatePosition="unknown"
 The planned end date for the measure should be provided in the right format,
 if unknown voided using indeterminatePosition="unknown"
 :)
+let $ms1K28 := prof:current-ms()
 
 let $K28 := try {
     for $el in $docRoot//aqd:AQD_Measures/aqd:plannedImplementation/aqd:PlannedImplementation/aqd:implementationPlannedTimePeriod/gml:TimePeriod
@@ -747,16 +812,20 @@ let $K28 := try {
     html:createErrorRow($err:code, $err:description)
 }
 
+let $ms2K28 := prof:current-ms()
+
 (: K29
 aqd:AQD_Measures/aqd:plannedImplementation/aqd:PlannedImplementation/aqd:implementationActualTimePeriod/gml:TimePeriod/gml:beginPosition
 must be a date in full ISO date format
 
 The planned start date for the measure should be provided
 :)
+let $ms1K29 := prof:current-ms()
 let $K29 := common:isDateFullISOReport(
     $docRoot//aqd:AQD_Measures/aqd:plannedImplementation/aqd:PlannedImplementation/aqd:implementationActualTimePeriod/gml:TimePeriod/gml:beginPosition,
     $ancestor-name
 )
+let $ms2K29 := prof:current-ms()
 
 (:
 let $K29 := c:errorReport(
@@ -775,6 +844,9 @@ If voided it should be indeterminatePosition="unknown"
 The planned end date for the measure should be provided in the right format,
 if unknown, voided using indeterminatePosition="unknown"
 :)
+
+let $ms1K30 := prof:current-ms()
+
 let $K30 := try {
     for $el in $docRoot//aqd:AQD_Measures/aqd:plannedImplementation/aqd:PlannedImplementation/aqd:implementationActualTimePeriod/gml:TimePeriod
         let $begin := $el/gml:beginPosition
@@ -798,12 +870,16 @@ let $K30 := try {
     html:createErrorRow($err:code, $err:description)
 }
 
+let $ms2K30 := prof:current-ms()
+
 (: K31
 aqd:AQD_Measures/aqd:plannedImplementation/aqd:PlannedImplementation/aqd:plannedFullEffectDate/gml:TimeInstant/gml:timePosition
 to be provided in the following format yyyy or yyyy-mm-dd
 
 The full effect date of the measure must be provided and the format to be yyyy or yyyy-mm-dd
 :)
+
+let $ms1K31 := prof:current-ms()
 
 let $K31 := try {
     for $node in $docRoot//aqd:AQD_Measures/aqd:plannedImplementation/aqd:PlannedImplementation/aqd:plannedFullEffectDate/gml:TimeInstant/gml:timePosition
@@ -825,12 +901,16 @@ let $K31 := try {
     html:createErrorRow($err:code, $err:description)
 }
 
+let $ms2K31 := prof:current-ms()
+
 (: K32
 /aqd:AQD_Measures/aqd:plannedImplementation/aqd:PlannedImplementation/aqd:otherDates
 RESERVE
 :)
 
+let $ms1K32 := prof:current-ms()
 let $K32 := <tr><td title="aqd:otherDates">{data($docRoot//aqd:AQD_Measures/aqd:plannedImplementation/aqd:PlannedImplementation/aqd:otherDates)}</td></tr>
+let $ms2K32 := prof:current-ms()
 
 (: K33
 A text string may be provided under
@@ -838,6 +918,8 @@ aqd:AQD_Measures/aqd:plannedImplementation/aqd:PlannedImplementation/aqd:monitor
 If voided an explanation of why this information unavailable shall be provided in
 /aqd:AQD_Measures/aqd:plannedImplementation/aqd:PlannedImplementation/aqd:comment
 :)
+
+let $ms1K33 := prof:current-ms()
 
 let $K33 := try {
     for $el in $docRoot//aqd:AQD_Measures/aqd:plannedImplementation/aqd:PlannedImplementation
@@ -862,6 +944,8 @@ let $K33 := try {
     html:createErrorRow($err:code, $err:description)
 }
 
+let $ms2K33 := prof:current-ms()
+
 (:
 K34
 Check that the element
@@ -871,6 +955,8 @@ an integer or floating point numeric >= 0 if attribute xsi:nil="false"
     <aqd:quantity uom="http://dd.eionet.europa.eu/vocabulary/uom/emission/t.year-1" xsi:nil="false">273</aqd:quantity>
     )
 :)
+
+let $ms1K34 := prof:current-ms()
 
 let $K34 := try {
     let $main := $docRoot//aqd:AQD_Measures/aqd:reductionOfEmissions/aqd:QuantityCommented/aqd:quantity
@@ -900,6 +986,7 @@ let $K34 := try {
     html:createErrorRow($err:code, $err:description)
 }
 
+let $ms2K34 := prof:current-ms()
 
 (: K35
 Check that the element aqd:QuantityCommented/aqd:quantity is empty if attribute xsi:nil="unpopulated" or "unknown" or "withheld"
@@ -907,6 +994,9 @@ Check that the element aqd:QuantityCommented/aqd:quantity is empty if attribute 
 
 If quantification is either "unpopulated" or "unknown" or "withheld", the element should be empty
 :)
+
+let $ms1K35 := prof:current-ms()
+
 let $K35 := try {
     let $main := $docRoot//aqd:AQD_Measures/aqd:reductionOfEmissions/aqd:QuantityCommented/aqd:quantity
     for $node in $main
@@ -939,6 +1029,7 @@ let $K35 := try {
     html:createErrorRow($err:code, $err:description)
 }
 
+let $ms2K35 := prof:current-ms()
 
 (: K36
 If aqd:QuantityCommented/aqd:quantity attribute xsi:nil="true"
@@ -946,6 +1037,9 @@ aqd:QuantityCommented/aqd:comment must be populated
 
 If the quantification is voided an explanation is required in aqd:comment
 :)
+
+let $ms1K36 := prof:current-ms()
+
 let $K36 := try {
     for $main in $docRoot//aqd:AQD_Measures/aqd:reductionOfEmissions/aqd:QuantityCommented
         let $quantity := $main/aqd:quantity
@@ -981,12 +1075,17 @@ let $K36 := try {
     html:createErrorRow($err:code, $err:description)
 }
 
+let $ms2K36 := prof:current-ms()
+
 (: K37
 The unit attribute (aqd:AQD_Measures/aqd:reductionOfEmissions/aqd:QuantityCommented/aqd:quantity/@UoM)
 shall correspond to http://dd.eionet.europa.eu/vocabulary/uom/emission
 
 the quantification of reductionOfEmissions should conform to vocabulary
 :)
+
+let $ms1K37 := prof:current-ms()
+
 let $K37 := try {
     let $main := $docRoot//aqd:AQD_Measures/aqd:reductionOfEmissions/aqd:QuantityCommented/aqd:quantity
     for $el in $main
@@ -1014,6 +1113,8 @@ let $K37 := try {
     html:createErrorRow($err:code, $err:description)
 }
 
+let $ms2K37 := prof:current-ms()
+
 (: K38
 Check that the element aqd:AQD_Measures/aqd:expectedImpact/aqd:ExpectedImpact/aqd:levelOfConcentration
 is an integer or floating point numeric >= 0
@@ -1022,6 +1123,8 @@ http://dd.eionet.europa.eu/vocabulary/uom/concentration/
 
 The level of concentration expected should be provided as an integer and its unit should conform to vocabulary
 :)
+
+let $ms1K38 := prof:current-ms()
 
 let $K38 := try {
     let $main := $docRoot//aqd:AQD_Measures/aqd:expectedImpact/aqd:ExpectedImpact/aqd:levelOfConcentration
@@ -1053,6 +1156,8 @@ let $K38 := try {
     html:createErrorRow($err:code, $err:description)
 }
 
+let $ms2K38 := prof:current-ms()
+
 (: K39
 Check that the element aqd:AQD_Measures/aqd:expectedImpact/aqd:ExpectedImpact/aqd:numberOfExceedances
 is an integer or floating point numeric >= 0
@@ -1061,6 +1166,8 @@ http://dd.eionet.europa.eu/vocabulary/uom/statistics
 
 The number of exceecedance expected should be provided as an integer and its unit should conform to vocabulary
 :)
+
+let $ms1K39 := prof:current-ms()
 
 let $K39 := try {
     let $main := $docRoot//aqd:AQD_Measures/aqd:expectedImpact/aqd:ExpectedImpact/aqd:numberOfExceedances
@@ -1089,9 +1196,13 @@ let $K39 := try {
     html:createErrorRow($err:code, $err:description)
 }
 
+let $ms2K39 := prof:current-ms()
+
 (: K40
 Reserve for specificationOfHours
 :)
+
+let $ms1K40 := prof:current-ms()
 
 let $K40 :=
     try {
@@ -1114,9 +1225,12 @@ let $K40 :=
         </tr>
     }
 
+let $ms2K40 := prof:current-ms()
+
 return
 (
     <table class="maintable hover">
+    <table>
         {html:build2("NS", $labels:NAMESPACES, $labels:NAMESPACES_SHORT, $NSinvalid, "All values are valid", "record", $errors:NS)}
         {html:build2("VOCAB", $labels:VOCAB, $labels:VOCAB_SHORT, $VOCABinvalid, "All values are valid", "record", $errors:VOCAB)}
         {html:build3("K0", $labels:K0, $labels:K0_SHORT, $K0table, string($K0table/td), errors:getMaxError($K0table))}
@@ -1161,6 +1275,57 @@ return
         {html:build2("K38", $labels:K38, $labels:K38_SHORT, $K38, "All values are valid", "not valid", $errors:K38)}
         {html:build2("K39", $labels:K39, $labels:K39_SHORT, $K39, "All values are valid", "not valid", $errors:K39)}
         {html:build2("K40", $labels:K40, $labels:K40_SHORT, $K40, "All values are valid", "not valid", $errors:K40)}
+    </table>
+    <table>
+        <tr>
+            <th>Query</th>
+            <th>Process time in miliseconds</th>
+            <th>Process time in seconds</th>
+        </tr>
+       {common:runtime("NS", $ms1NS, $ms2NS)}
+       {common:runtime("VOCAB", $ms1VOCAB, $ms2VOCAB)}
+       {common:runtime("K0", $ms1K0, $ms2K0)}
+       {common:runtime("K01", $ms1K01, $ms2K01)}
+       {common:runtime("K02", $ms1K02, $ms2K02)}
+       {common:runtime("K03", $ms1K03, $ms2K03)} 
+       {common:runtime("K04", $ms1K04, $ms2K04)}
+       {common:runtime("K05", $ms1K05, $ms2K05)}
+       {common:runtime("K06", $ms1K06, $ms2K06)}
+       {common:runtime("K07", $ms1K07, $ms2K07)}
+       {common:runtime("K08", $ms1K08, $ms2K08)}
+       {common:runtime("K09", $ms1K09, $ms2K09)}
+       {common:runtime("K10", $ms1K10, $ms2K10)}
+       {common:runtime("K11", $ms1K11, $ms2K11)}
+       {common:runtime("K12", $ms1K12, $ms2K12)}
+       {common:runtime("K13", $ms1K13, $ms2K13)}
+       {common:runtime("K14", $ms1K14, $ms2K14)}
+       {common:runtime("K15", $ms1K15, $ms2K15)}
+       {common:runtime("K16", $ms1K16, $ms2K16)}
+       {common:runtime("K17", $ms1K17, $ms2K17)}
+       {common:runtime("K18", $ms1K18, $ms2K18)}
+       {common:runtime("K19", $ms1K19, $ms2K19)}
+       {common:runtime("K20", $ms1K20, $ms2K20)}
+       {common:runtime("K21", $ms1K21, $ms2K21)}
+       {common:runtime("K22", $ms1K22, $ms2K22)}
+       {common:runtime("K23", $ms1K23, $ms2K23)}
+       {common:runtime("K24", $ms1K24, $ms2K24)}
+       {common:runtime("K25", $ms1K25, $ms2K25)}
+       {common:runtime("K26", $ms1K26, $ms2K26)}
+       {common:runtime("K27", $ms1K27, $ms2K27)}
+       {common:runtime("K28", $ms1K28, $ms2K28)}
+       {common:runtime("K29", $ms1K29, $ms2K29)}
+       {common:runtime("K30", $ms1K30, $ms2K30)}
+       {common:runtime("K31", $ms1K31, $ms2K31)}
+       {common:runtime("K32", $ms1K32, $ms2K32)}
+       {common:runtime("K33", $ms1K33, $ms2K33)}
+       {common:runtime("K34", $ms1K34, $ms2K34)}
+       {common:runtime("K35", $ms1K35, $ms2K35)}
+       {common:runtime("K36", $ms1K36, $ms2K36)}
+       {common:runtime("K37", $ms1K37, $ms2K37)}
+       {common:runtime("K38", $ms1K38, $ms2K38)}
+       {common:runtime("K39", $ms1K39, $ms2K39)}
+       {common:runtime("K40", $ms1K40, $ms2K40)}
+    </table>
     </table>
 )
 

@@ -86,6 +86,8 @@ Check prefix and namespaces of the gml:featureCollection according to expected r
 Prefix/namespaces check
 :)
 
+let $ms1NS := prof:current-ms()
+
 let $NSinvalid := try {
     let $XQmap := inspect:static-context((), 'namespaces')
     let $fileMap := map:merge(
@@ -109,14 +111,20 @@ let $NSinvalid := try {
     html:createErrorRow($err:code, $err:description)
 }
 
+let $ms2NS := prof:current-ms()
+
 (: VOCAB check:)
+let $ms1VOCAB := prof:current-ms()
 let $VOCABinvalid := checks:vocab($docRoot)
+let $ms2VOCAB := prof:current-ms()
 
 (: J0
 Check if delivery if this is a new delivery or updated delivery (via reporting year)
 
 Checks if this delivery is new or an update (on same reporting year)
 :)
+
+let $ms1J0 := prof:current-ms()
 
 let $J0 := try {
     if ($reportingYear = "")
@@ -145,12 +153,16 @@ let $knownEvaluationScenarios :=
         distinct-values(data(sparqlx:run(query:getEvaluationScenarios($cdrUrl || "j/"))//sparql:binding[@name='inspireLabel']/sparql:literal))
     else
         distinct-values(data(sparqlx:run(query:getEvaluationScenarios($latestEnvelopeByYearJ))//sparql:binding[@name='inspireLabel']/sparql:literal))
+        
+let $ms2J0 := prof:current-ms()        
 
 (: J1
 Compile & feedback upon the total number of plans records included in the delivery
 
 Number of AQ Plans reported
 :)
+
+let $ms1J01 := prof:current-ms()
 
 let $countEvaluationScenario := count($docRoot//aqd:AQD_EvaluationScenario)
 let $J1 := try {
@@ -171,12 +183,16 @@ let $J1 := try {
     html:createErrorRow($err:code, $err:description)
 }
 
+let $ms2J01 := prof:current-ms()
+
 (: J2
 Compile & feedback upon the total number of new EvaluationScenarios records included in the delivery.
 ERROR will be returned if XML is a new delivery and localId are not new compared to previous deliveries.
 
 Number of new EvaluationScenarios compared to previous report.
 :)
+
+let $ms1J02 := prof:current-ms()
 
 let $J2 := try {
     for $el in $docRoot//aqd:AQD_EvaluationScenario
@@ -211,6 +227,8 @@ let $J2errorLevel :=
     else
         $errors:INFO
 
+let $ms2J02 := prof:current-ms()
+
 (: J3
 Compile & feedback upon the total number of updated EvaluationScenarios records included in the delivery.
 ERROR will be returned if XML is an update and ALL localId (100%) are different
@@ -220,6 +238,8 @@ Number of existing EvaluationScenarios compared to previous report.
 ERROR will be returned if XML is an update and ALL localId (100%)
 are different to previous delivery (for the same YEAR).
 :)
+
+let $ms1J03 := prof:current-ms()
 
 let $J3 := try {
     for $main in $docRoot//aqd:AQD_EvaluationScenario
@@ -246,6 +266,8 @@ let $J3errorLevel :=
     else
         $errors:INFO
 
+let $ms2J03 := prof:current-ms()
+
 (: J4
 Compile & feedback a list of the unique identifier information
 for all EvaluationScenarios records included in the delivery.
@@ -253,6 +275,8 @@ Feedback report shall include the gml:id attribute, ./aqd:inspireId, ./aqd:pollu
 
 List of unique identifier information for all EvaluationScenarios records. Blocker if no EvaluationScenarios
 :)
+
+let $ms1J04 := prof:current-ms()
 
 let $J4 := try {
     let $gmlIds := $docRoot//aqd:AQD_EvaluationScenario/lower-case(normalize-space(@gml:id))
@@ -278,20 +302,27 @@ let $J4 := try {
     html:createErrorRow($err:code, $err:description)
 }
 
+let $ms2J04 := prof:current-ms()
 
 (: J5 RESERVE :)
 
+let $ms1J05 := prof:current-ms()
 let $J5 := ()
+let $ms2J05 := prof:current-ms()
 
 (: J6 RESERVE :)
 
+let $ms1J06 := prof:current-ms()
 let $J6 := ()
+let $ms2J06 := prof:current-ms()
 
 (: J7
 All gml:id attributes, ef:inspireId and aqd:inspireId elements shall have unique content
 
 All gml ID attributes shall have unique code
 :)
+
+let $ms1J07 := prof:current-ms()
 
 let $J7 := try {
     let $main := $docRoot//aqd:AQD_EvaluationScenario
@@ -322,11 +353,15 @@ let $J7 := try {
     html:createErrorRow($err:code, $err:description)
 }
 
+let $ms2J07 := prof:current-ms()
+
 (: J8
 ./aqd:inspireId/base:Identifier/base:localId must be unique code for the Plans records
 
 Local Id must be unique for the EvaluationScenarios records
 :)
+
+let $ms1J08 := prof:current-ms()
 
 let $J8 := try {
     let $localIds := $docRoot//aqd:AQD_EvaluationScenario/aqd:inspireId/base:Identifier/lower-case(normalize-space(base:localId))
@@ -349,12 +384,16 @@ let $J8 := try {
     html:createErrorRow($err:code, $err:description)
 }
 
+let $ms2J08 := prof:current-ms()
+
 (: J9
  ./aqd:inspireId/base:Identifier/base:namespace List base:namespace
  and count the number of base:localId assigned to each base:namespace.
 
  List unique namespaces used and count number of elements
 :)
+
+let $ms1J09 := prof:current-ms()
 
 let $J9 := try {
     for $namespace in distinct-values($docRoot//aqd:AQD_EvaluationScenario/aqd:inspireId/base:Identifier/base:namespace)
@@ -371,11 +410,15 @@ let $J9 := try {
     html:createErrorRow($err:code, $err:description)
 }
 
+let $ms2J09 := prof:current-ms()
+
 (: J10
 Check that namespace is registered in vocabulary (http://dd.eionet.europa.eu/vocabulary/aq/namespace/view)
 
 Check namespace is registered
 :)
+
+let $ms1J10 := prof:current-ms()
 
 let $J10 := try {
     let $vocDoc := doc($vocabulary:NAMESPACE || "rdf")
@@ -399,6 +442,8 @@ let $J10 := try {
     html:createErrorRow($err:code, $err:description)
 }
 
+let $ms2J10 := prof:current-ms()
+
 (: J11
 aqd:AQD_EvaluationScenario/aqd:usedInPlan shall reference an existing AQD_Plan (H) document
 for the same reporting year same year via namespace/localId
@@ -406,6 +451,8 @@ for the same reporting year same year via namespace/localId
 You must provide a reference to a plan document from data flow H via its namespace & localId.
 The plan document must have the same reporting year as the source apportionment document.
 :)
+
+let $ms1J11 := prof:current-ms()
 
 let $J11 := try {
     for $main in $evaluationScenario
@@ -429,6 +476,8 @@ let $J11 := try {
     html:createErrorRow($err:code, $err:description)
 }
 
+let $ms2J11 := prof:current-ms()
+
 (: J12
 aqd:AQD_EvaluationScenario/aqd:sourceApportionment MUST reference an existing AQD_SourceApportionment (I) document
 via namespace/localId record for the same reporting year .
@@ -436,6 +485,8 @@ via namespace/localId record for the same reporting year .
 You must provide a link to a Source Apportionment (I) document from data flow I
 via its namespace & localId (for the same reporting year)
 :)
+
+let $ms1J12 := prof:current-ms()
 
 let $J12 := try {
     for $main in $evaluationScenario
@@ -459,13 +510,17 @@ let $J12 := try {
     html:createErrorRow($err:code, $err:description)
 }
 
+let $ms2J12 := prof:current-ms()
+
 (: J13
 aqd:AQD_EvaluationScenario/aqd:codeOfScenario should begin with with the 2-digit country code according to ISO 3166-1.
 
 A code of the scenario should be provided as nn alpha-numeric code starting with the country ISO code
 :)
 
-(:let $J13 := try {
+(:
+let $ms1J13 := prof:current-ms()
+let $J13 := try {
     for $main in $evaluationScenario
         let $el := $main/aqd:codeOfScenario
         let $ok := fn:lower-case($countryCode) = fn:lower-case(fn:substring(data($el), 1, 2))
@@ -478,13 +533,17 @@ A code of the scenario should be provided as nn alpha-numeric code starting with
             )
 } catch * {
     html:createErrorRow($err:code, $err:description)
-}:)
+}
+let $ms2J13 := prof:current-ms()
+:)
 
 (: J14
 aqd:AQD_EvaluationScenario/aqd:publication/aqd:Publication/aqd:description shall be a text string
 
 Short textul description of the publication should be provided. If availabel, include the ISBN number.
 :)
+
+let $ms1J14 := prof:current-ms()
 
 let $J14 := try {
     for $el in $evaluationScenario/aqd:publication/aqd:Publication/aqd:description
@@ -503,12 +562,16 @@ let $J14 := try {
     html:createErrorRow($err:code, $err:description)
 }
 
+let $ms2J14 := prof:current-ms()
+
 (: J15
 aqd:AQD_EvaluationScenario/aqd:publication/aqd:Publication/aqd:title
 shall be a text string
 
 Title as written in the publication.
 :)
+
+let $ms1J15 := prof:current-ms()
 
 let $J15 := try {
     let $main := $evaluationScenario/aqd:publication/aqd:Publication/aqd:title
@@ -528,11 +591,15 @@ let $J15 := try {
     html:createErrorRow($err:code, $err:description)
 }
 
+let $ms2J15 := prof:current-ms()
+
 (: J16
 aqd:AQD_EvaluationScenario/aqd:publication/aqd:Publication/aqd:author shall be a text string (if provided)
 
 Author(s) should be provided as text (If there are multiple authors, please provide in one field separated by commas)
 :)
+
+let $ms1J16 := prof:current-ms()
 
 let $J16 := try {
     let $main := $evaluationScenario/aqd:publication/aqd:Publication/aqd:author
@@ -552,12 +619,16 @@ let $J16 := try {
     html:createErrorRow($err:code, $err:description)
 }
 
+let $ms2J16 := prof:current-ms()
+
 (: J17
 aqd:AQD_EvaluationScenario/aqd:publication/aqd:Publication/aqd:publicationDate/gml:TimeInstant/gml:timePosition
 may be a data in yyyy or yyyy-mm-dd format
 
 The publication date should be provided in yyyy or yyyy-mm-dd format
 :)
+
+let $ms1J17 := prof:current-ms()
 
 let $J17 := try {
     let $main := $evaluationScenario/aqd:publication/aqd:Publication/aqd:publicationDate/gml:TimeInstant/gml:timePosition
@@ -578,12 +649,16 @@ let $J17 := try {
     html:createErrorRow($err:code, $err:description)
 }
 
+let $ms2J17 := prof:current-ms()
+
 (: J18
 aqd:AQD_EvaluationScenario/aqd:publication/aqd:Publication/aqd:publisher
 shall be a text string
 
 Publisher should be provided as a text (Publishing institution, academic jourmal, etc.)
 :)
+
+let $ms1J18 := prof:current-ms()
 
 let $J18 := try {
     let $main := $evaluationScenario/aqd:publication/aqd:Publication/aqd:publisher
@@ -603,12 +678,16 @@ let $J18 := try {
     html:createErrorRow($err:code, $err:description)
 }
 
+let $ms2J18 := prof:current-ms()
+
 (: J19
 aqd:AQD_EvaluationScenario/aqd:publication/aqd:Publication/aqd:webLink
 as a valid url (if provided)
 
 Url to the published AQ Plan should be valid (if provided)
 :)
+
+let $ms1J19 := prof:current-ms()
 
 let $J19 := try {
     let $main :=  $evaluationScenario/aqd:publication/aqd:Publication/aqd:webLink
@@ -630,11 +709,15 @@ let $J19 := try {
     html:createErrorRow($err:code, $err:description)
 }
 
+let $ms2J19 := prof:current-ms()
+
 (: J20
 aqd:AQD_EvaluationScenario/aqd:attainmentYear/gml:TimeInstant/gml:timePosition must be provided and must conform to yyyy format
 
 The year for which the projections are developed must be provided and the yyyy format used
 :)
+
+let $ms1J20 := prof:current-ms()
 
 let $J20 := try {
     let $main := $evaluationScenario/aqd:attainmentYear/gml:TimeInstant/gml:timePosition
@@ -652,6 +735,8 @@ let $J20 := try {
     html:createErrorRow($err:code, $err:description)
 }
 
+let $ms2J20 := prof:current-ms()
+
 (: J21
 aqd:AQD_EvaluationScenario/aqd:startYear/gml:TimeInstant/gml:timePosition
 must be provided and must conform to yyyy format
@@ -659,6 +744,8 @@ must be provided and must conform to yyyy format
 Reference year from which the projections started and
 for which the source apportionment is available must be provided. Format used yyyy.
 :)
+
+let $ms1J21 := prof:current-ms()
 
 let $J21 := try {
     let $main := $evaluationScenario/aqd:startYear/gml:TimeInstant/gml:timePosition
@@ -680,6 +767,8 @@ let $J21 := try {
     html:createErrorRow($err:code, $err:description)
 }
 
+let $ms2J21 := prof:current-ms()
+
 (: J22
 Check aqd:AQD_EvaluationScenario/aqd:startYear/gml:TimeInstant/gml:timePosition must be equal to
 aqd:AQD_SourceApportionment/aqd:referenceYear/gml:TimeInstant/gml:timePosition
@@ -688,7 +777,9 @@ referenced via the xlink of (aqd:AQD_EvaluationScenario/aqd:sourceApportionment)
 Check if start year of the evaluation scenario is the same as
 the source apportionment reference year
 :)
-(: let $J22 := try {
+(: 
+let $ms1J22 := prof:current-ms()
+let $J22 := try {
     for $node in $evaluationScenario
         let $el := $node/aqd:sourceApportionment
         let $year := $node/aqd:startYear/gml:TimeInstant/gml:timePosition
@@ -709,13 +800,17 @@ the source apportionment reference year
 
 } catch * {
     html:createErrorRow($err:code, $err:description)
-} :)
+} 
+let $ms2J22 := prof:current-ms()
+:)
 
 (: J23
 aqd:AQD_EvaluationScenario/aqd:baselineScenario/aqd:Scenario/aqd:description shall be a text string
 
 A description of the emission scenario used for the baseline analysis should be provided as text
 :)
+
+let $ms1J23 := prof:current-ms()
 
 let $J23 := try {
     let $main := $evaluationScenario/aqd:baselineScenario/aqd:Scenario/aqd:description
@@ -735,6 +830,8 @@ let $J23 := try {
     html:createErrorRow($err:code, $err:description)
 }
 
+let $ms2J23 := prof:current-ms()
+
 (: J24
 Check that the element aqd:AQD_EvaluationScenario/aqd:baselineScenario/aqd:Scenario/aqd:totalEmissions
 is an integer or floating point numeric >= 0 and the unit (@uom) shall resolve to the codelist
@@ -742,6 +839,8 @@ http://dd.eionet.europa.eu/vocabulary/uom/emission/kt.year-1
 
 The baseline total emissions should be provided as integer with correct unit.
 :)
+
+let $ms1J24 := prof:current-ms()
 
 let $J24 := try {
     for $node in $evaluationScenario
@@ -772,6 +871,8 @@ let $J24 := try {
     html:createErrorRow($err:code, $err:description)
 }
 
+let $ms2J24 := prof:current-ms()
+
 (: J25
 Check that the element aqd:AQD_EvaluationScenario/aqd:baselineScenario/aqd:AQD_Scenario/aqd:expectedConcentration
 is an integer or floating point numeric >= 0 and the unit (@uom) shall resolve to the codelist
@@ -779,6 +880,8 @@ http://dd.eionet.europa.eu/vocabulary/uom/concentration/
 
 The expected concentration (under baseline scenario) should be provided as an integer and its unit should conform to vocabulary
 :)
+
+let $ms1J25 := prof:current-ms()
 
 let $J25 := try {
     let $main := $evaluationScenario/aqd:baselineScenario/aqd:Scenario/aqd:expectedConcentration
@@ -809,6 +912,8 @@ let $J25 := try {
     html:createErrorRow($err:code, $err:description)
 }
 
+let $ms2J25 := prof:current-ms()
+
 (: J26
 Check that the element aqd:AQD_EvaluationScenario/aqd:baselineScenario/aqd:AQD_Scenario/aqd:expectedExceedances
 is an integer or floating point numeric >= 0 and the unit (@uom) shall resolve to the codelist
@@ -816,6 +921,8 @@ http://dd.eionet.europa.eu/vocabulary/uom/statistics
 
 The number of exceecedance expected (under baseline scenario) should be provided as an integer and its unit should conform to vocabulary
 :)
+
+let $ms1J26 := prof:current-ms()
 
 let $J26 := try {
     let $main := $evaluationScenario/aqd:baselineScenario/aqd:Scenario/aqd:expectedExceedances
@@ -844,6 +951,8 @@ let $J26 := try {
     html:createErrorRow($err:code, $err:description)
 }
 
+let $ms2J26 := prof:current-ms()
+
 (: J27
 aqd:AQD_EvaluationScenario/aqd:baselineScenario/aqd:Scenario/aqd:measuresApplied
 shall reference an existing AQD_Measures delivered within a data flow K
@@ -851,6 +960,8 @@ and the reporting year of K & J shall be the same year via namespace/localId.
 
 Measures identified in the AQ-plan that are included in this baseline scenario should be provided (link to dataflow K)
 :)
+
+let $ms1J27 := prof:current-ms()
 
 let $J27 := try{
     let $main := $evaluationScenario/aqd:baselineScenario/aqd:Scenario/aqd:measuresApplied
@@ -893,11 +1004,15 @@ let $J27 := try{
     html:createErrorRow($err:code, $err:description)
 }
 
+let $ms2J27 := prof:current-ms()
+
 (: J28
 aqd:AQD_EvaluationScenario/aqd:projectionScenario/aqd:Scenario/aqd:description shall be a text string
 
 A description of the emission scenario used for the projection analysis should be provided as text
 :)
+
+let $ms1J28 := prof:current-ms()
 
 let $J28 := try {
     let $main := $evaluationScenario/aqd:projectionScenario/aqd:Scenario/aqd:description
@@ -917,6 +1032,8 @@ let $J28 := try {
     html:createErrorRow($err:code, $err:description)
 }
 
+let $ms2J28 := prof:current-ms()
+
 (: J29
 Check that the element aqd:AQD_EvaluationScenario/aqd:projectionScenario/aqd:Scenario/aqd:totalEmissions
 is an integer or floating point numeric >= 0 and the unit (@uom) shall resolve to the codelist
@@ -925,6 +1042,7 @@ http://dd.eionet.europa.eu/vocabulary/uom/emission/kt.year-1
 The projection total emissions should be provided as integer with correct unit.
 :)
 
+let $ms1J29 := prof:current-ms()
 
 let $J29 := try {
     let $main := $evaluationScenario/aqd:projectionScenario/aqd:Scenario/aqd:totalEmissions
@@ -955,6 +1073,8 @@ let $J29 := try {
     html:createErrorRow($err:code, $err:description)
 }
 
+let $ms2J29 := prof:current-ms()
+
 (: J30
 Check that the element aqd:AQD_EvaluationScenario/aqd:projectionScenario/aqd:AQD_Scenario/aqd:expectedConcentration
 is an integer or floating point numeric >= 0 and the unit (@uom) shall resolve to the codelist
@@ -963,6 +1083,9 @@ http://dd.eionet.europa.eu/vocabulary/uom/concentration/
 The expected concentration (under projection scenario) should be provided as an integer and its unit should conform to vocabulary
 :)
 (:  TODO CHECK IF $main node is not empty for all CHECKS  :)
+
+let $ms1J30 := prof:current-ms()
+
 let $J30 := try {
     let $main := $evaluationScenario/aqd:projectionScenario/aqd:Scenario/aqd:expectedConcentration
     for $el in $main
@@ -990,6 +1113,8 @@ let $J30 := try {
     html:createErrorRow($err:code, $err:description)
 }
 
+let $ms2J30 := prof:current-ms()
+
 (: J31
 Check that the element aqd:AQD_EvaluationScenario/aqd:projectionScenario/aqd:AQD_Scenario/aqd:expectedExceedances
 is an integer or floating point numeric >= 0 and the unit (@uom) shall resolve to the codelist
@@ -998,6 +1123,8 @@ http://dd.eionet.europa.eu/vocabulary/uom/statistics
 The number of exceecedance expected (under projection scenario) should be provided
 as an integer and its unit should conform to vocabulary
 :)
+
+let $ms1J31 := prof:current-ms()
 
 let $J31 := try {
     let $main := $evaluationScenario/aqd:projectionScenario/aqd:AQD_Scenario/aqd:expectedExceedances
@@ -1026,6 +1153,8 @@ let $J31 := try {
     html:createErrorRow($err:code, $err:description)
 }
 
+let $ms2J31 := prof:current-ms()
+
 (: J32
 aqd:AQD_EvaluationScenario/aqd:projectionScenario/aqd:Scenario/aqd:measuresApplied
 shall reference an existing AQD_Measures delivered within a data flow K
@@ -1033,6 +1162,8 @@ and the reporting year of K & J shall be the same year via namespace/localId.
 
 Measures identified in the AQ-plan that are included in this projection should be provided (link to dataflow K)
 :)
+
+let $ms1J32 := prof:current-ms()
 
 let $J32 := try{
     let $main := $evaluationScenario/aqd:projectionScenario/aqd:Scenario/aqd:measuresApplied
@@ -1055,9 +1186,12 @@ let $J32 := try{
     html:createErrorRow($err:code, $err:description)
 }
 
+let $ms2J32 := prof:current-ms()
+
 return
 (
     <table class="maintable hover">
+    <table>
         {html:build2("NS", $labels:NAMESPACES, $labels:NAMESPACES_SHORT, $NSinvalid, "All values are valid", "record", $errors:NS)}
         {html:build2("VOCAB", $labels:VOCAB, $labels:VOCAB_SHORT, $VOCABinvalid, "All values are valid", "record", $errors:VOCAB)}
         {html:build3("J0", $labels:J0, $labels:J0_SHORT, $J0, string($J0/td), errors:getMaxError($J0))}
@@ -1093,7 +1227,49 @@ return
         {html:build2("J30", $labels:J30, $labels:J30_SHORT, $J30, "All values are valid", "not valid", $errors:J30)}
         {html:build2("J31", $labels:J31, $labels:J31_SHORT, $J31, "All values are valid", "not valid", $errors:J31)}
         {html:build2Sparql("J32", $labels:J32, $labels:J32_SHORT, $J32, "All values are valid", "not valid", $errors:J32)}
-
+    </table>
+    <table>
+         <tr>
+            <th>Query</th>
+            <th>Process time in miliseconds</th>
+            <th>Process time in seconds</th>
+        </tr>
+       {common:runtime("NS", $ms1NS, $ms2NS)}
+       {common:runtime("VOCAB", $ms1VOCAB, $ms2VOCAB)}
+       {common:runtime("J0", $ms1J0, $ms2J0)}
+       {common:runtime("J01", $ms1J01, $ms2J01)}
+       {common:runtime("J02", $ms1J02, $ms2J02)}
+       {common:runtime("J03", $ms1J03, $ms2J03)} 
+       {common:runtime("J04", $ms1J04, $ms2J04)}
+       {common:runtime("J05", $ms1J05, $ms2J05)}
+       {common:runtime("J06", $ms1J06, $ms2J06)}
+       {common:runtime("J07", $ms1J07, $ms2J07)}
+       {common:runtime("J08", $ms1J08, $ms2J08)}
+       {common:runtime("J09", $ms1J09, $ms2J09)}
+       {common:runtime("J10", $ms1J10, $ms2J10)}
+       {common:runtime("J11", $ms1J11, $ms2J11)}
+       {common:runtime("J12", $ms1J12, $ms2J12)}
+       <!-- {common:runtime("J13", $ms1J13, $ms2J13)} -->
+       {common:runtime("J14", $ms1J14, $ms2J14)}
+       {common:runtime("J15", $ms1J15, $ms2J15)}
+       {common:runtime("J16", $ms1J16, $ms2J16)}
+       {common:runtime("J17", $ms1J17, $ms2J17)}
+       {common:runtime("J18", $ms1J18, $ms2J18)}
+       {common:runtime("J19", $ms1J19, $ms2J19)}
+       {common:runtime("J20", $ms1J20, $ms2J20)}
+       {common:runtime("J21", $ms1J21, $ms2J21)}
+       <!-- {common:runtime("J22", $ms1J22, $ms2J22)} -->
+       {common:runtime("J23", $ms1J23, $ms2J23)}
+       {common:runtime("J24", $ms1J24, $ms2J24)}
+       {common:runtime("J25", $ms1J25, $ms2J25)}
+       {common:runtime("J26", $ms1J26, $ms2J26)}
+       {common:runtime("J27", $ms1J27, $ms2J27)}
+       {common:runtime("J28", $ms1J28, $ms2J28)}
+       {common:runtime("J29", $ms1J29, $ms2J29)}
+       {common:runtime("J30", $ms1J30, $ms2J30)}
+       {common:runtime("J31", $ms1J31, $ms2J31)}
+       {common:runtime("J32", $ms1J32, $ms2J32)}
+    </table>
     </table>
 )
 };
