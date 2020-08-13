@@ -691,13 +691,24 @@ let $E22invalid :=
         for $i at $ipos in tokenize(replace($x//swe:values, $blockSeparator || "$", ""), $blockSeparator)
         for $z at $zpos in tokenize($i, $tokenSeparator)
         let $invalid :=
-            if ($fields[$zpos] = ("StartTime", "EndTime")) then if ($z castable as xs:dateTime) then false() else true()
+            (:if ($fields[$zpos] = ("StartTime", "EndTime")) then if ($z castable as xs:dateTime) then false() else true()
             else if ($fields[$zpos] = "Verification") then if ($z = $validVerifications) then false() else true()
             else if ($fields[$zpos] = "Validity") then if ($z = $validValidity) then false() else true()
             else if ($fields[$zpos] = "Value") then if ($z = "" or $z castable as xs:double) then false() else true()
             else if ($fields[$zpos] = "DataCapture") then if ($z = $exceptionDataCapture or ($z castable as xs:decimal and number($z) >= 0 and number($z) <= 100)) then false() else true()
-            else true()
-        where $invalid = true()
+            else true():)
+            switch ($fields[$zpos])
+              case '("StartTime", "EndTime")'
+                return if ($z castable as xs:dateTime) then false() else true()
+              case "Verification"
+                return if ($z = $validValidity) then false() else true()
+              case "Value"
+                return if ($z = "" or $z castable as xs:double) then false() else true()
+              case "DataCapture"
+                return if ($z = $exceptionDataCapture or ($z castable as xs:decimal and number($z) >= 0 and number($z) <= 100)) then false() else true()
+              default 
+                return false()
+        where $invalid = true() (:where $invalid = false():)
         return
             <tr>
                 <td title="OM_Observation">{string($x/../@gml:id)}</td>
@@ -767,7 +778,7 @@ let $E24invalid :=
                 let $startDateTime := xs:dateTime($startTime)
                 let $endDateTime := xs:dateTime($endTime)
                 return
-                    if ($definition = $vocabulary:OBSERVATIONS_PRIMARY || "hour") then
+                    (:if ($definition = $vocabulary:OBSERVATIONS_PRIMARY || "hour") then
                         if (($endDateTime - $startDateTime) div xs:dayTimeDuration("PT1H") = 1) then
                             false()
                         else
@@ -788,7 +799,31 @@ let $E24invalid :=
                         else
                             true()
                     else
-                        false()
+                        false():)
+            switch ($definition)
+              case '$vocabulary:OBSERVATIONS_PRIMARY || "hour"'
+                return if (($endDateTime - $startDateTime) div xs:dayTimeDuration("PT1H") = 1) then
+                            false()
+                        else
+                            true()
+              case '$vocabulary:OBSERVATIONS_PRIMARY || "day"'
+                return if (($endDateTime - $startDateTime) div xs:dayTimeDuration("P1D") = 1) then
+                            false()
+                        else
+                            true()
+              case '$vocabulary:OBSERVATIONS_PRIMARY || "year"'
+                return if (common:isDateTimeDifferenceOneYear($startDateTime, $endDateTime)) then
+                            false()
+                        else
+                            true()
+              case '$vocabulary:OBSERVATIONS_PRIMARY || "var"'
+                return if (($endDateTime - $startDateTime) div xs:dayTimeDuration("PT1H") > 0) then
+                            false()
+                        else
+                            true()
+              default 
+                return false()
+                              
         where $result = true()
         return
             <tr>
