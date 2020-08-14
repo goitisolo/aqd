@@ -120,9 +120,9 @@ declare function query:getSamplingPointProcess($url as xs:string) as xs:string {
    WHERE {
     FILTER(STRSTARTS(str(?graph), 'http://"|| $url ||"'))  
       GRAPH ?graph {
-      ?samplingPointProcess a aqd:AQD_SamplingPointProcess.
+      ?samplingPointProcess a aqd:AQD_SamplingPointProcess.}
       ?samplingPointProcess aqd:inspireId ?inspireId .
-      }
+      
               
                ?inspireId rdfs:label ?inspireLabel .
                ?inspireId aqd:localId ?localId .
@@ -1808,7 +1808,7 @@ declare function query:getC03bquery($cdrUrl as xs:string) as xs:string* {
 };
 
 (:
-declare function query:getC03c($cdrUrl as xs:string) as xs:string* {
+declare function query:getC03c($cdrUrl as xs:string) as xs:string* {inspireLabel
     
    "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
    PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
@@ -2010,7 +2010,9 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
    SELECT ?localId ?featureOfInterest ?procedure ?observedProperty ?inspireLabel ?beginPosition ?endPosition
    WHERE {
-       FILTER (STRSTARTS(STR(?graph), '"|| $url || "'))
+        values ?envelope { <" || $url || "> } 
+        ?graph dcterms:isPartOf ?envelope .
+        ?graph contreg:xmlSchema ?xmlSchema .
        GRAPH ?graph {
 
          ?samplingPoint a aqd:AQD_SamplingPoint;
@@ -2026,6 +2028,40 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
          ?observingCapability aqd:procedure ?procedure .
          ?observingCapability aqd:observedProperty ?observedProperty . 
 
+   }"
+};
+
+
+declare function query:getE26b($url as xs:string*, $pollutant as xs:string*) as xs:string {
+        "
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
+    PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+    PREFIX aq: <http://reference.eionet.europa.eu/aq/ontology/>
+    PREFIX dcterms: <http://purl.org/dc/terms/>
+    PREfIX contreg: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
+
+
+   SELECT ?localId ?featureOfInterest ?procedure ?observedProperty ?inspireLabel ?beginPosition ?endPosition
+   WHERE {
+        values ?envelope { <" || $url || "> } 
+        ?graph dcterms:isPartOf ?envelope .
+        ?graph contreg:xmlSchema ?xmlSchema .
+       GRAPH ?graph {
+
+         ?samplingPoint a aqd:AQD_SamplingPoint;
+         aqd:observingCapability ?observingCapability;
+         aqd:inspireId ?inspireId .}
+         ?inspireId rdfs:label ?inspireLabel .
+         ?inspireId aqd:localId ?localId .
+         ?inspireId aqd:namespace ?namespace .
+         ?observingCapability aqd:observingTime ?observingTime .
+         ?observingTime aqd:beginPosition ?beginPosition .
+         OPTIONAL { ?observingTime aqd:endPosition ?endPosition } .
+         ?observingCapability aqd:featureOfInterest ?featureOfInterest .
+         ?observingCapability aqd:procedure ?procedure .
+         ?observingCapability aqd:observedProperty ?observedProperty . 
+     FILTER(?observedProperty in (" || $pollutant || "))
    }"
 };
 (:
@@ -2708,6 +2744,45 @@ declare function query:getSamplingPointMetadataFromFiles($url as xs:string*) as 
             ?observingCapability aqd:featureOfInterest ?featureOfInterest .
             ?observingCapability aqd:procedure ?procedure .
             ?observingCapability aqd:observedProperty ?observedProperty .
+      }"
+};
+
+
+declare function query:getSamplingPointMetadataFromFiles($url as xs:string*, $pollutant as xs:string*) as xs:string {
+  let $filters :=
+    for $x in $url
+    return "<" || $x || ">"
+  let $filters := string-join($filters, "  ")
+  return
+   "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
+    PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+    PREFIX aq: <http://reference.eionet.europa.eu/aq/ontology/>
+    PREFIX dcterms: <http://purl.org/dc/terms/>
+    PREfIX contreg: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
+
+    SELECT DISTINCT
+        ?localId ?featureOfInterest ?procedure ?observedProperty ?inspireLabel
+
+      WHERE {
+        values ?envelope { " || $filters || " } 
+        ?graph dcterms:isPartOf ?envelope .
+        ?graph contreg:xmlSchema ?xmlSchema .
+        
+        GRAPH ?graph {
+          ?samplingPoint a aqd:AQD_SamplingPoint;
+              aqd:observingCapability ?observingCapability;
+              aqd:inspireId ?inspireId .
+              ?inspireId rdfs:label ?inspireLabel .
+              ?inspireId aqd:localId ?localId .
+              ?inspireId aqd:namespace ?namespace .
+              
+                
+        }      
+            ?observingCapability aqd:featureOfInterest ?featureOfInterest .
+            ?observingCapability aqd:procedure ?procedure .
+            ?observingCapability aqd:observedProperty ?observedProperty .
+         FILTER(?observedProperty in (" ||  $pollutant ||"))
       }"
 };
 
