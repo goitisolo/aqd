@@ -53,6 +53,11 @@ let $latestEnvelopeD := query:getLatestEnvelope($cdrUrl || "d/")
 let $headerBeginPosition := $docRoot//aqd:AQD_ReportingHeader/aqd:reportingPeriod/gml:TimePeriod/gml:beginPosition
 let $headerEndPosition := $docRoot//aqd:AQD_ReportingHeader/aqd:reportingPeriod/gml:TimePeriod/gml:endPosition
 
+let $pollutants :=   fn:string-join(fn:distinct-values(
+                        for $x in $docRoot//om:OM_Observation
+                         let $observedProperty := $x/om:observedProperty/@xlink:href
+                        return "<" || $observedProperty || ">"
+                      ), " , ")
 (: File prefix/namespace check :)
 
 let $ms1NS := prof:current-ms()
@@ -225,14 +230,20 @@ let $ms1E04 := prof:current-ms()
 
 let $E04invalid :=
     try {
-        (let $result := sparqlx:run(query:getSamplingPointProcess($cdrUrl))
-        let $all := $result/sparql:binding[@name = "inspireLabel"]/sparql:literal/string()
+        ( (:let $result := sparqlx:run(query:getSamplingPointProcess($cdrUrl)):)
+        
+        let $result := sparqlx:run(query:getSamplingPointMetadataFromFiles($latestEnvelopeD, $pollutants))
+        let $sparqlprocedure :=  $result/sparql:binding[@name = "procedure"]/sparql:uri/string()
+        let $all:= 
+                 for $x in $sparqlprocedure
+                   let $procedurecut := fn:substring-after($x, 'http://reference.eionet.europa.eu/aq/')
+                 return $procedurecut
         let $procedures := $docRoot//om:procedure/@xlink:href/string()
         for $x in $procedures[not(. = $all)]
         return
             <tr>
                 <td title="base:localId">{$x}</td>
-                <td title="Sparql">{sparqlx:getLink(query:getSamplingPointProcess($cdrUrl))}</td>
+                <td title="Sparql">{sparqlx:getLink(query:getSamplingPointMetadataFromFiles($cdrUrl, $pollutants))}</td>
             </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
     } catch * {
         <tr class="{$errors:FAILED}">
@@ -270,8 +281,10 @@ let $ms1E06 := prof:current-ms()
 
 let $E06invalid :=
     try {
-        (let $result := sparqlx:run(query:getSamplingPointFromFiles($latestEnvelopeD))
-        let $all := $result/sparql:binding[@name = "inspireLabel"]/sparql:literal/string()
+        ( (:let $result := sparqlx:run(query:getSamplingPointFromFiles($latestEnvelopeD))
+        :)
+         let $result := sparqlx:run(query:getSamplingPointMetadataFromFiles($latestEnvelopeD, $pollutants))
+       let $all := $result/sparql:binding[@name = "inspireLabel"]/sparql:literal/string()
         for $x in $docRoot//om:OM_Observation/om:parameter/om:NamedValue[om:name/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/processparameter/SamplingPoint"]
             let $name := $x/om:name/@xlink:href/string()
             let $value := common:if-empty($x/om:value, $x/om:value/@xlink:href)
@@ -280,7 +293,7 @@ let $E06invalid :=
             <tr>
                 <td title="om:OM_Observation">{string($x/../../@gml:id)}</td>
                 <td title="om:value">{$value}</td>
-                <td title="Sparql">{sparqlx:getLink(query:getSamplingPointFromFiles($latestEnvelopeD))}</td>
+                <td title="Sparql">{sparqlx:getLink(query:getSamplingPointMetadataFromFiles($latestEnvelopeD, $pollutants))}</td>
             </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
     } catch * {
         <tr class="{$errors:FAILED}">
@@ -288,6 +301,7 @@ let $E06invalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+
 
 let $ms2E06 := prof:current-ms()
 
@@ -947,7 +961,7 @@ let $ms1E26 := prof:current-ms()
 
 let $E26invalid :=
     try {
-        (let $result := sparqlx:run(query:getSamplingPointMetadataFromFiles($latestEnvelopeD))
+        (let $result := sparqlx:run(query:getSamplingPointMetadataFromFiles($latestEnvelopeD, $pollutants))
         let $resultsConcat :=
             for $x in $result
             return $x/sparql:binding[@name="localId"]/sparql:literal/string() || $x/sparql:binding[@name="procedure"]/sparql:uri/string() ||
@@ -978,7 +992,7 @@ let $E26invalid :=
                 <td title="aqd:AQD_SamplingPointProcess">{$procedure}</td>
                 <td title="aqd:AQD_Sample">{$featureOfInterest}</td>
                 <td title="Pollutant">{$observedProperty}</td>
-                <td title="Sparql">{sparqlx:getLink(query:getSamplingPointMetadataFromFiles($latestEnvelopeD))}</td>
+                <td title="Sparql">{sparqlx:getLink(query:getSamplingPointMetadataFromFiles($latestEnvelopeD, $pollutants))}</td>
             </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
     }
     catch * {
@@ -994,7 +1008,7 @@ let $ms2E26 := prof:current-ms()
 let $ms1E26b := prof:current-ms()
 
 let $E26bfunc := function() {
-    (let $result := sparqlx:run(query:getE26b($latestEnvelopeD))
+    (let $result := sparqlx:run(query:getE26b($latestEnvelopeD, $pollutants))
     let $operationalResults :=
         for $x in $result
         let $beginPosition := string($x/sparql:binding[@name="beginPosition"]/sparql:literal)
@@ -1031,7 +1045,7 @@ let $E26bfunc := function() {
             <td title="aqd:AQD_SamplingPointProcess">{$procedure}</td>
             <td title="aqd:AQD_Sample">{$featureOfInterest}</td>
             <td title="Pollutant">{$observedProperty}</td>
-            <td title="Sparql">{sparqlx:getLink(query:getE26b($latestEnvelopeD))}</td>
+            <td title="Sparql">{sparqlx:getLink(query:getE26b($latestEnvelopeD, $pollutants))}</td>
         </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
 }
 let $E26binvalid := errors:trycatch($E26bfunc)
