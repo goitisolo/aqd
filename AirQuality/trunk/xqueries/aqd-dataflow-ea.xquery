@@ -1425,7 +1425,10 @@ let $E34func := function() {
    let $previousTRT:=
        for $y in $x/../om:parameter/om:NamedValue[om:name/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/processparameter/SamplingPoint"]
 
-        let $samplingPoint := tokenize(common:if-empty($y/om:value, 'no data'), "/")[last()]
+       (: let $samplingPoint := tokenize(common:if-empty($y/om:value, 'no data'), "/")[last()]:)
+        let $samplingPoint := tokenize(common:if-empty($y/om:value, $y/om:value/@xlink:href), "/")[last()]
+
+
 
         let $previousMean := sparqlx:run(query:getE34Sampling($countryCode, $reportingYear, $samplingPoint))
 
@@ -1434,7 +1437,7 @@ let $E34func := function() {
     let $previousTRTquery:=
        for $y in $x/../om:parameter/om:NamedValue[om:name/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/processparameter/SamplingPoint"]
 
-        let $samplingPoint := tokenize(common:if-empty($y/om:value, 'no data'), "/")[last()]
+           let $samplingPoint := tokenize(common:if-empty($y/om:value, $y/om:value/@xlink:href), "/")[last()]
 
         let $previousMean := sparqlx:getLink(query:getE34Sampling($countryCode, $reportingYear, $samplingPoint))
 
