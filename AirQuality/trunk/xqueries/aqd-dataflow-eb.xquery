@@ -42,6 +42,9 @@ declare variable $dataflowEb:FEATURE_TYPES := ("aqd:AQD_Model", "aqd:AQD_ModelPr
 
 (: Rule implementations :)
 declare function dataflowEb:checkReport($source_url as xs:string, $countryCode as xs:string) as element(table) {
+    let $ms1Total := prof:current-ms()
+
+    let $ms1GeneralParameters:= prof:current-ms()
     let $docRoot := doc($source_url)
     let $cdrUrl := common:getCdrUrl($countryCode)
     let $reportingYear := common:getReportingYear($docRoot)
@@ -50,6 +53,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
     let $headerBeginPosition := $docRoot//aqd:AQD_ReportingHeader/aqd:reportingPeriod/gml:TimePeriod/gml:beginPosition
     let $headerEndPosition := $docRoot//aqd:AQD_ReportingHeader/aqd:reportingPeriod/gml:TimePeriod/gml:endPosition
 
+let $ms2GeneralParameters:= prof:current-ms()
     (: File prefix/namespace check :)
     let $ms1NS := prof:current-ms()
     let $NSinvalid :=
@@ -1360,7 +1364,7 @@ let $ms2Eb14b := prof:current-ms()
 
     
     let $ms2Eb42 := prof:current-ms()
-    
+    let $ms2Total := prof:current-ms()
     return
         <table class="maintable hover">
         <table>
@@ -1410,11 +1414,15 @@ let $ms2Eb14b := prof:current-ms()
             {html:build2("Eb42", $labels:Eb42, $labels:Eb42_SHORT, $Eb42invalid, "All records are valid", "record", $errors:Eb42)}
         </table>
     <table>
+    <br/>
+    <caption> {$labels:TIMINGTABLEHEADER} </caption>
         <tr>
             <th>Query</th>
             <th>Process time in miliseconds</th>
             <th>Process time in seconds</th>
         </tr>
+
+       {common:runtime("Common variables",  $ms1GeneralParameters, $ms2GeneralParameters)}
        {common:runtime("NS", $ms1NS, $ms2NS)}
        {common:runtime("VOCAB", $ms1VOCAB, $ms2VOCAB)}
        {common:runtime("Eb0",  $ms1Eb0, $ms2Eb0)}
@@ -1459,6 +1467,7 @@ let $ms2Eb14b := prof:current-ms()
        {common:runtime("Eb40",  $ms1Eb40, $ms2Eb40)}
        {common:runtime("Eb41",  $ms1Eb41, $ms2Eb41)}
        {common:runtime("Eb42",  $ms1Eb42, $ms2Eb42)}
+       {common:runtime("Total time",  $ms1Total, $ms2Total)}
     </table>
     </table>
 };

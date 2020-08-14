@@ -58,7 +58,9 @@ declare variable $dataflowJ:OBLIGATIONS as xs:string* := ($vocabulary:ROD_PREFIX
 
 (: Rule implementations :)
 declare function dataflowJ:checkReport($source_url as xs:string, $countryCode as xs:string) as element(table) {
+let $ms1Total := prof:current-ms()
 
+let $ms1GeneralParameters:= prof:current-ms()
 let $docRoot := doc($source_url)
 let $evaluationScenario := $docRoot//aqd:AQD_EvaluationScenario
 (: example 2014 :)
@@ -79,6 +81,7 @@ let $latestEnvelopesI := query:getLatestEnvelopesForObligation("681")
 let $latestEnvelopesJ := query:getLatestEnvelopesForObligation("682")
 let $latestEnvelopesK := query:getLatestEnvelopesForObligation("683")
 
+let $ms2GeneralParameters:= prof:current-ms()
 (: NS
 Check prefix and namespaces of the gml:featureCollection according to expected root elements
 (More information at http://www.eionet.europa.eu/aqportal/datamodel)
@@ -1188,6 +1191,7 @@ let $J32 := try{
 
 let $ms2J32 := prof:current-ms()
 
+  let $ms2Total := prof:current-ms()
 return
 (
     <table class="maintable hover">
@@ -1229,11 +1233,14 @@ return
         {html:build2Sparql("J32", $labels:J32, $labels:J32_SHORT, $J32, "All values are valid", "not valid", $errors:J32)}
     </table>
     <table>
-         <tr>
+     <br/>
+    <caption> {$labels:TIMINGTABLEHEADER} </caption>
+        <tr>
             <th>Query</th>
             <th>Process time in miliseconds</th>
             <th>Process time in seconds</th>
         </tr>
+       {common:runtime("Common variables",  $ms1GeneralParameters, $ms2GeneralParameters)}
        {common:runtime("NS", $ms1NS, $ms2NS)}
        {common:runtime("VOCAB", $ms1VOCAB, $ms2VOCAB)}
        {common:runtime("J0", $ms1J0, $ms2J0)}
@@ -1269,6 +1276,7 @@ return
        {common:runtime("J30", $ms1J30, $ms2J30)}
        {common:runtime("J31", $ms1J31, $ms2J31)}
        {common:runtime("J32", $ms1J32, $ms2J32)}
+       {common:runtime("Total time",  $ms1Total, $ms2Total)}
     </table>
     </table>
 )

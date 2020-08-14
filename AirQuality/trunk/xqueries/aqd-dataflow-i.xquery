@@ -63,7 +63,9 @@ declare function dataflowI:checkReport(
     $source_url as xs:string,
     $countryCode as xs:string
 ) as element(table) {
+let $ms1Total := prof:current-ms()
 
+let $ms1GeneralParameters:= prof:current-ms()
     let $docRoot := doc($source_url)
     let $cdrUrl := common:getCdrUrl($countryCode)
 
@@ -121,7 +123,8 @@ declare function dataflowI:checkReport(
 
     BLOCKER
     :)
-    
+
+let $ms2GeneralParameters:= prof:current-ms()
     let $ms1NS := prof:current-ms()
     
     let $NSinvalid :=
@@ -2768,6 +2771,7 @@ let $I44errorMessage := (
     
     let $ms2I45 := prof:current-ms()
 
+let $ms2Total := prof:current-ms()
     return
         <table class="maintable hover">
         
@@ -2831,11 +2835,15 @@ let $I44errorMessage := (
         </table>
         
         <table>
-              <tr>
-                  <th>Query</th>
-                  <th>Process time in miliseconds</th>
-                  <th>Process time in seconds</th>
-              </tr>
+    <br/>
+    <caption> {$labels:TIMINGTABLEHEADER} </caption>
+        <tr>
+            <th>Query</th>
+            <th>Process time in miliseconds</th>
+            <th>Process time in seconds</th>
+        </tr>
+
+       {common:runtime("Common variables",  $ms1GeneralParameters, $ms2GeneralParameters)}
              {common:runtime("NS", $ms1NS, $ms2NS)}
              {common:runtime("VOCAB", $ms1VOCAB, $ms2VOCAB)}
              {common:runtime("I0", $ms1I0, $ms2I0)}
@@ -2883,6 +2891,8 @@ let $I44errorMessage := (
              {common:runtime("I43", $ms1I43, $ms2I43)}
              {common:runtime("I44", $ms1I44, $ms2I44)}
              <!-- {common:runtime("I45", $ms1I45, $ms2I45)} -->
+             
+       {common:runtime("Total time",  $ms1Total, $ms2Total)}
         </table>
 
     </table>

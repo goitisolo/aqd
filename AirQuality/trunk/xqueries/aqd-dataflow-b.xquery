@@ -60,7 +60,9 @@ declare variable $dataflowB:OBLIGATIONS as xs:string* := ($vocabulary:ROD_PREFIX
 
 (: Rule implementations :)
 declare function dataflowB:checkReport($source_url as xs:string, $countryCode as xs:string) as element(table) {
+let $ms1Total := prof:current-ms()
 
+let $ms1GeneralParameters:= prof:current-ms()
 let $envelopeUrl := common:getEnvelopeXML($source_url)
 let $docRoot := doc($source_url)
 let $cdrUrl := common:getCdrUrl($countryCode)
@@ -73,6 +75,7 @@ let $zonesNamespaces := distinct-values($docRoot//aqd:AQD_Zone/am:inspireId/base
 let $headerBeginPosition := $docRoot//aqd:AQD_ReportingHeader/aqd:reportingPeriod/gml:TimePeriod/gml:beginPosition
 let $headerEndPosition := $docRoot//aqd:AQD_ReportingHeader/aqd:reportingPeriod/gml:TimePeriod/gml:endPosition
 
+let $ms2GeneralParameters:= prof:current-ms()
 (: File prefix/namespace check :)
 let $ns1NS := prof:current-ms()
 let $NSinvalid :=
@@ -1599,7 +1602,7 @@ let $B48invalid :=
 
 let $ns2B48 := prof:current-ms()
 
-    
+  let $ms2Total := prof:current-ms()
 
 return
     <table class="maintable hover">
@@ -1654,11 +1657,14 @@ return
         {html:build2("B48", $labels:B48, $labels:B48_SHORT, $B48invalid, "All values are valid", "invalid value", $errors:B48)}
     </table>
      <table>
+     <br/>
+    <caption> {$labels:TIMINGTABLEHEADER} </caption>
         <tr>
             <th>Query</th>
             <th>Process time in miliseconds</th>
             <th>Process time in seconds</th>
         </tr>
+    {common:runtime("Common variables",  $ms1GeneralParameters, $ms2GeneralParameters)}
        {common:runtime("NS", $ns1NS, $ns2NS)}
        {common:runtime("B0",  $ns1B0, $ns2B0)}
        {common:runtime("B01", $ns1B01, $ns2B01)}
@@ -1705,6 +1711,8 @@ return
        {common:runtime("B46",  $ns1B46, $ns2B46)}
        {common:runtime("B47",  $ns1B47, $ns2B47)}
        {common:runtime("B48",  $ns1B48, $ns2B48)}
+       
+       {common:runtime("Total time",  $ms1Total, $ms2Total)}
     </table>
     </table>
 };

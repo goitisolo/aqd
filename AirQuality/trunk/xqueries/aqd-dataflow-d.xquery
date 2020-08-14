@@ -60,7 +60,9 @@ declare variable $dataflowD:OBLIGATIONS as xs:string* := ($vocabulary:ROD_PREFIX
 
 (: Rule implementations :)
 declare function dataflowD:checkReport($source_url as xs:string, $countryCode as xs:string) as element(table) {
+let $ms1Total := prof:current-ms()
 
+let $ms1GeneralParameters:= prof:current-ms()
 let $docRoot := doc($source_url)
 let $cdrUrl := common:getCdrUrl($countryCode)
 let $reportingYear := common:getReportingYear($docRoot)
@@ -92,6 +94,7 @@ let $sampleNamespaces := distinct-values($docRoot//aqd:AQD_Sample/aqd:inspireId/
 let $stationNamespaces := distinct-values($docRoot//aqd:AQD_Station/ef:inspireId/base:Identifier/base:namespace)
 
 
+let $ms2GeneralParameters:= prof:current-ms()
 (: File prefix/namespace check :)
 
 let $ns1DNS := prof:current-ms()
@@ -2607,8 +2610,7 @@ let $D94invalid :=
     }
 
 let $ns2D94 := prof:current-ms()
-
-
+let $ms2Total := prof:current-ms()
 return
     <table class="maintable hover">
     <table>
@@ -2706,11 +2708,15 @@ return
         {html:build2("D94", $labels:D94, $labels:D94_SHORT, $D94invalid, "All values are valid"," invalid attribute", $errors:D94)}
     </table>     
     <table>
+    <br/>
+    <caption> {$labels:TIMINGTABLEHEADER} </caption>
         <tr>
             <th>Query</th>
             <th>Process time in miliseconds</th>
             <th>Process time in seconds</th>
         </tr>
+
+       {common:runtime("Common variables",  $ms1GeneralParameters, $ms2GeneralParameters)}
        {common:runtime("NS", $ns1DNS, $ns2DNS)}
        {common:runtime("VOCAB", $ns1DVOCAB, $ns2DVOCAB)}
        {common:runtime("D0",  $ns1D0, $ns2D0)}
@@ -2796,6 +2802,7 @@ return
        {common:runtime("D93",  $ns1D93, $ns2D93)}
        {common:runtime("D94",  $ns1D94, $ns2D94)}
 
+       {common:runtime("Total time",  $ms1Total, $ms2Total)}
     </table>
     </table>
 };

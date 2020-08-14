@@ -25,6 +25,7 @@ import module namespace query = "aqd-query" at "aqd-query.xquery";
 import module namespace errors = "aqd-errors" at "aqd-errors.xquery";
 import module namespace schemax = "aqd-schema" at "aqd-schema.xquery";
 import module namespace checks = "aqd-checks" at "aqd-checks.xq";
+import module namespace functx = "http://www.functx.com" at "functx-1.0-doc-2007-01.xq";
 
 declare namespace aqd = "http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0";
 declare namespace gml = "http://www.opengis.net/gml/3.2";
@@ -76,6 +77,9 @@ declare variable $dataflowC:OBLIGATIONS as xs:string* := ($vocabulary:ROD_PREFIX
 (: Rule implementations :)
 declare function dataflowC:checkReport($source_url as xs:string, $countryCode as xs:string) as element(table) {
 
+let $ms1Total := prof:current-ms()
+
+let $ms1GeneralParameters:= prof:current-ms()
 (: SETUP COMMON VARIABLES :)
 let $envelopeUrl := common:getEnvelopeXML($source_url)
 let $docRoot := doc($source_url)
@@ -138,8 +142,7 @@ let $latestModels2 :=
 let $modelsEnvelope2 := if (empty($latestModels2)) then $latestEnvelopeD else $getEnvelopeD1b
 
 
-
-
+let $ms2GeneralParameters:= prof:current-ms()
 (: File prefix/namespace check :)
 
 let $ms1NS := prof:current-ms()
@@ -1850,6 +1853,8 @@ let $C42invalid :=
 
     let $ms2C42 := prof:current-ms()
 
+let $ms2Total := prof:current-ms()
+
 return
     <table class="maintable hover">
     <table>
@@ -1895,11 +1900,15 @@ return
         {html:build2("C42", $labels:C42, $labels:C42_SHORT, $C42invalid, "All values are valid", " invalid value", $errors:C42)}
     </table>
     <table>
+    <br/>
+    <caption> {$labels:TIMINGTABLEHEADER} </caption>
         <tr>
             <th>Query</th>
             <th>Process time in miliseconds</th>
             <th>Process time in seconds</th>
         </tr>
+
+       {common:runtime("Common variables",  $ms1GeneralParameters, $ms2GeneralParameters)}
        {common:runtime("NS", $ms1NS, $ms2NS)}
        {common:runtime("C0",  $ms1C0, $ms2C0)}
        {common:runtime("C01", $ms1C01, $ms2C01)}
@@ -1938,6 +1947,7 @@ return
        {common:runtime("C40b",  $ms1C40b, $ms2C40b)}
        {common:runtime("C41",  $ms1C41, $ms2C41)}
        {common:runtime("C42",  $ms1C42, $ms2C42)}
+       {common:runtime("Total time",  $ms1Total, $ms2Total)}
     </table>
     </table>
 };
