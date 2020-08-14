@@ -65,6 +65,9 @@ declare variable $dataflowK:UNIQUE_IDS as xs:string* := (
 
 (: Rule implementations :)
 declare function dataflowK:checkReport($source_url as xs:string, $countryCode as xs:string) as element(table) {
+  
+let $ms1Total := prof:current-ms()  
+let $ms1GeneralParameters:= prof:current-ms()  
 
 let $envelopeUrl := common:getEnvelopeXML($source_url)
 let $docRoot := doc($source_url)
@@ -89,6 +92,8 @@ let $headerEndPosition := $docRoot//aqd:AQD_ReportingHeader/aqd:reportingPeriod/
 
 let $namespaces := distinct-values($docRoot//base:namespace)
 let $ancestor-name := "aqd:AQD_Measures"
+
+let $ms2GeneralParameters:= prof:current-ms()
 
 (: File prefix/namespace check :)
 
@@ -1227,6 +1232,8 @@ let $K40 :=
 
 let $ms2K40 := prof:current-ms()
 
+let $ms2Total := prof:current-ms()
+
 return
 (
     <table class="maintable hover">
@@ -1277,11 +1284,14 @@ return
         {html:build2("K40", $labels:K40, $labels:K40_SHORT, $K40, "All values are valid", "not valid", $errors:K40)}
     </table>
     <table>
+         <br/>
+        <caption> {$labels:TIMINGTABLEHEADER} </caption>
         <tr>
             <th>Query</th>
             <th>Process time in miliseconds</th>
             <th>Process time in seconds</th>
         </tr>
+       {common:runtime("Common Variables", $ms1GeneralParameters, $ms2GeneralParameters)}
        {common:runtime("NS", $ms1NS, $ms2NS)}
        {common:runtime("VOCAB", $ms1VOCAB, $ms2VOCAB)}
        {common:runtime("K0", $ms1K0, $ms2K0)}
@@ -1325,6 +1335,7 @@ return
        {common:runtime("K38", $ms1K38, $ms2K38)}
        {common:runtime("K39", $ms1K39, $ms2K39)}
        {common:runtime("K40", $ms1K40, $ms2K40)}
+       {common:runtime("Total", $ms1Total, $ms2Total)}
     </table>
     </table>
 )
