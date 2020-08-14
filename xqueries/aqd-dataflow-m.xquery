@@ -57,6 +57,10 @@ declare variable $dataflowM:OBLIGATIONS as xs:string* := ($vocabulary:ROD_PREFIX
 
 (: Rule implementations :)
 declare function dataflowM:checkReport($source_url as xs:string, $countryCode as xs:string) as element(table) {
+
+let $ms1Total := prof:current-ms()  
+let $ms1GeneralParameters:= prof:current-ms()
+  
 let $docRoot := doc($source_url)
 let $cdrUrl := common:getCdrUrl($countryCode)
 let $reportingYear := common:getReportingYear($docRoot)
@@ -77,6 +81,8 @@ let $MCombinations :=
     for $featureType in $dataflowM:FEATURE_TYPES
     return
         doc($source_url)//gml:featureMember/descendant::*[name()=$featureType]
+
+let $ms2GeneralParameters:= prof:current-ms()
 
 (: File prefix/namespace check :)
 let $ms1NS := prof:current-ms()
@@ -890,6 +896,8 @@ let $M46message :=
         "All values are valid"
 let $ms2M46 := prof:current-ms()
 
+let $ms2Total := prof:current-ms()
+
     return
     <table class="maintable hover">
     <table>
@@ -931,11 +939,14 @@ let $ms2M46 := prof:current-ms()
         {html:build2("M46", $labels:M46, $labels:M46_SHORT, $M46invalid, $M46message, "record", $errors:M46)}
     </table>
     <table>
+        <br/>
+        <caption> {$labels:TIMINGTABLEHEADER} </caption>
         <tr>
             <th>Query</th>
             <th>Process time in miliseconds</th>
             <th>Process time in seconds</th>
         </tr>
+       {common:runtime("Common Variables", $ms1GeneralParameters, $ms2GeneralParameters)}
        {common:runtime("NS", $ms1NS, $ms2NS)}
        {common:runtime("VOCAB", $ms1VOCAB, $ms2VOCAB)}
        {common:runtime("M0",  $ms1M0, $ms2M0)}
@@ -969,6 +980,7 @@ let $ms2M46 := prof:current-ms()
        {common:runtime("M43",  $ms1M43, $ms2M43)}
        {common:runtime("M45",  $ms1M45, $ms2M45)}
        {common:runtime("M46",  $ms1M43, $ms2M46)}
+       {common:runtime("Total", $ms1Total, $ms2Total)}
     </table>
     </table>
 };
