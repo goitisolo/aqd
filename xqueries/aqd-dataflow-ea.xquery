@@ -43,7 +43,9 @@ declare namespace rdf = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
 
 declare variable $dataflowEa:OBLIGATIONS as xs:string* := ($vocabulary:ROD_PREFIX || "673");
 declare function dataflowEa:checkReport($source_url as xs:string, $countryCode as xs:string) as element(table) {
+let $ms1Total := prof:current-ms()
 
+let $ms1GeneralParameters:= prof:current-ms()
 let $envelopeUrl := common:getEnvelopeXML($source_url)
 let $docRoot := doc($source_url)
 let $reportingYear := common:getReportingYear($docRoot)
@@ -58,6 +60,8 @@ let $pollutants :=   fn:string-join(fn:distinct-values(
                          let $observedProperty := $x/om:observedProperty/@xlink:href
                         return "<" || $observedProperty || ">"
                       ), " , ")
+
+let $ms2GeneralParameters:= prof:current-ms()
 (: File prefix/namespace check :)
 
 let $ms1NS := prof:current-ms()
@@ -1490,6 +1494,8 @@ let $E34invalid := errors:trycatch($E34func)
 
 let $ms2E34 := prof:current-ms()
 
+let $ms2Total := prof:current-ms()
+
 return
     <table class="maintable hover">
     <table>
@@ -1537,11 +1543,15 @@ return
         {html:build2Sparql("E34", $labels:E34, $labels:E34_SHORT, $E34invalid, "All records are valid", "record", $errors:E34)}
     </table>
     <table>
+    <br/>
+    <caption> {$labels:TIMINGTABLEHEADER} </caption>
         <tr>
             <th>Query</th>
             <th>Process time in miliseconds</th>
             <th>Process time in seconds</th>
         </tr>
+
+       {common:runtime("Common variables",  $ms1GeneralParameters, $ms2GeneralParameters)}
        {common:runtime("NS", $ms1NS, $ms2NS)}
        {common:runtime("VOCAB", $ms1EVOCAB, $ms2EVOCAB)}
        {common:runtime("E0",  $ms1E0, $ms2E0)}
@@ -1582,6 +1592,8 @@ return
        {common:runtime("E32",  $ms1E32, $ms2E32)}
        {common:runtime("E33",  $ms1E33, $ms2E33)}
        {common:runtime("E34",  $ms1E34, $ms2E34)}
+
+       {common:runtime("Total time",  $ms1Total, $ms2Total)}
     </table>
     </table>
 

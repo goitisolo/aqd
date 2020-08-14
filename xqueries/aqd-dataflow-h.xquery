@@ -58,7 +58,9 @@ declare variable $dataflowH:OBLIGATIONS as xs:string* := ($vocabulary:ROD_PREFIX
 
 (: Rule implementations :)
 declare function dataflowH:checkReport($source_url as xs:string, $countryCode as xs:string) as element(table) {
+let $ms1Total := prof:current-ms()
 
+let $ms1GeneralParameters:= prof:current-ms()
 let $envelopeUrl := common:getEnvelopeXML($source_url)
 let $docRoot := doc($source_url)
 let $cdrUrl := common:getCdrUrl($countryCode)
@@ -73,6 +75,7 @@ let $nameSpaces := distinct-values($docRoot//base:namespace)
 let $latestEnvelopesG := query:getLatestEnvelopesForObligation("679")
 let $latestEnvelopesH := query:getLatestEnvelopesForObligation("680")
 
+let $ms2GeneralParameters:= prof:current-ms()
 (: File prefix/namespace check :)
 let $ms1NS := prof:current-ms()
 let $NSinvalid := try {
@@ -1324,6 +1327,7 @@ let $H35 := try {
 }
 
 let $ms2H35 := prof:current-ms()
+let $ms2Total := prof:current-ms()
 
 return
     <table class="maintable hover">
@@ -1369,11 +1373,15 @@ return
         {html:build2("H35", $labels:H35, $labels:H35_SHORT, $H35, "All values are valid", "not valid", $errors:H35)}
     </table>
      <table>
+    <br/>
+    <caption> {$labels:TIMINGTABLEHEADER} </caption>
         <tr>
             <th>Query</th>
             <th>Process time in miliseconds</th>
             <th>Process time in seconds</th>
         </tr>
+
+       {common:runtime("Common variables",  $ms1GeneralParameters, $ms2GeneralParameters)}
        {common:runtime("NS", $ms1NS, $ms2NS)}
        {common:runtime("VOCAB", $ms1VOCAB, $ms2VOCAB)}
        {common:runtime("H0",  $ms1H0, $ms2H0)}
@@ -1411,6 +1419,8 @@ return
        {common:runtime("H33",  $ms1H33, $ms2H33)}
        {common:runtime("H34",  $ms1H34, $ms2H34)}
        {common:runtime("H35",  $ms1H35, $ms2H35)}
+       
+       {common:runtime("Total time",  $ms1Total, $ms2Total)}
     </table>
     </table>
 };

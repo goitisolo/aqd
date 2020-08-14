@@ -58,7 +58,9 @@ declare variable $dataflowG:OBLIGATIONS as xs:string* := ($vocabulary:ROD_PREFIX
 
 (: Rule implementations :)
 declare function dataflowG:checkReport($source_url as xs:string, $countryCode as xs:string) as element(table) {
+let $ms1Total := prof:current-ms()
 
+let $ms1GeneralParameters:= prof:current-ms()
 let $envelopeUrl := common:getEnvelopeXML($source_url)
 let $docRoot := doc($source_url)
 let $cdrUrl := common:getCdrUrl($countryCode)
@@ -124,6 +126,8 @@ let $modelAssessments :=
             for $i in $results
             return $i
     )
+
+let $ms2GeneralParameters:= prof:current-ms()
 (: File prefix/namespace check :)
 let $ms1NS := prof:current-ms()
 let $NSinvalid :=
@@ -2005,7 +2009,7 @@ let $G89invalid :=
 
 let $ms2G89 := prof:current-ms()
 
-
+let $ms2Total := prof:current-ms()
 return
     <table class="maintable hover">
     <table>
@@ -2080,11 +2084,15 @@ return
         {$G82invalid}
     </table>
      <table>
+    <br/>
+    <caption> {$labels:TIMINGTABLEHEADER} </caption>
         <tr>
             <th>Query</th>
             <th>Process time in miliseconds</th>
             <th>Process time in seconds</th>
         </tr>
+
+       {common:runtime("Common variables",  $ms1GeneralParameters, $ms2GeneralParameters)}
        {common:runtime("NS", $ms1NS, $ms2NS)}
        {common:runtime("VOCAB", $ms1VOCAB, $ms2VOCAB)}
        {common:runtime("G0",  $ms1G0, $ms2G0)}
@@ -2151,6 +2159,7 @@ return
        {common:runtime("G85",  $ms1G85, $ms2G85)}
        {common:runtime("G86",  $ms1G86, $ms2G86)}
        {common:runtime("G89",  $ms1G80, $ms2G89)}
+       {common:runtime("Total time",  $ms1Total, $ms2Total)}
     </table>
     </table>
 };
