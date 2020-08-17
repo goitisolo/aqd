@@ -877,7 +877,11 @@ let $E25invalid :=
         let $expectedEnd := $x/../om:phenomenonTime/gml:TimePeriod/gml:endPosition/text()
         return
             try {
-                for $i at $ipos in tokenize(replace($x//swe:values, $blockSeparator || "$", ""), $blockSeparator)
+                let $arrayValuesPos1 := tokenize($x//swe:values, $blockSeparator)[1]
+                let $arrayValuesLastPos := tokenize($x//swe:values, $blockSeparator)[last()]
+                let $firstAndLastElement := concat($arrayValuesPos1, $blockSeparator, $arrayValuesLastPos)
+                for $i at $ipos in tokenize(replace($firstAndLastElement, $blockSeparator || "$", ""), $blockSeparator)
+
                 let $startTime := tokenize($i, $tokenSeparator)[$startPos]
                 let $endTime := tokenize($i, $tokenSeparator)[$endPos]
                 where not(xs:dateTime($expectedStart) <= xs:dateTime($startTime)) or not(xs:dateTime($expectedEnd) >= xs:dateTime($endTime))
@@ -1123,7 +1127,12 @@ let $E29invalid :=
         let $tokenSeparator := string($x//swe:encoding/swe:TextEncoding/@tokenSeparator)
         let $fields := data($x//swe:elementType/swe:DataRecord/swe:field/@name)
 
-        for $i at $ipos in tokenize(replace($x//swe:values, $blockSeparator || "$", ""), $blockSeparator)
+        (:for $i at $ipos in tokenize(replace($x//swe:values, $blockSeparator || "$", ""), $blockSeparator):)
+        let $arrayValuesPos1 := tokenize($x//swe:values, $blockSeparator)[1]
+        let $arrayValuesLastPos := tokenize($x//swe:values, $blockSeparator)[last()]
+        let $firstAndLastElement := concat($arrayValuesPos1, $blockSeparator, $arrayValuesLastPos)
+        for $i at $ipos in tokenize(replace($firstAndLastElement, $blockSeparator || "$", ""), $blockSeparator)
+
         for $z at $zpos in tokenize($i, $tokenSeparator)
         where matches($z, "\s+")
         return
@@ -1211,7 +1220,12 @@ let $E30ainvalid :=
               where ($minValue castable as xs:double and $maxValue castable as xs:double and not($combinationMissing)):)
             return 
             if($countryMinValue castable as xs:double and $countryMaxValue castable as xs:double and not($combinationMissing))then
-                for $i at $ipos in tokenize(replace($x//swe:values, $blockSeparator || "$", ""), $blockSeparator)
+                (:for $i at $ipos in tokenize(replace($x//swe:values, $blockSeparator || "$", ""), $blockSeparator):)
+                let $arrayValuesPos1 := tokenize($x//swe:values, $blockSeparator)[1]
+                let $arrayValuesLastPos := tokenize($x//swe:values, $blockSeparator)[last()]
+                let $firstAndLastElement := concat($arrayValuesPos1, $blockSeparator, $arrayValuesLastPos)
+                for $i at $ipos in tokenize(replace($firstAndLastElement, $blockSeparator || "$", ""), $blockSeparator)
+
                 let $tokens := tokenize($i, $tokenSeparator)
                 let $validity := $tokens[index-of($fields, "Validity")]
                 let $value := $tokens[index-of($fields, "Value")]
@@ -1228,7 +1242,12 @@ let $E30ainvalid :=
                         <td title="Actual value">{$value}</td>
                     </tr>
               else if($minValue castable as xs:double and $maxValue castable as xs:double)then 
-                    for $i at $ipos in tokenize(replace($x//swe:values, $blockSeparator || "$", ""), $blockSeparator)
+                    (:for $i at $ipos in tokenize(replace($x//swe:values, $blockSeparator || "$", ""), $blockSeparator):)
+                      let $arrayValuesPos1 := tokenize($x//swe:values, $blockSeparator)[1]
+                      let $arrayValuesLastPos := tokenize($x//swe:values, $blockSeparator)[last()]
+                      let $firstAndLastElement := concat($arrayValuesPos1, $blockSeparator, $arrayValuesLastPos)
+                      for $i at $ipos in tokenize(replace($firstAndLastElement, $blockSeparator || "$", ""), $blockSeparator)
+
                       let $tokens := tokenize($i, $tokenSeparator)
                       let $validity := $tokens[index-of($fields, "Validity")]
                       let $value := $tokens[index-of($fields, "Value")]
@@ -1306,10 +1325,18 @@ let $E31invalid :=
         let $startPos := index-of($fields, "StartTime")
         let $endPos := index-of($fields, "EndTime")
 
-        let $startTimes := for $i in tokenize(replace($x//swe:values, $blockSeparator || "$", ""), $blockSeparator)
+        (:let $startTimes := for $i in tokenize(replace($x//swe:values, $blockSeparator || "$", ""), $blockSeparator)
         return tokenize($i, $tokenSeparator)[$startPos]
         let $endTimes := for $i in tokenize(replace($x//swe:values, $blockSeparator || "$", ""), $blockSeparator)
+        return tokenize($i, $tokenSeparator)[$endPos]:)
+        let $arrayValuesPos1 := tokenize($x//swe:values, $blockSeparator)[1]
+        let $arrayValuesLastPos := tokenize($x//swe:values, $blockSeparator)[last()]
+        let $firstAndLastElement := concat($arrayValuesPos1, $blockSeparator, $arrayValuesLastPos)
+        let $startTimes := for $i in tokenize(replace($firstAndLastElement, $blockSeparator || "$", ""), $blockSeparator)
+        return tokenize($i, $tokenSeparator)[$startPos]
+        let $endTimes := for $i in tokenize(replace($firstAndLastElement, $blockSeparator || "$", ""), $blockSeparator)
         return tokenize($i, $tokenSeparator)[$endPos]
+        
         return try {
             for $startTime at $ipos in $startTimes
             let $prevStartTime := $startTimes[$ipos - 1]
