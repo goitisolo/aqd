@@ -1378,7 +1378,11 @@ let $E32invalid :=
         let $verificationPos := index-of($fields, "Verification")
 
         let $values :=
-            for $i at $ipos in tokenize(replace($x//swe:values, $blockSeparator || "$", ""), $blockSeparator)
+            (:for $i at $ipos in tokenize(replace($x//swe:values, $blockSeparator || "$", ""), $blockSeparator):)
+            let $arrayValuesPos1 := tokenize($x//swe:values, $blockSeparator)[1]
+            let $arrayValuesLastPos := tokenize($x//swe:values, $blockSeparator)[last()]
+            let $firstAndLastElement := concat($arrayValuesPos1, $blockSeparator, $arrayValuesLastPos)
+            for $i at $ipos in tokenize(replace($firstAndLastElement, $blockSeparator || "$", ""), $blockSeparator)
             let $verification := tokenize($i, $tokenSeparator)[$verificationPos]
             where not($verification = "1")
             return
@@ -1413,7 +1417,11 @@ let $E33func := function() {
     let $observationType := (string($x//swe:field[@name = "Value"]/swe:Quantity/@definition) => tokenize("/"))[last()]
     let $coverageType := if ($observationType = "hour") then "Hourly" else "Daily"
     let $values :=
-        for $i at $ipos in tokenize(replace($x//swe:values, $blockSeparator || "$", ""), $blockSeparator)
+        (:for $i at $ipos in tokenize(replace($x//swe:values, $blockSeparator || "$", ""), $blockSeparator):)
+        let $arrayValuesPos1 := tokenize($x//swe:values, $blockSeparator)[1]
+        let $arrayValuesLastPos := tokenize($x//swe:values, $blockSeparator)[last()]
+        let $firstAndLastElement := concat($arrayValuesPos1, $blockSeparator, $arrayValuesLastPos)
+        for $i at $ipos in tokenize(replace($firstAndLastElement, $blockSeparator || "$", ""), $blockSeparator)
         let $values := tokenize($i, $tokenSeparator)
         let $validity := $values[index-of($fields, "Validity")]
         let $value := $values[index-of($fields, "Value")]
