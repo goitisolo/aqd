@@ -28,14 +28,14 @@ declare function dd:getValid($url as xs:string) {
 };
 declare function dd:getNameFromPollutantCode($code as xs:string?) as xs:string? {
     let $code := tokenize($code, "/")[last()]
-    let $codes := doc(concat($vocabulary:POLLUTANT_VOCABULARY, "/rdf"))    
+    let $codes := doc(concat($vocabulary:POLLUTANT_VOCABULARY, "rdf"))    
     let $num := concat($vocabulary:POLLUTANT_VOCABULARY, $code)
     let $name := $codes//skos:Concept[@rdf:about = $num]/string(skos:prefLabel)
     return $name
 };
 
 declare function dd:getValidPollutants() as xs:string* {
-    let $codes := doc(concat($vocabulary:POLLUTANT_VOCABULARY, "/rdf"))
+    let $codes := doc(concat($vocabulary:POLLUTANT_VOCABULARY, "rdf"))
     let $validCodes := $codes//skos:Concept[adms:status/@rdf:resource = $dd:VALIDRESOURCE]/string(@rdf:about)
     return $validCodes
 };
