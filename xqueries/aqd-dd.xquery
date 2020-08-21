@@ -80,3 +80,8 @@ declare function dd:getQAQCDefinition($notation as xs:string) as xs:string {
 declare function dd:getQAQCErrorType($notation as xs:string) as xs:string {
     string($dd:QAQCMAP/Entry[@notation = $notation]/ErrorType)
 };
+
+declare function dd:getMandatoryUnit($pollutant as xs:string) as xs:string* {
+    data(doc($vocabulary:POLLUTANT_VOCABULARY || "rdf")//skos:Concept[@rdf:about = $pollutant and adms:status/@rdf:resource = $dd:VALIDRESOURCE]/prop:mandatoryUnit/@rdf:resource)
+};
+
