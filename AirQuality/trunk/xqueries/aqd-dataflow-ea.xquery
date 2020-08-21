@@ -639,6 +639,35 @@ let $E19binvalid :=
 
 let $ms2E19b := prof:current-ms()
 
+
+
+
+(: E19c :)
+let $ms1E19c := prof:current-ms()
+
+let $E19cinvalid :=
+    try {
+        (for $x in $docRoot//om:OM_Observation
+        let $pollutant := string($x/om:observedProperty/@xlink:href)
+        let $value := string($x//swe:field[@name = 'Value']/swe:Quantity/swe:uom/@xlink:href)
+        let $mandatory := dd:getMandatoryUnit($pollutant)
+        where not($value = $mandatory)
+        return
+            <tr>
+                <td title="om:OM_Observation">{data($x/@gml:id)}</td>
+                <td title="Pollutant">{$pollutant}</td>
+                <td title="Mandatory Unit">{$mandatory}</td>
+                <td title="swe:uom">{$value}</td>
+            </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
+    } catch * {
+        <tr class="{$errors:FAILED}">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
+
+let $ms2E19c := prof:current-ms()
+
 (: E20 :)
 
 let $ms1E20 := prof:current-ms()
@@ -1557,6 +1586,7 @@ return
         {html:build2("E19", $labels:E19, $labels:E19_SHORT, $E19invalid, "All records are valid", "record", $errors:E19)}
         {html:build2("E19a", $labels:E19a, $labels:E19a_SHORT, $E19ainvalid, "All records are valid", "record", $errors:E19a)}
         {html:build2("E19b", $labels:E19b, $labels:E19b_SHORT, $E19binvalid, "All records are valid", "record", $errors:E19b)}
+        {html:build2("E19c", $labels:E19c, $labels:E19c_SHORT, $E19cinvalid, "All records are valid", "record", $errors:E19c)}
         {html:build2("E20", $labels:E20, $labels:E20_SHORT, $E20invalid, "All records are valid", "record", $errors:E20)}
         {html:build2("E21", $labels:E21, $labels:E21_SHORT, $E21invalid, "All records are valid", "record", $errors:E21)}
         {html:build2("E22", $labels:E22, $labels:E22_SHORT, $E22invalid, "All records are valid", "record", $errors:E22)}
@@ -1610,6 +1640,7 @@ return
        {common:runtime("E19",  $ms1E19, $ms2E19)}
        {common:runtime("E19a",  $ms1E19a, $ms2E19a)}
        {common:runtime("E19b",  $ms1E19b, $ms2E19b)}
+       {common:runtime("E19c",  $ms1E19c, $ms2E19c)}
        {common:runtime("E20", $ms1E20, $ms2E20)}
        {common:runtime("E21",  $ms1E21, $ms2E21)}
        {common:runtime("E22",  $ms1E22, $ms2E22)}
