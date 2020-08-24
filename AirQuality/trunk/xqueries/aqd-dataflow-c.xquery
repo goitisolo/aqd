@@ -322,8 +322,8 @@ try{
     return
         if(not(contains($source_url, "c_preliminary"))) then 
         <tr>
-            <td title="Assessment Regime (C) not found in C preliminary">{$localId}</td>
-            <td title="Assessment Regime (C preliminary) not found in C"></td>
+            <td title="Assessment Regime (C preliminary) not found in C">{$localId}</td>
+            <td title="Assessment Regime (C) not found in C preliminary"></td>
             <td title="Sparql">{$previousCombinations_query}</td>
         </tr>
     else()
@@ -358,8 +358,8 @@ try{
     return
         if(not(contains($source_url, "c_preliminary"))) then
         <tr>
-            <td title="Assessment Regime (C) not found in C preliminary"></td>
-            <td title="Assessment Regime (C preliminary) not found in C">{$localIdInC}</td>
+            <td title=>"Assessment Regime (C preliminary) not found in C"</td>
+            <td title="Assessment Regime (C) not found in C preliminary">{$localIdInC}</td>
             <td title="Sparql">{$previousCombinations_query}</td>
         </tr>
         else()
