@@ -2231,7 +2231,7 @@ declare function query:getE34Sampling($countryCode as xs:string, $reportingYear 
 
 
 
-declare function query:getG14(
+(:declare function query:getG14(
     $envelopeB as xs:string,
     $envelopeC as xs:string,
     $reportingYear as xs:string
@@ -2265,9 +2265,98 @@ PREFIX prop: <http://dd.eionet.europa.eu/property/>
 xsd:date(substr(str(?endPosition),1,10)) >= xsd:date('" || $reportingYear || "-12-31')))) .
        FILTER CONTAINS(str(?zoneURI),'" || $envelopeB || "') .
   }}
+    {
+  SELECT DISTINCT
+  str(?Pollutant) as ?Pollutant
+  str(?ProtectionTarget) as ?ProtectionTarget
+  count(distinct bif:concat(str(?Zone), str(?pollURI), str(?ProtectionTarget))) AS ?countOnC
+
+  WHERE {
+    ?areURI a aqd:AQD_AssessmentRegime;
+       aqd:zone ?Zone;
+       aqd:pollutant ?pollURI;
+       aqd:assessmentThreshold ?areThre ;
+       aqd:inspireId ?inspireId .
+       ?inspireId aqd:namespace ?Namespace .
+       ?areThre aqd:environmentalObjective ?envObj .
+       ?envObj aqd:protectionTarget ?ProtectionTarget .
+       ?pollURI rdfs:label ?Pollutant .
+  FILTER CONTAINS(str(?areURI),'" || $envelopeC || "') .
+  }}
+  
+  }"
+};:)
+
+
+
+
+declare function query:getG14(
+    $envelopeB as xs:string,
+    $envelopeC as xs:string,
+    $reportingYear as xs:string
+) as xs:string {
+"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX aq: <http://reference.eionet.europa.eu/aq/ontology/>
+PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+PREFIX prop: <http://dd.eionet.europa.eu/property/>
+  PREFIX dcterms: <http://purl.org/dc/terms/>
+  PREfIX contreg: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
+
+  SELECT *
+
+  WHERE {{
+  SELECT DISTINCT
+  str(?Pollutant) as ?Pollutant
+  str(?ProtectionTarget) as ?ProtectionTarget
+  count(distinct bif:concat(str(?Zone), str(?pollURI), str(?ProtectionTarget))) AS ?countOnB
+
+  WHERE {
+      values ?envelope {<" || $envelopeB || ">}
+      ?graph dcterms:isPartOf ?envelope .
+      ?graph contreg:xmlSchema ?xmlSchema .
+      GRAPH ?graph {
+       ?zoneURI a aqd:AQD_Zone;
+       aqd:zoneCode ?Zone;
+       aqd:pollutants ?polltargetURI;
+       aqd:inspireId ?inspireId;
+       aqd:designationPeriod ?designationPeriod .
+       ?designationPeriod aqd:beginPosition ?beginPosition .
+       OPTIONAL { ?designationPeriod aqd:endPosition ?endPosition . }
+       ?inspireId aqd:namespace ?Namespace .
+       ?polltargetURI aqd:protectionTarget ?ProtectionTarget .
+       ?polltargetURI aqd:pollutantCode ?pollURI .}
+       ?pollURI rdfs:label ?Pollutant
+              FILTER (((xsd:date(substr(str(?beginPosition),1,10)) <= xsd:date('" || $reportingYear || "-01-01')) AND (!(bound(?endPosition)) ||
+xsd:date(substr(str(?endPosition),1,10)) >= xsd:date('" || $reportingYear || "-12-31')))) .
+       FILTER CONTAINS(str(?zoneURI),'" || $envelopeB || "') .
+  }}
+    {
+  SELECT DISTINCT
+  str(?Pollutant) as ?Pollutant
+  str(?ProtectionTarget) as ?ProtectionTarget
+  count(distinct bif:concat(str(?Zone), str(?pollURI), str(?ProtectionTarget))) AS ?countOnC
+
+  WHERE {
+
+      values ?envelope {<" || $envelopeC || ">}
+      ?graph dcterms:isPartOf ?envelope .
+      ?graph contreg:xmlSchema ?xmlSchema .
+      GRAPH ?graph {
+    ?areURI a aqd:AQD_AssessmentRegime;
+       aqd:zone ?Zone;
+       aqd:pollutant ?pollURI;
+       aqd:assessmentThreshold ?areThre ;
+       aqd:inspireId ?inspireId .
+       ?inspireId aqd:namespace ?Namespace .
+       ?areThre aqd:environmentalObjective ?envObj .}
+       ?envObj aqd:protectionTarget ?ProtectionTarget .
+       ?pollURI rdfs:label ?Pollutant .
+  }}
   
   }"
 };
+
+
 
 (: ---- SPARQL methods --- :)
 declare function query:getTimeExtensionExemption($cdrUrl as xs:string) as xs:string {
