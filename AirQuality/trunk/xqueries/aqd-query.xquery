@@ -2195,7 +2195,7 @@ SELECT DISTINCT
     }"
 };  :)
 
-declare function query:getE34Sampling($countryCode as xs:string, $reportingYear as xs:string, $samplingPoint as xs:string) as xs:string {
+(: declare function query:getE34Sampling($countryCode as xs:string, $reportingYear as xs:string, $samplingPoint as xs:string) as xs:string {
     let $reportingYear := xs:integer($reportingYear) - 1
     return
     "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
@@ -2226,10 +2226,40 @@ declare function query:getE34Sampling($countryCode as xs:string, $reportingYear 
         ?statsURI aqr:observationValidity <http://dd.eionet.europa.eu/vocabulary/aq/observationvalidity/1> .
       } 
     }"
+}; :)
+
+declare function query:getE34Sampling($countryCode as xs:string, $reportingYear as xs:string, $samplingPoint as xs:string) as xs:string {
+    let $reportingYear := xs:integer($reportingYear) - 1
+    return
+    "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    PREFIX aq: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+    PREFIX aqr: <http://reference.eionet.europa.eu/aq/ontology/>
+    PREFIX dcterms: <http://purl.org/dc/terms/>
+    PREFIX aggregationprocess: <http://dd.eionet.europa.eu/vocabulary/aq/aggregationprocess/>
+
+    SELECT DISTINCT
+
+    ?AQValue
+    WHERE {
+     
+      FILTER(replace(str(?SamplingPointLocalId_URI),concat('http://reference.eionet.europa.eu/aq/', ?Namespace,'/'),'') = '"|| $samplingPoint ||"') 
+      
+      GRAPH ?g {
+        ?statsURI aqr:inspireNamespace ?Namespace .
+        ?statsURI aqr:samplingPoint ?SamplingPointLocalId_URI .
+        ?statsURI aqr:aggregationType ?AggregationType_URI .
+        FILTER (?AggregationType_URI IN (aggregationprocess:P1Y)) .}
+  
+        ?statsURI aqr:airqualityValue ?AQValue .
+        ?statsURI aqr:beginPosition ?BeginPosition .
+        
+        FILTER (YEAR(?BeginPosition) = " || $reportingYear || ") . 
+        
+        ?statsURI aqr:observationValidity <http://dd.eionet.europa.eu/vocabulary/aq/observationvalidity/1> .
+      
+    }"
 };
-
-
-
 
 (:declare function query:getG14(
     $envelopeB as xs:string,
