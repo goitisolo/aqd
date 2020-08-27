@@ -873,11 +873,11 @@ let $ms2M45 := prof:current-ms()
 let $ms1M46 := prof:current-ms()
 let $M46invalid :=
     try {
-        for $latLong in $docRoot//gml:posList
+        for $latLong in $docRoot//gml:posList[../../../../../@srsName != 'urn:ogc:def:crs:EPSG::3035']
         let $latlongToken := fn:tokenize(normalize-space($latLong), "\s+")
         let $lat := number($latlongToken[1])
         let $long := number($latlongToken[2])
-        where (not($countryCode = "fr") and ($long > $lat))
+        where (not($countryCode = "fr") and ($long > $lat) and $latLong/@srsDimension != 2)
         return
             <tr>
                 <td title="Polygon">{string($latLong/../../../@gml:id)}</td>
