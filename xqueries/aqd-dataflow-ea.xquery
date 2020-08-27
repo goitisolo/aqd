@@ -1156,12 +1156,7 @@ let $E29invalid :=
         let $tokenSeparator := string($x//swe:encoding/swe:TextEncoding/@tokenSeparator)
         let $fields := data($x//swe:elementType/swe:DataRecord/swe:field/@name)
 
-        (:for $i at $ipos in tokenize(replace($x//swe:values, $blockSeparator || "$", ""), $blockSeparator):)
-        let $arrayValuesPos1 := tokenize($x//swe:values, $blockSeparator)[1]
-        let $arrayValuesLastPos := tokenize($x//swe:values, $blockSeparator)[last()]
-        let $firstAndLastElement := concat($arrayValuesPos1, $blockSeparator, $arrayValuesLastPos)
-        for $i at $ipos in tokenize(replace($firstAndLastElement, $blockSeparator || "$", ""), $blockSeparator)
-
+        for $i at $ipos in tokenize(replace($x//swe:values, $blockSeparator || "$", ""), $blockSeparator)
         for $z at $zpos in tokenize($i, $tokenSeparator)
         where matches($z, "\s+")
         return
@@ -1249,11 +1244,7 @@ let $E30ainvalid :=
               where ($minValue castable as xs:double and $maxValue castable as xs:double and not($combinationMissing)):)
             return 
             if($countryMinValue castable as xs:double and $countryMaxValue castable as xs:double and not($combinationMissing))then
-                (:for $i at $ipos in tokenize(replace($x//swe:values, $blockSeparator || "$", ""), $blockSeparator):)
-                let $arrayValuesPos1 := tokenize($x//swe:values, $blockSeparator)[1]
-                let $arrayValuesLastPos := tokenize($x//swe:values, $blockSeparator)[last()]
-                let $firstAndLastElement := concat($arrayValuesPos1, $blockSeparator, $arrayValuesLastPos)
-                for $i at $ipos in tokenize(replace($firstAndLastElement, $blockSeparator || "$", ""), $blockSeparator)
+                for $i at $ipos in tokenize(replace($x//swe:values, $blockSeparator || "$", ""), $blockSeparator)
 
                 let $tokens := tokenize($i, $tokenSeparator)
                 let $validity := $tokens[index-of($fields, "Validity")]
@@ -1271,11 +1262,7 @@ let $E30ainvalid :=
                         <td title="Actual value">{$value}</td>
                     </tr>
               else if($minValue castable as xs:double and $maxValue castable as xs:double)then 
-                    (:for $i at $ipos in tokenize(replace($x//swe:values, $blockSeparator || "$", ""), $blockSeparator):)
-                      let $arrayValuesPos1 := tokenize($x//swe:values, $blockSeparator)[1]
-                      let $arrayValuesLastPos := tokenize($x//swe:values, $blockSeparator)[last()]
-                      let $firstAndLastElement := concat($arrayValuesPos1, $blockSeparator, $arrayValuesLastPos)
-                      for $i at $ipos in tokenize(replace($firstAndLastElement, $blockSeparator || "$", ""), $blockSeparator)
+                    for $i at $ipos in tokenize(replace($x//swe:values, $blockSeparator || "$", ""), $blockSeparator)
 
                       let $tokens := tokenize($i, $tokenSeparator)
                       let $validity := $tokens[index-of($fields, "Validity")]
@@ -1354,16 +1341,9 @@ let $E31invalid :=
         let $startPos := index-of($fields, "StartTime")
         let $endPos := index-of($fields, "EndTime")
 
-        (:let $startTimes := for $i in tokenize(replace($x//swe:values, $blockSeparator || "$", ""), $blockSeparator)
+        let $startTimes := for $i in tokenize(replace($x//swe:values, $blockSeparator || "$", ""), $blockSeparator)
         return tokenize($i, $tokenSeparator)[$startPos]
         let $endTimes := for $i in tokenize(replace($x//swe:values, $blockSeparator || "$", ""), $blockSeparator)
-        return tokenize($i, $tokenSeparator)[$endPos]:)
-        let $arrayValuesPos1 := tokenize($x//swe:values, $blockSeparator)[1]
-        let $arrayValuesLastPos := tokenize($x//swe:values, $blockSeparator)[last()]
-        let $firstAndLastElement := concat($arrayValuesPos1, $blockSeparator, $arrayValuesLastPos)
-        let $startTimes := for $i in tokenize(replace($firstAndLastElement, $blockSeparator || "$", ""), $blockSeparator)
-        return tokenize($i, $tokenSeparator)[$startPos]
-        let $endTimes := for $i in tokenize(replace($firstAndLastElement, $blockSeparator || "$", ""), $blockSeparator)
         return tokenize($i, $tokenSeparator)[$endPos]
         
         return try {
@@ -1407,11 +1387,7 @@ let $E32invalid :=
         let $verificationPos := index-of($fields, "Verification")
 
         let $values :=
-            (:for $i at $ipos in tokenize(replace($x//swe:values, $blockSeparator || "$", ""), $blockSeparator):)
-            let $arrayValuesPos1 := tokenize($x//swe:values, $blockSeparator)[1]
-            let $arrayValuesLastPos := tokenize($x//swe:values, $blockSeparator)[last()]
-            let $firstAndLastElement := concat($arrayValuesPos1, $blockSeparator, $arrayValuesLastPos)
-            for $i at $ipos in tokenize(replace($firstAndLastElement, $blockSeparator || "$", ""), $blockSeparator)
+            for $i at $ipos in tokenize(replace($x//swe:values, $blockSeparator || "$", ""), $blockSeparator)
             let $verification := tokenize($i, $tokenSeparator)[$verificationPos]
             where not($verification = "1")
             return
@@ -1446,11 +1422,7 @@ let $E33func := function() {
     let $observationType := (string($x//swe:field[@name = "Value"]/swe:Quantity/@definition) => tokenize("/"))[last()]
     let $coverageType := if ($observationType = "hour") then "Hourly" else "Daily"
     let $values :=
-        (:for $i at $ipos in tokenize(replace($x//swe:values, $blockSeparator || "$", ""), $blockSeparator):)
-        let $arrayValuesPos1 := tokenize($x//swe:values, $blockSeparator)[1]
-        let $arrayValuesLastPos := tokenize($x//swe:values, $blockSeparator)[last()]
-        let $firstAndLastElement := concat($arrayValuesPos1, $blockSeparator, $arrayValuesLastPos)
-        for $i at $ipos in tokenize(replace($firstAndLastElement, $blockSeparator || "$", ""), $blockSeparator)
+        for $i at $ipos in tokenize(replace($x//swe:values, $blockSeparator || "$", ""), $blockSeparator)
         let $values := tokenize($i, $tokenSeparator)
         let $validity := $values[index-of($fields, "Validity")]
         let $value := $values[index-of($fields, "Value")]
@@ -1484,32 +1456,23 @@ let $ms2E33 := prof:current-ms()
 let $ms1E34 := prof:current-ms()
 
 let $E34func := function() {
-
-    ((:let $previousData := sparqlx:run(query:getE34($countryCode, $reportingYear)):)
-    for $x at $xpos in $docRoot//om:OM_Observation/om:result
-
-   
-   
-   let $previousTRT:=
-       for $y in $x/../om:parameter/om:NamedValue[om:name/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/processparameter/SamplingPoint"]
-
-       (: let $samplingPoint := tokenize(common:if-empty($y/om:value, 'no data'), "/")[last()]:)
-        let $samplingPoint := tokenize(common:if-empty($y/om:value, $y/om:value/@xlink:href), "/")[last()]
-
-
-
-        let $previousMean := sparqlx:run(query:getE34Sampling($countryCode, $reportingYear, $samplingPoint))
-
-    return $previousMean
     
-    let $previousTRTquery:=
-       for $y in $x/../om:parameter/om:NamedValue[om:name/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/processparameter/SamplingPoint"]
-
-           let $samplingPoint := tokenize(common:if-empty($y/om:value, $y/om:value/@xlink:href), "/")[last()]
-
-        let $previousMean := sparqlx:getLink(query:getE34Sampling($countryCode, $reportingYear, $samplingPoint))
-
-    return $previousMean
+    (let $previousData := sparqlx:run(query:getE34($countryCode, $reportingYear))
+          
+    for $x at $xpos in $docRoot//om:OM_Observation
+   
+      let $previousTRT:=
+        for $y in $x/om:parameter/om:NamedValue[om:name/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/processparameter/SamplingPoint"]
+         (: let $samplingPoint := tokenize(common:if-empty($y/om:value, 'no data'), "/")[last()]:)
+         let $samplingPoint := tokenize(common:if-empty($y/om:value, $y/om:value/@xlink:href), "/")[last()]
+         (:let $previousMean := sparqlx:run(query:getE34Sampling($countryCode, $reportingYear, $samplingPoint)):)
+        return $previousData[(sparql:binding[@name = "SamplingPointLocalId"]/sparql:literal = $samplingPoint)]/sparql:binding[@name = "AQValue"]/sparql:literal
+      
+       let $previousTRTquery:=
+         for $y in $x/om:parameter/om:NamedValue[om:name/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/processparameter/SamplingPoint"]
+            let $samplingPoint := tokenize(common:if-empty($y/om:value, $y/om:value/@xlink:href), "/")[last()]
+            let $previousMean := sparqlx:getLink(query:getE34Sampling($countryCode, $reportingYear, $samplingPoint))
+        return $previousMean
 
  
    return if (string($previousTRT) = 'NaN' ) then () else 
@@ -1526,9 +1489,12 @@ let $E34func := function() {
         let $validity := $values[index-of($fields, "Validity")]
         let $value := $values[index-of($fields, "Value")]
         where $validity castable as xs:decimal and xs:decimal($validity) >= 0 and $value castable as xs:decimal
+                
         return xs:decimal($value)
     let $count := count($values)
+    
     return if ($count = 0) then () else
+    
     let $values := $values => sum()
     let $mean := $values div $count
     let $dataCoverage :=
@@ -1542,14 +1508,14 @@ let $E34func := function() {
     let $higherLimit := $previousTRT * 3
     let $lowerLimit := $previousTRT div 3
     where $mean > $higherLimit or $mean < $lowerLimit
+    
     return    
         <tr>
-            <td title="OM_Observation">{string($x/../@gml:id)}</td>
+            <td title="OM_Observation">{string($x/@gml:id)}</td>
             <td title="Mean">{format-number($mean, "0.1")}</td>
             <td title="Previous Mean">{format-number($previousTRT, "0.1")}</td>
             <td title="Data coverage">{$coverageType || " coverage: " || $dataCoverage}</td>
-            <td title="Sparql1">{sparqlx:getLink(query:getE34($countryCode, $reportingYear))}</td>
-            <td title="Sparql2">{$previousTRTquery}</td>
+            <td title="Sparql">{sparqlx:getLink(query:getE34($countryCode, $reportingYear))}</td>
         </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
        
 }
