@@ -960,7 +960,8 @@ let $E25binvalid :=
         
          return
             if(contains($field[@name = "Value"]/swe:Quantity/@definition, '/day') or contains($field[@name = "Value"]/swe:Quantity/@definition, '/hour'))then 
-                  if(($headerBeginPosition - xs:dayTimeDuration("P1D")) > $beginPosition or ($headerEndPosition + xs:dayTimeDuration("P1D")) < $endPosition ) then
+                  (:if(($headerBeginPosition - xs:dayTimeDuration("P1D")) > $beginPosition or ($headerEndPosition + xs:dayTimeDuration("P1D")) < $endPosition ) then:)
+                  if(($headerBeginPosition - xs:dayTimeDuration("P2D")) > $beginPosition or ($headerEndPosition + xs:dayTimeDuration("P2D")) < $endPosition ) then
                     <tr>
                         <td title="@gml:id">{string($x/@gml:id)}</td>
                         <td title="gml:headerBeginPosition">{$headerBeginPosition}</td>
