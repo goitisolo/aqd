@@ -157,9 +157,7 @@ declare function query:getModelProcess($url as xs:string) as xs:string {
    WHERE {
    
      
-      values ?envelope{ <" || $url || "> } 
-      ?graph dcterms:isPartOf ?envelope .
-      ?graph contreg:xmlSchema ?xmlSchema .
+      FILTER(STRSTARTS(str(?graph), 'http://"|| $url ||"'))  
         GRAPH ?graph {
         ?samplingPointProcess a aqd:AQD_ModelProcess.
          ?samplingPointProcess aqd:inspireId ?inspireId .
@@ -2633,7 +2631,7 @@ declare function query:getModelSampling($url as xs:string) as xs:string {
 
    SELECT ?samplingPoint ?inspireLabel
    WHERE {
-       FILTER (STRSTARTS(STR(?graph), '"||  $url ||"'))
+       FILTER (STRSTARTS(STR(?graph), 'http://"||  $url ||"'))
        GRAPH ?graph {
          ?samplingPoint a aqd:AQD_Model;
          aqd:inspireId ?inspireId .
@@ -2735,7 +2733,7 @@ declare function query:getModelMetadataSampling($url as xs:string*) as xs:string
 
   WHERE {
 
-       FILTER (STRSTARTS(STR(?graph), '"|| $url ||"'))
+       FILTER (STRSTARTS(STR(?graph), 'http://"|| $url ||"'))
     GRAPH ?graph {
       ?samplingPoint a aqd:AQD_Model;
       aqd:observingCapability ?observingCapability;
