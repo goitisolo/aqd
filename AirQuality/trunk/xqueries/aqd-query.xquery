@@ -2504,6 +2504,26 @@ declare function query:getSamplingPointAssessmentMetadata() as xs:string {
           }"
 };
 
+declare function query:getSamplingPointAssessmentMetadata2($countryCode as xs:string) as xs:string {
+  "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+   PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
+   PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+   PREFIX aq: <http://reference.eionet.europa.eu/aq/ontology/>
+
+   SELECT ?assessmentRegime ?inspireId ?localId ?inspireLabel ?assessmentMethods  ?samplingPointAssessmentMetadata ?metadataId ?metadataNamespace
+   WHERE {
+          ?assessmentRegime a aqd:AQD_AssessmentRegime ;
+          aqd:inspireId ?inspireId .
+          ?inspireId rdfs:label ?inspireLabel .
+          ?inspireId aqd:localId ?localId .
+          ?assessmentRegime aqd:assessmentMethods ?assessmentMethods .
+          ?assessmentMethods aqd:samplingPointAssessmentMetadata ?samplingPointAssessmentMetadata.
+          ?samplingPointAssessmentMetadata aq:inspireId ?metadataId.
+          ?samplingPointAssessmentMetadata aq:inspireNamespace ?metadataNamespace.
+          FILTER(CONTAINS(str(?localId), '" || common:getCdrUrl($countryCode) || "'))
+          }"
+};
+
 (: returns a list of assessment methods for the inspireid :)
 (: declare function query:get-assessment-methods-for-inspireid() as xs:string {
   let $query := "

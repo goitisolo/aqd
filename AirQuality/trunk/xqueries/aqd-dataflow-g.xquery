@@ -75,10 +75,10 @@ let $latestEnvelopeD := query:getLatestEnvelope($cdrUrl || "d/")
 let $latestEnvelopeD1b := query:getLatestEnvelope($cdrUrl || "d1b/", $reportingYear)
 let $latestEnvelopeByYearG := query:getLatestEnvelope($cdrUrl || "g/", $reportingYear)
 
-let $envelopesC := query:getEnvelopes($cdrUrl || "c/", $reportingYear)
+let $envelopesC := distinct-values(query:getEnvelopes($cdrUrl || "c/", $reportingYear))
 let $latestEnvelopeC := query:getLatestEnvelope($cdrUrl || "c/", $reportingYear)
-let $envelopesE1a := query:getEnvelopes($cdrUrl || "e1a/", $reportingYear)
-let $envelopesE1b := query:getEnvelopes($cdrUrl || "e1b/", $reportingYear)
+let $envelopesE1a := distinct-values(query:getEnvelopes($cdrUrl || "e1a/", $reportingYear))
+let $envelopesE1b := distinct-values(query:getEnvelopes($cdrUrl || "e1b/", $reportingYear))
 
 let $headerBeginPosition := $docRoot//aqd:AQD_ReportingHeader/aqd:reportingPeriod/gml:TimePeriod/gml:beginPosition
 let $headerEndPosition := $docRoot//aqd:AQD_ReportingHeader/aqd:reportingPeriod/gml:TimePeriod/gml:endPosition
@@ -103,7 +103,8 @@ let $validAssessment :=
 let $latestSamplingPoints := data(sparqlx:run(query:getSamplingPoint($latestEnvelopeD))/sparql:binding[@name="inspireLabel"]/sparql:literal)
 
 let $samplingPointAssessmentMetadata :=
-    let $results := sparqlx:run(query:getSamplingPointAssessmentMetadata())
+    (:let $results := sparqlx:run(query:getSamplingPointAssessmentMetadata()):)
+    let $results := sparqlx:run(query:getSamplingPointAssessmentMetadata2($countryCode))
     return distinct-values(
             for $i in $results
             return concat($i/sparql:binding[@name='metadataNamespace']/sparql:literal,"/", $i/sparql:binding[@name='metadataId']/sparql:literal)
@@ -1977,7 +1978,7 @@ let $G89invalid :=
                         else   
                             <tr>
                                  <td title="Not found">{"Sampling Point Assessment for: " || functx:substring-after-last(string($assessmentMethod), '/')}</td>
-                                 <td title="Sparql1">{sparqlx:getLink(query:getAssessmentMethodsCSamplingPoint($latestEnvelopeC, $assessment))}</td>
+                                 <td title="Sparql">{sparqlx:getLink(query:getAssessmentMethodsCSamplingPoint($latestEnvelopeC, $assessment))}</td>
                             </tr>   
             let $models := 
             let $assessmentMethodsModels := sparqlx:run(query:getAssessmentMethodsCModels($latestEnvelopeC, $assessment))
@@ -1988,7 +1989,7 @@ let $G89invalid :=
                         else   
                             <tr>
                                  <td title="Not found">{"Model Point Assessment for: " || functx:substring-after-last(string($assessmentMethod), '/')}</td>
-                                 <td title="Sparql2">{sparqlx:getLink(query:getAssessmentMethodsCModels($latestEnvelopeC, $assessment))}</td>
+                                 <td title="Sparql">{sparqlx:getLink(query:getAssessmentMethodsCModels($latestEnvelopeC, $assessment))}</td>
                             </tr>                                         
 
         let $countModels := count($models)
