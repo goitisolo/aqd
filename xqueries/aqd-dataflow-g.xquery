@@ -1966,30 +1966,30 @@ let $ms1G89 := prof:current-ms()
 
 let $G89invalid :=
     try {
+        let $assessmentMethodsSampling := sparqlx:run(query:getAssessmentMethodsCSamplingPoint($latestEnvelopeC))
+        let $assessmentMethodsModels := sparqlx:run(query:getAssessmentMethodsCModels($latestEnvelopeC))
         for $x in $docRoot//aqd:AQD_Attainment/aqd:assessment/@xlink:href
         let $assessment := functx:substring-after-last($x, '/')        
             for $envelopeC in $envelopesC
             let $sampling :=
-            let $assessmentMethodsSampling := sparqlx:run(query:getAssessmentMethodsCSamplingPoint($latestEnvelopeC, $assessment))
-                for $assessmentMethod in $assessmentMethodsSampling
+                for $assessmentMethod in $assessmentMethodsSampling[sparql:binding[@name='localId']/sparql:literal = $assessment]/sparql:binding[@name='samplingPointAssessmentMetadata']/sparql:literal
                     return
                     if (not(empty($assessmentMethod))) then  
                         if ($samplingPoints = $assessmentMethod) then ()
                         else   
                             <tr>
                                  <td title="Not found">{"Sampling Point Assessment for: " || functx:substring-after-last(string($assessmentMethod), '/')}</td>
-                                 <td title="Sparql">{sparqlx:getLink(query:getAssessmentMethodsCSamplingPoint($latestEnvelopeC, $assessment))}</td>
+                                 <td title="Sparql">{sparqlx:getLink(query:getAssessmentMethodsCSamplingPoint($latestEnvelopeC))}</td>
                             </tr>   
             let $models := 
-            let $assessmentMethodsModels := sparqlx:run(query:getAssessmentMethodsCModels($latestEnvelopeC, $assessment))
-                for $assessmentMethod in $assessmentMethodsModels
+                for $assessmentMethod in $assessmentMethodsModels[sparql:binding[@name='localId']/sparql:literal = $assessment]/sparql:binding[@name='modelAssessmentMetadata']/sparql:literal
                     return
                     if (not(empty($assessmentMethod))) then  
                         if ($modelAssessments = $assessmentMethod) then ()
                         else   
                             <tr>
                                  <td title="Not found">{"Model Point Assessment for: " || functx:substring-after-last(string($assessmentMethod), '/')}</td>
-                                 <td title="Sparql">{sparqlx:getLink(query:getAssessmentMethodsCModels($latestEnvelopeC, $assessment))}</td>
+                                 <td title="Sparql">{sparqlx:getLink(query:getAssessmentMethodsCModels($latestEnvelopeC))}</td>
                             </tr>                                         
 
         let $countModels := count($models)
