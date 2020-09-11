@@ -877,11 +877,50 @@ let $M46invalid :=
         let $latlongToken := fn:tokenize(normalize-space($latLong), "\s+")
         let $lat := number($latlongToken[1])
         let $long := number($latlongToken[2])
-        where (not($countryCode = "fr") and ($long > $lat) and $latLong/@srsDimension != 2)
+
+        let $datalon := $latlongToken[position() mod 2 = 0]
+        let $datalat := $latlongToken[position() mod 2 != 0]
+        let $maxlon := number(max($latlongToken[position() mod 2 = 0]))
+        let $minlon := number(min($latlongToken[position() mod 2 = 0]))
+        let $maxlat := number(max($latlongToken[position() mod 2 != 0]))
+        let $minlat := number(min($latlongToken[position() mod 2 != 0]))
+        let $NamespaceDD := 
+         for $x in doc($vocabulary:AQD_Namespace || "rdf")//skos:Concept
+          
+            let $currentCountry := string(fn:upper-case($countryCode))
+            let $countryyy := string($x/prop:inCountry/@rdf:resource)
+            let $length := fn:string-length($countryyy) - 1
+            let $sbst := fn:substring($countryyy, $length, 2)
+            let $LongitudeMax :=  $x/prop:LongitudeMax
+            let $LongitudeMin :=  $x/prop:LongitudeMin
+            let $LatitudeMax :=  $x/prop:LatitudeMax
+            let $LatitudeMin :=  $x/prop:LatitudeMin
+
+            where ($currentCountry = $sbst)            
+
+            return $LongitudeMax || "###"|| $LongitudeMin || "###"|| $LatitudeMax || "###"|| $LatitudeMin
+
+    
+
+        
+        let $LongitudeMax := number(tokenize($NamespaceDD, "###")[1])
+        let $LongitudeMin := number(tokenize($NamespaceDD, "###")[2])
+        let $LatitudeMax := number(tokenize($NamespaceDD, "###")[3])
+        let $LatitudeMin := number(tokenize($NamespaceDD, "###")[4])
+
+
+        where (not($countryCode = "fr") and ($long > $lat)  and $latLong/@srsDimension != 2 or ((not($maxlat <= $LatitudeMax and $minlat >= $LatitudeMin) or
+                    not($maxlon <= $LongitudeMax and $minlon >=$LongitudeMin) and $countryCode != 'fr')) )
         return
             <tr>
                 <td title="Polygon">{string($latLong/../../../@gml:id)}</td>
-                <td title="First vertex">{string($lat) || string($long)}</td>
+                <td title="First vertex">{string($lat) || string($long)}</td>                
+                <td title="minLonInDD">{$LongitudeMin}</td>
+                <td title="maxLonInDD">{$LongitudeMax}</td>
+                <td title="minLatInDD">{$LatitudeMin}</td>
+                <td title="maxLatInDD">{$LatitudeMax}</td>
+                <td title="DataLan">{$datalat}</td>
+                <td title="DataLon">{$datalon}</td>
             </tr>
     } catch * {
         <tr class="{$errors:FAILED}">
