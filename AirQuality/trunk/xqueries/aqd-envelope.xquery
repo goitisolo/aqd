@@ -251,7 +251,7 @@ declare function envelope:validateEnvelope($source_url as xs:string) as element(
         try {
             let $validCount := count($filesWithAQSchema[@schema = $schemax:SCHEMA])
             return if ($validCount = 0) then
-                <tr>
+                <tr class="{$errors:ERROR}">
                     <p>Your delivery cannot be accepted as you did not provide any XML file with correct XML Schema location.<br />
                         Valid XML Schema location is: <strong>{$schemax:SCHEMA}</strong></p>
                 </tr>
