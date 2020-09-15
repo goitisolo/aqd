@@ -240,14 +240,17 @@ let $E04invalid :=
         let $sparqlprocedure :=  $result/sparql:binding[@name = "procedure"]/sparql:uri/string()
         let $all:= 
                  for $x in $sparqlprocedure
-                   let $procedurecut := fn:substring-after($x, 'http://reference.eionet.europa.eu/aq/')
+                      let $procedurecut := if(fn:contains($x,'http://reference.eionet.europa.eu/aq/')) then
+                            fn:substring-after($x, 'http://reference.eionet.europa.eu/aq/')
+                        else 
+                            $x
                  return $procedurecut
         let $procedures := $docRoot//om:procedure/@xlink:href/string()
         for $x in $procedures[not(. = $all)]
         return
             <tr>
                 <td title="base:localId">{$x}</td>
-                <td title="Sparql">{sparqlx:getLink(query:getSamplingPointMetadataFromFiles($cdrUrl, $pollutants))}</td>
+                <td title="Sparql">{sparqlx:getLink(query:getSamplingPointMetadataFromFiles($latestEnvelopeD, $pollutants))}</td>
             </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
     } catch * {
         <tr class="{$errors:FAILED}">
