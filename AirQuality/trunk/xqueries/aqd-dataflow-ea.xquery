@@ -851,22 +851,22 @@ let $E24invalid :=
                     else
                         false():)
             switch ($definition)
-              case '$vocabulary:OBSERVATIONS_PRIMARY || "hour"'
+              case $vocabulary:OBSERVATIONS_PRIMARY || "hour"
                 return if (($endDateTime - $startDateTime) div xs:dayTimeDuration("PT1H") = 1) then
                             false()
                         else
                             true()
-              case '$vocabulary:OBSERVATIONS_PRIMARY || "day"'
-                return if (($endDateTime - $startDateTime) div xs:dayTimeDuration("P1D") = 1) then
+              case $vocabulary:OBSERVATIONS_PRIMARY || "day"
+                (:return if (($endDateTime - $startDateTime) div xs:dayTimeDuration("P1D") = 1):) return if ( xs:dayTimeDuration( xs:date(substring-before(xs:string($endDateTime),"T")) - xs:date(substring-before(xs:string($startDateTime),"T")) ) div xs:dayTimeDuration("P1D") = 1) then
                             false()
                         else
                             true()
-              case '$vocabulary:OBSERVATIONS_PRIMARY || "year"'
+              case $vocabulary:OBSERVATIONS_PRIMARY || "year"
                 return if (common:isDateTimeDifferenceOneYear($startDateTime, $endDateTime)) then
                             false()
                         else
                             true()
-              case '$vocabulary:OBSERVATIONS_PRIMARY || "var"'
+              case $vocabulary:OBSERVATIONS_PRIMARY || "var"
                 return if (($endDateTime - $startDateTime) div xs:dayTimeDuration("PT1H") > 0) then
                             false()
                         else
