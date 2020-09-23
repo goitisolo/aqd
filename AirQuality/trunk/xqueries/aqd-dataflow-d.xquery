@@ -256,7 +256,7 @@ let $D02errorLevel :=
     }
 
 
-let $ns2D02 := prof:current-ms():)
+let $ns2D02 := prof:current-ms()
 
 (: D03 - :)
 
