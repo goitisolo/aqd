@@ -914,13 +914,11 @@ let $M46invalid :=
         return
             <tr>
                 <td title="Polygon">{string($latLong/../../../@gml:id)}</td>
-                <td title="First vertex">{string($lat) || string($long)}</td>                
-                <td title="minLonInDD">{$LongitudeMin}</td>
-                <td title="maxLonInDD">{$LongitudeMax}</td>
-                <td title="minLatInDD">{$LatitudeMin}</td>
-                <td title="maxLatInDD">{$LatitudeMax}</td>
-                <td title="DataLan">{$datalat}</td>
-                <td title="DataLon">{$datalon}</td>
+                <td title="First vertex">{string($lat) || string($long)}</td>     
+                <td title="minMaxLonInXML">{$minlon || "  " ||$maxlon}</td>  
+                <td title="minMaxLatInXML">{$minlat || "  " || $maxlat}</td>               
+                <td title="minMaxLonInDD">{$LongitudeMin || "  " || $LongitudeMax}</td>
+                <td title="minMaxLatInDD">{$LatitudeMin || "  " || $LatitudeMax}</td>
             </tr>
     } catch * {
         <tr class="{$errors:FAILED}">
