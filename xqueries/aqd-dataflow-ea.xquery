@@ -55,11 +55,10 @@ let $latestEnvelopeD := query:getLatestEnvelope($cdrUrl || "d/")
 let $headerBeginPosition := $docRoot//aqd:AQD_ReportingHeader/aqd:reportingPeriod/gml:TimePeriod/gml:beginPosition
 let $headerEndPosition := $docRoot//aqd:AQD_ReportingHeader/aqd:reportingPeriod/gml:TimePeriod/gml:endPosition
 
-let $pollutants :=   fn:string-join(fn:distinct-values(
+let $pollutants :=   fn:distinct-values(
                         for $x in $docRoot//om:OM_Observation
                          let $observedProperty := $x/om:observedProperty/@xlink:href
-                        return "<" || $observedProperty || ">"
-                      ), " , ")
+                        return $observedProperty)
 
 let $ms2GeneralParameters:= prof:current-ms()
 (: File prefix/namespace check :)
@@ -236,8 +235,10 @@ let $E04invalid :=
     try {
         ( (:let $result := sparqlx:run(query:getSamplingPointProcess($cdrUrl)):)
         
-        let $result := sparqlx:run(query:getSamplingPointMetadataFromFiles($latestEnvelopeD, $pollutants))
-        let $sparqlprocedure :=  $result/sparql:binding[@name = "procedure"]/sparql:uri/string()
+        let $result := sparqlx:run(query:getSamplingPointMetadataFromFiles($latestEnvelopeD))
+        let $sparqlprocedure :=  for $x in $pollutants
+                       return $result[sparql:binding[@name='observedProperty']/sparql:uri = $x]/sparql:binding[@name = "procedure"]/sparql:uri/string()
+
         let $all:= 
                  for $x in $sparqlprocedure
                       let $procedurecut := if(fn:contains($x,'http://reference.eionet.europa.eu/aq/')) then
@@ -250,7 +251,8 @@ let $E04invalid :=
         return
             <tr>
                 <td title="base:localId">{$x}</td>
-                <td title="Sparql">{sparqlx:getLink(query:getSamplingPointMetadataFromFiles($latestEnvelopeD, $pollutants))}</td>
+                <td title="Sparql">{sparqlx:getLink(query:getSamplingPointMetadataFromFiles($latestEnvelopeD))}</td>
+
             </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
     } catch * {
         <tr class="{$errors:FAILED}">
@@ -290,8 +292,11 @@ let $E06invalid :=
     try {
         ( (:let $result := sparqlx:run(query:getSamplingPointFromFiles($latestEnvelopeD))
         :)
-         let $result := sparqlx:run(query:getSamplingPointMetadataFromFiles($latestEnvelopeD, $pollutants))
-       let $all := $result/sparql:binding[@name = "inspireLabel"]/sparql:literal/string()
+        let $result := sparqlx:run(query:getSamplingPointMetadataFromFiles($latestEnvelopeD))
+         let $all :=  for $x in $pollutants
+                      return $result[sparql:binding[@name='observedProperty']/sparql:uri = $x ]/sparql:binding[@name = "inspireLabel"]/sparql:literal/string()
+
+         
         for $x in $docRoot//om:OM_Observation/om:parameter/om:NamedValue[om:name/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/processparameter/SamplingPoint"]
             let $name := $x/om:name/@xlink:href/string()
             let $value := common:if-empty($x/om:value, $x/om:value/@xlink:href)
@@ -300,7 +305,7 @@ let $E06invalid :=
             <tr>
                 <td title="om:OM_Observation">{string($x/../../@gml:id)}</td>
                 <td title="om:value">{$value}</td>
-                <td title="Sparql">{sparqlx:getLink(query:getSamplingPointMetadataFromFiles($latestEnvelopeD, $pollutants))}</td>
+                <td title="Sparql">{sparqlx:getLink(query:getSamplingPointMetadataFromFiles($latestEnvelopeD))}</td>
             </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
     } catch * {
         <tr class="{$errors:FAILED}">
@@ -856,17 +861,17 @@ let $E24invalid :=
                             false()
                         else
                             true()
-              case $vocabulary:OBSERVATIONS_PRIMARY || "day"
-                (:return if (($endDateTime - $startDateTime) div xs:dayTimeDuration("P1D") = 1):) return if ( xs:dayTimeDuration( xs:date(substring-before(xs:string($endDateTime),"T")) - xs:date(substring-before(xs:string($startDateTime),"T")) ) div xs:dayTimeDuration("P1D") = 1) then
+              case '$vocabulary:OBSERVATIONS_PRIMARY || "day"'
+                return if (($endDateTime - $startDateTime) div xs:dayTimeDuration("P1D") = 1) then
                             false()
                         else
                             true()
-              case $vocabulary:OBSERVATIONS_PRIMARY || "year"
+              case '$vocabulary:OBSERVATIONS_PRIMARY || "year"'
                 return if (common:isDateTimeDifferenceOneYear($startDateTime, $endDateTime)) then
                             false()
                         else
                             true()
-              case $vocabulary:OBSERVATIONS_PRIMARY || "var"
+              case '$vocabulary:OBSERVATIONS_PRIMARY || "var"'
                 return if (($endDateTime - $startDateTime) div xs:dayTimeDuration("PT1H") > 0) then
                             false()
                         else
@@ -963,8 +968,7 @@ let $E25binvalid :=
         
          return
             if(contains($field[@name = "Value"]/swe:Quantity/@definition, '/day') or contains($field[@name = "Value"]/swe:Quantity/@definition, '/hour'))then 
-                  (:if(($headerBeginPosition - xs:dayTimeDuration("P1D")) > $beginPosition or ($headerEndPosition + xs:dayTimeDuration("P1D")) < $endPosition ) then:)
-                  if(($headerBeginPosition - xs:dayTimeDuration("P2D")) > $beginPosition or ($headerEndPosition + xs:dayTimeDuration("P2D")) < $endPosition ) then
+                  if(($headerBeginPosition - xs:dayTimeDuration("P1D")) > $beginPosition or ($headerEndPosition + xs:dayTimeDuration("P1D")) < $endPosition ) then
                     <tr>
                         <td title="@gml:id">{string($x/@gml:id)}</td>
                         <td title="gml:headerBeginPosition">{$headerBeginPosition}</td>
@@ -1002,11 +1006,14 @@ let $ms1E26 := prof:current-ms()
 
 let $E26invalid :=
     try {
-        (let $result := sparqlx:run(query:getSamplingPointMetadataFromFiles($latestEnvelopeD, $pollutants))
-        let $resultsConcat :=
-            for $x in $result
-            return $x/sparql:binding[@name="localId"]/sparql:literal/string() || $x/sparql:binding[@name="procedure"]/sparql:uri/string() ||
-            $x/sparql:binding[@name="featureOfInterest"]/sparql:uri/string() || $x/sparql:binding[@name="observedProperty"]/sparql:uri/string()
+        (let $result := sparqlx:run(query:getSamplingPointMetadataFromFiles($latestEnvelopeD))
+        let $resultsConcat := 
+          for $y in $pollutants
+                let $sparqlData :=
+                    for $x in $result[sparql:binding[@name='observedProperty']/sparql:uri = $y]
+                    return $x/sparql:binding[@name="localId"]/sparql:literal/string() || $x/sparql:binding[@name="procedure"]/sparql:uri/string() ||
+                    $x/sparql:binding[@name="featureOfInterest"]/sparql:uri/string() || $x/sparql:binding[@name="observedProperty"]/sparql:uri/string()
+            return $sparqlData
 
         for $x in $docRoot//om:OM_Observation
             let $namedValue := $x/om:parameter/om:NamedValue[om:name/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/processparameter/SamplingPoint"]
@@ -1033,7 +1040,7 @@ let $E26invalid :=
                 <td title="aqd:AQD_SamplingPointProcess">{$procedure}</td>
                 <td title="aqd:AQD_Sample">{$featureOfInterest}</td>
                 <td title="Pollutant">{$observedProperty}</td>
-                <td title="Sparql">{sparqlx:getLink(query:getSamplingPointMetadataFromFiles($latestEnvelopeD, $pollutants))}</td>
+                <td title="Sparql">{sparqlx:getLink(query:getSamplingPointMetadataFromFiles($latestEnvelopeD))}</td>
             </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
     }
     catch * {
@@ -1049,17 +1056,21 @@ let $ms2E26 := prof:current-ms()
 let $ms1E26b := prof:current-ms()
 
 let $E26bfunc := function() {
-    (let $result := sparqlx:run(query:getE26b($latestEnvelopeD, $pollutants))
+    (let $result := sparqlx:run(query:getE26b($latestEnvelopeD))
     let $operationalResults :=
-        for $x in $result
-        let $beginPosition := string($x/sparql:binding[@name="beginPosition"]/sparql:literal)
-        let $endPosition := string($x/sparql:binding[@name="endPosition"]/sparql:literal)
-        let $beginYear := year-from-dateTime(common:getUTCDateTime($beginPosition))
-        let $endYear := if ($endPosition = "") then () else year-from-dateTime(common:getUTCDateTime($endPosition))
-        let $reportingYear := xs:integer($reportingYear)
-        where $beginYear <= $reportingYear and (empty($endYear) or $endYear >= $reportingYear)
-        return $x/sparql:binding[@name="localId"]/sparql:literal/string() || $x/sparql:binding[@name="procedure"]/sparql:uri/string() ||
-        $x/sparql:binding[@name="featureOfInterest"]/sparql:uri/string() || $x/sparql:binding[@name="observedProperty"]/sparql:uri/string()
+        for $y in $pollutants
+                let $sparqlData :=
+                    for $x in $result[sparql:binding[@name='observedProperty']/sparql:uri = $y]
+
+                    let $beginPosition := string($x/sparql:binding[@name="beginPosition"]/sparql:literal)
+                    let $endPosition := string($x/sparql:binding[@name="endPosition"]/sparql:literal)
+                    let $beginYear := year-from-dateTime(common:getUTCDateTime($beginPosition))
+                    let $endYear := if ($endPosition = "") then () else year-from-dateTime(common:getUTCDateTime($endPosition))
+                    let $reportingYear := xs:integer($reportingYear)
+                    where $beginYear <= $reportingYear and (empty($endYear) or $endYear >= $reportingYear)
+                    return $x/sparql:binding[@name="localId"]/sparql:literal/string() || $x/sparql:binding[@name="procedure"]/sparql:uri/string() ||
+                    $x/sparql:binding[@name="featureOfInterest"]/sparql:uri/string() || $x/sparql:binding[@name="observedProperty"]/sparql:uri/string()
+            return $sparqlData
 
     for $x in $docRoot//om:OM_Observation
     let $namedValue := $x/om:parameter/om:NamedValue[om:name/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/processparameter/SamplingPoint"]
@@ -1086,7 +1097,7 @@ let $E26bfunc := function() {
             <td title="aqd:AQD_SamplingPointProcess">{$procedure}</td>
             <td title="aqd:AQD_Sample">{$featureOfInterest}</td>
             <td title="Pollutant">{$observedProperty}</td>
-            <td title="Sparql">{sparqlx:getLink(query:getE26b($latestEnvelopeD, $pollutants))}</td>
+            <td title="Sparql">{sparqlx:getLink(query:getE26b($latestEnvelopeD))}</td>
         </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
 }
 let $E26binvalid := errors:trycatch($E26bfunc)
