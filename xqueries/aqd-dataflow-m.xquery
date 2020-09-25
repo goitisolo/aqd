@@ -909,7 +909,7 @@ let $M46invalid :=
         let $LatitudeMin := number(tokenize($NamespaceDD, "###")[4])
 
 
-        where (not($countryCode = "fr") and ($long > $lat)  and $latLong/@srsDimension != 2 or ((not($maxlat <= $LatitudeMax and $minlat >= $LatitudeMin) or
+        where (not($countryCode = "fr") and ($long > $lat)  and $latLong/@srsDimension != 2 and ((not($maxlat <= $LatitudeMax and $minlat >= $LatitudeMin) or
                     not($maxlon <= $LongitudeMax and $minlon >=$LongitudeMin) and $countryCode != 'fr')) )
         return
             <tr>
