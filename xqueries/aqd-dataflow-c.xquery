@@ -640,24 +640,26 @@ let $C03cfunc :=
                         <combination>string-join(string($x/sparql:binding[@name="localId"]/sparql:literal) || "###" || string(substring-after($x/sparql:binding[@name="assessmentType"]/sparql:uri, "http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/"))</combination>              
                     </result>
 
-        let $currentCombinations :=
+      let $currentCombinations :=
             for $x in $docRoot//aqd:AQD_AssessmentRegime
 
                 let $localId := $x//base:localId => string()
                 let $namespace := $x//base:namespace => string()
                
-                for $i in $x/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata/@xlink:href
+                for $j in $x/aqd:assessmentMethods/aqd:AssessmentMethods
+
+                 let $assessmentType := substring-after($j/aqd:assessmentType/@xlink:href, "http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/")
+                 
+                  for $i in $j/aqd:samplingPointAssessmentMetadata/@xlink:href
 
                     let $samplingpoint := substring-after($i, $namespace || "/")
-                        for $j in $x/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:assessmentType/@xlink:href
-                        let $assessmentType := substring-after($j, "http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/")
+                       
                         return
                          <result>
                             <localId>{$localId}</localId>
                             <samplingPoint>{$samplingpoint}</samplingPoint>
                             <assessmentType>{$assessmentType}</assessmentType>
                          </result>
-
        
       for $x in $currentCombinations
 
