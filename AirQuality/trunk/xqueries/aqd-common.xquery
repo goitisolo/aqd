@@ -95,6 +95,11 @@ declare function common:getUTCDateTime($dateTime as xs:string) {
     adjust-dateTime-to-timezone(xs:dateTime($dateTime), xs:dayTimeDuration("PT0H"))
 };
 
+(: Transforms local date to UTC date :)
+declare function common:getUTCDate($dateTime as xs:string) {
+    adjust-date-to-timezone(xs:date($dateTime), ())
+};
+
 (:~ Returns true if $seq1 contains any element from $seq2 :)
 declare function common:containsAny(
     $seq1 as xs:string*,
