@@ -236,6 +236,40 @@ declare function common:isDateTimeIncluded($reportingYear as xs:string, $beginPo
             false()
 };
 
+declare function common:isDateTimeIncludedB11B12($reportingYear as xs:string, $beginPosition as xs:dateTime?, $endPosition as xs:dateTime?) {
+    let $reportingYearDateTimeStart := xs:dateTime($reportingYear || "-01-01T00:00:00Z")
+    let $reportingYearDateTimeEnd := xs:dateTime($reportingYear || "-12-31T24:00:00Z")
+    return
+        if (empty($endPosition)) then
+            if ($reportingYearDateTimeStart >= $beginPosition) then
+                true()
+            else
+                false()
+        else if ($endPosition >= $reportingYearDateTimeEnd) then
+                (:if ($reportingYearDateTimeStart >= $beginPosition) then
+                    true()
+                else false():)
+                true()
+            else 
+             false()
+};
+
+declare function common:isDateTimeIncludedB11B12New($reportingYear as xs:string, $beginPosition as xs:dateTime?, $endPosition as xs:dateTime?) {
+    let $reportingYearDateTimeStart := xs:dateTime($reportingYear || "-01-01T00:00:00Z")
+    let $reportingYearDateTimeEnd := xs:dateTime($reportingYear || "-12-31T24:00:00Z")
+    return
+        if ($beginPosition <= $reportingYearDateTimeStart) then
+            if (empty($endPosition) or ($beginPosition <= $reportingYearDateTimeEnd and $beginPosition >= $reportingYearDateTimeStart)) then
+                true()
+            else
+                false()
+        else if ($beginPosition >= $reportingYearDateTimeStart and $beginPosition <= $reportingYearDateTimeEnd) then
+                true()
+              else 
+               false()
+};
+
+
 (: Returns error report for ?0 check :)
 declare function common:checkDeliveryReport (
     $errorClass as xs:string,
