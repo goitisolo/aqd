@@ -659,7 +659,7 @@ let $E19cinvalid :=
         let $pollutant := string($x/om:observedProperty/@xlink:href)
         let $value := string($x//swe:field[@name = 'Value']/swe:Quantity/swe:uom/@xlink:href)
         let $mandatory := dd:getMandatoryUnit($pollutant)
-        where not($value = $mandatory)
+        where (not($value = $mandatory) and not(empty($mandatory)))
         return
             <tr>
                 <td title="om:OM_Observation">{data($x/@gml:id)}</td>
