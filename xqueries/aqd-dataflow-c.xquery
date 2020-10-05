@@ -1205,8 +1205,9 @@ let $C27table :=
             let $zoneId := $zone//sparql:binding[@name = 'inspireLabel']/sparql:literal => string()
             let $beginPosition := $zone//sparql:binding[@name = 'beginPosition']/sparql:literal => string()
             let $endPosition := $zone//sparql:binding[@name = 'endPosition']/sparql:literal => string()
+            let $endPositionWOTime := substring-before($endPosition, 'T')
             let $beginYear := year-from-dateTime(common:getUTCDateTime($beginPosition))
-            let $endYear := if ($endPosition = '') then () else year-from-dateTime(common:getUTCDateTime($endPosition))
+            let $endYear := if ($endPosition = '') then () else year-from-date(common:getUTCDate($endPositionWOTime))
             let $reportingYear := xs:integer($reportingYear)
             where $beginYear <= $reportingYear and (empty($endYear) or $endYear >= $reportingYear)
             return $zoneId
