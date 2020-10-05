@@ -578,7 +578,8 @@ let $B11table :=
                     let $key := string-join(($zone, $pollutant, $protectionTarget), "#")
                     
                     
-            where common:isDateTimeIncluded($reportingYear, $beginPosition, $endPosition)
+            (:where common:isDateTimeIncludedB11B12($reportingYear, $beginPosition, $endPosition) and $x/am:designationPeriod//gml:endPosition[@indeterminatePosition]:)
+            where common:isDateTimeIncludedB11B12New($reportingYear, $beginPosition, $endPosition)
             (:group by $pollutant, $protectionTarget:)
             return
                 <result>
@@ -677,7 +678,8 @@ let $B12table :=
                     let $key := string-join(($zone, $pollutant, $protectionTarget), "#")
                     
                     
-            where common:isDateTimeIncluded($reportingYear, $beginPosition, $endPosition)
+            (:where common:isDateTimeIncludedB11B12($reportingYear, $beginPosition, $endPosition) and $x/am:designationPeriod//gml:endPosition[@indeterminatePosition]:)
+            where common:isDateTimeIncludedB11B12New($reportingYear, $beginPosition, $endPosition)
             (:group by $pollutant, $protectionTarget:)
             return
                 <result>
