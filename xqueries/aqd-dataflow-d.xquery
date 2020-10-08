@@ -1379,14 +1379,17 @@ let $D37invalid :=
 
             for $period at $pos in $observingCapabilities
 
-            let $ok := if ($pos < count($observingCapabilities))
-            then
-                if ($period/gml:endPosition castable as xs:dateTime and $observingCapabilities[$pos + 1]/gml:beginPosition castable as xs:dateTime) then
-                    if (xs:dateTime($period/gml:endPosition) > xs:dateTime($observingCapabilities[$pos + 1]/gml:beginPosition)) then fn:false() else fn:true()
+              let $ok := 
+                if ($pos < count($observingCapabilities))
+                  then
+                      if ($period/gml:endPosition castable as xs:dateTime and $observingCapabilities[$pos + 1]/gml:beginPosition castable as xs:dateTime) then
+                          if (xs:dateTime($period/gml:endPosition) > xs:dateTime($observingCapabilities[$pos + 1]/gml:beginPosition)) then 
+                            fn:false() 
+                          else fn:true()
+                      else
+                          fn:false()
                 else
                     fn:true()
-            else
-                fn:true()
 
             return if ($ok) then () else
 
