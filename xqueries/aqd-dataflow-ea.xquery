@@ -899,6 +899,59 @@ let $E24invalid :=
 
 let $ms2E24 := prof:current-ms()
 
+
+let $ms1E24b := prof:current-ms()
+
+let $E24binvalid  := 
+  try
+    {
+    (for $x at $xpos in $docRoot//om:OM_Observation/om:result[//swe:field[@name = "Value"]/swe:Quantity/contains(@definition, $vocabulary:OBSERVATIONS_PRIMARY) = true()]
+      let $blockSeparator := string($x//swe:encoding/swe:TextEncoding/@blockSeparator)
+      let $decimalSeparator := string($x//swe:encoding/swe:TextEncoding/@decimalSeparator)
+      let $tokenSeparator := string($x//swe:encoding/swe:TextEncoding/@tokenSeparator)
+      
+      let $fields := data($x//swe:elementType/swe:DataRecord/swe:field/@name)
+      let $startPos := index-of($fields, "StartTime")
+      let $endPos := index-of($fields, "EndTime")
+
+      for $i at $ipos in tokenize(replace($x//swe:values, $blockSeparator || "$", ""), $blockSeparator)
+        let $startTime := tokenize($i, $tokenSeparator)[$startPos]
+        let $endTime := tokenize($i, $tokenSeparator)[$endPos]       
+               
+        (: regex expression to compare the $startTime and $endTime dates format with the ISO 8601 extended format: 
+        2014-01-01T00:00:00+01:00 | 2014-01-01T00:00:00Z | 2020-10-07T20:20:05Z | 2014-01-01T00:00:00-01:00  :)
+        let $okStartTime :=
+            if (matches($startTime, "^\d\d\d\d-(0?[1-9]|1[0-2])-(0?[1-9]|[12][0-9]|3[01])T(00|0[0-9]|1[0-9]|2[0-4]):([0-9]|[0-5][0-9]):([0-9]|[0-5][0-9])((\+([0-9]|[0-5][0-9]):([0-9]|[0-5][0-9]))|(\-([0-9]|[0-5][0-9]):([0-9]|[0-5][0-9]))|(Z))$") ) then
+                true()
+            else
+                false()
+                
+        let $okEndTime :=
+            if (matches($endTime, "^\d\d\d\d-(0?[1-9]|1[0-2])-(0?[1-9]|[12][0-9]|3[01])T(00|0[0-9]|1[0-9]|2[0-4]):([0-9]|[0-5][0-9]):([0-9]|[0-5][0-9])((\+([0-9]|[0-5][0-9]):([0-9]|[0-5][0-9]))|(\-([0-9]|[0-5][0-9]):([0-9]|[0-5][0-9]))|(Z))$") ) then
+                true()
+            else
+                false()                     
+                              
+        where $okStartTime = false() or $okEndTime = false() 
+          
+        return 
+              <tr>
+                <td title="@gml:id">{string($x/../@gml:id)}</td>
+                <td title="StartTime">{$startTime}</td>
+                <td title="EndTime">{$endTime}</td>
+            </tr>)[position() = 1 (:to $errors:MEDIUM_LIMIT:)]
+           
+    }
+    catch * {
+        <tr class="{$errors:FAILED}">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
+
+let $ms2E24b := prof:current-ms()
+
+
 let $ms1E25 := prof:current-ms()
 
 
@@ -1575,6 +1628,7 @@ return
         {html:build2("E22", $labels:E22, $labels:E22_SHORT, $E22invalid, "All records are valid", "record", $errors:E22)}
         {html:build2("E23", $labels:E23, $labels:E23_SHORT, $E23invalid, "All records are valid", "record", $errors:E23)}
         {html:build2("E24", $labels:E24, $labels:E24_SHORT, $E24invalid, "All records are valid", "record", $errors:E24)}
+        {html:build2("E24b", $labels:E24b, $labels:E24b_SHORT, $E24binvalid, "All records are valid", "record", $errors:E24b)}
         {html:build2("E25", $labels:E25, $labels:E25_SHORT, $E25invalid, "All records are valid", "record", $errors:E25)}
         {html:build2("E25b", $labels:E25b, $labels:E25b_SHORT, $E25binvalid, "All records are valid", "record", $errors:E25b)}
         {html:build2Sparql("E26", $labels:E26, $labels:E26_SHORT, $E26invalid, "All records are valid", "record", $errors:E26)}
@@ -1629,6 +1683,7 @@ return
        {common:runtime("E22",  $ms1E22, $ms2E22)}
        {common:runtime("E23",  $ms1E23, $ms2E23)}
        {common:runtime("E24",  $ms1E24, $ms2E24)}
+       {common:runtime("E24b",  $ms1E24b, $ms2E24b)}
        {common:runtime("E25",  $ms1E25, $ms2E25)}
        {common:runtime("E25b",  $ms1E25b, $ms2E25b)}
        {common:runtime("E26",  $ms1E26, $ms2E26)}
