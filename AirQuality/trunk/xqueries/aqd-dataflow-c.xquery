@@ -1203,8 +1203,10 @@ let $C27table :=
         let $validZones := if ((fn:string-length($countryCode) = 2) and exists($latestEnvelopeB)) then
             for $zone in $results
             let $zoneId := $zone//sparql:binding[@name = 'inspireLabel']/sparql:literal => string()
-            let $beginPosition := $zone//sparql:binding[@name = 'beginPosition']/sparql:literal => string()
-            let $endPosition := $zone//sparql:binding[@name = 'endPosition']/sparql:literal => string()
+            (: let $beginPosition := $zone//sparql:binding[@name = 'beginPosition']/sparql:literal => string()
+            let $endPosition := $zone//sparql:binding[@name = 'endPosition']/sparql:literal => string() :)
+            let $beginPosition := (xs:dateTime($zone//sparql:binding[@name = 'beginPosition']/sparql:literal) + xs:dayTimeDuration("P2D")) => string()
+            let $endPosition := (xs:dateTime($zone//sparql:binding[@name = 'endPosition']/sparql:literal) - xs:dayTimeDuration("P2D")) => string()
             let $endPositionWOTime := substring-before($endPosition, 'T')
             let $beginYear := year-from-dateTime(common:getUTCDateTime($beginPosition))
             let $endYear := if ($endPosition = '') then () else year-from-date(common:getUTCDate($endPositionWOTime))
@@ -1937,6 +1939,7 @@ return
        {common:runtime("C24",  $ms1C24, $ms2C24)}
        {common:runtime("C25",  $ms1C25, $ms2C25)}
        {common:runtime("C26",  $ms1C26, $ms2C26)}
+       {common:runtime("C27",  $ms1C27, $ms2C27)}
        {common:runtime("C28",  $ms1C28, $ms2C28)}
        {common:runtime("C29",  $ms1C29, $ms2C29)}
        {common:runtime("C31",  $ms1C31, $ms2C31)}
