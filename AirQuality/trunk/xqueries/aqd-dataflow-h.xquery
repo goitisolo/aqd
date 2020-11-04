@@ -950,7 +950,7 @@ AQ plan pollutant's should match those in the exceedance situation (G)
 :)
 
 let $ms1H24 := prof:current-ms()
-
+(:
 let $H24 := try {
     for $plan in $docRoot//aqd:AQD_Plan
         let $pollutantCodes := $plan/aqd:pollutants/aqd:Pollutant/aqd:pollutantCode/@xlink:href
@@ -966,6 +966,36 @@ let $H24 := try {
                             <td title="aqd:exceedanceSituation">{data($exceedanceSituation)}</td>
                             <td title="pollutantCode xlink:href">{data($pollutantCodes)}</td>
                             <td title="Sparql">{$pollutants_query}</td>
+                        </tr>
+                    else
+                        ()
+} catch * {
+    html:createErrorRow($err:code, $err:description)
+}
+:)
+
+let $H24 := try {
+    let $pollutantsList := sparqlx:run(query:getPollutantsQuery("AQD_Attainment"))
+    for $plan in $docRoot//aqd:AQD_Plan
+        let $pollutantCodes := $plan/aqd:pollutants/aqd:Pollutant/aqd:pollutantCode/@xlink:href
+
+        for $exceedanceSituation in $plan/aqd:exceedanceSituation/@xlink:href            
+            (: let $pollutants := query:getPollutants("AQD_Attainment", $exceedanceSituation) :)
+            let $pollutants := 
+                for $pollutantsFilter in $pollutantsList[sparql:binding[@name='label']/sparql:literal = $exceedanceSituation]/sparql:binding[@name='pollutant']/sparql:uri
+                return $pollutantsFilter
+                
+            let $pollutants_query := sparqlx:getLink(query:getPollutantsQuery("AQD_Attainment", $exceedanceSituation)) 
+            let $ok := count(index-of($pollutantCodes, functx:if-empty($pollutants, ""))) > 0
+
+            return
+                if(not($ok))
+                    then
+                        <tr>
+                            <td title="gml:id">{data($plan/ancestor-or-self::*[name() = $node-name]/@gml:id)}</td>
+                            <td title="aqd:exceedanceSituation">{data($exceedanceSituation)}</td>
+                            <td title="pollutantCode xlink:href">{data($pollutantCodes)}</td>
+                            <td title="Sparql">{sparqlx:getLink(query:getPollutantsQuery("AQD_Attainment"))}</td>
                         </tr>
                     else
                         ()
