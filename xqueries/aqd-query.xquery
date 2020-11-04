@@ -947,6 +947,31 @@ FILTER (?label = '" || $label || "')
    }"
 };
 
+declare function query:getPollutants(
+        $type as xs:string
+) as xs:string* {
+    let $res := sparqlx:run(query:getPollutantsQuery($type))
+    return $res
+};
+declare function query:getPollutantsQuery(
+        $type as xs:string
+) as xs:string* {
+  
+"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX aq: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+ SELECT distinct ?pollutant ?label
+ WHERE {
+        GRAPH ?graph{
+              ?scenariosXMLURI a aq:" || $type ||";
+              aq:inspireId ?inspireId ;
+              aq:pollutant ?pollutant .
+        }
+              ?inspireId rdfs:label ?label .
+              ?inspireId aq:namespace ?name .
+              ?inspireId aq:localId ?localId .
+   }"
+};
+
 (:~ Creates a SPARQL query string to query all objects of given type in a URL
 
 The result is a list of inspireLabels
