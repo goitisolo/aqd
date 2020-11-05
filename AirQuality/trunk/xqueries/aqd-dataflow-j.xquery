@@ -964,7 +964,7 @@ and the reporting year of K & J shall be the same year via namespace/localId.
 Measures identified in the AQ-plan that are included in this baseline scenario should be provided (link to dataflow K)
 :)
 
-let $ms1J27 := prof:current-ms()
+(:let $ms1J27 := prof:current-ms()
 
 let $J27 := try{
     let $main := $evaluationScenario/aqd:baselineScenario/aqd:Scenario/aqd:measuresApplied
@@ -987,6 +987,49 @@ let $J27 := try{
                 $reportingYear,
                 $latestEnvelopesK
             )
+        
+        let $sparql_query := if(fn:empty($label))
+                             then
+                              "No element to execute this query"
+                             else
+                              sparqlx:getLink(query:existsViaNameLocalIdYearQuery($el/@xlink:href, 'AQD_Measures', $reportingYear, $latestEnvelopesK))
+        
+        return common:conditionalReportRow(
+                $ok,
+                [
+                    ("gml:id", $el/ancestor-or-self::*[name() = $ancestor-name]/@gml:id),
+                    (node-name($el), $el/@xlink:href),
+                    (: ("Sparql", sparqlx:getLink(query:existsViaNameLocalIdYearQuery($el/@xlink:href,'AQD_Measures',$reportingYear,$latestEnvelopesK))) :)
+                    ("Sparql", $sparql_query)
+                ]
+            )
+} catch * {
+    html:createErrorRow($err:code, $err:description)
+}:)
+
+let $ms1J27 := prof:current-ms()
+
+let $J27 := try{
+    let $main := $evaluationScenario/aqd:baselineScenario/aqd:Scenario/aqd:measuresApplied
+    let $viaNameLocalIdList:= sparqlx:run(query:existsViaNameLocalIdYearGeneral('AQD_Measures',$reportingYear))
+    for $el in $main
+    
+       
+        let $label := data($el/@xlink:href)
+
+        
+        let $ok := if(fn:empty($label))
+        then
+            true()
+        else
+        for $nameLocalId in $viaNameLocalIdList[sparql:binding[@name='label']/sparql:literal=$label](:/sparql:binding[@name='pollutant']/sparql:uri:)
+            (:query:existsViaNameLocalIdYear(
+                $el/@xlink:href,
+                'AQD_Measures',
+                $reportingYear,
+                $latestEnvelopesK
+            ):)
+            return $nameLocalId
         
         let $sparql_query := if(fn:empty($label))
                              then
