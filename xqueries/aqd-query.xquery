@@ -550,6 +550,36 @@ declare function query:existsViaNameLocalIdYearQuery(
     }" 
 };
 
+declare function query:existsViaNameLocalIdYearGeneral(
+   
+    $type as xs:string,
+    $year as xs:string
+   
+    ) as xs:string {
+    "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+      PREFIX aq: <http://reference.eionet.europa.eu/aq/ontology/>
+      PREFIX dcterms: <http://purl.org/dc/terms/>
+      PREFIX rod: <http://rod.eionet.europa.eu/schema.rdf#>
+
+      SELECT ?subject ?declaration year(?startOfPeriod) as ?reportingYear
+        WHERE {
+          
+            GRAPH ?source {
+              ?subject a aqd:" || $type ||" .
+              ?subject aqd:inspireId ?inspireId.
+              ?inspireId rdfs:label ?label.
+              ?inspireId aqd:namespace ?name.
+              ?inspireId aqd:localId ?localId.
+            } 
+            ?source dcterms:isPartOf ?envelope .
+            ?envelope rod:startOfPeriod ?startOfPeriod .
+            ?subject aqd:declarationFor ?declaration .
+
+      FILTER ( year(?startOfPeriod) = " || $year || " )
+    }" 
+};
+
 (: Checks if X references an existing Y via namespace/localid and reporting year :)
 (: declare function query:existsViaNameLocalIdYearI11(
     $label as xs:string,
