@@ -808,6 +808,50 @@ let $E23invalid :=
 
 let $ms2E23 := prof:current-ms()
 
+
+let $ms1E23b := prof:current-ms()
+
+let $E23binvalid :=
+    try {
+        (for $x at $xpos in $docRoot//om:OM_Observation/om:result
+        let $blockSeparator := string($x//swe:encoding/swe:TextEncoding/@blockSeparator)
+        let $decimalSeparator := string($x//swe:encoding/swe:TextEncoding/@decimalSeparator)
+        let $tokenSeparator := string($x//swe:encoding/swe:TextEncoding/@tokenSeparator)
+        let $validCount := count($x//swe:elementType/swe:DataRecord/swe:field)
+
+        let $fields := data($x//swe:elementType/swe:DataRecord/swe:field/@name)
+        let $valuePos := index-of($fields, "Value")
+
+        for $i at $ipos in tokenize(replace($x//swe:values, $blockSeparator || "$", ""), $blockSeparator)
+        let $okValues := 
+          if( tokenize($i, $tokenSeparator)[$valuePos] = "" ) then
+            false()
+          else
+            true()
+        let $count := 
+          if( tokenize($i, $tokenSeparator)[$valuePos] = "" ) then
+              count(tokenize($i, $tokenSeparator))-1
+            else
+              count(tokenize($i, $tokenSeparator))
+        where $okValues = false()
+        return
+            <tr>
+                <td title="OM_Observation">{string($x/../@gml:id)}</td>
+                <td title="Data record position">{$ipos}</td>
+                <td title="Expected fields">{$validCount}</td>
+                <td title="Actual fields">{$count}</td>
+                <td title="$okValues">{$okValues}</td>
+            </tr>)[position() = 1 to $errors:HIGHER_LIMIT]
+    } catch * {
+        <tr class="{$errors:FAILED}">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
+
+let $ms2E23b := prof:current-ms()
+
+
 let $ms1E24 := prof:current-ms()
 
 let $E24invalid :=
@@ -1627,6 +1671,7 @@ return
         {html:build2("E21", $labels:E21, $labels:E21_SHORT, $E21invalid, "All records are valid", "record", $errors:E21)}
         {html:build2("E22", $labels:E22, $labels:E22_SHORT, $E22invalid, "All records are valid", "record", $errors:E22)}
         {html:build2("E23", $labels:E23, $labels:E23_SHORT, $E23invalid, "All records are valid", "record", $errors:E23)}
+        {html:build2("E23b", $labels:E23b, $labels:E23b_SHORT, $E23binvalid, "All records are valid", "record", $errors:E23b)}
         {html:build2("E24", $labels:E24, $labels:E24_SHORT, $E24invalid, "All records are valid", "record", $errors:E24)}
         {html:build2("E24b", $labels:E24b, $labels:E24b_SHORT, $E24binvalid, "All records are valid", "record", $errors:E24b)}
         {html:build2("E25", $labels:E25, $labels:E25_SHORT, $E25invalid, "All records are valid", "record", $errors:E25)}
@@ -1682,6 +1727,7 @@ return
        {common:runtime("E21",  $ms1E21, $ms2E21)}
        {common:runtime("E22",  $ms1E22, $ms2E22)}
        {common:runtime("E23",  $ms1E23, $ms2E23)}
+       {common:runtime("E23b",  $ms1E23b, $ms2E23b)}
        {common:runtime("E24",  $ms1E24, $ms2E24)}
        {common:runtime("E24b",  $ms1E24b, $ms2E24b)}
        {common:runtime("E25",  $ms1E25, $ms2E25)}
