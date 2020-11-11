@@ -958,7 +958,7 @@ let $E24binvalid  :=
       let $startPos := index-of($fields, "StartTime")
       let $endPos := index-of($fields, "EndTime")
 
-      for $i at $ipos in tokenize(replace($x//swe:values, $blockSeparator || "$", ""), $blockSeparator)
+      for $i at $ipos in tokenize(replace($x//swe:values, $blockSeparator || "$", ""), $blockSeparator)[1]
         let $startTime := tokenize($i, $tokenSeparator)[$startPos]
         let $endTime := tokenize($i, $tokenSeparator)[$endPos]       
                
@@ -983,7 +983,7 @@ let $E24binvalid  :=
                 <td title="@gml:id">{string($x/../@gml:id)}</td>
                 <td title="StartTime">{$startTime}</td>
                 <td title="EndTime">{$endTime}</td>
-            </tr>)[position() = 1 (:to $errors:MEDIUM_LIMIT:)]
+            </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
            
     }
     catch * {
