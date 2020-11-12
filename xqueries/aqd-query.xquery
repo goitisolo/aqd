@@ -550,6 +550,22 @@ declare function query:existsViaNameLocalIdYearQuery(
     }" 
 };
 
+declare function query:existsViaNameLocalIdYear1(
+   
+    $subject as xs:string,
+    
+    $latestEnvelopes as xs:string*
+    ) as xs:boolean {
+
+   (:let $results := sparqlx:run(query:existsViaNameLocalIdYearGeneral( $type, $year, $latestEnvelopes)):)
+
+    let $envelopes :=
+        (:for $result in $results
+        return :)functx:substring-before-last($subject, "/")
+
+    return common:isLatestEnvelope($envelopes, $latestEnvelopes) 
+};
+
 declare function query:existsViaNameLocalIdYearGeneral(
    
     $type as xs:string,
@@ -562,7 +578,7 @@ declare function query:existsViaNameLocalIdYearGeneral(
       PREFIX dcterms: <http://purl.org/dc/terms/>
       PREFIX rod: <http://rod.eionet.europa.eu/schema.rdf#>
 
-      SELECT ?subject ?declaration year(?startOfPeriod) as ?reportingYear
+      SELECT ?label ?subject ?declaration year(?startOfPeriod) as ?reportingYear
         WHERE {
           
             GRAPH ?source {

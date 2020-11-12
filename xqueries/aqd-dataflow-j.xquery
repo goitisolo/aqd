@@ -1016,20 +1016,35 @@ let $J27 := try{
     
        
         let $label := data($el/@xlink:href)
+        (:  let $localId:=
+          for $nameLocalId in $viaNameLocalIdList
+            for $nameLocalId in $viaNameLocalIdList[sparql:binding[@name='label']/sparql:literal=$label]/sparql:binding[@name='subject']/sparql:uri
+            return  $nameLocalId/sparql:binding[@name='subject']/sparql:uri
+            return  $nameLocalId/sparql:binding[@name='label']/sparql:literal:)
 
-        
+
+       let $localId:=
+            for $nameLocalId in $viaNameLocalIdList[sparql:binding[@name='label']/sparql:literal=$label]/sparql:binding[@name='subject']/sparql:uri
+           return  query:existsViaNameLocalIdYear1(
+                $nameLocalId,
+                $latestEnvelopesK
+            )
         let $ok := if(fn:empty($label))
         then
-            true()
+            (:true() volver a poner a true cnd terminen pruebas:)
+            false()
         else
-        for $nameLocalId in $viaNameLocalIdList[sparql:binding[@name='label']/sparql:literal=$label](:/sparql:binding[@name='pollutant']/sparql:uri:)
-            (:query:existsViaNameLocalIdYear(
-                $el/@xlink:href,
-                'AQD_Measures',
-                $reportingYear,
-                $latestEnvelopesK
-            ):)
-            return $nameLocalId
+        
+        (:
+            for $nameLocalId in $viaNameLocalIdList:)
+            
+            if(fn:empty($localId)) then false()
+            else $localId
+            (:return  $nameLocalId/sparql:binding[@name='label']/sparql:literal:)
+
+        
+           
+           
         
         let $sparql_query := if(fn:empty($label))
                              then
@@ -1042,6 +1057,8 @@ let $J27 := try{
                 [
                     ("gml:id", $el/ancestor-or-self::*[name() = $ancestor-name]/@gml:id),
                     (node-name($el), $el/@xlink:href),
+                    
+                    
                     (: ("Sparql", sparqlx:getLink(query:existsViaNameLocalIdYearQuery($el/@xlink:href,'AQD_Measures',$reportingYear,$latestEnvelopesK))) :)
                     ("Sparql", $sparql_query)
                 ]
