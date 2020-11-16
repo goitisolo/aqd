@@ -373,6 +373,29 @@ declare function common:conditionalReportRow (
         ()
 };
 
+declare function common:conditionalReportRowI18 (
+    $ok as xs:boolean,
+    $vals as array(item()*)
+) as element(tr)* {
+    if (not($ok))
+    then
+        <tr>{
+        array:flatten(
+            array:for-each($vals, function($row) {
+                <td title="{common:get($row, 1)}">
+                    {
+                    functx:if-empty(
+                        data(common:get($row, 2)),
+                        "Attainment not found"
+                    )
+                    }
+                </td>
+            })
+        )
+        }</tr>
+    else
+        ()
+};
 
 (: returns if a specific node exists in a parent :)
 declare function common:isNodeInParent(

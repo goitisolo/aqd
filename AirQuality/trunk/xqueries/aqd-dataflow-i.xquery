@@ -879,7 +879,7 @@ let $I7 := try {
                             ) 
                         )
 
-        return common:conditionalReportRow(
+        return common:conditionalReportRowI18(
             $ok,
             [
                 ("gml:id", data($node/@gml:id)),
