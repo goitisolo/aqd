@@ -373,7 +373,7 @@ let $ms2GeneralParameters:= prof:current-ms()
             for $x in $sources
                 let $id := $x/@gml:id
                 let $inspireId := $x/aqd:inspireId
-                let $aqdinspireId := concat($x/aqd:inspireId/base:Identifier/base:localId, "/", $x/aqd:inspireId/base:Identifier/base:namespace)
+                let $aqdinspireId := concat($x/aqd:inspireId/base:Identifier/base:namespace, "/", $x/aqd:inspireId/base:Identifier/base:localId)
                 let $one-gmlid := count(index-of($gmlIds, lower-case(normalize-space($id)))) = 1
                 let $one-inspireid := count(index-of($inspireIds, lower-case(normalize-space($inspireId)))) = 1
 
