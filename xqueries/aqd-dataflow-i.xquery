@@ -1112,6 +1112,7 @@ let $I18errorMessage := (
             let $dec := string-length(substring-after(xs:string($total),"."))
 
             let $sum := common:sum-of-nodes((
+                $li/aqd:traffic/aqd:QuantityCommented/aqd:quantity,
                 $li/aqd:heatAndPowerProduction/aqd:QuantityCommented/aqd:quantity,
                 $li/aqd:agriculture/aqd:QuantityCommented/aqd:quantity,
                 $li/aqd:commercialAndResidential/aqd:QuantityCommented/aqd:quantity,
@@ -1132,9 +1133,12 @@ let $I18errorMessage := (
                 ("gml:id", data($x/@gml:id)),
                 ("aqd:total", $total),
                 ("sum-of-components", $sumRound),
+                ("traffic", $li/aqd:traffic/aqd:QuantityCommented/aqd:quantity),
+                ("heatAndPowerProduction",$li/aqd:heatAndPowerProduction/aqd:QuantityCommented/aqd:quantity),
                 ("agriculture", $li/aqd:agriculture/aqd:QuantityCommented/aqd:quantity),
                 ("commercialAndResidential", $li/aqd:commercialAndResidential/aqd:QuantityCommented/aqd:quantity),
                 ("shipping", $li/aqd:shipping/aqd:QuantityCommented/aqd:quantity),
+                ("offRoadMobileMachinery", $li/aqd:offRoadMobileMachinery/aqd:QuantityCommented/aqd:quantity),
                 ("natural", $li/aqd:natural/aqd:QuantityCommented/aqd:quantity),
                 ("transboundary", $li/aqd:transboundary/aqd:QuantityCommented/aqd:quantity),
                 ("other", $li/aqd:other/aqd:QuantityCommented/aqd:quantity)
