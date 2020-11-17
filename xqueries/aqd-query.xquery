@@ -680,6 +680,13 @@ declare function query:existsViaNameLocalIdYearI11(
     return common:isLatestEnvelope($envelopes, $latestEnvelopes) 
 };
 
+declare function query:existsViaNameLocalIdYearI11General(
+    $envelope as xs:string,
+    $latestEnvelopes as xs:string*
+    ) as xs:boolean {
+    let $envelopes := $envelope
+    return common:isLatestEnvelope($envelopes, $latestEnvelopes) 
+};
 (:declare function query:existsViaNameLocalIdYearI11Query(
     $label as xs:string,
     $type as xs:string,
@@ -737,6 +744,8 @@ declare function query:existsViaNameLocalIdYearI11(
           FILTER (?reportingYear = " || $year || ")
       }" 
 };:)
+
+
 declare function query:existsViaNameLocalIdYearI11Query(
     $label as xs:string,
     $type as xs:string,
@@ -775,6 +784,42 @@ declare function query:existsViaNameLocalIdYearI11Query(
     }" 
 };
 
+(: #carraand 17/11/2020 To make more eficcient used a more general query to get general data and filter in the XQuery side.:)
+
+declare function query:existsViaNameLocalIdYearI11QueryGeneral(
+    $type as xs:string,
+    $year as xs:string
+    ) as xs:string {
+    "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+      PREFIX aq: <http://reference.eionet.europa.eu/aq/ontology/>
+      PREFIX dcterms: <http://purl.org/dc/terms/>
+      PREFIX rod: <http://rod.eionet.europa.eu/schema.rdf#>
+
+      SELECT 
+        ?Country
+        YEAR(?endOfPeriod) as ?reportingYear
+        ?localId
+        ?envelope
+        ?label
+
+        WHERE {
+            GRAPH ?source {
+              ?subject a aqd:" || $type ||" .
+              ?subject aqd:inspireId ?inspireId.
+              ?inspireId rdfs:label ?label.
+              ?inspireId aqd:namespace ?name.
+              ?inspireId aqd:localId ?localId.           
+            } 
+            ?source dcterms:isPartOf ?envelope .
+            ?envelope rod:startOfPeriod ?startOfPeriod .
+            ?envelope rod:endOfPeriod ?endOfPeriod .
+            ?envelope rod:locality ?locality.
+            ?locality rod:localityName ?Country .
+
+      FILTER ( year(?startOfPeriod) = " || $year || " )
+    }" 
+};
 
 
 

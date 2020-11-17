@@ -612,15 +612,19 @@ let $I7 := try {
     let $ms1I11 := prof:current-ms()
     
     let $I11 := try{
+        let $generalData := sparqlx:run(query:existsViaNameLocalIdYearI11QueryGeneral('AQD_Plan',$reportingYear))
+                
         for $el in $sources/aqd:usedInPlan
 
             let $label := functx:if-empty(functx:substring-after-last($el/@xlink:href, "/"), "")
-            let $ok := query:existsViaNameLocalIdYearI11(
-                $label,
-                'AQD_Plan',
-                $reportingYear,
-                $latestEnvelopesH
-            ) 
+
+            let $localId:=
+                for $nameLocalId in $generalData[sparql:binding[@name='label']/sparql:literal=$label]/sparql:binding[@name='envelope']/sparql:uri
+                   return  query:existsViaNameLocalIdYearI11General(
+                        $nameLocalId,
+                        $latestEnvelopesH
+                    )
+            let $ok := $localId
 
         return common:conditionalReportRow(
             $ok,
@@ -630,7 +634,7 @@ let $I7 := try {
                 ("Sparql", sparqlx:getLink(query:existsViaNameLocalIdYearI11Query($label,'AQD_Plan',$reportingYear,$latestEnvelopesH)))
             ]
         )
-    } catch * {
+    } catch * { 
         html:createErrorRow($err:code, $err:description)
     }
 
