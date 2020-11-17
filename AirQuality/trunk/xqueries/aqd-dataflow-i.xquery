@@ -1057,21 +1057,21 @@ let $I18errorMessage := (
 
             let $ok := $total = $sumRound
 
-        return common:conditionalReportRow(
+        return common:conditionalReportRowI20I21(
             $ok,
             [
                 ("gml:id", data($x/@gml:id)),
-                ("aqd:total", $total),
+                ("Total in XML", $total),
                 ("sum-of-components", $sumRound),
-                ("aqd:traffic", data($trafic)),
-                ("aqd:heatAndPowerProduction", data($head)),
-                ("aqd:agriculture", data($agr)),
-                ("aqd:commercialAndResidential", data($comer)),
-                ("aqd:shipping", data($ship)),
-                ("aqd:offRoadMobileMachinery", data($offroad)),
-                ("aqd:natural", data($natural)),
-                ("aqd:transb", data($transb)),
-                ("aqd:other", data($other))
+                ("Traffic", data($trafic)),
+                ("HeatAndPowerProduction", data($head)),
+                ("Agriculture", data($agr)),
+                ("CommercialAndResidential", data($comer)),
+                ("Shipping", data($ship)),
+                ("OffRoadMobileMachinery", data($offroad)),
+                ("Natural", data($natural)),
+                ("Transboundary", data($transb)),
+                ("Other", data($other))
             ]
         )
     } catch * {
@@ -1127,21 +1127,21 @@ let $I18errorMessage := (
 
             let $ok := $total = $sumRound
 
-        return common:conditionalReportRow(
+        return common:conditionalReportRowI20I21(
             $ok,
             [
                 ("gml:id", data($x/@gml:id)),
-                ("aqd:total", $total),
+                ("Total in XML", $total),
                 ("sum-of-components", $sumRound),
-                ("traffic", $li/aqd:traffic/aqd:QuantityCommented/aqd:quantity),
-                ("heatAndPowerProduction",$li/aqd:heatAndPowerProduction/aqd:QuantityCommented/aqd:quantity),
-                ("agriculture", $li/aqd:agriculture/aqd:QuantityCommented/aqd:quantity),
-                ("commercialAndResidential", $li/aqd:commercialAndResidential/aqd:QuantityCommented/aqd:quantity),
-                ("shipping", $li/aqd:shipping/aqd:QuantityCommented/aqd:quantity),
-                ("offRoadMobileMachinery", $li/aqd:offRoadMobileMachinery/aqd:QuantityCommented/aqd:quantity),
-                ("natural", $li/aqd:natural/aqd:QuantityCommented/aqd:quantity),
-                ("transboundary", $li/aqd:transboundary/aqd:QuantityCommented/aqd:quantity),
-                ("other", $li/aqd:other/aqd:QuantityCommented/aqd:quantity)
+                ("Traffic", $li/aqd:traffic/aqd:QuantityCommented/aqd:quantity),
+                ("HeatAndPowerProduction",$li/aqd:heatAndPowerProduction/aqd:QuantityCommented/aqd:quantity),
+                ("Agriculture", $li/aqd:agriculture/aqd:QuantityCommented/aqd:quantity),
+                ("CommercialAndResidential", $li/aqd:commercialAndResidential/aqd:QuantityCommented/aqd:quantity),
+                ("Shipping", $li/aqd:shipping/aqd:QuantityCommented/aqd:quantity),
+                ("OffRoadMobileMachinery", $li/aqd:offRoadMobileMachinery/aqd:QuantityCommented/aqd:quantity),
+                ("Natural", $li/aqd:natural/aqd:QuantityCommented/aqd:quantity),
+                ("Transboundary", $li/aqd:transboundary/aqd:QuantityCommented/aqd:quantity),
+                ("Other", $li/aqd:other/aqd:QuantityCommented/aqd:quantity)
             ]
         )
     } catch * {
