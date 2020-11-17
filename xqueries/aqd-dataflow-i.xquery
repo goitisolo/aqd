@@ -982,16 +982,16 @@ let $I18errorMessage := (
             let $sumRound := round-half-to-even($sum, $dec)
             let $ok := $total = $sumRound
 
-        return common:conditionalReportRow(
+        return common:conditionalReportRowI21I20I19(
             $ok,
             [
                 ("gml:id", data($x/@gml:id)),
-                ("aqd:total", $total),
+                ("Total in XML", $total),
                 ("sum-of-components", $sumRound),
-                ("aqd:fromWithinMS", data($fwm)),
-                ("aqd:transboundary", data($trans)),
-                ("aqd:natural", data($natural)),
-                ("aqd:other", data($other))
+                ("FromWithinMS", data($fwm)),
+                ("Transboundary", data($trans)),
+                ("Natural", data($natural)),
+                ("Other", data($other))
             ]
         )
     } catch * {
@@ -1057,7 +1057,7 @@ let $I18errorMessage := (
 
             let $ok := $total = $sumRound
 
-        return common:conditionalReportRowI20I21(
+        return common:conditionalReportRowI21I20I19(
             $ok,
             [
                 ("gml:id", data($x/@gml:id)),
@@ -1127,7 +1127,7 @@ let $I18errorMessage := (
 
             let $ok := $total = $sumRound
 
-        return common:conditionalReportRowI20I21(
+        return common:conditionalReportRowI21I20I19(
             $ok,
             [
                 ("gml:id", data($x/@gml:id)),
