@@ -397,7 +397,7 @@ declare function common:conditionalReportRowI18 (
         ()
 };
 
-declare function common:conditionalReportRowI20I21 (
+declare function common:conditionalReportRowI21I20I19 (
     $ok as xs:boolean,
     $vals as array(item()*)
 ) as element(tr)* {
