@@ -532,7 +532,10 @@ declare function html:build2(
         else if ($countRecords = 0) then
             $validMsg
         else
-            $countRecords || " " || $unit ||  " found"
+            if ($countRecords=1) then
+            $countRecords || " " || $unit ||  "issue found"
+             else  
+            $countRecords || " " || $unit ||  "issues found"
 
     return html:buildGeneric(
         $ruleCode,
