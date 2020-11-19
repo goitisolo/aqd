@@ -1362,45 +1362,45 @@ let $ms2Total := prof:current-ms()
 return
     <table class="maintable hover">
     <table>
-        {html:build2("NS", $labels:NAMESPACES, $labels:NAMESPACES_SHORT, $NSinvalid, "All values are valid", "record", $errors:NS)}
-        {html:build2("VOCAB", $labels:VOCAB, $labels:VOCAB_SHORT, $VOCABinvalid, "All values are valid", "record", $errors:VOCAB)}
+        {html:build2("NS", $labels:NAMESPACES, $labels:NAMESPACES_SHORT, $NSinvalid, "All values are valid", "", $errors:NS)}
+        {html:build2("VOCAB", $labels:VOCAB, $labels:VOCAB_SHORT, $VOCABinvalid, "All values are valid", "", $errors:VOCAB)}
         {html:build3("H0", $labels:H0, $labels:H0_SHORT, $H0, string($H0/td), errors:getMaxError($H0))}
-        {html:build1("H01", $labels:H01, $labels:H01_SHORT, $H01, "", string($countPlans), "", "", $errors:H01)}
-        {html:buildSimpleSparql("H02", $labels:H02, $labels:H02_SHORT, $H02, "", "", $H02errorLevel)}
-        {html:buildSimpleSparql("H03", $labels:H03, $labels:H03_SHORT, $H03, "", "", $H03errorLevel)}
-        {html:build2("H04", $labels:H04, $labels:H04_SHORT, $H04, "All values are valid", "found", $errors:H04)}
+        {html:build1("H01", $labels:H01, $labels:H01_SHORT, $H01, "", string($countPlans), "", "issues found", $errors:H01)}
+        {html:buildSimpleSparql("H02", $labels:H02, $labels:H02_SHORT, $H02, "", "issue", $H02errorLevel)}
+        {html:buildSimpleSparql("H03", $labels:H03, $labels:H03_SHORT, $H03, "", "issue", $H03errorLevel)}
+        {html:build2("H04", $labels:H04, $labels:H04_SHORT, $H04, "All values are valid", "", $errors:H04)}
         <!--{html:build1("H04", $labels:H04, $labels:H04_SHORT, $H04, "", string(count($H04)), " ", "", $errors:H04)}-->
-        {html:build2("H05", $labels:H05, $labels:H05_SHORT, $H05, "All values are valid", "needs valid input", $errors:H05)}
+        {html:build2("H05", $labels:H05, $labels:H05_SHORT, $H05, "All values are valid", " ", $errors:H05)}
         {html:build1("H06", $labels:H06, $labels:H06_SHORT, $H06, "RESERVE", "RESERVE", "RESERVE", "RESERVE", $errors:H06)}
-        {html:build2("H07", $labels:H07, $labels:H07_SHORT, $H07, "No duplicate values found", " duplicate value", $errors:H07)}
-        {html:build2("H08", $labels:H08, $labels:H08_SHORT, $H08, "No duplicate values found", " duplicate value", $errors:H08)}
+        {html:build2("H07", $labels:H07, $labels:H07_SHORT, $H07, "No duplicate values ", " ", $errors:H07)}
+        {html:build2("H08", $labels:H08, $labels:H08_SHORT, $H08, "No duplicate values ", "", $errors:H08)}
         {html:buildUnique("H09", $labels:H09, $labels:H09_SHORT, $H09, "namespace", $errors:H09)}
-        {html:build2("H10", $labels:H10, $labels:H10_SHORT, $H10, "All values are valid", " not conform to vocabulary", $errors:H10)}
-        {html:build2Sparql("H11", $labels:H11, $labels:H11_SHORT, $H11, "All values are valid", "needs valid input", $errors:H11)}
-        {html:build2("H12", $labels:H12, $labels:H12_SHORT, $H12, "All values are valid", "needs valid input", $errors:H12)}
+        {html:build2("H10", $labels:H10, $labels:H10_SHORT, $H10, "All values are valid", " ", $errors:H10)}
+        {html:build2Sparql("H11", $labels:H11, $labels:H11_SHORT, $H11, "All values are valid", "issues ", $errors:H11)}
+        {html:build2("H12", $labels:H12, $labels:H12_SHORT, $H12, "All values are valid", " ", $errors:H12)}
         {html:build1("H13", $labels:H13, $labels:H13_SHORT, $H13, "RESERVE", "RESERVE", "RESERVE", "RESERVE", $errors:H13)}
-    <!--{html:build2("H14", $labels:H14, $labels:H14_SHORT, $H14, "All values are valid", "needs valid input", $errors:H14)}:)-->
-        {html:build2("H15", $labels:H15, $labels:H15_SHORT, $H15, "All values are valid", "needs valid input", $errors:H15)}
-        {html:build2("H16", $labels:H16, $labels:H16_SHORT, $H16, "All values are valid", "needs valid input", $errors:H16)}
-        {html:build2("H17", $labels:H17, $labels:H17_SHORT, $H17, "All values are valid", "needs valid input", $errors:H17)}
-        {html:build2("H18", $labels:H18, $labels:H18_SHORT, $H18, "All values are valid", "needs valid input", $errors:H18)}
-        {html:build2("H19", $labels:H19, $labels:H19_SHORT, $H19, "All values are valid", "needs valid input", $errors:H19)}
-        {html:build2("H20", $labels:H20, $labels:H20_SHORT, $H20, "All values are valid", "needs valid input", $errors:H20)}
+    <!--{html:build2("H14", $labels:H14, $labels:H14_SHORT, $H14, "All values are valid", "issues found", $errors:H14)}:)-->
+        {html:build2("H15", $labels:H15, $labels:H15_SHORT, $H15, "All values are valid", " ", $errors:H15)}
+        {html:build2("H16", $labels:H16, $labels:H16_SHORT, $H16, "All values are valid", " ", $errors:H16)}
+        {html:build2("H17", $labels:H17, $labels:H17_SHORT, $H17, "All values are valid", " ", $errors:H17)}
+        {html:build2("H18", $labels:H18, $labels:H18_SHORT, $H18, "All values are valid", " ", $errors:H18)}
+        {html:build2("H19", $labels:H19, $labels:H19_SHORT, $H19, "All values are valid", " ", $errors:H19)}
+        {html:build2("H20", $labels:H20, $labels:H20_SHORT, $H20, "All values are valid", " ", $errors:H20)}
         {html:build1("H21", $labels:H21, $labels:H21_SHORT, $H21, "RESERVE", "RESERVE", "RESERVE", "RESERVE", $errors:H21)}
-        {html:build2("H22", $labels:H22, $labels:H22_SHORT, $H22, "All values are valid", "needs valid input", $errors:H22)}
-        {html:build2("H23", $labels:H23, $labels:H23_SHORT, $H23, "All values are valid", "needs valid input", $errors:H23)}
-        {html:build2Sparql("H24", $labels:H24, $labels:H24_SHORT, $H24, "All values are valid", "needs valid input", $errors:H24)}
-        {html:build2("H25", $labels:H25, $labels:H25_SHORT, $H25, "All values are valid", "needs valid input", $errors:H25)}
-        {html:build2("H26", $labels:H26, $labels:H26_SHORT, $H26, "All values are valid", "needs valid input", $errors:H26)}
-        {html:build2("H27", $labels:H27, $labels:H27_SHORT, $H27, "All values are valid", "needs valid input", $errors:H27)}
-        {html:build2("H28", $labels:H28, $labels:H28_SHORT, $H28, "All values are valid", "not valid", $errors:H28)}
-        {html:build2("H29", $labels:H29, $labels:H29_SHORT, $H29, "All values are valid", "not valid", $errors:H29)}
-        {html:build2("H30", $labels:H30, $labels:H30_SHORT, $H30, "All values are valid", "needs valid input", $errors:H30)}
-        {html:build2("H31", $labels:H31, $labels:H31_SHORT, $H31, "All values are valid", "needs valid input", $errors:H31)}
-        {html:build2("H32", $labels:H32, $labels:H32_SHORT, $H32, "All values are valid", "needs valid input", $errors:H32)}
-        {html:build2("H33", $labels:H33, $labels:H33_SHORT, $H33, "All values are valid", "not valid", $errors:H33)}
-        {html:build2("H34", $labels:H34, $labels:H34_SHORT, $H34, "All values are valid", "needs valid input", $errors:H34)}
-        {html:build2("H35", $labels:H35, $labels:H35_SHORT, $H35, "All values are valid", "not valid", $errors:H35)}
+        {html:build2("H22", $labels:H22, $labels:H22_SHORT, $H22, "All values are valid", " ", $errors:H22)}
+        {html:build2("H23", $labels:H23, $labels:H23_SHORT, $H23, "All values are valid", " ", $errors:H23)}
+        {html:build2Sparql("H24", $labels:H24, $labels:H24_SHORT, $H24, "All values are valid", "issues ", $errors:H24)}
+        {html:build2("H25", $labels:H25, $labels:H25_SHORT, $H25, "All values are valid", " ", $errors:H25)}
+        {html:build2("H26", $labels:H26, $labels:H26_SHORT, $H26, "All values are valid", " ", $errors:H26)}
+        {html:build2("H27", $labels:H27, $labels:H27_SHORT, $H27, "All values are valid", " ", $errors:H27)}
+        {html:build2("H28", $labels:H28, $labels:H28_SHORT, $H28, "All values are valid", "", $errors:H28)}
+        {html:build2("H29", $labels:H29, $labels:H29_SHORT, $H29, "All values are valid", "", $errors:H29)}
+        {html:build2("H30", $labels:H30, $labels:H30_SHORT, $H30, "All values are valid", " ", $errors:H30)}
+        {html:build2("H31", $labels:H31, $labels:H31_SHORT, $H31, "All values are valid", " ", $errors:H31)}
+        {html:build2("H32", $labels:H32, $labels:H32_SHORT, $H32, "All values are valid", " ", $errors:H32)}
+        {html:build2("H33", $labels:H33, $labels:H33_SHORT, $H33, "All values are valid", "", $errors:H33)}
+        {html:build2("H34", $labels:H34, $labels:H34_SHORT, $H34, "All values are valid", " ", $errors:H34)}
+        {html:build2("H35", $labels:H35, $labels:H35_SHORT, $H35, "All values are valid", "", $errors:H35)}
     </table>
      <table>
     <br/>
