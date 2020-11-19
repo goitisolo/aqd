@@ -236,14 +236,14 @@ let $H03 := try {
     let $main := $docRoot//aqd:AQD_Plan
     for $x in $main/aqd:inspireId/base:Identifier
     let $inspireId := concat(data($x/base:namespace), "/", data($x/base:localId))
-    let $ok := not(query:existsViaNameLocalIdYear($inspireId, 'AQD_Plan', $latestEnvelopesH, $reportingYear))
+    let $ok := not(query:existsViaNameLocalIdYear($inspireId, 'AQD_Plan', $reportingYear, $latestEnvelopesH ))
     return
         common:conditionalReportRow(
                 $ok,
                 [
                 ("gml:id", data($main/@gml:id)),
                 ("aqd:inspireId", $inspireId),
-                ("Sparql", sparqlx:getLink(query:existsViaNameLocalIdYearQuery($inspireId, 'AQD_Plan', $latestEnvelopesH, $reportingYear)))
+                ("Sparql", sparqlx:getLink(query:existsViaNameLocalIdYearQuery($inspireId, 'AQD_Plan', $reportingYear, $latestEnvelopesH)))
                 ]
         )
 } catch * {

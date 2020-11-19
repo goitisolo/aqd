@@ -821,7 +821,44 @@ declare function query:existsViaNameLocalIdYearI11QueryGeneral(
     }" 
 };
 
+declare function query:existsViaNameLocalIdYearI12aQueryGeneral(
+    $type as xs:string,
+    $year as xs:string,
+    $countryCode as xs:string
+    ) as xs:string {
+    "
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+      PREFIX aq: <http://reference.eionet.europa.eu/aq/ontology/>
+      PREFIX dcterms: <http://purl.org/dc/terms/>
+      PREFIX rod: <http://rod.eionet.europa.eu/schema.rdf#>
 
+      SELECT 
+        ?Country
+        YEAR(?endOfPeriod) as ?reportingYear
+        ?localId
+        ?envelope
+        ?label
+
+        WHERE {
+            GRAPH ?source {
+              ?subject a aqd:" || $type ||" .
+              ?subject aqd:inspireId ?inspireId.
+              ?inspireId rdfs:label ?label.
+              ?inspireId aqd:namespace ?name.
+              ?inspireId aqd:localId ?localId.           
+            } 
+            ?source dcterms:isPartOf ?envelope .
+            ?envelope rod:startOfPeriod ?startOfPeriod .
+            ?envelope rod:endOfPeriod ?endOfPeriod .
+            ?envelope rod:locality ?locality.
+            ?locality rod:localityName ?Country .
+            ?locality rod:loccode ?Countrycode .
+
+      FILTER ( year(?startOfPeriod) = " || $year || " )
+      FILTER (?Countrycode = " || $countryCode ||")
+    }" 
+};
 
 (: G :)
 declare function query:getAttainment($url as xs:string) as xs:string {

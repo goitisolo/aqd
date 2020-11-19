@@ -619,7 +619,7 @@ let $I7 := try {
             let $label := functx:if-empty(functx:substring-after-last($el/@xlink:href, "/"), "")
 
             let $localId:=
-                for $nameLocalId in $generalData[sparql:binding[@name='label']/sparql:literal=$label]/sparql:binding[@name='envelope']/sparql:uri
+                for $nameLocalId in $generalData[sparql:binding[@name='localId']/sparql:literal=$label]/sparql:binding[@name='envelope']/sparql:uri
                    return  query:existsViaNameLocalIdYearI11General(
                         $nameLocalId,
                         $latestEnvelopesH
@@ -656,15 +656,18 @@ let $I7 := try {
     let $ms1I12 := prof:current-ms()
     
     let $I12 := try{
+
+        let $viaNameLocalIdList:= sparqlx:run(query:existsViaNameLocalIdYearGeneral('AQD_Attainment',$reportingYear))
         for $node in $sources/aqd:parentExceedanceSituation
             let $link := data($node/@xlink:href)
 
-            let $ok := query:existsViaNameLocalIdYear(
-                    $link,
-                    'AQD_Attainment',
-                    $reportingYear,
-                    $latestEnvelopeByCountryG
-            )
+            let $localId:=
+                for $nameLocalId in $viaNameLocalIdList[sparql:binding[@name='label']/sparql:literal=$link]/sparql:binding[@name='subject']/sparql:uri
+                   return  query:existsViaNameLocalIdYear1(
+                        $nameLocalId,
+                        $latestEnvelopeByCountryG
+                    )
+            let $ok := $localId
             (:let $ok := 1 = -1:)
 
         return common:conditionalReportRow(
@@ -672,8 +675,6 @@ let $I7 := try {
             [
                 ("gml:id", data($node/ancestor-or-self::aqd:AQD_SourceApportionment/@gml:id)),
                 (node-name($node), $node/@xlink:href),
-                ("test", $link),
-                ("test2", $latestEnvelopeByCountryG),
                 ("reportingYear", $reportingYear),
                 ("Sparql", sparqlx:getLink(query:existsViaNameLocalIdYearQuery($link,'AQD_Attainment',$reportingYear,$latestEnvelopeByCountryG)))
             ]
@@ -684,6 +685,41 @@ let $I7 := try {
 
     let $ms2I12 := prof:current-ms()
     
+
+
+    let $ms1I12a := prof:current-ms()
+    
+    let $I12a := try{
+
+        let $viaNameLocalIdList:= sparqlx:run(query:existsViaNameLocalIdYearI12aQueryGeneral('AQD_Plan',$reportingYear, $countryCode))
+        for $node in $sources/aqd:parentExceedanceSituation
+            let $link := data($node/@xlink:href)
+
+            let $localId:=
+                for $nameLocalId in $viaNameLocalIdList[sparql:binding[@name='label']/sparql:literal=$link]/sparql:binding[@name='subject']/sparql:uri
+                   return  query:existsViaNameLocalIdYear1(
+                        $nameLocalId,
+                        $latestEnvelopeByCountryG
+                    )
+            let $ok := $localId
+            (:let $ok := 1 = -1:)
+
+        return common:conditionalReportRow(
+            $ok,
+            [
+                ("gml:id", data($node/ancestor-or-self::aqd:AQD_SourceApportionment/@gml:id)),
+                (node-name($node), $node/@xlink:href),
+                ("reportingYear", $reportingYear),
+                ("reportingYear", $latestEnvelopeByCountryG),
+
+                ("Sparql", sparqlx:getLink(query:existsViaNameLocalIdYearQuery($link,'AQD_Attainment',$reportingYear,$latestEnvelopeByCountryG)))
+            ]
+        )
+    } catch * {
+        html:createErrorRow($err:code, $err:description)
+    }
+
+    let $ms2I12a := prof:current-ms()
     (: I13
 
     aqd:AQD_SourceApportionment/aqd:referenceYear/gml:TimeInstant/gml:timePosition
