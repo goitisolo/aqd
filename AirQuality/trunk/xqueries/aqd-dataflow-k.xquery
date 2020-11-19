@@ -488,12 +488,12 @@ let $K12 := try {
 
 let $ms2K12:= prof:current-ms()
 
-(: K13
+(: K13 ## goititer: skipped; issue #1234534 ##
 aqd:AQD_Measures/aqd:code should be a unique local identifier for each measure record.
 For convenience the same code as localId may be used
 
 So, the aqd:code should be unique within XML
-:)
+
 
 let $ms1K13 := prof:current-ms()
 
@@ -519,7 +519,7 @@ let $K13invalid := try {
     html:createErrorRow($err:code, $err:description)
 }
 
-let $ms2K13 := prof:current-ms()
+let $ms2K13 := prof:current-ms():)
 
 (: K14 aqd:AQD_Measures/aqd:name must be populated with a text string
 A short name for the measure :)
@@ -1254,7 +1254,7 @@ return
         {html:build2("K10", $labels:K10, $labels:K10_SHORT, $K10invalid, "All values are valid", " not conform to vocabulary", $errors:K10)}
         {html:build2Sparql("K11", $labels:K11, $labels:K11_SHORT, $K11, "All values are valid", "needs valid input", $errors:K11)}
         {html:build2Sparql("K12", $labels:K12, $labels:K12_SHORT, $K12, "All values are valid", "needs valid input", $errors:K12)}
-        {html:build2("K13", $labels:K13, $labels:K13_SHORT, $K13invalid, "All values are valid", " code not equal", $errors:K13)}
+        <!--{html:build2("K13", $labels:K13, $labels:K13_SHORT, $K13invalid, "All values are valid", " code not equal", $errors:K13)}-->
         {html:build2("K14", $labels:K14, $labels:K14_SHORT, $K14invalid, "All values are valid", "needs valid input", $errors:K14)}
         {html:build2("K15", $labels:K15, $labels:K15_SHORT, $K15invalid, "All values are valid", "needs valid input", $errors:K15)}
         {html:build2("K16", $labels:K16, $labels:K16_SHORT, $K16, "All values are valid", "not conform to vocabulary",$errors:K16)}
@@ -1307,7 +1307,7 @@ return
        {common:runtime("K10", $ms1K10, $ms2K10)}
        {common:runtime("K11", $ms1K11, $ms2K11)}
        {common:runtime("K12", $ms1K12, $ms2K12)}
-       {common:runtime("K13", $ms1K13, $ms2K13)}
+      <!-- {common:runtime("K13", $ms1K13, $ms2K13)}-->
        {common:runtime("K14", $ms1K14, $ms2K14)}
        {common:runtime("K15", $ms1K15, $ms2K15)}
        {common:runtime("K16", $ms1K16, $ms2K16)}
