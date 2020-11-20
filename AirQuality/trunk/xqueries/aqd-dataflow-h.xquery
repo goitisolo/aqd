@@ -377,7 +377,7 @@ let $ms2H06 := prof:current-ms()
 :)
 
 let $ms1H07 := prof:current-ms()
-
+(: commented by diezzana on 20201120, issue #124439
 let $H07 := try {
     let $checks := ('gml:id', 'aqd:inspireId', 'ef:inspireId')
 
@@ -400,6 +400,27 @@ let $H07 := try {
             array:size($errors) = 0,
             $errors
     )
+} catch * {
+    html:createErrorRow($err:code, $err:description)
+}:)
+
+let $H07 := try {
+    let $gmlIds := $docRoot//aqd:AQD_Plan/@gml:id
+    let $inspireIds := $docRoot//aqd:AQD_Plan/lower-case(normalize-space(aqd:inspireId))
+
+    for $x in $docRoot//aqd:AQD_Plan
+      let $id := $x/@gml:id
+      let $aqdInspireId := $x/aqd:inspireId/base:Identifier/base:localId
+
+      let $ok := (
+          count(index-of($gmlIds, $id)) = 1
+      )
+
+       where not($ok) return
+          <tr>
+              <td title="gml:id">{data($x/@gml:id)}</td>
+              <td title="aqd:inspireId">{distinct-values($aqdInspireId)}</td>            
+          </tr>   
 } catch * {
     html:createErrorRow($err:code, $err:description)
 }
