@@ -397,9 +397,25 @@ let $ms2J08 := prof:current-ms()
 :)
 
 let $ms1J09 := prof:current-ms()
-
+(: commented by diezzana on 20201123, issue #124498
 let $J9 := try {
     for $namespace in distinct-values($docRoot//aqd:AQD_EvaluationScenario/aqd:inspireId/base:Identifier/base:namespace)
+        let $localIds := $docRoot//aqd:AQD_EvaluationScenario/aqd:inspireId/base:Identifier[base:namespace = $namespace]/base:localId
+        let $ok := false()
+        return common:conditionalReportRow(
+            $ok,
+            [
+                ("base:namespace", $namespace),
+                ("base:localId", count($localIds))
+            ]
+        )
+} catch * {
+    html:createErrorRow($err:code, $err:description)
+}:)
+
+let $J9 := try {
+    for $x in $docRoot//aqd:AQD_EvaluationScenario/aqd:inspireId/base:Identifier
+        let $namespace := $x/base:namespace 
         let $localIds := $docRoot//aqd:AQD_EvaluationScenario/aqd:inspireId/base:Identifier[base:namespace = $namespace]/base:localId
         let $ok := false()
         return common:conditionalReportRow(
