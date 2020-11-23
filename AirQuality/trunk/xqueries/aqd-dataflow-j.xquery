@@ -926,7 +926,7 @@ The number of exceecedance expected (under baseline scenario) should be provided
 :)
 
 let $ms1J26 := prof:current-ms()
-
+(: commented by diezzana on 20201120, issue #120666
 let $J26 := try {
     let $main := $evaluationScenario/aqd:baselineScenario/aqd:Scenario/aqd:expectedExceedances
     for $el in $main
@@ -948,6 +948,27 @@ let $J26 := try {
                     ("gml:id", $el/ancestor-or-self::*[name() = $ancestor-name]/@gml:id),
                     ("aqd:expectedExceedances", $el),
                     ("uom", $el/@uom)
+                ]
+            )
+} catch * {
+    html:createErrorRow($err:code, $err:description)
+}:)
+
+let $J26 := try {
+    let $main := $evaluationScenario/aqd:baselineScenario/aqd:Scenario/aqd:expectedExceedances
+    for $el in $main
+        let $ok := (
+            (data($el) castable as xs:float
+            or
+            data($el) castable as xs:integer)
+            and
+            data($el) >= 0
+        )
+        return common:conditionalReportRow(
+                $ok,
+                [
+                    ("gml:id", $el/ancestor-or-self::*[name() = $ancestor-name]/@gml:id),
+                    ("aqd:expectedExceedances", $el)
                 ]
             )
 } catch * {
