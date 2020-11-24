@@ -1048,10 +1048,10 @@ let $ms1J27 := prof:current-ms()
 
 let $J27 := try{
     let $main := $evaluationScenario/aqd:baselineScenario/aqd:Scenario/aqd:measuresApplied
-    let $viaNameLocalIdList:= sparqlx:run(query:existsViaNameLocalIdYearGeneral('AQD_Measures',$reportingYear))
+    (:let $viaNameLocalIdList:= sparqlx:run(query:existsViaNameLocalIdYearGeneral('AQD_Measures',$reportingYear)):) (: issue #117054 :)
+    let $viaNameLocalIdList:= sparqlx:run(query:existsViaNameLocalIdYearGeneralWithoutYearFilter('AQD_Measures',$reportingYear)) (: issue #117054 :)
     for $el in $main
     
-       
         let $label := data($el/@xlink:href)
         (:  let $localId:=
           for $nameLocalId in $viaNameLocalIdList
@@ -1059,9 +1059,9 @@ let $J27 := try{
             return  $nameLocalId/sparql:binding[@name='subject']/sparql:uri
             return  $nameLocalId/sparql:binding[@name='label']/sparql:literal:)
 
-
        let $localId:=
-            for $nameLocalId in $viaNameLocalIdList[sparql:binding[@name='label']/sparql:literal=$label]/sparql:binding[@name='subject']/sparql:uri
+            (: for $nameLocalId in $viaNameLocalIdList[sparql:binding[@name='label']/sparql:literal=$label]/sparql:binding[@name='subject']/sparql:uri :) (:issue #117054 :)
+            for $nameLocalId in $viaNameLocalIdList[sparql:binding[@name='label']/sparql:literal=$label and sparql:binding[@name='reportingYear']/sparql:literal=$reportingYear]/sparql:binding[@name='subject']/sparql:uri (: issue #117054 :)
            return  query:existsViaNameLocalIdYear1(
                 $nameLocalId,
                 $latestEnvelopesK
@@ -1079,22 +1079,18 @@ let $J27 := try{
             else $localId
             (:return  $nameLocalId/sparql:binding[@name='label']/sparql:literal:)
 
-        
-           
-           
-        
         let $sparql_query := if(fn:empty($label))
                              then
                               "No element to execute this query"
                              else
-                              sparqlx:getLink(query:existsViaNameLocalIdYearQuery($el/@xlink:href, 'AQD_Measures', $reportingYear, $latestEnvelopesK))
+                              (:sparqlx:getLink(query:existsViaNameLocalIdYearQuery($el/@xlink:href, 'AQD_Measures', $reportingYear, $latestEnvelopesK)):) (: issue #117054 :)
+                              sparqlx:getLink(query:existsViaNameLocalIdYearGeneralWithoutYearFilter('AQD_Measures',$reportingYear)) (: issue #117054 :)
         
         return common:conditionalReportRow(
                 $ok,
                 [
                     ("gml:id", $el/ancestor-or-self::*[name() = $ancestor-name]/@gml:id),
                     (node-name($el), $el/@xlink:href),
-                    
                     
                     (: ("Sparql", sparqlx:getLink(query:existsViaNameLocalIdYearQuery($el/@xlink:href,'AQD_Measures',$reportingYear,$latestEnvelopesK))) :)
                     ("Sparql", $sparql_query)
@@ -1265,7 +1261,7 @@ Measures identified in the AQ-plan that are included in this projection should b
 
 let $ms1J32 := prof:current-ms()
 
-let $J32 := try{
+(:let $J32 := try{
     let $main := $evaluationScenario/aqd:projectionScenario/aqd:Scenario/aqd:measuresApplied
     for $el in $main
         let $ok := query:existsViaNameLocalIdYear(
@@ -1280,6 +1276,47 @@ let $J32 := try{
                     ("gml:id", $el/ancestor-or-self::*[name() = $ancestor-name]/@gml:id),
                     (node-name($el), $el/@xlink:href),
                     ("Sparql", sparqlx:getLink(query:existsViaNameLocalIdYearQuery($el/@xlink:href,'AQD_Measures',$reportingYear,$latestEnvelopesK)))
+                ]
+            )
+} catch * {
+    html:createErrorRow($err:code, $err:description)
+}:)
+
+(: code lines commented for issue #117054: time optimization and removal year specific :)
+let $J32 := try{
+    let $main := $evaluationScenario/aqd:projectionScenario/aqd:Scenario/aqd:measuresApplied
+    (:let $viaNameLocalIdList:= sparqlx:run(query:existsViaNameLocalIdYearGeneral('AQD_Measures',$reportingYear)):)
+    let $viaNameLocalIdList:= sparqlx:run(query:existsViaNameLocalIdYearGeneralWithoutYearFilter('AQD_Measures',$reportingYear))
+    for $el in $main
+        let $label := data($el/@xlink:href)
+        
+        let $localId:=
+            (: for $nameLocalId in $viaNameLocalIdList[sparql:binding[@name='label']/sparql:literal=$label]/sparql:binding[@name='subject']/sparql:uri :)
+            for $nameLocalId in $viaNameLocalIdList[sparql:binding[@name='label']/sparql:literal=$label and sparql:binding[@name='reportingYear']/sparql:literal=$reportingYear]/sparql:binding[@name='subject']/sparql:uri
+           return  query:existsViaNameLocalIdYear1(
+                $nameLocalId,
+                $latestEnvelopesK
+            )
+            
+        let $ok := if(fn:empty($label)) then
+                        true()
+                    else
+                        if(fn:empty($localId)) then false()
+                        else $localId
+
+        let $sparql_query := if(fn:empty($label))
+                             then
+                              "No element to execute this query"
+                             else
+                              (:sparqlx:getLink(query:existsViaNameLocalIdYearQuery($el/@xlink:href, 'AQD_Measures', $reportingYear, $latestEnvelopesK)):)
+                              sparqlx:getLink(query:existsViaNameLocalIdYearGeneralWithoutYearFilter('AQD_Measures',$reportingYear))
+
+        return common:conditionalReportRow(
+                $ok,
+                [
+                    ("gml:id", $el/ancestor-or-self::*[name() = $ancestor-name]/@gml:id),
+                    (node-name($el), $el/@xlink:href),
+                    ("Sparql", $sparql_query)
                 ]
             )
 } catch * {
