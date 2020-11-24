@@ -839,10 +839,12 @@ declare function query:existsViaNameLocalIdYearI12aQueryGeneral(
         ?localId
         ?envelope
         ?label
+        ?exceedanceSituation
 
         WHERE {
             GRAPH ?source {
               ?subject a aqd:" || $type ||" .
+              ?subject aqd:exceedanceSituation ?exceedanceSituation.
               ?subject aqd:inspireId ?inspireId.
               ?inspireId rdfs:label ?label.
               ?inspireId aqd:namespace ?name.
@@ -856,7 +858,7 @@ declare function query:existsViaNameLocalIdYearI12aQueryGeneral(
             ?locality rod:loccode ?Countrycode .
 
       FILTER ( year(?startOfPeriod) = " || $year || " )
-      FILTER (?Countrycode = " || $countryCode ||")
+      FILTER (?Countrycode = '" || $countryCode ||"')
     }" 
 };
 

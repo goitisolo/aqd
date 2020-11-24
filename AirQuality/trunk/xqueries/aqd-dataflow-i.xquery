@@ -691,18 +691,16 @@ let $I7 := try {
     
     let $I12a := try{
 
-        let $viaNameLocalIdList:= sparqlx:run(query:existsViaNameLocalIdYearI12aQueryGeneral('AQD_Plan',$reportingYear, $countryCode))
+         let $viaNameLocalIdList:= sparqlx:run(query:existsViaNameLocalIdYearI12aQueryGeneral('AQD_Plan',$reportingYear, fn:upper-case($countryCode)))
         for $node in $sources/aqd:parentExceedanceSituation
             let $link := data($node/@xlink:href)
+            let $useinplan := data($node/../aqd:usedInPlan/@xlink:href)
 
             let $localId:=
-                for $nameLocalId in $viaNameLocalIdList[sparql:binding[@name='label']/sparql:literal=$link]/sparql:binding[@name='subject']/sparql:uri
-                   return  query:existsViaNameLocalIdYear1(
-                        $nameLocalId,
-                        $latestEnvelopeByCountryG
-                    )
-            let $ok := $localId
-            (:let $ok := 1 = -1:)
+                for $nameLocalId in $viaNameLocalIdList[sparql:binding[@name='label']/sparql:literal=$useinplan]/sparql:binding[@name='exceedanceSituation']/sparql:uri
+                   return  functx:substring-after-last($nameLocalId, "/")
+                    
+            let $ok := $localId = functx:substring-after-last($link, "/")
 
         return common:conditionalReportRow(
             $ok,
@@ -710,9 +708,7 @@ let $I7 := try {
                 ("gml:id", data($node/ancestor-or-self::aqd:AQD_SourceApportionment/@gml:id)),
                 (node-name($node), $node/@xlink:href),
                 ("reportingYear", $reportingYear),
-                ("reportingYear", $latestEnvelopeByCountryG),
-
-                ("Sparql", sparqlx:getLink(query:existsViaNameLocalIdYearQuery($link,'AQD_Attainment',$reportingYear,$latestEnvelopeByCountryG)))
+                ("Sparql", sparqlx:getLink(query:existsViaNameLocalIdYearI12aQueryGeneral('AQD_Plan',$reportingYear, fn:upper-case($countryCode))))
             ]
         )
     } catch * {
@@ -2838,6 +2834,7 @@ let $ms2Total := prof:current-ms()
                      "All values are valid", "needs valid input", $errors:I11)}
         <!--{html:build2("I12", $labels:I12, $labels:I12_SHORT, $I12,"All values are valid", "needs valid input", $errors:I12)}-->
         {html:build2Sparql("I12", $labels:I12, $labels:I12_SHORT, $I12,"All values are valid", "needs valid input", $errors:I12)}
+        {html:build2Sparql("I12a", $labels:I12a, $labels:I12a_SHORT, $I12a,"All values are valid", "needs valid input", $errors:I12a)}
         {html:build2("I13", $labels:I13, $labels:I13_SHORT, $I13, "All values are valid", "needs valid input", $errors:I13)}
         {html:build2("I15", $labels:I15, $labels:I15_SHORT, $I15, "All values are valid", "needs valid input", $errors:I15)}
         {html:build2("I16", $labels:I16, $labels:I16_SHORT, $I16, "All values are valid", "needs valid input", $errors:I16)}
@@ -2903,6 +2900,7 @@ let $ms2Total := prof:current-ms()
              {common:runtime("I10", $ms1I10, $ms2I10)}
              {common:runtime("I11", $ms1I11, $ms2I11)}
              {common:runtime("I12", $ms1I12, $ms2I12)}
+             {common:runtime("I12a", $ms1I12a, $ms2I12a)}
              {common:runtime("I13", $ms1I13, $ms2I13)}
              {common:runtime("I15", $ms1I15, $ms2I15)}
              {common:runtime("I16", $ms1I16, $ms2I16)}
