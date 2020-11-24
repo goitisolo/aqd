@@ -405,21 +405,28 @@ let $H07 := try {
 }:)
 
 let $H07 := try {
-    let $gmlIds := $docRoot//aqd:AQD_Plan/@gml:id
+    let $gmlIds := $docRoot//aqd:AQD_Plan//@gml:id
     let $inspireIds := $docRoot//aqd:AQD_Plan/lower-case(normalize-space(aqd:inspireId))
 
     for $x in $docRoot//aqd:AQD_Plan
-      let $id := $x/@gml:id
+      let $aqdPlanId := $x/@gml:id
       let $aqdInspireId := $x/aqd:inspireId/base:Identifier/base:localId
-
-      let $ok := (
-          count(index-of($gmlIds, $id)) = 1
-      )
+      let $firstExceedanceYearId := $x/aqd:firstExceedanceYear/gml:TimeInstant/@gml:id
+      let $adoptionDateId := $x/aqd:adoptionDate/gml:TimeInstant/@gml:id
+      let $publicationDateId := $x/aqd:publication/aqd:Publication/aqd:publicationDate/gml:TimeInstant/@gml:id
+        
+      for $y in $publicationDateId   
+        let $ok := (
+          count(index-of($gmlIds, $aqdPlanId)) = 1 and count(index-of($gmlIds, $firstExceedanceYearId)) = 1 and count(index-of($gmlIds, $adoptionDateId)) = 1 and count(index-of($gmlIds, $y)) = 1
+        )
 
        where not($ok) return
           <tr>
-              <td title="gml:id">{data($x/@gml:id)}</td>
-              <td title="aqd:inspireId">{distinct-values($aqdInspireId)}</td>            
+              <td title="aqd:AQD_Plan gml:id">{data($x/@gml:id)}</td>
+              <td title="aqd:inspireId">{distinct-values($aqdInspireId)}</td>
+              <td title="aqd:firstExceedanceYear gml:id">{data($x/aqd:firstExceedanceYear/gml:TimeInstant/@gml:id)}</td>
+              <td title="aqd:adoptionDate gml:id">{data($x/aqd:adoptionDate/gml:TimeInstant/@gml:id)}</td> 
+              <td title="aqd:publicationDate gml:id">{data($x/aqd:publication/aqd:Publication/aqd:publicationDate/gml:TimeInstant/@gml:id)}</td>
           </tr>   
 } catch * {
     html:createErrorRow($err:code, $err:description)
