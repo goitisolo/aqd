@@ -419,6 +419,7 @@ declare variable $errors:I9 := errors:getError("I9");
 declare variable $errors:I10 := errors:getError("I10");
 declare variable $errors:I11 := errors:getError("I11");
 declare variable $errors:I12 := errors:getError("I12");
+declare variable $errors:I12a := errors:getError("I12a");
 declare variable $errors:I13 := errors:getError("I13");
 declare variable $errors:I14 := errors:getError("I14");
 declare variable $errors:I15 := errors:getError("I15");
