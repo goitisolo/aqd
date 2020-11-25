@@ -268,7 +268,7 @@ let $K04table := try {
     for $x in $docRoot//aqd:AQD_Measures
         let $id := $x/@gml:id
         let $inspireId := $x/aqd:inspireId
-        let $aqdinspireId := concat($x/aqd:inspireId/base:Identifier/base:localId, "/", $x/aqd:inspireId/base:Identifier/base:namespace)
+        let $aqdinspireId := concat($x/aqd:inspireId/base:Identifier/base:namespace, "/" , $x/aqd:inspireId/base:Identifier/base:localId)
         let $ok := (count(index-of($gmlIds, lower-case(normalize-space($id)))) = 1
             and
             count(index-of($inspireIds, lower-case(normalize-space($inspireId)))) = 1
@@ -278,8 +278,8 @@ let $K04table := try {
             [
                 ("gml:id", data($x/@gml:id)),
                 ("aqd:inspireId", distinct-values($aqdinspireId)),
-                ("aqd:AQD_Measures", common:checkLink(distinct-values(data($x/aqd:exceedanceAffected/@xlink:href)))),
-                ("aqd:AQD_Scenario", common:checkLink(distinct-values(data($x/aqd:usedForScenario/@xlink:href))))
+                ("Number of Source Apportionment", count(common:checkLink(distinct-values(data($x/aqd:exceedanceAffected/@xlink:href))))),
+                ("Number of Scenarios", count(common:checkLink(distinct-values(data($x/aqd:usedForScenario/@xlink:href)))))
             ]
         )
 } catch * {
