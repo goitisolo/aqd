@@ -1184,9 +1184,11 @@ let $K39 := try {
             or
             ($el castable as xs:float)
         )
+        
+        let $specificationOfHoursLink := $el/../aqd:specificationOfHours/@xlink:href
 
         let $ok := (
-           $isNum and ($el cast as xs:float >= 0)
+           $isNum and ($el cast as xs:float >= 0) and not(empty($specificationOfHoursLink))
         )
 
         return common:conditionalReportRow(
@@ -1194,7 +1196,8 @@ let $K39 := try {
             [
                 ("gml:id", $el/ancestor-or-self::*[name() = $ancestor-name]/@gml:id),
                 ("aqd:numberOfExceedances", data($el)),
-                ("uom", data($uri))
+                ("uom", data($uri)),
+                ("aqd:specificationOfHours",$specificationOfHoursLink)
             ]
         )
 } catch * {
