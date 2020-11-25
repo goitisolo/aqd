@@ -1219,12 +1219,14 @@ let $K40 :=
         let $specified := string($x/aqd:specificationOfHours/@xlink:href)
         let $invoca := common:isInVocabulary($specified, $vocabulary:UOM_TIME)
         let $elementExist := exists($x/aqd:specificationOfHours/@xlink:href)
+        let $numberOfExceedancesExist := exists($x/aqd:numberOfExceedances)
 
-        where ($elementExist = true() and not($invoca and functx:substring-after-last($specified, "/") = "hour" or functx:substring-after-last($specified, "/") = "day"))
+        where ( ($elementExist = true() and not($invoca and functx:substring-after-last($specified, "/") = "hour" or functx:substring-after-last($specified, "/") = "day")) or ($elementExist = true() and not($invoca and functx:substring-after-last($specified, "/") = "hour" or functx:substring-after-last($specified, "/") = "day") and $numberOfExceedancesExist = false()) )
         return
             <tr>
                 <td title="gml:id">{data($x/../../@gml:id)}</td>
-                <td title="Pollutant">{$specified}</td>
+                <td title="aqd:specificationOfHours">{$specified}</td>
+                <td title="aqd:numberOfExceedances">{data($x/aqd:numberOfExceedances)}</td>
             </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
     } catch * {
         <tr class="{$errors:FAILED}">
