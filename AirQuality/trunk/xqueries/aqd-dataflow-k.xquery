@@ -664,12 +664,41 @@ If the final total costs of the measure is provided, this nneeds to be a number
 :)
 
 let $ms1K22 := prof:current-ms()
+(: commented because of the issue #124537
 let $K22 := common:validatePossibleNodeValueReport(
     $docRoot//aqd:AQD_Measures/aqd:costs/aqd:Costs,
     'aqd:finalImplementationCosts',
     common:is-a-number#1,
     $ancestor-name
-)
+):)
+let $K22 := 
+    try {
+        (for $x in $docRoot//aqd:AQD_Measures/aqd:costs/aqd:Costs/aqd:finalImplementationCosts
+        let $elementExists := exists(data($x))
+        (:checking if it is a number:)
+        let $number := if($elementExists) then string(number($x))
+                       else -1
+        let $matches := if($elementExists) then matches($number, "^\d+(\.\d{0,9}?){0,1}$")
+                        else false()
+        let $positive := number($x) >= 0
+        let $isNum := (
+            (data($x) castable as xs:integer)
+            or
+            (data($x) castable as xs:float)
+        )
+
+        where ( ($elementExists = true() and $matches = false() and not($isNum)) or ($elementExists = true() and not($positive) and not($isNum)) )
+        return
+            <tr>
+                <td title="gml:id">{data($x/../../../@gml:id)}</td>
+                <td title="aqd:finalImplementationCosts">{data($x)}</td>
+            </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
+    } catch * {
+        <tr class="{$errors:FAILED}">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
 let $ms2K22 := prof:current-ms()
 
 (: K23
