@@ -2453,7 +2453,7 @@ let $I18errorMessage := (
     
     let $ms1I43 := prof:current-ms()
 
-    let $I43 := try {
+      let $I43 := try {
         let $seq :=
             $sources/aqd:macroExceedanceSituation/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:assessmentMethod/aqd:AssessmentMethods
         let $generalData := sparqlx:run(query:existsViaNameLocalIdGeneralQuery("AQD_SamplingPoint",$latestEnvelopesD))
@@ -2470,16 +2470,17 @@ let $I18errorMessage := (
                                 false()
                             else
                              for $sa in $samplingPointAssessmentMetadata
-                                let $test := for $gd in $generalData[sparql:binding[@name='label']/sparql:literal=$sa]/sparql:binding[@name='subject']/sparql:uri
-                                return
-                                    query:existsViaNameLocalIdGeneral(
-                                     $gd,
-                                     $latestEnvelopesD
-                                     )
+                                let $test := 
+                                    for $gd in $generalData[sparql:binding[@name='label']/sparql:literal=$sa]/sparql:binding[@name='subject']/sparql:uri
+                                        return
+                                            query:existsViaNameLocalIdGeneral(
+                                             $gd,
+                                             $latestEnvelopesD
+                                             )
                             return
                                      $test
                                      
-              let $sparql_query :=for $sa in $samplingPointAssessmentMetadata
+             let $sparql_query :=for $sa in $samplingPointAssessmentMetadata
                   return if(fn:empty($sa))
                             then
                                 "No samplingPointAssessmentMetadata to execute this query"
@@ -2490,7 +2491,7 @@ let $I18errorMessage := (
             let $linkAjustment := $ul/@xlink:href
             
             let $needed := common:is-polutant-air($pollutant)(:) and ($link = "http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/fullyCorrected" or $link = "http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/noneApplied"):)
-            let $needed2 := not(common:is-polutant-air($pollutant)) and ($linkAjustment = "http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/noneApplicable" or $linkAjustment = "")
+            let $needed2 := (not(common:is-polutant-air($pollutant))) and ($linkAjustment = "http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/noneApplicable" or $linkAjustment = "")
             
              
             let $check := not(common:is-polutant-air($pollutant))
@@ -2561,8 +2562,8 @@ let $I18errorMessage := (
             let $ul := $node/../../aqd:adjustmentType
             let $linkAjustment := $ul/@xlink:href
             
-            let $needed := not(common:is-polutant-air($pollutant))(:) and ($link = "http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/fullyCorrected" or $link = "http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/noneApplied"):)
-            let $needed2 := common:is-polutant-air($pollutant) and ($linkAjustment = "http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/noneApplicable" or $linkAjustment = "")
+            let $needed := common:is-polutant-air($pollutant)(:) and ($link = "http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/fullyCorrected" or $link = "http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/noneApplied"):)
+            let $needed2 := not(common:is-polutant-air($pollutant)) and ($linkAjustment = "http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/noneApplicable" or $linkAjustment = "")
             
                                
 
