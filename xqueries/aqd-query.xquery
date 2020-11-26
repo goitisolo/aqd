@@ -431,6 +431,34 @@ declare function query:existsViaNameLocalIdQuery(
   }"
 };
 
+declare function query:existsViaNameLocalIdGeneral(
+        $results as xs:string,
+        $latestEnvelopes as xs:string*
+) as xs:boolean {
+    
+    let $envelopes := functx:substring-before-last($results, "/")
+
+    return common:isLatestEnvelope($envelopes, $latestEnvelopes)
+};
+
+declare function query:existsViaNameLocalIdGeneralQuery(
+        
+        $name as xs:string,
+        $latestEnvelopes as xs:string*
+) as xs:string {
+  "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+  PREFIX aq: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+  
+  SELECT ?subject ?label
+  WHERE {
+      ?subject a aq:" || $name ||";
+      aq:inspireId ?inspireId.
+      ?inspireId rdfs:label ?label.
+      ?inspireId aq:namespace ?name.
+      ?inspireId aq:localId ?localId
+  }"
+};
+
 (: Checks if X references an existing Y via namespace/localid and reporting year :)
 (:declare function query:existsViaNameLocalIdYear(
     $label as xs:string,

@@ -657,7 +657,7 @@ let $I7 := try {
     
     let $I12 := try{
 
-        let $viaNameLocalIdList:= sparqlx:run(query:existsViaNameLocalIdYearGeneral('AQD_Attainment',$reportingYear))
+let $viaNameLocalIdList:= sparqlx:run(query:existsViaNameLocalIdYearGeneral('AQD_Attainment',$reportingYear))
         for $node in $sources/aqd:parentExceedanceSituation
             let $link := data($node/@xlink:href)
 
@@ -666,8 +666,8 @@ let $I7 := try {
                    return  query:existsViaNameLocalIdYear1(
                         $nameLocalId,
                         $latestEnvelopeByCountryG
-                    )
-            let $ok := $localId
+                    ) 
+             let $ok := count($localId[false()]) = 0   (:Count required more than one result in the $localId variable:)
             (:let $ok := 1 = -1:)
 
         return common:conditionalReportRow(
@@ -2456,7 +2456,7 @@ let $I18errorMessage := (
     let $I43 := try {
         let $seq :=
             $sources/aqd:macroExceedanceSituation/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:assessmentMethod/aqd:AssessmentMethods
-
+        let $generalData := sparqlx:run(query:existsViaNameLocalIdGeneralQuery("AQD_SamplingPoint",$latestEnvelopesD))
         (: modelAssessmentMetadata :)
         (: samplingPointAssessmentMetadata :)
         for $node in $seq
@@ -2469,26 +2469,28 @@ let $I18errorMessage := (
                             then
                                 false()
                             else
-                            for $sa in $samplingPointAssessmentMetadata
+                             for $sa in $samplingPointAssessmentMetadata
+                                let $test := for $gd in $generalData[sparql:binding[@name='label']/sparql:literal=$sa]/sparql:binding[@name='subject']/sparql:uri
                                 return
-                                
-                                     query:existsViaNameLocalId(
-                                     $sa,
-                                     "AQD_SamplingPoint",
+                                    query:existsViaNameLocalIdGeneral(
+                                     $gd,
                                      $latestEnvelopesD
                                      )
+                            return
+                                     $test
                                      
-            let $sparql_query := if(fn:empty($samplingPointAssessmentMetadata))
+              let $sparql_query :=for $sa in $samplingPointAssessmentMetadata
+                  return if(fn:empty($sa))
                             then
                                 "No samplingPointAssessmentMetadata to execute this query"
                             else
-                                sparqlx:getLink(query:existsViaNameLocalIdQuery($samplingPointAssessmentMetadata, "AQD_SamplingPoint", $latestEnvelopesD))
+                                sparqlx:getLink(query:existsViaNameLocalIdQuery($sa, "AQD_SamplingPoint", $latestEnvelopesD))
                                                        
             let $ul := $node/../../aqd:adjustmentType
             let $linkAjustment := $ul/@xlink:href
             
-            let $needed := not(common:is-polutant-air($pollutant))(:) and ($link = "http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/fullyCorrected" or $link = "http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/noneApplied"):)
-            let $needed2 := common:is-polutant-air($pollutant) and ($linkAjustment = "http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/noneApplicable" or $linkAjustment = "")
+            let $needed := common:is-polutant-air($pollutant)(:) and ($link = "http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/fullyCorrected" or $link = "http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/noneApplied"):)
+            let $needed2 := not(common:is-polutant-air($pollutant)) and ($linkAjustment = "http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/noneApplicable" or $linkAjustment = "")
             
              
             let $check := not(common:is-polutant-air($pollutant))
