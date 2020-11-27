@@ -194,16 +194,18 @@ let $H02 := try {
     let $x := $el/aqd:inspireId/base:Identifier
     let $inspireId := concat(data($x/base:namespace), "/", data($x/base:localId))
     let $ok := $inspireId = $knownPlans
-                
+    (:let $id := $x/base:namespace || "/" || $x/base:localId:) (:***changed for #124433 issue by goititer***:)
+    let $id := $x/base:localId
+
     return
         common:conditionalReportRow(
                 $ok,
                 [
                     ("gml:id", data($el/@gml:id)),
                     ("aqd:inspireId", $inspireId),
-                    ("knownPlans", $isNewDelivery),
-                    ("deliveries", data($knownPlans)),
-                    ("Sparql", sparqlx:getLink(query:existsViaNameLocalIdQuery(data($el/@gml:id), 'AQD_Plan', $latestEnvelopesH)))
+                    (:("knownPlans", $isNewDelivery),eliminar al subir:)
+                   (: ("deliveries", data($knownPlans)),eliminar al subir:)
+                    ("Sparql", sparqlx:getLink(query:existsViaNameLocalIdQuery(data($id), 'AQD_Plan', $latestEnvelopesH)))
                 ]
         )
 } catch * {
@@ -215,9 +217,10 @@ let $H02errorLevel :=
                 and
                 count(
                         for $x in $docRoot//aqd:AQD_Plan/aqd:inspireId/base:Identifier
-                        let $id := $x/base:namespace || "/" || $x/base:localId
+                        (:let $id := $x/base:namespace || "/" || $x/base:localId:)(:***changed for #124433 issue by goititer***:)
+                        let $id :=$x/base:localId
                         where query:existsViaNameLocalId($id, 'AQD_Plan', $latestEnvelopesH)
-                        return 1
+                        return 1.
                 ) > 0
     )
     then
