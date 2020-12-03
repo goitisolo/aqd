@@ -546,6 +546,52 @@ declare function html:build2(
         $bulletType
     )
 };
+
+declare function html:build2Distinct(
+    $ruleCode as xs:string,
+    $longText,
+    $text,
+    $records as element(tr)*,
+    $validMsg as xs:string,
+    $unit as xs:string,
+    $errorLevel as xs:string
+) as element(tr)* {
+
+    let $metadata := html:parseData($records, "metadata")
+    let $thead := html:parseData($records, "thead")  
+    let $data := html:parseData($records, "data")
+    let $data2:=distinct-values($data)
+    let $countRecords := count($data2)  
+    let $skipped := $metadata/count = "0"
+
+    let $bulletType :=
+        if ($skipped) then
+            $errors:SKIPPED
+        else if (count($data) = 0) then
+            $errors:INFO
+        else
+            $errorLevel
+
+    let $message :=
+        if ($skipped) then
+            $labels:SKIPPED
+        else if ($countRecords = 0) then
+            $validMsg
+        else
+            if ($countRecords=1) then
+            $countRecords || " " || $unit ||  "issue found"
+             else  
+            $countRecords || " " || $unit ||  "issues found"
+
+    return html:buildGeneric(
+        $ruleCode,
+        $longText,
+        $text,
+        $data,
+        $message,
+        $bulletType
+    )
+};
 declare function html:build2Sparql(
     $ruleCode as xs:string,
     $longText,
