@@ -411,25 +411,18 @@ let $H07 := try {
     let $gmlIds := $docRoot//aqd:AQD_Plan//@gml:id
     let $inspireIds := $docRoot//aqd:AQD_Plan/lower-case(normalize-space(aqd:inspireId))
 
-    for $x in $docRoot//aqd:AQD_Plan
-      let $aqdPlanId := $x/@gml:id
-      let $aqdInspireId := $x/aqd:inspireId/base:Identifier/base:localId
-      let $firstExceedanceYearId := $x/aqd:firstExceedanceYear/gml:TimeInstant/@gml:id
-      let $adoptionDateId := $x/aqd:adoptionDate/gml:TimeInstant/@gml:id
-      let $publicationDateId := $x/aqd:publication/aqd:Publication/aqd:publicationDate/gml:TimeInstant/@gml:id
-        
-      for $y in $publicationDateId   
+    for $x in $docRoot//aqd:AQD_Plan 
+      let $ids := $x//@gml:id
+      let $aqdInspireId := $x/aqd:inspireId/base:Identifier/base:localId 
+      for $id in $ids           
         let $ok := (
-          count(index-of($gmlIds, $aqdPlanId)) = 1 and count(index-of($gmlIds, $firstExceedanceYearId)) = 1 and count(index-of($gmlIds, $adoptionDateId)) = 1 and count(index-of($gmlIds, $y)) = 1
+          count(index-of($gmlIds, $id)) = 1
         )
 
        where not($ok) return
           <tr>
-              <td title="aqd:AQD_Plan gml:id">{data($x/@gml:id)}</td>
+              <td title="duplicated gml:id">{data($id)}</td>
               <td title="aqd:inspireId">{distinct-values($aqdInspireId)}</td>
-              <td title="aqd:firstExceedanceYear gml:id">{data($x/aqd:firstExceedanceYear/gml:TimeInstant/@gml:id)}</td>
-              <td title="aqd:adoptionDate gml:id">{data($x/aqd:adoptionDate/gml:TimeInstant/@gml:id)}</td> 
-              <td title="aqd:publicationDate gml:id">{data($x/aqd:publication/aqd:Publication/aqd:publicationDate/gml:TimeInstant/@gml:id)}</td>
           </tr>   
 } catch * {
     html:createErrorRow($err:code, $err:description)
@@ -1403,7 +1396,7 @@ return
         <!--{html:build1("H04", $labels:H04, $labels:H04_SHORT, $H04, "", string(count($H04)), " ", "", $errors:H04)}-->
         {html:build2("H05", $labels:H05, $labels:H05_SHORT, $H05, "All values are valid", " ", $errors:H05)}
         {html:build1("H06", $labels:H06, $labels:H06_SHORT, $H06, "RESERVE", "RESERVE", "RESERVE", "RESERVE", $errors:H06)}
-        {html:build2("H07", $labels:H07, $labels:H07_SHORT, $H07, "No duplicate values ", " ", $errors:H07)}
+        {html:build2Distinct("H07", $labels:H07, $labels:H07_SHORT, $H07, "No duplicate values ", " ", $errors:H07)}
         {html:build2("H08", $labels:H08, $labels:H08_SHORT, $H08, "No duplicate values ", "", $errors:H08)}
         {html:buildUnique("H09", $labels:H09, $labels:H09_SHORT, $H09, "namespace", $errors:H09)}
         {html:build2("H10", $labels:H10, $labels:H10_SHORT, $H10, "All values are valid", " ", $errors:H10)}
