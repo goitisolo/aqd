@@ -624,7 +624,9 @@ let $I7 := try {
                         $nameLocalId,
                         $latestEnvelopesH
                     )
-            let $ok := $localId
+
+             (:Required to add a count:)      
+             let $ok := count($localId[true()] ) > 0
 
         return common:conditionalReportRow(
             $ok,
@@ -667,7 +669,7 @@ let $viaNameLocalIdList:= sparqlx:run(query:existsViaNameLocalIdYearGeneral('AQD
                         $nameLocalId,
                         $latestEnvelopeByCountryG
                     ) 
-             let $ok := count($localId[false()]) = 0   (:Count required more than one result in the $localId variable:)
+             let $ok := count($localId[true()]) > 0   (:Count required more than one result in the $localId variable:)
             (:let $ok := 1 = -1:)
 
         return common:conditionalReportRow(
