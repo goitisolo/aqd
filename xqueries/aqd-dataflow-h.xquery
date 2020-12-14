@@ -1398,7 +1398,8 @@ return
         {html:build1("H06", $labels:H06, $labels:H06_SHORT, $H06, "RESERVE", "RESERVE", "RESERVE", "RESERVE", $errors:H06)}
         {html:build2Distinct("H07", $labels:H07, $labels:H07_SHORT, $H07, "No duplicate values ", " ", $errors:H07)}
         {html:build2("H08", $labels:H08, $labels:H08_SHORT, $H08, "No duplicate values ", "", $errors:H08)}
-        {html:buildUnique("H09", $labels:H09, $labels:H09_SHORT, $H09, "namespace", $errors:H09)}
+        <!-- {html:buildUnique("H09", $labels:H09, $labels:H09_SHORT, $H09, "namespace", $errors:H09)} -->
+        {html:build2Distinct("H09", $labels:H09, $labels:H09_SHORT, $H09, "namespace", "", $errors:H09)}
         {html:build2("H10", $labels:H10, $labels:H10_SHORT, $H10, "All values are valid", " ", $errors:H10)}
         {html:build2Sparql("H11", $labels:H11, $labels:H11_SHORT, $H11, "All values are valid", "issues ", $errors:H11)}
         {html:build2("H12", $labels:H12, $labels:H12_SHORT, $H12, "All values are valid", " ", $errors:H12)}
