@@ -341,7 +341,7 @@ Your plan status should use one of those listed at http://dd.eionet.europa.eu/vo
  :)
 
 let $ms1H05 := prof:current-ms()
-
+(: commented by diezzana on 20201214 because of the issue #124552
 let $H05 := try {
     for $el in $docRoot//aqd:AQD_Plan/aqd:pollutants/aqd:Pollutant/aqd:pollutantCode
     let $uri := $el/@xlink:href
@@ -355,6 +355,34 @@ let $H05 := try {
             </tr>
         else
             ()
+} catch * {
+    html:createErrorRow($err:code, $err:description)
+}:)
+
+let $H05 := try {
+    let $allowedPollutants := ("http://dd.eionet.europa.eu/vocabulary/aq/pollutant/2", 
+                                "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/9", 
+                                "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/8", 
+                                "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/10", 
+                                "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5",
+                                "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/6001", 
+                                "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5028", 
+                                "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5018", 
+                                "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5014", 
+                                "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5015", 
+                                "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5012", 
+                                "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/20")                            
+    for $el in $docRoot//aqd:AQD_Plan/aqd:pollutants/aqd:Pollutant/aqd:pollutantCode
+      let $uri := $el/@xlink:href
+      let $ok := (
+                    count(index-of($allowedPollutants, $uri)) >= 1
+                 )
+      where not($ok) return
+              <tr>
+                  <td title="gml:id">{data($el/ancestor-or-self::*[name() = $node-name]/@gml:id)}</td>
+                  <td title="xlink:href"> {data($el/@xlink:href)}</td>
+                  <td title="{node-name($el)}"> not conform to vocabulary</td>
+              </tr>
 } catch * {
     html:createErrorRow($err:code, $err:description)
 }
@@ -482,7 +510,7 @@ let $H09 := try {
             $ok,
             [
             ("base:namespace", $namespace),
-            ("base:localId", count($localIds))
+            ("used in number of base:localId", count($localIds))
             ]
     )
 } catch * {
@@ -1394,7 +1422,7 @@ return
         {html:buildSimpleSparql("H03", $labels:H03, $labels:H03_SHORT, $H03, "", "issue", $H03errorLevel)}
         {html:build2("H04", $labels:H04, $labels:H04_SHORT, $H04, "All values are valid", "", $errors:H04)}
         <!--{html:build1("H04", $labels:H04, $labels:H04_SHORT, $H04, "", string(count($H04)), " ", "", $errors:H04)}-->
-        {html:build2("H05", $labels:H05, $labels:H05_SHORT, $H05, "All values are valid", " ", $errors:H05)}
+        {html:build2Distinct("H05", $labels:H05, $labels:H05_SHORT, $H05, "All values are valid", " ", $errors:H05)}
         {html:build1("H06", $labels:H06, $labels:H06_SHORT, $H06, "RESERVE", "RESERVE", "RESERVE", "RESERVE", $errors:H06)}
         {html:build2Distinct("H07", $labels:H07, $labels:H07_SHORT, $H07, "No duplicate values ", " ", $errors:H07)}
         {html:build2("H08", $labels:H08, $labels:H08_SHORT, $H08, "No duplicate values ", "", $errors:H08)}
