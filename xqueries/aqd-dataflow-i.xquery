@@ -2523,9 +2523,9 @@ let $I18errorMessage := (
                 ("gml:id", data($node/ancestor-or-self::aqd:AQD_SourceApportionment/@gml:id)),
                 ("aqd:pollutant", $pollutant),
                 ("aqd:parentExceedanceSituation", $parentExceedanceSituation),
-                ("aqd:samplingPointAssessmentMetadata", $ok-spa),
+                (:("aqd:samplingPointAssessmentMetadata", $ok-spa),
                 ("test", $samplingPointAssessmentMetadata),
-                (: ("Sparql", sparqlx:getLink(query:existsViaNameLocalIdQuery($samplingPointAssessmentMetadata, "AQD_SamplingPoint", $latestEnvelopesD))) :)
+                 ("Sparql", sparqlx:getLink(query:existsViaNameLocalIdQuery($samplingPointAssessmentMetadata, "AQD_SamplingPoint", $latestEnvelopesD))) :)
                 (: ("Sparql", sparqlx:getLink(query:existsViaNameLocalIdQuery(data($node/ancestor-or-self::aqd:AQD_SourceApportionment/@gml:id), "AQD_SamplingPoint", $latestEnvelopesD))) :)
                 ("Sparql", $sparql_query)
 
