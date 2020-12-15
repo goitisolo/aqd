@@ -693,7 +693,7 @@ let $viaNameLocalIdList:= sparqlx:run(query:existsViaNameLocalIdYearGeneral('AQD
     
     let $I12a := try{
 
-         let $viaNameLocalIdList:= sparqlx:run(query:existsViaNameLocalIdYearI12aQueryGeneral('AQD_Plan',$reportingYear, fn:upper-case($countryCode)))
+        let $viaNameLocalIdList:= sparqlx:run(query:existsViaNameLocalIdYearI12aQueryGeneral('AQD_Plan',$reportingYear, fn:upper-case($countryCode)))
         for $node in $sources/aqd:parentExceedanceSituation
             let $link := data($node/@xlink:href)
             let $useinplan := data($node/../aqd:usedInPlan/@xlink:href)
@@ -708,6 +708,7 @@ let $viaNameLocalIdList:= sparqlx:run(query:existsViaNameLocalIdYearGeneral('AQD
             $ok,
             [
                 ("gml:id", data($node/ancestor-or-self::aqd:AQD_SourceApportionment/@gml:id)),
+                ("useinplan", $useinplan),
                 (node-name($node), $node/@xlink:href),
                 ("reportingYear", $reportingYear),
                 ("Sparql", sparqlx:getLink(query:existsViaNameLocalIdYearI12aQueryGeneral('AQD_Plan',$reportingYear, fn:upper-case($countryCode))))
