@@ -191,12 +191,14 @@ Number of new Plans compared to previous report(s).
 let $ms1H02 := prof:current-ms()
 
 let $H02 := try {
+    (:NEW:)let $headerNamespace := $docRoot//aqd:AQD_ReportingHeader/aqd:inspireId/base:Identifier/base:namespace
     for $el in $docRoot//aqd:AQD_Plan
     let $x := $el/aqd:inspireId/base:Identifier
     let $inspireId := concat(data($x/base:namespace), "/", data($x/base:localId))
     let $ok := $inspireId = $knownPlans
     (:let $id := $x/base:namespace || "/" || $x/base:localId:) (:***changed for #124433 issue by goititer***:)
     let $id := $x/base:localId
+    (:NEW:) let $label := $headerNamespace || "/" || $id
 
     return
         common:conditionalReportRow(
@@ -206,7 +208,9 @@ let $H02 := try {
                     ("aqd:inspireId", $inspireId),
                     (:("knownPlans", $isNewDelivery),eliminar al subir:)
                    (: ("deliveries", data($knownPlans)),eliminar al subir:)
-                    ("Sparql", sparqlx:getLink(query:existsViaNameLocalIdQuery(data($id), 'AQD_Plan', $latestEnvelopesH)))
+                    (:("Sparql", sparqlx:getLink(query:existsViaNameLocalIdQuery(data($id), 'AQD_Plan', $latestEnvelopesH))):) (:SVN:)
+                    (:("Sparql",sparqlx:getLink(query:existsViaNameLocalIdYearQuery(data($id), 'AQD_Plan', $reportingYear, $latestEnvelopesH))):)(:NEW:)
+                    ("Sparql", sparqlx:getLink(query:existsViaNameLocalIdQuery(data($label), 'AQD_Plan', $latestEnvelopesH))) (:NEW:)
                 ]
         )
 } catch * {
@@ -220,7 +224,9 @@ let $H02errorLevel :=
                         for $x in $docRoot//aqd:AQD_Plan/aqd:inspireId/base:Identifier
                         (:let $id := $x/base:namespace || "/" || $x/base:localId:)(:***changed for #124433 issue by goititer***:)
                         let $id :=$x/base:localId
-                        where query:existsViaNameLocalId($id, 'AQD_Plan', $latestEnvelopesH)
+                        (:where query:existsViaNameLocalId($id, 'AQD_Plan', $latestEnvelopesH):) (:SVN:)
+                        (:where query:existsViaNameLocalIdYearQuery(data($id), 'AQD_Plan', $reportingYear, $latestEnvelopesH):) (:NEW:)
+                        where query:existsViaNameLocalId($docRoot//aqd:AQD_ReportingHeader/aqd:inspireId/base:Identifier/base:namespace || "/" || $id, 'AQD_Plan', $latestEnvelopesH) (:NEW:)
                         return 1
                 ) > 0
     )
