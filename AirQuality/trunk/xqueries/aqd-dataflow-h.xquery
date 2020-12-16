@@ -67,6 +67,7 @@ let $cdrUrl := common:getCdrUrl($countryCode)
 let $reportingYear := common:getReportingYear($docRoot)
 let $node-name := 'aqd:AQD_Plan'
 let $latestEnvelopeByYearH := query:getLatestEnvelope($cdrUrl || "h/", $reportingYear)
+let $latestEnvelopeByYearG := query:getLatestEnvelope($cdrUrl || "g/", $reportingYear)
 let $headerBeginPosition := $docRoot//aqd:AQD_ReportingHeader/aqd:reportingPeriod/gml:TimePeriod/gml:beginPosition
 let $headerEndPosition := $docRoot//aqd:AQD_ReportingHeader/aqd:reportingPeriod/gml:TimePeriod/gml:endPosition
 
@@ -220,7 +221,7 @@ let $H02errorLevel :=
                         (:let $id := $x/base:namespace || "/" || $x/base:localId:)(:***changed for #124433 issue by goititer***:)
                         let $id :=$x/base:localId
                         where query:existsViaNameLocalId($id, 'AQD_Plan', $latestEnvelopesH)
-                        return 1.
+                        return 1
                 ) > 0
     )
     then
@@ -580,10 +581,11 @@ let $H11 := try{
             true() :)
     let $ok := if($year>=2013 and not(fn:empty($label)))
         then
-            query:existsViaNameLocalId(
+            query:existsViaNameLocalIdYear(
                 $label,
                 'AQD_Attainment',
-                $latestEnvelopesG
+                xs:string($year),
+                $latestEnvelopeByYearG
             )
         else
             true()
@@ -592,7 +594,7 @@ let $H11 := try{
                          then
                           "No label to execute this query"
                          else
-                          sparqlx:getLink(query:existsViaNameLocalIdQuery($label, 'AQD_Attainment', $latestEnvelopesG))
+                          sparqlx:getLink(query:existsViaNameLocalIdYearQuery($label, 'AQD_Attainment',xs:string($year), $latestEnvelopeByYearG))
     
     return common:conditionalReportRow(
             $ok,
