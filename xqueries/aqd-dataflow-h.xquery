@@ -371,7 +371,8 @@ let $H05 := try {
                                 "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5014", 
                                 "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5015", 
                                 "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5012", 
-                                "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/20")                            
+                                "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/20",
+                                "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/7")                            
     for $el in $docRoot//aqd:AQD_Plan/aqd:pollutants/aqd:Pollutant/aqd:pollutantCode
       let $uri := $el/@xlink:href
       let $ok := (
