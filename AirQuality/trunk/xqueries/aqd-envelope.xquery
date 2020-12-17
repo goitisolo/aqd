@@ -255,6 +255,11 @@ declare function envelope:validateEnvelope($source_url as xs:string) as element(
                     <p>Your delivery cannot be accepted as you did not provide any XML file with correct XML Schema location.<br />
                         Valid XML Schema location is: <strong>{$schemax:SCHEMA}</strong></p>
                 </tr>
+             else if ((not($obligationNumber="673") and not($obligationNumber="674"))and($validCount > 1)) then
+                <tr class="{$errors:ERROR}">
+                    <p>Your delivery cannot be accepted as you did provide more than one XML file with e-reporting XML Schema.<br />
+                        </p>
+                </tr>
             else if ($validCount != count($xmlFilesWithAQSchema)) then
                 <tr class="{$errors:ERROR}">
                     <p>1 or more AQ e-Reporting XML file(s) with incorrect XML Schema location<br />
