@@ -708,7 +708,7 @@ let $viaNameLocalIdList:= sparqlx:run(query:existsViaNameLocalIdYearGeneral('AQD
             $ok,
             [
                 ("gml:id", data($node/ancestor-or-self::aqd:AQD_SourceApportionment/@gml:id)),
-                ("useinplan", $useinplan),
+                ("useInPlan", $useinplan),
                 (node-name($node), $node/@xlink:href),
                 ("reportingYear", $reportingYear),
                 ("Sparql", sparqlx:getLink(query:existsViaNameLocalIdYearI12aQueryGeneral('AQD_Plan',$reportingYear, fn:upper-case($countryCode))))
