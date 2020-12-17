@@ -278,47 +278,38 @@ Feedback report shall include the gml:id attribute, ./aqd:inspireId, ./aqd:pollu
 List of unique identifier information for all Plan records. Blocker if no Plans.
 :)
 
-let $ms1H04 := prof:current-ms()
+(:let $ms1H04 := prof:current-ms()
 
-let $H04 := try {(:)
-    let $gmlIds := $docRoot//aqd:AQD_Plan/lower-case(normalize-space(@gml:id))
-    let $inspireIds := $docRoot//aqd:AQD_Plan/lower-case(normalize-space(aqd:inspireId))
-
-    for $x in $docRoot//aqd:AQD_Plan
-        let $id := $x/@gml:id
-        let $inspireId := $x/aqd:inspireId
-        let $pollutantCodes := 
-                            for $y in $x/aqd:pollutants/aqd:Pollutant/aqd:pollutantCode/@xlink:href
-                                return $y    
-        let $aqdinspireId := concat($x/aqd:inspireId/base:Identifier/base:localId, "/", $x/aqd:inspireId/base:Identifier/base:namespace)
-
-    
-        
-        let $ok := (count(index-of($gmlIds, lower-case(normalize-space($id)))) = 1
-            and
-            count(index-of($inspireIds, lower-case(normalize-space($inspireId)))) = 1
-        )
-        return common:conditionalReportRow(
-            not($ok),
-            [
-                ("gml:id", data($x/@gml:id)),
-                ("aqd:inspireId", distinct-values($aqdinspireId)),
-                ("aqd:pollutant", data($pollutantCodes)),
-                ("aqd:protectionTarget", data($x/aqd:pollutants/aqd:Pollutant/aqd:protectionTarget/@xlink:href)),
-                ("aqd:firstExceedanceYear", data($x/aqd:firstExceedanceYear))
-            ]
-        )
-} catch * {
-    html:createErrorRow($err:code, $err:description)
-}:)
+let $H04 := try {
 
      let $gmlIds := $docRoot//aqd:AQD_Plan/lower-case(normalize-space(@gml:id))
      let $inspireIds := $docRoot//aqd:AQD_Plan/lower-case(normalize-space(aqd:inspireId))
      for $x in $docRoot//aqd:AQD_Plan
         let $pollutantCodes := $x/aqd:pollutants/aqd:Pollutant/aqd:pollutantCode/@xlink:href
+       (:) let $pollutantCodes := substring-after($x/aqd:pollutants/aqd:Pollutant/aqd:pollutantCode/@xlink:href,"/pollutant/"):)
+            let $pollutantsSubstr := 
+                for $y in $pollutantCodes
+                
+                   return if (not($y= $pollutantCodes[last()])) then 
+                    string-join((substring-after($y,"/pollutant/")),',')|| ','
+                   else  string-join((substring-after($y,"/pollutant/")),',')
+                   (:return(<li> string-join(substring-after($y,"/pollutant/"),'')</li>, '&#xa;'):)
+
+        let $protectionCodes := $x/aqd:pollutants/aqd:Pollutant/aqd:protectionTarget/@xlink:href
+       (:) let $pollutantCodes := substring-after($x/aqd:pollutants/aqd:Pollutant/aqd:pollutantCode/@xlink:href,"/pollutant/"):)
+            let $protectionsSubstr := 
+                for $y in $protectionCodes
+
+
+                   return if (not($y= $protectionCodes[last()])) then 
+                   string-join((substring-after($y,"/protectiontarget/")),',')(:|| ',':)
+                   else  string-join((substring-after($y,"/protectiontarget/")),',')
+                   (:return(<li> string-join(substring-after($y,"/pollutant/"),'')</li>, '&#xa;'):)
+
         let $id := $x/@gml:id
         let $inspireId := $x/aqd:inspireId/base:Identifier
-        let $aqdinspireId := concat($x/aqd:inspireId/base:Identifier/base:localId, "/", $x/aqd:inspireId/base:Identifier/base:namespace)
+        (:let $aqdinspireId := concat($x/aqd:inspireId/base:Identifier/base:localId, "/", $x/aqd:inspireId/base:Identifier/base:namespace) changed by goititer 03/12/2020. Refs #124438:)
+        let $aqdinspireId := concat($x/aqd:inspireId/base:Identifier/base:namespace, "/",$x/aqd:inspireId/base:Identifier/base:localId )
         let $ok := (count(index-of($gmlIds, lower-case(normalize-space($id)))) = 1
             and
             count(index-of($inspireIds, lower-case(normalize-space($inspireId)))) = 1)
@@ -328,8 +319,53 @@ let $H04 := try {(:)
                         <tr>
                             <td title="gml:id">{data($x/@gml:id)}</td>
                             <td title="aqd:inspireId">{distinct-values($aqdinspireId)}</td>
-                            <td title="aqd:pollutant">{data($pollutantCodes)}</td>
-                            <td title="aqd:protectionTarget">{distinct-values(data($x/aqd:pollutants/aqd:Pollutant/aqd:protectionTarget/@xlink:href))}</td>
+                            <td title="aqd:pollutant">{data($pollutantsSubstr)}</td>
+                            <!--<td title="aqd:protectionTarget">{distinct-values(data($x/aqd:pollutants/aqd:Pollutant/aqd:protectionTarget/@xlink:href))}</td>-->
+                            <td title="aqd:protectionTarget">{distinct-values(data($protectionsSubstr))}</td>
+                            <td title="aqd:firstExceedanceYear">{data($x/aqd:firstExceedanceYear)}</td>
+                        </tr>
+                    else
+                        ()
+} catch * {
+    html:createErrorRow($err:code, $err:description)
+}
+
+let $ms2H04 := prof:current-ms():)
+
+let $ms1H04 := prof:current-ms()
+
+let $H04 := try {
+    
+
+     let $gmlIds := $docRoot//aqd:AQD_Plan/lower-case(normalize-space(@gml:id))
+     let $inspireIds := $docRoot//aqd:AQD_Plan/lower-case(normalize-space(aqd:inspireId))
+     for $x in $docRoot//aqd:AQD_Plan
+        let $pollutantNode:=$x/aqd:pollutants/aqd:Pollutant
+
+                
+                for $y in $pollutantNode
+
+                     let $pollutantCode := substring-after($y/aqd:pollutantCode/@xlink:href,"/pollutant/")
+                     let $protectionCode := substring-after($y/aqd:protectionTarget/@xlink:href,"/protectiontarget/")
+       
+       
+           
+                  
+        let $id := $x/@gml:id
+        let $inspireId := $x/aqd:inspireId/base:Identifier     
+        let $aqdinspireId := concat($x/aqd:inspireId/base:Identifier/base:namespace, "/",$x/aqd:inspireId/base:Identifier/base:localId )
+        let $ok := (count(index-of($gmlIds, lower-case(normalize-space($id)))) = 1
+            and
+            count(index-of($inspireIds, lower-case(normalize-space($inspireId)))) = 1)
+            return
+                if($ok)
+                    then
+                        <tr>
+                            <td title="gml:id">{data($x/@gml:id)}</td>
+                            <td title="aqd:inspireId">{distinct-values($aqdinspireId)}</td>
+                            <td title="aqd:pollutant">{data($pollutantCode)}</td>
+                            <!--<td title="aqd:protectionTarget">{distinct-values(data($x/aqd:pollutants/aqd:Pollutant/aqd:protectionTarget/@xlink:href))}</td>-->
+                            <td title="aqd:protectionTarget">{distinct-values(data($protectionCode))}</td>
                             <td title="aqd:firstExceedanceYear">{data($x/aqd:firstExceedanceYear)}</td>
                         </tr>
                     else
@@ -1114,7 +1150,7 @@ let $ms2H25 := prof:current-ms()
 if /gml:FeatureCollection/gml:featureMember/aqd:AQD_Plan/aqd:status  xlink:href attribute equal
 http://dd.eionet.europa.eu/vocabulary/aq/statusaqplan/preparation,
 http://dd.eionet.europa.eu/vocabulary/aq/statusaqplan/adoption-process or
-http://dd.eionet.europa.eu/vocabulary/aq/statusaqplan/under-revision
+http://dd.eionet.europa.eu/vocabulary/aq/statusaqplan/under-implementation
 
 aqd:AQD_Plan/aqd:adoptionDate/gml:TimeInstant/gml:timePosition should not be populated
 :)
@@ -1124,23 +1160,29 @@ let $ms1H26 := prof:current-ms()
 let $H26 := try {
     for $node in $docRoot//aqd:AQD_Plan
     let $link := $node/aqd:status/@xlink:href
-    let $not_needed := not(common:is-status-in-progress($link))
+    let $not_needed := common:is-status-in-progressH26($link)
 
     let $el := $node/aqd:adoptionDate/gml:TimeInstant/gml:timePosition
-    let $is-populated := common:has-content($el)
+    (:let $is-populated := common:has-content($el):)
+
+    let $is-populated := not(empty($el))
+    let $missing :=common:if-empty($el,"")
 
     let $ok :=
-        if ($not_needed and $is-populated)
+        if ($not_needed and $missing="")
         then
-            false()
-        else
             true()
+        else if ((not($not_needed)) and (not($missing="")))then
+            true()
+          else false()  
 
     return common:conditionalReportRow(
             $ok,
             [
             ("gml:id", data($node/@gml:id)),
-            (node-name($el), $link)
+            (node-name($link), $link),
+             (node-name($el), $el)
+             
             ]
     )
 }  catch * {

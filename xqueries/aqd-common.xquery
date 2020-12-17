@@ -691,6 +691,18 @@ declare function common:is-status-in-progress(
     return $uri = $okv
 };
 
+(:~ Returns true if provided status is one of special values :)
+declare function common:is-status-in-progressH26(
+        $uri as xs:string
+) as xs:boolean {
+    let $okv := (
+        "http://dd.eionet.europa.eu/vocabulary/aq/statusaqplan/preparation",
+        "http://dd.eionet.europa.eu/vocabulary/aq/statusaqplan/adoption-process",
+        "http://dd.eionet.europa.eu/vocabulary/aq/statusaqplan/under-implementation"
+    )
+    return $uri = $okv
+};
+
 (: Given a list of envelopes, returns true if is lates envelope :)
 declare function common:isLatestEnvelope(
     $envelopes as xs:string*,
