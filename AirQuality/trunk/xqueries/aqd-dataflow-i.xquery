@@ -2131,12 +2131,14 @@ let $I18errorMessage := (
                 then
                     (:Skip check:)
                     true()
+                    
                 else if($needed2) 
                      then
                         (:Skip check:)
                         true()
+
                 else
-                    false () (:common:has-content($el) volver a poner esto si funciona y borrar el false ():)
+                    common:has-content($el) 
 
 
         return common:conditionalReportRow(
