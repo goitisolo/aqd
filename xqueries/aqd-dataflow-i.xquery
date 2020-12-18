@@ -73,6 +73,7 @@ let $ms1GeneralParameters:= prof:current-ms()
     let $namespaces := distinct-values($docRoot//base:namespace)
 
     let $latestEnvelopeByYearI := query:getLatestEnvelope($cdrUrl || "i/", $reportingYear)
+    let $latestEnvelopeByYearG := query:getLatestEnvelope($cdrUrl || "g/", $reportingYear)
     let $latestEnvelopesD := query:getLatestEnvelopesForObligation("672")
     let $latestEnvelopesD1 := query:getLatestEnvelopesForObligation("742")
     let $latestEnvelopesG := query:getLatestEnvelopesForObligation("679")
@@ -2033,7 +2034,7 @@ let $I18errorMessage := (
     ERROR
     :)
     
-    let $ms1I41 := prof:current-ms()
+   (: let $ms1I41 := prof:current-ms()
 
     let $I41 := try {
         for $node in $sources
@@ -2043,7 +2044,7 @@ let $I18errorMessage := (
 
             let $ul := $node/aqd:macroExceedanceSituation/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:adjustmentType
             let $linkAjustment := $ul/@xlink:href
-            let $assessmentTypeDescriptionEmpty := functx:if-empty($node/aqd:macroExceedanceSituation/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:assessmentMethod/aqd:AssessmentMethods/aqd:assessmentTypeDescription, "")
+            let $assessmentTypeDescriptionEmpty := functx:if-empty($node/aqd:macroExceedanceSituation/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:assessmentMethod/aqd:AssessmentMethods/aqd:assessmentTypeDescription, "Description not found")
             
             let $ul := $node/aqd:macroExceedanceSituation/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:adjustmentType
             let $linkAjustment := $ul/@xlink:href
@@ -2052,6 +2053,9 @@ let $I18errorMessage := (
             let $needed2 := common:is-polutant-air($pollutant) and ($linkAjustment = "http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/noneApplicable" or $linkAjustment = "")
             
             let $needed3 := common:is-polutant-air($pollutant)
+
+
+(:latestEnvelopeByYearG:)
 
 
             let $ok := 
@@ -2071,7 +2075,10 @@ let $I18errorMessage := (
             $ok,
             [
                 ("gml:id", data($node/ancestor-or-self::aqd:AQD_SourceApportionment/@gml:id)),
-                (node-name($node), data($node)),
+                (:(node-name($node), data($node)),               :)
+                ("aqd:assessmentTypeDescription ", $assessmentTypeDescriptionEmpty), 
+                ("common:is-polutant-air($pollutant)", common:is-polutant-air($pollutant)),               
+
                 ("Sparql", sparqlx:getLink(query:get-pollutant-for-attainment-query($parent)))
             ]
         )
@@ -2079,7 +2086,76 @@ let $I18errorMessage := (
         html:createErrorRow($err:code, $err:description)
     }
     
+    let $ms2I41 := prof:current-ms():)
+
+ (: I41
+    WHERE ./aqd:pollutant xlink:href attribute EQUALs
+    http://dd.eionet.europa.eu/vocabulary/aq/pollutant/[1,5,10,6001]  (via
+    …/aqd:parentExceedanceSituation),
+    /aqd:AQD_SourceApportionment/aqd:macroExceedanceSituation/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:assessmentMethod/aqd:AssessmentMethods/aqd:assessmentTypeDescription
+    must be populated.
+
+    If the pollutant is SO2, PM10, PM2.5 or CO a Description of the assessment
+    type is expected
+
+    ERROR
+    :)
+    
+    let $ms1I41 := prof:current-ms()
+
+    let $I41 := try {
+        for $node in $sources
+            let $el := $node/aqd:macroExceedanceSituation/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:assessmentTypeDescription
+            let $parent := functx:if-empty($node/aqd:parentExceedanceSituation/@xlink:href,"")
+            (:let $strParent:= substring-after($parent,'/'):)
+            let $pollutant := functx:if-empty(query:get-pollutant-for-attainmentI41($parent, $reportingYear, $latestEnvelopeByYearG),"")
+
+
+            let $ul := $node/aqd:macroExceedanceSituation/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:adjustmentType
+            let $linkAjustment := $ul/@xlink:href
+            let $assessmentTypeDescriptionEmpty := functx:if-empty($node/aqd:macroExceedanceSituation/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:assessmentMethod/aqd:AssessmentMethods/aqd:assessmentTypeDescription, "Description not found")
+            
+            let $ul := $node/aqd:macroExceedanceSituation/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:adjustmentType
+            let $linkAjustment := $ul/@xlink:href
+            
+            let $needed := not(common:is-polutant-air($pollutant))(:) and ($link = "http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/fullyCorrected" or $link = "http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/noneApplied"):)
+            let $needed2 := common:is-polutant-air($pollutant) and ($linkAjustment = "http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/noneApplicable" or $linkAjustment = "")
+            
+            let $needed3 := common:is-polutant-air($pollutant)
+
+
+
+
+            let $ok := 
+                if($needed) 
+                then
+                    (:Skip check:)
+                    true()
+                else if($needed2) 
+                     then
+                        (:Skip check:)
+                        true()
+                else
+                    false () (:common:has-content($el) volver a poner esto si funciona y borrar el false ():)
+
+
+        return common:conditionalReportRow(
+            $ok,
+            [
+                ("gml:id", data($node/ancestor-or-self::aqd:AQD_SourceApportionment/@gml:id)),
+                (:(node-name($node), data($node)),               :)
+                ("aqd:assessmentTypeDescription ", $assessmentTypeDescriptionEmpty), 
+                ("common:is-polutant-air($pollutant)", common:is-polutant-air($pollutant)),  (:quitar al subir:) 
+                ("common:has-content($el)",$el)  , (:quitar al subir:)
+                ("Sparql", sparqlx:getLink(query:get-pollutant-for-attainment-queryI41($parent, $reportingYear)))
+            ]
+        )
+    } catch * {
+        html:createErrorRow($err:code, $err:description)
+    }
+    
     let $ms2I41 := prof:current-ms()
+
 
 
     (: I42

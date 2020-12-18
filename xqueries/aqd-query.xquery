@@ -1917,6 +1917,77 @@ declare function query:get-pollutant-for-attainment-query(
     }"
 };
 
+declare function query:get-pollutant-for-attainmentI41(
+    $url as xs:string?,
+    $year as xs:string,
+    $latestEnvelopes as xs:string*
+) as xs:string? {
+  let $res := sparqlx:run(query:get-pollutant-for-attainment-queryI41($url,$year))
+
+    let $envelopes :=
+        for $result in $res
+        return functx:substring-before-last($result/sparql:binding[@name="subject"]/sparql:uri, "/")
+
+    
+return
+  if (common:isLatestEnvelope($envelopes, $latestEnvelopes))  then
+    
+    if(empty($res)) then
+      ""
+    else
+       data($res//sparql:binding[@name='pollutant']/sparql:uri)
+  
+};
+
+declare function query:get-pollutant-for-attainment-queryI41(
+    $url as xs:string?,
+     $year as xs:string
+) as xs:string? {
+
+  " PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    PREFIX aq: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+    PREFIX rod: <http://rod.eionet.europa.eu/schema.rdf#>
+    PREFIX dcterms: <http://purl.org/dc/terms/>
+      
+      SELECT distinct(?pollutant)?label year(?startOfPeriod)
+      WHERE {
+        GRAPH ?source {
+         ?sourceApportionment a aq:AQD_Attainment;
+          aq:pollutant ?pollutant;
+          aq:inspireId ?inspireId.
+          ?inspireId rdfs:label ?label
+          }
+   
+          ?source dcterms:isPartOf ?envelope .
+          ?envelope rod:startOfPeriod ?startOfPeriod .
+          ?envelope rod:endOfPeriod ?endOfPeriod .   
+          ?envelope rod:startOfPeriod ?startOfPeriod.
+      
+      FILTER(?label='" || $url || "').
+      FILTER ( year(?startOfPeriod) = " || $year || " )
+      }"
+
+
+
+
+
+
+  (:)  "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    PREFIX aq: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+    PREFIX rod: <http://rod.eionet.europa.eu/schema.rdf#>
+
+    
+    SELECT distinct(?pollutant)
+    WHERE {
+    ?sourceApportionment a aq:AQD_Attainment;
+        aq:pollutant ?pollutant;
+        aq:inspireId ?inspireId.
+    ?inspireId rdfs:label ?label
+    FILTER(?label = '" || $url || "')
+    FILTER ( year(?startOfPeriod) = " || $year || " )
+    }":)
+};
+
 declare function query:getPollutantCodeAndProtectionTarge(
     $cdrUrl as xs:string,
     $bDir as xs:string

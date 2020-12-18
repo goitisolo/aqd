@@ -148,7 +148,7 @@ declare variable $xmlconv:TEST_ENV := false();${line.separator}
   </target>
 
   <target name="Start Envelope">
-    <!--<antcall target="Clean"/>-->
+    <antcall target="Clean"/>
     <antcall target="namespaces"/>
     <antcall target="Build">
       <param name="output" value="dist/aqd-envelope-checks.xquery"/>
