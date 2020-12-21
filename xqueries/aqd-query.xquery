@@ -3581,7 +3581,7 @@ FILTER(?label = '" || $uri || "')
     return $res
 };
 
-declare function query:getAttainmentForExceedanceAreaQuery(
+(:declare function query:getAttainmentForExceedanceAreaQuery(
     $uri as xs:string,
     $objectName as xs:string,
     $objectlUsed as xs:string
@@ -3611,6 +3611,38 @@ FILTER(?modelUsedAttainment = ?modelUsed)
 FILTER(regex(?modelUsedAttainment, '" || $objectlUsed || "'))
 FILTER(?label = '" || $uri || "')
 }
+"
+};:)
+
+declare function query:getAttainmentForExceedanceAreaQuery( (:changed by goititer 21/12/2020 Ref.#116742 :)
+    $uri as xs:string,
+    $objectName as xs:string,
+    $objectlUsed as xs:string
+) as item()* {
+"
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX aq: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+
+SELECT 
+?attainment
+#?stationUsed
+WHERE {
+  GRAPH ?a {
+    ?inspireId rdfs:label '" || $uri || "' 
+    
+  }
+  GRAPH ?a {
+    ?attainment a aq:AQD_Attainment .
+    ?attainment aq:exceedanceDescriptionFinal ?exceedanceDescriptionFinal .
+    ?attainment aq:inspireId ?inspireId .
+    ?exceedanceDescriptionFinal aq:exceedanceArea ?exceedanceAreaAttainment.
+    ?exceedanceAreaAttainment aq:stationUsed ?stationUsed.
+  }
+
+FILTER(regex(?stationUsed, '" ||$objectlUsed|| "'))
+
+} 
+      
 "
 };
 
