@@ -403,13 +403,14 @@ let $H05 := try {
 }:)
 
 let $H05 := try {
-    let $allowedPollutants := ("http://dd.eionet.europa.eu/vocabulary/aq/pollutant/2", 
+    let $allowedPollutants := ("http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1",
+                                "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/2", 
                                 "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/9", 
                                 "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/8", 
                                 "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/10", 
                                 "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5",
                                 "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/6001", 
-                                "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5028", 
+                                "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5029", 
                                 "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5018", 
                                 "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5014", 
                                 "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5015", 
