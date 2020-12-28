@@ -2131,24 +2131,30 @@ let $I18errorMessage := (
                 then
                     (:Skip check:)
                     true()
+                   
                     
                 else if($needed2) 
                      then
                         (:Skip check:)
                         true()
-
+                       
                 else
-                    common:has-content($el) 
+                                       
+                     not($assessmentTypeDescriptionEmpty="Description not found")
+                     
 
 
         return common:conditionalReportRow(
             $ok,
             [
-                ("gml:id", data($node/ancestor-or-self::aqd:AQD_SourceApportionment/@gml:id)),
-                (:(node-name($node), data($node)),               :)
+                ("gml:id", data($node/ancestor-or-self::aqd:AQD_SourceApportionment/@gml:id)),                            
                 ("aqd:assessmentTypeDescription ", $assessmentTypeDescriptionEmpty), 
-                ("common:is-polutant-air($pollutant)", common:is-polutant-air($pollutant)),  (:quitar al subir:) 
-                ("common:has-content($el)",$el)  , (:quitar al subir:)
+                (:("$assessmentTypeDescriptionEmpty=Description not found", $assessmentTypeDescriptionEmpty="Description not found"),              
+                ("pollutant",$pollutant)  ,  
+                ("needed",$needed)  , 
+                ("needed2",$needed2)  , 
+                ("needed3",$needed3)  , :)      
+                
                 ("Sparql", sparqlx:getLink(query:get-pollutant-for-attainment-queryI41($parent, $reportingYear)))
             ]
         )

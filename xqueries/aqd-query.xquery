@@ -1926,11 +1926,11 @@ declare function query:get-pollutant-for-attainmentI41(
 
     let $envelopes :=
         for $result in $res
-        return functx:substring-before-last($result/sparql:binding[@name="subject"]/sparql:uri, "/")
+        return functx:substring-before-last($result/sparql:binding[@name="envelope"]/sparql:uri, "/")
 
     
 return
-  if (common:isLatestEnvelope($envelopes, $latestEnvelopes))  then
+ (: if (common:isLatestEnvelope($envelopes, $latestEnvelopes))  then:)
     
     if(empty($res)) then
       ""
