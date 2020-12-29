@@ -1963,27 +1963,8 @@ declare function query:get-pollutant-for-attainment-queryI41(
       
       FILTER(?label='" || $url || "').
       FILTER ( year(?startOfPeriod) = " || $year || " )
-      }"
+    }"
 
-
-
-
-
-
-  (:)  "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-    PREFIX aq: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
-    PREFIX rod: <http://rod.eionet.europa.eu/schema.rdf#>
-
-    
-    SELECT distinct(?pollutant)
-    WHERE {
-    ?sourceApportionment a aq:AQD_Attainment;
-        aq:pollutant ?pollutant;
-        aq:inspireId ?inspireId.
-    ?inspireId rdfs:label ?label
-    FILTER(?label = '" || $url || "')
-    FILTER ( year(?startOfPeriod) = " || $year || " )
-    }":)
 };
 
 declare function query:getPollutantCodeAndProtectionTarge(
