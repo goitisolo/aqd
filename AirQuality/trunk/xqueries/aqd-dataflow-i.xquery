@@ -2120,26 +2120,19 @@ let $I18errorMessage := (
             let $needed2 := common:is-polutant-air($pollutant) and ($linkAjustment = "http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/noneApplicable" or $linkAjustment = "")            
             let $needed3 := common:is-polutant-air($pollutant)
 
-
-
-
             let $ok := 
                 if($needed) 
                 then
                     (:Skip check:)
                     true()
-                   
-                    
+                                       
                 else if($needed2) 
                      then
                         (:Skip check:)
-                        true()
-                       
+                        true()                       
                 else
                                        
                    not($assessmentTypeDescriptionEmpty="Description not found")
-                    
-                    
 
         return common:conditionalReportRow(
             $ok,
