@@ -2107,10 +2107,8 @@ let $I18errorMessage := (
         for $node in $sources
             let $el := $node/aqd:macroExceedanceSituation/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:assessmentTypeDescription
             let $parent := functx:if-empty($node/aqd:parentExceedanceSituation/@xlink:href,"")
-            (:let $strParent:= substring-after($parent,'/'):)
-            let $pollutant := functx:if-empty(query:get-pollutant-for-attainmentI41($parent, $reportingYear, $latestEnvelopeByYearG),"")
-
-
+                        let $pollutant:= query:get-pollutant-for-attainmentI41($parent, $reportingYear, $latestEnvelopeByYearG)
+          
             let $ul := $node/aqd:macroExceedanceSituation/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:adjustmentType
             let $linkAjustment := $ul/@xlink:href
             let $assessmentTypeDescriptionEmpty := functx:if-empty($node/aqd:macroExceedanceSituation/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:assessmentMethod/aqd:AssessmentMethods/aqd:assessmentTypeDescription, "Description not found")
@@ -2119,8 +2117,7 @@ let $I18errorMessage := (
             let $linkAjustment := $ul/@xlink:href
             
             let $needed := not(common:is-polutant-air($pollutant))(:) and ($link = "http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/fullyCorrected" or $link = "http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/noneApplied"):)
-            let $needed2 := common:is-polutant-air($pollutant) and ($linkAjustment = "http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/noneApplicable" or $linkAjustment = "")
-            
+            let $needed2 := common:is-polutant-air($pollutant) and ($linkAjustment = "http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/noneApplicable" or $linkAjustment = "")            
             let $needed3 := common:is-polutant-air($pollutant)
 
 
@@ -2140,21 +2137,16 @@ let $I18errorMessage := (
                        
                 else
                                        
-                     not($assessmentTypeDescriptionEmpty="Description not found")
-                     
-
+                   not($assessmentTypeDescriptionEmpty="Description not found")
+                    
+                    
 
         return common:conditionalReportRow(
             $ok,
             [
                 ("gml:id", data($node/ancestor-or-self::aqd:AQD_SourceApportionment/@gml:id)),                            
-                ("aqd:assessmentTypeDescription ", $assessmentTypeDescriptionEmpty), 
-                (:("$assessmentTypeDescriptionEmpty=Description not found", $assessmentTypeDescriptionEmpty="Description not found"),              
-                ("pollutant",$pollutant)  ,  
-                ("needed",$needed)  , 
-                ("needed2",$needed2)  , 
-                ("needed3",$needed3)  , :)      
-                
+                ("aqd:assessmentTypeDescription ", $assessmentTypeDescriptionEmpty),                           
+                ("Pollutant",$pollutant)  ,                 
                 ("Sparql", sparqlx:getLink(query:get-pollutant-for-attainment-queryI41($parent, $reportingYear)))
             ]
         )
