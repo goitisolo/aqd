@@ -1917,6 +1917,7 @@ declare function query:get-pollutant-for-attainment-query(
     }"
 };
 
+
 declare function query:get-pollutant-for-attainmentI41(
     $url as xs:string?,
     $year as xs:string,
@@ -1924,21 +1925,18 @@ declare function query:get-pollutant-for-attainmentI41(
 ) as xs:string? {
   let $res := sparqlx:run(query:get-pollutant-for-attainment-queryI41($url,$year))
 
-    let $envelopes :=
+   
         for $result in $res
-        return functx:substring-before-last($result/sparql:binding[@name="envelope"]/sparql:uri, "/")
+        return
+        if (common:isLatestEnvelope( substring($result/sparql:binding[@name="envelope"]/sparql:uri, 1), $latestEnvelopes))  then
 
-    
-return
- (: if (common:isLatestEnvelope($envelopes, $latestEnvelopes))  then:)
-    
-    if(empty($res)) then
-      ""
-    else
-       data($res//sparql:binding[@name='pollutant']/sparql:uri)
+           if(empty($res)) then
+              ""
+            else
+               fn:string($result//sparql:binding[@name='pollutant']/sparql:uri)
+
   
 };
-
 declare function query:get-pollutant-for-attainment-queryI41(
     $url as xs:string?,
      $year as xs:string
@@ -1949,7 +1947,7 @@ declare function query:get-pollutant-for-attainment-queryI41(
     PREFIX rod: <http://rod.eionet.europa.eu/schema.rdf#>
     PREFIX dcterms: <http://purl.org/dc/terms/>
       
-      SELECT distinct(?pollutant)?label year(?startOfPeriod)
+      SELECT distinct(?pollutant)?label year(?startOfPeriod) ?envelope
       WHERE {
         GRAPH ?source {
          ?sourceApportionment a aq:AQD_Attainment;
