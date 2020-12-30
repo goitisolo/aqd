@@ -417,7 +417,7 @@ declare function query:existsViaNameLocalIdQuery(
         $name as xs:string,
         $latestEnvelopes as xs:string*
 ) as xs:string {
-  "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+ (:) "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
   PREFIX aq: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
   
   SELECT ?subject
@@ -428,7 +428,23 @@ declare function query:existsViaNameLocalIdQuery(
       ?inspireId aq:namespace ?name.
       ?inspireId aq:localId ?localId
       FILTER (?label = '" || $label || "')
-  }"
+  }":)
+
+  "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> 
+   PREFIX aq: <http://rdfdata.eionet.europa.eu/airquality/ontology/> 
+
+    SELECT ?subject ?label 
+
+    WHERE { 
+    BIND(xsd:string(<'" || $label || "'>) AS ?label)
+
+    ?subject a aq:AQD_Measures; 
+    aq:inspireId ?inspireId. 
+    ?inspireId rdfs:label ?label. 
+    ?inspireId aq:namespace ?name. 
+    ?inspireId aq:localId ?localId 
+
+}"
 };
 
 declare function query:existsViaNameLocalIdGeneral(
