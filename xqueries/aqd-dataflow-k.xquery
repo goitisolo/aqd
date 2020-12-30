@@ -607,7 +607,7 @@ reasons for not providing it should be included.
 :)
 
 let $ms1K21 := prof:current-ms()
-let $K21 := try {
+(:let $K21 := try {
     let $root := $docRoot//aqd:AQD_Measures
     for $el in $root
         let $costs := $el/aqd:costs
@@ -648,7 +648,48 @@ let $K21 := try {
                 <tr>
                     <td title="gml:id">{data($el/@gml:id)}</td>
                     <td title="aqd:costs"> aqd:costs not provided</td>
+                    <td title="$costs"> $costs</td>
                 </tr>
+
+} catch * {
+    html:createErrorRow($err:code, $err:description)
+}:)
+let $K21 := try { (:@goititer 30/12/2020 Ref. #124536:)
+    let $root := $docRoot//aqd:AQD_Measures
+    for $el in $root
+        let $costs := $el/aqd:costs
+        let $implCosts := $costs/aqd:Costs/aqd:estimatedImplementationCosts
+        let $comment := $costs/aqd:Costs/aqd:comment
+        let $costsRoot := $costs/aqd:Costs
+
+        (:let $isValidCost := common:is-a-number(data($implCosts)):)
+
+        let $n := string(number(data($implCosts))
+        let $isValidCost := matches($n, "^\d+(\.\d{0,9}?){0,1}$")
+
+        let $hasCost := common:isNodeInParent($costsRoot, 'aqd:estimatedImplementationCosts')
+
+        return
+            
+                if (empty($implCosts)) then
+                    if (empty($comment/text()))
+                    then
+                        <tr>
+                            <td title="gml:id">{data($el/@gml:id)}</td>
+                            <td title="aqd:estimatedImplementationCosts">aqd:estimatedImplementationCosts not provided</td>
+                            <td title="aqd:comment"> aqd:comment not provided</td>
+                        </tr>
+                    else () (:ok, there´s a comment:)
+                else (:there´cost, check if number:)
+                   if  (not($isValidCost))(:if (not(number($implCosts) = $implCosts)):)
+                    then
+                         <tr>
+                            <td title="gml:id">{data($el/@gml:id)}</td>
+                            <td title="aqd:estimatedImplementationCosts">{$implCosts}</td>
+                            <td title="aqd:comment"> no number</td>
+                            <td title="$isValidCost"> {$isValidCost}</td>
+                        </tr>  
+                    else () (:cost is populated and it´s a number:)     
 
 } catch * {
     html:createErrorRow($err:code, $err:description)
@@ -1295,7 +1336,7 @@ return
         {html:build2("K17", $labels:K17, $labels:K17_SHORT, $K17, "All values are valid", "not conform to vocabulary",$errors:K17)}
         {html:build2("K18", $labels:K18, $labels:K18_SHORT, $K18, "All values are valid", "not conform to vocabulary",$errors:K18)}
         {html:build2("K19", $labels:K19, $labels:K19_SHORT, $K19, "All values are valid", "not conform to vocabulary", $errors:K19)}
-        {html:build2("K20", $labels:K20, $labels:K20_SHORT, $K20, "All values are valid", " needs valid input", $errors:K20)}
+        {html:build2("K20", $labels:K20, $labels:K20_SHORT, $K20, "All values are valid", " needs valid input ", $errors:K20)}
         {html:build2("K21", $labels:K21, $labels:K21_SHORT, $K21, "All values are valid", " needs valid input", $errors:K21)}
         {html:build2("K22", $labels:K22, $labels:K22_SHORT, $K22, "All values are valid", " needs valid input", $errors:K22)}
         {html:build2("K23", $labels:K23, $labels:K23_SHORT, $K23, "All values are valid", " needs valid input", $errors:K23)}
