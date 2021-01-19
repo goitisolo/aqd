@@ -156,6 +156,12 @@ declare function common:is-a-number(
     return $matches and $positive
 };
 
+declare function common:is-a-number2(
+ $value as xs:anyAtomicType? )  as xs:boolean {
+
+   string(number($value)) != 'NaN'
+ } ;
+
 declare function common:includesURL($x as xs:string) {
     contains($x, "http://") or contains($x, "https://") or contains($x, "ftp://") or contains($x, "www.")
 };

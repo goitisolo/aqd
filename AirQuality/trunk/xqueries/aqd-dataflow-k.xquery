@@ -664,8 +664,12 @@ let $K21 := try { (:@goititer 30/12/2020 Ref. #124536:)
 
         (:let $isValidCost := common:is-a-number(data($implCosts)):)
 
-        let $n := string(number(data($implCosts))
-        let $isValidCost := matches($n, "^\d+(\.\d{0,9}?){0,1}$")
+       
+
+       (:) let $n := string(number(data($implCosts))
+        let $isValidCost := matches($n, '^\d+(\.\d{0,9}?){0,1}$'):)
+
+        let $isValidCost := common:is-a-number2(data($implCosts))
 
         let $hasCost := common:isNodeInParent($costsRoot, 'aqd:estimatedImplementationCosts')
 
@@ -685,9 +689,9 @@ let $K21 := try { (:@goititer 30/12/2020 Ref. #124536:)
                     then
                          <tr>
                             <td title="gml:id">{data($el/@gml:id)}</td>
-                            <td title="aqd:estimatedImplementationCosts">{$implCosts}</td>
-                            <td title="aqd:comment"> no number</td>
-                            <td title="$isValidCost"> {$isValidCost}</td>
+                            <td title="aqd:estimatedImplementationCosts">no number</td>
+                            <td title="aqd:comment"> {$comment}</td>
+                            
                         </tr>  
                     else () (:cost is populated and it´s a number:)     
 
