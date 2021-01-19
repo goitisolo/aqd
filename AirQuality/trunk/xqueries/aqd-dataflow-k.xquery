@@ -662,13 +662,6 @@ let $K21 := try { (:@goititer 30/12/2020 Ref. #124536:)
         let $comment := $costs/aqd:Costs/aqd:comment
         let $costsRoot := $costs/aqd:Costs
 
-        (:let $isValidCost := common:is-a-number(data($implCosts)):)
-
-       
-
-       (:) let $n := string(number(data($implCosts))
-        let $isValidCost := matches($n, '^\d+(\.\d{0,9}?){0,1}$'):)
-
         let $isValidCost := common:is-a-number2(data($implCosts))
 
         let $hasCost := common:isNodeInParent($costsRoot, 'aqd:estimatedImplementationCosts')
@@ -685,7 +678,7 @@ let $K21 := try { (:@goititer 30/12/2020 Ref. #124536:)
                         </tr>
                     else () (:ok, there´s a comment:)
                 else (:there´cost, check if number:)
-                   if  (not($isValidCost))(:if (not(number($implCosts) = $implCosts)):)
+                   if  (not($isValidCost))
                     then
                          <tr>
                             <td title="gml:id">{data($el/@gml:id)}</td>
@@ -1124,7 +1117,7 @@ let $K36 := try {
         let $quantity := $main/aqd:quantity
         let $comment := $main/aqd:comment
 
-        let $ok := (
+        (:let $ok := (
                 lower-case(functx:if-empty(data($quantity/@xsi:nil), "")) = "false"
             or
             (
@@ -1140,7 +1133,14 @@ let $K36 := try {
              and
              functx:if-empty(data($comment), "") != ""
             )
-        )
+        ):)
+
+        let $ok := (     (:changed by @goititer #117080:)    
+            $quantity/@xsi:nil!="true" 
+             or
+             not(empty($comment))
+            )
+        
 
         return common:conditionalReportRow(
             $ok,
@@ -1148,6 +1148,8 @@ let $K36 := try {
                 ("gml:id", $main/ancestor-or-self::*[name() = $ancestor-name]/@gml:id),
                 ("aqd:quantity", data($quantity)),
                 ("aqd:comment", data($comment))
+               
+              
             ]
         )
 } catch * {
