@@ -1084,7 +1084,8 @@ let $J27 := try{
                               "No element to execute this query"
                              else
                               (:sparqlx:getLink(query:existsViaNameLocalIdYearQuery($el/@xlink:href, 'AQD_Measures', $reportingYear, $latestEnvelopesK)):) (: issue #117054 :)
-                              sparqlx:getLink(query:existsViaNameLocalIdYearGeneralWithoutYearFilter('AQD_Measures',$reportingYear)) (: issue #117054 :)
+                              (:sparqlx:getLink(query:existsViaNameLocalIdYearGeneralWithoutYearFilter('AQD_Measures',$reportingYear)):) (: issue #117054 :) (: 09/12/2020 :)
+                              sparqlx:getLink(query:existsViaNameLocalIdYearGeneralWithoutYearFilter($label, 'AQD_Measures',$reportingYear)) (: 09/12/2020 :)
         
         return common:conditionalReportRow(
                 $ok,
@@ -1309,7 +1310,8 @@ let $J32 := try{
                               "No element to execute this query"
                              else
                               (:sparqlx:getLink(query:existsViaNameLocalIdYearQuery($el/@xlink:href, 'AQD_Measures', $reportingYear, $latestEnvelopesK)):)
-                              sparqlx:getLink(query:existsViaNameLocalIdYearGeneralWithoutYearFilter('AQD_Measures',$reportingYear))
+                              (:sparqlx:getLink(query:existsViaNameLocalIdYearGeneralWithoutYearFilter('AQD_Measures',$reportingYear)):) (:09/12/2020:)
+                              sparqlx:getLink(query:existsViaNameLocalIdYearGeneralWithoutYearFilter($label,'AQD_Measures',$reportingYear)) (:09/12/2020:)
 
         return common:conditionalReportRow(
                 $ok,
