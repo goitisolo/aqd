@@ -436,13 +436,13 @@ let $K11 := try{
                     else
                       for $l in $label
                         return
-                          query:existsViaNameLocalId($l, 'AQD_SourceApportionment', $latestEnvelopesI)                      
+                          query:existsViaNameLocalIdYear($l, 'AQD_SourceApportionment', $reportingYear, $latestEnvelopesI)                      
                                 
         let $sparql_query := if(fn:empty($label))
                              then
                               "No label to execute this query"
                              else
-                              sparqlx:getLink(query:existsViaNameLocalIdQuery($label, 'AQD_SourceApportionment', $latestEnvelopesI)) 
+                              sparqlx:getLink(query:existsViaNameLocalIdYearQuery($label, 'AQD_SourceApportionment', $reportingYear, $latestEnvelopesI)) 
 
         return common:conditionalReportRow(
             $ok,
