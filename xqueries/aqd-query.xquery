@@ -449,6 +449,45 @@ declare function query:existsViaNameLocalIdQuery(
 }":)
 };
 
+(:11/01/2021:) declare function query:existsViaNameLocalIdJ02(
+        $localId as xs:string,
+        $name as xs:string,
+        $latestEnvelopes as xs:string*
+) as xs:boolean {
+    let $results := sparqlx:run(query:existsViaNameLocalIdQueryFilteringBySubject($localId, $name, $latestEnvelopes))
+    let $envelopes :=
+        for $result in $results
+        return functx:substring-before-last($result/sparql:binding[@name="subject"]/sparql:uri, "/")
+
+    return common:isLatestEnvelope($envelopes, $latestEnvelopes)
+};
+
+(:11/01/2021:) declare function query:existsViaNameLocalIdQueryFilteringBySubject(
+        $localId as xs:string,
+        $name as xs:string,
+        $latestEnvelopes as xs:string*
+) as xs:string {
+  "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+  PREFIX aq: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+  PREFIX dcterms: <http://purl.org/dc/terms/>
+  PREFIX rod: <http://rod.eionet.europa.eu/schema.rdf#>
+  
+  SELECT distinct ?subject year(?startOfPeriod) as ?reportingYear ?envelope ?localId
+  WHERE {
+    VALUES ?localId { '" || $localId || "' }
+    GRAPH ?source {
+      ?subject a aq:AQD_EvaluationScenario;
+      aq:inspireId ?inspireId.
+     }   
+      ?inspireId rdfs:label ?label.
+      ?inspireId aq:namespace ?name.
+      ?inspireId aq:localId ?localId .
+
+    ?source dcterms:isPartOf ?envelope .
+    ?envelope rod:startOfPeriod ?startOfPeriod .
+  }"
+};
+
 declare function query:existsViaNameLocalIdGeneral(
         $results as xs:string,
         $latestEnvelopes as xs:string*

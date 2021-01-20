@@ -208,7 +208,8 @@ let $J2 := try {
             [
                 ("gml:id", data($el/@gml:id)),
                 ("aqd:inspireId", $inspireId),
-                ("Sparql", sparqlx:getLink(query:existsViaNameLocalIdQuery(data($el/@gml:id), 'AQD_EvaluationScenario', $latestEnvelopesJ)))
+                (:("Sparql", sparqlx:getLink(query:existsViaNameLocalIdQueryFilteringBySubject(data($el/@gml:id), 'AQD_EvaluationScenario', $latestEnvelopesJ))):) (:08/01/2021:)
+                ("Sparql", sparqlx:getLink(query:existsViaNameLocalIdQueryFilteringBySubject($x/base:localId, 'AQD_EvaluationScenario', $latestEnvelopesJ)))(:11/01/2021:)
             ]
             )
 } catch * {
@@ -221,7 +222,7 @@ let $J2errorLevel :=
         count(
             for $x in $docRoot//aqd:AQD_EvaluationScenario/aqd:inspireId/base:Identifier
                 let $id := $x/base:namespace || "/" || $x/base:localId
-                where query:existsViaNameLocalId($id, 'AQD_EvaluationScenario', $latestEnvelopesJ)
+                where query:existsViaNameLocalIdJ02($x/base:localId, 'AQD_EvaluationScenario', $latestEnvelopesJ)
                 return 1
         ) > 0
         )
