@@ -95,6 +95,9 @@ let $ancestor-name := "aqd:AQD_Measures"
 
 let $ms2GeneralParameters:= prof:current-ms()
 
+
+
+
 (: File prefix/namespace check :)
 
 let $ms1NS := prof:current-ms()
@@ -594,6 +597,7 @@ let $K20 := common:isNodeNotInParentReport(
         'aqd:costs',
         $ancestor-name
         )
+
 let $ms2K20 := prof:current-ms()
 
 (: K21
@@ -655,6 +659,7 @@ let $ms1K21 := prof:current-ms()
     html:createErrorRow($err:code, $err:description)
 }:)
 let $K21 := try { (:@goititer 30/12/2020 Ref. #124536:)
+
     let $root := $docRoot//aqd:AQD_Measures
     for $el in $root
         let $costs := $el/aqd:costs
@@ -666,27 +671,36 @@ let $K21 := try { (:@goititer 30/12/2020 Ref. #124536:)
 
         let $hasCost := common:isNodeInParent($costsRoot, 'aqd:estimatedImplementationCosts')
 
+ let $ancestorCosts:=
+
+    if (not(common:isNodeInParent($el,  'aqd:costs'))) then
+     data($el/ancestor-or-self::*[name() = 'aqd:AQD_Measures']/@gml:id)
+    else  ()
+
+
         return
-            
-                if (empty($implCosts)) then
-                    if (empty($comment/text()))
-                    then
+             if (empty($comment/text()) and (string($ancestorCosts)!=string(data($el/@gml:id))))  then
+                if (empty($implCosts)) then 
                         <tr>
                             <td title="gml:id">{data($el/@gml:id)}</td>
                             <td title="aqd:estimatedImplementationCosts">aqd:estimatedImplementationCosts not provided</td>
                             <td title="aqd:comment"> aqd:comment not provided</td>
+                            
+                            
                         </tr>
-                    else () (:ok, there´s a comment:)
-                else (:there´cost, check if number:)
-                   if  (not($isValidCost))
+                else (:there´cost:)
+                            
+                if  (not($isValidCost))                   
                     then
                          <tr>
                             <td title="gml:id">{data($el/@gml:id)}</td>
-                            <td title="aqd:estimatedImplementationCosts">no number</td>
-                            <td title="aqd:comment"> {$comment}</td>
+                            <td title="aqd:estimatedImplementationCosts">no valid number</td>
+                            <td title="aqd:comment"> aqd:comment not provided</td>
                             
                         </tr>  
-                    else () (:cost is populated and it´s a number:)     
+                 else()(:cost is a valid number:)  
+            else () (:ok, there´s a comment:)
+
 
 } catch * {
     html:createErrorRow($err:code, $err:description)
