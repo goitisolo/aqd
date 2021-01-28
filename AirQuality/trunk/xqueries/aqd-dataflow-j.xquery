@@ -327,8 +327,55 @@ All gml ID attributes shall have unique code
 :)
 
 let $ms1J07 := prof:current-ms()
+(:)
+let $H07 := try {
+    let $gmlIds := $docRoot//aqd:AQD_Plan//@gml:id
+    let $inspireIds := $docRoot//aqd:AQD_Plan/lower-case(normalize-space(aqd:inspireId))
 
+    for $x in $docRoot//aqd:AQD_Plan 
+      let $ids := $x//@gml:id
+      let $aqdInspireId := $x/aqd:inspireId/base:Identifier/base:localId 
+      for $id in $ids           
+        let $ok := (
+          count(index-of($gmlIds, $id)) = 1
+        )
+
+       where not($ok) return
+          <tr>
+              <td title="duplicated gml:id">{data($id)}</td>
+              <td title="aqd:inspireId">{distinct-values($aqdInspireId)}</td>
+          </tr>   
+} catch * {
+    html:createErrorRow($err:code, $err:description)
+}:)
 let $J7 := try {
+
+    let $gmlIds := $docRoot//aqd:AQD_EvaluationScenario//@gml:id
+    let $inspireIds := $docRoot//aqd:AQD_EvaluationScenario/lower-case(normalize-space(aqd:inspireId))
+
+    for $x in $docRoot//aqd:AQD_EvaluationScenario 
+      let $ids := $x//@gml:id
+      let $aqdInspireId := $x/aqd:inspireId/base:Identifier/base:localId 
+      for $id in $ids           
+        let $ok := (
+          count(index-of($gmlIds, $id)) = 1
+        )
+
+       where not($ok) return
+          <tr>
+              <td title="duplicated gml:id">{data($id)}</td>
+              <td title="aqd:inspireId">{distinct-values($aqdInspireId)}</td>
+          </tr>   
+} catch * {
+    html:createErrorRow($err:code, $err:description)
+}
+
+   
+
+let $ms2J07 := prof:current-ms()
+(:let $J7 := try {
+
+
     let $main := $docRoot//aqd:AQD_EvaluationScenario
 
     let $checks := ('gml:id', 'aqd:inspireId', 'ef:inspireId')
@@ -357,7 +404,7 @@ let $J7 := try {
     html:createErrorRow($err:code, $err:description)
 }
 
-let $ms2J07 := prof:current-ms()
+let $ms2J07 := prof:current-ms():)
 
 (: J8
 ./aqd:inspireId/base:Identifier/base:localId must be unique code for the Plans records
@@ -1342,7 +1389,7 @@ return
         {html:build1("J4", $labels:J4, $labels:J4_SHORT, $J4, "", string(count($J4)), " ", "", $errors:J4)}
         {html:build1("J5", $labels:J5, $labels:J5_SHORT, $J5, "RESERVE", "RESERVE", "RESERVE", "RESERVE", $errors:J5)}
         {html:build1("J6", $labels:J6, $labels:J6_SHORT, $J6, "RESERVE", "RESERVE", "RESERVE", "RESERVE", $errors:J6)}
-        {html:build2("J7", $labels:J7, $labels:J7_SHORT, $J7, "No duplicate values found", " duplicate value", $errors:J7)}
+        {html:build2Distinct("J7", $labels:J7, $labels:J7_SHORT, $J7, "No duplicate values found", " duplicate value", $errors:J7)}
         {html:build2("J8", $labels:J8, $labels:J8_SHORT, $J8, "No duplicate values found", " duplicate value", $errors:J8)}
         <!--{html:buildUnique("J9", $labels:J9, $labels:J9_SHORT, $J9, "namespace", $errors:J9)}-->
         {html:build2Distinct("J9", $labels:J9, $labels:J9_SHORT, $J9, "namespace", "", $errors:J9)}
