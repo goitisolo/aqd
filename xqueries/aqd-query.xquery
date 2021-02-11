@@ -693,7 +693,7 @@ declare function query:existsViaNameLocalIdYearGeneralWithoutYearFilter(
       PREFIX dcterms: <http://purl.org/dc/terms/>
       PREFIX rod: <http://rod.eionet.europa.eu/schema.rdf#>
 
-      SELECT ?label ?subject ?declaration year(?startOfPeriod) as ?reportingYear
+      SELECT distinct ?label ?subject ?declaration year(?startOfPeriod) as ?reportingYear
         WHERE {
           
             GRAPH ?source {
@@ -721,7 +721,7 @@ declare function query:existsViaNameLocalIdYearGeneralWithoutYearFilter(
       PREFIX dcterms: <http://purl.org/dc/terms/>
       PREFIX rod: <http://rod.eionet.europa.eu/schema.rdf#>
 
-      SELECT ?label ?subject ?declaration year(?startOfPeriod) as ?reportingYear
+      SELECT distinct ?label ?subject ?declaration year(?startOfPeriod) as ?reportingYear
         WHERE {
           VALUES ?label { '" || $label || "' }
             GRAPH ?source {
