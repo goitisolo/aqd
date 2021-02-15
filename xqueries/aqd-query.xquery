@@ -1450,7 +1450,7 @@ declare function query:isTimePositionValidQuery(
 
 (: K :)
 declare function query:getMeasures($url as xs:string) as xs:string {
-  "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+ (:) "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
    PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
    PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
 
@@ -1460,7 +1460,29 @@ declare function query:getMeasures($url as xs:string) as xs:string {
       aqd:inspireId ?inspireId .
       ?inspireId rdfs:label ?inspireLabel .
       FILTER (CONTAINS(str(?measure), '" || $url || "'))
-   }"
+   }":)
+   "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
+    PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+    PREFIX aq: <http://reference.eionet.europa.eu/aq/ontology/>
+    PREFIX dcterms: <http://purl.org/dc/terms/>
+    PREfIX contreg: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
+
+   SELECT DISTINCT ?localId 
+   WHERE {
+   values ?envelope { <" || $url || "> }
+    ?graph dcterms:isPartOf ?envelope .
+    ?graph contreg:xmlSchema ?xmlSchema .
+
+    GRAPH ?graph {
+        ?measure a aqd:AQD_Measures ;
+        aqd:inspireId ?inspireId .
+        ?inspireId rdfs:label ?inspireLabel .
+        ?inspireId aqd:localId ?localId  
+    }    
+
+  }
+   "
 };
 
 (: Feature Types queries - These queries return all ids of the specified feature type :)
@@ -1705,6 +1727,7 @@ limit 1")
 };
 :)
 (: Returns latest report envelope for this country and Year :)
+(:@goititer changed FILTER STRSTARTS with FILTER(CONTAINS, it didn´t return results with STRSTARTS :)
 declare function query:getLatestEnvelope(
     $cdrUrl as xs:string,
     $reportingYear as xs:string
@@ -1714,7 +1737,7 @@ declare function query:getLatestEnvelope(
 PREFIX aqd: <http://rod.eionet.europa.eu/schema.rdf#>
      SELECT *
      WHERE {
-       FILTER(STRSTARTS(str(?graph), '", $url,"'))
+       FILTER(CONTAINS(str(?graph), '", $url,"')) 
        GRAPH ?graph {
         ?envelope a aqd:Delivery ;
         aqd:released ?date ;

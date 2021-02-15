@@ -86,6 +86,7 @@ let $latestEnvelopesG := query:getLatestEnvelopesForObligation("679")
 let $latestEnvelopesI := query:getLatestEnvelopesForObligation("681")
 let $latestEnvelopesJ := query:getLatestEnvelopesForObligation("682")
 let $latestEnvelopesK := query:getLatestEnvelopesForObligation("683")
+let $latestEnvelopeK := query:getLatestEnvelope($cdrUrl || "k", $reportingYear)
 
 let $headerBeginPosition := $docRoot//aqd:AQD_ReportingHeader/aqd:reportingPeriod/gml:TimePeriod/gml:beginPosition
 let $headerEndPosition := $docRoot//aqd:AQD_ReportingHeader/aqd:reportingPeriod/gml:TimePeriod/gml:endPosition
@@ -94,6 +95,12 @@ let $namespaces := distinct-values($docRoot//base:namespace)
 let $ancestor-name := "aqd:AQD_Measures"
 
 let $ms2GeneralParameters:= prof:current-ms()
+
+let $knownMeasures := distinct-values(data(sparqlx:run(query:getMeasures($latestEnvelopeK))/sparql:binding[@name = 'localId']/sparql:literal))
+(:let $knownMeasures := sparqlx:run(query:getMeasures($latestEnvelopeK)):)
+
+(:let $knownRegimes := distinct-values(data(sparqlx:run(query:getAssessmentRegime($latestEnvelopeC))/sparql:binding[@name = 'inspireLabel']/sparql:literal)):)
+(:/sparql:binding[@name = 'localId']/sparql:literal:)
 
 
 
@@ -231,7 +238,9 @@ ERROR will be returned if XML is an update and ALL localId (100%)
 are different to previous delivery (for the same YEAR). :)
 
 let $ms1K03 := prof:current-ms()
-let $K03table := try {
+
+
+(:let $K03table := try {
     for $main in $docRoot//aqd:AQD_Measures
         let $x := $main/aqd:inspireId/base:Identifier
         let $inspireId := concat(data($x/base:namespace), "/", data($x/base:localId))
@@ -249,12 +258,50 @@ let $K03table := try {
 } catch * {
     html:createErrorRow($err:code, $err:description)
 }
+
 let $K03errorLevel :=
     if (not($isNewDelivery) and count($K03table) = 0)
     then
         $errors:K03
     else
         $errors:INFO
+
+        :)
+let $K03table :=
+    try {
+        for $main in $docRoot//aqd:AQD_Measures
+        let $x := $main/aqd:inspireId/base:Identifier       
+        let $id :=  data($x/base:localId)      
+        (:for $y in $knownMeasures:)
+        (:where ($y = $id):)
+        return
+           <tr>
+                <td title="gml:id">{data($main/@gml:id)}</td>
+                 <td title="latestEnvelopeK">{data($latestEnvelopeK)}</td>
+                 <td title="isNewDelivery">{data($isNewDelivery)}</td>  
+                <td title="knownMeasures y">{$knownMeasures}</td>
+                <td title="base:localId">{data($x/base:localId)}</td>
+
+               <td title="base:namespace">{data($x/base:namespace)}</td>
+               <td title="aqd:code">{data($main/aqd:code)}</td>
+               <td title="aqd:name">{data($main/aqd:name)}</td>
+               <td title="Sparql">{sparqlx:getLink(query:getMeasures($latestEnvelopeK))}</td>
+            </tr>
+    } catch * {
+        <tr class="{$errors:FAILED}">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
+(:let $K03errorLevel :=
+    if (not($isNewDelivery) and count($K03table) = 0) then
+        $errors:K03
+    else
+        $errors:INFO:)
+
+
+
+
 
 let $ms2K03 := prof:current-ms()
 
@@ -1338,7 +1385,7 @@ return
         {html:build3("K0", $labels:K0, $labels:K0_SHORT, $K0table, string($K0table/td), errors:getMaxError($K0table))}
         {html:build1("K01", $labels:K01, $labels:K01_SHORT, $K01, "", string($countMeasures), "", "", $errors:K01)}
         {html:buildSimpleSparql("K02", $labels:K02, $labels:K02_SHORT, $K02table, "", "", $K02errorLevel)}
-        {html:buildSimpleSparql("K03", $labels:K03, $labels:K03_SHORT, $K03table, "", "", $K03errorLevel)}
+        {html:buildSimpleSparql("K03", $labels:K03, $labels:K03_SHORT, $K03table, "", "", $errors:K03)} <!--$K03errorLevel)}-->
         {html:build1("K04", $labels:K04, $labels:K04_SHORT, $K04table, "", string(count($K04table)), " ", "", $errors:K04)}
         {html:build1("K05", $labels:K05, $labels:K05_SHORT, $K05, "RESERVE", "RESERVE", "RESERVE", "RESERVE", $errors:K05)}
         {html:build1("K06", $labels:K06, $labels:K06_SHORT, $K06, "RESERVE", "RESERVE", "RESERVE", "RESERVE", $errors:K06)}
