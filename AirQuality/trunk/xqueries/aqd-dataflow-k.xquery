@@ -269,23 +269,23 @@ let $K03errorLevel :=
         :)
 let $K03table :=
     try {
+        let $knownMeasuresK03 := distinct-values(data(sparqlx:run(query:getMeasures($latestEnvelopeK))/sparql:binding[@name = 'localId']/sparql:literal))
         for $main in $docRoot//aqd:AQD_Measures
         let $x := $main/aqd:inspireId/base:Identifier       
-        let $id :=  data($x/base:localId)      
-        (:for $y in $knownMeasures:)
-        (:where ($y = $id):)
+        let $localId :=  data($x/base:localId) 
+        for $y in $knownMeasuresK03
+        where ($y = $localId)
         return
            <tr>
-                <td title="gml:id">{data($main/@gml:id)}</td>
-                 <td title="latestEnvelopeK">{data($latestEnvelopeK)}</td>
-                 <td title="isNewDelivery">{data($isNewDelivery)}</td>  
-                <td title="knownMeasures y">{$knownMeasures}</td>
-                <td title="base:localId">{data($x/base:localId)}</td>
-
+                <td title="gml:id">{data($main/@gml:id)}</td>               
+                <td title="base:localId">{$localId}</td>
                <td title="base:namespace">{data($x/base:namespace)}</td>
                <td title="aqd:code">{data($main/aqd:code)}</td>
                <td title="aqd:name">{data($main/aqd:name)}</td>
                <td title="Sparql">{sparqlx:getLink(query:getMeasures($latestEnvelopeK))}</td>
+               <!--  <td title="latestEnvelopeK">{data($latestEnvelopeK)}</td>
+                 <td title="isNewDelivery">{data($isNewDelivery)}</td>  
+                <td title="knownMeasures y">{$y}</td>-->
             </tr>
     } catch * {
         <tr class="{$errors:FAILED}">
@@ -293,11 +293,11 @@ let $K03table :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
-(:let $K03errorLevel :=
+let $K03errorLevel :=
     if (not($isNewDelivery) and count($K03table) = 0) then
         $errors:K03
     else
-        $errors:INFO:)
+        $errors:INFO
 
 
 
