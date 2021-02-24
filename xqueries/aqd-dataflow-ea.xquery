@@ -1683,7 +1683,8 @@ let $time1:='T24:00:00'
 let $time2:='T23:59:59'
 let $asessments:=sparqlx:run(query:getAssessmentMethodsAndDates($e1aUrl,$reportingYear,$regex,$time1,$time2))
 
-(:let $asessments:=sparqlx:run(query:getAssessmentMethodsAndDates("http://cdr.eionet.europa.eu/lu/eu/aqd/e1a/","2019")):)
+
+
 (:for $x at $xpos in $docRoot//om:OM_Observation/om:resultTime:)
  
  where 1 = 1   
@@ -1692,6 +1693,7 @@ return
             <!--<td title="OM_Observation">{string($x/../@gml:id)}</td>
             <td title="om:resultTime">{$x}</td>-->
               <td title="asessments">{$asessments}</td>
+               <td title="Sparql">{sparqlx:getLink(query:getAssessmentMethodsAndDates($e1aUrl,$reportingYear,$regex,$time1,$time2))}</td>
         </tr>
             
        (:) getAssessmentMethodsAndDates:)
