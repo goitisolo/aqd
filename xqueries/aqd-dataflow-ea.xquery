@@ -51,6 +51,7 @@ let $docRoot := doc($source_url)
 let $reportingYear := common:getReportingYear($docRoot)
 let $cdrUrl := common:getCdrUrl($countryCode)
 let $latestEnvelopeD := query:getLatestEnvelope($cdrUrl || "d/")
+let $e1aUrl := $cdrUrl || "e1a"
 
 let $headerBeginPosition := $docRoot//aqd:AQD_ReportingHeader/aqd:reportingPeriod/gml:TimePeriod/gml:beginPosition
 let $headerEndPosition := $docRoot//aqd:AQD_ReportingHeader/aqd:reportingPeriod/gml:TimePeriod/gml:endPosition
@@ -229,7 +230,7 @@ let $ms2E03 := prof:current-ms()
 
 (: E04 - ./om:procedure xlink:href attribute shall resolve to a traversable link process configuration in Data flow D: /aqd:AQD_SamplingPointProcess/ompr:inspireld/base:Identifier/base:localId:)
 
-let $ms1E04 := prof:current-ms()
+(:let $ms1E04 := prof:current-ms()
 
 let $E04invalid :=
     try {
@@ -262,7 +263,7 @@ let $E04invalid :=
     }
 
 let $ms2E04 := prof:current-ms()
-
+:)
 (: E05 - A valid delivery MUST provide an om:parameter with om:name/@xlink:href to http://dd.eionet.europa.eu/vocabulary/aq/processparameter/SamplingPoint :)
 
 let $ms1E05 := prof:current-ms()
@@ -286,7 +287,7 @@ let $ms2E05 := prof:current-ms()
 
 (: E06 :)
 
-let $ms1E06 := prof:current-ms()
+(:let $ms1E06 := prof:current-ms()
 
 let $E06invalid :=
     try {
@@ -315,7 +316,7 @@ let $E06invalid :=
     }
 
 
-let $ms2E06 := prof:current-ms()
+let $ms2E06 := prof:current-ms():)
 
 (: E07 :)
 
@@ -1101,7 +1102,7 @@ let $ms2E25b := prof:current-ms()
 
 (: E26 :)
 
-let $ms1E26 := prof:current-ms()
+(:let $ms1E26 := prof:current-ms()
 
 let $E26invalid :=
     try {
@@ -1203,7 +1204,7 @@ let $E26binvalid := errors:trycatch($E26bfunc)
 
 
 let $ms2E26b := prof:current-ms()
-
+:)
 (: E27 :)
 
 let $ms1E27 := prof:current-ms()
@@ -1565,7 +1566,7 @@ let $E33func := function() {
 let $E33invalid := errors:trycatch($E33func)
 
 let $ms2E33 := prof:current-ms()
-
+(:
 
 let $ms1E34 := prof:current-ms()
 
@@ -1638,6 +1639,68 @@ let $E34invalid := errors:trycatch($E34func)
 
 let $ms2E34 := prof:current-ms()
 
+:)
+let $ms1E35 := prof:current-ms()
+
+let $E35func := function() {
+   (:) (for $x at $xpos in $docRoot//om:OM_Observation/om:result
+
+    let $blockSeparator := string($x//swe:encoding/swe:TextEncoding/@blockSeparator)
+    let $decimalSeparator := string($x//swe:encoding/swe:TextEncoding/@decimalSeparator)
+    let $tokenSeparator := string($x//swe:encoding/swe:TextEncoding/@tokenSeparator)
+    let $fields := data($x//swe:elementType/swe:DataRecord/swe:field/@name)
+    let $observationType := (string($x//swe:field[@name = "Value"]/swe:Quantity/@definition) => tokenize("/"))[last()]
+    let $coverageType := if ($observationType = "hour") then "Hourly" else "Daily"
+    let $values :=
+        for $i at $ipos in tokenize(replace($x//swe:values, $blockSeparator || "$", ""), $blockSeparator)
+        let $values := tokenize($i, $tokenSeparator)
+        let $validity := $values[index-of($fields, "Validity")]
+        let $value := $values[index-of($fields, "Value")]
+        where $validity castable as xs:decimal and xs:decimal($validity) > 0 and $value castable as xs:decimal
+        return xs:decimal($value)
+    let $count := count($values)
+    return if ($count = 0) then () else
+    let $values := $values => sum()
+    let $mean := $values div $count
+    let $dataCoverage :=
+        let $dc :=
+        if ($observationType = "day") then
+            ($count div common:getYearDaysCount($reportingYear)) => format-number("0.01")
+        else
+            ($count div common:getYearHoursCount($reportingYear)) => format-number("0.01")
+        let $dc := number($dc) * 100
+        return $dc || "%"
+    where $mean <= 0
+    return
+        <tr>
+            <td title="OM_Observation">{string($x/../@gml:id)}</td>
+            <td title="Mean">{format-number($mean, "0.1")}</td>
+            <td title="Data coverage">{$coverageType || " coverage: " || $dataCoverage}</td>
+        </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]:)
+
+let $regex:='\\d{4}-\\d{2}-\\d{2}T24'
+let $time1:='T24:00:00'
+let $time2:='T23:59:59'
+let $asessments:=sparqlx:run(query:getAssessmentMethodsAndDates($e1aUrl,$reportingYear,$regex,$time1,$time2))
+
+(:let $asessments:=sparqlx:run(query:getAssessmentMethodsAndDates("http://cdr.eionet.europa.eu/lu/eu/aqd/e1a/","2019")):)
+(:for $x at $xpos in $docRoot//om:OM_Observation/om:resultTime:)
+ 
+ where 1 = 1   
+return
+        <tr>
+            <!--<td title="OM_Observation">{string($x/../@gml:id)}</td>
+            <td title="om:resultTime">{$x}</td>-->
+              <td title="asessments">{$asessments}</td>
+        </tr>
+            
+       (:) getAssessmentMethodsAndDates:)
+}
+let $E35invalid := errors:trycatch($E35func)
+
+let $ms2E35 := prof:current-ms()
+
+
 let $ms2Total := prof:current-ms()
 
 return
@@ -1650,9 +1713,9 @@ return
         {html:build2("E01b", $labels:E01b, $labels:E01b_SHORT, $E01binvalid, "All records are valid", "record", $errors:E01b)}
         {html:build2("E02", $labels:E02, $labels:E02_SHORT, $E02invalid, "All records are valid", "record", $errors:E02)}
         {html:build2("E03", $labels:E03, $labels:E03_SHORT, $E03invalid, "All records are valid", "record", $errors:E03)}
-        {html:build2Sparql("E04", $labels:E04, $labels:E04_SHORT, $E04invalid, "All records are valid", "record", $errors:E04)}
+        <!--{html:build2Sparql("E04", $labels:E04, $labels:E04_SHORT, $E04invalid, "All records are valid", "record", $errors:E04)}-->
         {html:build2("E05", $labels:E05, $labels:E05_SHORT, $E05invalid, "All records are valid", "record", $errors:E05)}
-        {html:build2Sparql("E06", $labels:E06, $labels:E06_SHORT, $E06invalid, "All records are valid", "record", $errors:E06)}
+        <!--{html:build2Sparql("E06", $labels:E06, $labels:E06_SHORT, $E06invalid, "All records are valid", "record", $errors:E06)}-->
         {html:build2("E07", $labels:E07, $labels:E07_SHORT, $E07invalid, "All records are valid", "record", $errors:E07)}
         {html:build2("E08", $labels:E08, $labels:E08_SHORT, $E08invalid, "All records are valid", "record", $errors:E08)}
         {html:build2("E09", $labels:E09, $labels:E09_SHORT, $E09invalid, "All records are valid", "record", $errors:E09)}
@@ -1676,8 +1739,8 @@ return
         {html:build2("E24b", $labels:E24b, $labels:E24b_SHORT, $E24binvalid, "All records are valid", "record", $errors:E24b)}
         {html:build2("E25", $labels:E25, $labels:E25_SHORT, $E25invalid, "All records are valid", "record", $errors:E25)}
         {html:build2("E25b", $labels:E25b, $labels:E25b_SHORT, $E25binvalid, "All records are valid", "record", $errors:E25b)}
-        {html:build2Sparql("E26", $labels:E26, $labels:E26_SHORT, $E26invalid, "All records are valid", "record", $errors:E26)}
-        {html:build2Sparql("E26b", $labels:E26b, $labels:E26b_SHORT, $E26binvalid, "All records are valid", "record", $errors:E26b)}
+       <!-- {html:build2Sparql("E26", $labels:E26, $labels:E26_SHORT, $E26invalid, "All records are valid", "record", $errors:E26)}
+        {html:build2Sparql("E26b", $labels:E26b, $labels:E26b_SHORT, $E26binvalid, "All records are valid", "record", $errors:E26b)}-->
         {html:build2("E27", $labels:E27, $labels:E27_SHORT, $E27invalid, "All records are valid", "record", $errors:E27)}
         {html:build2("E28", $labels:E28, $labels:E28_SHORT, $E28invalid, "All records are valid", "record", $errors:E28)}
         {html:build2("E29", $labels:E29, $labels:E29_SHORT, $E29invalid, "All records are valid", "record", $errors:E29)}
@@ -1687,7 +1750,8 @@ return
         {html:build2("E31", $labels:E31, $labels:E31_SHORT, $E31invalid, "All records are valid", "record", $errors:E31)}
         {html:build2("E32", $labels:E32, $labels:E32_SHORT, $E32invalid, "All records are valid", "record", $errors:E32)}
         {html:build2("E33", $labels:E33, $labels:E33_SHORT, $E33invalid, "All records are valid", "record", $errors:E33)}
-        {html:build2Sparql("E34", $labels:E34, $labels:E34_SHORT, $E34invalid, "All records are valid", "record", $errors:E34)}
+        <!--{html:build2Sparql("E34", $labels:E34, $labels:E34_SHORT, $E34invalid, "All records are valid", "record", $errors:E34)}-->
+         {html:build2("E35", $labels:E35, $labels:E35_SHORT, $E35invalid, "All records are valid", "record", $errors:E35)}
     </table>
     <table>
     <br/>
@@ -1706,9 +1770,9 @@ return
        {common:runtime("E01b", $ms1E01b, $ms2E01b)}
        {common:runtime("E02", $ms1E02, $ms2E02)}
        {common:runtime("E03", $ms1E03, $ms2E03)}
-       {common:runtime("E04",  $ms1E04, $ms2E04)}
+       <!--{common:runtime("E04",  $ms1E04, $ms2E04)}-->
        {common:runtime("E05", $ms1E05, $ms2E05)}
-       {common:runtime("E06",  $ms1E06, $ms2E06)}
+       <!--{common:runtime("E06",  $ms1E06, $ms2E06)}-->
        {common:runtime("E07",  $ms1E07, $ms2E07)}
        {common:runtime("E08",  $ms1E08, $ms2E08)}
        {common:runtime("E09",  $ms1E09, $ms2E09)}
@@ -1732,8 +1796,8 @@ return
        {common:runtime("E24b",  $ms1E24b, $ms2E24b)}
        {common:runtime("E25",  $ms1E25, $ms2E25)}
        {common:runtime("E25b",  $ms1E25b, $ms2E25b)}
-       {common:runtime("E26",  $ms1E26, $ms2E26)}
-       {common:runtime("E26b",  $ms1E26b, $ms2E26b)}
+      <!-- {common:runtime("E26",  $ms1E26, $ms2E26)}
+       {common:runtime("E26b",  $ms1E26b, $ms2E26b)}-->
        {common:runtime("E27",  $ms1E27, $ms2E27)}
        {common:runtime("E28",  $ms1E28, $ms2E28)}
        {common:runtime("E29",  $ms1E29, $ms2E29)}
@@ -1741,7 +1805,8 @@ return
        {common:runtime("E31",  $ms1E31, $ms2E31)}
        {common:runtime("E32",  $ms1E32, $ms2E32)}
        {common:runtime("E33",  $ms1E33, $ms2E33)}
-       {common:runtime("E34",  $ms1E34, $ms2E34)}
+      <!-- {common:runtime("E34",  $ms1E34, $ms2E34)}-->
+       {common:runtime("E35",  $ms1E35, $ms2E35)}
 
        {common:runtime("Total time",  $ms1Total, $ms2Total)}
     </table>
