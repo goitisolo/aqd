@@ -1194,11 +1194,11 @@ SELECT DISTINCT
    replace(str(?assessmentMethod),'http://reference.eionet.europa.eu/aq/','') as ?assessmentMethod
    ?beginPosition
   
-(if(regex(str(?endPosition), "|| $regex ||"), xsd:dateTime(replace(?endPosition, "||$time1||", "||$time2||")), ?endPosition) as ?endPosition)
+(if(regex(str(?endPosition), '"|| $regex ||"'), xsd:dateTime(replace(?endPosition, '"||$time1||"', '"||$time2||"')), ?endPosition) as ?endPosition)
    ?timePosition as ?resultTime
 
    WHERE {
-      VALUES ?url  { <" || $url || "> }
+      VALUES ?url  { <'" || $url || "'> }
      
       FILTER(CONTAINS(str(?g), str(?url)))
       GRAPH ?g {
@@ -1213,7 +1213,7 @@ SELECT DISTINCT
       ?parameter om:value ?assessmentMethod .
       }
 
-FILTER(?beginPosition >= xsd:dateTime(" || $year || ")) 
+FILTER(?beginPosition >= xsd:dateTime('" || $year || "')) 
 
    }
 ORDER BY DESC(?beginPosition )
