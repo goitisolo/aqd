@@ -493,6 +493,8 @@ declare variable $labels:E33 := labels:getDefinition("E33");
 declare variable $labels:E33_SHORT := labels:getPrefLabel("E33");
 declare variable $labels:E34 := labels:getDefinition("E34");
 declare variable $labels:E34_SHORT := labels:getPrefLabel("E34");
+declare variable $labels:E35 := labels:getDefinition("E35");
+declare variable $labels:E35_SHORT := labels:getPrefLabel("E35");
 
 declare variable $labels:Eb0 := labels:getDefinition("Eb0");
 declare variable $labels:Eb0_SHORT := labels:getPrefLabel("Eb0");
