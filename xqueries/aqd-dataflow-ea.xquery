@@ -1682,19 +1682,20 @@ let $regex:='\\d{4}-\\d{2}-\\d{2}T24'
 let $time1:='T24:00:00'
 let $time2:='T23:59:59'
 let $asessments:=sparqlx:run(query:getAssessmentMethodsAndDates($e1aUrl,$reportingYear,$regex,$time1,$time2))
+let $asessemtData := xs:dateTime($asessments/sparql:binding[@name = "resultTime"]/sparql:literal)
 
-
-
-(:for $x at $xpos in $docRoot//om:OM_Observation/om:resultTime:)
+let $XMlResultTime := max(for $x at $xpos in $docRoot//om:OM_Observation/om:resultTime
+              return xs:dateTime($x))
  
- where 1 = 1   
+ where $asessemtData > $XMlResultTime   
 return
         <tr>
-            <!--<td title="OM_Observation">{string($x/../@gml:id)}</td>
-            <td title="om:resultTime">{$x}</td>-->
-              <td title="asessments">{$asessments}</td>
+            <!--<td title="OM_Observation">{string($x/../@gml:id)}</td>-->
+            <td title="om:resultTime">{$XMlResultTime}</td>
+              <td title="asessments">{$asessemtData}</td>
                <td title="Sparql">{sparqlx:getLink(query:getAssessmentMethodsAndDates($e1aUrl,$reportingYear,$regex,$time1,$time2))}</td>
         </tr>
+            
             
        (:) getAssessmentMethodsAndDates:)
 }

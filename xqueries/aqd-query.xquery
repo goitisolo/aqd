@@ -1198,7 +1198,7 @@ SELECT DISTINCT
    ?timePosition as ?resultTime
 
    WHERE {
-      VALUES ?url  { <'" || $url || "'> }
+      VALUES ?url  { <" || $url || "> }
      
       FILTER(CONTAINS(str(?g), str(?url)))
       GRAPH ?g {
