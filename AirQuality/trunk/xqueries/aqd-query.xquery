@@ -1180,10 +1180,8 @@ declare function query:getAssessmentMethodsE($envelope as xs:string) {
 
 (: E35 :)
 declare function query:getAssessmentMethodsAndDates($url as xs:string, $year as xs:string, $regex as xs:string, $time1 as xs:string, $time2 as xs:string) as xs:string {
-  (:?g xsd:dateTime("2020-01-01") as ?endFijo
-#FILTER(?beginPosition >= xsd:date("2019-01-01") and ?endPosition <= xsd:date("2020-01-01"))
-#FILTER(?endPosition > xsd:dateTime("2020-01-01"))
-  :)
+  
+  
   "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
 PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
@@ -1216,10 +1214,48 @@ SELECT DISTINCT
 FILTER(?beginPosition >= xsd:dateTime('" || $year || "')) 
 
    }
-ORDER BY DESC(?beginPosition )
+ORDER BY DESC(?resultTime )
 LIMIT 1"
-};(:'2019-01-01':)
+};
 
+(: E35 :)
+declare function query:getAllAssessmentMethodsAndDates($url as xs:string, $year as xs:string, $regex as xs:string, $time1 as xs:string, $time2 as xs:string) as xs:string {
+  
+  
+  "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
+PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+PREFIX om: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+PREFIX purl: <http://purl.org/dc/terms/>
+
+SELECT DISTINCT
+   replace(str(?assessmentMethod),'http://reference.eionet.europa.eu/aq/','') as ?assessmentMethod
+   ?beginPosition
+  
+(if(regex(str(?endPosition), '"|| $regex ||"'), xsd:dateTime(replace(?endPosition, '"||$time1||"', '"||$time2||"')), ?endPosition) as ?endPosition)
+   ?timePosition as ?resultTime
+
+   WHERE {
+      VALUES ?url  { <" || $url || "> }
+     
+      FILTER(CONTAINS(str(?g), str(?url)))
+      GRAPH ?g {
+        ?observation a om:OM_Observation .
+
+      ?observation om:parameter ?parameter .
+      ?observation om:phenomenonTime ?phenomenonTime .
+      ?observation om:resultTime ?resultTime .
+      ?resultTime om:timePosition ?timePosition .
+      ?phenomenonTime om:beginPosition ?beginPosition .
+      ?phenomenonTime om:endPosition ?endPosition .
+      ?parameter om:value ?assessmentMethod .
+      }
+
+FILTER(?beginPosition >= xsd:dateTime('" || $year || "')) 
+
+   }
+"
+};
 (: H :)
 (: H24 :)
 declare function query:getPollutants(
