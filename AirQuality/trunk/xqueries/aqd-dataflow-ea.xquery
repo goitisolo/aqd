@@ -1566,7 +1566,7 @@ let $E33func := function() {
 let $E33invalid := errors:trycatch($E33func)
 
 let $ms2E33 := prof:current-ms()
-(:
+
 
 let $ms1E34 := prof:current-ms()
 
@@ -1639,7 +1639,7 @@ let $E34invalid := errors:trycatch($E34func)
 
 let $ms2E34 := prof:current-ms()
 
-:)
+
 let $ms1E35 := prof:current-ms()
 
 let $E35func := function() {

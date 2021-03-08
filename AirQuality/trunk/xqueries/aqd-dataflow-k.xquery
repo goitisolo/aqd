@@ -196,16 +196,17 @@ ERROR will be returned if XML is a new delivery and localId are not new compared
 
 let $ms1K02 := prof:current-ms()
 let $K02table := try {
+    let $knownMeasuresK02 := distinct-values(data(sparqlx:run(query:getMeasures($latestEnvelopeByYearK))/sparql:binding[@name = 'localId']/sparql:literal))
     for $el in $docRoot//aqd:AQD_Measures
         let $x := $el/aqd:inspireId/base:Identifier
-        let $inspireId := concat(data($x/base:namespace), "/", data($x/base:localId))
-        let $ok := $inspireId = $knownMeasures
+        let $inspireId := data($x/base:localId) (:concat(data($x/base:namespace), "/", :)
+        let $ok := $inspireId = $knownMeasuresK02
         return
             common:conditionalReportRow(
             $ok,
             [
                 ("gml:id", data($el/@gml:id)),
-                ("aqd:inspireId", $inspireId),
+                ("aqd:inspireId", $inspireId),               
                 ("Sparql", <td title="Sparql">{sparqlx:getLink(query:getMeasures($latestEnvelopeByYearK))}</td>),
                 (: ("SparqlQuery", sparqlx:getLink(query:existsViaNameLocalIdQuery(data($el/@gml:id), 'AQD_Measures', $latestEnvelopesK))) :)
                 ("SparqlQuery", sparqlx:getLink(query:existsViaNameLocalIdQuery($inspireId, 'AQD_Measures', $latestEnvelopesK)))
@@ -240,33 +241,6 @@ are different to previous delivery (for the same YEAR). :)
 let $ms1K03 := prof:current-ms()
 
 
-(:let $K03table := try {
-    for $main in $docRoot//aqd:AQD_Measures
-        let $x := $main/aqd:inspireId/base:Identifier
-        let $inspireId := concat(data($x/base:namespace), "/", data($x/base:localId))
-        let $ok := not(query:existsViaNameLocalId($inspireId, 'AQD_Measures', $latestEnvelopesK))
-        return
-            common:conditionalReportRow(
-            $ok,
-            [
-                ("gml:id", data($main/@gml:id)),
-                ("aqd:inspireId", $inspireId),
-                ("aqd:classification", common:checkLink(distinct-values(data($main/aqd:classification/@xlink:href)))),
-                ("Sparql", sparqlx:getLink(query:existsViaNameLocalIdQuery($inspireId, 'AQD_Measures', $latestEnvelopesK)))
-            ]
-            )
-} catch * {
-    html:createErrorRow($err:code, $err:description)
-}
-
-let $K03errorLevel :=
-    if (not($isNewDelivery) and count($K03table) = 0)
-    then
-        $errors:K03
-    else
-        $errors:INFO
-
-        :)
 let $K03table :=
     try {
         let $knownMeasuresK03 := distinct-values(data(sparqlx:run(query:getMeasures($latestEnvelopeK))/sparql:binding[@name = 'localId']/sparql:literal))
@@ -295,9 +269,12 @@ let $K03table :=
     }
 let $K03errorLevel :=
     if (not($isNewDelivery) and count($K03table) = 0) then
-        $errors:K03
-    else
+
+       (: $errors:K03:)
         $errors:INFO
+    else
+    (: $errors:INFO:)
+       $errors:K03
 
 
 
@@ -1385,7 +1362,7 @@ return
         {html:build3("K0", $labels:K0, $labels:K0_SHORT, $K0table, string($K0table/td), errors:getMaxError($K0table))}
         {html:build1("K01", $labels:K01, $labels:K01_SHORT, $K01, "", string($countMeasures), "", "", $errors:K01)}
         {html:buildSimpleSparql("K02", $labels:K02, $labels:K02_SHORT, $K02table, "", "", $K02errorLevel)}
-        {html:buildSimpleSparql("K03", $labels:K03, $labels:K03_SHORT, $K03table, "", "", $errors:K03)} <!--$K03errorLevel)}-->
+        {html:buildSimpleSparql("K03", $labels:K03, $labels:K03_SHORT, $K03table, "", "", $K03errorLevel)} <!--$K03errorLevel)}-->
         {html:build1("K04", $labels:K04, $labels:K04_SHORT, $K04table, "", string(count($K04table)), " ", "", $errors:K04)}
         {html:build1("K05", $labels:K05, $labels:K05_SHORT, $K05, "RESERVE", "RESERVE", "RESERVE", "RESERVE", $errors:K05)}
         {html:build1("K06", $labels:K06, $labels:K06_SHORT, $K06, "RESERVE", "RESERVE", "RESERVE", "RESERVE", $errors:K06)}
