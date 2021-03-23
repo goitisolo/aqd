@@ -230,7 +230,7 @@ let $ms2E03 := prof:current-ms()
 
 (: E04 - ./om:procedure xlink:href attribute shall resolve to a traversable link process configuration in Data flow D: /aqd:AQD_SamplingPointProcess/ompr:inspireld/base:Identifier/base:localId:)
 
-let $ms1E04 := prof:current-ms()
+(:let $ms1E04 := prof:current-ms()
 
 let $E04invalid :=
     try {
@@ -262,7 +262,7 @@ let $E04invalid :=
         </tr>
     }
 
-let $ms2E04 := prof:current-ms()
+let $ms2E04 := prof:current-ms():)
 
 (: E05 - A valid delivery MUST provide an om:parameter with om:name/@xlink:href to http://dd.eionet.europa.eu/vocabulary/aq/processparameter/SamplingPoint :)
 
@@ -286,7 +286,7 @@ let $E05invalid :=
 let $ms2E05 := prof:current-ms()
 
 (: E06 :)
-
+(:
 let $ms1E06 := prof:current-ms()
 
 let $E06invalid :=
@@ -316,7 +316,7 @@ let $E06invalid :=
     }
 
 
-let $ms2E06 := prof:current-ms()
+let $ms2E06 := prof:current-ms():)
 
 (: E07 :)
 
@@ -857,12 +857,24 @@ let $ms1E24 := prof:current-ms()
 
 let $E24invalid :=
     try {
-        (for $x at $xpos in $docRoot//om:OM_Observation/om:result[//swe:field[@name = "Value"]/swe:Quantity/contains(@definition, $vocabulary:OBSERVATIONS_PRIMARY) = true()]
+
+(let $node:=     
+       if (matches(($docRoot//om:OM_Observation/om:result//swe:field[@name = "Value"]/swe:Quantity/@definition)[1], $vocabulary:OBSERVATIONS_PRIMARY)) then
+        
+          $vocabulary:OBSERVATIONS_PRIMARY
+       
+        else if  (matches(($docRoot//om:OM_Observation/om:result//swe:field[@name = "Value"]/swe:Quantity/@definition)[1], $vocabulary:OBSERVATIONS_PRIMARY_UPPER)) then
+          $vocabulary:OBSERVATIONS_PRIMARY_UPPER
+        else ""
+
+ where not($node="")
+
+        for $x at $xpos in $docRoot//om:OM_Observation/om:result[//swe:field[@name = "Value"]/swe:Quantity/contains(@definition, $node) = true()]
 
         let $blockSeparator := string($x//swe:encoding/swe:TextEncoding/@blockSeparator)
         let $decimalSeparator := string($x//swe:encoding/swe:TextEncoding/@decimalSeparator)
         let $tokenSeparator := string($x//swe:encoding/swe:TextEncoding/@tokenSeparator)
-        let $definition := $x//swe:field[@name = "Value"]/swe:Quantity/@definition/string()
+        let $definition := ($x//swe:field[@name = "Value"]/swe:Quantity/@definition/string())
         let $fields := data($x//swe:elementType/swe:DataRecord/swe:field/@name)
 
         let $startPos := index-of($fields, "StartTime")
@@ -878,61 +890,48 @@ let $E24invalid :=
                 let $startDateTime := xs:dateTime($startTime)
                 let $endDateTime := xs:dateTime($endTime)
                 return
-                    (:if ($definition = $vocabulary:OBSERVATIONS_PRIMARY || "hour") then
-                        if (($endDateTime - $startDateTime) div xs:dayTimeDuration("PT1H") = 1) then
-                            false()
-                        else
-                            true()
-                    else if ($definition = $vocabulary:OBSERVATIONS_PRIMARY || "day") then
-                        if (($endDateTime - $startDateTime) div xs:dayTimeDuration("P1D") = 1) then
-                            false()
-                        else
-                            true()
-                    else if ($definition = $vocabulary:OBSERVATIONS_PRIMARY || "year") then
-                        if (common:isDateTimeDifferenceOneYear($startDateTime, $endDateTime)) then
-                            false()
-                        else
-                            true()
-                    else if ($definition = $vocabulary:OBSERVATIONS_PRIMARY || "var") then
-                        if (($endDateTime - $startDateTime) div xs:dayTimeDuration("PT1H") > 0) then
-                            false()
-                        else
-                            true()
-                    else
-                        false():)
+                   
             switch ($definition)
-              case $vocabulary:OBSERVATIONS_PRIMARY || "hour"
+              case $node || "hour"
                 return if (($endDateTime - $startDateTime) div xs:dayTimeDuration("PT1H") = 1) then
-                            false()
+                            false () 
                         else
                             true()
-              case $vocabulary:OBSERVATIONS_PRIMARY || "day"
-                (:return if (($endDateTime - $startDateTime) div xs:dayTimeDuration("P1D") = 1):) 
+              case $node || "day"
+               
                 return if ( xs:dayTimeDuration( xs:date(substring-before(xs:string($endDateTime),"T")) - xs:date(substring-before(xs:string($startDateTime),"T")) ) div xs:dayTimeDuration("P1D") = 1) then
-                            false()
+                           false () 
                         else
                             true()
-              case $vocabulary:OBSERVATIONS_PRIMARY || "year"
+              case $node || "year"
                 return if (common:isDateTimeDifferenceOneYear($startDateTime, $endDateTime)) then
-                            false()
+                           false () 
                         else
                             true()
-              case $vocabulary:OBSERVATIONS_PRIMARY || "var"
+              case $node || "var"
                 return if (($endDateTime - $startDateTime) div xs:dayTimeDuration("PT1H") > 0) then
-                            false()
+                            false () 
                         else
                             true()
               default 
-                return false()
+              
+               return if (($endDateTime - $startDateTime) div xs:dayTimeDuration("PT1H") > 0) then
+                    false () 
+                else
+                true()
                               
         where $result = true()
+       
         return
             <tr>
                 <td title="@gml:id">{string($x/../@gml:id)}</td>
-                <td title="@definition">{$definition}</td>
+                <td title="@definition">{$definition}</td>               
                 <td title="StartTime">{$startTime}</td>
                 <td title="EndTime">{$endTime}</td>
+
             </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
+
+
     }
     catch * {
         <tr class="{$errors:FAILED}">
@@ -1101,7 +1100,7 @@ let $E25binvalid :=
 let $ms2E25b := prof:current-ms()
 
 (: E26 :)
-
+(:
 let $ms1E26 := prof:current-ms()
 
 let $E26invalid :=
@@ -1204,7 +1203,7 @@ let $E26binvalid := errors:trycatch($E26bfunc)
 
 
 let $ms2E26b := prof:current-ms()
-
+:)
 (: E27 :)
 
 let $ms1E27 := prof:current-ms()
@@ -1567,7 +1566,7 @@ let $E33invalid := errors:trycatch($E33func)
 
 let $ms2E33 := prof:current-ms()
 
-
+(:
 let $ms1E34 := prof:current-ms()
 
 let $E34func := function() {
@@ -1639,7 +1638,7 @@ let $E34invalid := errors:trycatch($E34func)
 
 let $ms2E34 := prof:current-ms()
 
-
+:)
 let $ms1E35 := prof:current-ms()
 
 let $E35func := function() {
@@ -1699,9 +1698,9 @@ return
         {html:build2("E01b", $labels:E01b, $labels:E01b_SHORT, $E01binvalid, "All records are valid", "record", $errors:E01b)}
         {html:build2("E02", $labels:E02, $labels:E02_SHORT, $E02invalid, "All records are valid", "record", $errors:E02)}
         {html:build2("E03", $labels:E03, $labels:E03_SHORT, $E03invalid, "All records are valid", "record", $errors:E03)}
-        {html:build2Sparql("E04", $labels:E04, $labels:E04_SHORT, $E04invalid, "All records are valid", "record", $errors:E04)}
+        <!--{html:build2Sparql("E04", $labels:E04, $labels:E04_SHORT, $E04invalid, "All records are valid", "record", $errors:E04)}
         {html:build2("E05", $labels:E05, $labels:E05_SHORT, $E05invalid, "All records are valid", "record", $errors:E05)}
-        {html:build2Sparql("E06", $labels:E06, $labels:E06_SHORT, $E06invalid, "All records are valid", "record", $errors:E06)}
+        {html:build2Sparql("E06", $labels:E06, $labels:E06_SHORT, $E06invalid, "All records are valid", "record", $errors:E06)}-->
         {html:build2("E07", $labels:E07, $labels:E07_SHORT, $E07invalid, "All records are valid", "record", $errors:E07)}
         {html:build2("E08", $labels:E08, $labels:E08_SHORT, $E08invalid, "All records are valid", "record", $errors:E08)}
         {html:build2("E09", $labels:E09, $labels:E09_SHORT, $E09invalid, "All records are valid", "record", $errors:E09)}
@@ -1725,8 +1724,8 @@ return
         {html:build2("E24b", $labels:E24b, $labels:E24b_SHORT, $E24binvalid, "All records are valid", "record", $errors:E24b)}
         {html:build2("E25", $labels:E25, $labels:E25_SHORT, $E25invalid, "All records are valid", "record", $errors:E25)}
         {html:build2("E25b", $labels:E25b, $labels:E25b_SHORT, $E25binvalid, "All records are valid", "record", $errors:E25b)}
-       {html:build2Sparql("E26", $labels:E26, $labels:E26_SHORT, $E26invalid, "All records are valid", "record", $errors:E26)}
-        {html:build2Sparql("E26b", $labels:E26b, $labels:E26b_SHORT, $E26binvalid, "All records are valid", "record", $errors:E26b)}
+      <!-- {html:build2Sparql("E26", $labels:E26, $labels:E26_SHORT, $E26invalid, "All records are valid", "record", $errors:E26)}
+        {html:build2Sparql("E26b", $labels:E26b, $labels:E26b_SHORT, $E26binvalid, "All records are valid", "record", $errors:E26b)}-->
         {html:build2("E27", $labels:E27, $labels:E27_SHORT, $E27invalid, "All records are valid", "record", $errors:E27)}
         {html:build2("E28", $labels:E28, $labels:E28_SHORT, $E28invalid, "All records are valid", "record", $errors:E28)}
         {html:build2("E29", $labels:E29, $labels:E29_SHORT, $E29invalid, "All records are valid", "record", $errors:E29)}
@@ -1736,7 +1735,7 @@ return
         {html:build2("E31", $labels:E31, $labels:E31_SHORT, $E31invalid, "All records are valid", "record", $errors:E31)}
         {html:build2("E32", $labels:E32, $labels:E32_SHORT, $E32invalid, "All records are valid", "record", $errors:E32)}
         {html:build2("E33", $labels:E33, $labels:E33_SHORT, $E33invalid, "All records are valid", "record", $errors:E33)}
-        {html:build2Sparql("E34", $labels:E34, $labels:E34_SHORT, $E34invalid, "All records are valid", "record", $errors:E34)}
+       <!--{html:build2Sparql("E34", $labels:E34, $labels:E34_SHORT, $E34invalid, "All records are valid", "record", $errors:E34)}-->
          {html:build2Sparql("E35", $labels:E35, $labels:E35_SHORT, $E35invalid, "All records are valid", "record", $errors:E35)}
     </table>
     <table>
