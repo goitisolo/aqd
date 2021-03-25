@@ -270,11 +270,11 @@ let $K03table :=
 let $K03errorLevel :=
     if (not($isNewDelivery) and count($K03table) = 0) then
 
-       (: $errors:K03:)
-        $errors:INFO
+        $errors:K03
+       
     else
-    (: $errors:INFO:)
-       $errors:K03
+     $errors:INFO
+      
 
 
 
