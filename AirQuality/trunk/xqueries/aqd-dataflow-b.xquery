@@ -374,7 +374,7 @@ let $B08table :=
                 let $zone := string($pollutantNode/../../am:inspireId/base:Identifier/base:localId)
                 let $protectionTarget := string($pollutantNode/aqd:protectionTarget/@xlink:href)
                 let $key := string-join(($zone, $pollutant, $protectionTarget), "#")
-            where common:isDateTimeIncluded($reportingYear, $beginPosition, $endPosition)
+           where common:isDateTimeIncludedB11B12New($reportingYear, $beginPosition, $endPosition)
             group by $pollutant, $protectionTarget
             return
                 <result>
@@ -421,6 +421,7 @@ let $B08table :=
                     <td title="Pollutant Code">{$vsCode}</td>
                     <td title="Protection Target">{$protectionTarget}</td>
                     <td title="Count">{$count}</td>
+
 
                 </tr>
     } catch * {
