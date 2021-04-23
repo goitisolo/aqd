@@ -579,20 +579,64 @@ let $D10invalid :=
 
     let $ns2D10 := prof:current-ms()
 
-(: D11 :)
 
 let $ns1D11 := prof:current-ms()
 
 let $D11invalid :=
     try {
-        let $D11tmp := distinct-values(
-                $docRoot//aqd:AQD_Network/aqd:operationActivityPeriod/gml:TimePeriod[((gml:beginPosition >= gml:endPosition)
-                        and (gml:endPosition != ""))]/../../ef:inspireId/base:Identifier/base:localId)
-        for $x in $D11tmp
+        
+
+
+  let $D11tmp_Network :=
+        let $allEfOperationActivityPeriod :=
+            for $allOperationActivityPeriod in $docRoot//aqd:AQD_Network/aqd:operationActivityPeriod
+            where ($allOperationActivityPeriod/gml:TimePeriod/gml:endPosition[normalize-space(@indeterminatePosition) != "unknown"]
+                    or fn:string-length($allOperationActivityPeriod/gml:TimePeriod/gml:endPosition) > 0)
+            return $allOperationActivityPeriod
+
+        for $operationActivityPeriod in $allEfOperationActivityPeriod
+        where ((geox:parseDateTime($operationActivityPeriod/gml:TimePeriod/gml:endPosition) < geox:parseDateTime($operationActivityPeriod/gml:TimePeriod/gml:beginPosition)) or ($operationActivityPeriod/gml:TimePeriod/gml:endPosition = "")or ($operationActivityPeriod/gml:TimePeriod/gml:beginPosition = "")or ($operationActivityPeriod/gml:TimePeriod/gml:beginPosition [normalize-space(@indeterminatePosition) = "unknown"]))
+        return data($operationActivityPeriod/../@gml:id)
+
+
+
+   let $D11tmp_SamplingPoint :=
+        let $allEfOperationActivityPeriod :=
+            for $allOperationActivityPeriod in $docRoot//aqd:AQD_SamplingPoint/ef:observingCapability
+            where ($allOperationActivityPeriod/ef:ObservingCapability/ef:observingTime/gml:TimePeriod/gml:endPosition[normalize-space(@indeterminatePosition) != "unknown"]
+                    or fn:string-length($allOperationActivityPeriod/ef:ObservingCapability/ef:observingTime/gml:TimePeriod/gml:endPosition) > 0)
+            return $allOperationActivityPeriod
+
+        for $operationActivityPeriod in $allEfOperationActivityPeriod
+        where ((geox:parseDateTime($operationActivityPeriod/ef:ObservingCapability/ef:observingTime/gml:TimePeriod/gml:endPosition) < geox:parseDateTime($operationActivityPeriod/ef:ObservingCapability/ef:observingTime/gml:TimePeriod/gml:beginPosition)) or ($operationActivityPeriod/ef:ObservingCapability/ef:observingTime/gml:TimePeriod/gml:endPosition = "")or ($operationActivityPeriod/ef:ObservingCapability/ef:observingTime/gml:TimePeriod/gml:beginPosition = "")or ($operationActivityPeriod/ef:ObservingCapability/ef:observingTime/gml:TimePeriod/gml:beginPosition [normalize-space(@indeterminatePosition) = "unknown"]))
+        return data($operationActivityPeriod/../@gml:id)
+
+
+             
+      let $D11tmp_Station :=
+        let $allEfOperationActivityPeriod :=
+            for $allOperationActivityPeriod in $docRoot//aqd:AQD_Station/ef:operationalActivityPeriod
+            where ($allOperationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:endPosition[normalize-space(@indeterminatePosition) != "unknown"]
+                    or fn:string-length($allOperationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:endPosition) > 0)
+            return $allOperationActivityPeriod
+
+        for $operationActivityPeriod in $allEfOperationActivityPeriod
+        where ((geox:parseDateTime($operationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:endPosition) < geox:parseDateTime($operationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:beginPosition)) or ($operationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:endPosition = "")or ($operationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:beginPosition = "")or ($operationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:beginPosition [normalize-space(@indeterminatePosition) = "unknown"]))
+        return data($operationActivityPeriod/../@gml:id)
+
+       let $allRecords:=  ($D11tmp_Network, $D11tmp_Station,$D11tmp_SamplingPoint)
+        
+        
+
+        for $x in $allRecords
         return
             <tr>
                 <td title="base:localId">{$x}</td>
+
+             
             </tr>
+
+        
     } catch * {
         <tr class="{$errors:FAILED}">
             <td title="Error code">{$err:code}</td>
@@ -603,7 +647,9 @@ let $D11invalid :=
 
 let $ns2D11 := prof:current-ms()
 
-(: D12 aqd:AQD_Network/ef:name shall return a string :)
+
+(: D12  aqd:AQD_Network/ef:name shall return a string :)
+
 
 let $ns1D12 := prof:current-ms()
 
@@ -915,7 +961,7 @@ let $ns2D21 := prof:current-ms()
 
 let $ns1D23 := prof:current-ms()
 
-let $D23invalid :=
+(:let $D23invalid :=
     try {
         let $allEfOperationActivityPeriod :=
             for $allOperationActivityPeriod in $docRoot//aqd:AQD_Station/ef:operationalActivityPeriod
@@ -924,13 +970,40 @@ let $D23invalid :=
             return $allOperationActivityPeriod
 
         for $operationActivityPeriod in $allEfOperationActivityPeriod
-        where ($operationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:endPosition < $operationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:beginPosition) and ($operationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:endPosition != "")
+        where ((geox:parseDateTime($operationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:endPosition) < geox:parseDateTime($operationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:beginPosition)) or ($operationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:endPosition = "")or ($operationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:beginPosition = "")or ($operationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:beginPosition [normalize-space(@indeterminatePosition) = "unknown"]))
         return
             <tr>
                 <td title="aqd:AQD_Station">{data($operationActivityPeriod/../@gml:id)}</td>
                 <td title="gml:TimePeriod">{data($operationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/@gml:id)}</td>
                 <td title="gml:beginPosition">{$operationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:beginPosition}</td>
                 <td title="gml:endPosition">{$operationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:endPosition}</td>
+                
+            </tr>
+    }  catch * {
+        <tr class="{$errors:FAILED}">
+            <td title="Error code"> {$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+            <td></td>
+        </tr>
+    }:)
+
+    let $D23invalid :=
+    try {
+        let $allEfOperationActivityPeriod :=
+            for $allOperationActivityPeriod in $docRoot//aqd:AQD_Station/ef:operationalActivityPeriod
+            where ($allOperationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:endPosition[normalize-space(@indeterminatePosition) != "unknown"]
+                    or fn:string-length($allOperationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:endPosition) > 0)
+            return $allOperationActivityPeriod
+
+        for $operationActivityPeriod in $allEfOperationActivityPeriod
+        where ((geox:parseDateTime($operationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:endPosition) < geox:parseDateTime($operationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:beginPosition)) or ($operationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:endPosition = "")or ($operationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:beginPosition = "")or ($operationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:beginPosition [normalize-space(@indeterminatePosition) = "unknown"]))
+        return
+            <tr>
+                <td title="aqd:AQD_Station">{data($operationActivityPeriod/../@gml:id)}</td>
+                <td title="gml:TimePeriod">{data($operationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/@gml:id)}</td>
+                <td title="gml:beginPosition">{$operationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:beginPosition}</td>
+                <td title="gml:endPosition">{$operationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:endPosition}</td>
+                
             </tr>
     }  catch * {
         <tr class="{$errors:FAILED}">
@@ -1337,6 +1410,7 @@ let $ns1D37 := prof:current-ms()
 let $D37invalid :=
     try {
         let $invalidPosition :=
+           (: for  $timePeriod in $docRoot//aqd:AQD_Station/ef:operationalActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod:)
             for $timePeriod in $docRoot//aqd:AQD_SamplingPoint/ef:observingCapability/ef:ObservingCapability/ef:observingTime/gml:TimePeriod
             (: XQ does not support 24h that is supported by xml schema validation :)
             (: TODO: comment by sofiageo - the above statement is not true, fix this if necessary :)
@@ -1615,7 +1689,7 @@ let $D45invalid :=
             return $allOperationActivityPeriod
 
         for $operationActivitPeriod in $allNotNullEndOperationActivityPeriods
-        where ((xs:dateTime($operationActivitPeriod/gml:endPosition) < xs:dateTime($operationActivitPeriod/gml:beginPosition)))
+        where ((geox:parseDateTime($operationActivitPeriod/gml:endPosition) < geox:parseDateTime($operationActivitPeriod/gml:beginPosition)))
         return
             <tr>
                 <td title="aqd:AQD_Station">{data($operationActivitPeriod/../../../../@gml:id)}</td>
