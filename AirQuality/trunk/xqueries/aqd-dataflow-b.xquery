@@ -1560,12 +1560,13 @@ let $ns1B47 := prof:current-ms()
 let $B47invalid :=
     try {
         let $all := dd:getValidConcepts($vocabulary:ZONETYPE_VOCABULARY || "rdf")
-        for $x in $docRoot//aqd:aqdZoneType
-        where not($x/@xlink:href = $all)
+        (:for $x in $docRoot//aqd:aqdZoneType:)
+        for $x in $docRoot/gml:FeatureCollection/gml:featureMember/aqd:AQD_Zone/aqd:aqdZoneType/@xlink:href
+        where not($x = $all)
         return
             <tr>
-                <td title="aqd:AQD_Zone">{string($x/../am:inspireId/base:Identifier/base:localId)}</td>
-                <td title="aqd:aqdZoneType">{data($x/@xlink:href)}</td>
+                <td title="aqd:AQD_Zone">{string($x/../../am:inspireId/base:Identifier/base:localId)}</td>
+                <td title="aqd:aqdZoneType">{data($x)}</td>
             </tr>
     } catch * {
         <tr class="{$errors:FAILED}">
