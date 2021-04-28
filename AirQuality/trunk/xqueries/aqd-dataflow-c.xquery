@@ -88,12 +88,10 @@ let $bdir := if (contains($source_url, "c_preliminary")) then "b_preliminary/" e
 let $cdir := if (contains($source_url, "c_preliminary")) then "c_preliminary/" else "c/"
 let $zonesUrl := concat($cdrUrl, $bdir)
 let $reportingYear := common:getReportingYear($docRoot)
-let $latestEnvelopeB := query:getLatestEnvelope($zonesUrl, $reportingYear)
+let $latestEnvelopeBperYear := query:getLatestEnvelope($zonesUrl, $reportingYear)
 let $prelimEnvelopeC := query:getLatestEnvelope($cdrUrl || "c_preliminary/", $reportingYear)
 let $namespaces := distinct-values($docRoot//base:namespace)
-let $zoneIds := if ((fn:string-length($countryCode) = 2) and exists($latestEnvelopeB)) then distinct-values(data(sparqlx:run(query:getZone($latestEnvelopeB))//sparql:binding[@name = 'inspireLabel']/sparql:literal)) else ()
-let $countZoneIds1 := count($zoneIds)
-let $countZoneIds2 := count(distinct-values($docRoot//aqd:AQD_AssessmentRegime/aqd:zone/@xlink:href))
+
 
 
 let $latestEnvelopeB := query:getLatestEnvelope($cdrUrl || $bdir)
@@ -104,6 +102,10 @@ let $getEnvelopeD1b := query:getEnvelopes($cdrUrl || "d1b/")
 let $knownRegimes := distinct-values(data(sparqlx:run(query:getAssessmentRegime($latestEnvelopeC))/sparql:binding[@name = 'inspireLabel']/sparql:literal))
 let $allRegimes := query:getAllRegimeIds($namespaces)
 let $countRegimes := count($docRoot//aqd:AQD_AssessmentRegime)
+
+let $zoneIds := if ((fn:string-length($countryCode) = 2) and exists($latestEnvelopeB)) then distinct-values(data(sparqlx:run(query:getZone($latestEnvelopeB))//sparql:binding[@name = 'inspireLabel']/sparql:literal)) else ()
+let $countZoneIds1 := count($zoneIds)
+let $countZoneIds2 := count(distinct-values($docRoot//aqd:AQD_AssessmentRegime/aqd:zone/@xlink:href))
 
 let $headerBeginPosition := $docRoot//aqd:AQD_ReportingHeader/aqd:reportingPeriod/gml:TimePeriod/gml:beginPosition
 let $headerEndPosition := $docRoot//aqd:AQD_ReportingHeader/aqd:reportingPeriod/gml:TimePeriod/gml:endPosition
@@ -1308,6 +1310,7 @@ let $C28invalid :=
                 <td title="aqd:AQD_AssessmentRegime/aqd:inspireId/base:Identifier/base:localId">{data($zone/../../aqd:inspireId/base:Identifier/base:localId)}</td>
                 <td title="aqd:AQD_Zone/am:inspireId/base:Identifier/base:localId">{data($zone/am:inspireId/base:Identifier/base:localId)}</td>
                 {html:getErrorTD(data($endPosition), "gml:endPosition", fn:true())}
+
             </tr>
     } catch * {
         <tr class="{$errors:FAILED}">
@@ -1319,13 +1322,12 @@ let $C28invalid :=
 let $ms2C28 := prof:current-ms()
 
 (: C31 :)
-
 let $ms1C31 := prof:current-ms()
 
 let $C31table :=
     try {
         let $C31ResultB :=
-            for $i in sparqlx:run(query:getC31($latestEnvelopeB, $reportingYear))
+            for $i in sparqlx:run(query:getC31($latestEnvelopeBperYear, $reportingYear))
             return
                 <result>
                     <pollutantName>{string($i/sparql:binding[@name = "Pollutant"]/sparql:literal)}</pollutantName>
@@ -1368,13 +1370,13 @@ let $C31table :=
                 else $errors:INFO
         order by $vsName
         return
-            <tr class="{$errorClass}">
+            <tr class="{$errorClass}">                   
                 <td title="Pollutant Name">{$vsName}</td>
                 <td title="Pollutant Code">{$vsCode}</td>
                 <td title="Protection Target">{$protectionTarget}</td>
                 <td title="Count C">{string($countC)}</td>
                 <td title="Count B">{string($countB)}</td>
-                <td title="Sparql">{sparqlx:getLink(query:getC31($latestEnvelopeB, $reportingYear))}</td>
+                <td title="Sparql">{sparqlx:getLink(query:getC31($latestEnvelopeBperYear, $reportingYear))}</td>
             </tr>
     } catch * {
         <tr class="{$errors:FAILED}">
@@ -1384,6 +1386,7 @@ let $C31table :=
     }
 
     let $ms2C31 := prof:current-ms()
+
 
 (: C31b :)
 
@@ -1437,6 +1440,13 @@ let $C31btable :=
         where doc($envelopeUrl)/envelope/obligation != 'http://rod.eionet.europa.eu/obligations/694'
         return
             <tr class="{$errorClass}">
+            
+            
+<!--pruebas C31 local
+             <td title="rlatestEnvelopeB">{$latestEnvelopeB}</td>
+             <td title="latestEnvelopeBperYearv">{$latestEnvelopeBperYear}</td>           
+pruebas C31 local-->
+
                 <td title="Pollutant Name">{$vsName}</td>
                 <td title="Pollutant Code">{$vsCode}</td>
                 <td title="Protection Target">{$protectionTarget}</td>
@@ -1942,7 +1952,7 @@ return
        {common:runtime("C27",  $ms1C27, $ms2C27)}
        {common:runtime("C28",  $ms1C28, $ms2C28)}
        {common:runtime("C29",  $ms1C29, $ms2C29)}
-       {common:runtime("C31",  $ms1C31, $ms2C31)}
+       <!--{common:runtime("C31",  $ms1C31, $ms2C31)}-->
        {common:runtime("C31b",  $ms1C31b, $ms2C31b)}
        {common:runtime("C32",  $ms1C32, $ms2C32)}
        {common:runtime("C33",  $ms1C33, $ms2C33)}
