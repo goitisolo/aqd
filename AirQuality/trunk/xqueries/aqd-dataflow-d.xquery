@@ -86,7 +86,7 @@ let $latestEnvelopeB := query:getLatestEnvelope($cdrUrl || "b/")
 let $latestEnvelopeD := query:getLatestEnvelope($cdrUrl || "d/")
 
 let $namespaces := distinct-values($docRoot//base:namespace)
-let $knownFeatures := distinct-values(data(sparqlx:run(query:getAllFeatureIds($dataflowD:FEATURE_TYPES, $latestEnvelopeD, $namespaces))//sparql:binding[@name='inspireLabel']/sparql:literal))
+(:let $knownFeatures := distinct-values(data(sparqlx:run(query:getAllFeatureIds($dataflowD:FEATURE_TYPES, $latestEnvelopeD, $namespaces))//sparql:binding[@name='inspireLabel']/sparql:literal)):)
 let $SPOnamespaces := distinct-values($docRoot//aqd:AQD_SamplingPoint//base:Identifier/base:namespace)
 let $SPPnamespaces := distinct-values($docRoot//aqd:AQD_SamplingPointProcess/ompr:inspireId/base:Identifier/base:namespace)
 let $networkNamespaces := distinct-values($docRoot//aqd:AQD_Network/ef:inspireId/base:Identifier/base:namespace)
@@ -1011,25 +1011,34 @@ let $ns1D23 := prof:current-ms()
 
     let $D23invalid :=
     try {
+ 
+                 for $allStations in $docRoot//aqd:AQD_Station
+                    let $belongsTo:= fn:substring-after(data($allStations/ef:belongsTo/@xlink:href), '/')
+                    let $stationBeginPos:=$allStations/ef:operationalActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:beginPosition
+                    let $stationEndPos:=$allStations/ef:operationalActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:endPosition
 
+               
+                        for $x in $docRoot//aqd:AQD_Network
+                        let $networkBeginPos:=$x/aqd:operationActivityPeriod/gml:TimePeriod/gml:beginPosition
+                        let $networkEndPos:=$x/aqd:operationActivityPeriod/gml:TimePeriod/gml:endPosition
+                            
+                   where ( ($belongsTo!="")and ($belongsTo = data($x/@gml:id) ))
+   
+                    return
 
-
-
-
-        let $allEfOperationActivityPeriod :=
-            for $allOperationActivityPeriod in $docRoot//aqd:AQD_Station/ef:operationalActivityPeriod
-            where ($allOperationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:endPosition[normalize-space(@indeterminatePosition) != "unknown"]
-                    or fn:string-length($allOperationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:endPosition) > 0)
-            return $allOperationActivityPeriod
-
-        for $operationActivityPeriod in $allEfOperationActivityPeriod
-        where ((geox:parseDateTime($operationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:endPosition) < geox:parseDateTime($operationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:beginPosition)) or ($operationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:endPosition = "")or ($operationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:beginPosition = "")or ($operationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:beginPosition [normalize-space(@indeterminatePosition) = "unknown"]))
-        return
+                    if ((($stationEndPos != "") and($networkEndPos[normalize-space(@indeterminatePosition) = "unknown"] )) or (($networkEndPos != "") and($stationEndPos[normalize-space(@indeterminatePosition) = "unknown"] ))
+                    or ($stationBeginPos < $networkBeginPos))
+                    then
+                   
+        
             <tr>
-                <td title="aqd:AQD_Station">{data($operationActivityPeriod/../@gml:id)}</td>
-                <td title="gml:TimePeriod">{data($operationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/@gml:id)}</td>
-                <td title="gml:beginPosition">{$operationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:beginPosition}</td>
-                <td title="gml:endPosition">{$operationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:endPosition}</td>
+                <td title="aqd:AQD_Station">{data($allStations/@gml:id)}</td>
+                <td title="belongs to aqd:AQD_Network ">{$belongsTo}</td>
+                <td title="Station beginPos">{$stationBeginPos}</td>
+                <td title="Network beginPos">{$networkBeginPos}</td>
+                <td title="Station endPos">{$stationEndPos}</td>
+                <td title="Network endPos">{$networkEndPos}</td>
+               
                 
             </tr>
     }  catch * {
@@ -2726,9 +2735,9 @@ return
         {html:build2("VOCAB", $labels:VOCAB, $labels:VOCAB_SHORT, $VOCABinvalid, "All values are valid", "record", $errors:VOCAB)}
         {html:build3("D0", $labels:D0, $labels:D0_SHORT, $D0table, string($D0table/td), errors:getMaxError($D0table))}
         {html:build1("D01", $labels:D01, $labels:D01_SHORT, $D01table, "", $D1sum, "", "",$errors:D01)}
-       <!-- {html:buildSimpleSparql("D02", $labels:D02, $labels:D02_SHORT, $D02table, "", "feature type", $D02errorLevel)}
+        {html:buildSimpleSparql("D02", $labels:D02, $labels:D02_SHORT, $D02table, "", "feature type", $D02errorLevel)}
         {html:buildSimpleSparql("D03", $labels:D03, $labels:D03_SHORT, $D03table, $D3count, "feature type", $D03errorLevel)}
-        {html:build2Sparql("D03b", $labels:D03b, $labels:D03b_SHORT, $D03binvalid, "All values are valid", "feature type", $errors:D03b)}-->
+        {html:build2Sparql("D03b", $labels:D03b, $labels:D03b_SHORT, $D03binvalid, "All values are valid", "feature type", $errors:D03b)}
         {html:build1("D04", $labels:D04, $labels:D04_SHORT, $D04table, string(count($D04table)), "", "", "", $errors:D04)}
         {html:build2("D05", $labels:D05, $labels:D05_SHORT, $D05invalid, "All values are valid", "record", $errors:D05)}
         {html:buildInfoTR("Specific checks on AQD_Network feature(s) within this XML")}
@@ -2829,9 +2838,9 @@ return
        {common:runtime("VOCAB", $ns1DVOCAB, $ns2DVOCAB)}
        {common:runtime("D0",  $ns1D0, $ns2D0)}
        {common:runtime("D01", $ns1D01, $ns2D01)}
-      <!-- {common:runtime("D02", $ns1D02, $ns2D02)}
+       {common:runtime("D02", $ns1D02, $ns2D02)}
        {common:runtime("D03", $ns1D03, $ns2D03)}
-       {common:runtime("D03b", $ns1D03b, $ns2D03b)}-->
+       {common:runtime("D03b", $ns1D03b, $ns2D03b)}
        {common:runtime("D04",  $ns1D04, $ns2D04)}
        {common:runtime("D05", $ns1D05, $ns2D05)}
        {common:runtime("D06",  $ns1D06, $ns2D06)}
