@@ -86,7 +86,7 @@ let $latestEnvelopeB := query:getLatestEnvelope($cdrUrl || "b/")
 let $latestEnvelopeD := query:getLatestEnvelope($cdrUrl || "d/")
 
 let $namespaces := distinct-values($docRoot//base:namespace)
-(:let $knownFeatures := distinct-values(data(sparqlx:run(query:getAllFeatureIds($dataflowD:FEATURE_TYPES, $latestEnvelopeD, $namespaces))//sparql:binding[@name='inspireLabel']/sparql:literal)):)
+let $knownFeatures := distinct-values(data(sparqlx:run(query:getAllFeatureIds($dataflowD:FEATURE_TYPES, $latestEnvelopeD, $namespaces))//sparql:binding[@name='inspireLabel']/sparql:literal))
 let $SPOnamespaces := distinct-values($docRoot//aqd:AQD_SamplingPoint//base:Identifier/base:namespace)
 let $SPPnamespaces := distinct-values($docRoot//aqd:AQD_SamplingPointProcess/ompr:inspireId/base:Identifier/base:namespace)
 let $networkNamespaces := distinct-values($docRoot//aqd:AQD_Network/ef:inspireId/base:Identifier/base:namespace)
@@ -197,7 +197,7 @@ let $D01table :=
 
 let $ns2D01 := prof:current-ms()
 
-(: D02 -
+(: D02 -:)
 
 let $ns1D02 := prof:current-ms()
 
@@ -332,7 +332,7 @@ let $D03bfunc := function() {
 }
 let $D03binvalid := errors:trycatch($D03bfunc)
 
-let $ns2D03b := prof:current-ms():)
+let $ns2D03b := prof:current-ms()
 
 (: D04 :)
 
@@ -1448,8 +1448,8 @@ let $ns1D37 := prof:current-ms()
 let $D37invalid :=
     try {
         let $invalidPosition :=
-           (: for  $timePeriod in $docRoot//aqd:AQD_Station/ef:operationalActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod:)
-            for $timePeriod in $docRoot//aqd:AQD_SamplingPoint/ef:observingCapability/ef:ObservingCapability/ef:observingTime/gml:TimePeriod
+             (:for  $timePeriod in $docRoot//aqd:AQD_Station/ef:operationalActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod:)
+           for $timePeriod in $docRoot//aqd:AQD_SamplingPoint/ef:observingCapability/ef:ObservingCapability/ef:observingTime/gml:TimePeriod
             (: XQ does not support 24h that is supported by xml schema validation :)
             (: TODO: comment by sofiageo - the above statement is not true, fix this if necessary :)
             let $beginDate := substring(normalize-space($timePeriod/gml:beginPosition), 1, 10)
@@ -1457,6 +1457,8 @@ let $D37invalid :=
             let $beginPosition :=
                 if ($beginDate castable as xs:date) then
                     xs:date($beginDate)
+                    else if ($beginDate = "") then
+                    "empty"
                 else
                     "error"
             let $endPosition :=
@@ -1468,7 +1470,7 @@ let $D37invalid :=
                     "error"
 
             return
-                if ((string($beginPosition) = "error" or string($endPosition) = "error") or
+                if ((string($beginPosition) = "error" or string($endPosition) = "error" or string($beginPosition) = "empty") or
                         ($beginPosition instance of xs:date and $endPosition instance of xs:date and $beginPosition > $endPosition)) then
                     <tr>
                         <td title="aqd:AQD_SamplingPoint">{data($timePeriod/../../../../ef:inspireId/base:Identifier/base:localId)}</td>
@@ -2778,9 +2780,9 @@ return
         {html:build2("VOCAB", $labels:VOCAB, $labels:VOCAB_SHORT, $VOCABinvalid, "All values are valid", "record", $errors:VOCAB)}
         {html:build3("D0", $labels:D0, $labels:D0_SHORT, $D0table, string($D0table/td), errors:getMaxError($D0table))}
         {html:build1("D01", $labels:D01, $labels:D01_SHORT, $D01table, "", $D1sum, "", "",$errors:D01)}
-       <!-- {html:buildSimpleSparql("D02", $labels:D02, $labels:D02_SHORT, $D02table, "", "feature type", $D02errorLevel)}
+        {html:buildSimpleSparql("D02", $labels:D02, $labels:D02_SHORT, $D02table, "", "feature type", $D02errorLevel)}
         {html:buildSimpleSparql("D03", $labels:D03, $labels:D03_SHORT, $D03table, $D3count, "feature type", $D03errorLevel)}
-        {html:build2Sparql("D03b", $labels:D03b, $labels:D03b_SHORT, $D03binvalid, "All values are valid", "feature type", $errors:D03b)}-->
+        {html:build2Sparql("D03b", $labels:D03b, $labels:D03b_SHORT, $D03binvalid, "All values are valid", "feature type", $errors:D03b)}
         {html:build1("D04", $labels:D04, $labels:D04_SHORT, $D04table, string(count($D04table)), "", "", "", $errors:D04)}
         {html:build2("D05", $labels:D05, $labels:D05_SHORT, $D05invalid, "All values are valid", "record", $errors:D05)}
         {html:buildInfoTR("Specific checks on AQD_Network feature(s) within this XML")}
@@ -2881,9 +2883,9 @@ return
        {common:runtime("VOCAB", $ns1DVOCAB, $ns2DVOCAB)}
        {common:runtime("D0",  $ns1D0, $ns2D0)}
        {common:runtime("D01", $ns1D01, $ns2D01)}
-       <!--{common:runtime("D02", $ns1D02, $ns2D02)}
+       {common:runtime("D02", $ns1D02, $ns2D02)}
        {common:runtime("D03", $ns1D03, $ns2D03)}
-       {common:runtime("D03b", $ns1D03b, $ns2D03b)}-->
+       {common:runtime("D03b", $ns1D03b, $ns2D03b)}
        {common:runtime("D04",  $ns1D04, $ns2D04)}
        {common:runtime("D05", $ns1D05, $ns2D05)}
        {common:runtime("D06",  $ns1D06, $ns2D06)}
