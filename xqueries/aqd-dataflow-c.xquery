@@ -415,6 +415,8 @@ try{
     return
       if(not(contains($source_url, "c_preliminary"))) then 
         <tr>
+        
+        <td title="prelimEnvelopeC">{$prelimEnvelopeC}</td>
             <td title="Assessment Regime (C)">{$previousComb}</td>
             <td title="Missing SamplingPoint compared to C preliminary">{$samplin}</td>
             <td title="Sparql">{$sparql}</td>
@@ -430,204 +432,11 @@ try{
 
 let $ms2C03b := prof:current-ms()
 
-(: C03c :)
-(:let $C03cfunc := 
-    try {   
-        let $previousCombinations := sparqlx:run(query:getC03c($prelimEnvelopeC))
-        let $previousCombinationsConcat :=
-            for $x in $previousCombinations
-            
-       
-            return $x/sparql:binding[@name="localId"]/sparql:literal || "###" || $x/sparql:binding[@name="samplingPoint"]/sparql:literal || "###" || substring-after($x/sparql:binding[@name="assessmentType"]/sparql:uri, "http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/")
-     
 
-        let $currentCombinations :=
-            for $x in $docRoot//aqd:AQD_AssessmentRegime
-
-                let $localId := $x//base:localId => string()
-                let $namespace := $x//base:namespace => string()
-                
-                for $i in $x/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata/@xlink:href
-
-                    let $samplingpoint := substring-after($i, $namespace || "/")
-                        for $j in $x/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:assessmentType/@xlink:href
-                        let $assessmentType := substring-after($j, "http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/")
-            
-            let $combination := string-join(($localId || "###" || $samplingpoint|| "###" || $assessmentType))
-            return $combination
-
-        for $x at $j in $previousCombinationsConcat 
-            let $localId := tokenize($x, "###")[1]
-            let $samplingPoint := tokenize($x, "###")[2]    
-            let $typeCPrel := tokenize($x, "###")[3] 
-       
-        
-        where not($x = $currentCombinations)
-        
-
-        return
-            <tr>
-                <td title="Assessment Regime (C)">{$localId}</td>
-                <td title="aqd:AQD_SamplingPoint">{$samplingPoint}</td>
-                <td title="Assessment Type in C preliminary">{$typeCPrel}</td> 
-              
-
-            </tr>
-    } catch * {
-        <tr class="{$errors:FAILED}">
-            <td title="Error code">{$err:code}</td>
-            <td title="Error description">{$err:description}</td>
-        </tr>
-    }:)
-
-
-(: C03c 
-let $C03cfunc := 
-    try {   
-        let $previousCombinations := sparqlx:run(query:getC03c($prelimEnvelopeC))
-        let $previousCombinationsConcat :=
-            for $x in $previousCombinations
-            
-                 return
-                    <result>
-                        <localId>{string($x/sparql:binding[@name="localId"]/sparql:literal)}</localId>
-                        <samplingPoint>{string($x/sparql:binding[@name="samplingPoint"]/sparql:literal)}</samplingPoint>
-                        <assessmentType>{string(substring-after($x/sparql:binding[@name="assessmentType"]/sparql:uri, "http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/"))}</assessmentType>                        
-                    </result>
-            
-     
-
-        let $currentCombinations :=
-            for $x in $docRoot//aqd:AQD_AssessmentRegime
-
-                let $localId := $x//base:localId => string()
-                let $namespace := $x//base:namespace => string()
-                
-                for $i in $x/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata/@xlink:href
-
-                    let $samplingpoint := substring-after($i, $namespace || "/")
-                        for $j in $x/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:assessmentType/@xlink:href
-                        let $assessmentType := substring-after($j, "http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/")
-                        return
-                         <result>
-                            <localId>{$localId}</localId>
-                            <samplingPoint>{$samplingpoint}</samplingPoint>
-                            <assessmentType>{$assessmentType}</assessmentType>                            
-                         </result>
-            
-           
-
-        for $x in $previousCombinationsConcat 
-            let $localId := string($x/localId)
-            let $samplingPoint := string($x/samplingPoint)  
-            let $typeCPrel :=string($x/assessmentType) 
-            let $typeC:=
-             for $i in $currentCombinations 
-                let $TypeTemp:=
-                     if ($i[localId = $localId and samplingPoint = $samplingPoint]) then 
-                         string($i/assessmentType)
-                    else ()
-                    return $TypeTemp
-        
-        where not($typeCPrel = $typeC)  and not($typeC='')    
-
-        return
-            <tr>
-                <td title="Assessment Regime (C)">{$localId}</td>
-                <td title="aqd:AQD_SamplingPoint">{$samplingPoint}</td>
-                <td title="Assessment Type in C preliminary">{$typeCPrel}</td> 
-                <td title="Assessment Type in C">{$typeC}</td>
-    
-
-            </tr>
-    } catch * {
-        <tr class="{$errors:FAILED}">
-            <td title="Error code">{$err:code}</td>
-            <td title="Error description">{$err:description}</td>
-        </tr>
-    }:)
-
-
-(: C03c :)
 
 let $ms1C03c := prof:current-ms()
 
-(:let $C03cfunc := 
-    try {   
-        let $previousCombinations := sparqlx:run(query:getC03c($prelimEnvelopeC))
-        let $previousCombinationsConcat :=
-            for $x in $previousCombinations
-            
-                 return
-                    <result>
-                        <localId>{string($x/sparql:binding[@name="localId"]/sparql:literal)}</localId>
-                        <samplingPoint>{string($x/sparql:binding[@name="samplingPoint"]/sparql:literal)}</samplingPoint>
-                        <assessmentType>{string(substring-after($x/sparql:binding[@name="assessmentType"]/sparql:uri, "http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/"))}</assessmentType>                        
-                    </result>
 
-        let $currentCombinations :=
-            for $x in $docRoot//aqd:AQD_AssessmentRegime
-
-                let $localId := $x//base:localId => string()
-                let $namespace := $x//base:namespace => string()
-                
-                for $i in $x/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:samplingPointAssessmentMetadata/@xlink:href
-
-                    let $samplingpoint := substring-after($i, $namespace || "/")
-                        for $j in $x/aqd:assessmentMethods/aqd:AssessmentMethods/aqd:assessmentType/@xlink:href
-                        let $assessmentType := substring-after($j, "http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/")
-                        return
-                         <result>
-                            <localId>{$localId}</localId>
-                            <samplingPoint>{$samplingpoint}</samplingPoint>
-                            <assessmentType>{$assessmentType}</assessmentType>
-                         </result>
-        
-        let $C03Blist :=
-            for $x in $C03b
-                let $C03blisted := $x/xPreviousComb
-            return $C03blisted
-
-        for $x in $previousCombinationsConcat
-
-            let $localId := string($x/localId)
-            let $samplingPoint := string($x/samplingPoint)  
-            let $typeCPrel :=string($x/assessmentType) 
-            let $combination := string-join(($localId || "###" || $samplingPoint))
-            
-            let $C03Bquery :=
-            for $x in $C03b
-                let $C03blisted := $x[xPreviousComb != combination, 1]/query
-            return $C03blisted
-            
-            let $typeC:=
-
-             for $i in $currentCombinations
-                 let $TypeTemp:=
-                     if ($i[localId = $localId and samplingPoint = $samplingPoint]) then 
-                         string($i/assessmentType)
-                    else ()
-
-                    return $TypeTemp
-
-                 
-            where not($typeCPrel = $typeC) and not($combination = $C03Blist)
-            return
-      if(not(contains($source_url, "c_preliminary"))) then 
-            <tr>
-               <td title="Assessment Regime">{$localId}</td>
-                <td title="aqd:AQD_SamplingPoint">{$samplingPoint}</td>
-                <td title="Assessment Type in C">{$typeC}</td>
-                <td title="Assessment Type in C preliminary">{$typeCPrel}</td> 
-                <td title="Sparql">{sparqlx:getLink(query:getC03c($prelimEnvelopeC))}</td>
-            </tr>
-        else()
-    } catch * {
-        <tr class="{$errors:FAILED}">
-            <td title="Error code">{$err:code}</td>
-            <td title="Error description">{$err:description}</td>
-        </tr>
-    }:)
 let $C03cfunc :=
     try {  
         let $previousCombinations := sparqlx:run(query:getC03c($prelimEnvelopeC))
@@ -675,10 +484,7 @@ let $C03cfunc :=
             let $typeC:=
 
              for $i in $previousCombinationsConcat
-                 let $TypeTemp:=
-                     if ($i[localId = $localId and samplingPoint = $samplingPoint]) then 
-                         string($i/assessmentType)
-                    else ()
+                 
                     where $i/localId = $localId and $i/samplingPoint = $samplingPoint
                     return 
                     <result>
@@ -688,7 +494,9 @@ let $C03cfunc :=
                          </result>
 
                  
-            where not($typeCPrel = $typeC/assessmentType) and not(functx:if-empty($typeC/assessmentType, '') = '') 
+          for $y in $typeC/assessmentType
+
+            where not($typeCPrel = $y) and not(functx:if-empty($y, '') = '') 
             
             return
       if(not(contains($source_url, "c_preliminary"))) then
@@ -698,7 +506,7 @@ let $C03cfunc :=
                 <td title="Assessment Type in C  XML">{$typeCPrel}</td>
                 <td title="Assessment Regime SPARQL">{$typeC/localId}</td>
                 <td title="aqd:AQD_SamplingPoint SPARQL">{$typeC/samplingPoint}</td>
-                <td title="Assessment Type in C preliminary SPARQL">{$typeC/assessmentType}</td>
+                <td title="Assessment Type in C preliminary SPARQL">{$y}</td>
                 <td title="Sparql">{sparqlx:getLink(query:getC03c($prelimEnvelopeC))}</td>
             </tr>
         else()
@@ -1952,7 +1760,7 @@ return
        {common:runtime("C27",  $ms1C27, $ms2C27)}
        {common:runtime("C28",  $ms1C28, $ms2C28)}
        {common:runtime("C29",  $ms1C29, $ms2C29)}
-       <!--{common:runtime("C31",  $ms1C31, $ms2C31)}-->
+       {common:runtime("C31",  $ms1C31, $ms2C31)}
        {common:runtime("C31b",  $ms1C31b, $ms2C31b)}
        {common:runtime("C32",  $ms1C32, $ms2C32)}
        {common:runtime("C33",  $ms1C33, $ms2C33)}
