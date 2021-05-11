@@ -638,8 +638,8 @@ let $C03cfunc :=
                     <result>
                         <localId>{string($x/sparql:binding[@name="localId"]/sparql:literal)}</localId>
                         <samplingPoint>{string($x/sparql:binding[@name="samplingPoint"]/sparql:literal)}</samplingPoint>
-                        <assessmentType>{string(substring-after($x/sparql:binding[@name="assessmentType"]/sparql:uri, "http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/"))}</assessmentType>          
-                        <combination>string-join(string($x/sparql:binding[@name="localId"]/sparql:literal) || "###" || string(substring-after($x/sparql:binding[@name="assessmentType"]/sparql:uri, "http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/"))</combination>              
+                        <assessmentType>{string(substring-after($x/sparql:binding[@name="assessmentType"]/sparql:uri, "http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/"))}</assessmentType>       
+                        <combination>{string-join(string($x/sparql:binding[@name="localId"]/sparql:literal) || "###" || string(substring-after($x/sparql:binding[@name="assessmentType"]/sparql:uri, "http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/")))}</combination>          
                     </result>
 
       let $currentCombinations :=
