@@ -789,11 +789,12 @@ vocabulary
 :)
 
 let $ms1K23 := prof:current-ms()
-let $K23 := try {
+(:let $K23 := try {
     let $main := $docRoot//aqd:AQD_Measures/aqd:costs/aqd:Costs
     for $node in $main
         let $ok := (
-                    if(lower-case($node/aqd:currency/@xsi:nil) = "true" and (lower-case($node/aqd:currency/@nilReason) = "unpopulated"))then
+                    if(lower-case($node/aqd:currency/@xsi:nil) = "true" and 
+                        (lower-case($node/aqd:currency/@nilReason) = "unpopulated"))then
                         true()
                     else 
                      common:isInVocabulary(
@@ -815,7 +816,45 @@ let $K23 := try {
         )
 } catch * {
     html:createErrorRow($err:code, $err:description)
+}:)
+
+let $K23 := try {
+    let $main := $docRoot//aqd:AQD_Measures/aqd:costs/aqd:Costs
+    for $node in $main
+        let $ok := (
+                    if(lower-case($node/aqd:currency/@xsi:nil) = "true" and 
+                (
+                    (lower-case($node/aqd:currency/@nilReason) = "unknown")
+                    or
+                    (lower-case($node/aqd:currency/@nilReason) = "unpopulated")
+                    or
+                    (lower-case($node/aqd:currency/@nilReason) = "withheld")
+                ))then
+                        true()
+                    else 
+                     common:isInVocabulary(
+                        $node/aqd:currency/@xlink:href,
+                        $vocabulary:CURRENCIES
+                    )
+                )
+
+        return common:conditionalReportRow(
+            $ok,
+            [
+                ("gml:id", $node/ancestor-or-self::*[name() = $ancestor-name]/@gml:id),
+                ("aqd:quantity", data($node/aqd:currency/@xlink:href)),
+                ("nilReason",data($node/aqd:currency/@nilReason)),
+                ("xsi:nil",data($node/aqd:currency/@xsi:nil)),
+                ("aqd:currency in vocabulary", common:isInVocabulary(
+                        $node/aqd:currency/@xlink:href,
+                        $vocabulary:CURRENCIES
+                    ))
+            ]
+        )
+} catch * {
+    html:createErrorRow($err:code, $err:description)
 }
+
 let $ms2K23 := prof:current-ms()
 
 
