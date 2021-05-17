@@ -979,7 +979,7 @@ let $invalidPosD21 :=
 
 let $ns2D21 := prof:current-ms()
 
-(: D23 Done by Rait :)
+(: D23 Done by Rait changed by @goititer 13 May 2021 :)
 
 let $ns1D23 := prof:current-ms()
 
@@ -1481,41 +1481,110 @@ let $D37invalid :=
 
                 else
                     ()
+       
+        
+         let $overlappingPeriods :=
+            for $operationalPeriod in $docRoot//aqd:AQD_SamplingPoint
+
+                let $periodBeginPos:=xs:date(substring(normalize-space($operationalPeriod/ef:operationalActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:beginPosition), 1, 10))
+                
+
+                let $periodEndPos:=                  
+                    if ($operationalPeriod/ef:operationalActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:endPosition!="")
+                    then xs:date(substring(normalize-space($operationalPeriod/ef:operationalActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:endPosition), 1, 10))
+                    else  xs:date("1800-01-01")
+
+                let $observingCapabilities :=
+                    for $cp in $operationalPeriod/ef:observingCapability/ef:ObservingCapability/ef:observingTime/gml:TimePeriod
+                        order by $cp/gml:beginPosition
+                        return                         
+                        <result>
+                            <localId>{$cp/../../../../ef:inspireId/base:Identifier/base:localId}</localId>
+                            <observingBeginPos>{(substring(normalize-space($cp/gml:beginPosition), 1, 10))}</observingBeginPos>
+                            <observingEndPos>{(substring(normalize-space($cp/gml:endPosition), 1, 10))}</observingEndPos>                                                       
+                       </result>
+
+                     
+                
+                let $observingDatesBegin:=
+                    for $x in $observingCapabilities
+                 return xs:date($x/observingBeginPos)
+
+                
+                let $observingCapabilitiesBeginMin:= min($observingDatesBegin)
+           
+
+                let $observingDatesEnd:=
+                    for $x in $observingCapabilities
+                    return
+                        if ($x/observingEndPos!="")
+                        then xs:date($x/observingEndPos)
+                        else
+                        xs:date("1800-01-01")
+
+                
+                let $observingCapabilitiesEndMax:= max($observingDatesEnd)
 
 
-        (: sort by begin and find if end is greater than next end :)
-        let $overlappingPeriods :=
-            for $rec in $docRoot//aqd:AQD_SamplingPoint
-            let $observingCapabilities :=
-                for $cp in $rec/ef:observingCapability/ef:ObservingCapability/ef:observingTime/gml:TimePeriod
-                order by $cp/gml:beginPosition
-                return $cp
+               
+              for $observingCap at $pos in $observingCapabilities 
 
-            for $period at $pos in $observingCapabilities
+                let $observingCapabilitiesBegin := $observingCap/observingBeginPos
 
-              let $ok := 
-                if ($pos < count($observingCapabilities))
-                  then
-                      if ($period/gml:endPosition castable as xs:dateTime and $observingCapabilities[$pos + 1]/gml:beginPosition castable as xs:dateTime) then
-                          if (xs:dateTime($period/gml:endPosition) > xs:dateTime($observingCapabilities[$pos + 1]/gml:beginPosition)) then 
+
+                (:let $observingCapabilitiesEnd := $observingCap/observingEndPos:)
+
+               let $observingCapabilitiesEnd:=                    
+                    
+                        if ( $observingCap/observingEndPos!="")
+                        then xs:date( $observingCap/observingEndPos)
+                        else
+                        xs:date("1800-01-01")
+
+
+               let $ok := 
+
+                if (($periodBeginPos!= $observingCapabilitiesBeginMin) or 
+                    ($periodEndPos != $observingCapabilitiesEndMax)) then
+                   
+                     
+                    fn:false()
+
+                  else   
+
+                   if ($pos < count($observingCapabilities)) then
+
+                        if (($observingCap[$pos]/observingBeginPos >= $observingCap[$pos+1]/observingBeginPos) or
+                        ($observingCap[$pos]/observingEndPos >= $observingCap[$pos+1]/observingBeginPos) or
+                        ($observingCap[$pos+1]/observingEndPos < $observingCap[$pos+1]/observingBeginPos))  then 
+
                             fn:false() 
-                          else fn:true()
-                      else
-                          fn:false()
-                else
-                    fn:true()
+
+                         else fn:true()
+                    else fn:true()
+
+                    let $periodEndPos1:=  if ($periodEndPos = xs:date("1800-01-01")) then "" else $periodEndPos
+                    let $observingCapabilitiesEndMax1:=  if ($observingCapabilitiesEndMax = xs:date("1800-01-01")) then "" else $observingCapabilitiesEndMax 
 
             return if ($ok) then () else
 
+
+
                 <tr>
-                    <td title="aqd:AQD_SamplingPoint">{data($period/../../../../ef:inspireId/base:Identifier/base:localId)}</td>
-                    <td title="gml:TimePeriod">{data($period/@gml:id)}</td>
-                    <td title="gml:beginPosition">{$period/gml:beginPosition}</td>
-                    <td title="gml:endPosition">{$period/gml:endPosition}</td>
+                    <td title="aqd:AQD_SamplingPoint">{$observingCap/localId}</td>
+                    <td title="operational TimePeriod">{$periodBeginPos || "/" || $periodEndPos1}</td>
+                    <td title="observing beginPosition">{$observingCap/observingBeginPos}</td>
+                    <td title="observing endPosition">{$observingCap/observingEndPos}</td>                    
+                    <td title="observingCapabilitiesBeginMin">{$observingCapabilitiesBeginMin}</td>
+                    <td title="observingCapabilitiesEndMax">{$observingCapabilitiesEndMax1}</td>
                 </tr>
+
+                  
 
 
         return (($invalidPosition), ($overlappingPeriods))
+
+
     }  catch * {
         <tr class="{$errors:FAILED}">
             <td title="Error code"> {$err:code}</td>
@@ -2780,7 +2849,7 @@ return
         {html:build2("VOCAB", $labels:VOCAB, $labels:VOCAB_SHORT, $VOCABinvalid, "All values are valid", "record", $errors:VOCAB)}
         {html:build3("D0", $labels:D0, $labels:D0_SHORT, $D0table, string($D0table/td), errors:getMaxError($D0table))}
         {html:build1("D01", $labels:D01, $labels:D01_SHORT, $D01table, "", $D1sum, "", "",$errors:D01)}
-        {html:buildSimpleSparql("D02", $labels:D02, $labels:D02_SHORT, $D02table, "", "feature type", $D02errorLevel)}
+       {html:buildSimpleSparql("D02", $labels:D02, $labels:D02_SHORT, $D02table, "", "feature type", $D02errorLevel)}
         {html:buildSimpleSparql("D03", $labels:D03, $labels:D03_SHORT, $D03table, $D3count, "feature type", $D03errorLevel)}
         {html:build2Sparql("D03b", $labels:D03b, $labels:D03b_SHORT, $D03binvalid, "All values are valid", "feature type", $errors:D03b)}
         {html:build1("D04", $labels:D04, $labels:D04_SHORT, $D04table, string(count($D04table)), "", "", "", $errors:D04)}
