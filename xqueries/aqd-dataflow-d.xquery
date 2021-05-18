@@ -1556,7 +1556,8 @@ let $D37invalid :=
 
                         if (($observingCap[$pos]/observingBeginPos >= $observingCap[$pos+1]/observingBeginPos) or
                         ($observingCap[$pos]/observingEndPos >= $observingCap[$pos+1]/observingBeginPos) or
-                        ($observingCap[$pos+1]/observingEndPos < $observingCap[$pos+1]/observingBeginPos))  then 
+                        ($observingCap[$pos+1]/observingEndPos < $observingCap[$pos+1]/observingBeginPos) or 
+                        ($observingCap[$pos]/observingEndPos =  ""))  then 
 
                             fn:false() 
 
