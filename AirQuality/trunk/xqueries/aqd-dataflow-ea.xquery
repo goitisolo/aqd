@@ -1669,7 +1669,7 @@ let $XMlResultTime := min(for $x at $xpos in $docRoot//om:OM_Observation/om:resu
           where (data($samplingPoint)=data($z/sparql:binding[@name = "assessmentMethod"]/sparql:literal)) 
             return 
            
-            if ($resultTime>$resultTime2) then
+            if (data($z/sparql:binding[@name = "resultTime"]/sparql:literal)>$resultTime2) then
                 
                  <tr>
                     <td title="Sampling Point">{$samplingPoint}</td>           
