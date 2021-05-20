@@ -1840,8 +1840,8 @@ let $ns1D45 := prof:current-ms()
                     then                 
         
             <tr>
-                <td title="aqd:AQD_Station">{data($allSamplings/@gml:id)}</td>
-                <td title="belongs to aqd:AQD_Network ">{$broader}</td>
+                <td title="aqd:AQD_SamplingPoint">{data($allSamplings/@gml:id)}</td>
+                <td title="belongs to aqd:AQD_Station ">{$broader}</td>
                 <td title="Sampling Point beginPos">{$samplingBeginPos}</td>
                 <td title="Station beginPos">{$stationBeginPos}</td>
                 <td title="Sampling Point endPos">{$samplingEndPos}</td>
