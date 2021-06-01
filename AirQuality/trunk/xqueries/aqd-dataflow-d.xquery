@@ -2167,19 +2167,20 @@ let $ns2D58 := prof:current-ms()
 
 
 (: D59 Done by Rait:)
-(: TODO FIND OUT WHAT IS CORRECT PATH:)
+(: CORRECT PATH added by goititer:)
 
 let $ns1D59 := prof:current-ms()
 
 let $D59invalid :=
     try {
         let $valid := dd:getValidConcepts($vocabulary:ANALYTICALTECHNIQUE_VOCABULARY || "rdf")
-        for $x in $docRoot//aqd:SamplingPointProcess/aqd:analyticalTechnique/aqd:AnalyticalTechnique/aqd:analyticalTechnique
-        where not($x/@xlink:href = $valid)
+        for $x in $docRoot//aqd:AQD_SamplingPointProcess/aqd:analyticalTechnique/aqd:AnalyticalTechnique/aqd:analyticalTechnique
+        where  not($x/@xlink:href = $valid)
         return
             <tr>
-                <td title="aqd:AQD_SamplingPointProcess">{data($x/../ef:inspireId/base:Identifier/base:localId)}</td>
+                <td title="aqd:AQD_SamplingPointProcess">{data($x/../../../ompr:inspireId/base:Identifier/base:localId)}</td>
                 <td title="aqd:measurementType">{data($x/@xlink:href)}</td>
+               
             </tr>
     } catch * {
         <tr class="{$errors:FAILED}">
@@ -2850,7 +2851,7 @@ return
         {html:build2("VOCAB", $labels:VOCAB, $labels:VOCAB_SHORT, $VOCABinvalid, "All values are valid", "record", $errors:VOCAB)}
         {html:build3("D0", $labels:D0, $labels:D0_SHORT, $D0table, string($D0table/td), errors:getMaxError($D0table))}
         {html:build1("D01", $labels:D01, $labels:D01_SHORT, $D01table, "", $D1sum, "", "",$errors:D01)}
-       {html:buildSimpleSparql("D02", $labels:D02, $labels:D02_SHORT, $D02table, "", "feature type", $D02errorLevel)}
+        {html:buildSimpleSparql("D02", $labels:D02, $labels:D02_SHORT, $D02table, "", "feature type", $D02errorLevel)}
         {html:buildSimpleSparql("D03", $labels:D03, $labels:D03_SHORT, $D03table, $D3count, "feature type", $D03errorLevel)}
         {html:build2Sparql("D03b", $labels:D03b, $labels:D03b_SHORT, $D03binvalid, "All values are valid", "feature type", $errors:D03b)}
         {html:build1("D04", $labels:D04, $labels:D04_SHORT, $D04table, string(count($D04table)), "", "", "", $errors:D04)}
