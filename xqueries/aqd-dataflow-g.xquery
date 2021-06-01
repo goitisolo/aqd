@@ -64,10 +64,21 @@ let $ms1GeneralParameters:= prof:current-ms()
 let $envelopeUrl := common:getEnvelopeXML($source_url)
 let $docRoot := doc($source_url)
 let $cdrUrl := common:getCdrUrl($countryCode)
-let $modelCdrUrl := if ($countryCode = 'gi') then common:getCdrUrl('gb') else $cdrUrl
 let $reportingYear := common:getReportingYear($docRoot)
 
+let $bdir := if (contains($source_url, "b_preliminary")) then "b_preliminary/" else "b/"
+let $cdir := if (contains($source_url, "c_preliminary")) then "c_preliminary/" else "c/"
+let $zonesUrlB := concat($cdrUrl, $bdir)
+let $zonesUrlC := concat($cdrUrl, $cdir)
+let $latestEnvelopeBperYear := query:getLatestEnvelope($zonesUrlB, $reportingYear)
+let $latestEnvelopeCperYear := query:getLatestEnvelope($zonesUrlC, $reportingYear)
+
+
+let $modelCdrUrl := if ($countryCode = 'gi') then common:getCdrUrl('gb') else $cdrUrl
+
+
 let $latestEnvelopeByYearB := query:getLatestEnvelope($cdrUrl || "b/", $reportingYear)
+
 let $latestEnvelopeB := query:getLatestEnvelope($cdrUrl || "b/")
 let $latestEnvelopeC := query:getLatestEnvelope($cdrUrl || "c/")
 let $latestEnvelopeByYearC := query:getLatestEnvelope($cdrUrl || "c/", $reportingYear)
@@ -690,7 +701,7 @@ let $ms1G14 := prof:current-ms()
 let $G14table :=
     try {
         let $G14resultBC :=
-            for $i in sparqlx:run(query:getG14($latestEnvelopeB, $latestEnvelopeC, $reportingYear))
+            for $i in sparqlx:run(query:getG14($latestEnvelopeBperYear, $latestEnvelopeCperYear, $reportingYear))
             return
                 <result>
                     <pollutantName>{string($i/sparql:binding[@name = "Pollutant"]/sparql:literal)}</pollutantName>
@@ -747,7 +758,7 @@ let $G14table :=
                 <td title="Count B">{string($countB)}</td>
                 <td title="Count C">{string($countC)}</td>
                 <td title="Count G">{string($countG)}</td>
-                <td title="Sparql">{sparqlx:getLink(query:getG14($latestEnvelopeB, $latestEnvelopeC, $reportingYear))}</td>
+                <td title="Sparql">{sparqlx:getLink(query:getG14($latestEnvelopeBperYear, $latestEnvelopeCperYear, $reportingYear))}</td>
             </tr>
     } catch * {
         <tr class="{$errors:FAILED}">
