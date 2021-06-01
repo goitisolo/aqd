@@ -228,7 +228,10 @@ let $E03invalid :=
 
 let $ms2E03 := prof:current-ms()
 
-(: E04 - ./om:procedure xlink:href attribute shall resolve to a traversable link process configuration in Data flow D: /aqd:AQD_SamplingPointProcess/ompr:inspireld/base:Identifier/base:localId:)
+(: E04 - 
+./om:procedure xlink:href attribute shall resolve to a traversable link process configuration in Data flow D: /aqd:AQD_SamplingPointProcess/ompr:inspireld/base:Identifier/base:localId
+:)
+
 
 let $ms1E04 := prof:current-ms()
 
@@ -1657,16 +1660,21 @@ let $XMlResultTime := min(for $x at $xpos in $docRoot//om:OM_Observation/om:resu
 
  return     
  if  ($resultTime > $XMlResultTime ) then
-    let $allData:=sparqlx:run(query:getAllAssessmentMethodsAndDates($e1aUrl,$reportingYear,$regex,$time1,$time2))
+let $currentCountry := string(fn:upper-case($countryCode))
+ let $allData2:=sparqlx:run(query:getSamplingsAndDates($currentCountry,$reportingYear))
+ let $getAssessmentMethodsAndDates_query2 := sparqlx:getLink(query:getSamplingsAndDates($currentCountry,$reportingYear))
+
+let $allData:=sparqlx:run(query:getAllAssessmentMethodsAndDates($e1aUrl,$reportingYear,$regex,$time1,$time2))
    
         for $y in $docRoot//om:OM_Observation
             let $namedValue := $y/om:parameter/om:NamedValue[om:name/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/processparameter/SamplingPoint"]            
             let $samplingPoint := common:if-empty($namedValue/om:value, $namedValue/om:value/@xlink:href)
             let $resultTime2 := xs:dateTime($y/om:resultTime/gml:TimeInstant/gml:timePosition)
         
-         for $z in $allData
+         for $z in $allData2
          
-          where (data($samplingPoint)=data($z/sparql:binding[@name = "assessmentMethod"]/sparql:literal)) 
+        
+         where (functx:substring-after-last(data($samplingPoint), '/') = functx:substring-after-last(xs:string(data($z/sparql:binding[@name = "samplingPoint"])), '/'))
             return 
            
             if (data($z/sparql:binding[@name = "resultTime"]/sparql:literal)>$resultTime2) then
@@ -1675,8 +1683,20 @@ let $XMlResultTime := min(for $x at $xpos in $docRoot//om:OM_Observation/om:resu
                     <td title="Sampling Point">{$samplingPoint}</td>           
                     <td title="OLDEST XMLresultTime">{$XMlResultTime}</td>
                     <td title="Result Time dataflow E">{$resultTime}</td>
-                    <td title="XMLresultTime">{$resultTime2}</td>                                        
-                    <td title="Sparql">{$getAssessmentMethodsAndDates_query}</td>   
+                    <td title="XMLresultTime">{$resultTime2}</td>  
+                     <td title="Sparql">{$getAssessmentMethodsAndDates_query2}</td>  
+                   
+  <!--
+                      <td title="sprql resultTime">{data($z/sparql:binding[@name = "resultTime"]/sparql:literal)}</td> 
+                      <td title="sprql resultTime">{$z/sparql:binding[@name = "resultTime"]}</td>   
+                      <td title="XML resultTime">{$resultTime2}</td>  
+                    <td title="XML sampling">{functx:substring-after-last(data($samplingPoint), '/')}</td> 
+                     <td title="SPARQL sampling">{functx:substring-after-last(xs:string(data($z/sparql:binding[@name = "samplingPoint"])), '/')}</td> 
+
+                  
+
+
+                    -->
                 </tr>
                 else ()
 
@@ -1729,9 +1749,9 @@ return
         {html:build2("E27", $labels:E27, $labels:E27_SHORT, $E27invalid, "All records are valid", "record", $errors:E27)}
         {html:build2("E28", $labels:E28, $labels:E28_SHORT, $E28invalid, "All records are valid", "record", $errors:E28)}
         {html:build2("E29", $labels:E29, $labels:E29_SHORT, $E29invalid, "All records are valid", "record", $errors:E29)}
-        <!--{html:build2("E30", $labels:E30, $labels:E30_SHORT, $E30invalid, "All records are valid", "record", $errors:E30)}-->
+       
         {html:build2("E30a", $labels:E30a, $labels:E30a_SHORT, $E30ainvalid, "All records are valid", "record", $errors:E30a)}
-        <!--{html:build2("E30b", $labels:E30b, $labels:E30b_SHORT, $E30binvalid, "All records are valid", "record", $errors:E30b)}-->
+        
         {html:build2("E31", $labels:E31, $labels:E31_SHORT, $E31invalid, "All records are valid", "record", $errors:E31)}
         {html:build2("E32", $labels:E32, $labels:E32_SHORT, $E32invalid, "All records are valid", "record", $errors:E32)}
         {html:build2("E33", $labels:E33, $labels:E33_SHORT, $E33invalid, "All records are valid", "record", $errors:E33)}
@@ -1755,9 +1775,9 @@ return
        {common:runtime("E01b", $ms1E01b, $ms2E01b)}
        {common:runtime("E02", $ms1E02, $ms2E02)}
        {common:runtime("E03", $ms1E03, $ms2E03)}
-       <!--{common:runtime("E04",  $ms1E04, $ms2E04)}-->
+       {common:runtime("E04",  $ms1E04, $ms2E04)}
        {common:runtime("E05", $ms1E05, $ms2E05)}
-       <!--{common:runtime("E06",  $ms1E06, $ms2E06)}-->
+       {common:runtime("E06",  $ms1E06, $ms2E06)}
        {common:runtime("E07",  $ms1E07, $ms2E07)}
        {common:runtime("E08",  $ms1E08, $ms2E08)}
        {common:runtime("E09",  $ms1E09, $ms2E09)}
@@ -1781,8 +1801,8 @@ return
        {common:runtime("E24b",  $ms1E24b, $ms2E24b)}
        {common:runtime("E25",  $ms1E25, $ms2E25)}
        {common:runtime("E25b",  $ms1E25b, $ms2E25b)}
-      <!-- {common:runtime("E26",  $ms1E26, $ms2E26)}
-       {common:runtime("E26b",  $ms1E26b, $ms2E26b)}-->
+      {common:runtime("E26",  $ms1E26, $ms2E26)}
+       {common:runtime("E26b",  $ms1E26b, $ms2E26b)}
        {common:runtime("E27",  $ms1E27, $ms2E27)}
        {common:runtime("E28",  $ms1E28, $ms2E28)}
        {common:runtime("E29",  $ms1E29, $ms2E29)}
@@ -1790,7 +1810,7 @@ return
        {common:runtime("E31",  $ms1E31, $ms2E31)}
        {common:runtime("E32",  $ms1E32, $ms2E32)}
        {common:runtime("E33",  $ms1E33, $ms2E33)}
-      <!-- {common:runtime("E34",  $ms1E34, $ms2E34)}-->
+       {common:runtime("E34",  $ms1E34, $ms2E34)}
        {common:runtime("E35",  $ms1E35, $ms2E35)}
 
        {common:runtime("Total time",  $ms1Total, $ms2Total)}
