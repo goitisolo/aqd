@@ -730,8 +730,8 @@ let $B12table :=
                     <td title="protectionTarget">{$protectionTarget}</td>
                     <td title="Area">{$areaSum}</td>
                     <td title="Status">{$goodOrNo}</td>
-                    <td title="AreaDD-5">{$area5less}</td>
-                    <td title="AreaDD+5">{$area5more}</td>
+                    <td title="AreaDD-0.5%">{$area5less}</td>
+                    <td title="AreaDD+0.5%">{$area5more}</td>
                 </tr>
     } catch * {
         <tr class="{$errors:FAILED}">
