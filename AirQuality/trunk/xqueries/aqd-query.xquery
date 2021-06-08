@@ -1218,6 +1218,64 @@ ORDER BY DESC(?resultTime )
 LIMIT 1"
 };
 
+declare function query:getSamplingsAndDates($countryCode as xs:string,  $year as xs:string) as xs:string {
+  
+  
+  "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX rod: <http://rod.eionet.europa.eu/schema.rdf#>
+PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
+PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX aq: <http://reference.eionet.europa.eu/aq/ontology/>
+PREFIX obligations: <http://rod.eionet.europa.eu/obligations/>
+
+SELECT DISTINCT
+  (?startOfPeriod) AS ?startOfPeriod
+  MAX(?timePosition) AS ?timePosition
+  ?samplingPoint
+?timePosition as ?resultTime
+
+WHERE 
+  {
+
+      VALUES ?countryCode  { '" || $countryCode || "' }
+      VALUES ?startOfPeriodFilter  { " || $year || " }
+      {
+        SELECT DISTINCT 
+          ?samplingPoint_inner AS ?samplingPointOriginal
+
+ 
+
+          if(bound(?samplingPointType_inner),  ?samplingPoint_inner, URI(concat('http://reference.eionet.europa.eu/aq/',?samplingPoint_inner))) AS ?samplingPoint
+        WHERE {
+          GRAPH ?file {
+            ?observation_inner a aqd:OM_Observation .
+            ?observation_inner aqd:parameter ?parameter_inner .
+            ?parameter_inner aqd:value ?samplingPoint_inner .
+          }
+        OPTIONAL { ?samplingPoint_inner a ?samplingPointType_inner . }
+        }
+      }
+      GRAPH ?file {
+        ?observation a aqd:OM_Observation .
+        ?observation aqd:resultTime ?resultTime . 
+        ?resultTime aqd:timePosition ?timePosition .
+        ?observation aqd:parameter ?parameter .
+        ?parameter aqd:value ?samplingPointOriginal .
+        
+      }
+      ?file dcterms:isPartOf ?envelope .
+      ?envelope rod:startOfPeriod ?startOfPeriod .
+      FILTER (YEAR(?startOfPeriod) = ?startOfPeriodFilter)
+
+      ?samplingPoint a aq:SamplingPoint .
+      ?file cr:xmlSchema ?xmlschema .
+      ?samplingPoint aq:broader ?broader .
+      ?broader dcterms:spatial ?spatial .
+      ?spatial rod:loccode ?countryCode .
+   }"
+};
+
 (: E35 :)
 declare function query:getAllAssessmentMethodsAndDates($url as xs:string, $year as xs:string, $regex as xs:string, $time1 as xs:string, $time2 as xs:string) as xs:string {
   

@@ -177,6 +177,15 @@ let $VOCABinvalid := checks:vocab($docRoot)
 
 let $ms2VOCAB := prof:current-ms()
 
+
+(:VOCABALL check @goititer:)
+
+let $ms1CVOCABALL := prof:current-ms()
+
+let $VOCABALLinvalid := checks:vocaball($docRoot)
+
+let $ms2CVOCABALL := prof:current-ms()
+
 (: G0 :)
 
 let $ms1G0 := prof:current-ms()
@@ -2107,6 +2116,7 @@ return
        {common:runtime("Common variables",  $ms1GeneralParameters, $ms2GeneralParameters)}
        {common:runtime("NS", $ms1NS, $ms2NS)}
        {common:runtime("VOCAB", $ms1VOCAB, $ms2VOCAB)}
+       {common:runtime("VOCABALL", $ms1CVOCABALL, $ms2CVOCABALL)}
        {common:runtime("G0",  $ms1G0, $ms2G0)}
        {common:runtime("G01", $ms1G01, $ms2G01)}
        {common:runtime("G02", $ms1G02, $ms2G02)}

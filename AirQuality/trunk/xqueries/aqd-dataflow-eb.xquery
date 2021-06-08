@@ -89,6 +89,14 @@ let $ms2GeneralParameters:= prof:current-ms()
 
     let $ms2VOCAB := prof:current-ms()
 
+    (:VOCABALL check @goititer:)
+
+let $ms1CVOCABALL := prof:current-ms()
+
+let $VOCABALLinvalid := checks:vocaball($docRoot)
+
+let $ms2CVOCABALL := prof:current-ms()
+
     (: Eb0 - Check if delivery if this is a new delivery or updated delivery (via reporting year) :)
 
     let $ms1Eb0 := prof:current-ms()
@@ -1425,6 +1433,7 @@ let $ms2Eb14b := prof:current-ms()
        {common:runtime("Common variables",  $ms1GeneralParameters, $ms2GeneralParameters)}
        {common:runtime("NS", $ms1NS, $ms2NS)}
        {common:runtime("VOCAB", $ms1VOCAB, $ms2VOCAB)}
+       {common:runtime("VOCABALL", $ms1CVOCABALL, $ms2CVOCABALL)}
        {common:runtime("Eb0",  $ms1Eb0, $ms2Eb0)}
        {common:runtime("Eb01", $ms1Eb01, $ms2Eb01)}
        {common:runtime("Eb02", $ms1Eb02, $ms2Eb02)}
