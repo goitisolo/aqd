@@ -110,6 +110,16 @@ let $ms1VOCAB := prof:current-ms()
 let $VOCABinvalid := checks:vocab($docRoot)
 
 let $ms2VOCAB := prof:current-ms()
+
+(:VOCABALL check @goititer:)
+
+let $ms1CVOCABALL := prof:current-ms()
+
+let $VOCABALLinvalid := checks:vocaball($docRoot)
+
+let $ms2CVOCABALL := prof:current-ms()
+
+
 (: H0 Checks if this delivery is new or an update (on same reporting year) :)
 
 let $ms1H0 := prof:current-ms()
@@ -1519,6 +1529,7 @@ return
        {common:runtime("Common variables",  $ms1GeneralParameters, $ms2GeneralParameters)}
        {common:runtime("NS", $ms1NS, $ms2NS)}
        {common:runtime("VOCAB", $ms1VOCAB, $ms2VOCAB)}
+       {common:runtime("VOCABALL", $ms1CVOCABALL, $ms2CVOCABALL)}
        {common:runtime("H0",  $ms1H0, $ms2H0)}
        {common:runtime("H01", $ms1H01, $ms2H01)}
        {common:runtime("H02", $ms1H02, $ms2H02)}

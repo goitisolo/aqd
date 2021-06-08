@@ -72,4 +72,5 @@ declare variable $vocabulary:UOM_CONCENTRATION_VOCABULARY := "http://dd.eionet.e
 declare variable $vocabulary:UOM_EMISSION_VOCABULARY := "http://dd.eionet.europa.eu/vocabulary/uom/emission/";
 declare variable $vocabulary:UOM_STATISTICS := "http://dd.eionet.europa.eu/vocabulary/uom/statistics/";
 declare variable $vocabulary:UOM_TIME := "http://dd.eionet.europa.eu/vocabulary/uom/time/";
+declare variable $vocabulary:UOM_LENGTH := "http://dd.eionet.europa.eu/vocabulary/uom/length/";
 declare variable $vocabulary:ZONETYPE_VOCABULARY as xs:string := "http://dd.eionet.europa.eu/vocabulary/aq/zonetype/";
