@@ -104,7 +104,13 @@ let $NSinvalid :=
         </tr>
     }
 let $ns2NS := prof:current-ms()
+(: VOCAB check:)
+
+let $ns1DVOCAB := prof:current-ms()
+
 let $VOCABinvalid := checks:vocab($docRoot)
+
+let $ns2DVOCAB := prof:current-ms()
 
 (:VOCABALL check @goititer:)
 
@@ -1621,6 +1627,7 @@ return
     <table>
         {html:build2("NS", $labels:NAMESPACES, $labels:NAMESPACES_SHORT, $NSinvalid, "All values are valid", "record", $errors:NS)}
         {html:build2("VOCAB", $labels:VOCAB, $labels:VOCAB_SHORT, $VOCABinvalid, "All values are valid", "record", $errors:VOCAB)}
+         {html:build2("VOCABALL", $labels:VOCABALL, $labels:VOCABALL_SHORT, $VOCABALLinvalid, "All values are valid", "record", $errors:VOCABALL)}
         {html:build3("B0", $labels:B0, $labels:B0_SHORT, $B0table, string($B0table/td), errors:getMaxError($B0table))}
         {html:buildCountRow0("B01", $labels:B01, $labels:B01_SHORT, $countZones, "", "record", $errors:B01)}
         {html:buildSimpleSparql("B02", $labels:B02, $labels:B02_SHORT, $B02table, "", "record", $B02errorLevel)}
@@ -1678,6 +1685,7 @@ return
         </tr>
     {common:runtime("Common variables",  $ms1GeneralParameters, $ms2GeneralParameters)}
        {common:runtime("NS", $ns1NS, $ns2NS)}
+       {common:runtime("VOCAB", $ns1DVOCAB, $ns1DVOCAB)}
        {common:runtime("VOCABALL", $ms1CVOCABALL, $ms2CVOCABALL)}
        {common:runtime("B0",  $ns1B0, $ns2B0)}
        {common:runtime("B01", $ns1B01, $ns2B01)}

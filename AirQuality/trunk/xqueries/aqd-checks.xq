@@ -84,10 +84,19 @@ declare function checks:vocaball($docRoot as document-node()) {
 
     let $items :=
             for $x in $data   
-            let $link :=$x/@xlink:href    
-            let $request := <http:request href="{$x/@xlink:href}" method="GET"/>
+            let $link :=                
+                 if  ($x/@xlink:href!="")   then ($x/@xlink:href)
+                 else if ($x/@uom!="")   then ($x/@uom)
+                 else if ($x/@definition!="")   then ($x/@definition)
+                 else ("emptyUrl")  
+
+           (:) let $link2:= replace($link, "http://", "https://")      :)
+            let $request := <http:request href="{$link}" method="HEAD"/>
             let $response := http:send-request($request)[1]
-    return
+            
+           (: let $response :=http:send-request( <http:request  method="HEAD"/>, $link):)
+
+         return
         <item>{$request, $response}</item>
 
     for $item-group in $items
@@ -95,7 +104,7 @@ declare function checks:vocaball($docRoot as document-node()) {
             let $url := $item-group/http:request/@href            
             let $status := $item-group/http:response/@status
             let $message := $item-group/http:response/@message
-            let $spent-millis := $item-group/http:response/@spent-millis                
+            (:let $spent-millis := $item-group/http:response/@spent-millis                :)
 
   where ($status!=200)
   return

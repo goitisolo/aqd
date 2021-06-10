@@ -1478,6 +1478,7 @@ return
     <table>
         {html:build2("NS", $labels:NAMESPACES, $labels:NAMESPACES_SHORT, $NSinvalid, "All values are valid", "", $errors:NS)}
         {html:build2("VOCAB", $labels:VOCAB, $labels:VOCAB_SHORT, $VOCABinvalid, "All values are valid", "", $errors:VOCAB)}
+         {html:build2("VOCABALL", $labels:VOCABALL, $labels:VOCABALL_SHORT, $VOCABALLinvalid, "All values are valid", "record", $errors:VOCABALL)}
         {html:build3("H0", $labels:H0, $labels:H0_SHORT, $H0, string($H0/td), errors:getMaxError($H0))}
         {html:build1("H01", $labels:H01, $labels:H01_SHORT, $H01, "", string($countPlans), "", "issues found", $errors:H01)}
         {html:buildSimpleSparql("H02", $labels:H02, $labels:H02_SHORT, $H02, "", "issue", $H02errorLevel)}
