@@ -175,7 +175,12 @@ let $NSinvalid :=
     }
    let $ms2NS := prof:current-ms()
 (: VOCAB check:)
+
+let $ns1DVOCAB := prof:current-ms()
+
 let $VOCABinvalid := checks:vocab($docRoot)
+
+let $ns2DVOCAB := prof:current-ms()
 
 (:VOCABALL check @goititer:)
 
@@ -1693,7 +1698,7 @@ return
     <table>
         {html:build2("NS", $labels:NAMESPACES, $labels:NAMESPACES_SHORT, $NSinvalid, "All values are valid", "record", $errors:NS)}
         {html:build2("VOCAB", $labels:VOCAB, $labels:VOCAB_SHORT, $VOCABinvalid, "All values are valid", "record", $errors:VOCAB)}
-        {html:build2("VOCABALL", $labels:VOCABALL, $labels:VOCABALL_SHORT, $VOCABALLinvalid, "All values are valid", "record", $errors:VOCABALL)}
+         {html:build2("VOCABALL", $labels:VOCABALL, $labels:VOCABALL_SHORT, $VOCABALLinvalid, "All values are valid", "record", $errors:VOCABALL)}
         {html:build3("C0", $labels:C0, $labels:C0_SHORT, $C0table, string($C0table/td), errors:getMaxError($C0table))}
         {html:build1("C01", $labels:C01, $labels:C01_SHORT, $C01table, "", string(count($C01table)), "", "", $errors:C01)}
         {html:buildSimpleSparql("C02", $labels:C02, $labels:C02_SHORT, $C02table, "", "record", $C02errorLevel)}
@@ -1721,8 +1726,8 @@ return
         {html:build2Sparql("C27", labels:interpolate($labels:C27, ($countZoneIds2, $countZoneIds1)), $labels:C27_SHORT, $C27table, "", " not unique zone", $errors:C27)}
         {html:build2("C28", $labels:C28, $labels:C28_SHORT, $C28invalid, "All values are valid", " invalid value", $errors:C28)}
         {html:build2Sparql("C29", $labels:C29, $labels:C29_SHORT,  $C29invalid, "All values are valid", " invalid value", $errors:C29)}
-      <!-- {html:build2Sparql("C31", $labels:C31, $labels:C31_SHORT, $C31table, "", "record", errors:getMaxError($C31table))}
-        {html:build4Sparql("C31b", $labels:C31b, $labels:C31b_SHORT, $C31btable, "", "record", errors:getMaxError($C31btable))}-->
+       {html:build2Sparql("C31", $labels:C31, $labels:C31_SHORT, $C31table, "", "record", errors:getMaxError($C31table))}
+        {html:build4Sparql("C31b", $labels:C31b, $labels:C31b_SHORT, $C31btable, "", "record", errors:getMaxError($C31btable))}
         {html:build2Sparql("C32", $labels:C32, $labels:C32_SHORT, $C32table, "All values are valid", " invalid value", $errors:C32)}
         {html:build2("C33", $labels:C33, $labels:C33_SHORT, $C33invalid, "All values are valid", " invalid value", $errors:C33)}
         {html:build2("C35", $labels:C35, $labels:C35_SHORT, $C35invalid, "All values are valid", " invalid value", $errors:C35)}
@@ -1744,6 +1749,7 @@ return
 
        {common:runtime("Common variables",  $ms1GeneralParameters, $ms2GeneralParameters)}
        {common:runtime("NS", $ms1NS, $ms2NS)}
+       {common:runtime("VOCAB", $ns1DVOCAB, $ns1DVOCAB)}
        {common:runtime("VOCABALL", $ms1CVOCABALL, $ms2CVOCABALL)}
        {common:runtime("C0",  $ms1C0, $ms2C0)}
        {common:runtime("C01", $ms1C01, $ms2C01)}
@@ -1772,8 +1778,8 @@ return
        {common:runtime("C27",  $ms1C27, $ms2C27)}
        {common:runtime("C28",  $ms1C28, $ms2C28)}
        {common:runtime("C29",  $ms1C29, $ms2C29)}
-      <!-- {common:runtime("C31",  $ms1C31, $ms2C31)}
-       {common:runtime("C31b",  $ms1C31b, $ms2C31b)}-->
+       {common:runtime("C31",  $ms1C31, $ms2C31)}
+       {common:runtime("C31b",  $ms1C31b, $ms2C31b)}
        {common:runtime("C32",  $ms1C32, $ms2C32)}
        {common:runtime("C33",  $ms1C33, $ms2C33)}
        {common:runtime("C35",  $ms1C35, $ms2C35)}
