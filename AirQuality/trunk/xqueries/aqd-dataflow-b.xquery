@@ -712,7 +712,7 @@ let $B12table :=
                 let $countryyy := string($x/prop:inCountry/@rdf:resource)
                 let $length := fn:string-length($countryyy) - 1
                 let $sbst := fn:substring($countryyy, $length, 2)
-                let $area :=  $x/prop:Area
+                let $area :=  $x/prop:SurfaceArea
                 
                 where ($currentCountry = $sbst)            
 
