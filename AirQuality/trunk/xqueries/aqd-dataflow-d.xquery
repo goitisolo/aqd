@@ -727,11 +727,11 @@ let $D14invalid :=
 
 let $ns2D14 := prof:current-ms()
 
-(: D15 Done by Rait :)
+(: D15 Done by Rait changed by @diezzana 21 June 2021, issue #135446 :)
 
 let $ns1D15 := prof:current-ms()
 
-let $D15invalid :=
+(:let $D15invalid :=
     try {
         let $amInspireIds := $docRoot//aqd:AQD_Station/ef:inspireId/base:Identifier/concat(lower-case(normalize-space(base:namespace)), '##',
                 lower-case(normalize-space(base:localId)))
@@ -757,7 +757,24 @@ let $D15invalid :=
             <td title="Error description">{$err:description}</td>
             <td></td>
         </tr>
-    }
+    }:)
+    
+let $D15invalid := try {
+      let $baseLocalIds := $docRoot//gml:featureMember/aqd:AQD_Station/ef:inspireId/base:Identifier/normalize-space(base:localId)    
+      for $id in distinct-values($baseLocalIds)
+        let $ok := (
+          count(index-of($baseLocalIds, $id)) = 1
+        )
+        let $stationIds := $docRoot//gml:featureMember/aqd:AQD_Station/ef:inspireId/base:Identifier[base:localId = $id]/../../../aqd:AQD_Station/@gml:id
+        where not($ok) return 
+          <tr> 
+             <td title="Duplicated base:localId">{data($id)}</td>
+             <td title="aqd:AQD_Station ID">{string-join(data($stationIds), '; ')}</td>
+             <td title="Number of elements">{count(index-of($baseLocalIds, $id))}</td>
+          </tr>    
+} catch * {
+    html:createErrorRow($err:code, $err:description)
+}
 
 let $ns2D15 := prof:current-ms()
 
@@ -2876,7 +2893,8 @@ return
         {html:build2("D12", $labels:D12, $labels:D12_SHORT, $D12invalid, "All attributes are valid", " invalid attribute ", $errors:D12)}
         {html:build2("D14", $labels:D14, $labels:D14_SHORT, $D14invalid, "", "", $errors:D14)}
         {html:buildInfoTR("Specific checks on AQD_Station feature(s) within this XML")}
-        {html:buildCountRow("D15", $labels:D15, $labels:D15_SHORT, $D15invalid, "All Ids are unique", (), ())}
+        <!-- {html:buildCountRow("D15", $labels:D15, $labels:D15_SHORT, $D15invalid, "All Ids are unique", (), ())} -->
+        {html:build2Distinct("D15", $labels:D15, $labels:D15_SHORT, $D15invalid, "No duplicate values ", " ", $errors:D15)}
         {html:buildUnique("D16", $labels:D16, $labels:D16_SHORT, $D16table, "namespace", $errors:D16)}
         {html:build2("D16.1", $labels:D16.1, $labels:D16.1_SHORT, $D16.1invalid, "All values are valid", " invalid namespaces", $errors:D16.1)}
         {html:build2("D17", $labels:D17, $labels:D17_SHORT, $D17invalid, "All values are valid", "", $errors:D17)}
