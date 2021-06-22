@@ -768,6 +768,93 @@ let $B12table :=
 
     let $ns2B12 := prof:current-ms()
 
+(:B12b:)
+let $ns1B12b := prof:current-ms()
+
+let $B12btable :=
+
+    try {
+        let $B12btmp :=
+            for $x in $docRoot//aqd:AQD_Zone
+                let $beginPosition := geox:parseDateTime($x/am:designationPeriod//gml:beginPosition)
+                let $endPosition := geox:parseDateTime($x/am:designationPeriod//gml:endPosition)
+                let $area := $x/aqd:area
+                
+                    for $pollutantNode in $x/aqd:pollutants/aqd:Pollutant
+                    let $pollutant := string($pollutantNode/aqd:pollutantCode/@xlink:href)
+                    let $zone := string($pollutantNode/../../am:inspireId/base:Identifier/base:localId)
+                    let $protectionTarget := string($pollutantNode/aqd:protectionTarget/@xlink:href)
+                    let $key := string-join(($zone, $pollutant, $protectionTarget), "#")
+                    
+                    
+            (:where common:isDateTimeIncludedB11B12($reportingYear, $beginPosition, $endPosition) and $x/am:designationPeriod//gml:endPosition[@indeterminatePosition]:)
+            where common:isDateTimeIncludedB11B12New($reportingYear, $beginPosition, $endPosition)
+            (:group by $pollutant, $protectionTarget:)
+            return
+                <result>
+                    <pollutantName>{dd:getNameFromPollutantCode($pollutant)}</pollutantName>
+                    <pollutantCode>{tokenize($pollutant, "/")[last()]}</pollutantCode>
+                    <protectionTarget>{$protectionTarget}</protectionTarget>
+                    <area>{$area}</area>
+                    <count>{count(distinct-values($key))}</count>
+                </result>
+
+            let $NamespaceDD := 
+             for $x in doc($vocabulary:AQD_Namespace || "rdf")//skos:Concept
+              
+                let $currentCountry := string(fn:upper-case($countryCode))
+                let $countryyy := string($x/prop:inCountry/@rdf:resource)
+                let $length := fn:string-length($countryyy) - 1
+                let $sbst := fn:substring($countryyy, $length, 2)
+                let $area :=  $x/prop:Area
+                
+                where ($currentCountry = $sbst)            
+
+                return $area
+
+            let $arrayAreas := array {
+              for $x in $combinations/combination
+                  let $pollutant := $x/@pollutant
+                  let $protectionTarget := $vocabulary:PROTECTIONTARGET_VOCABULARY || $x/@protectionTarget
+                  let $elem := $B12btmp[pollutantCode = $pollutant and protectionTarget = $protectionTarget]
+                  let $count := string($elem/count)
+                  let $area := $elem/area 
+                  let $areaSum := sum($area)
+                  
+                  return $areaSum
+             }     
+             
+                let $minSumArea := distinct-values(min($arrayAreas))
+                let $maxSumArea := distinct-values(max($arrayAreas))
+                let $difference := $maxSumArea - $minSumArea
+                
+                where $difference > $NamespaceDD return 
+                 <tr>
+                    <td title="Minimum area">{$minSumArea}</td>
+                    <td title="Maximun area">{$maxSumArea}</td>
+                    <td title="Area difference">{$difference}</td>
+                 </tr>
+    } catch * {
+        <tr class="{$errors:FAILED}">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
+
+    let $B12bcount := 
+           for $x in $B12btable/td[4]
+                    where $x = "OK" or $x = "..."
+                    return count($x)
+
+    let $B12berrorLevel :=
+     
+        if (sum($B12bcount) = sum($conbicount)) then
+            $errors:INFO
+        else
+            $errors:B12b
+
+let $ns2B12b := prof:current-ms()
+
 (: B13 :)
 
 let $ns1B13 := prof:current-ms()
@@ -1644,6 +1731,7 @@ return
         {html:build2("B10.1", $labels:B10.1, $labels:B10.1_SHORT, $B10.1invalid, "All values are valid", " invalid namespaces", $errors:B10.1)}
         {html:build2("B11", $labels:B11, $labels:B11_SHORT, $B11table, "", "record", $B11errorLevel)}
         {html:build2("B12", $labels:B12, $labels:B12_SHORT, $B12table, "", "record", $B12errorLevel)}
+        {html:build2("B12b", $labels:B12b, $labels:B12b_SHORT, $B12btable, "", "record", $B12berrorLevel)}
         {html:build2Sparql("B13", $labels:B13, $labels:B13_SHORT, $B13invalid, "All values are valid", " invalid value", $errors:B13)}
         {html:build2("B18", $labels:B18, $labels:B18_SHORT, $B18invalid, "All text are valid"," invalid attribute", $errors:B18)}
         {html:build2("B20", $labels:B20, $labels:B20_SHORT, $B20invalid, "All srsName attributes are valid"," invalid attribute", $errors:B20)}
@@ -1703,6 +1791,7 @@ return
        {common:runtime("B10.1",  $ns1B10.1, $ns2B10.1)}
        {common:runtime("B11",  $ns1B11, $ns2B11)}
        {common:runtime("B12",  $ns1B12, $ns2B12)}
+       {common:runtime("B12b",  $ns1B12b, $ns2B12b)}
        {common:runtime("B13",  $ns1B13, $ns2B13)}
        {common:runtime("B18",  $ns1B18, $ns2B18)}
        {common:runtime("B20", $ns1B20, $ns2B20)}

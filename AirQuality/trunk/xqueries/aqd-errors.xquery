@@ -33,6 +33,7 @@ declare variable $errors:B10 := errors:getError("B10");
 declare variable $errors:B10.1 := errors:getError("B10.1");
 declare variable $errors:B11 := errors:getError("B11");
 declare variable $errors:B12 := errors:getError("B12");
+declare variable $errors:B12b := errors:getError("B12b");
 declare variable $errors:B13 := errors:getError("B13");
 declare variable $errors:B14 := errors:getError("B14");
 declare variable $errors:B15 := errors:getError("B15");
