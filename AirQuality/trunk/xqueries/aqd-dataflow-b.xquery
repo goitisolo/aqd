@@ -831,7 +831,7 @@ let $B12btable :=
                 where $difference > $NamespaceDD return 
                  <tr>
                     <td title="Minimum area">{$minSumArea}</td>
-                    <td title="Maximun area">{$maxSumArea}</td>
+                    <td title="Maximum area">{$maxSumArea}</td>
                     <td title="Area difference">{$difference}</td>
                  </tr>
     } catch * {
