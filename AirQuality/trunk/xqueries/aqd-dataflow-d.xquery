@@ -974,24 +974,45 @@ let $invalidPosD21 :=
 
 
         let $invalidPos_order :=
-            for $gmlPos in $docRoot//aqd:AQD_SamplingPoint
+            for $gmlPos in $docRoot//aqd:AQD_Station
 
-            let $samplingPos := data($gmlPos/ef:geometry/gml:Point/gml:pos)
-            let $samplingLat := if (not(empty($samplingPos))) then fn:substring-before($samplingPos, " ") else ""
-            let $samplingLong := if (not(empty($samplingPos))) then fn:substring-after($samplingPos, " ") else ""
+            let $stationPos := data($gmlPos/ef:geometry/gml:Point/gml:pos)
+            let $stationLat := if (not(empty($stationPos))) then fn:substring-before($stationPos, " ") else ""
+            let $stationLong := if (not(empty($stationPos))) then fn:substring-after($stationPos, " ") else ""
 
 
-            let $samplingLat := if ($samplingLat castable as xs:decimal) then xs:decimal($samplingLat) else 0.00
-            let $samplingLong := if ($samplingLong castable as xs:decimal) then xs:decimal($samplingLong) else 0.00
+            let $stationLat := if ($stationLat castable as xs:decimal) then xs:decimal($stationLat) else 0.00
+            let $stationLong := if ($stationLong castable as xs:decimal) then xs:decimal($stationLong) else 0.00
 
             return
-                if (not($samplingLat <= $LatitudeMax and $samplingLat >= $LatitudeMin) or
-                    not($samplingLong <= $LongitudeMax and $samplingLong >=$LongitudeMin) and $countryCode != 'fr') then
+                if (not($stationLat <= $LatitudeMax and $stationLat >= $LatitudeMin) or
+                    not($stationLong <= $LongitudeMax and $stationLong >=$LongitudeMin) and $countryCode != 'fr') then
                     <tr>
-                        <td title="lat/long">{concat($gmlPos/ef:inspireId/base:Identifier/base:localId, " : lat=", string($samplingLat), " :long=", string($samplingLong))}</td>
+                        <td title="lat/long">{concat($gmlPos/ef:inspireId/base:Identifier/base:localId, " : lat=", string($stationLat), " :long=", string($stationLong))}</td>
                     </tr>
                 else
-                    ()
+                    (
+                      let $invalidPos_order :=
+                        for $gmlPos in $docRoot//aqd:AQD_SamplingPoint
+            
+                        let $samplingPos := data($gmlPos/ef:geometry/gml:Point/gml:pos)
+                        let $samplingLat := if (not(empty($samplingPos))) then fn:substring-before($samplingPos, " ") else ""
+                        let $samplingLong := if (not(empty($samplingPos))) then fn:substring-after($samplingPos, " ") else ""
+            
+            
+                        let $samplingLat := if ($samplingLat castable as xs:decimal) then xs:decimal($samplingLat) else 0.00
+                        let $samplingLong := if ($samplingLong castable as xs:decimal) then xs:decimal($samplingLong) else 0.00
+            
+                        return
+                            if (not($samplingLat <= $LatitudeMax and $samplingLat >= $LatitudeMin) or
+                                not($samplingLong <= $LongitudeMax and $samplingLong >=$LongitudeMin) and $countryCode != 'fr') then
+                                <tr>
+                                    <td title="lat/long">{concat($gmlPos/ef:inspireId/base:Identifier/base:localId, " : lat=", string($samplingLat), " :long=", string($samplingLong))}</td>
+                                </tr>
+                            else
+                                ()
+                            return (($invalidPos_srsDim), ($invalidPos_order)) 
+                    )
         return (($invalidPos_srsDim), ($invalidPos_order))
     }  catch * {
         <tr class="{$errors:FAILED}">
@@ -2901,7 +2922,7 @@ return
         {html:build2("D18", $labels:D18, $labels:D18_SHORT, $D18invalid, "All values are valid", "", $errors:D18)}
         {html:build2("D19", $labels:D19, $labels:D19_SHORT, $D19invalid, "All values are valid", "record", $errors:D19)}
         {html:build2("D20", $labels:D20, $labels:D20_SHORT, $D20invalid, "All smsName attributes are valid"," invalid attribute", $errors:D20)}
-        {html:build2("D21", $labels:D21, $labels:D21_SHORT, $invalidPosD21, "All srsDimension attributes resolve to ""2""", " invalid attribute", $errors:D21)}
+        {html:build2Distinct("D21", $labels:D21, $labels:D21_SHORT, $invalidPosD21, "All srsDimension attributes resolve to ""2""", " invalid attribute", $errors:D21)}
         {html:build2("D23", $labels:D23, $labels:D23_SHORT, $D23invalid, "All values are valid", "", $errors:D23)}
         {html:build1("D24", $labels:D24, $labels:D24_SHORT, $D24table, "", string(count($D24table)) || "records found", "record", "", $errors:D24)}
         {html:build2("D26", $labels:D26, $labels:D26_SHORT, $D26invalid, "All station codes are valid", " invalid station codes", $errors:D26)}
