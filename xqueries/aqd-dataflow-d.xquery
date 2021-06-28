@@ -446,10 +446,10 @@ let $D05invalid :=$part1|$part2|$part3
 let $ns2D05 := prof:current-ms()
 
 (: D06 Done by Rait ./ef:inspireId/base:Identifier/base:localId shall be an unique code for AQD_network and unique within the namespace.:)
-(: TODO FIX TRY CATCH :)
+(: Changed by @diezzana 28 June 2021, issue #135478 :)
 
 let $ns1D06 := prof:current-ms()
-
+(:
     let $amInspireIds := $docRoot//aqd:AQD_Network/ef:inspireId/base:Identifier/concat(lower-case(normalize-space(base:namespace)), '##',
             lower-case(normalize-space(base:localId)))
     let $duplicateEUStationCode := distinct-values(
@@ -461,6 +461,29 @@ let $ns1D06 := prof:current-ms()
     )
     let $countAmInspireIdDuplicates := count($duplicateEUStationCode)
     let $D06invalid := $countAmInspireIdDuplicates
+:)
+
+let $D06invalid :=
+    try {
+      let $amInspireIds := $docRoot//aqd:AQD_Network/ef:inspireId/base:Identifier/concat(lower-case(normalize-space(base:namespace)), '##',
+              lower-case(normalize-space(base:localId)))
+
+      for $identifier in $docRoot//aqd:AQD_Network/ef:inspireId/base:Identifier
+      where string-length(normalize-space($identifier/base:localId)) > 0 and count(index-of($amInspireIds,
+              concat(lower-case(normalize-space($identifier/base:namespace)), '##', lower-case(normalize-space($identifier/base:localId))))) > 1
+      
+        return
+              <tr>
+                  <td title="Repeated base:Identifier">{concat(normalize-space($identifier/base:namespace), ': ', normalize-space($identifier/base:localId))}</td>
+                  <td title="base:localId">{normalize-space($identifier/base:localId)}</td>
+                  <td title="base:namespace">{normalize-space($identifier/base:namespace)}</td>
+              </tr>
+    } catch * {
+        <tr class="{$errors:FAILED}">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
 
 
 let $ns2D06 := prof:current-ms()
@@ -2904,7 +2927,7 @@ return
         {html:build1("D04", $labels:D04, $labels:D04_SHORT, $D04table, string(count($D04table)), "", "", "", $errors:D04)}
         {html:build2("D05", $labels:D05, $labels:D05_SHORT, $D05invalid, "All values are valid", "record", $errors:D05)}
         {html:buildInfoTR("Specific checks on AQD_Network feature(s) within this XML")}
-        {html:buildCountRow("D06", $labels:D06, $labels:D06_SHORT, $D06invalid, (), (), ())}
+        {html:build2Distinct("D06", $labels:D06, $labels:D06_SHORT, $D06invalid, "No duplicate values ", " ", $errors:D06)}
         {html:buildUnique("D07", $labels:D07, $labels:D07_SHORT, $D07table, "namespace", $errors:D07)}
         {html:build2("D07.1", $labels:D07.1, $labels:D07.1_SHORT, $D07.1invalid, "All values are valid", " invalid namespaces", $errors:D07.1)}
         {html:build2("D08", $labels:D08, $labels:D08_SHORT, $D08invalid, "", "", $errors:D08)}
