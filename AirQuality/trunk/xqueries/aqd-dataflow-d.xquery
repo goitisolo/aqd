@@ -86,7 +86,7 @@ let $latestEnvelopeB := query:getLatestEnvelope($cdrUrl || "b/")
 let $latestEnvelopeD := query:getLatestEnvelope($cdrUrl || "d/")
 
 let $namespaces := distinct-values($docRoot//base:namespace)
-let $knownFeatures := distinct-values(data(sparqlx:run(query:getAllFeatureIds($dataflowD:FEATURE_TYPES, $latestEnvelopeD, $namespaces))//sparql:binding[@name='inspireLabel']/sparql:literal))
+(:let $knownFeatures := distinct-values(data(sparqlx:run(query:getAllFeatureIds($dataflowD:FEATURE_TYPES, $latestEnvelopeD, $namespaces))//sparql:binding[@name='inspireLabel']/sparql:literal)):)
 let $SPOnamespaces := distinct-values($docRoot//aqd:AQD_SamplingPoint//base:Identifier/base:namespace)
 let $SPPnamespaces := distinct-values($docRoot//aqd:AQD_SamplingPointProcess/ompr:inspireId/base:Identifier/base:namespace)
 let $networkNamespaces := distinct-values($docRoot//aqd:AQD_Network/ef:inspireId/base:Identifier/base:namespace)
@@ -187,14 +187,27 @@ let $ns1D01 := prof:current-ms()
 
 let $D01table :=
     try {
+
         for $featureType at $pos in $dataflowD:FEATURE_TYPES
+        
         order by $featureType descending
-        where map:get($countFeatureTypesMap, $featureType) > 0
         return
+        if (map:get($countFeatureTypesMap, $featureType) > 0) then
+        
+        
             <tr>
                 <td title="Feature type">{$featureType}</td>
                 <td title="Total number">{map:get($countFeatureTypesMap, $featureType)}</td>
             </tr>
+        else if ($featureType != "aqd:AQD_RepresentativeArea") then
+       
+            <tr class="{$errors:BLOCKER}">
+                <td title="Feature type">{$featureType}</td>
+                <td title="Total number">{map:get($countFeatureTypesMap, $featureType)}</td>
+                
+            </tr>
+        
+
     } catch * {
         <tr class="{$errors:FAILED}">
             <td title="Error code">{$err:code}</td>
@@ -205,7 +218,7 @@ let $D01table :=
 
 let $ns2D01 := prof:current-ms()
 
-(: D02 -:)
+(: D02 -
 
 let $ns1D02 := prof:current-ms()
 
@@ -340,7 +353,7 @@ let $D03bfunc := function() {
 }
 let $D03binvalid := errors:trycatch($D03bfunc)
 
-let $ns2D03b := prof:current-ms()
+let $ns2D03b := prof:current-ms():)
 
 (: D04 :)
 
@@ -411,7 +424,7 @@ let $part2 :=
     for $i in $part2
     return
         <tr>
-       	 	
+            
             <td title="Duplicate records">ef:inspireId {string($i)}</td>
         </tr>
 
@@ -433,7 +446,7 @@ let $part3 :=
     return
    
         <tr>
-        	
+            
             <td title="Duplicate records">aqd:inspireId {string($i)}</td>
         </tr>
 
@@ -1530,17 +1543,46 @@ let $D37invalid :=
                 else
                     ()
        
-        
+       (: if ((count($observingCapabilities)=1) and (($periodBeginPos!= $observingCapabilitiesBeginMin) or 
+                    ($periodEndPos != $observingCapabilitiesEndMax))) then
+                    fn:false()
+
+                  else   if((count($observingCapabilities)>1) and (($periodBeginPos!= $observingCapabilities[1]/observingBeginPos) or 
+                    ($periodEndPos != $observingCapabilitiesLastEnd))) then
+                     fn:false():)
+               (:) if (($periodBeginPos!= $observingCapabilitiesBeginMin) or 
+                    ($periodEndPos != $observingCapabilitiesEndMax)) then:)
+
+               (: if ($pos < count($observingCapabilities)) then :)
+                    (:if ((($periodBeginPos!= $observingCapabilities[1]/observingBeginPos)and($observingCapabilities[1]=$observingCap)) or 
+                        (($periodEndPos != $observingCapabilitiesLastEnd)and ($observingCapabilities[last()]=$observingCap))) then
+                         
+                        fn:false()
+                     else :)
+
+                       (: let $observingCapabilitiesBegin := $observingCap/observingBeginPos               
+
+               let $observingCapabilitiesEnd:=                    
+                    
+                        if ( $observingCap/observingEndPos!="")
+                        then xs:date( $observingCap/observingEndPos)
+                        else
+                        xs:date("2800-01-01")
+:)
+                   
          let $overlappingPeriods :=
             for $operationalPeriod in $docRoot//aqd:AQD_SamplingPoint
 
-                let $periodBeginPos:=xs:date(substring(normalize-space($operationalPeriod/ef:operationalActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:beginPosition), 1, 10))
-                
+                       
+                let $periodBeginPos:=                  
+                    if ($operationalPeriod/ef:operationalActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:beginPosition!="")
+                    then xs:date(substring(normalize-space($operationalPeriod/ef:operationalActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:beginPosition), 1, 10))
+                    else  xs:date("1800-01-01")
 
                 let $periodEndPos:=                  
                     if ($operationalPeriod/ef:operationalActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:endPosition!="")
                     then xs:date(substring(normalize-space($operationalPeriod/ef:operationalActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:endPosition), 1, 10))
-                    else  xs:date("1800-01-01")
+                    else  xs:date("2800-01-01")
 
                 let $observingCapabilities :=
                     for $cp in $operationalPeriod/ef:observingCapability/ef:ObservingCapability/ef:observingTime/gml:TimePeriod
@@ -1550,13 +1592,19 @@ let $D37invalid :=
                             <localId>{$cp/../../../../ef:inspireId/base:Identifier/base:localId}</localId>
                             <observingBeginPos>{(substring(normalize-space($cp/gml:beginPosition), 1, 10))}</observingBeginPos>
                             <observingEndPos>{(substring(normalize-space($cp/gml:endPosition), 1, 10))}</observingEndPos>                                                       
+                            <nextSiblingBegin>{(substring(normalize-space(($cp/../../../following-sibling::ef:observingCapability/ef:ObservingCapability/ef:observingTime/gml:TimePeriod/gml:beginPosition)[1]), 1, 10))}</nextSiblingBegin>
+                            <nextSiblingEnd>{(substring(normalize-space(($cp/../../../following-sibling::ef:observingCapability/ef:ObservingCapability/ef:observingTime/gml:TimePeriod/gml:endPosition)[1]), 1, 10))}</nextSiblingEnd>
+                            <nextSiblingLocalId>{(($cp/../../../following-sibling::ef:observingCapability/../ef:inspireId/base:Identifier/base:localId)[1])}</nextSiblingLocalId>
+                               
                        </result>
 
-                     
-                
-                let $observingDatesBegin:=
+                  let $observingDatesBegin:=
                     for $x in $observingCapabilities
-                 return xs:date($x/observingBeginPos)
+                    return
+                        if (($x/observingDatesBegin!="")and($x/observingDatesBegin castable as xs:date))
+                        then xs:date($x/observingEndPos)
+                        else
+                        xs:date("1800-01-01")
 
                 
                 let $observingCapabilitiesBeginMin:= min($observingDatesBegin)
@@ -1565,71 +1613,100 @@ let $D37invalid :=
                 let $observingDatesEnd:=
                     for $x in $observingCapabilities
                     return
-                        if ($x/observingEndPos!="")
+                        if (($x/observingEndPos!="")and($x/observingEndPos castable as xs:date))
                         then xs:date($x/observingEndPos)
                         else
-                        xs:date("1800-01-01")
+                        xs:date("2800-01-01")
 
                 
                 let $observingCapabilitiesEndMax:= max($observingDatesEnd)
-
-
                
               for $observingCap at $pos in $observingCapabilities 
 
-                let $observingCapabilitiesBegin := $observingCap/observingBeginPos
+                           let $observingCapabilitiesLastEnd:=
+                 if ( $observingCapabilities[last()]/observingEndPos!="")
+                                        then xs:date( $observingCapabilities[last()]/observingEndPos)
+                                        else
+                                        xs:date("2800-01-01")
+                
+               (:) let $next_observingBeginPos :=xs:date($observingCap/nextSiblingBegin):)
+                
+                let $next_observingBeginPos :=
+                    if ( $observingCap/nextSiblingBegin!="")
+                                            then xs:date($observingCap/nextSiblingBegin)
+                                            else
+                                            xs:date("1800-01-01")
+               
 
+                let $next_observingEndPos :=
+                    if ( $observingCap/nextSiblingEnd!="")
+                                            then xs:date($observingCap/nextSiblingEnd)
+                                            else
+                                            xs:date("2800-01-01")
 
-                (:let $observingCapabilitiesEnd := $observingCap/observingEndPos:)
+                let $observingBeginPos :=
+                    if ( $observingCap/observingBeginPos!="")
+                                            then xs:date($observingCap/observingBeginPos)
+                                            else
+                                            xs:date("1800-01-01")
+               
 
-               let $observingCapabilitiesEnd:=                    
-                    
-                        if ( $observingCap/observingEndPos!="")
-                        then xs:date( $observingCap/observingEndPos)
-                        else
-                        xs:date("1800-01-01")
-
-
+                let $observingEndPos :=
+                    if ( $observingCap/observingEndPos!="")
+                                            then xs:date($observingCap/observingEndPos)
+                                            else
+                                            xs:date("2800-01-01")
+               
                let $ok := 
+              
+                     if  (   ($periodBeginPos = xs:date("1800-01-01")) or
+                            ($observingBeginPos = xs:date("1800-01-01")) or
+                            (($observingBeginPos >= $next_observingBeginPos)and ($observingCap[$pos]/localId = $observingCap[$pos]/nextSiblingLocalId ))or
+                            (($observingCap[$pos]/observingEndPos!="")and($observingCap[$pos]/observingEndPos > $next_observingBeginPos)and ($observingCap[$pos]/localId = $observingCap[$pos]/nextSiblingLocalId)) or
+                            (($next_observingEndPos < $next_observingBeginPos)and ($observingCap[$pos]/localId = $observingCap[$pos]/nextSiblingLocalId))or
+                            ($observingBeginPos > $periodEndPos) or
+                            (($observingCap[$pos]/observingEndPos =  "") and ($observingCap[$pos+1]/observingEndPos =  ""))or
+                            (($periodBeginPos!= $observingCapabilities[1]/observingBeginPos)and($observingCapabilities[1]=$observingCap)) or
+                            (($periodEndPos != $observingCapabilitiesLastEnd)and ($observingCapabilities[last()]=$observingCap))
+                            )
+                            then 
+                                fn:false() 
 
-                if (($periodBeginPos!= $observingCapabilitiesBeginMin) or 
-                    ($periodEndPos != $observingCapabilitiesEndMax)) then
-                   
-                     
-                    fn:false()
-
-                  else   
-
-                   if ($pos < count($observingCapabilities)) then
-
-                        if (($observingCap[$pos]/observingBeginPos >= $observingCap[$pos+1]/observingBeginPos) or
-                        ($observingCap[$pos]/observingEndPos >= $observingCap[$pos+1]/observingBeginPos) or
-                        ($observingCap[$pos+1]/observingEndPos < $observingCap[$pos+1]/observingBeginPos) or 
-                        ($observingCap[$pos]/observingEndPos =  ""))  then 
-
-                            fn:false() 
-
-                         else fn:true()
                     else fn:true()
+                             
+                            (:) )
+                else fn:true():)
 
-                    let $periodEndPos1:=  if ($periodEndPos = xs:date("1800-01-01")) then "" else $periodEndPos
-                    let $observingCapabilitiesEndMax1:=  if ($observingCapabilitiesEndMax = xs:date("1800-01-01")) then "" else $observingCapabilitiesEndMax 
+                    let $periodEndPos1:=  if ($periodEndPos = xs:date("2800-01-01")) then "" else $periodEndPos
+                    let $observingCapabilitiesEndMax1:=  if ($observingCapabilitiesEndMax = xs:date("2800-01-01")) then "" else $observingCapabilitiesEndMax 
+                    let $next_observingBeginPos1:=  if ($next_observingBeginPos = xs:date("1800-01-01")) then "" else $next_observingBeginPos
+                    let $next_observingEndPos1:=  if ($next_observingEndPos = xs:date("2800-01-01")) then "" else $next_observingEndPos
+                    let $periodBeginPos1:=  if ($periodBeginPos = xs:date("1800-01-01")) then "" else $periodBeginPos
+                    let $observingBeginPos1:=  if ($observingBeginPos = xs:date("1800-01-01")) then "" else $observingBeginPos
+
+                    
+                    
 
             return if ($ok) then () else
-
-
-
                 <tr>
                     <td title="aqd:AQD_SamplingPoint">{$observingCap/localId}</td>
-                    <td title="operational TimePeriod">{$periodBeginPos || "/" || $periodEndPos1}</td>
-                    <td title="observing beginPosition">{$observingCap/observingBeginPos}</td>
-                    <td title="observing endPosition">{$observingCap/observingEndPos}</td>                    
-                    <td title="observingCapabilitiesBeginMin">{$observingCapabilitiesBeginMin}</td>
-                    <td title="observingCapabilitiesEndMax">{$observingCapabilitiesEndMax1}</td>
+                    <td title="operational TimePeriod">{$periodBeginPos1 || "/" || $periodEndPos1}</td>
+                    <td title="observing beginPosition">{$observingBeginPos1}</td>
+                    <td title="observing endPosition">{$observingCap/observingEndPos}</td> 
+                    <td title="next observing period begin date">{$next_observingBeginPos1}</td>                    
+                    <td title="next observing period end date">{$next_observingEndPos1}</td>  
+                    
+                 
+                  <!--  
+                        <td title="next_observingEndPos">{$next_observingEndPos}</td>   
+                    <td title="nextSiblingLocalId">{$observingCap/nextSiblingLocalId}</td>   
+
+                  <td title="$observingCap[1]/observingBeginPos">{($observingCapabilities[1]/observingBeginPos)}</td>
+                    <td title=" $observingCap[last()]/observingEndPos">{($observingCapabilities[last()]/observingEndPos)}</td>
+                    <td title="count($observingCapabilities)">{count($observingCapabilities)}</td>-->
+
+                    
                 </tr>
-
-                  
-
 
         return (($invalidPosition), ($overlappingPeriods))
 
@@ -1874,7 +1951,8 @@ let $ns1D45 := prof:current-ms()
                         let $stationBeginPos:=$x/ef:operationalActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:beginPosition
                         let $stationEndPos:=$x/ef:operationalActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:endPosition                
 
-                   where ( ($broader!="")and ($broader = data($x/@gml:id) ))
+                   where ( ($broader!="")and ($broader = data($x/ef:inspireId/base:Identifier/base:localId)))
+   
 
                     return
                     
@@ -2899,10 +2977,12 @@ return
         {html:build2("VOCAB", $labels:VOCAB, $labels:VOCAB_SHORT, $VOCABinvalid, "All values are valid", "record", $errors:VOCAB)}
          {html:build2("VOCABALL", $labels:VOCABALL, $labels:VOCABALL_SHORT, $VOCABALLinvalid, "All values are valid", "record", $errors:VOCABALL)}
         {html:build3("D0", $labels:D0, $labels:D0_SHORT, $D0table, string($D0table/td), errors:getMaxError($D0table))}
-        {html:build1("D01", $labels:D01, $labels:D01_SHORT, $D01table, "", $D1sum, "", "",$errors:D01)}
-        {html:buildSimpleSparql("D02", $labels:D02, $labels:D02_SHORT, $D02table, "", "feature type", $D02errorLevel)}
+        {html:build2("D01", $labels:D01, $labels:D01_SHORT, $D01table, "All values are valid", "", errors:getMaxError($D01table))}
+        
+        
+        <!--{html:buildSimpleSparql("D02", $labels:D02, $labels:D02_SHORT, $D02table, "", "feature type", $D02errorLevel)}
         {html:buildSimpleSparql("D03", $labels:D03, $labels:D03_SHORT, $D03table, $D3count, "feature type", $D03errorLevel)}
-        {html:build2Sparql("D03b", $labels:D03b, $labels:D03b_SHORT, $D03binvalid, "All values are valid", "feature type", $errors:D03b)}
+        {html:build2Sparql("D03b", $labels:D03b, $labels:D03b_SHORT, $D03binvalid, "All values are valid", "feature type", $errors:D03b)}-->
         {html:build1("D04", $labels:D04, $labels:D04_SHORT, $D04table, string(count($D04table)), "", "", "", $errors:D04)}
         {html:build2("D05", $labels:D05, $labels:D05_SHORT, $D05invalid, "All values are valid", "record", $errors:D05)}
         {html:buildInfoTR("Specific checks on AQD_Network feature(s) within this XML")}
@@ -3005,9 +3085,9 @@ return
        {common:runtime("VOCABALL", $ms1CVOCABALL, $ms2CVOCABALL)}
        {common:runtime("D0",  $ns1D0, $ns2D0)}
        {common:runtime("D01", $ns1D01, $ns2D01)}
-       {common:runtime("D02", $ns1D02, $ns2D02)}
+      <!-- {common:runtime("D02", $ns1D02, $ns2D02)}
        {common:runtime("D03", $ns1D03, $ns2D03)}
-       {common:runtime("D03b", $ns1D03b, $ns2D03b)}
+       {common:runtime("D03b", $ns1D03b, $ns2D03b)}-->
        {common:runtime("D04",  $ns1D04, $ns2D04)}
        {common:runtime("D05", $ns1D05, $ns2D05)}
        {common:runtime("D06",  $ns1D06, $ns2D06)}
