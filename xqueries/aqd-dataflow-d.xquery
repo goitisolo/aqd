@@ -1014,28 +1014,7 @@ let $invalidPosD21 :=
                         <td title="lat/long">{concat($gmlPos/ef:inspireId/base:Identifier/base:localId, " : lat=", string($stationLat), " :long=", string($stationLong))}</td>
                     </tr>
                 else
-                    (
-                      let $invalidPos_order :=
-                        for $gmlPos in $docRoot//aqd:AQD_SamplingPoint
-            
-                        let $samplingPos := data($gmlPos/ef:geometry/gml:Point/gml:pos)
-                        let $samplingLat := if (not(empty($samplingPos))) then fn:substring-before($samplingPos, " ") else ""
-                        let $samplingLong := if (not(empty($samplingPos))) then fn:substring-after($samplingPos, " ") else ""
-            
-            
-                        let $samplingLat := if ($samplingLat castable as xs:decimal) then xs:decimal($samplingLat) else 0.00
-                        let $samplingLong := if ($samplingLong castable as xs:decimal) then xs:decimal($samplingLong) else 0.00
-            
-                        return
-                            if (not($samplingLat <= $LatitudeMax and $samplingLat >= $LatitudeMin) or
-                                not($samplingLong <= $LongitudeMax and $samplingLong >=$LongitudeMin) and $countryCode != 'fr') then
-                                <tr>
-                                    <td title="lat/long">{concat($gmlPos/ef:inspireId/base:Identifier/base:localId, " : lat=", string($samplingLat), " :long=", string($samplingLong))}</td>
-                                </tr>
-                            else
-                                ()
-                            return (($invalidPos_srsDim), ($invalidPos_order)) 
-                    )
+                    ()
         return (($invalidPos_srsDim), ($invalidPos_order))
     }  catch * {
         <tr class="{$errors:FAILED}">
