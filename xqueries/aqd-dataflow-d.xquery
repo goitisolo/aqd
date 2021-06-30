@@ -2862,9 +2862,10 @@ let $D78invalid :=
     try {
         for $inletHeigh in $docRoot//aqd:AQD_Sample/aqd:inletHeight
         return
-            if (($inletHeigh/@uom != "http://dd.eionet.europa.eu/vocabulary/uom/length/m") or (common:is-a-number(data($inletHeigh)) = false())) then
+            if (($inletHeigh/@uom != "http://dd.eionet.europa.eu/vocabulary/uom/length/m") or (common:is-a-number(data($inletHeigh)) = false())  or ($inletHeigh<0) or ($inletHeigh>30)) then
                 <tr>
                     <td title="@gml:id">{string($inletHeigh/../@gml:id)}</td>
+                     <td title="aqd:inletHeight">{$inletHeigh}</td>
                 </tr>
             else
                 ()
@@ -2980,7 +2981,7 @@ return
         {html:build2("D01", $labels:D01, $labels:D01_SHORT, $D01table, "All values are valid", "", errors:getMaxError($D01table))}
         
         
-        {html:buildSimpleSparql("D02", $labels:D02, $labels:D02_SHORT, $D02table, "", "feature type", $D02errorLevel)}
+       {html:buildSimpleSparql("D02", $labels:D02, $labels:D02_SHORT, $D02table, "", "feature type", $D02errorLevel)}
         {html:buildSimpleSparql("D03", $labels:D03, $labels:D03_SHORT, $D03table, $D3count, "feature type", $D03errorLevel)}
         {html:build2Sparql("D03b", $labels:D03b, $labels:D03b_SHORT, $D03binvalid, "All values are valid", "feature type", $errors:D03b)}
         {html:build1("D04", $labels:D04, $labels:D04_SHORT, $D04table, string(count($D04table)), "", "", "", $errors:D04)}
@@ -3085,9 +3086,9 @@ return
        {common:runtime("VOCABALL", $ms1CVOCABALL, $ms2CVOCABALL)}
        {common:runtime("D0",  $ns1D0, $ns2D0)}
        {common:runtime("D01", $ns1D01, $ns2D01)}
-      <!-- {common:runtime("D02", $ns1D02, $ns2D02)}
+      {common:runtime("D02", $ns1D02, $ns2D02)}
        {common:runtime("D03", $ns1D03, $ns2D03)}
-       {common:runtime("D03b", $ns1D03b, $ns2D03b)}-->
+       {common:runtime("D03b", $ns1D03b, $ns2D03b)}
        {common:runtime("D04",  $ns1D04, $ns2D04)}
        {common:runtime("D05", $ns1D05, $ns2D05)}
        {common:runtime("D06",  $ns1D06, $ns2D06)}
