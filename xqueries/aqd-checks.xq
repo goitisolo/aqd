@@ -76,44 +76,73 @@ let $allRecords:=($assessmentInvalid,$uomInvalid,$organisationInvalid,$unitInval
 };
 
 declare function checks:vocaball($docRoot as document-node()) {
-(:let $data := (($docRoot//*[contains(@xlink:href, "https://dd.eionet.europa.eu/")], $docRoot//*[contains(@xlink:href, "http://dd.eionet.europa.eu/")])):)
- let $xlink := (($docRoot//*[contains(@xlink:href, "https://dd.eionet.europa.eu/")], $docRoot//*[contains(@xlink:href, "http://dd.eionet.europa.eu/")]))
+
+ try {   
+
+(: let $xlink := (($docRoot//*[contains(@xlink:href, "https://dd.eionet.europa.eu/")], $docRoot//*[contains(@xlink:href, "http://dd.eionet.europa.eu/")]))
  let $uom := (($docRoot//*[contains(@uom, "https://dd.eionet.europa.eu/")], $docRoot//*[contains(@uom, "http://dd.eionet.europa.eu/")]))
- let $definition := (($docRoot//*[contains(@definition, "https://dd.eionet.europa.eu/")], $docRoot//*[contains(@definition, "http://dd.eionet.europa.eu/")]))
- let $data :=($xlink,$uom,$definition)
+ let $definition := (($docRoot//*[contains(@definition, "https://dd.eionet.europa.eu/")], $docRoot//*[contains(@definition, "http://dd.eionet.europa.eu/")])):)
+ let $uom2:=
+    (: for $att in $docRoot//*[@uom]:)
+    for $att in $docRoot//@uom
+     return data($att)
 
-    let $items :=
-            for $x in $data   
-            let $link :=                
-                 if  ($x/@xlink:href!="")   then ($x/@xlink:href)
-                 else if ($x/@uom!="")   then ($x/@uom)
-                 else if ($x/@definition!="")   then ($x/@definition)
-                 else ("emptyUrl")  
+let $xlinkAtt:=
+    for $x in (($docRoot//*[contains(@xlink:href, "https://dd.eionet.europa.eu/")], $docRoot//*[contains(@xlink:href, "http://dd.eionet.europa.eu/")]))
+        return $x/@xlink:href
 
-           (:) let $link2:= replace($link, "http://", "https://")      :)
-            let $request := <http:request href="{$link}" method="HEAD"/>
-            let $response := http:send-request($request)[1]
-            
-           (: let $response :=http:send-request( <http:request  method="HEAD"/>, $link):)
+(:let $uomAtt:=
+    for $x in $uom
+        return $x/@uom:)
 
-         return
-        <item>{$request, $response}</item>
+let $definitionAtt:=
+    for $x in (($docRoot//*[contains(@definition, "https://dd.eionet.europa.eu/")], $docRoot//*[contains(@definition, "http://dd.eionet.europa.eu/")]))
+        return $x/@definition
 
-    for $item-group in $items
-            (:group by $status-code := $item-group/http:response/@status:)
-            let $url := $item-group/http:request/@href            
-            let $status := $item-group/http:response/@status
-            let $message := $item-group/http:response/@message
-            (:let $spent-millis := $item-group/http:response/@spent-millis                :)
+let $data:= ($uom2,$xlinkAtt,$definitionAtt)
 
-  where ($status!=200)
-  return
-    <tr>
+                        for $x in $data 
+                      
 
-        <td title=" Vocabulary link">{$url/string()}</td>
-        <td title=" Status">{$status/string()}</td>
-        <td title=" Message">{$message/string()}</td>
-        
-    </tr>   
+                        return 
+                         if (starts-with($x,'http://') or starts-with($x,'https://')) then (      
+                   
+                            let $request := <http:request href="{$x}" method="HEAD"/>
+                            let $response := http:send-request($request)[1]  
+
+                            let $url := $request/@href            
+                            let $status := $response/@status
+                            let $message := $response/@message
+
+                            where ($status!=200)
+                           return
+                            <tr>
+
+                                <td title=" Vocabulary link">{$url/string()}</td>
+                                <td title=" Status">{$status/string()}</td>
+                                <td title=" Message">{$message/string()}</td>
+                               
+                            </tr>  
+
+                         
+                        )
+                       else (
+                        <tr>
+
+                                <td title=" Vocabulary link">{$x}</td>
+                                <td title=" Status">{'Not valid host or protocol'}</td>
+                                
+                                
+                            </tr>  
+                        
+                        )
+
+                 
+}
+
+catch * {
+           html:createErrorRow($err:code, $err:description)
+        }          
+
 };
 
