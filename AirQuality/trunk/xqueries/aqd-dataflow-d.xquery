@@ -86,7 +86,7 @@ let $latestEnvelopeB := query:getLatestEnvelope($cdrUrl || "b/")
 let $latestEnvelopeD := query:getLatestEnvelope($cdrUrl || "d/")
 
 let $namespaces := distinct-values($docRoot//base:namespace)
-let $knownFeatures := distinct-values(data(sparqlx:run(query:getAllFeatureIds($dataflowD:FEATURE_TYPES, $latestEnvelopeD, $namespaces))//sparql:binding[@name='inspireLabel']/sparql:literal))
+(:let $knownFeatures := distinct-values(data(sparqlx:run(query:getAllFeatureIds($dataflowD:FEATURE_TYPES, $latestEnvelopeD, $namespaces))//sparql:binding[@name='inspireLabel']/sparql:literal)):)
 let $SPOnamespaces := distinct-values($docRoot//aqd:AQD_SamplingPoint//base:Identifier/base:namespace)
 let $SPPnamespaces := distinct-values($docRoot//aqd:AQD_SamplingPointProcess/ompr:inspireId/base:Identifier/base:namespace)
 let $networkNamespaces := distinct-values($docRoot//aqd:AQD_Network/ef:inspireId/base:Identifier/base:namespace)
@@ -135,7 +135,7 @@ let $VOCABinvalid := checks:vocab($docRoot)
 
 let $ns2DVOCAB := prof:current-ms()
 
-(:VOCABALL check @goititer:)
+(:VOCABALL check @goititer
 
 let $ms1CVOCABALL := prof:current-ms()
 
@@ -353,7 +353,7 @@ let $D03bfunc := function() {
 }
 let $D03binvalid := errors:trycatch($D03bfunc)
 
-let $ns2D03b := prof:current-ms()
+let $ns2D03b := prof:current-ms():)
 
 (: D04 :)
 
@@ -1142,6 +1142,53 @@ let $D24table :=
 
 let $ns2D24 := prof:current-ms()
 
+
+(: D25 - Station altitude must be provided as a number and unit of measurement according to vocabulary.:)
+
+let $ns1D25 := prof:current-ms()
+
+let $D25table :=
+    try {
+        for $altitude in $docRoot//aqd:AQD_Station/aqd:altitude
+        let $uom:= data($altitude/@uom)
+        let $status:=
+        
+            if (starts-with($uom,'http://') or starts-with($uom,'https://')) then (      
+                   
+                            let $request := <http:request href="{$uom}" method="HEAD"/>
+                            let $response := http:send-request($request)[1]  
+
+                            let $url := $request/@href 
+                            let $message := $response/@message
+
+                            return  $response/@status)
+            else (
+
+               0
+                )
+   
+    
+     
+         where ((string(number(data($altitude)))= 'NaN') or (number(data($altitude))< -10) or (number(data($altitude)) > 5700 ) or ($status!=200))
+        return
+            <tr class="{$errors:BLOCKER}">
+                <td title="aqd:AQD_Station">{data($altitude/../@gml:id)}</td>
+                <td title="altitude">{data($altitude)}</td>                
+                <td title="uom url">{$uom}</td>
+               <!-- <td title="gml:beginPosition">{$operationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:beginPosition}</td>
+                <td title="gml:endPosition">{$operationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:endPosition}</td>-->
+            </tr>
+    }  catch * {
+        <tr class="{$errors:FAILED}">
+            <td title="Error code"> {$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+            <td></td>
+        </tr>
+    }
+
+
+let $ns2D25 := prof:current-ms()
+
 (: D26 Done by Rait:)
 
 let $ns1D26 := prof:current-ms()
@@ -1695,17 +1742,7 @@ let $D37invalid :=
                     <td title="observing endPosition">{$observingCap/observingEndPos}</td> 
                     <td title="next observing period begin date">{$next_observingBeginPos1}</td>                    
                     <td title="next observing period end date">{$next_observingEndPos1}</td>  
-                    
-                 
-                  <!--  
-                        <td title="next_observingEndPos">{$next_observingEndPos}</td>   
-                    <td title="nextSiblingLocalId">{$observingCap/nextSiblingLocalId}</td>   
-
-                  <td title="$observingCap[1]/observingBeginPos">{($observingCapabilities[1]/observingBeginPos)}</td>
-                    <td title=" $observingCap[last()]/observingEndPos">{($observingCapabilities[last()]/observingEndPos)}</td>
-                    <td title="count($observingCapabilities)">{count($observingCapabilities)}</td>-->
-
-                    
+                               
                 </tr>
 
         return (($invalidPosition), ($overlappingPeriods))
@@ -1721,6 +1758,27 @@ let $D37invalid :=
 
 let $ns2D37 := prof:current-ms()
 
+(: D37b - Check if a SPO has more than one operational time activity. :)
+
+
+let $ns1D37b := prof:current-ms()
+
+let $D37bfunc := function() {
+   
+for $operationalPeriod in $docRoot//aqd:AQD_SamplingPoint
+    let $countOperationalPeriod := count($operationalPeriod/ef:operationalActivityPeriod)
+
+    where ($countOperationalPeriod > 1 )
+    return
+        <tr>
+            <td title="aqd:AQD_SamplingPoint">{data($operationalPeriod/@gml:id)}</td>
+          
+        </tr>
+
+}
+let $D37binvalid := errors:trycatch($D37bfunc)
+
+let $ns2D37b := prof:current-ms()
 
 (: D38 - Check if superseded Sampling Point can be found in the data flow D delivered in the past. :)
 
@@ -2706,7 +2764,7 @@ let $D73invalid :=
         </tr>
     }
 let $isInvalidInvalidD73 := if (count($allGmlPoint) > 0) then fn:true() else fn:false()
-let $errLevelD73 := if (count($allGmlPoint) > 0) then $errors:ERROR else $errors:WARNING
+let $errLevelD73 := if (count($allGmlPoint) > 0) then $errors:BLOCKER else $errors:WARNING
 let $errMsg73 := if (count($allGmlPoint) > 0) then " errors found" else " gml:Point elements found"
 
 
@@ -2861,8 +2919,24 @@ let $ns1D78 := prof:current-ms()
 let $D78invalid :=
     try {
         for $inletHeigh in $docRoot//aqd:AQD_Sample/aqd:inletHeight
+
+      (:)  let $status:=
+        
+            if (starts-with($inletHeigh/@uom,'http://') or starts-with($inletHeigh/@uom,'https://')) then (      
+                   
+                            let $request := <http:request href="{$inletHeigh/@uom}" method="HEAD"/>
+                            let $response := http:send-request($request)[1]  
+
+                            let $url := $request/@href 
+                            let $message := $response/@message
+
+                            return  $response/@status)
+            else (
+
+               0
+                ):)
         return
-            if (($inletHeigh/@uom != "http://dd.eionet.europa.eu/vocabulary/uom/length/m") or (common:is-a-number(data($inletHeigh)) = false())  or ($inletHeigh<0) or ($inletHeigh>30)) then
+            if (($inletHeigh/@uom != "http://dd.eionet.europa.eu/vocabulary/uom/length/m") or (common:is-a-number(data($inletHeigh)) = false())  or ($inletHeigh<0) or ($inletHeigh>30) ) then
                 <tr>
                     <td title="@gml:id">{string($inletHeigh/../@gml:id)}</td>
                      <td title="aqd:inletHeight">{$inletHeigh}</td>
@@ -2976,14 +3050,15 @@ return
     <table>
         {html:build2("NS", $labels:NAMESPACES, $labels:NAMESPACES_SHORT, $NSinvalid, "All values are valid", "record", $errors:NS)}
         {html:build2("VOCAB", $labels:VOCAB, $labels:VOCAB_SHORT, $VOCABinvalid, "All values are valid", "record", $errors:VOCAB)}
-         {html:build2("VOCABALL", $labels:VOCABALL, $labels:VOCABALL_SHORT, $VOCABALLinvalid, "All values are valid", "record", $errors:VOCABALL)}
+         <!--{html:build2("VOCABALL", $labels:VOCABALL, $labels:VOCABALL_SHORT, $VOCABALLinvalid, "All values are valid", "record", $errors:VOCABALL)}-->
+        <!--{html:buildNoCount2Sparql("VOCABALL", $labels:VOCABALL, $labels:VOCABALL_SHORT, $VOCABALLinvalid, "All values are valid", "Invalid urls found", $errors:VOCABALL)}
         {html:build3("D0", $labels:D0, $labels:D0_SHORT, $D0table, string($D0table/td), errors:getMaxError($D0table))}
         {html:build2("D01", $labels:D01, $labels:D01_SHORT, $D01table, "All values are valid", "", errors:getMaxError($D01table))}
         
         
        {html:buildSimpleSparql("D02", $labels:D02, $labels:D02_SHORT, $D02table, "", "feature type", $D02errorLevel)}
         {html:buildSimpleSparql("D03", $labels:D03, $labels:D03_SHORT, $D03table, $D3count, "feature type", $D03errorLevel)}
-        {html:build2Sparql("D03b", $labels:D03b, $labels:D03b_SHORT, $D03binvalid, "All values are valid", "feature type", $errors:D03b)}
+        {html:build2Sparql("D03b", $labels:D03b, $labels:D03b_SHORT, $D03binvalid, "All values are valid", "feature type", $errors:D03b)}-->
         {html:build1("D04", $labels:D04, $labels:D04_SHORT, $D04table, string(count($D04table)), "", "", "", $errors:D04)}
         {html:build2("D05", $labels:D05, $labels:D05_SHORT, $D05invalid, "All values are valid", "record", $errors:D05)}
         {html:buildInfoTR("Specific checks on AQD_Network feature(s) within this XML")}
@@ -3008,6 +3083,7 @@ return
         {html:build2Distinct("D21", $labels:D21, $labels:D21_SHORT, $invalidPosD21, "All srsDimension attributes resolve to ""2""", " invalid attribute", $errors:D21)}
         {html:build2("D23", $labels:D23, $labels:D23_SHORT, $D23invalid, "All values are valid", "", $errors:D23)}
         {html:build1("D24", $labels:D24, $labels:D24_SHORT, $D24table, "", string(count($D24table)) || "records found", "record", "", $errors:D24)}
+        {html:build2("D25", $labels:D25, $labels:D25_SHORT, $D25table, "All values are valid", "record",  $errors:D25)}
         {html:build2("D26", $labels:D26, $labels:D26_SHORT, $D26invalid, "All station codes are valid", " invalid station codes", $errors:D26)}
         {html:deprecated("D27", $labels:D27, $labels:D27_SHORT, $D27invalid, "aqd:meteoParams", "", "", "", $errors:D27)}
         {html:build2("D28", $labels:D28, $labels:D28_SHORT, $D28invalid, "All values are valid", "", $errors:D28)}
@@ -3022,6 +3098,7 @@ return
         {html:build2("D35", $labels:D35, $labels:D35_SHORT, $D35invalid, $D35message, " invalid elements", $errors:D35)}
         {html:build2("D36", $labels:D36, $labels:D36_SHORT, $D36invalid, "All attributes are valid", " invalid attribute", $errors:D36)}
         {html:build2("D37", $labels:D37, $labels:D37_SHORT, $D37invalid, "All values are valid", "", $errors:D37)}
+        {html:build2("D37b", $labels:D37b, $labels:D37b_SHORT, $D37binvalid, "All values are valid", "", $errors:D37b)}
         {html:build2Sparql("D38", $labels:D38, $labels:D38_SHORT, $D38invalid, "All values are valid", "", $errors:D38)}
         {html:build2("D39", $labels:D39, $labels:D39_SHORT, $D39invalid, "All values are valid", "", $errors:D39)}
         {html:build2("D40", $labels:D40, $labels:D40_SHORT, $D40invalid, "All values are valid", "invalid pollutant", $errors:D40)}
@@ -3083,12 +3160,12 @@ return
        {common:runtime("Common variables",  $ms1GeneralParameters, $ms2GeneralParameters)}
        {common:runtime("NS", $ns1DNS, $ns2DNS)}
        {common:runtime("VOCAB", $ns1DVOCAB, $ns2DVOCAB)}
-       {common:runtime("VOCABALL", $ms1CVOCABALL, $ms2CVOCABALL)}
+       <!--{common:runtime("VOCABALL", $ms1CVOCABALL, $ms2CVOCABALL)}
        {common:runtime("D0",  $ns1D0, $ns2D0)}
        {common:runtime("D01", $ns1D01, $ns2D01)}
-      {common:runtime("D02", $ns1D02, $ns2D02)}
+     {common:runtime("D02", $ns1D02, $ns2D02)}
        {common:runtime("D03", $ns1D03, $ns2D03)}
-       {common:runtime("D03b", $ns1D03b, $ns2D03b)}
+       {common:runtime("D03b", $ns1D03b, $ns2D03b)}-->
        {common:runtime("D04",  $ns1D04, $ns2D04)}
        {common:runtime("D05", $ns1D05, $ns2D05)}
        {common:runtime("D06",  $ns1D06, $ns2D06)}
@@ -3123,6 +3200,7 @@ return
        {common:runtime("D35",  $ns1D35, $ns2D35)}
        {common:runtime("D36",  $ns1D36, $ns2D36)}
        {common:runtime("D37",  $ns1D37, $ns2D37)}
+       {common:runtime("D37b",  $ns1D37b, $ns2D37b)}
        {common:runtime("D38",  $ns1D38, $ns2D38)}
        {common:runtime("D39",  $ns1D39, $ns2D39)}
        {common:runtime("D40",  $ns1D40, $ns2D40)}
