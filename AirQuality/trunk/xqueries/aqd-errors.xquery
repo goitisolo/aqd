@@ -174,6 +174,7 @@ declare variable $errors:D44b := errors:getError("D44b");
 declare variable $errors:D45 := errors:getError("D45");
 declare variable $errors:D46 := errors:getError("D46");
 declare variable $errors:D48 := errors:getError("D48");
+declare variable $errors:D49 := errors:getError("D49");
 declare variable $errors:D50 := errors:getError("D50");
 declare variable $errors:D51 := errors:getError("D51");
 declare variable $errors:D52 := errors:getError("D52");
