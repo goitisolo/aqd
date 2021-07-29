@@ -2104,13 +2104,13 @@ let $D49invalid :=
         let $wrongEmissionURL:=
             for $x in $docRoot//aqd:relevantEmissions/aqd:RelevantEmissions/aqd:mainEmissionSources
             where not($x/@xlink:href = $validEmission)
-            return $x/@xlink:href || "##" || $x/../../../ef:inspireId/base:Identifier/base:localId
+            return $x/@xlink:href || "##" || $x/../../../ef:inspireId/base:Identifier/base:localId || "$$" || "aqd:mainEmissionSources"
 
         let $validStationClass := dd:getValidConcepts($vocabulary:STATION_CLASSIFICATION || "rdf")
         let $wrongStationClassURL:=
             for $x in $docRoot//aqd:relevantEmissions/aqd:RelevantEmissions/aqd:stationClassification 
             where not($x/@xlink:href = $validStationClass)
-            return $x/@xlink:href || "##" || $x/../../../ef:inspireId/base:Identifier/base:localId
+            return $x/@xlink:href || "##" || $x/../../../ef:inspireId/base:Identifier/base:localId|| "$$" || "aqd:stationClassification"
 
         let $wrongUom:=
             for $uom in $docRoot//aqd:relevantEmissions/aqd:RelevantEmissions/aqd:distanceSource
@@ -2130,7 +2130,7 @@ let $D49invalid :=
                    0
                     )
                 where not ($status = 200)
-                return $uom/@uom || "##" || $uom/../../../ef:inspireId/base:Identifier/base:localId
+                return $uom/@uom || "##" || $uom/../../../ef:inspireId/base:Identifier/base:localId|| "$$" || "aqd:distanceSource"
    
     
      let $result:=($wrongEmissionURL,$wrongStationClassURL,$wrongUom)
@@ -2138,14 +2138,16 @@ let $D49invalid :=
 
        
         for $x in $result
+        let $id:=substring-after($x, '##')
         
         return
 
       
             <tr>
                
-               <td title="gml:id">{substring-after($x, '##')}</td>
+               <td title="gml:id">{substring-before($id, '$$')}</td>
                 <td title="url">{substring-before($x, '##')}</td>
+                <td title="failing element">{substring-after($x, '$$')}</td>
                  
             </tr>
     }  catch * {
@@ -3120,7 +3122,8 @@ return
         {html:build2("NS", $labels:NAMESPACES, $labels:NAMESPACES_SHORT, $NSinvalid, "All values are valid", "record", $errors:NS)}
         {html:build2("VOCAB", $labels:VOCAB, $labels:VOCAB_SHORT, $VOCABinvalid, "All values are valid", "record", $errors:VOCAB)}
          <!--{html:build2("VOCABALL", $labels:VOCABALL, $labels:VOCABALL_SHORT, $VOCABALLinvalid, "All values are valid", "record", $errors:VOCABALL)}-->
-        {html:buildNoCount2Sparql("VOCABALL", $labels:VOCABALL, $labels:VOCABALL_SHORT, $VOCABALLinvalid, "All values are valid", "Invalid urls found", $errors:VOCABALL)}
+       
+       {html:buildNoCount2Sparql("VOCABALL", $labels:VOCABALL, $labels:VOCABALL_SHORT, $VOCABALLinvalid, "All values are valid", "Invalid urls found", $errors:VOCABALL)}
         {html:build3("D0", $labels:D0, $labels:D0_SHORT, $D0table, string($D0table/td), errors:getMaxError($D0table))}
         {html:build2("D01", $labels:D01, $labels:D01_SHORT, $D01table, "All values are valid", "", errors:getMaxError($D01table))}
         
@@ -3160,7 +3163,8 @@ return
         {html:build2("D30", $labels:D30, $labels:D30_SHORT, $D30invalid, "All values are valid", "", $errors:D30)}
         {html:buildInfoTR("Specific checks on AQD_SamplingPoint feature(s) within this XML")}
         {html:build2("D31", $labels:D31, $labels:D31_SHORT, $D31invalid, "All values are valid", "", $errors:D31)}
-        {html:buildUnique("D32", $labels:D32, $labels:D32_SHORT, $D32table, "namespace", $errors:D32)}
+        {html:build2("D32", $labels:D32, $labels:D32_SHORT, $D32table, "All values are valid", "", $errors:D32)}
+       <!-- {html:buildUnique("D32", $labels:D32, $labels:D32_SHORT, $D32table, "namespace", $errors:D32)}-->
         {html:build2("D32.1", $labels:D32.1, $labels:D32.1_SHORT, $D32.1invalid, "All values are valid", " invalid namespaces", $errors:D32.1)}
         {html:build2("D33", $labels:D33, $labels:D33_SHORT, $D33invalid, "All values are valid", "", $errors:D33)}
         {html:build2("D34", $labels:D34, $labels:D34_SHORT, $D34invalid, "All values are valid", "", $errors:D34)}
