@@ -1549,11 +1549,11 @@ let $D36invalid :=
 
 let $ns2D36 := prof:current-ms()
 
-(: D37 - check for invalid data or if beginPosition > endPosition :)
+(: D37b - check for invalid data or if beginPosition > endPosition :)
 
-let $ns1D37 := prof:current-ms()
+let $ns1D37b := prof:current-ms()
 
-let $D37invalid :=
+let $D37binvalid :=
     try {
         let $invalidPosition :=
              (:for  $timePeriod in $docRoot//aqd:AQD_Station/ef:operationalActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod:)
@@ -1756,7 +1756,7 @@ let $D37invalid :=
         </tr>
     }
 
-let $ns2D37 := prof:current-ms()
+let $ns2D37b := prof:current-ms()
 
 (: D37a - Check if a SPO has more than one operational time activity. :)
 
@@ -3170,7 +3170,7 @@ return
         {html:build2("D34", $labels:D34, $labels:D34_SHORT, $D34invalid, "All values are valid", "", $errors:D34)}
         {html:build2("D35", $labels:D35, $labels:D35_SHORT, $D35invalid, $D35message, " invalid elements", $errors:D35)}
         {html:build2("D36", $labels:D36, $labels:D36_SHORT, $D36invalid, "All attributes are valid", " invalid attribute", $errors:D36)}
-        {html:build2("D37", $labels:D37, $labels:D37_SHORT, $D37invalid, "All values are valid", "", $errors:D37)}
+        {html:build2("D37b", $labels:D37b, $labels:D37b_SHORT, $D37binvalid, "All values are valid", "", $errors:D37b)}
         {html:build2("D37a", $labels:D37a, $labels:D37a_SHORT, $D37ainvalid, "All values are valid", "", $errors:D37a)}
         {html:build2Sparql("D38", $labels:D38, $labels:D38_SHORT, $D38invalid, "All values are valid", "", $errors:D38)}
         {html:build2("D39", $labels:D39, $labels:D39_SHORT, $D39invalid, "All values are valid", "", $errors:D39)}
@@ -3274,7 +3274,7 @@ return
        {common:runtime("D34",  $ns1D34, $ns2D34)}
        {common:runtime("D35",  $ns1D35, $ns2D35)}
        {common:runtime("D36",  $ns1D36, $ns2D36)}
-       {common:runtime("D37",  $ns1D37, $ns2D37)}
+       {common:runtime("D37b",  $ns1D37b, $ns2D37b)}
        {common:runtime("D37a",  $ns1D37a, $ns2D37a)}
        {common:runtime("D38",  $ns1D38, $ns2D38)}
        {common:runtime("D39",  $ns1D39, $ns2D39)}
