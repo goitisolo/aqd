@@ -960,20 +960,21 @@ let $D20invalid :=
 
 let $ns2D20 := prof:current-ms()
 
-(: D21 - The Dimension attribute shall resolve to "2." :)
+(: D21 - The Dimension attribute shall resolve to "2.". Updated by @diezzana 29 July 2021 :)
 
 let $ns1D21 := prof:current-ms()
 
 let $invalidPosD21 :=
     try {
-        let $D21tmp := distinct-values($docRoot//aqd:AQD_Station/ef:geometry/gml:Point/gml:pos[@srsDimension != "2"]/
-        concat(../../../ef:inspireId/base:Identifier/base:localId, ": srsDimension=", @srsDimension))
-        let $invalidPos_srsDim :=
-            for $i in $D21tmp
-            return
-                <tr>
-                    <td title="dimension">{string($i)}</td>
-                </tr>
+        let $allnot2 := distinct-values(
+            for $x in $docRoot//aqd:AQD_Station/ef:geometry/gml:Point[gml:pos/@srsDimension != "2"]
+            return $x/../../ef:inspireId/base:Identifier/base:localId/string() || "#" || $x/@gml:id || "#" || $x/gml:pos/@srsDimension || "#" || $x/gml:pos
+        )
+        
+        let $all2 := distinct-values(
+            for $x in $docRoot//aqd:AQD_Station/ef:geometry/gml:Point[gml:pos/@srsDimension = "2"]
+            return $x/../../ef:inspireId/base:Identifier/base:localId/string() || "#" || $x/@gml:id || "#" || $x/gml:pos/@srsDimension || "#" || $x/gml:pos
+        )
 
         let $NamespaceDD := 
          for $x in doc($vocabulary:AQD_Namespace || "rdf")//skos:Concept
@@ -992,43 +993,54 @@ let $invalidPosD21 :=
             return $LongitudeMax || "###"|| $LongitudeMin || "###"|| $LatitudeMax || "###"|| $LatitudeMin
 
     
-
-        
             let $LongitudeMax := number(tokenize($NamespaceDD, "###")[1])
             let $LongitudeMin := number(tokenize($NamespaceDD, "###")[2])
             let $LatitudeMax := number(tokenize($NamespaceDD, "###")[3])
             let $LatitudeMin := number(tokenize($NamespaceDD, "###")[4])
 
 
+        let $wrong2:= (for $i in $all2
+                            let $position:= normalize-space(tokenize($i, "#")[4])
+                            return if (count(tokenize($position," ")) != 2) then
+                                        ( $i )
+                                    else if (string(number(tokenize($position," ")[1])) = 'NaN' or string(number(tokenize($position," ")[2])) = 'NaN') then
+                                        ( $i )
+                                    else ()
+                        )   
+                    
+                     
+         let $invalidCoordinate := 
+           (for $coord in $all2
+
+              let $stationPos := tokenize($coord, "#")[4]
+              let $stationLat := if (not(empty($stationPos))) then fn:substring-before($stationPos, " ") else ""
+              let $stationLong := if (not(empty($stationPos))) then fn:substring-after($stationPos, " ") else ""
+              let $stationLatNum := if ($stationLat castable as xs:decimal) then xs:decimal($stationLat) else 0.00
+              let $stationLongNum := if ($stationLong castable as xs:decimal) then xs:decimal($stationLong) else 0.00
+  
+              return
+                  if ( (string(number($stationLat))) = 'NaN' or (string(number($stationLong))) = 'NaN') then
+                      $coord
+                  else
+                      if (not($stationLatNum <= $LatitudeMax and $stationLatNum >= $LatitudeMin) or
+                      not($stationLongNum <= $LongitudeMax and $stationLongNum >=$LongitudeMin) and $countryCode != 'fr') then
+                          $coord
+                      else
+                          ()
+            )                  
+                    
+                    
+        let $wrongRows := ($allnot2, $invalidCoordinate)  
+          
+        for $i in $wrongRows   
+          return 
+          <tr>
+              <td title="aqd:AQD_Station">{tokenize($i, "#")[1]}</td>
+              <td title="gml:Point">{tokenize($i, "#")[2]}</td>
+              <td title="srsDimension">{tokenize($i, "#")[3]}</td>
+              <td title="gml:pos (lat/long)">{tokenize($i, "#")[4]}</td>
+          </tr>
         
-
-        let $aqdStationPos :=
-            for $allPos in $docRoot//aqd:AQD_Station
-            where not(empty($allPos/ef:geometry/gml:Point/gml:pos))
-            return concat($allPos/ef:inspireId/base:Identifier/base:namespace, "/", $allPos/ef:inspireId/base:Identifier/base:localId, "|",
-                    fn:substring-before(data($allPos/ef:geometry/gml:Point/gml:pos), " "), "#", fn:substring-after(data($allPos/ef:geometry/gml:Point/gml:pos), " "))
-
-
-        let $invalidPos_order :=
-            for $gmlPos in $docRoot//aqd:AQD_Station
-
-            let $stationPos := data($gmlPos/ef:geometry/gml:Point/gml:pos)
-            let $stationLat := if (not(empty($stationPos))) then fn:substring-before($stationPos, " ") else ""
-            let $stationLong := if (not(empty($stationPos))) then fn:substring-after($stationPos, " ") else ""
-
-
-            let $stationLat := if ($stationLat castable as xs:decimal) then xs:decimal($stationLat) else 0.00
-            let $stationLong := if ($stationLong castable as xs:decimal) then xs:decimal($stationLong) else 0.00
-
-            return
-                if (not($stationLat <= $LatitudeMax and $stationLat >= $LatitudeMin) or
-                    not($stationLong <= $LongitudeMax and $stationLong >=$LongitudeMin) and $countryCode != 'fr') then
-                    <tr>
-                        <td title="lat/long">{concat($gmlPos/ef:inspireId/base:Identifier/base:localId, " : lat=", string($stationLat), " :long=", string($stationLong))}</td>
-                    </tr>
-                else
-                    ()
-        return (($invalidPos_srsDim), ($invalidPos_order))
     }  catch * {
         <tr class="{$errors:FAILED}">
             <td title="Error code"> {$err:code}</td>
