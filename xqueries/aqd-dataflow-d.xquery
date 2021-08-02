@@ -1567,6 +1567,10 @@ let $ns1D37b := prof:current-ms()
 
 let $D37binvalid :=
     try {
+      let $arrayMultipleOpActivs := $docRoot//aqd:AQD_SamplingPoint[count(ef:operationalActivityPeriod) > 1]
+        
+      where (count($arrayMultipleOpActivs) = 0 )     
+      
         let $invalidPosition :=
              (:for  $timePeriod in $docRoot//aqd:AQD_Station/ef:operationalActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod:)
            for $timePeriod in $docRoot//aqd:AQD_SamplingPoint/ef:observingCapability/ef:ObservingCapability/ef:observingTime/gml:TimePeriod
@@ -3182,7 +3186,7 @@ return
         {html:build2("D34", $labels:D34, $labels:D34_SHORT, $D34invalid, "All values are valid", "", $errors:D34)}
         {html:build2("D35", $labels:D35, $labels:D35_SHORT, $D35invalid, $D35message, " invalid elements", $errors:D35)}
         {html:build2("D36", $labels:D36, $labels:D36_SHORT, $D36invalid, "All attributes are valid", " invalid attribute", $errors:D36)}
-        {html:build2("D37b", $labels:D37b, $labels:D37b_SHORT, $D37binvalid, "All values are valid", "", $errors:D37b)}
+        {html:build2("D37b", $labels:D37b, $labels:D37b_SHORT, $D37binvalid, "All values are valid or D37a is a blocker", "", $errors:D37b)}
         {html:build2("D37a", $labels:D37a, $labels:D37a_SHORT, $D37ainvalid, "All values are valid", "", $errors:D37a)}
         {html:build2Sparql("D38", $labels:D38, $labels:D38_SHORT, $D38invalid, "All values are valid", "", $errors:D38)}
         {html:build2("D39", $labels:D39, $labels:D39_SHORT, $D39invalid, "All values are valid", "", $errors:D39)}
