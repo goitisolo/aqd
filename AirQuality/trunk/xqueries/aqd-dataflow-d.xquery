@@ -1742,26 +1742,62 @@ let $D37binvalid :=
 
                     let $periodEndPos1:=  if ($periodEndPos = xs:date("2800-01-01")) then "" else $periodEndPos
                     let $observingCapabilitiesEndMax1:=  if ($observingCapabilitiesEndMax = xs:date("2800-01-01")) then "" else $observingCapabilitiesEndMax 
+                    let $observingCapabilitiesBeginMin1:=  if ($observingCapabilitiesBeginMin = xs:date("1800-01-01")) then "" else $observingCapabilitiesBeginMin 
                     let $next_observingBeginPos1:=  if ($next_observingBeginPos = xs:date("1800-01-01")) then "" else $next_observingBeginPos
                     let $next_observingEndPos1:=  if ($next_observingEndPos = xs:date("2800-01-01")) then "" else $next_observingEndPos
                     let $periodBeginPos1:=  if ($periodBeginPos = xs:date("1800-01-01")) then "" else $periodBeginPos
                     let $observingBeginPos1:=  if ($observingBeginPos = xs:date("1800-01-01")) then "" else $observingBeginPos
 
-                    
-                    
+               
+        (:let $observingBeginPosW :=
+                    if ( $observingCap/observingBeginPos!="")
+                                            then xs:date($observingCap/observingBeginPos):)
+                                            
+               let $isWarning:=     
+                if (($periodBeginPos != xs:date("1800-01-01"))and ($observingBeginPos!=xs:date("1800-01-01"))
+                and ($observingBeginPos!=$periodBeginPos) and ($observingBeginPos < xs:date("2013-01-01"))
+                and ($periodBeginPos < xs:date("2013-01-01")))  then
+                true()
+                else false()
 
-            return if ($ok) then () else
-                <tr>
+           (: let $errorClassD37b :=
+                if ($isWarning) then 
+                $errors:WARNING
+            else
+                $errors:BLOCKER
+           :)
+
+            return if (not($ok)and not($isWarning))  then  
+
+                <tr class="{$errors:BLOCKER}">
                     <td title="aqd:AQD_SamplingPoint">{$observingCap/localId}</td>
                     <td title="operational TimePeriod">{$periodBeginPos1 || "/" || $periodEndPos1}</td>
                     <td title="observing beginPosition">{$observingBeginPos1}</td>
                     <td title="observing endPosition">{$observingCap/observingEndPos}</td> 
                     <td title="next observing period begin date">{$next_observingBeginPos1}</td>                    
                     <td title="next observing period end date">{$next_observingEndPos1}</td>  
+                     <td title="type of error">BLOCKER</td>
+                    
+                </tr>
+
+                else if (not ($ok) and ($isWarning)) then
+
+                <tr>
+                    <td title="aqd:AQD_SamplingPoint">{$observingCap/localId}</td>
+                    <td title="operational TimePeriod">{$periodBeginPos1 || "/" || $periodEndPos1}</td>
+                    <td title="observing beginPosition">{$observingBeginPos1}</td>
+                    <td title="observing endPosition">{$observingCap/observingEndPos}</td> 
+                    <td title="next observing period begin date">{$next_observingBeginPos1}</td>                    
+                    <td title="next observing period end date">{$next_observingEndPos1}</td> 
+                    <td title="type of error">WARNING</td>  
+                     
                                
                 </tr>
 
+    
         return (($invalidPosition), ($overlappingPeriods))
+
+
 
 
     }  catch * {
@@ -3186,8 +3222,9 @@ return
         {html:build2("D34", $labels:D34, $labels:D34_SHORT, $D34invalid, "All values are valid", "", $errors:D34)}
         {html:build2("D35", $labels:D35, $labels:D35_SHORT, $D35invalid, $D35message, " invalid elements", $errors:D35)}
         {html:build2("D36", $labels:D36, $labels:D36_SHORT, $D36invalid, "All attributes are valid", " invalid attribute", $errors:D36)}
-        {html:build2("D37b", $labels:D37b, $labels:D37b_SHORT, $D37binvalid, "All values are valid or D37a is a blocker", "", $errors:D37b)}
         {html:build2("D37a", $labels:D37a, $labels:D37a_SHORT, $D37ainvalid, "All values are valid", "", $errors:D37a)}
+        {html:build2("D37b", $labels:D37b, $labels:D37b_SHORT, $D37binvalid, "All values are valid or D37a is a blocker", "",$errors:D37b)}
+        
         {html:build2Sparql("D38", $labels:D38, $labels:D38_SHORT, $D38invalid, "All values are valid", "", $errors:D38)}
         {html:build2("D39", $labels:D39, $labels:D39_SHORT, $D39invalid, "All values are valid", "", $errors:D39)}
         {html:build2("D40", $labels:D40, $labels:D40_SHORT, $D40invalid, "All values are valid", "invalid pollutant", $errors:D40)}
@@ -3290,8 +3327,10 @@ return
        {common:runtime("D34",  $ns1D34, $ns2D34)}
        {common:runtime("D35",  $ns1D35, $ns2D35)}
        {common:runtime("D36",  $ns1D36, $ns2D36)}
-       {common:runtime("D37b",  $ns1D37b, $ns2D37b)}
        {common:runtime("D37a",  $ns1D37a, $ns2D37a)}
+       {common:runtime("D37a",  $ns1D37a, $ns2D37a)}
+       {common:runtime("D37b",  $ns1D37b, $ns2D37b)}
+       
        {common:runtime("D38",  $ns1D38, $ns2D38)}
        {common:runtime("D39",  $ns1D39, $ns2D39)}
        {common:runtime("D40",  $ns1D40, $ns2D40)}
