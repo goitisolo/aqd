@@ -806,7 +806,7 @@ let $B12btable :=
                 let $countryyy := string($x/prop:inCountry/@rdf:resource)
                 let $length := fn:string-length($countryyy) - 1
                 let $sbst := fn:substring($countryyy, $length, 2)
-                let $area :=  $x/prop:Area
+                let $area :=  $x/prop:AreaDifference
                 
                 where ($currentCountry = $sbst)            
 
@@ -1730,8 +1730,8 @@ return
         {html:buildUnique("B10", $labels:B10, $labels:B10_SHORT, $B10table, "record", $errors:B10)}
         {html:build2("B10.1", $labels:B10.1, $labels:B10.1_SHORT, $B10.1invalid, "All values are valid", " invalid namespaces", $errors:B10.1)}
         {html:build2("B11", $labels:B11, $labels:B11_SHORT, $B11table, "", "record", $B11errorLevel)}
-        {html:build2("B12", $labels:B12, $labels:B12_SHORT, $B12table, "", "record", $B12errorLevel)}
-        {html:build2("B12b", $labels:B12b, $labels:B12b_SHORT, $B12btable, "", "record", $B12berrorLevel)}
+        {html:build2("B12", $labels:B12, $labels:B12_SHORT, $B12table, "All values are valid", "record", $B12errorLevel)}
+        {html:build2("B12b", $labels:B12b, $labels:B12b_SHORT, $B12btable, "All values are valid", "record", $B12berrorLevel)}
         {html:build2Sparql("B13", $labels:B13, $labels:B13_SHORT, $B13invalid, "All values are valid", " invalid value", $errors:B13)}
         {html:build2("B18", $labels:B18, $labels:B18_SHORT, $B18invalid, "All text are valid"," invalid attribute", $errors:B18)}
         {html:build2("B20", $labels:B20, $labels:B20_SHORT, $B20invalid, "All srsName attributes are valid"," invalid attribute", $errors:B20)}
