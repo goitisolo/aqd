@@ -948,7 +948,7 @@ let $ms2Total := prof:current-ms()
     <table>
         {html:build2("NS", $labels:NAMESPACES, $labels:NAMESPACES_SHORT, $NSinvalid, "All values are valid", "record", $errors:WARNING)}
         {html:build2("VOCAB", $labels:VOCAB, $labels:VOCAB_SHORT, $VOCABinvalid, "All values are valid", "record", $errors:VOCAB)}
-        {html:buildNoCount2Sparql("VOCABALL", $labels:VOCABALL, $labels:VOCABALL_SHORT, $VOCABALLinvalid, "All values are valid", "Invalid urls found", $errors:VOCABALL)}
+        <!--{html:buildNoCount2Sparql("VOCABALL", $labels:VOCABALL, $labels:VOCABALL_SHORT, $VOCABALLinvalid, "All values are valid", "Invalid urls found", $errors:VOCABALL)}-->
         {html:build3("M0", $labels:M0, $labels:M0_SHORT, $M0table, string($M0table/td), errors:getMaxError($M0table))}
         {html:build2("M01", $labels:M01, $labels:M01_SHORT, $M01table, "All values are valid", "record", errors:getMaxError($M01table))}
         {html:buildSimple("M02", $labels:M02, $labels:M02_SHORT, $M02table, $M02count, "feature type", errors:getMaxError($M02table))}
@@ -996,7 +996,7 @@ let $ms2Total := prof:current-ms()
        {common:runtime("NS", $ms1NS, $ms2NS)}
 
        {common:runtime("VOCAB", $ms1VOCAB, $ms2VOCAB)}
-       {common:runtime("VOCABALL", $ms1CVOCABALL, $ms2CVOCABALL)}
+       <!--{common:runtime("VOCABALL", $ms1CVOCABALL, $ms2CVOCABALL)}-->
        {common:runtime("M0",  $ms1M0, $ms2M0)}
        {common:runtime("M01", $ms1M01, $ms2M01)}
        {common:runtime("M02", $ms1M02, $ms2M02)}

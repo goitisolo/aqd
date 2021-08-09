@@ -1755,8 +1755,8 @@ let $D37binvalid :=
                                             
                let $isWarning:=     
                 if (($periodBeginPos != xs:date("1800-01-01"))and ($observingBeginPos!=xs:date("1800-01-01"))
-                and ($observingBeginPos!=$periodBeginPos) and ($observingBeginPos < xs:date("2013-01-01"))
-                and ($periodBeginPos < xs:date("2013-01-01")))  then
+                and ($observingBeginPos!=$periodBeginPos) and ($observingBeginPos < xs:date("2013-01-02"))
+                and ($periodBeginPos < xs:date("2013-01-02")))  then
                 true()
                 else false()
 
@@ -3175,7 +3175,7 @@ return
         {html:build2("VOCAB", $labels:VOCAB, $labels:VOCAB_SHORT, $VOCABinvalid, "All values are valid", "record", $errors:VOCAB)}
          <!--{html:build2("VOCABALL", $labels:VOCABALL, $labels:VOCABALL_SHORT, $VOCABALLinvalid, "All values are valid", "record", $errors:VOCABALL)}-->
        
-       {html:buildNoCount2Sparql("VOCABALL", $labels:VOCABALL, $labels:VOCABALL_SHORT, $VOCABALLinvalid, "All values are valid", "Invalid urls found", $errors:VOCABALL)}
+      <!-- {html:buildNoCount2Sparql("VOCABALL", $labels:VOCABALL, $labels:VOCABALL_SHORT, $VOCABALLinvalid, "All values are valid", "Invalid urls found", $errors:VOCABALL)}-->
         {html:build3("D0", $labels:D0, $labels:D0_SHORT, $D0table, string($D0table/td), errors:getMaxError($D0table))}
         {html:build2("D01", $labels:D01, $labels:D01_SHORT, $D01table, "All values are valid", "", errors:getMaxError($D01table))}
         
@@ -3287,7 +3287,7 @@ return
        {common:runtime("Common variables",  $ms1GeneralParameters, $ms2GeneralParameters)}
        {common:runtime("NS", $ns1DNS, $ns2DNS)}
        {common:runtime("VOCAB", $ns1DVOCAB, $ns2DVOCAB)}
-       {common:runtime("VOCABALL", $ms1CVOCABALL, $ms2CVOCABALL)}
+       <!--{common:runtime("VOCABALL", $ms1CVOCABALL, $ms2CVOCABALL)}-->
        {common:runtime("D0",  $ns1D0, $ns2D0)}
        {common:runtime("D01", $ns1D01, $ns2D01)}
      {common:runtime("D02", $ns1D02, $ns2D02)}
