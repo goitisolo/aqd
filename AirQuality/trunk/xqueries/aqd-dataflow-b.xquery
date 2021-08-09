@@ -672,6 +672,98 @@ let $B11table :=
             $errors:B11
 
 let $ns2B11 := prof:current-ms()
+
+(: B11b :)
+
+let $ns1B11b := prof:current-ms()
+
+let $B11btable :=
+
+    try {
+        let $B11btmp :=
+            for $x in $docRoot//aqd:AQD_Zone
+                let $beginPosition := geox:parseDateTime($x/am:designationPeriod//gml:beginPosition)
+                let $endPosition := geox:parseDateTime($x/am:designationPeriod//gml:endPosition)
+                let $population := $x/aqd:residentPopulation
+                    for $pollutantNode in $x/aqd:pollutants/aqd:Pollutant
+                    let $pollutant := string($pollutantNode/aqd:pollutantCode/@xlink:href)
+                    let $zone := string($pollutantNode/../../am:inspireId/base:Identifier/base:localId)
+                    let $protectionTarget := string($pollutantNode/aqd:protectionTarget/@xlink:href)
+                    let $key := string-join(($zone, $pollutant, $protectionTarget), "#")
+                    
+                    
+            (:where common:isDateTimeIncludedB11B12($reportingYear, $beginPosition, $endPosition) and $x/am:designationPeriod//gml:endPosition[@indeterminatePosition]:)
+            where common:isDateTimeIncludedB11B12New($reportingYear, $beginPosition, $endPosition)
+            (:group by $pollutant, $protectionTarget:)
+            return
+                <result>
+                    <pollutantName>{dd:getNameFromPollutantCode($pollutant)}</pollutantName>
+                    <pollutantCode>{tokenize($pollutant, "/")[last()]}</pollutantCode>
+                    <protectionTarget>{$protectionTarget}</protectionTarget>
+                    <population>{$population}</population>
+                    <count>{count(distinct-values($key))}</count>
+                </result>
+
+        
+
+            let $NamespaceDD := 
+             for $x in doc($vocabulary:AQD_Namespace || "rdf")//skos:Concept
+              
+                let $currentCountry := string(fn:upper-case($countryCode))
+                let $countryyy := string($x/prop:inCountry/@rdf:resource)
+                let $length := fn:string-length($countryyy) - 1
+                let $sbst := fn:substring($countryyy, $length, 2)
+                let $populationDiff :=  $x/prop:PopulationDifference
+                
+                where ($currentCountry = $sbst)            
+
+                return $populationDiff
+            
+           
+            let $arrayPopulations:=array{
+            for $x in $combinations/combination
+                let $pollutant := $x/@pollutant
+                let $protectionTarget := $vocabulary:PROTECTIONTARGET_VOCABULARY || $x/@protectionTarget
+                let $elem := $B11btmp[pollutantCode = $pollutant and protectionTarget = $protectionTarget]
+                let $count := string($elem/count)
+                let $pupulation := $elem/population 
+                let $pupulationSum := sum($pupulation)
+               return $pupulationSum
+           }
+                let $minPopulation := distinct-values(min($arrayPopulations))
+                let $maxPopulation := distinct-values(max($arrayPopulations))
+                let $difference := $maxPopulation - $minPopulation
+                
+                where $difference > $NamespaceDD return 
+
+
+                <tr>
+                    <td title="Minimum population">{$minPopulation}</td>
+                    <td title="Maximum population">{$maxPopulation}</td>
+                    <td title="Population difference">{$difference}</td>
+                   
+                 </tr>
+                
+    } catch * {
+        <tr class="{$errors:FAILED}">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
+
+    let $B11bcount := 
+                    for $x in $B11btable/td[4]
+                            where $x = "OK" or $x = "..."
+                            return count($x)
+
+    let $B11berrorLevel :=
+         
+        if (sum($B11bcount) = sum($conbicount)) then
+            $errors:INFO
+        else
+            $errors:B11b
+
+let $ns2B11b := prof:current-ms()
     
 
 (:B12:)
@@ -1714,7 +1806,7 @@ return
     <table>
         {html:build2("NS", $labels:NAMESPACES, $labels:NAMESPACES_SHORT, $NSinvalid, "All values are valid", "record", $errors:NS)}
         {html:build2("VOCAB", $labels:VOCAB, $labels:VOCAB_SHORT, $VOCABinvalid, "All values are valid", "record", $errors:VOCAB)}
-         {html:buildNoCount2Sparql("VOCABALL", $labels:VOCABALL, $labels:VOCABALL_SHORT, $VOCABALLinvalid, "All values are valid", "Invalid urls found", $errors:VOCABALL)}
+        <!-- {html:buildNoCount2Sparql("VOCABALL", $labels:VOCABALL, $labels:VOCABALL_SHORT, $VOCABALLinvalid, "All values are valid", "Invalid urls found", $errors:VOCABALL)}-->
         {html:build3("B0", $labels:B0, $labels:B0_SHORT, $B0table, string($B0table/td), errors:getMaxError($B0table))}
         {html:buildCountRow0("B01", $labels:B01, $labels:B01_SHORT, $countZones, "", "record", $errors:B01)}
         {html:buildSimpleSparql("B02", $labels:B02, $labels:B02_SHORT, $B02table, "", "record", $B02errorLevel)}
@@ -1730,6 +1822,7 @@ return
         {html:buildUnique("B10", $labels:B10, $labels:B10_SHORT, $B10table, "record", $errors:B10)}
         {html:build2("B10.1", $labels:B10.1, $labels:B10.1_SHORT, $B10.1invalid, "All values are valid", " invalid namespaces", $errors:B10.1)}
         {html:build2("B11", $labels:B11, $labels:B11_SHORT, $B11table, "", "record", $B11errorLevel)}
+        {html:build2("B11b", $labels:B11b, $labels:B11b_SHORT, $B11btable, "", "record", $B11berrorLevel)}
         {html:build2("B12", $labels:B12, $labels:B12_SHORT, $B12table, "All values are valid", "record", $B12errorLevel)}
         {html:build2("B12b", $labels:B12b, $labels:B12b_SHORT, $B12btable, "All values are valid", "record", $B12berrorLevel)}
         {html:build2Sparql("B13", $labels:B13, $labels:B13_SHORT, $B13invalid, "All values are valid", " invalid value", $errors:B13)}
@@ -1774,7 +1867,7 @@ return
     {common:runtime("Common variables",  $ms1GeneralParameters, $ms2GeneralParameters)}
        {common:runtime("NS", $ns1NS, $ns2NS)}
        {common:runtime("VOCAB", $ns1DVOCAB, $ns1DVOCAB)}
-       {common:runtime("VOCABALL", $ms1CVOCABALL, $ms2CVOCABALL)}
+      <!-- {common:runtime("VOCABALL", $ms1CVOCABALL, $ms2CVOCABALL)}-->
        {common:runtime("B0",  $ns1B0, $ns2B0)}
        {common:runtime("B01", $ns1B01, $ns2B01)}
        {common:runtime("B02", $ns1B02, $ns2B02)}
