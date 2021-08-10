@@ -86,10 +86,11 @@ let $latestEnvelopeB := query:getLatestEnvelope($cdrUrl || "b/")
 let $latestEnvelopeD := query:getLatestEnvelope($cdrUrl || "d/")
 
 let $namespaces := distinct-values($docRoot//base:namespace)
-let $knownFeatures := distinct-values(data(sparqlx:run(query:getAllFeatureIds($dataflowD:FEATURE_TYPES, $latestEnvelopeD, $namespaces))//sparql:binding[@name='inspireLabel']/sparql:literal))
+(:let $knownFeatures := distinct-values(data(sparqlx:run(query:getAllFeatureIds($dataflowD:FEATURE_TYPES, $latestEnvelopeD, $namespaces))//sparql:binding[@name='inspireLabel']/sparql:literal)):)
 let $SPOnamespaces := distinct-values($docRoot//aqd:AQD_SamplingPoint//base:Identifier/base:namespace)
 let $SPPnamespaces := distinct-values($docRoot//aqd:AQD_SamplingPointProcess/ompr:inspireId/base:Identifier/base:namespace)
 let $networkNamespaces := distinct-values($docRoot//aqd:AQD_Network/ef:inspireId/base:Identifier/base:namespace)
+
 let $sampleNamespaces := distinct-values($docRoot//aqd:AQD_Sample/aqd:inspireId/base:Identifier/base:namespace)
 let $stationNamespaces := distinct-values($docRoot//aqd:AQD_Station/ef:inspireId/base:Identifier/base:namespace)
 
@@ -135,7 +136,7 @@ let $VOCABinvalid := checks:vocab($docRoot)
 
 let $ns2DVOCAB := prof:current-ms()
 
-(:VOCABALL check @goititer:)
+(:VOCABALL check @goititer
 
 let $ms1CVOCABALL := prof:current-ms()
 
@@ -353,7 +354,7 @@ let $D03bfunc := function() {
 }
 let $D03binvalid := errors:trycatch($D03bfunc)
 
-let $ns2D03b := prof:current-ms()
+let $ns2D03b := prof:current-ms():)
 
 (: D04 :)
 
@@ -1351,7 +1352,7 @@ let $ns1D32 := prof:current-ms()
 
 let $D32table :=
     try {
-        for $id in $networkNamespaces
+        for $id in $SPOnamespaces(:$networkNamespaces:)
         let $localId := $docRoot//aqd:AQD_SamplingPoint//base:Identifier[base:namespace = $id]/base:localId
         return
             <tr>
@@ -3176,13 +3177,15 @@ return
          <!--{html:build2("VOCABALL", $labels:VOCABALL, $labels:VOCABALL_SHORT, $VOCABALLinvalid, "All values are valid", "record", $errors:VOCABALL)}-->
        
       <!-- {html:buildNoCount2Sparql("VOCABALL", $labels:VOCABALL, $labels:VOCABALL_SHORT, $VOCABALLinvalid, "All values are valid", "Invalid urls found", $errors:VOCABALL)}-->
-        {html:build3("D0", $labels:D0, $labels:D0_SHORT, $D0table, string($D0table/td), errors:getMaxError($D0table))}
+        
+
+        <!--{html:build3("D0", $labels:D0, $labels:D0_SHORT, $D0table, string($D0table/td), errors:getMaxError($D0table))}
         {html:build2("D01", $labels:D01, $labels:D01_SHORT, $D01table, "All values are valid", "", errors:getMaxError($D01table))}
         
         
        {html:buildSimpleSparql("D02", $labels:D02, $labels:D02_SHORT, $D02table, "", "feature type", $D02errorLevel)}
         {html:buildSimpleSparql("D03", $labels:D03, $labels:D03_SHORT, $D03table, $D3count, "feature type", $D03errorLevel)}
-        {html:build2Sparql("D03b", $labels:D03b, $labels:D03b_SHORT, $D03binvalid, "All values are valid", "feature type", $errors:D03b)}
+        {html:build2Sparql("D03b", $labels:D03b, $labels:D03b_SHORT, $D03binvalid, "All values are valid", "feature type", $errors:D03b)}-->
         {html:build1("D04", $labels:D04, $labels:D04_SHORT, $D04table, string(count($D04table)), "", "", "", $errors:D04)}
         {html:build2("D05", $labels:D05, $labels:D05_SHORT, $D05invalid, "All values are valid", "record", $errors:D05)}
         {html:buildInfoTR("Specific checks on AQD_Network feature(s) within this XML")}
@@ -3215,8 +3218,8 @@ return
         {html:build2("D30", $labels:D30, $labels:D30_SHORT, $D30invalid, "All values are valid", "", $errors:D30)}
         {html:buildInfoTR("Specific checks on AQD_SamplingPoint feature(s) within this XML")}
         {html:build2("D31", $labels:D31, $labels:D31_SHORT, $D31invalid, "All values are valid", "", $errors:D31)}
-        {html:build2("D32", $labels:D32, $labels:D32_SHORT, $D32table, "All values are valid", "", $errors:D32)}
-       <!-- {html:buildUnique("D32", $labels:D32, $labels:D32_SHORT, $D32table, "namespace", $errors:D32)}-->
+        <!--{html:build2("D32", $labels:D32, $labels:D32_SHORT, $D32table, "All values are valid", "", $errors:D32)}-->
+        {html:buildUnique2("D32", $labels:D32, $labels:D32_SHORT, $D32table, "namespace", $errors:D32)}
         {html:build2("D32.1", $labels:D32.1, $labels:D32.1_SHORT, $D32.1invalid, "All values are valid", " invalid namespaces", $errors:D32.1)}
         {html:build2("D33", $labels:D33, $labels:D33_SHORT, $D33invalid, "All values are valid", "", $errors:D33)}
         {html:build2("D34", $labels:D34, $labels:D34_SHORT, $D34invalid, "All values are valid", "", $errors:D34)}
@@ -3288,11 +3291,13 @@ return
        {common:runtime("NS", $ns1DNS, $ns2DNS)}
        {common:runtime("VOCAB", $ns1DVOCAB, $ns2DVOCAB)}
        <!--{common:runtime("VOCABALL", $ms1CVOCABALL, $ms2CVOCABALL)}-->
-       {common:runtime("D0",  $ns1D0, $ns2D0)}
+
+
+       <!--{common:runtime("D0",  $ns1D0, $ns2D0)}
        {common:runtime("D01", $ns1D01, $ns2D01)}
      {common:runtime("D02", $ns1D02, $ns2D02)}
        {common:runtime("D03", $ns1D03, $ns2D03)}
-       {common:runtime("D03b", $ns1D03b, $ns2D03b)}
+       {common:runtime("D03b", $ns1D03b, $ns2D03b)}-->
        {common:runtime("D04",  $ns1D04, $ns2D04)}
        {common:runtime("D05", $ns1D05, $ns2D05)}
        {common:runtime("D06",  $ns1D06, $ns2D06)}
