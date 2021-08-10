@@ -439,6 +439,27 @@ declare function html:buildUnique($ruleCode as xs:string, $longText, $text, $rec
             html:buildGeneric($ruleCode, $longText, $text, $records, $message, $bulletType)
 };
 
+declare function html:buildUnique2($ruleCode as xs:string, $longText, $text, $records as element(tr)*, $unit as xs:string, $errorLevel as xs:string) {
+    let $data := html:parseData($records, "data")
+
+    let $countRecords := count($records)
+    let $bulletType :=
+        if (count($records) = 1) then
+            $errors:INFO
+        else
+            $errorLevel
+    let $message := $countRecords || " " || $unit || substring("s ", number(not($countRecords > 1)) * 2) || " found"
+    return
+        (:if (count($records) = 1) then
+            <tr>
+                <td class="bullet">{html:getBullet($ruleCode, $bulletType)}</td>
+                <th colspan="2">{$text} {html:getModalInfo($ruleCode, $longText)}</th>
+                <td><span class="largeText">{$message}</span></td>
+            </tr>
+        else:)
+            html:buildGeneric($ruleCode, $longText, $text, $records, $message, $bulletType)
+};
+
 declare function html:build1(
     $ruleCode as xs:string,
     $longText,
