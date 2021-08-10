@@ -450,13 +450,7 @@ declare function html:buildUnique2($ruleCode as xs:string, $longText, $text, $re
             $errorLevel
     let $message := $countRecords || " " || $unit || substring("s ", number(not($countRecords > 1)) * 2) || " found"
     return
-        (:if (count($records) = 1) then
-            <tr>
-                <td class="bullet">{html:getBullet($ruleCode, $bulletType)}</td>
-                <th colspan="2">{$text} {html:getModalInfo($ruleCode, $longText)}</th>
-                <td><span class="largeText">{$message}</span></td>
-            </tr>
-        else:)
+       
             html:buildGeneric($ruleCode, $longText, $text, $records, $message, $bulletType)
 };
 
