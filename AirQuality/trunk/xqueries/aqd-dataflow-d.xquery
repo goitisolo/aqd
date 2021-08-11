@@ -2052,8 +2052,8 @@ let $ns1D45 := prof:current-ms()
     }:)
 
     let $D45invalid :=
-    try {
-        for $allSamplings in $docRoot//aqd:AQD_SamplingPoint
+    try { (:original commented on 20210810:)
+        (:for $allSamplings in $docRoot//aqd:AQD_SamplingPoint
                     let $broader:= fn:substring-after(data($allSamplings/ef:broader/@xlink:href), '/')
                     let $samplingBeginPos:=$allSamplings/ef:observingCapability/ef:ObservingCapability/ef:observingTime/gml:TimePeriod/gml:beginPosition
                     let $samplingEndPos:=$allSamplings/ef:observingCapability/ef:ObservingCapability/ef:observingTime/gml:TimePeriod/gml:endPosition
@@ -2083,7 +2083,61 @@ let $ns1D45 := prof:current-ms()
                 <td title="Station beginPos">{$stationBeginPos}</td>
                 <td title="Sampling Point endPos">{$samplingEndPos}</td>
                 <td title="Station endPos">{$stationEndPos}</td>
-            </tr>
+            </tr>:)
+            
+            
+            (:modified to improve the speed on 20210810 by @diezzana, issue #131759:)
+            let $aqdSamplings := for $allSamplings in $docRoot//aqd:AQD_SamplingPoint
+                    let $broader:= fn:substring-after(data($allSamplings/ef:broader/@xlink:href), '/')
+                    let $samplingBeginPos:=$allSamplings/ef:observingCapability/ef:ObservingCapability/ef:observingTime/gml:TimePeriod/gml:beginPosition
+                    let $samplingEndPos:=$allSamplings/ef:observingCapability/ef:ObservingCapability/ef:observingTime/gml:TimePeriod/gml:endPosition
+                    
+                    return                         
+                        <result>
+                            <sampling>{data($allSamplings/@gml:id)}</sampling>
+                            <broader>{$broader}</broader>
+                            <samplingBeginPos>{$samplingBeginPos}</samplingBeginPos>
+                            <samplingEndPos>{$samplingEndPos}</samplingEndPos>
+                       </result>
+                    
+               
+           let $aqdStations := for $x in $docRoot//aqd:AQD_Station 
+                        let $stationBeginPos:=$x/ef:operationalActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:beginPosition
+                        let $stationEndPos:=$x/ef:operationalActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:endPosition
+                                               
+                     return                         
+                        <result>
+                            <station>{data($x/@gml:id)}</station>
+                            <stationBeginPos>{$stationBeginPos}</stationBeginPos>
+                            <stationEndPos>{$stationEndPos}</stationEndPos>
+                            <stationLocalId>{data($x/ef:inspireId/base:Identifier/base:localId)}</stationLocalId>
+                       </result>
+                        
+                   
+          for $samp in $aqdSamplings
+            for $stat in $aqdStations
+                       
+                   where ( ($samp/broader!="")and ($samp/broader = data($stat/stationLocalId)))
+  
+                    return
+                    
+                    if (($samp/samplingBeginPos < $stat/stationBeginPos) or 
+                        ($samp/samplingBeginPos="") or 
+                        ($stat/stationBeginPos="") or 
+                        (($stat/stationEndPos != "") and ($samp/samplingEndPos != "") and ($samp/samplingEndPos > $stat/stationEndPos) ) or
+                        (($stat/stationEndPos != "") and(($samp/samplingEndPos[normalize-space(@indeterminatePosition) = "unknown"] )or ($samp/samplingEndPos = "")))    
+                        )
+
+                    then
+        
+                      <tr>
+                          <td title="aqd:AQD_SamplingPoint">{$samp/sampling}</td>
+                          <td title="belongs to aqd:AQD_Station ">{$samp/broader}</td>
+                          <td title="Sampling Point beginPos">{$samp/samplingBeginPos}</td>
+                          <td title="Station beginPos">{$stat/stationBeginPos}</td>
+                          <td title="Sampling Point endPos">{$samp/samplingEndPos}</td>
+                          <td title="Station endPos">{$stat/stationEndPos}</td>
+                      </tr>
 
     }  catch * {
         <tr class="{$errors:FAILED}">
