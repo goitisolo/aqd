@@ -3280,7 +3280,7 @@ return
         {html:build2("D35", $labels:D35, $labels:D35_SHORT, $D35invalid, $D35message, " invalid elements", $errors:D35)}
         {html:build2("D36", $labels:D36, $labels:D36_SHORT, $D36invalid, "All attributes are valid", " invalid attribute", $errors:D36)}
         {html:build2("D37a", $labels:D37a, $labels:D37a_SHORT, $D37ainvalid, "All values are valid", "", $errors:D37a)}
-        {html:build2("D37b", $labels:D37b, $labels:D37b_SHORT, $D37binvalid, "All values are valid or D37a is a blocker", "",$errors:D37b)}
+        {html:build2("D37b", $labels:D37b, $labels:D37b_SHORT, $D37binvalid, "All values are valid or D37b is skipped because of D37a", "",$errors:D37b)}
         
         {html:build2Sparql("D38", $labels:D38, $labels:D38_SHORT, $D38invalid, "All values are valid", "", $errors:D38)}
         {html:build2("D39", $labels:D39, $labels:D39_SHORT, $D39invalid, "All values are valid", "", $errors:D39)}
