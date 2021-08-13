@@ -1770,14 +1770,14 @@ let $D37binvalid :=
 
             return if (not($ok)and not($isWarning))  then  
 
-                <tr class="{$errors:BLOCKER}">
+                <tr>
                     <td title="aqd:AQD_SamplingPoint">{$observingCap/localId}</td>
                     <td title="operational TimePeriod">{$periodBeginPos1 || "/" || $periodEndPos1}</td>
                     <td title="observing beginPosition">{$observingBeginPos1}</td>
                     <td title="observing endPosition">{$observingCap/observingEndPos}</td> 
                     <td title="next observing period begin date">{$next_observingBeginPos1}</td>                    
                     <td title="next observing period end date">{$next_observingEndPos1}</td>  
-                     <td title="type of error">BLOCKER</td>
+                    <td title="type of error">ERROR</td>
                     
                 </tr>
 
