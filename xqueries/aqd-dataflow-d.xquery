@@ -2087,10 +2087,13 @@ let $ns1D45 := prof:current-ms()
             
             
             (:modified to improve the speed on 20210810 by @diezzana, issue #131759:)
-            let $aqdSamplings := for $allSamplings in $docRoot//aqd:AQD_SamplingPoint
+            let $aqdSamplings := 
+              
+                for $allSamplings in $docRoot//aqd:AQD_SamplingPoint
                     let $broader:= fn:substring-after(data($allSamplings/ef:broader/@xlink:href), '/')
-                    let $samplingBeginPos:=$allSamplings/ef:observingCapability/ef:ObservingCapability/ef:observingTime/gml:TimePeriod/gml:beginPosition
-                    let $samplingEndPos:=$allSamplings/ef:observingCapability/ef:ObservingCapability/ef:observingTime/gml:TimePeriod/gml:endPosition
+                    let $operationalOccurrences:= count($allSamplings/ef:operationalActivityPeriod)
+                    let $samplingBeginPos:=$allSamplings/ef:operationalActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:beginPosition
+                    let $samplingEndPos:=$allSamplings/ef:operationalActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:endPosition
                     
                     return                         
                         <result>
@@ -2098,10 +2101,14 @@ let $ns1D45 := prof:current-ms()
                             <broader>{$broader}</broader>
                             <samplingBeginPos>{$samplingBeginPos}</samplingBeginPos>
                             <samplingEndPos>{$samplingEndPos}</samplingEndPos>
+                            <occurrences>{$operationalOccurrences}</occurrences>
                        </result>
+                      
                     
                
-           let $aqdStations := for $x in $docRoot//aqd:AQD_Station 
+           let $aqdStations := 
+          
+                for $x in $docRoot//aqd:AQD_Station 
                         let $stationBeginPos:=$x/ef:operationalActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:beginPosition
                         let $stationEndPos:=$x/ef:operationalActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:endPosition
                                                
@@ -2112,8 +2119,9 @@ let $ns1D45 := prof:current-ms()
                             <stationEndPos>{$stationEndPos}</stationEndPos>
                             <stationLocalId>{data($x/ef:inspireId/base:Identifier/base:localId)}</stationLocalId>
                        </result>
-                        
-                   
+            
+
+          
           for $samp in $aqdSamplings
             for $stat in $aqdStations
                        
@@ -2125,8 +2133,11 @@ let $ns1D45 := prof:current-ms()
                         ($samp/samplingBeginPos="") or 
                         ($stat/stationBeginPos="") or 
                         (($stat/stationEndPos != "") and ($samp/samplingEndPos != "") and ($samp/samplingEndPos > $stat/stationEndPos) ) or
-                        (($stat/stationEndPos != "") and(($samp/samplingEndPos[normalize-space(@indeterminatePosition) = "unknown"] )or ($samp/samplingEndPos = "")))    
+                        (($stat/stationEndPos != "") and(($samp/samplingEndPos[normalize-space(@indeterminatePosition) = "unknown"] )or ($samp/samplingEndPos = "")))  
+                        or ($samp/occurrences>1)  
                         )
+
+
 
                     then
         
@@ -2137,6 +2148,7 @@ let $ns1D45 := prof:current-ms()
                           <td title="Station beginPos">{$stat/stationBeginPos}</td>
                           <td title="Sampling Point endPos">{$samp/samplingEndPos}</td>
                           <td title="Station endPos">{$stat/stationEndPos}</td>
+                          <td title="Operational dates occurrences">{$samp/occurrences}</td>
                       </tr>
 
     }  catch * {
@@ -3233,7 +3245,7 @@ return
       <!-- {html:buildNoCount2Sparql("VOCABALL", $labels:VOCABALL, $labels:VOCABALL_SHORT, $VOCABALLinvalid, "All values are valid", "Invalid urls found", $errors:VOCABALL)}-->
         
 
-       {html:build3("D0", $labels:D0, $labels:D0_SHORT, $D0table, string($D0table/td), errors:getMaxError($D0table))}
+      {html:build3("D0", $labels:D0, $labels:D0_SHORT, $D0table, string($D0table/td), errors:getMaxError($D0table))}
         {html:build2("D01", $labels:D01, $labels:D01_SHORT, $D01table, "All values are valid", "", errors:getMaxError($D01table))}
         
         
