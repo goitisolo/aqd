@@ -2086,14 +2086,17 @@ let $ns1D45 := prof:current-ms()
             </tr>:)
             
             
-            (:modified to improve the speed on 20210810 by @diezzana, issue #131759:)
+            (:modified to improve the speed in August 2020 by @diezzana and @goititer, issue #131759:)
             let $aqdSamplings := 
               
                 for $allSamplings in $docRoot//aqd:AQD_SamplingPoint
                     let $broader:= fn:substring-after(data($allSamplings/ef:broader/@xlink:href), '/')
                     let $operationalOccurrences:= count($allSamplings/ef:operationalActivityPeriod)
-                    let $samplingBeginPos:=$allSamplings/ef:operationalActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:beginPosition
-                    let $samplingEndPos:=$allSamplings/ef:operationalActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:endPosition
+
+                    (: operationalActivityPeriod can be multiple: :)
+                    for $x in $allSamplings/ef:operationalActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod
+                      let $samplingBeginPos:=$x/gml:beginPosition
+                      let $samplingEndPos:=$x/gml:endPosition  
                     
                     return                         
                         <result>
@@ -2109,12 +2112,30 @@ let $ns1D45 := prof:current-ms()
            let $aqdStations := 
           
                 for $x in $docRoot//aqd:AQD_Station 
-                        let $stationBeginPos:=$x/ef:operationalActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:beginPosition
-                        let $stationEndPos:=$x/ef:operationalActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:endPosition
+                        let $stationBeginPos0 :=$x/ef:operationalActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:beginPosition
+                        let $stationEndPos0 :=$x/ef:operationalActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:endPosition
+                        
+                        (: regex expression to compare the $stationBeginPos and $stationEndPos dates format with the ISO 8601 extended format: 
+                        2014-01-01T00:00:00+01:00 | 2014-01-01T00:00:00Z | 2020-10-07T20:20:05Z | 2014-01-01T00:00:00-01:00 :)  
+                        let $stationBeginPos :=
+                            if (matches($stationBeginPos0, "^\d\d\d\d-(0?[1-9]|1[0-2])-(0?[1-9]|[12][0-9]|3[01])T(00|0[0-9]|1[0-9]|2[0-4]):([0-9]|[0-5][0-9]):([0-9]|[0-5][0-9])((\+([0-9]|[0-5][0-9]):([0-9]|[0-5][0-9]))|(\-([0-9]|[0-5][0-9]):([0-9]|[0-5][0-9]))|(Z))$") ) then
+                                $stationBeginPos0
+                            else
+                              if($stationBeginPos0 != "") then 
+                                xs:dateTime(concat(xs:string($stationBeginPos0),"T00:00:00+01:00"))
+                                
+                        let $stationEndPos :=
+                            if (matches($stationEndPos0, "^\d\d\d\d-(0?[1-9]|1[0-2])-(0?[1-9]|[12][0-9]|3[01])T(00|0[0-9]|1[0-9]|2[0-4]):([0-9]|[0-5][0-9]):([0-9]|[0-5][0-9])((\+([0-9]|[0-5][0-9]):([0-9]|[0-5][0-9]))|(\-([0-9]|[0-5][0-9]):([0-9]|[0-5][0-9]))|(Z))$") ) then
+                                $stationEndPos0
+                            else
+                              if($stationEndPos0 != "") then
+                                xs:dateTime(concat(xs:string($stationEndPos0),"T00:00:00+01:00"))  
                                                
                      return                         
                         <result>
                             <station>{data($x/@gml:id)}</station>
+                            <stationBeginPos0>{$stationBeginPos0}</stationBeginPos0>
+                            <stationEndPos0>{$stationEndPos0}</stationEndPos0>
                             <stationBeginPos>{$stationBeginPos}</stationBeginPos>
                             <stationEndPos>{$stationEndPos}</stationEndPos>
                             <stationLocalId>{data($x/ef:inspireId/base:Identifier/base:localId)}</stationLocalId>
@@ -2129,14 +2150,12 @@ let $ns1D45 := prof:current-ms()
   
                     return
                     
-                    if (($samp/samplingBeginPos < $stat/stationBeginPos) or 
+                     if ( (($stat/stationBeginPos != "") and ($samp/samplingBeginPos != "") and ($samp/samplingBeginPos < $stat/stationBeginPos)) or 
                         ($samp/samplingBeginPos="") or 
                         ($stat/stationBeginPos="") or 
                         (($stat/stationEndPos != "") and ($samp/samplingEndPos != "") and ($samp/samplingEndPos > $stat/stationEndPos) ) or
                         (($stat/stationEndPos != "") and(($samp/samplingEndPos[normalize-space(@indeterminatePosition) = "unknown"] )or ($samp/samplingEndPos = "")))  
-                        or ($samp/occurrences>1)  
-                        )
-
+                        )   
 
 
                     then
@@ -2145,9 +2164,9 @@ let $ns1D45 := prof:current-ms()
                           <td title="aqd:AQD_SamplingPoint">{$samp/sampling}</td>
                           <td title="belongs to aqd:AQD_Station ">{$samp/broader}</td>
                           <td title="Sampling Point beginPos">{$samp/samplingBeginPos}</td>
-                          <td title="Station beginPos">{$stat/stationBeginPos}</td>
+                          <td title="Station beginPos">{$stat/stationBeginPos0}</td>
                           <td title="Sampling Point endPos">{$samp/samplingEndPos}</td>
-                          <td title="Station endPos">{$stat/stationEndPos}</td>
+                          <td title="Station endPos">{$stat/stationEndPos0}</td>
                           <td title="Operational dates occurrences">{$samp/occurrences}</td>
                       </tr>
 
