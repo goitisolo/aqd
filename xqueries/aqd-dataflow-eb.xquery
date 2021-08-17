@@ -49,6 +49,7 @@ declare function dataflowEb:checkReport($source_url as xs:string, $countryCode a
     let $cdrUrl := common:getCdrUrl($countryCode)
     let $reportingYear := common:getReportingYear($docRoot)
     let $latestEnvelopeD1b := query:getLatestEnvelope($cdrUrl || "d1b/")
+    let $latestEnvelopeByYearD1b := query:getLatestEnvelope($cdrUrl || "d1b/", $reportingYear)
 
     let $headerBeginPosition := $docRoot//aqd:AQD_ReportingHeader/aqd:reportingPeriod/gml:TimePeriod/gml:beginPosition
     let $headerEndPosition := $docRoot//aqd:AQD_ReportingHeader/aqd:reportingPeriod/gml:TimePeriod/gml:endPosition
@@ -394,7 +395,7 @@ let $ms2CVOCABALL := prof:current-ms()
     
     let $Eb11invalid :=
         try {
-            (let $result := sparqlx:run(query:getModelMetadataFromFiles($latestEnvelopeD1b))
+            (let $result := sparqlx:run(query:getModelMetadataFromFiles($latestEnvelopeByYearD1b))
             let $resultConcat := for $x in $result
             return $x/sparql:binding[@name="featureOfInterest"]/sparql:uri/string() || $x/sparql:binding[@name="observedProperty"]/sparql:uri/string()
             for $x in $docRoot//om:OM_Observation
@@ -414,7 +415,7 @@ let $ms2CVOCABALL := prof:current-ms()
                     <td title="@gml:id">{$x/@gml:id/string()}</td>
                     <td title="om:value">{$value}</td>
                     <td title="om:observedProperty">{$observedProperty}</td>
-                    <td title="Sparql">{sparqlx:getLink(query:getModelMetadataFromFiles($latestEnvelopeD1b))}</td>
+                    <td title="Sparql">{sparqlx:getLink(query:getModelMetadataFromFiles($latestEnvelopeByYearD1b))}</td>
                 </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
         } catch * {
             <tr class="{$errors:FAILED}">
