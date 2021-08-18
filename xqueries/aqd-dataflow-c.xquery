@@ -580,12 +580,21 @@ let $ms1C04 := prof:current-ms()
 
 let $C04invalid :=
     try {
-        let $gmlIds := $docRoot//aqd:AQD_AssessmentRegime/lower-case(normalize-space(@gml:id))
-        for $id in $docRoot//aqd:AQD_AssessmentRegime/@gml:id
-        where count(index-of($gmlIds, lower-case(normalize-space($id)))) > 1
-        return
+        let $gmlIds := $docRoot//aqd:AQD_AssessmentRegime//lower-case(normalize-space(@gml:id))
+        
+        for $x in $docRoot//aqd:AQD_AssessmentRegime
+          let $ids := $x//@gml:id
+          let $aqdLocalId := $x/aqd:inspireId/base:Identifier/base:localId 
+          for $id in $ids           
+            let $ok := (
+              count(index-of($gmlIds, lower-case(normalize-space($id))) ) = 1
+            )
+            
+          where not($ok)
+          return
             <tr>
-                <td title="@gml:id">{$id}</td>
+                <td title="@gml:id">{data($id)}</td>
+                <td title="base:localId">{distinct-values($aqdLocalId)}</td>
             </tr>
     } catch * {
         <tr class="{$errors:FAILED}">
@@ -1708,8 +1717,8 @@ return
         {html:buildNoCountSparql("C03b", $labels:C03b, $labels:C03b_SHORT, $C03bfunc, "All values are valid", "Missing Assessment Method", $errors:C03b)}
         {html:buildNoCount2Sparql("C03c", $labels:C03c, $labels:C03c_SHORT, $C03cfunc, "All values are valid", "Mismatches of assessment type found", $errors:C03c)}
         {html:build2Sparql("C03d", $labels:C03d, $labels:C03d_SHORT, $C03dinvalid, "All values are valid", " New Assessment Methods", $errors:C03d)}
-        {html:build2("C04", $labels:C04, $labels:C04_SHORT, $C04invalid, "No duplicates found", " duplicate", $errors:C04)}
-        {html:build2("C05", $labels:C05, $labels:C05_SHORT, $C05invalid, "No duplicates found", " duplicate", $errors:C05)}
+        {html:build2Distinct("C04", $labels:C04, $labels:C04_SHORT, $C04invalid, "No duplicates found", " duplicate ", $errors:C04)}
+        {html:build2Distinct("C05", $labels:C05, $labels:C05_SHORT, $C05invalid, "No duplicates found", " duplicate ", $errors:C05)}
         {html:build2("C06", $labels:C06, $labels:C06_SHORT, $C06table, string(count($C06table)), "", $errors:C06)}
         {html:build2("C06.1", $labels:C06.1, $labels:C06.1_SHORT, $C06.1invalid, "All values are valid", " invalid namespaces", $errors:C06.1)}
         {html:build2("C07", $labels:C07, $labels:C07_SHORT, $C07invalid, "All values are valid", " invalid value", $errors:C07)}
