@@ -1373,6 +1373,56 @@ let $ms2Eb14b := prof:current-ms()
 
     
     let $ms2Eb42 := prof:current-ms()
+    
+    
+    (: Eb44 - When results are provided via an external file, the XML must include an om:parameter including the modelprojection via EEA vocabulary
+            IF resultencoding = external resultformat, the XML must include an om:parameter with modelprojection
+            <om:parameter>
+            <om:NamedValue>
+            <om:name xlink:href="http://dd.eionet.europa.eu/vocabulary/aq/modelparameter/projection"/>
+            <om:value xlink:href="http://dd.eionet.europa.eu/vocabulary/common/epsg/4326"/>
+            </om:NamedValue>
+            </om:parameter> :)
+    
+    let $ms1Eb44 := prof:current-ms()
+    
+    let $Eb44invalid :=
+         try {
+          let $processParameterResultencoding := $vocabulary:PROCESS_PARAMETER || "resultencoding"
+          let $processParameterResultformat := $vocabulary:PROCESS_PARAMETER || "resultformat"
+          let $modelParameterProjection := $vocabulary:MODEL_PARAMETER || "projection"
+          
+          for $x in $docRoot//om:OM_Observation
+            let $resultEncoding := $x/om:parameter/om:NamedValue[om:name/@xlink:href = $processParameterResultencoding]
+            let $resultencodingValue := tokenize(common:if-empty($resultEncoding/om:value, $resultEncoding/om:value/@xlink:href), "/")[last()]
+            
+            let $resultFormat := $x/om:parameter/om:NamedValue[om:name/@xlink:href = $processParameterResultformat]
+            let $resultformatValue := tokenize(common:if-empty($resultFormat/om:value, $resultFormat/om:value/@xlink:href), "/")[last()]
+            
+            let $modelProjection := $x/om:parameter/om:NamedValue[om:name/@xlink:href = $modelParameterProjection]
+            let $modelProjectionValue := tokenize(common:if-empty($modelProjection/om:value, $modelProjection/om:value/@xlink:href), "/")[last()]
+            
+            let $ok := ($resultencodingValue = "external" and $resultformatValue != "" and $modelProjectionValue != "")
+            
+            where not($ok) and $resultencodingValue = "external"
+            return
+                <tr>
+                    <td title="gml:id">{data($x/@gml:id)}</td>
+                    <td title="modelparameter/projection">{$modelProjectionValue}</td>
+                    <td title="resultencoding">{$resultencodingValue}</td>
+                    <td title="resultformat">{$resultformatValue}</td>
+                </tr>
+        } catch * {
+            <tr class="{$errors:FAILED}">
+                <td title="Error code">{$err:code}</td>
+                <td title="Error description">{$err:description}</td>
+            </tr>
+        }
+
+    
+    let $ms2Eb44 := prof:current-ms()
+    
+    
     let $ms2Total := prof:current-ms()
     return
         <table class="maintable hover">
@@ -1422,6 +1472,7 @@ let $ms2Eb14b := prof:current-ms()
             {html:build2("Eb40", $labels:Eb40, $labels:Eb40_SHORT, $Eb40invalid, "All records are valid", "record", $errors:Eb40)}
             {html:build2("Eb41", $labels:Eb41, $labels:Eb41_SHORT, $Eb41invalid, "All records are valid", "record", $errors:Eb41)}
             {html:build2("Eb42", $labels:Eb42, $labels:Eb42_SHORT, $Eb42invalid, "All records are valid", "record", $errors:Eb42)}
+            {html:build2("Eb44", $labels:Eb44, $labels:Eb44_SHORT, $Eb44invalid, "All records are valid", "record", $errors:Eb44)}
         </table>
     <table>
     <br/>
@@ -1478,6 +1529,7 @@ let $ms2Eb14b := prof:current-ms()
        {common:runtime("Eb40",  $ms1Eb40, $ms2Eb40)}
        {common:runtime("Eb41",  $ms1Eb41, $ms2Eb41)}
        {common:runtime("Eb42",  $ms1Eb42, $ms2Eb42)}
+       {common:runtime("Eb44",  $ms1Eb44, $ms2Eb44)}
        {common:runtime("Total time",  $ms1Total, $ms2Total)}
     </table>
     </table>
