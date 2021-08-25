@@ -1454,6 +1454,7 @@ let $ms2Eb14b := prof:current-ms()
           let $processParameterResultencoding := $vocabulary:PROCESS_PARAMETER || "resultencoding"
           let $processParameterResultformat := $vocabulary:PROCESS_PARAMETER || "resultformat"
           let $modelParameterProjection := $vocabulary:MODEL_PARAMETER || "projection"
+          let $processParameterModel := $vocabulary:PROCESS_PARAMETER || "model"
           
           for $x in $docRoot//om:OM_Observation
             let $resultEncoding := $x/om:parameter/om:NamedValue[om:name/@xlink:href = $processParameterResultencoding]
@@ -1465,15 +1466,27 @@ let $ms2Eb14b := prof:current-ms()
             let $modelProjection := $x/om:parameter/om:NamedValue[om:name/@xlink:href = $modelParameterProjection]
             let $modelProjectionValue := tokenize(common:if-empty($modelProjection/om:value, $modelProjection/om:value/@xlink:href), "/")[last()]
             
+            let $model := $x/om:parameter/om:NamedValue[om:name/@xlink:href = $processParameterModel]
+            let $modelValueLink := common:if-empty($model/om:value, $model/om:value/@xlink:href)
+            
+            let $fileReference := $x/om:result/gml:File/gml:fileReference
+            
+            let $errorType := 
+              if($resultencodingValue = "external" and $resultformatValue = "esri-shp") then "ERROR" 
+              else if($resultencodingValue = "external" and $resultformatValue != "esri-shp") then "BLOCKER"
+            
             let $ok := ($resultencodingValue = "external" and $resultformatValue != "" and $modelProjectionValue != "")
             
             where not($ok) and $resultencodingValue = "external"
             return
                 <tr>
                     <td title="gml:id">{data($x/@gml:id)}</td>
-                    <td title="modelparameter/projection">{$modelProjectionValue}</td>
+                    <td title="model local id">{$modelValueLink}</td>
+                    <td title="projection">{$modelProjectionValue}</td>
                     <td title="resultencoding">{$resultencodingValue}</td>
                     <td title="resultformat">{$resultformatValue}</td>
+                    <td title="gml:fileReference">{$fileReference}</td>
+                    <td title="error type">{$errorType}</td>
                 </tr>
         } catch * {
             <tr class="{$errors:FAILED}">
@@ -1482,7 +1495,6 @@ let $ms2Eb14b := prof:current-ms()
             </tr>
         }
 
-    
     let $ms2Eb44 := prof:current-ms()
     
     
