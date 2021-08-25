@@ -1375,6 +1375,69 @@ let $ms2Eb14b := prof:current-ms()
     let $ms2Eb42 := prof:current-ms()
     
     
+    (: Eb43 - When results are provided via an external file and the external file is ESRI shapefile, it must include the *.prj file
+      IF resultencoding = external resultformat, AND resultformat = esri-shp, THEN the external results provided must include the correct projection file.
+
+      [Example: if results provided via gml:fileReference (http://cdr.eionet.europa.eu/es/eu/aqd/e1b/envxta1qq/ES_CIEMAT_O3_V_TV_AOT40c-5yr_2018.shp), 
+      the  same envelope must include file ES_CIEMAT_O3_V_TV_AOT40c-5yr_2018.prj] :)
+    
+    let $ms1Eb43 := prof:current-ms()
+    
+    let $Eb43invalid :=
+         try {
+          let $processParameterResultencoding := $vocabulary:PROCESS_PARAMETER || "resultencoding"
+          let $processParameterResultformat := $vocabulary:PROCESS_PARAMETER || "resultformat"
+          let $processParameterModel := $vocabulary:PROCESS_PARAMETER || "model"
+          
+          let $xmlName := tokenize($source_url , "/")[last()]
+          let $envelopexml := substring-before($source_url, $xmlName) || "xml"
+          let $docEnvelopexml := doc($envelopexml)
+          
+          for $x in $docRoot//om:OM_Observation
+            let $fileReference := $x/om:result/gml:File/gml:fileReference
+            
+            let $fileReferenceWithoutFormat := 
+              (if (contains($fileReference, ".shp") = true() ) then 
+                substring-before($fileReference, ".shp"))
+          
+            let $prjLink := 
+              ( 
+                for $y in $docEnvelopexml/envelope/file
+                  where(contains($y/@link, $fileReferenceWithoutFormat || ".prj") = true() ) 
+                  return data($y/@link)
+              )
+            
+            let $resultEncoding := $x/om:parameter/om:NamedValue[om:name/@xlink:href = $processParameterResultencoding]
+            let $resultencodingValue := tokenize(common:if-empty($resultEncoding/om:value, $resultEncoding/om:value/@xlink:href), "/")[last()]
+            
+            let $resultFormat := $x/om:parameter/om:NamedValue[om:name/@xlink:href = $processParameterResultformat]
+            let $resultformatValue := tokenize(common:if-empty($resultFormat/om:value, $resultFormat/om:value/@xlink:href), "/")[last()]
+            
+            let $model := $x/om:parameter/om:NamedValue[om:name/@xlink:href = $processParameterModel]
+            let $modelValueLink := common:if-empty($model/om:value, $model/om:value/@xlink:href)
+            
+            let $ok := ($fileReference and $fileReference != "" and $resultencodingValue = "external" and $resultformatValue != "" and $resultformatValue = "esri-shp" and $prjLink != "")
+            
+            where not($ok) and $resultencodingValue = "external" 
+            return
+                <tr>
+                    <td title="gml:id">{data($x/@gml:id)}</td>
+                    <td title="model local id">{$modelValueLink}</td>
+                    <td title="gml:fileReference">{$fileReference}</td>
+                    <td title="resultencoding">{$resultencodingValue}</td>
+                    <td title="resultformat">{$resultformatValue}</td>
+                    <td title="*.prj file">{$prjLink}</td>
+                </tr>
+        } catch * {
+            <tr class="{$errors:FAILED}">
+                <td title="Error code">{$err:code}</td>
+                <td title="Error description">{$err:description}</td>
+            </tr>
+        }
+
+    let $ms2Eb43 := prof:current-ms()
+    
+    
     (: Eb44 - When results are provided via an external file, the XML must include an om:parameter including the modelprojection via EEA vocabulary
             IF resultencoding = external resultformat, the XML must include an om:parameter with modelprojection
             <om:parameter>
@@ -1472,6 +1535,7 @@ let $ms2Eb14b := prof:current-ms()
             {html:build2("Eb40", $labels:Eb40, $labels:Eb40_SHORT, $Eb40invalid, "All records are valid", "record", $errors:Eb40)}
             {html:build2("Eb41", $labels:Eb41, $labels:Eb41_SHORT, $Eb41invalid, "All records are valid", "record", $errors:Eb41)}
             {html:build2("Eb42", $labels:Eb42, $labels:Eb42_SHORT, $Eb42invalid, "All records are valid", "record", $errors:Eb42)}
+            {html:build2("Eb43", $labels:Eb43, $labels:Eb43_SHORT, $Eb43invalid, "All records are valid", "record", $errors:Eb43)}
             {html:build2("Eb44", $labels:Eb44, $labels:Eb44_SHORT, $Eb44invalid, "All records are valid", "record", $errors:Eb44)}
         </table>
     <table>
@@ -1529,6 +1593,7 @@ let $ms2Eb14b := prof:current-ms()
        {common:runtime("Eb40",  $ms1Eb40, $ms2Eb40)}
        {common:runtime("Eb41",  $ms1Eb41, $ms2Eb41)}
        {common:runtime("Eb42",  $ms1Eb42, $ms2Eb42)}
+       {common:runtime("Eb43",  $ms1Eb43, $ms2Eb43)}
        {common:runtime("Eb44",  $ms1Eb44, $ms2Eb44)}
        {common:runtime("Total time",  $ms1Total, $ms2Total)}
     </table>
