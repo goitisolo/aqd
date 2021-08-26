@@ -1496,6 +1496,31 @@ let $ms2Eb14b := prof:current-ms()
             </tr>
         }
 
+    let $Eb44ErrorTypeWorkflow := 
+          let $processParameterResultencoding := $vocabulary:PROCESS_PARAMETER || "resultencoding"
+          let $processParameterResultformat := $vocabulary:PROCESS_PARAMETER || "resultformat"
+          
+          for $x in $docRoot//om:OM_Observation
+            let $resultEncoding := $x/om:parameter/om:NamedValue[om:name/@xlink:href = $processParameterResultencoding]
+            let $resultencodingValue := tokenize(common:if-empty($resultEncoding/om:value, $resultEncoding/om:value/@xlink:href), "/")[last()]
+            
+            let $resultFormat := $x/om:parameter/om:NamedValue[om:name/@xlink:href = $processParameterResultformat]
+            let $resultformatValue := tokenize(common:if-empty($resultFormat/om:value, $resultFormat/om:value/@xlink:href), "/")[last()]
+
+            return  
+              if($resultencodingValue = "external" and $resultformatValue = "esri-shp") then $errors:ERROR 
+              else 
+                if($resultencodingValue = "external" and $resultformatValue != "esri-shp") then $errors:BLOCKER 
+                else $errors:Eb44
+    
+    let $Eb44maxErrorLevel := (if ($Eb44ErrorTypeWorkflow = $errors:BLOCKER)
+                            then( $errors:BLOCKER )
+                            else(if ($Eb44ErrorTypeWorkflow = $errors:ERROR)
+                                then( $errors:ERROR )
+                                else( $errors:INFO )
+                                )
+                        )
+    
     let $ms2Eb44 := prof:current-ms()
     
     
@@ -1549,7 +1574,7 @@ let $ms2Eb14b := prof:current-ms()
             {html:build2("Eb41", $labels:Eb41, $labels:Eb41_SHORT, $Eb41invalid, "All records are valid", "record", $errors:Eb41)}
             {html:build2("Eb42", $labels:Eb42, $labels:Eb42_SHORT, $Eb42invalid, "All records are valid", "record", $errors:Eb42)}
             {html:build2("Eb43", $labels:Eb43, $labels:Eb43_SHORT, $Eb43invalid, "All records are valid", "record", $errors:Eb43)}
-            {html:build2("Eb44", $labels:Eb44, $labels:Eb44_SHORT, $Eb44invalid, "All records are valid", "record", $errors:Eb44)}
+            {html:build2("Eb44", $labels:Eb44, $labels:Eb44_SHORT, $Eb44invalid, "All records are valid", "record", $Eb44maxErrorLevel)}
         </table>
     <table>
     <br/>
