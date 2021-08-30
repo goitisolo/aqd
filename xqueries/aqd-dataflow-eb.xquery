@@ -1353,24 +1353,40 @@ let $ms2Eb14b := prof:current-ms()
     
     let $ms1Eb42 := prof:current-ms()
     
-    let $Eb42invalid :=
+    let $Eb42invalid :=    
         try {
-            (let $regex := functx:escape-for-regex($cdrUrl || "e1b") || ".+\.[a-z]{3,3}#.*"
+          (        
+            let $processParameterModel := $vocabulary:PROCESS_PARAMETER || "model"
+            
+            let $envelopeUrl := common:getCleanUrl($source_url)
+            let $xmlName := tokenize($envelopeUrl , "/")[last()]
+            let $currentEnvelope := substring-before($envelopeUrl, $xmlName)
+            
+            let $regex := functx:escape-for-regex($currentEnvelope) || ".+\.[a-z]{3,3}#.+"
+            
             for $x in $docRoot//om:OM_Observation/om:result[gml:File]
-            let $reference := $x/gml:File/gml:fileReference
-            where not(matches($reference, $regex))
-            return
-                <tr>
-                    <td title="@gml:id">{string($x/../@gml:id)}</td>
-                    <td title="gml:fileReference">{$reference => string()}</td>
-                </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
+              let $reference := $x/gml:File/gml:fileReference
+              let $referenceHTTPS := replace($reference, "http://", "https://")
+              let $referenceHTTP := replace($reference, "https://", "http://")
+              
+              let $model := $x/../om:parameter/om:NamedValue[om:name/@xlink:href = $processParameterModel]
+              let $modelValueLink := common:if-empty($model/om:value, $model/om:value/@xlink:href)
+              
+              let $ok := ( matches($reference, $regex) or matches($referenceHTTPS, $regex) or matches($referenceHTTP, $regex) )
+              
+              where not($ok)
+              return
+                  <tr>
+                      <td title="@gml:id">{string($x/../@gml:id)}</td>
+                      <td title="model local id">{$modelValueLink}</td>
+                      <td title="gml:fileReference">{$reference => string()}</td>
+                  </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
         } catch * {
             <tr class="{$errors:FAILED}">
                 <td title="Error code">{$err:code}</td>
                 <td title="Error description">{$err:description}</td>
             </tr>
         }
-
     
     let $ms2Eb42 := prof:current-ms()
     
