@@ -1402,9 +1402,11 @@ let $ms2Eb14b := prof:current-ms()
           
             let $prjLink := 
               ( 
-                let $fileReferenceWithoutFormatHTTPS := replace($fileReferenceWithoutFormat, "http", "https")
+                let $fileReferenceWithoutFormatHTTPS := replace($fileReferenceWithoutFormat, "http://", "https://")
+                let $fileReferenceWithoutFormatHTTP := replace($fileReferenceWithoutFormat, "https://", "http://")
+                
                 for $y in $docEnvelopexml/envelope/file
-                  where(contains($y/@link, $fileReferenceWithoutFormat || ".prj") = true() or contains($y/@link, $fileReferenceWithoutFormatHTTPS || ".prj") = true() ) 
+                  where(contains($y/@link, $fileReferenceWithoutFormat || ".prj") = true() or contains($y/@link, $fileReferenceWithoutFormatHTTPS || ".prj") = true() or contains($y/@link, $fileReferenceWithoutFormatHTTP || ".prj") = true() ) 
                   return data($y/@link)
               )
             
