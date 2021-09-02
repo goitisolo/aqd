@@ -1131,7 +1131,7 @@ let $ms2C29 := prof:current-ms()
 (: C28 If ./aqd:zone xlink:href shall be current, then ./AQD_zone/aqd:operationActivityPeriod/gml:endPosition shall be equal to “9999-12-31 23:59:59Z” or nulled (blank)  :)
 
 let $ms1C28 := prof:current-ms()
-
+(: original
 let $C28invalid :=
     try {
         for $zone in $docRoot//aqd:zone[@xlink:href = '.']/aqd:AQD_Zone
@@ -1142,6 +1142,63 @@ let $C28invalid :=
                 <td title="aqd:AQD_AssessmentRegime/aqd:inspireId/base:Identifier/base:localId">{data($zone/../../aqd:inspireId/base:Identifier/base:localId)}</td>
                 <td title="aqd:AQD_Zone/am:inspireId/base:Identifier/base:localId">{data($zone/am:inspireId/base:Identifier/base:localId)}</td>
                 {html:getErrorTD(data($endPosition), "gml:endPosition", fn:true())}
+
+            </tr>
+    } catch * {
+        <tr class="{$errors:FAILED}">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
+:)
+let $C28invalid :=
+    try {
+        (: read the begin and end positions from the file of data flow C :)
+        let $beginAndEndPositionC := 
+          for $timePeriod in $docRoot//gml:featureMember/aqd:AQD_ReportingHeader/aqd:reportingPeriod/gml:TimePeriod
+            let $beginPosition := normalize-space($timePeriod/gml:beginPosition)
+            let $endPosition := normalize-space($timePeriod/gml:endPosition)
+            return
+            <result>
+              <beginPosition>{$beginPosition}</beginPosition>
+              <endPosition>{$endPosition}</endPosition>
+            </result> 
+        
+        (: find the corresponding file of data flow B, ie latest file from the same reporting year :)
+        let $openLatestEnvelopeBperYear := (:doc($latestEnvelopeBperYear):) doc("https://cdr.eionet.europa.eu/no/eu/aqd/b/envx2sqxa/B_Zones_2019.xml")
+        
+        (: in that file of data flow B, find zone using the identifier linked by xlink:href= :)
+        for $x in $docRoot//gml:featureMember/aqd:AQD_AssessmentRegime
+          let $zoneC := data(tokenize(normalize-space($x/aqd:zone/@xlink:href), "/")[last()])
+          let $baseLocalId := $x/aqd:inspireId/base:Identifier/base:localId
+                   
+          for $aqdZoneB in $openLatestEnvelopeBperYear//gml:featureMember/aqd:AQD_Zone[@gml:id = $zoneC]
+            (:let $zoneB := data($aqdZoneB/aqd:AQD_Zone/@gml:id):)
+            (: find begin and end position of that zone :)
+            let $beginPositionZoneB := normalize-space($aqdZoneB/am:designationPeriod/gml:TimePeriod/gml:beginPosition)
+            let $endPositionZoneB := normalize-space($aqdZoneB/am:designationPeriod/gml:TimePeriod/gml:endPosition)
+            let $endPositionZoneBIndet := data(normalize-space($aqdZoneB/am:designationPeriod/gml:TimePeriod/gml:endPosition/@indeterminatePosition))
+            
+            (: compare with the begin and end position from reporting header of data flow C :)
+            let $ok := 
+              if( $endPositionZoneB != "" and $endPositionZoneB > $beginAndEndPositionC/beginPosition ) then 
+                true()
+              else
+                if( data($endPositionZoneBIndet) = "unknown" and $beginPositionZoneB < $beginAndEndPositionC/beginPosition ) then
+                  true() 
+                else 
+                  false()
+        
+        where not($ok) (:where 1=1 test:)
+        return
+            <tr>
+                <td title="$beginPosition C">{$beginAndEndPositionC/beginPosition}</td>
+                <td title="$endPosition C">{$beginAndEndPositionC/endPosition}</td>
+                <td title="$latestEnvelopeBperYear">{$latestEnvelopeBperYear}</td>
+                <td title="$baseLocalId">{$baseLocalId}</td>
+                <td title="$aqdZoneC">{$zoneC}</td>
+                <td title="beginPositionZoneB">{$beginPositionZoneB}</td>
+                <td title="endPositionZoneB">{$endPositionZoneB}</td>
 
             </tr>
     } catch * {
