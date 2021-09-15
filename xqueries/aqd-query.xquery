@@ -737,6 +737,48 @@ declare function query:existsViaNameLocalIdYearGeneralWithoutYearFilter(
     }" 
 };
 
+
+(:for C28 function:)
+declare function query:getZonesDates(
+   
+    $cdrUrl as xs:string
+   
+    ) as xs:string {
+
+"   PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
+    PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+    PREFIX aq: <http://reference.eionet.europa.eu/aq/ontology/>
+    PREFIX dcterms: <http://purl.org/dc/terms/>
+    PREfIX contreg: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
+
+   SELECT  
+    ?beginPosition   
+    ?zoneURI
+    ?label
+
+    
+
+    WHERE {
+    values ?envelope { <" || $cdrUrl || "> }
+
+    ?graph dcterms:isPartOf ?envelope .
+    ?graph contreg:xmlSchema ?xmlSchema .
+    
+    GRAPH ?graph {
+      ?zoneURI a aqd:AQD_Zone;
+       aqd:zoneCode ?Zone;
+       aqd:pollutants ?polltargetURI;
+       aqd:inspireId ?inspireId;
+
+       aqd:designationPeriod ?designationPeriod .
+       ?designationPeriod aqd:beginPosition ?beginPosition .       
+       ?designationPeriod rdfs:label ?label.
+    }  
+     
+}"
+};
+
 (: Checks if X references an existing Y via namespace/localid and reporting year :)
 (: declare function query:existsViaNameLocalIdYearI11(
     $label as xs:string,
