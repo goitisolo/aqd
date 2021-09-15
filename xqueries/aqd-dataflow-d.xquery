@@ -136,13 +136,13 @@ let $VOCABinvalid := checks:vocab($docRoot)
 
 let $ns2DVOCAB := prof:current-ms()
 
-(:VOCABALL check @goititer:)
+(:VOCABALL check @goititer
 
 let $ms1CVOCABALL := prof:current-ms()
 
 let $VOCABALLinvalid := checks:vocaball($docRoot)
 
-let $ms2CVOCABALL := prof:current-ms()
+let $ms2CVOCABALL := prof:current-ms():)
 
 (: D0 :)
 
@@ -2003,12 +2003,14 @@ let $D44invalid :=
                     data($z/ef:inspireId/base:Identifier/base:localId))
             return $id
         
-        for $x in $docRoot//aqd:AQD_SamplingPoint/ef:belongsTo
-        where empty(index-of($aqdNetworkLocal, fn:normalize-space($x/@xlink:href)))
+        for $x in $docRoot//aqd:AQD_SamplingPoint
+
+        let $el :=$x/ef:belongsTo
+        where empty(index-of($aqdNetworkLocal, fn:normalize-space($el/@xlink:href))) or not(exists($el))
         return
             <tr>
-                <td title="aqd:AQD_SamplingPoint">{data($x/../@gml:id)}</td>
-                <td title="ef:belongsTo">{data(fn:normalize-space($x/@xlink:href))}</td>
+                <td title="aqd:AQD_SamplingPoint">{data($x/@gml:id)}</td>
+                <td title="ef:belongsTo">{(fn:normalize-space($el/@xlink:href))}</td>
             </tr>
     }  catch * {
         <tr class="{$errors:FAILED}">
@@ -2025,31 +2027,7 @@ let $ns2D44 := prof:current-ms()
 
 let $ns1D45 := prof:current-ms()
 
-(:let $D45invalid :=
-    try {
-        let $allNotNullEndOperationActivityPeriods :=
-            for $allOperationActivityPeriod in $docRoot//aqd:AQD_SamplingPoint/ef:operationalActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod
-            where ($allOperationActivityPeriod/gml:endPosition[normalize-space(@indeterminatePosition) != "unknown"]
-                    or fn:string-length($allOperationActivityPeriod/gml:endPosition) > 0)
 
-            return $allOperationActivityPeriod
-
-        for $operationActivitPeriod in $allNotNullEndOperationActivityPeriods
-        where ((geox:parseDateTime($operationActivitPeriod/gml:endPosition) < geox:parseDateTime($operationActivitPeriod/gml:beginPosition)))
-        return
-            <tr>
-                <td title="aqd:AQD_Station">{data($operationActivitPeriod/../../../../@gml:id)}</td>
-                <td title="gml:TimePeriod">{data($operationActivitPeriod/@gml:id)}</td>
-                <td title="gml:beginPosition">{$operationActivitPeriod/gml:beginPosition}</td>
-                <td title="gml:endPosition">{$operationActivitPeriod/gml:endPosition}</td>
-            </tr>
-    }  catch * {
-        <tr class="{$errors:FAILED}">
-            <td title="Error code"> {$err:code}</td>
-            <td title="Error description">{$err:description}</td>
-            <td></td>
-        </tr>
-    }:)
 
     let $D45invalid :=
     try { (:original commented on 20210810:)
@@ -2096,7 +2074,8 @@ let $ns1D45 := prof:current-ms()
                     (: operationalActivityPeriod can be multiple: :)
                     for $x in $allSamplings/ef:operationalActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod
                       let $samplingBeginPos:=$x/gml:beginPosition
-                      let $samplingEndPos:=$x/gml:endPosition  
+                      let $samplingEndPos:=$x/gml:endPosition 
+                      (: let $endDate := substring(normalize-space($timePeriod/gml:endPosition), 1, 10):) 
                     
                     return                         
                         <result>
@@ -2118,18 +2097,22 @@ let $ns1D45 := prof:current-ms()
                         (: regex expression to compare the $stationBeginPos and $stationEndPos dates format with the ISO 8601 extended format: 
                         2014-01-01T00:00:00+01:00 | 2014-01-01T00:00:00Z | 2020-10-07T20:20:05Z | 2014-01-01T00:00:00-01:00 :)  
                         let $stationBeginPos :=
-                            if (matches($stationBeginPos0, "^\d\d\d\d-(0?[1-9]|1[0-2])-(0?[1-9]|[12][0-9]|3[01])T(00|0[0-9]|1[0-9]|2[0-4]):([0-9]|[0-5][0-9]):([0-9]|[0-5][0-9])((\+([0-9]|[0-5][0-9]):([0-9]|[0-5][0-9]))|(\-([0-9]|[0-5][0-9]):([0-9]|[0-5][0-9]))|(Z))$") ) then
+                            (:if (matches($stationBeginPos0, "^\d\d\d\d-(0?[1-9]|1[0-2])-(0?[1-9]|[12][0-9]|3[01])T(00|0[0-9]|1[0-9]|2[0-4]):([0-9]|[0-5][0-9]):([0-9]|[0-5][0-9])((\+([0-9]|[0-5][0-9]):([0-9]|[0-5][0-9]))|(\-([0-9]|[0-5][0-9]):([0-9]|[0-5][0-9]))|(Z))$") ) then:)
+                            if (matches($stationBeginPos0, "^\d\d\d\d-(0?[1-9]|1[0-2])-(0?[1-9]|[12][0-9]|3[01])T(00|0[0-9]|1[0-9]|2[0-4]):([0-9]|[0-5][0-9]):([0-9]|[0-5][0-9])(|(\+([0-9]|[0-5][0-9]):([0-9]|[0-5][0-9]))|(\-([0-9]|[0-5][0-9]):([0-9]|[0-5][0-9]))|(Z))$") ) then
+                          
                                 $stationBeginPos0
                             else
                               if($stationBeginPos0 != "") then 
                                 xs:dateTime(concat(xs:string($stationBeginPos0),"T00:00:00+01:00"))
+                              (:  xs:dateTime(xs:string($stationBeginPos0)):)
                                 
                         let $stationEndPos :=
-                            if (matches($stationEndPos0, "^\d\d\d\d-(0?[1-9]|1[0-2])-(0?[1-9]|[12][0-9]|3[01])T(00|0[0-9]|1[0-9]|2[0-4]):([0-9]|[0-5][0-9]):([0-9]|[0-5][0-9])((\+([0-9]|[0-5][0-9]):([0-9]|[0-5][0-9]))|(\-([0-9]|[0-5][0-9]):([0-9]|[0-5][0-9]))|(Z))$") ) then
+                            if (matches($stationEndPos0, "^\d\d\d\d-(0?[1-9]|1[0-2])-(0?[1-9]|[12][0-9]|3[01])T(00|0[0-9]|1[0-9]|2[0-4]):([0-9]|[0-5][0-9]):([0-9]|[0-5][0-9])(|(\+([0-9]|[0-5][0-9]):([0-9]|[0-5][0-9]))|(\-([0-9]|[0-5][0-9]):([0-9]|[0-5][0-9]))|(Z))$") ) then
                                 $stationEndPos0
                             else
                               if($stationEndPos0 != "") then
                                 xs:dateTime(concat(xs:string($stationEndPos0),"T00:00:00+01:00"))  
+                                (:xs:dateTime(xs:string($stationEndPos0)):)
                                                
                      return                         
                         <result>
@@ -2145,12 +2128,14 @@ let $ns1D45 := prof:current-ms()
           
           for $samp in $aqdSamplings
             for $stat in $aqdStations
+
+            
                        
                    where ( ($samp/broader!="")and ($samp/broader = data($stat/stationLocalId)))
   
                     return
                     
-                     if ( (($stat/stationBeginPos != "") and ($samp/samplingBeginPos != "") and ($samp/samplingBeginPos < $stat/stationBeginPos)) or 
+                    if ( (($stat/stationBeginPos != "") and ($samp/samplingBeginPos != "") and ($samp/samplingBeginPos < $stat/stationBeginPos)) or 
                         ($samp/samplingBeginPos="") or 
                         ($stat/stationBeginPos="") or 
                         (($stat/stationEndPos != "") and ($samp/samplingEndPos != "") and ($samp/samplingEndPos > $stat/stationEndPos) ) or
