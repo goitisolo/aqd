@@ -1165,40 +1165,62 @@ let $C28invalid :=
             </result> 
         
         (: find the corresponding file of data flow B, ie latest file from the same reporting year :)
-        let $openLatestEnvelopeBperYear := (:doc($latestEnvelopeBperYear):) doc("https://cdr.eionet.europa.eu/no/eu/aqd/b/envx2sqxa/B_Zones_2019.xml")
-        
+        let $openLatestEnvelopeBperYear := doc($latestEnvelopeBperYear)(: doc("https://cdr.eionet.europa.eu/be/eu/aqd/b/envx5hyg/BE_B_zones_2019.xml"):)
+        let $zonesB := sparqlx:run(query:getZonesDates($latestEnvelopeBperYear))
+
+
         (: in that file of data flow B, find zone using the identifier linked by xlink:href= :)
-        for $x in $docRoot//gml:featureMember/aqd:AQD_AssessmentRegime
-          let $zoneC := data(tokenize(normalize-space($x/aqd:zone/@xlink:href), "/")[last()])
+        for $x in $docRoot//gml:featureMember/aqd:AQD_AssessmentRegime 
+          let $zoneC := data(tokenize(normalize-space($x/aqd:zone/@xlink:href), "/")[last()]) (:BE.CELINE-IRCEL.AQ/ZON-BEB10A":)
           let $baseLocalId := $x/aqd:inspireId/base:Identifier/base:localId
                    
-          for $aqdZoneB in $openLatestEnvelopeBperYear//gml:featureMember/aqd:AQD_Zone[@gml:id = $zoneC]
+          for $aqdZoneB in $zonesB(:$openLatestEnvelopeBperYear//gml:featureMember/aqd:AQD_Zone[@gml:id = $zoneC]:)
             (:let $zoneB := data($aqdZoneB/aqd:AQD_Zone/@gml:id):)
             (: find begin and end position of that zone :)
-            let $beginPositionZoneB := normalize-space($aqdZoneB/am:designationPeriod/gml:TimePeriod/gml:beginPosition)
-            let $endPositionZoneB := normalize-space($aqdZoneB/am:designationPeriod/gml:TimePeriod/gml:endPosition)
-            let $endPositionZoneBIndet := data(normalize-space($aqdZoneB/am:designationPeriod/gml:TimePeriod/gml:endPosition/@indeterminatePosition))
+
+
+            where $zoneC = substring-after($aqdZoneB/sparql:binding[@name='zoneURI']/sparql:uri,'#')
             
-            (: compare with the begin and end position from reporting header of data flow C :)
+           (: let $beginPositionZoneB := normalize-space($aqdZoneB/am:designationPeriod/gml:TimePeriod/gml:beginPosition)
+            let $endPositionZoneB := normalize-space($aqdZoneB/am:designationPeriod/gml:TimePeriod/gml:endPosition)
+            let $endPositionZoneBIndet := data(normalize-space($aqdZoneB/am:designationPeriod/gml:TimePeriod/gml:endPosition/@indeterminatePosition)) :)
+
+            let $beginPositionZoneB :=$aqdZoneB/sparql:binding[@name='beginPosition']/sparql:literal (:normalize-space($aqdZoneB/am:designationPeriod/gml:TimePeriod/gml:beginPosition):)
+            let $labelZoneB :=normalize-space(substring-after($aqdZoneB/sparql:binding[@name='label']/sparql:literal,'to')) (: normalize-space($aqdZoneB/am:designationPeriod/gml:TimePeriod/gml:endPosition):)
+            let $localIdB := substring-after($aqdZoneB/sparql:binding[@name='zoneURI']/sparql:uri,'#')
+            
+
+            let $endPositionZoneB:=
+              if (contains($labelZoneB, "indefinite")) then
+                    ""
+                else
+                    $labelZoneB
+            (: compare with the begin and end position from reporting header of data flow C; he zone needs to be active during the whole period of the reporting year.:)
             let $ok := 
-              if( $endPositionZoneB != "" and $endPositionZoneB > $beginAndEndPositionC/beginPosition ) then 
+              if( $endPositionZoneB != "" and $beginPositionZoneB <= $beginAndEndPositionC/beginPosition and $endPositionZoneB >= $beginAndEndPositionC/endPosition) then 
                 true()
               else
-                if( data($endPositionZoneBIndet) = "unknown" and $beginPositionZoneB < $beginAndEndPositionC/beginPosition ) then
+                if( $endPositionZoneB = "" and $beginPositionZoneB <= $beginAndEndPositionC/beginPosition )then
                   true() 
                 else 
                   false()
         
-        where not($ok) (:where 1=1 test:)
+        where not($ok)  
         return
             <tr>
-                <td title="$beginPosition C">{$beginAndEndPositionC/beginPosition}</td>
-                <td title="$endPosition C">{$beginAndEndPositionC/endPosition}</td>
-                <td title="$latestEnvelopeBperYear">{$latestEnvelopeBperYear}</td>
-                <td title="$baseLocalId">{$baseLocalId}</td>
-                <td title="$aqdZoneC">{$zoneC}</td>
-                <td title="beginPositionZoneB">{$beginPositionZoneB}</td>
-                <td title="endPositionZoneB">{$endPositionZoneB}</td>
+               
+                
+                <td title="Base LocalId">{$baseLocalId}</td>               
+                <td title="ZoneB localId">{$localIdB}</td>
+                <td title="Period begin">{$beginAndEndPositionC/beginPosition}</td>
+                <td title="Period end">{$beginAndEndPositionC/endPosition}</td>
+                <td title="ZoneB begin position ">{$beginPositionZoneB}</td>
+                <td title="ZoneB end position ">{$labelZoneB}</td>            
+                
+               <!-- <td title="reportingYear">{$reportingYear}</td>
+                <td title="latestEnvelopeBperYear">{$latestEnvelopeBperYear}</td>
+                 <td title="$aqdZoneC">{$zoneC}</td>-->
+                
 
             </tr>
     } catch * {
