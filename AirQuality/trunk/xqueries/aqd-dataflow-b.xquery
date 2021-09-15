@@ -1822,7 +1822,7 @@ return
         {html:buildUnique("B10", $labels:B10, $labels:B10_SHORT, $B10table, "record", $errors:B10)}
         {html:build2("B10.1", $labels:B10.1, $labels:B10.1_SHORT, $B10.1invalid, "All values are valid", " invalid namespaces", $errors:B10.1)}
         {html:build2("B11", $labels:B11, $labels:B11_SHORT, $B11table, "", "record", $B11errorLevel)}
-        {html:build2("B11b", $labels:B11b, $labels:B11b_SHORT, $B11btable, "", "record", $B11berrorLevel)}
+        {html:build2("B11b", $labels:B11b, $labels:B11b_SHORT, $B11btable, "All values are valid", "record", $B11berrorLevel)}
         {html:build2("B12", $labels:B12, $labels:B12_SHORT, $B12table, "All values are valid", "record", $B12errorLevel)}
         {html:build2("B12b", $labels:B12b, $labels:B12b_SHORT, $B12btable, "All values are valid", "record", $B12berrorLevel)}
         {html:build2Sparql("B13", $labels:B13, $labels:B13_SHORT, $B13invalid, "All values are valid", " invalid value", $errors:B13)}
@@ -1883,6 +1883,7 @@ return
        {common:runtime("B10",  $ns1B10, $ns2B10)}
        {common:runtime("B10.1",  $ns1B10.1, $ns2B10.1)}
        {common:runtime("B11",  $ns1B11, $ns2B11)}
+       {common:runtime("B11b",  $ns1B11b, $ns2B11b)}
        {common:runtime("B12",  $ns1B12, $ns2B12)}
        {common:runtime("B12b",  $ns1B12b, $ns2B12b)}
        {common:runtime("B13",  $ns1B13, $ns2B13)}
