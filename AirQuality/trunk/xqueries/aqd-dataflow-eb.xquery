@@ -1405,8 +1405,12 @@ let $ms2Eb14b := prof:current-ms()
           let $processParameterResultformat := $vocabulary:PROCESS_PARAMETER || "resultformat"
           let $processParameterModel := $vocabulary:PROCESS_PARAMETER || "model"
           
-          let $xmlName := tokenize($source_url , "/")[last()]
+          (:let $xmlName := tokenize($source_url , "/")[last()]
           let $envelopexml := substring-before($source_url, $xmlName) || "xml"
+          let $docEnvelopexml := doc($envelopexml):)
+          let $envelopeUrl := common:getCleanUrl($source_url)
+          let $xmlName := tokenize($envelopeUrl , "/")[last()]
+          let $envelopexml := substring-before($envelopeUrl, $xmlName) || "xml"
           let $docEnvelopexml := doc($envelopexml)
           
           for $x in $docRoot//om:OM_Observation
@@ -1415,7 +1419,7 @@ let $ms2Eb14b := prof:current-ms()
             let $fileReferenceWithoutFormat := 
               (if (contains($fileReference, ".shp") = true() ) then 
                 substring-before($fileReference, ".shp"))
-          
+            
             let $prjLink := 
               ( 
                 let $fileReferenceWithoutFormatHTTPS := replace($fileReferenceWithoutFormat, "http://", "https://")
@@ -1437,7 +1441,7 @@ let $ms2Eb14b := prof:current-ms()
             
             let $ok := ($fileReference and $fileReference != "" and $resultencodingValue = "external" and $resultformatValue != "" and $resultformatValue = "esri-shp" and $prjLink != "")
             
-            where not($ok) and $resultencodingValue = "external" 
+            where not($ok) and $resultencodingValue = "external" and $resultformatValue = "esri-shp"
             return
                 <tr>
                     <td title="gml:id">{data($x/@gml:id)}</td>
