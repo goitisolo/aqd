@@ -2235,7 +2235,14 @@ let $D49invalid :=
             where not($x/@xlink:href = $validStationClass)
             return $x/@xlink:href || "##" || $x/../../../ef:inspireId/base:Identifier/base:localId|| "$$" || "aqd:stationClassification"
 
-        let $wrongUom:=
+
+        let $validUom := dd:getValidConcepts($vocabulary:UOM_LENGTH || "rdf")
+        let $wrongUomURL:=
+            for $x in $docRoot//aqd:relevantEmissions/aqd:RelevantEmissions/aqd:distanceSource
+            where not($x/@uom = $validUom)
+            return $x/@uom || "##" || $x/../../../ef:inspireId/base:Identifier/base:localId|| "$$" || "aqd:distanceSource"
+
+       (: let $wrongUom:=
             for $uom in $docRoot//aqd:relevantEmissions/aqd:RelevantEmissions/aqd:distanceSource
             let $status:=
             
@@ -2253,10 +2260,10 @@ let $D49invalid :=
                    0
                     )
                 where not ($status = 200)
-                return $uom/@uom || "##" || $uom/../../../ef:inspireId/base:Identifier/base:localId|| "$$" || "aqd:distanceSource"
+                return $uom/@uom || "##" || $uom/../../../ef:inspireId/base:Identifier/base:localId|| "$$" || "aqd:distanceSource":)
    
     
-     let $result:=($wrongEmissionURL,$wrongStationClassURL,$wrongUom)
+     let $result:=($wrongEmissionURL,$wrongStationClassURL,$wrongUomURL)
         
 
        
@@ -3253,7 +3260,7 @@ return
         {html:build2("D01", $labels:D01, $labels:D01_SHORT, $D01table, "All values are valid", "", errors:getMaxError($D01table))}
         
         
-       {html:buildSimpleSparql("D02", $labels:D02, $labels:D02_SHORT, $D02table, "", "feature type", $D02errorLevel)}
+      {html:buildSimpleSparql("D02", $labels:D02, $labels:D02_SHORT, $D02table, "", "feature type", $D02errorLevel)}
         {html:buildSimpleSparql("D03", $labels:D03, $labels:D03_SHORT, $D03table, $D3count, "feature type", $D03errorLevel)}
         {html:build2Sparql("D03b", $labels:D03b, $labels:D03b_SHORT, $D03binvalid, "All values are valid", "feature type", $errors:D03b)}
         {html:build1("D04", $labels:D04, $labels:D04_SHORT, $D04table, string(count($D04table)), "", "", "", $errors:D04)}
@@ -3365,7 +3372,7 @@ return
 
        {common:runtime("D0",  $ns1D0, $ns2D0)}
        {common:runtime("D01", $ns1D01, $ns2D01)}
-     {common:runtime("D02", $ns1D02, $ns2D02)}
+    {common:runtime("D02", $ns1D02, $ns2D02)}
        {common:runtime("D03", $ns1D03, $ns2D03)}
        {common:runtime("D03b", $ns1D03b, $ns2D03b)}
        {common:runtime("D04",  $ns1D04, $ns2D04)}
