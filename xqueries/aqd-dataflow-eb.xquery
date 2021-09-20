@@ -94,7 +94,7 @@ let $ms2GeneralParameters:= prof:current-ms()
 
 let $ms1CVOCABALL := prof:current-ms()
 
-let $VOCABALLinvalid := checks:vocaball($docRoot)
+(:let $VOCABALLinvalid := checks:vocaball($docRoot):)
 
 let $ms2CVOCABALL := prof:current-ms()
 
@@ -1419,7 +1419,7 @@ let $ms2Eb14b := prof:current-ms()
             let $fileReferenceWithoutFormat := 
               (if (contains($fileReference, ".shp") = true() ) then 
                 substring-before($fileReference, ".shp"))
-            
+          
             let $prjLink := 
               ( 
                 let $fileReferenceWithoutFormatHTTPS := replace($fileReferenceWithoutFormat, "http://", "https://")
@@ -1441,7 +1441,71 @@ let $ms2Eb14b := prof:current-ms()
             
             let $ok := ($fileReference and $fileReference != "" and $resultencodingValue = "external" and $resultformatValue != "" and $resultformatValue = "esri-shp" and $prjLink != "")
             
-            where not($ok) and $resultencodingValue = "external" and $resultformatValue = "esri-shp"
+            (: if the files are inside a zip: :)
+            let $fileReferenceWithoutFormatZip := 
+              (if (contains($fileReference, ".zip") = true() ) then 
+                substring-before($fileReference, ".zip"))
+                
+            let $zipContentUrl :=  
+              ( 
+                let $fileReferenceWithoutFormatHTTPS := replace($fileReferenceWithoutFormatZip, "http://", "https://")
+                let $fileReferenceWithoutFormatHTTP := replace($fileReferenceWithoutFormatZip, "https://", "http://")
+                
+                for $y in $docEnvelopexml/envelope/file
+                  where( $y/@type="application/zip" and (contains($y/@link, $fileReferenceWithoutFormatZip) = true() or contains($y/@link, $fileReferenceWithoutFormatHTTPS) = true() or contains($y/@link, $fileReferenceWithoutFormatHTTP) = true() ) )
+                  let $zipLink := data($y/@link)
+                  let $eionet := if (contains($zipLink, "https://cdrtest.eionet.europa.eu/"))
+                                 then "https://cdrtest.eionet.europa.eu/"
+                                 else if (contains($zipLink, "http://cdrtest.eionet.europa.eu/"))
+                                      then "http://cdrtest.eionet.europa.eu/"
+                                      else if (contains($zipLink, "https://cdr.eionet.europa.eu/"))
+                                           then "https://cdr.eionet.europa.eu/"
+                                           else if (contains($zipLink, "http://cdr.eionet.europa.eu/"))
+                                                then "http://cdr.eionet.europa.eu/"
+                  
+                  let $envelopeAndZipName := substring-after($zipLink, $eionet)
+                  
+                  let $zipContentUrl := $eionet || "Converters/run_conversion?file=" || $envelopeAndZipName || "&amp;conv=ziplist&amp;source=local"
+                  
+                  (: using http:request and http:send-request in order to access to the content of the ZIP files :)
+                  let $request := <http:request href="{$zipContentUrl}" method="GET"/> 
+                  let $response := http:send-request($request)[2] 
+                  let $html2xml := $response
+                  
+                  let $prjInZip := (
+                    if ( contains($html2xml, ".prj") ) then true()
+                    else false()
+                  )
+                  let $ok2 := ( 
+                    if($ok = true() ) then true()
+                    else
+                      $prjInZip
+                  )
+                  
+                  return 
+                    <result>
+                      <zipContentUrl>{$zipContentUrl}</zipContentUrl>
+                      <html2xml>{$html2xml}</html2xml>
+                      <prjInZip>{$prjInZip}</prjInZip>
+                      <ok2>{$ok2}</ok2>
+                    </result>
+              )
+            
+            (: start comparing envelope/xml file @link wih the xml <gml:fileReference> :)
+            let $comparingEnvelopexmlAndxml := ( 
+                let $fileReferenceWithoutFormatHTTPS := replace($fileReferenceWithoutFormatZip, "http://", "https://")
+                let $fileReferenceWithoutFormatHTTP := replace($fileReferenceWithoutFormatZip, "https://", "http://")
+                
+                for $y in $docEnvelopexml/envelope/file[@type="application/zip"]/@link
+                  let $comparingEnvelopexmlAndxml := if ( contains(substring-before($y, ".zip"), $fileReferenceWithoutFormatZip) = false() and contains(substring-before($y, ".zip"), $fileReferenceWithoutFormatHTTPS) = false() and contains(substring-before($y, ".zip"), $fileReferenceWithoutFormatHTTP) = false() ) 
+                                then false()
+                                else true()        
+                  return $comparingEnvelopexmlAndxml
+              )
+              let $countingComparingEnvelopexmlAndxml := if(count(index-of($comparingEnvelopexmlAndxml, true())) = 0) then false() else true()  
+             (: end comparing envelope/xml file @link wih the xml <gml:fileReference> :)
+            
+            where ( ($zipContentUrl/ok2 = false() and $resultencodingValue = "external" ) or (($ok = false() and $resultencodingValue = "external" and $resultformatValue = "esri-shp" and $countingComparingEnvelopexmlAndxml = false() )))
             return
                 <tr>
                     <td title="gml:id">{data($x/@gml:id)}</td>
