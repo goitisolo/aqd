@@ -1559,8 +1559,8 @@ let $ms2Eb14b := prof:current-ms()
             let $fileReference := $x/om:result/gml:File/gml:fileReference
             
             let $errorType := 
-              if($resultencodingValue = "external" and $resultformatValue = "esri-shp") then "ERROR" 
-              else if($resultencodingValue = "external" and $resultformatValue != "esri-shp") then "BLOCKER"
+              if($resultencodingValue = "external" and $resultformatValue = "esri-shp") then "Warning" 
+              else if($resultencodingValue = "external" and $resultformatValue != "esri-shp") then functx:capitalize-first($errors:Eb44)
             
             let $ok := ($resultencodingValue = "external" and $resultformatValue != "" and $modelProjectionValue != "")
             
@@ -1594,15 +1594,14 @@ let $ms2Eb14b := prof:current-ms()
             let $resultformatValue := tokenize(common:if-empty($resultFormat/om:value, $resultFormat/om:value/@xlink:href), "/")[last()]
 
             return  
-              if($resultencodingValue = "external" and $resultformatValue = "esri-shp") then $errors:ERROR 
+              if($resultencodingValue = "external" and $resultformatValue = "esri-shp") then $errors:WARNING
               else 
-                if($resultencodingValue = "external" and $resultformatValue != "esri-shp") then $errors:BLOCKER 
-                else $errors:Eb44
+                if($resultencodingValue = "external" and $resultformatValue != "esri-shp") then $errors:Eb44
     
-    let $Eb44maxErrorLevel := (if ($Eb44ErrorTypeWorkflow = $errors:BLOCKER)
-                            then( $errors:BLOCKER )
-                            else(if ($Eb44ErrorTypeWorkflow = $errors:ERROR)
-                                then( $errors:ERROR )
+    let $Eb44maxErrorLevel := (if ($Eb44ErrorTypeWorkflow = $errors:Eb44)
+                            then( $errors:Eb44 )
+                            else(if ($Eb44ErrorTypeWorkflow = $errors:WARNING)
+                                then( $errors:WARNING )
                                 else( $errors:INFO )
                                 )
                         )
