@@ -20,6 +20,7 @@ declare variable $vocabulary:AREA_CLASSIFICATION_VOCABULARY := "http://dd.eionet
 declare variable $vocabulary:ASSESSMENTTYPE_VOCABULARY as xs:string := "http://dd.eionet.europa.eu/vocabulary/aq/assessmenttype/";
 declare variable $vocabulary:STATION_CLASSIFICATION as xs:string := "https://dd.eionet.europa.eu/vocabulary/aq/stationclassification/";
 declare variable $vocabulary:EMISSION_SOURCE as xs:string := "https://dd.eionet.europa.eu/vocabulary/aq/emissionsource/";
+(:declare variable $vocabulary:EMISSION_SOURCE2 as xs:string := "https://dd.eionet.europa.eu/vocabulary/aq/emissionSource/";:)
 declare variable $vocabulary:BASE := "http://dd.eionet.europa.eu/vocabulary/aq/";
 declare variable $vocabulary:CURRENCIES as xs:string := "http://dd.eionet.europa.eu/vocabulary/common/currencies/";
 declare variable $vocabulary:DISPERSION_LOCAL_VOCABULARY := "http://dd.eionet.europa.eu/vocabulary/aq/dispersionlocal/";
