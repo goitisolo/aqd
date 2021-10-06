@@ -86,7 +86,7 @@ let $latestEnvelopeB := query:getLatestEnvelope($cdrUrl || "b/")
 let $latestEnvelopeD := query:getLatestEnvelope($cdrUrl || "d/")
 
 let $namespaces := distinct-values($docRoot//base:namespace)
-let $knownFeatures := distinct-values(data(sparqlx:run(query:getAllFeatureIds($dataflowD:FEATURE_TYPES, $latestEnvelopeD, $namespaces))//sparql:binding[@name='inspireLabel']/sparql:literal))
+(:let $knownFeatures := distinct-values(data(sparqlx:run(query:getAllFeatureIds($dataflowD:FEATURE_TYPES, $latestEnvelopeD, $namespaces))//sparql:binding[@name='inspireLabel']/sparql:literal)):)
 let $SPOnamespaces := distinct-values($docRoot//aqd:AQD_SamplingPoint//base:Identifier/base:namespace)
 let $SPPnamespaces := distinct-values($docRoot//aqd:AQD_SamplingPointProcess/ompr:inspireId/base:Identifier/base:namespace)
 let $networkNamespaces := distinct-values($docRoot//aqd:AQD_Network/ef:inspireId/base:Identifier/base:namespace)
@@ -219,7 +219,7 @@ let $D01table :=
 
 let $ns2D01 := prof:current-ms()
 
-(: D02 -:)
+(: D02 -
 
 let $ns1D02 := prof:current-ms()
 
@@ -354,7 +354,7 @@ let $D03bfunc := function() {
 }
 let $D03binvalid := errors:trycatch($D03bfunc)
 
-let $ns2D03b := prof:current-ms()
+let $ns2D03b := prof:current-ms():)
 
 (: D04 :)
 
@@ -2098,7 +2098,7 @@ let $ns1D45 := prof:current-ms()
                         2014-01-01T00:00:00+01:00 | 2014-01-01T00:00:00Z | 2020-10-07T20:20:05Z | 2014-01-01T00:00:00-01:00 :)  
                         let $stationBeginPos :=
                             (:if (matches($stationBeginPos0, "^\d\d\d\d-(0?[1-9]|1[0-2])-(0?[1-9]|[12][0-9]|3[01])T(00|0[0-9]|1[0-9]|2[0-4]):([0-9]|[0-5][0-9]):([0-9]|[0-5][0-9])((\+([0-9]|[0-5][0-9]):([0-9]|[0-5][0-9]))|(\-([0-9]|[0-5][0-9]):([0-9]|[0-5][0-9]))|(Z))$") ) then:)
-                            if (matches($stationBeginPos0, "^\d\d\d\d-(0?[1-9]|1[0-2])-(0?[1-9]|[12][0-9]|3[01])T(00|0[0-9]|1[0-9]|2[0-4]):([0-9]|[0-5][0-9]):([0-9]|[0-5][0-9])(|(\+([0-9]|[0-5][0-9]):([0-9]|[0-5][0-9]))|(\-([0-9]|[0-5][0-9]):([0-9]|[0-5][0-9]))|(Z))$") ) then
+                            if (matches($stationBeginPos0, "^\d\d\d\d-(0?[1-9]|1[0-2])-(0?[1-9]|[12][0-9]|3[01])T(00|0[0-9]|1[0-9]|2[0-4]):([0-9]|[0-5][0-9]):([0-9]|[0-5][0-9]|[0-9]\.[0-9]{1,3}|[0-5][0-9]\.[0-9]{1,3})(|(\+([0-9]|[0-5][0-9]):([0-9]|[0-5][0-9]))|(\-([0-9]|[0-5][0-9]):([0-9]|[0-5][0-9]))|(Z))$") ) then
                           
                                 $stationBeginPos0
                             else
@@ -2107,7 +2107,7 @@ let $ns1D45 := prof:current-ms()
                               (:  xs:dateTime(xs:string($stationBeginPos0)):)
                                 
                         let $stationEndPos :=
-                            if (matches($stationEndPos0, "^\d\d\d\d-(0?[1-9]|1[0-2])-(0?[1-9]|[12][0-9]|3[01])T(00|0[0-9]|1[0-9]|2[0-4]):([0-9]|[0-5][0-9]):([0-9]|[0-5][0-9])(|(\+([0-9]|[0-5][0-9]):([0-9]|[0-5][0-9]))|(\-([0-9]|[0-5][0-9]):([0-9]|[0-5][0-9]))|(Z))$") ) then
+                            if (matches($stationEndPos0, "^\d\d\d\d-(0?[1-9]|1[0-2])-(0?[1-9]|[12][0-9]|3[01])T(00|0[0-9]|1[0-9]|2[0-4]):([0-9]|[0-5][0-9]):([0-9]|[0-5][0-9]|[0-9]\.[0-9]{1,3}|[0-5][0-9]\.[0-9]{1,3})(|(\+([0-9]|[0-5][0-9]):([0-9]|[0-5][0-9]))|(\-([0-9]|[0-5][0-9]):([0-9]|[0-5][0-9]))|(Z))$") ) then
                                 $stationEndPos0
                             else
                               if($stationEndPos0 != "") then
@@ -2223,13 +2223,15 @@ let $ns1D49 := prof:current-ms()
 
 let $D49invalid :=
     try {
-        let $validEmission := dd:getValidConcepts($vocabulary:EMISSION_SOURCE || "rdf")
+        let $validEmission1 := dd:getValidConcepts($vocabulary:EMISSION_SOURCE || "rdf")
+        (:let $validEmission2 := dd:getValidConcepts($vocabulary:EMISSION_SOURCE2 || "rdf")
+        let $validEmission := ($validEmission1, $validEmission2):)
         let $wrongEmissionURL:=
             for $x in $docRoot//aqd:relevantEmissions/aqd:RelevantEmissions/aqd:mainEmissionSources
-            where not($x/@xlink:href = $validEmission)
+            where not($x/@xlink:href = $validEmission1)
             return $x/@xlink:href || "##" || $x/../../../ef:inspireId/base:Identifier/base:localId || "$$" || "aqd:mainEmissionSources"
 
-        let $validStationClass := dd:getValidConcepts($vocabulary:STATION_CLASSIFICATION || "rdf")
+       let $validStationClass := dd:getValidConcepts($vocabulary:STATION_CLASSIFICATION || "rdf")
         let $wrongStationClassURL:=
             for $x in $docRoot//aqd:relevantEmissions/aqd:RelevantEmissions/aqd:stationClassification 
             where not($x/@xlink:href = $validStationClass)
@@ -2280,6 +2282,33 @@ let $D49invalid :=
                 <td title="failing element">{substring-after($x, '$$')}</td>
                  
             </tr>
+          (:  return
+            <tr>
+                <td title="validEmission">
+                    {$validEmission}
+                </td>
+            <td title="$x/@xlink:href = $validEmission">
+                    {$x/@xlink:href = $validEmission}
+                </td>
+                <td title="data $x/@xlink:href = $validEmission">
+                    {data($x/@xlink:href) = $validEmission}
+                </td>
+                <td title="$x/@xlink:href">
+                    {$x/@xlink:href}
+                </td>
+<td title="data $x/@xlink:href">
+                    {data($x/@xlink:href)}
+                </td>
+
+                
+<td title="indexof($validEmission, data($x/@xlink:href))">
+                    {index-of($validEmission, data($x/@xlink:href))}
+                </td>
+
+                
+
+              
+            </tr>:)
     }  catch * {
         <tr class="{$errors:FAILED}">
             <td title="Error code"> {$err:code}</td>
@@ -3246,6 +3275,92 @@ let $D94invalid :=
 
 let $ns2D94 := prof:current-ms()
 let $ms2Total := prof:current-ms()
+
+(: D96 - Sampling point should belong to the same station as previous deliveries :)
+
+let $ns1D96 := prof:current-ms()
+
+let $D96invalid :=
+   
+    try {
+       
+        let $historicSP := sparqlx:run(query:getSamplingNetworkLatAndLong($latestEnvelopeD))
+        (:let $historicSPLocalId := data(sparqlx:run(query:getSamplingNetworkLatAndLong($latestEnvelopeD))/sparql:binding[@name = 'localId']/sparql:literal)
+        let $historicSPStation := data(sparqlx:run(query:getSamplingNetworkLatAndLong($latestEnvelopeD))/sparql:binding[@name = 'broader']/sparql:uri):)
+            
+      (:  let $samplingDataDoc:=:)
+            for $x in $docRoot//aqd:AQD_SamplingPoint
+                for $y in $historicSP
+                    where ((data($x/@gml:id)= data($y/sparql:binding[@name = 'localId']/sparql:literal)) and not(functx:substring-after-last($x/ef:broader/@xlink:href, '/')=functx:substring-after-last(data($y/sparql:binding[@name = 'broader']/sparql:uri), '/')))
+            
+        return
+            <tr>
+                <td title="Local ID">{data($x/@gml:id)}</td>
+                <!--<td title="Previous Local ID">{data($y/sparql:binding[@name = 'localId']/sparql:literal)}</td>-->
+                <td title="Current station">{data($x/ef:broader/@xlink:href)}</td>
+                <td title="Previous station">{data($y/sparql:binding[@name = 'broader']/sparql:uri)}</td>
+                <td title="Sparql">{sparqlx:getLink(query:getSamplingNetworkLatAndLong($latestEnvelopeD))}</td>
+            </tr>
+
+    } catch * {
+        <tr class="{$errors:FAILED}">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
+
+let $ns2D96 := prof:current-ms()
+
+(: D97 - Sampling point should have same lat & long as previous deliveries :)
+
+let $ns1D97 := prof:current-ms()
+
+let $D97invalid :=
+   
+    try {
+       
+        let $historicSP := sparqlx:run(query:getSamplingNetworkLatAndLong($latestEnvelopeD))
+        (:let $historicSPLocalId := data(sparqlx:run(query:getSamplingNetworkLatAndLong($latestEnvelopeD))/sparql:binding[@name = 'localId']/sparql:literal)
+        let $historicSPStation := data(sparqlx:run(query:getSamplingNetworkLatAndLong($latestEnvelopeD))/sparql:binding[@name = 'broader']/sparql:uri):)
+            
+      (:  let $samplingDataDoc:=:)
+            for $x in $docRoot//aqd:AQD_SamplingPoint
+            let $latLong:= $x/ef:geometry/gml:Point/gml:pos
+            if ($x/@srsDimension="2") then
+                let $lat:=substring-before($latLong,"")
+                let $Long:=substring-after($latLong,"")
+                else if ($x/@srsDimension="1") then 
+                    let $lat:=$latLong
+                    let $long:=""
+                        else
+                            let $lat:=""
+                            let $long:=""
+                for $y in $historicSP
+                    where ((data($x/@gml:id)= data($y/sparql:binding[@name = 'localId']/sparql:literal)) and (not($lat=(data($y/sparql:binding[@name = 'lat']/sparql:literal)))or not($long=(data($y/sparql:binding[@name = 'long']/sparql:literal))))
+            
+        return
+            <tr>
+                <td title="Local ID">{data($x/@gml:id)}</td>
+                <!--<td title="Previous Local ID">{data($y/sparql:binding[@name = 'localId']/sparql:literal)}</td>-->
+                <td title="Current lat">{$lat}</td>
+                <td title="Previous lat">{data($y/sparql:binding[@name = 'lat']/sparql:literal)}</td>
+                 <td title="Current long">{$long}</td>
+                <td title="Previous long">{data($y/sparql:binding[@name = 'long']/sparql:literal)}</td>
+                <td title="Sparql">{sparqlx:getLink(query:getSamplingNetworkLatAndLong($latestEnvelopeD))}</td>
+            </tr>
+
+    } catch * {
+        <tr class="{$errors:FAILED}">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
+
+let $ns2D97 := prof:current-ms()
+
+let $ms2Total := prof:current-ms()
+
+
 return
     <table class="maintable hover">
     <table>
@@ -3260,9 +3375,9 @@ return
         {html:build2("D01", $labels:D01, $labels:D01_SHORT, $D01table, "All values are valid", "", errors:getMaxError($D01table))}
         
         
-      {html:buildSimpleSparql("D02", $labels:D02, $labels:D02_SHORT, $D02table, "", "feature type", $D02errorLevel)}
+      <!--{html:buildSimpleSparql("D02", $labels:D02, $labels:D02_SHORT, $D02table, "", "feature type", $D02errorLevel)}
         {html:buildSimpleSparql("D03", $labels:D03, $labels:D03_SHORT, $D03table, $D3count, "feature type", $D03errorLevel)}
-        {html:build2Sparql("D03b", $labels:D03b, $labels:D03b_SHORT, $D03binvalid, "All values are valid", "feature type", $errors:D03b)}
+        {html:build2Sparql("D03b", $labels:D03b, $labels:D03b_SHORT, $D03binvalid, "All values are valid", "feature type", $errors:D03b)}-->
         {html:build1("D04", $labels:D04, $labels:D04_SHORT, $D04table, string(count($D04table)), "", "", "", $errors:D04)}
         {html:build2("D05", $labels:D05, $labels:D05_SHORT, $D05invalid, "All values are valid", "record", $errors:D05)}
         {html:buildInfoTR("Specific checks on AQD_Network feature(s) within this XML")}
@@ -3354,6 +3469,8 @@ return
         {html:build2("D92", $labels:D92, $labels:D92_SHORT, $D92invalid, "All values are valid"," invalid attribute", $errors:D92)}
         {html:build2("D93", $labels:D93, $labels:D93_SHORT, $D93invalid, "All values are valid"," invalid attribute", $errors:D93)}
         {html:build2("D94", $labels:D94, $labels:D94_SHORT, $D94invalid, "All values are valid"," invalid attribute", $errors:D94)}
+        {html:build2Sparql("D96", $labels:D96, $labels:D96_SHORT, $D96invalid, "All values are valid"," invalid", $errors:D96)}
+        {html:build2Sparql("D97", $labels:D97, $labels:D97_SHORT, $D97invalid, "All values are valid"," invalid", $errors:D97)}
     </table>     
     <table>
     <br/>
@@ -3372,9 +3489,9 @@ return
 
        {common:runtime("D0",  $ns1D0, $ns2D0)}
        {common:runtime("D01", $ns1D01, $ns2D01)}
-    {common:runtime("D02", $ns1D02, $ns2D02)}
+    <!--{common:runtime("D02", $ns1D02, $ns2D02)}
        {common:runtime("D03", $ns1D03, $ns2D03)}
-       {common:runtime("D03b", $ns1D03b, $ns2D03b)}
+       {common:runtime("D03b", $ns1D03b, $ns2D03b)}-->
        {common:runtime("D04",  $ns1D04, $ns2D04)}
        {common:runtime("D05", $ns1D05, $ns2D05)}
        {common:runtime("D06",  $ns1D06, $ns2D06)}
@@ -3457,6 +3574,8 @@ return
        {common:runtime("D92",  $ns1D92, $ns2D92)}
        {common:runtime("D93",  $ns1D93, $ns2D93)}
        {common:runtime("D94",  $ns1D94, $ns2D94)}
+       {common:runtime("D96",  $ns1D96, $ns2D96)}
+       {common:runtime("D97",  $ns1D97, $ns2D97)}
 
        {common:runtime("Total time",  $ms1Total, $ms2Total)}
     </table>
