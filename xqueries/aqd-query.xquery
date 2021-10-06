@@ -4022,7 +4022,7 @@ PREFIX dcterms: <http://purl.org/dc/terms/>
 PREfIX contreg: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
 PREfIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
 
-SELECT ?lat ?long ?broader ?inspireLabel ?localId
+SELECT DISTINCT ?lat ?long ?broader ?inspireLabel ?localId
   WHERE {
    
     values ?envelope {<"||$cdrUrl||">}
