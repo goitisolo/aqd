@@ -182,13 +182,13 @@ let $VOCABinvalid := checks:vocab($docRoot)
 
 let $ns2DVOCAB := prof:current-ms()
 
-(:VOCABALL check @goititer:)
+(:VOCABALL check @goititer
 
 let $ms1CVOCABALL := prof:current-ms()
 
 let $VOCABALLinvalid := checks:vocaball($docRoot)
 
-let $ms2CVOCABALL := prof:current-ms()
+let $ms2CVOCABALL := prof:current-ms():)
 
 (: C0 :)
 let $ms1C0 := prof:current-ms()
@@ -1154,10 +1154,11 @@ let $C28invalid :=
 let $C28invalid :=
     try {
         (: read the begin and end positions from the file of data flow C :)
+
         let $beginAndEndPositionC := 
           for $timePeriod in $docRoot//gml:featureMember/aqd:AQD_ReportingHeader/aqd:reportingPeriod/gml:TimePeriod
-            let $beginPosition := normalize-space($timePeriod/gml:beginPosition)
-            let $endPosition := normalize-space($timePeriod/gml:endPosition)
+            let $beginPosition := substring(normalize-space($timePeriod/gml:beginPosition), 1, 10)
+            let $endPosition := substring(normalize-space($timePeriod/gml:endPosition), 1, 10)
             return
             <result>
               <beginPosition>{$beginPosition}</beginPosition>
@@ -1167,6 +1168,7 @@ let $C28invalid :=
         (: find the corresponding file of data flow B, ie latest file from the same reporting year :)
         let $openLatestEnvelopeBperYear := doc($latestEnvelopeBperYear)(: doc("https://cdr.eionet.europa.eu/be/eu/aqd/b/envx5hyg/BE_B_zones_2019.xml"):)
         let $zonesB := sparqlx:run(query:getZonesDates($latestEnvelopeBperYear))
+        let $zonesB_query := sparqlx:getLink(query:getZonesDates($latestEnvelopeBperYear))
 
 
         (: in that file of data flow B, find zone using the identifier linked by xlink:href= :)
@@ -1185,7 +1187,7 @@ let $C28invalid :=
             let $endPositionZoneB := normalize-space($aqdZoneB/am:designationPeriod/gml:TimePeriod/gml:endPosition)
             let $endPositionZoneBIndet := data(normalize-space($aqdZoneB/am:designationPeriod/gml:TimePeriod/gml:endPosition/@indeterminatePosition)) :)
 
-            let $beginPositionZoneB :=$aqdZoneB/sparql:binding[@name='beginPosition']/sparql:literal (:normalize-space($aqdZoneB/am:designationPeriod/gml:TimePeriod/gml:beginPosition):)
+            let $beginPositionZoneB :=substring($aqdZoneB/sparql:binding[@name='beginPosition']/sparql:literal,1,10) (:normalize-space($aqdZoneB/am:designationPeriod/gml:TimePeriod/gml:beginPosition):)
             let $labelZoneB :=normalize-space(substring-after($aqdZoneB/sparql:binding[@name='label']/sparql:literal,'to')) (: normalize-space($aqdZoneB/am:designationPeriod/gml:TimePeriod/gml:endPosition):)
             let $localIdB := substring-after($aqdZoneB/sparql:binding[@name='zoneURI']/sparql:uri,'#')
             
@@ -1194,7 +1196,7 @@ let $C28invalid :=
               if (contains($labelZoneB, "indefinite")) then
                     ""
                 else
-                    $labelZoneB
+                    substring($labelZoneB, 1, 10)
             (: compare with the begin and end position from reporting header of data flow C; he zone needs to be active during the whole period of the reporting year.:)
             let $ok := 
               if( $endPositionZoneB != "" and $beginPositionZoneB <= $beginAndEndPositionC/beginPosition and $endPositionZoneB >= $beginAndEndPositionC/endPosition) then 
@@ -1215,7 +1217,10 @@ let $C28invalid :=
                 <td title="Period begin">{$beginAndEndPositionC/beginPosition}</td>
                 <td title="Period end">{$beginAndEndPositionC/endPosition}</td>
                 <td title="ZoneB begin position ">{$beginPositionZoneB}</td>
-                <td title="ZoneB end position ">{$labelZoneB}</td>            
+                <td title="ZoneB end position ">{$labelZoneB}</td> 
+                <td title="Sparql">{$zonesB_query}</td> 
+
+                 
                 
                <!-- <td title="reportingYear">{$reportingYear}</td>
                 <td title="latestEnvelopeBperYear">{$latestEnvelopeBperYear}</td>
@@ -1787,12 +1792,14 @@ return
         {html:build2("NS", $labels:NAMESPACES, $labels:NAMESPACES_SHORT, $NSinvalid, "All values are valid", "record", $errors:NS)}
         {html:build2("VOCAB", $labels:VOCAB, $labels:VOCAB_SHORT, $VOCABinvalid, "All values are valid", "record", $errors:VOCAB)}
         <!--{html:buildNoCount2Sparql("VOCABALL", $labels:VOCABALL, $labels:VOCABALL_SHORT, $VOCABALLinvalid, "All values are valid", "Invalid urls found", $errors:VOCABALL)}-->
+        
+
         {html:build3("C0", $labels:C0, $labels:C0_SHORT, $C0table, string($C0table/td), errors:getMaxError($C0table))}
         {html:build1("C01", $labels:C01, $labels:C01_SHORT, $C01table, "", string(count($C01table)), "", "", $errors:C01)}
         {html:buildSimpleSparql("C02", $labels:C02, $labels:C02_SHORT, $C02table, "", "record", $C02errorLevel)}
         {html:buildSimple("C03", $labels:C03, $labels:C03_SHORT, $C03table, "", "record", $C03errorLevel)}
         {html:build2Sparql("C03a", $labels:C03a, $labels:C03a_SHORT, ($C03afunc, $C03a2func), "All values are valid", " Assessment Regime missing", $errors:C03a)}
-       <!-- {html:build2("C03b", $labels:C03b, $labels:C03b_SHORT, $C03bfunc, "All values are valid", " Assessment Methods missing", $errors:C03b)}-->
+      
         {html:buildNoCountSparql("C03b", $labels:C03b, $labels:C03b_SHORT, $C03bfunc, "All values are valid", "Missing Assessment Method", $errors:C03b)}
         {html:buildNoCount2Sparql("C03c", $labels:C03c, $labels:C03c_SHORT, $C03cfunc, "All values are valid", "Mismatches of assessment type found", $errors:C03c)}
         {html:build2Sparql("C03d", $labels:C03d, $labels:C03d_SHORT, $C03dinvalid, "All values are valid", " New Assessment Methods", $errors:C03d)}
@@ -1812,7 +1819,7 @@ return
         {html:build2("C25", $labels:C25, $labels:C25_SHORT, $C25invalid, "All values are valid", "", $errors:C25)}
         {html:build2("C26", $labels:C26, $labels:C26_SHORT, $C26table, "All values are valid", " invalid value", $C26errorClass)}
         {html:build2Sparql("C27", labels:interpolate($labels:C27, ($countZoneIds2, $countZoneIds1)), $labels:C27_SHORT, $C27table, "", " not unique zone", $errors:C27)}
-        {html:build2("C28", $labels:C28, $labels:C28_SHORT, $C28invalid, "All values are valid", " invalid value", $errors:C28)}
+        {html:build2Sparql("C28", $labels:C28, $labels:C28_SHORT, $C28invalid, "All values are valid", " invalid value(s) ", $errors:C28)}
         {html:build2Sparql("C29", $labels:C29, $labels:C29_SHORT,  $C29invalid, "All values are valid", " invalid value", $errors:C29)}
        {html:build2Sparql("C31", $labels:C31, $labels:C31_SHORT, $C31table, "", "record", errors:getMaxError($C31table))}
         {html:build4Sparql("C31b", $labels:C31b, $labels:C31b_SHORT, $C31btable, "", "record", errors:getMaxError($C31btable))}
