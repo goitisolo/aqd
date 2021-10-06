@@ -418,6 +418,11 @@ declare variable $labels:D93 := labels:getDefinition("D93");
 declare variable $labels:D93_SHORT := labels:getPrefLabel("D93");
 declare variable $labels:D94 := labels:getDefinition("D94");
 declare variable $labels:D94_SHORT := labels:getPrefLabel("D94");
+declare variable $labels:D96 := labels:getDefinition("D96");
+declare variable $labels:D96_SHORT := labels:getPrefLabel("D96");
+declare variable $labels:D97 := labels:getDefinition("D97");
+declare variable $labels:D97_SHORT := labels:getPrefLabel("D97");
+
 
 declare variable $labels:E0 := labels:getDefinition("E0");
 declare variable $labels:E0_SHORT := labels:getPrefLabel("E0");
