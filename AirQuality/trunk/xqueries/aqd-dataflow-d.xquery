@@ -3325,26 +3325,33 @@ let $D97invalid :=
             
       (:  let $samplingDataDoc:=:)
             for $x in $docRoot//aqd:AQD_SamplingPoint
-            let $latLong:= $x/ef:geometry/gml:Point/gml:pos
-            if ($x/@srsDimension="2") then
-                let $lat:=substring-before($latLong,"")
-                let $Long:=substring-after($latLong,"")
-                else if ($x/@srsDimension="1") then 
-                    let $lat:=$latLong
-                    let $long:=""
-                        else
-                            let $lat:=""
-                            let $long:=""
+              let $latLong:= $x/ef:geometry/gml:Point/gml:pos
+              let $latCoordinate := 
+                  (if (data($latLong/@srsDimension)="2") then
+                      number(substring-before($latLong," "))
+                    else if (data($latLong/@srsDimension)="1") then 
+                        number($latLong)
+                            else
+                                ""
+                   )
+                let $longCoordinate := 
+                (if (data($latLong/@srsDimension)="2") then
+                    number(substring-after($latLong," "))
+                  else if (data($latLong/@srsDimension)="1") then 
+                      ""
+                          else
+                              ""
+                 ) 
                 for $y in $historicSP
-                    where ((data($x/@gml:id)= data($y/sparql:binding[@name = 'localId']/sparql:literal)) and (not($lat=(data($y/sparql:binding[@name = 'lat']/sparql:literal)))or not($long=(data($y/sparql:binding[@name = 'long']/sparql:literal))))
+                    where ((data($x/@gml:id)= data($y/sparql:binding[@name = 'localId']/sparql:literal)) and (not($latCoordinate=(data($y/sparql:binding[@name = 'lat']/sparql:literal))) or not($longCoordinate=(data($y/sparql:binding[@name = 'long']/sparql:literal)))))
             
         return
             <tr>
                 <td title="Local ID">{data($x/@gml:id)}</td>
                 <!--<td title="Previous Local ID">{data($y/sparql:binding[@name = 'localId']/sparql:literal)}</td>-->
-                <td title="Current lat">{$lat}</td>
+                <td title="Current lat">{$latCoordinate}</td>
                 <td title="Previous lat">{data($y/sparql:binding[@name = 'lat']/sparql:literal)}</td>
-                 <td title="Current long">{$long}</td>
+                 <td title="Current long">{$longCoordinate}</td>
                 <td title="Previous long">{data($y/sparql:binding[@name = 'long']/sparql:literal)}</td>
                 <td title="Sparql">{sparqlx:getLink(query:getSamplingNetworkLatAndLong($latestEnvelopeD))}</td>
             </tr>
