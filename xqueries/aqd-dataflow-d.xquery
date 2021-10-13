@@ -2656,7 +2656,7 @@ let $ns2D60b := prof:current-ms()
 (: D61 :)
 
 let $ns1D61 := prof:current-ms()
-
+(:
 let $D61invalid :=
     try {
         for $x in $docRoot//aqd:AQD_SamplingPointProcess
@@ -2673,6 +2673,37 @@ let $D61invalid :=
                 <td title="aqd:otherMeasurementMethod">{data($otherMeasurementMethod)}</td>
                 <td title="aqd:MeasurementEquipment">{data($measurementEquipment)}</td>
                 <td title="aqd:otherSamplingMethod">{data($otherSamplingMethod)}</td>
+                <td title="aqd:SamplingEquipment">{data($samplingEquipment)}</td>
+            </tr>
+    } catch * {
+        <tr class="{$errors:FAILED}">
+            <td title="Error code"> {$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+            <td></td>
+        </tr>
+    }
+:)
+
+let $D61invalid :=
+    try {
+        let $validSamplingMethods := dd:getValidConcepts($vocabulary:SAMPLINGMETHOD_VOCABULARY || "rdf")
+        for $x in $docRoot//aqd:AQD_SamplingPointProcess
+          let $analyticalTechnique := $x/aqd:analyticalTechnique/aqd:AnalyticalTechnique/aqd:analyticalTechnique/@xlink:href
+          let $measurementMethod := $x/aqd:measurementMethod/aqd:MeasurementMethod/aqd:measurementMethod/@xlink:href
+          let $measurementEquipment := $x/aqd:measurementEquipment/aqd:MeasurementEquipment/aqd:equipment/@xlink:href
+          let $samplingMethod := $x/aqd:samplingMethod/aqd:SamplingMethod/aqd:samplingMethod/@xlink:href
+          let $samplingEquipment := $x/aqd:SamplingEquipment/aqd:SamplingEquipment/aqd:equipment/@xlink:href
+          
+          let $existingSamplingMethod := functx:is-value-in-sequence(replace($samplingMethod, "https://", "http://"), $validSamplingMethods)    
+            
+        where not(empty(($analyticalTechnique, $measurementMethod, $measurementEquipment, $samplingMethod, $samplingEquipment))) and not($existingSamplingMethod) and not(empty($samplingMethod))
+        return
+            <tr>
+                <td title="aqd:AQD_SamplingPointProcess">{data($x/ompr:inspireId/base:Identifier/base:localId)}</td>
+                <td title="aqd:AnalyticalTechnique">{data($analyticalTechnique)}</td>
+                <td title="aqd:MeasurementMethod">{data($measurementMethod)}</td>
+                <td title="aqd:MeasurementEquipment">{data($measurementEquipment)}</td>
+                <td title="aqd:SamplingMethod">{data($samplingMethod)}</td>
                 <td title="aqd:SamplingEquipment">{data($samplingEquipment)}</td>
             </tr>
     } catch * {
