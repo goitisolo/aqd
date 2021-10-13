@@ -77,3 +77,4 @@ declare variable $vocabulary:UOM_STATISTICS := "http://dd.eionet.europa.eu/vocab
 declare variable $vocabulary:UOM_TIME := "http://dd.eionet.europa.eu/vocabulary/uom/time/";
 declare variable $vocabulary:UOM_LENGTH := "http://dd.eionet.europa.eu/vocabulary/uom/length/";
 declare variable $vocabulary:ZONETYPE_VOCABULARY as xs:string := "http://dd.eionet.europa.eu/vocabulary/aq/zonetype/";
+declare variable $vocabulary:SAMPLINGMETHOD_VOCABULARY as xs:string := "http://dd.eionet.europa.eu/vocabulary/aq/samplingmethod/";
