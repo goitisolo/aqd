@@ -1993,24 +1993,28 @@ let $G89invalid :=
             for $envelopeC in $envelopesC
             let $sampling :=
                 for $assessmentMethod in $assessmentMethodsSampling[sparql:binding[@name='localId']/sparql:literal = $assessment]/sparql:binding[@name='samplingPointAssessmentMetadata']/sparql:literal
+                    let $localId := $assessmentMethod/../../sparql:binding[@name='localId']/sparql:literal
                     return
                     if (not(empty($assessmentMethod))) then  
                         if ($samplingPoints = $assessmentMethod) then ()
                         else   
                             <tr>
                                  <td title="Not found">{"Sampling Point Assessment for: " || functx:substring-after-last(string($assessmentMethod), '/')}</td>
+                                 <td title="localId">{$localId}</td>
                                  <td title="Sparql">{sparqlx:getLink(query:getAssessmentMethodsCSamplingPoint($latestEnvelopeC))}</td>
                             </tr>   
             let $models := 
                 for $assessmentMethod in $assessmentMethodsModels[sparql:binding[@name='localId']/sparql:literal = $assessment]/sparql:binding[@name='modelAssessmentMetadata']/sparql:literal
+                    let $localId := $assessmentMethod/../../sparql:binding[@name='localId']/sparql:literal
                     return
                     if (not(empty($assessmentMethod))) then  
                         if ($modelAssessments = $assessmentMethod) then ()
                         else   
                             <tr>
                                  <td title="Not found">{"Model Point Assessment for: " || functx:substring-after-last(string($assessmentMethod), '/')}</td>
+                                 <td title="localId">{$localId}</td>
                                  <td title="Sparql">{sparqlx:getLink(query:getAssessmentMethodsCModels($latestEnvelopeC))}</td>
-                            </tr>                                         
+                            </tr>                                                        
 
         let $countModels := count($models)
         let $countSampling := count($sampling)
@@ -2102,7 +2106,8 @@ return
         {html:build2("G81", $labels:G81, $labels:G81_SHORT, $G81invalid, "All values are valid", " invalid value", $errors:G81)}
         {html:build2("G85", $labels:G85, $labels:G85_SHORT, $G85invalid, "All values are valid", " invalid value", $errors:G85)}
         {html:build2("G86", $labels:G86, $labels:G86_SHORT, $G86invalid, "All values are valid", " invalid value", $errors:G86)}
-        {html:buildNoCount2Sparql("G89", $labels:G89, $labels:G89_SHORT, $G89invalid, "All values are valid", "Invalid value found", $errors:G89)}
+        <!-- {html:buildNoCount2Sparql("G89", $labels:G89, $labels:G89_SHORT, $G89invalid, "All values are valid", "Invalid value found", $errors:G89)} -->
+        {html:build2Sparql("G89", $labels:G89, $labels:G89_SHORT, $G89invalid, "All values are valid", " invalid value", $errors:G89)}
         {$G82invalid}
     </table>
      <table>
