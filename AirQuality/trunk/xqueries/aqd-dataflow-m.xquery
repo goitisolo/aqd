@@ -887,8 +887,9 @@ let $ms2M45 := prof:current-ms()
 let $ms1M46 := prof:current-ms()
 let $M46invalid :=
     try {
-        for $latLong in $docRoot//gml:posList[../../../../../@srsName != 'urn:ogc:def:crs:EPSG::3035']
-        let $latlongToken := fn:tokenize(normalize-space($latLong), "\s+")
+        for $latLong in $docRoot//aqd:AQD_ModelArea/sams:shape
+        let $latLongList := $latLong//gml:posList[../../../../../@srsName != 'urn:ogc:def:crs:EPSG::3035']
+        let $latlongToken := fn:tokenize(normalize-space($latLongList), "\s+")
         let $lat := number($latlongToken[1])
         let $long := number($latlongToken[2])
 
@@ -923,12 +924,23 @@ let $M46invalid :=
         let $LatitudeMin := number(tokenize($NamespaceDD, "###")[4])
 
 
-        where (not($countryCode = "fr") and ($long > $lat)  and $latLong/@srsDimension != 2 and ((not($maxlat <= $LatitudeMax and $minlat >= $LatitudeMin) or
-                    not($maxlon <= $LongitudeMax and $minlon >=$LongitudeMin) and $countryCode != 'fr')) )
+        where (not($countryCode = "fr") and ($long > $lat)  and $latLongList/@srsDimension != 2 or ((not($maxlat <= $LatitudeMax and $minlat >= $LatitudeMin) or
+                    not($maxlon <= $LongitudeMax and $minlon >=$LongitudeMin) and $countryCode != 'fr')) ) or
+                    (count($latLong/*) = 0)
         return
+          if ( count($latLong/*) > 0 ) then 
             <tr>
-                <td title="Polygon">{string($latLong/../../../@gml:id)}</td>
-                <td title="First vertex">{string($lat) || string($long)}</td>     
+                <td title="Polygon">{string($latLongList/../../../@gml:id)}</td>
+                <td title="First vertex">{string($lat) || "  " || string($long)}</td>     
+                <td title="minMaxLonInXML">{$minlon || "  " ||$maxlon}</td>  
+                <td title="minMaxLatInXML">{$minlat || "  " || $maxlat}</td>               
+                <td title="minMaxLonInDD">{$LongitudeMin || "  " || $LongitudeMax}</td>
+                <td title="minMaxLatInDD">{$LatitudeMin || "  " || $LatitudeMax}</td>
+            </tr>
+          else if ( count($latLong/*) = 0 ) then
+            <tr>
+                <td title="Polygon">Missing value</td>
+                <td title="First vertex">{string($lat) || "  " || string($long)}</td>     
                 <td title="minMaxLonInXML">{$minlon || "  " ||$maxlon}</td>  
                 <td title="minMaxLatInXML">{$minlat || "  " || $maxlat}</td>               
                 <td title="minMaxLonInDD">{$LongitudeMin || "  " || $LongitudeMax}</td>
