@@ -837,15 +837,21 @@ let $ms2M41.1 := prof:current-ms()
 let $ms1M43 := prof:current-ms()
 let $M43invalid :=
     try {
-        let $valid := ("urn:ogc:def:crs:EPSG::4258", "urn:ogc:def:crs:EPSG::4326", "urn:ogc:def:crs:EPSG::3035")
-        for $x in $docRoot//aqd:AQD_ModelArea[count(sams:shape) > 0]
-            for $z in data($x/sams:shape//@srsName)
-        where not($z = $valid)
-        return
-            <tr>
-                <td title="aqd:AQD_ModelArea">{data($x/aqd:inspireId/base:Identifier/base:localId)}</td>
-                <td title="@srsName">{$z}</td>
-            </tr>
+        let $validSrsNames := ("urn:ogc:def:crs:EPSG::4258", "urn:ogc:def:crs:EPSG::4326", "urn:ogc:def:crs:EPSG::3035")
+        for $x in $docRoot//aqd:AQD_ModelArea             
+           for $z in ($x/sams:shape)
+              where ( not(data($z//@srsName) = $validSrsNames) or (count($z/*) = 0) )
+              return
+              if( $x[count(sams:shape) > 0] and (count(data($z//@srsName)) > 0) ) then 
+                  <tr>
+                      <td title="aqd:AQD_ModelArea">{data($x/aqd:inspireId/base:Identifier/base:localId)}</td>
+                      <td title="@srsName">{data($z//@srsName)}</td>
+                  </tr>
+              else if ( empty(data($z)) or (count(data($z//@srsName)) = 0) or (count($z/*) = 0) ) then          
+                  <tr>
+                      <td title="aqd:AQD_ModelArea">{data($x/aqd:inspireId/base:Identifier/base:localId)}</td>
+                      <td title="@srsName">"Missing value"</td>
+                  </tr>
     } catch * {
         <tr class="{$errors:FAILED}">
             <td title="Error code">{$err:code}</td>
