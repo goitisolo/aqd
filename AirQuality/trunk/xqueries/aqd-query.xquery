@@ -3621,8 +3621,9 @@ SELECT DISTINCT
 ?obligation 
 ?obligation_nr 
 ?deadline 
-bif:either(xsd:int(?obligation_nr) < 680 or xsd:int(?obligation_nr) = 742,(year(?deadline) - 1),bif:either(xsd:int(?obligation_nr) < 690,(year(?deadline) - 2),(year(?deadline))) ) as ?minimum
-bif:either(xsd:int(?obligation_nr) < 680 or xsd:int(?obligation_nr) = 742,(year(?deadline) - 1),bif:either(xsd:int(?obligation_nr) < 690,(year(?deadline) ),(year(?deadline)+1)) ) as ?maximum
+
+bif:either(xsd:int(?obligation_nr) < 680 or xsd:int(?obligation_nr) = 742,(year(?deadline) - 2),bif:either(xsd:int(?obligation_nr) < 690,(year(?deadline) - 2),(year(?deadline))) ) as ?minimum
+bif:either(xsd:int(?obligation_nr) < 680 or xsd:int(?obligation_nr) = 742,(year(?deadline) - 1),bif:either(xsd:int(?obligation_nr) < 690,(year(?deadline) - 1),(year(?deadline)+1)) ) as ?maximum
 
 WHERE {
 ?delivery rod:released ?released ;
@@ -3649,8 +3650,9 @@ SELECT DISTINCT
 ?obligation 
 ?obligation_nr 
 ?deadline 
-bif:either(xsd:int(?obligation_nr) < 680 or xsd:int(?obligation_nr) = 742,(year(?deadline) - 1),bif:either(xsd:int(?obligation_nr) < 690,(year(?deadline) - 2),(year(?deadline))) ) as ?minimum
-bif:either(xsd:int(?obligation_nr) < 680 or xsd:int(?obligation_nr) = 742,(year(?deadline) - 1),bif:either(xsd:int(?obligation_nr) < 690,(year(?deadline) ),(year(?deadline)+1)) ) as ?maximum
+
+bif:either(xsd:int(?obligation_nr) < 680 or xsd:int(?obligation_nr) = 742,(year(?deadline) - 2),bif:either(xsd:int(?obligation_nr) < 690,(year(?deadline) - 2),(year(?deadline))) ) as ?minimum
+bif:either(xsd:int(?obligation_nr) < 680 or xsd:int(?obligation_nr) = 742,(year(?deadline) - 1),bif:either(xsd:int(?obligation_nr) < 690,(year(?deadline) - 1),(year(?deadline)+1)) ) as ?maximum
 
 WHERE {
 ?delivery rod:released ?released ;
