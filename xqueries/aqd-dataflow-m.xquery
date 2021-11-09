@@ -864,13 +864,49 @@ let $ms2M43 := prof:current-ms()
 let $ms1M45 := prof:current-ms()
 let $M45invalid :=
     try {
-        for $posList in $docRoot//gml:posList
+
+
+      (:  for $posList in $docRoot//gml:posList
         let $posListCount := count(fn:tokenize(normalize-space($posList), "\s+")) mod 2
-        where (not(empty($posList)) and $posListCount > 0)
-        return
-            <tr>
-                <td title="Polygon">{string($posList/../../../@gml:id)}</td>
-            </tr>
+        where (not(empty($posList)) and $posListCount > 0):)
+        
+
+        let $posListCountRes:=
+        for $x in $docRoot//aqd:AQD_ModelArea
+            return
+                if (exists($x//gml:posList)) then
+                   <result>
+                       <model>{$x/aqd:inspireId/base:Identifier/base:localId}</model>
+                        <count>{count(fn:tokenize(normalize-space($x//gml:posList), "\s+")) mod 2}</count>
+                        <posList>{$x//gml:posList}</posList>
+                        <poly>{data($x//gml:posList/../../../@gml:id)}</poly>
+                    </result>
+                  
+                 else 
+                  <result>
+                        <model>{$x/aqd:inspireId/base:Identifier/base:localId}</model>
+                         <count>{"Missing value"}</count>
+                         <posList>{"Missing value"}</posList>
+                </result>
+          for $y in $posListCountRes
+          return
+        if (($y/posList!="Missing value") and ($y/count > 0) ) then
+            
+               <tr>
+               
+                     <td title="Model">{$y/model}</td>
+                    <!-- <td title="Count">{$y/count}</td>-->
+                     <td title="Polygon">{$y/poly}</td>
+                    
+                </tr>
+        else if ($y/posList="Missing value") then 
+        <tr>
+                    
+                    <td title="Model">{$y/model}</td>
+                    <td title="Polygon">{$y/posList}</td>
+                   
+                </tr>
+
     } catch * {
         <tr class="{$errors:FAILED}">
             <td title="Error code">{$err:code}</td>
