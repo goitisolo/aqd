@@ -1996,7 +1996,7 @@ let $I18errorMessage := (
             let $el := $node/aqd:macroExceedanceSituation/aqd:ExceedanceDescription/aqd:deductionAssessmentMethod/aqd:AdjustmentMethod/aqd:adjustmentType
             let $link := $el/@xlink:href
             let $needed := not(common:is-polutant-air($pollutant))(:) and ($link = "http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/fullyCorrected" or $link = "http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/noneApplied"):)
-            let $needed2 := common:is-polutant-air($pollutant) and ($link = "http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/noneApplicable" or $link = "")
+            let $needed2 := common:is-polutant-air($pollutant) and ($link = "http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/noneApplicable" or $link = "http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/fullyCorrected" or $link = "http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/noneApplied"  or $link = "")
             
 
 
@@ -2011,7 +2011,8 @@ let $I18errorMessage := (
                 else                 
                     common:isInVocabulary(
                         $linkAssesment,
-                        $vocabulary:ASSESSMENTTYPE_VOCABULARY
+                        (:$vocabulary:ASSESSMENTTYPE_VOCABULARY:)
+                        $vocabulary:ADJUSTMENTTYPE_VOCABULARY
                     )
         return common:conditionalReportRow(
             $ok,
