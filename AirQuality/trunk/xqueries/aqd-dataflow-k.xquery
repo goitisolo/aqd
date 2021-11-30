@@ -414,14 +414,16 @@ and count the number of base:localId assigned to each base:namespace.  :)
 
 let $ms1K09 := prof:current-ms()
 let $K09table := try {
-    for $namespace in distinct-values($docRoot//aqd:AQD_Measures/aqd:inspireId/base:Identifier/base:namespace)
+    let $uniqueNamespaces := distinct-values($docRoot//aqd:AQD_Measures/aqd:inspireId/base:Identifier/base:namespace)
+    for $namespace in $uniqueNamespaces
         let $localIds := $docRoot//aqd:AQD_Measures/aqd:inspireId/base:Identifier[base:namespace = $namespace]/base:localId
-        let $ok := false()
+        let $ok := if(count($uniqueNamespaces) > 1) then false()
+                   else true()
         return common:conditionalReportRow(
             $ok,
             [
                 ("base:namespace", $namespace),
-                ("base:localId", count($localIds))
+                ("base:localId count", count($localIds))
             ]
         )
 } catch * {
