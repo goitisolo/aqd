@@ -1013,6 +1013,8 @@ let $K30 := try {
             (common:isDateFullISO($begin) and common:isDateFullISO($end) and $end > $begin)
             or
             (lower-case($end/@indeterminatePosition) = "unknown" and functx:if-empty(data($end),"") eq "")
+            or
+            ($end = "T00:00:00Z")
         )
 
         return common:conditionalReportRow(
