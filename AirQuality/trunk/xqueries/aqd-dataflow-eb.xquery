@@ -1361,6 +1361,8 @@ let $ms2Eb14b := prof:current-ms()
             let $envelopeUrl := common:getCleanUrl($source_url)
             let $xmlName := tokenize($envelopeUrl , "/")[last()]
             let $currentEnvelope := substring-before($envelopeUrl, $xmlName)
+            let $envelopexml := substring-before($envelopeUrl, $xmlName) || "xml"
+            let $docEnvelopexml := doc($envelopexml)
             
             let $regex := functx:escape-for-regex($currentEnvelope) || ".+\.[a-z]{3,3}#.+"
             
@@ -1368,11 +1370,24 @@ let $ms2Eb14b := prof:current-ms()
               let $reference := $x/gml:File/gml:fileReference
               let $referenceHTTPS := replace($reference, "http://", "https://")
               let $referenceHTTP := replace($reference, "https://", "http://")
+              let $okAllowedFileReference := ( if( contains($reference, ".zip") or contains($reference, ".shp") or contains($reference, ".tiff") or contains($reference, ".asc") ) then true()
+                                              else false() )
               
               let $model := $x/../om:parameter/om:NamedValue[om:name/@xlink:href = $processParameterModel]
               let $modelValueLink := common:if-empty($model/om:value, $model/om:value/@xlink:href)
               
-              let $ok := ( matches($reference, $regex) or matches($referenceHTTPS, $regex) or matches($referenceHTTP, $regex) )
+              (: start comparing envelope/xml file @link with the xml <gml:fileReference> :)
+              let $comparingEnvelopexmlAndxml := ( 
+                  for $y in $docEnvelopexml/envelope/file/@link
+                    let $comparingEnvelopexmlAndxml := if ( contains($y, substring-before($reference, "#")) = false() and contains($y, substring-before($referenceHTTPS, "#")) = false() and contains($y, substring-before($referenceHTTP, "#")) = false() ) 
+                                  then false()
+                                  else true()        
+                    return $comparingEnvelopexmlAndxml
+              )
+              let $countingComparingEnvelopexmlAndxml := if(count(index-of($comparingEnvelopexmlAndxml, true())) = 0) then false() else true()
+             (: end comparing envelope/xml file @link with the xml <gml:fileReference> :)
+              
+              let $ok := ( $okAllowedFileReference = true() and ( matches($reference, $regex) or matches($referenceHTTPS, $regex) or matches($referenceHTTP, $regex) ) and $countingComparingEnvelopexmlAndxml = true() )
               
               where not($ok)
               return
