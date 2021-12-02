@@ -1623,6 +1623,70 @@ let $ms2Eb14b := prof:current-ms()
     
     let $ms2Eb44 := prof:current-ms()
     
+    (: Eb47 - The aim of this QC rule Eb47 is:
+      1. scan envelope to find all files with extensions such as *.zip, *.shp ; *.tiff, *.asc,
+      2. compare with the list of files found in gml:fileReference,
+      3. return BLOCKER if the lists are not identical. 
+    :)
+    
+    let $ms1Eb47 := prof:current-ms()
+    
+    let $Eb47invalid :=
+      try {
+        (: 1. scan envelope to find all files with extensions such as *.zip, *.shp ; *.tiff, *.asc :)
+        let $envelopeUrl := common:getCleanUrl($source_url)
+        let $xmlName := tokenize($envelopeUrl , "/")[last()]
+        let $currentEnvelope := substring-before($envelopeUrl, $xmlName)
+        let $envelopexml := substring-before($envelopeUrl, $xmlName) || "xml"
+        let $docEnvelopexml := doc($envelopexml)
+        
+        (: getting envelope/xml file @link :)
+        let $filesEnvelopeXML := data($docEnvelopexml/envelope/file[ends-with(@link, ".zip") or ends-with(@link, ".shp") or ends-with(@link, ".tiff") or ends-with(@link, ".asc")]/@link)
+        let $countFilesEnvelopeXML := count($filesEnvelopeXML)
+
+        
+        (: 2. compare with the list of files found in gml:fileReference :)
+        (: getting gml:fileReference secuence :)
+        let $fileReferences := $docRoot//om:OM_Observation/om:result[gml:File]/gml:File[contains(gml:fileReference, ".zip") or contains(gml:fileReference, ".shp") or contains(gml:fileReference, ".tiff") or contains(gml:fileReference, ".asc")]/gml:fileReference
+        let $countFileReferences := count($fileReferences)
+        
+        (: lists comparison :)
+        let $sameNumOfFiles := if($countFilesEnvelopeXML = $countFileReferences) then true()
+                              else false()
+        
+                                          
+        (: 3. return BLOCKER if the lists are not identical :)
+        let $filesEnvelopeXML_toCompare := data($docEnvelopexml/envelope/file[ends-with(@link, ".zip") or ends-with(@link, ".shp") or ends-with(@link, ".tiff") or ends-with(@link, ".asc")]/substring-after(@link, '://'))
+        let $fileReferences_toCompare := $docRoot//om:OM_Observation/om:result[gml:File]/gml:File[contains(gml:fileReference, ".zip") or contains(gml:fileReference, ".shp") or contains(gml:fileReference, ".tiff") or contains(gml:fileReference, ".asc")]/functx:substring-before-if-contains(substring-after(gml:fileReference, '://'), "#") 
+        let $searchingIdentical := if($sameNumOfFiles = true() and $countFilesEnvelopeXML != 0 and $countFileReferences != 0) then 
+                                  (
+                                      for $file in $filesEnvelopeXML_toCompare
+                                      return functx:is-value-in-sequence($file, $fileReferences_toCompare)
+                                  )
+        let $identical := ( 
+                          if($sameNumOfFiles = false()) then false()
+                          else if($sameNumOfFiles = true() and $countFilesEnvelopeXML != 0 and $countFileReferences != 0) then
+                                  if($searchingIdentical = false()) then 
+                                  false()
+                               else true()
+                        )
+          
+          where not($identical)
+          return
+              <tr>
+                  <td title="Envelope attached files list">{$filesEnvelopeXML}</td>
+                  <td title="Envelope attached files count">{$countFilesEnvelopeXML}</td>
+                  <td title="gml:fileReference list">{$fileReferences}</td>
+                  <td title="gml:fileReference count">{$countFileReferences}</td>
+              </tr>[position() = 1 to $errors:MEDIUM_LIMIT]
+        } catch * {
+            <tr class="{$errors:FAILED}">
+                <td title="Error code">{$err:code}</td>
+                <td title="Error description">{$err:description}</td>
+            </tr>
+        }
+    
+    let $ms2Eb47 := prof:current-ms()
     
     let $ms2Total := prof:current-ms()
     return
@@ -1675,6 +1739,7 @@ let $ms2Eb14b := prof:current-ms()
             {html:build2("Eb42", $labels:Eb42, $labels:Eb42_SHORT, $Eb42invalid, "All records are valid", "record", $errors:Eb42)}
             {html:build2("Eb43", $labels:Eb43, $labels:Eb43_SHORT, $Eb43invalid, "All records are valid", "record", $errors:Eb43)}
             {html:build2("Eb44", $labels:Eb44, $labels:Eb44_SHORT, $Eb44invalid, "All records are valid", "record", $Eb44maxErrorLevel)}
+            {html:build2("Eb47", $labels:Eb47, $labels:Eb47_SHORT, $Eb47invalid, "All records are valid", "record", $errors:Eb47)}
         </table>
     <table>
     <br/>
@@ -1733,6 +1798,7 @@ let $ms2Eb14b := prof:current-ms()
        {common:runtime("Eb42",  $ms1Eb42, $ms2Eb42)}
        {common:runtime("Eb43",  $ms1Eb43, $ms2Eb43)}
        {common:runtime("Eb44",  $ms1Eb44, $ms2Eb44)}
+       {common:runtime("Eb47",  $ms1Eb47, $ms2Eb47)}
        {common:runtime("Total time",  $ms1Total, $ms2Total)}
     </table>
     </table>
