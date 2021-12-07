@@ -74,7 +74,7 @@ declare function schemax:getErrorClass($result as element(report)) {
     let $status := string($result/status)
     return
         if ($status = $schemax:INVALIDSTATUS) then
-            $errors:ERROR
+            $errors:XML
         else
             $errors:INFO
 };
