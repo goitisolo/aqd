@@ -1688,6 +1688,34 @@ let $ms2Eb14b := prof:current-ms()
     
     let $ms2Eb47 := prof:current-ms()
     
+    
+    (: Eb48 - The aim of this task is to add new QC rule Eb48 which will test if <swe:Quantity> refers to the correct vocabulary which is https://dd.eionet.europa.eu/vocabulary/aq/aggregationprocess :)
+    
+    let $ms1Eb48 := prof:current-ms()
+    
+    let $Eb48invalid :=
+        try {
+            let $vocDoc := doc($vocabulary:AGGREGATION_PROCESS || "rdf")
+            let $valid := data($vocDoc//skos:Concept/@rdf:about)
+            for $x in $docRoot//om:OM_Observation/om:result/gml:File/gml:rangeParameters/swe:Quantity
+            where not(functx:is-value-in-sequence(data($x/@definition), $valid)) 
+                  and not(functx:is-value-in-sequence(replace(data($x/@definition), 'https://', 'http://'), $valid))
+                  and not(functx:is-value-in-sequence(replace(data($x/@definition), 'http://', 'https://'), $valid))
+            return
+                <tr>
+                    <td title="om:OM_Observation">{data($x/../../../../@gml:id)}</td>
+                    <td title="Aggregation process">{data($x/@definition)}</td>
+                </tr>
+        } catch * {
+            <tr class="{$errors:FAILED}">
+                <td title="Error code">{$err:code}</td>
+                <td title="Error description">{$err:description}</td>
+            </tr>
+        }
+
+    let $ms2Eb48 := prof:current-ms()
+    
+    
     let $ms2Total := prof:current-ms()
     return
         <table class="maintable hover">
@@ -1740,6 +1768,7 @@ let $ms2Eb14b := prof:current-ms()
             {html:build2("Eb43", $labels:Eb43, $labels:Eb43_SHORT, $Eb43invalid, "All records are valid", "record", $errors:Eb43)}
             {html:build2("Eb44", $labels:Eb44, $labels:Eb44_SHORT, $Eb44invalid, "All records are valid", "record", $Eb44maxErrorLevel)}
             {html:build2("Eb47", $labels:Eb47, $labels:Eb47_SHORT, $Eb47invalid, "All records are valid", "record", $errors:Eb47)}
+            {html:build2("Eb48", $labels:Eb48, $labels:Eb48_SHORT, $Eb48invalid, "All records are valid", "record", $errors:Eb48)}
         </table>
     <table>
     <br/>
@@ -1799,6 +1828,7 @@ let $ms2Eb14b := prof:current-ms()
        {common:runtime("Eb43",  $ms1Eb43, $ms2Eb43)}
        {common:runtime("Eb44",  $ms1Eb44, $ms2Eb44)}
        {common:runtime("Eb47",  $ms1Eb47, $ms2Eb47)}
+       {common:runtime("Eb48",  $ms1Eb48, $ms2Eb48)}
        {common:runtime("Total time",  $ms1Total, $ms2Total)}
     </table>
     </table>
