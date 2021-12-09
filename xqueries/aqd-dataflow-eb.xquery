@@ -1567,6 +1567,11 @@ let $ms2Eb14b := prof:current-ms()
             
             let $modelProjection := $x/om:parameter/om:NamedValue[om:name/@xlink:href = $modelParameterProjection]
             let $modelProjectionValue := tokenize(common:if-empty($modelProjection/om:value, $modelProjection/om:value/@xlink:href), "/")[last()]
+            let $modelProjectionValueLink := common:if-empty($modelProjection/om:value, $modelProjection/om:value/@xlink:href)
+            let $allowedModelProjectionValue := ( 
+                if( contains($modelProjectionValueLink, "dd.eionet.europa.eu/vocabulary/common/epsg/") or contains($modelProjectionValueLink, "epsg.io/") or contains($modelProjectionValueLink, "spatialreference.org/ref/epsg/") or number($modelProjectionValueLink) ) then true()
+                else false()
+              )
             
             let $model := $x/om:parameter/om:NamedValue[om:name/@xlink:href = $processParameterModel]
             let $modelValueLink := common:if-empty($model/om:value, $model/om:value/@xlink:href)
@@ -1577,18 +1582,22 @@ let $ms2Eb14b := prof:current-ms()
               if($resultencodingValue = "external" and $resultformatValue = "esri-shp") then "Warning" 
               else if($resultencodingValue = "external" and $resultformatValue != "esri-shp") then functx:capitalize-first($errors:Eb44)
             
-            let $ok := ($resultencodingValue = "external" and $resultformatValue != "" and $modelProjectionValue != "")
+            let $errorMessage := if(not($modelProjection)) then "missing model projection reference"
+                                 else if($allowedModelProjectionValue = false()) then "wrong model projection reference"
+            
+            let $ok := ($resultencodingValue = "external" and $resultformatValue != "" and $modelProjectionValue != "" and $allowedModelProjectionValue = true())
             
             where not($ok) and $resultencodingValue = "external"
             return
                 <tr>
                     <td title="gml:id">{data($x/@gml:id)}</td>
                     <td title="model local id">{$modelValueLink}</td>
-                    <td title="projection">{$modelProjectionValue}</td>
+                    <td title="projection">{$modelProjectionValueLink}</td>
                     <td title="resultencoding">{$resultencodingValue}</td>
                     <td title="resultformat">{$resultformatValue}</td>
                     <td title="gml:fileReference">{$fileReference}</td>
                     <td title="error type">{$errorType}</td>
+                    <td title="error message">{$errorMessage}</td>
                 </tr>
         } catch * {
             <tr class="{$errors:FAILED}">
