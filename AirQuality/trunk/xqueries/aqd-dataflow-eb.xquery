@@ -1685,9 +1685,9 @@ let $ms2Eb14b := prof:current-ms()
           where not($identical)
           return
               <tr>
-                  <td title="Envelope attached files list">{$filesEnvelopeXML}</td>
+                  <td title="Envelope attached files list">{string-join($filesEnvelopeXML, " ")}</td>
                   <td title="Envelope attached files count">{$countFilesEnvelopeXML}</td>
-                  <td title="gml:fileReference list">{$fileReferences}</td>
+                  <td title="gml:fileReference list">{string-join($fileReferences, " ")}</td>
                   <td title="gml:fileReference count">{$countFileReferences}</td>
               </tr>[position() = 1 to $errors:MEDIUM_LIMIT]
         } catch * {
