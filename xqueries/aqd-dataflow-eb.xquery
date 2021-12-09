@@ -1665,7 +1665,9 @@ let $ms2Eb14b := prof:current-ms()
                                   )
         let $identical := ( 
                           if($sameNumOfFiles = false()) then false()
-                          else if($sameNumOfFiles = true() and $countFilesEnvelopeXML != 0 and $countFileReferences != 0) then
+                          else if($sameNumOfFiles = true() and $countFilesEnvelopeXML = 0 and $countFileReferences = 0) then 
+                                  true()
+                               else if($sameNumOfFiles = true() and $countFilesEnvelopeXML != 0 and $countFileReferences != 0) then
                                   if($searchingIdentical = false()) then 
                                   false()
                                else true()
