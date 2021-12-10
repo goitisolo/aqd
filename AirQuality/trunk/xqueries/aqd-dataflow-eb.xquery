@@ -1387,6 +1387,11 @@ let $ms2Eb14b := prof:current-ms()
               let $countingComparingEnvelopexmlAndxml := if(count(index-of($comparingEnvelopexmlAndxml, true())) = 0) then false() else true()
              (: end comparing envelope/xml file @link with the xml <gml:fileReference> :)
               
+              let $errorMessage := if($okAllowedFileReference = false()) then "file extension not allowed/wrong"
+                                   else if( contains($reference, functx:substring-after-if-contains($currentEnvelope, "://")) = false() ) then "file URL not matching location of XML"
+                                   else if( not(matches($reference, $regex)) and not(matches($referenceHTTPS, $regex)) and not(matches($referenceHTTP, $regex)) ) then "wrong specification of attribute"
+                                   else if($countingComparingEnvelopexmlAndxml = false()) then "external file missing in envelope"
+                                 
               let $ok := ( $okAllowedFileReference = true() and ( matches($reference, $regex) or matches($referenceHTTPS, $regex) or matches($referenceHTTP, $regex) ) and $countingComparingEnvelopexmlAndxml = true() )
               
               where not($ok)
@@ -1395,6 +1400,7 @@ let $ms2Eb14b := prof:current-ms()
                       <td title="@gml:id">{string($x/../@gml:id)}</td>
                       <td title="model local id">{$modelValueLink}</td>
                       <td title="gml:fileReference">{$reference => string()}</td>
+                      <td title="error message">{$errorMessage}</td>
                   </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
         } catch * {
             <tr class="{$errors:FAILED}">
