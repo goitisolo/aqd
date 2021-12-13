@@ -1585,7 +1585,7 @@ let $ms2Eb14b := prof:current-ms()
             let $fileReference := $x/om:result/gml:File/gml:fileReference
             
             let $errorType := 
-              if($resultencodingValue = "external" and $resultformatValue = "esri-shp") then "Warning" 
+              if($resultencodingValue = "external" and $resultformatValue = "esri-shp") then "Error" 
               else if($resultencodingValue = "external" and $resultformatValue != "esri-shp") then functx:capitalize-first($errors:Eb44)
             
             let $errorMessage := if(not($modelProjection)) then "missing model projection reference"
@@ -1624,14 +1624,14 @@ let $ms2Eb14b := prof:current-ms()
             let $resultformatValue := tokenize(common:if-empty($resultFormat/om:value, $resultFormat/om:value/@xlink:href), "/")[last()]
 
             return  
-              if($resultencodingValue = "external" and $resultformatValue = "esri-shp") then $errors:WARNING
+              if($resultencodingValue = "external" and $resultformatValue = "esri-shp") then $errors:ERROR
               else 
                 if($resultencodingValue = "external" and $resultformatValue != "esri-shp") then $errors:Eb44
     
     let $Eb44maxErrorLevel := (if ($Eb44ErrorTypeWorkflow = $errors:Eb44)
                             then( $errors:Eb44 )
-                            else(if ($Eb44ErrorTypeWorkflow = $errors:WARNING)
-                                then( $errors:WARNING )
+                            else(if ($Eb44ErrorTypeWorkflow = $errors:ERROR)
+                                then( $errors:ERROR )
                                 else( $errors:INFO )
                                 )
                         )
