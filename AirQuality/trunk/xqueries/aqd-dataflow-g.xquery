@@ -1990,7 +1990,6 @@ let $G89invalid :=
         let $assessmentMethodsModels := sparqlx:run(query:getAssessmentMethodsCModels($latestEnvelopeC))
         for $x in $docRoot//aqd:AQD_Attainment/aqd:assessment/@xlink:href
         let $assessment := functx:substring-after-last($x, '/')        
-            for $envelopeC in $envelopesC
             let $sampling :=
                 for $assessmentMethod in $assessmentMethodsSampling[sparql:binding[@name='localId']/sparql:literal = $assessment]/sparql:binding[@name='samplingPointAssessmentMetadata']/sparql:literal
                     let $localId := $assessmentMethod/../../sparql:binding[@name='localId']/sparql:literal
