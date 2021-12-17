@@ -303,6 +303,7 @@ declare variable $errors:Eb41 := errors:getError("Eb41");
 declare variable $errors:Eb42 := errors:getError("Eb42");
 declare variable $errors:Eb43 := errors:getError("Eb43");
 declare variable $errors:Eb44 := errors:getError("Eb44");
+declare variable $errors:Eb46 := errors:getError("Eb46");
 declare variable $errors:Eb47 := errors:getError("Eb47");
 declare variable $errors:Eb48 := errors:getError("Eb48");
 

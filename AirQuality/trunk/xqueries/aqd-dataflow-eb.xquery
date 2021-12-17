@@ -1638,6 +1638,98 @@ let $ms2Eb14b := prof:current-ms()
     
     let $ms2Eb44 := prof:current-ms()
     
+    
+    (: Eb46 - The aim of this QC rule Eb46 is:
+      1. scan envelope to find all files with *.zip extension,
+      2. within each zip file count number of files with extensions such as: *.shp or *.tiff or *.asc,
+      3. return BLOCKER if the count > 1 (ie each zip file should not contain more than 1 *.shp files, neither e.g. *.shp and *.asc).
+    :)
+    
+    let $ms1Eb46 := prof:current-ms()
+    
+    let $Eb46invalid :=
+      try {
+        (: 1. scan envelope to find all files with *.zip extension :)
+        let $envelopeUrl := common:getCleanUrl($source_url)
+        let $xmlName := tokenize($envelopeUrl , "/")[last()]
+        let $currentEnvelope := substring-before($envelopeUrl, $xmlName)
+        let $envelopexml := substring-before($envelopeUrl, $xmlName) || "xml"
+        let $docEnvelopexml := doc($envelopexml)
+        
+        (: getting envelope/xml file @link :)
+        let $ZIPFilesEnvelope := data($docEnvelopexml/envelope/file[ends-with(@link, ".zip")]/@link)
+        let $countZIPFilesEnvelope := count($ZIPFilesEnvelope)
+
+        
+        (: 2. within each zip file count number of files with extensions such as: *.shp or *.tiff or *.asc :)         
+        for $y in $docEnvelopexml/envelope/file[@type="application/zip"]
+          let $zipLink := data($y/@link)
+          let $eionet := if (contains($zipLink, "https://cdrtest.eionet.europa.eu/"))
+                         then "https://cdrtest.eionet.europa.eu/"
+                         else if (contains($zipLink, "http://cdrtest.eionet.europa.eu/"))
+                              then "http://cdrtest.eionet.europa.eu/"
+                              else if (contains($zipLink, "https://cdr.eionet.europa.eu/"))
+                                   then "https://cdr.eionet.europa.eu/"
+                                   else if (contains($zipLink, "http://cdr.eionet.europa.eu/"))
+                                        then "http://cdr.eionet.europa.eu/"
+          
+          let $envelopeAndZipName := substring-after($zipLink, $eionet)
+          
+          let $zipContentUrl := $eionet || "Converters/run_conversion?file=" || $envelopeAndZipName || "&amp;conv=ziplist&amp;source=local"
+          
+          (: using http:request and http:send-request in order to access to the content of the ZIP files :)
+          let $request := <http:request href="{$zipContentUrl}" method="GET"/> 
+          let $response := http:send-request($request)[2] 
+          let $zipContent := $response
+          
+          (: counting *.shp or *.tiff or *.asc :)
+          let $zipContent2 := tokenize($zipContent, " ")
+ 
+          let $countShpInZip := (
+              let $isShpInZip := (for $elem in $zipContent2
+                                  return contains($elem, ".shp"))
+              return count(index-of($isShpInZip, true()))
+            ) 
+            
+          let $countTiffInZip := (
+              let $isTiffInZip := (for $elem in $zipContent2
+                                  return contains($elem, ".tiff"))
+              return count(index-of($isTiffInZip, true()))
+          )
+          
+          let $countAscInZip := (
+              let $isAscInZip := (for $elem in $zipContent2
+                                  return contains($elem, ".asc"))
+              return count(index-of($isAscInZip, true()))
+          )
+              
+                                          
+        (: 3. return BLOCKER if the count > 1 (ie each zip file should not contain more than 1 *.shp files, neither e.g. *.shp and *.asc) :)
+        let $ok := (
+                    if( $countShpInZip > 1 or $countTiffInZip > 1 or $countAscInZip > 1) then 
+                      false()
+                    else 
+                      true()
+                   )
+          
+          where not($ok)
+          return
+              <tr>
+                  <td title="ZIP name">{data($y/@name)}</td>
+                  <td title="Number of .shp files">{$countShpInZip}</td>
+                  <td title="Number of .tiff files">{$countTiffInZip}</td>
+                  <td title="Number of .asc files">{$countAscInZip}</td>
+              </tr>[position() = 1 to $errors:MEDIUM_LIMIT]
+        } catch * {
+            <tr class="{$errors:FAILED}">
+                <td title="Error code">{$err:code}</td>
+                <td title="Error description">{$err:description}</td>
+            </tr>
+        }
+    
+    let $ms2Eb46 := prof:current-ms()
+    
+    
     (: Eb47 - The aim of this QC rule Eb47 is:
       1. scan envelope to find all files with extensions such as *.zip, *.shp ; *.tiff, *.asc,
       2. compare with the list of files found in gml:fileReference,
@@ -1784,6 +1876,7 @@ let $ms2Eb14b := prof:current-ms()
             {html:build2("Eb42", $labels:Eb42, $labels:Eb42_SHORT, $Eb42invalid, "All records are valid", "record", $errors:Eb42)}
             {html:build2("Eb43", $labels:Eb43, $labels:Eb43_SHORT, $Eb43invalid, "All records are valid", "record", $errors:Eb43)}
             {html:build2("Eb44", $labels:Eb44, $labels:Eb44_SHORT, $Eb44invalid, "All records are valid", "record", $Eb44maxErrorLevel)}
+            {html:build2("Eb46", $labels:Eb46, $labels:Eb46_SHORT, $Eb46invalid, "All records are valid", "record", $errors:Eb46)}
             {html:build2("Eb47", $labels:Eb47, $labels:Eb47_SHORT, $Eb47invalid, "All records are valid", "record", $errors:Eb47)}
             {html:build2("Eb48", $labels:Eb48, $labels:Eb48_SHORT, $Eb48invalid, "All records are valid", "record", $errors:Eb48)}
         </table>
@@ -1844,6 +1937,7 @@ let $ms2Eb14b := prof:current-ms()
        {common:runtime("Eb42",  $ms1Eb42, $ms2Eb42)}
        {common:runtime("Eb43",  $ms1Eb43, $ms2Eb43)}
        {common:runtime("Eb44",  $ms1Eb44, $ms2Eb44)}
+       {common:runtime("Eb46",  $ms1Eb46, $ms2Eb46)}
        {common:runtime("Eb47",  $ms1Eb47, $ms2Eb47)}
        {common:runtime("Eb48",  $ms1Eb48, $ms2Eb48)}
        {common:runtime("Total time",  $ms1Total, $ms2Total)}
