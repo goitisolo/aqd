@@ -81,6 +81,9 @@ let $ms1GeneralParameters:= prof:current-ms()
     let $latestEnvelopeByCountryG := query:getLatestEnvelope($cdrUrl || "g/")
     let $headerBeginPosition := $docRoot//aqd:AQD_ReportingHeader/aqd:reportingPeriod/gml:TimePeriod/gml:beginPosition
     let $headerEndPosition := $docRoot//aqd:AQD_ReportingHeader/aqd:reportingPeriod/gml:TimePeriod/gml:endPosition
+    let $latestEnvelopeByYearD1b := query:getLatestEnvelope($cdrUrl || "d1b/", $reportingYear)
+    let $latestEnvelopeByYearD := query:getLatestEnvelope($cdrUrl || "d/", $reportingYear)
+    let $latestEnvelopeD := query:getLatestEnvelope($cdrUrl || "d/")
 
 
     let $node-name := 'aqd:AQD_SourceApportionment'
@@ -2280,10 +2283,26 @@ let $I18errorMessage := (
             let $pollutant := query:get-pollutant-for-attainment($parentExceedanceSituation)
             (:let $modelAssessmentMetadata := $node/aqd:modelAssessmentMetadata/@xlink:href:)
             let $modelAssessmentMetadata := 
-                if(local-name($node) = "modelAssessmentMetadata")
+                (if($node/aqd:modelAssessmentMetadata)
                 then
-                    let $modelAssessmentMetadata := $node/aqd:modelAssessmentMetadata/@xlink:href
-                    return $modelAssessmentMetadata
+                    $node/aqd:modelAssessmentMetadata/@xlink:href
+                else   
+                     "")
+         
+            let $samplingPointAssessmentMetadata := 
+                (if($node/aqd:samplingPointAssessmentMetadata)
+                then
+                    $node/aqd:samplingPointAssessmentMetadata/@xlink:href
+                else   
+                     "")    
+                     
+            let $failingElementType := 
+                (if($node/aqd:modelAssessmentMetadata) then
+                    data("Model")
+                else if($node/aqd:samplingPointAssessmentMetadata) then  
+                        data("SamplingPoint")
+                      else                       
+                     "")
             
             let $poll := common:is-polutant-air($pollutant)
             
@@ -2303,15 +2322,31 @@ let $I18errorMessage := (
                                 query:existsViaNameLocalId(
                                 $ma,
                                 "AQD_Model",
-                                $latestEnvelopesD1
+                                $latestEnvelopeByYearD1b
                                 )
                                 (:true():)
-            
-            let $sparql_query := if(fn:empty($modelAssessmentMetadata))
-                                   then
-                                    "No modelAssessmentMetadata to execute this query"
-                                   else
-                                    sparqlx:getLink(query:existsViaNameLocalIdQuery($modelAssessmentMetadata, "AQD_Model", $latestEnvelopesD1))
+             
+            let $ok-spa := if(fn:empty($samplingPointAssessmentMetadata))
+                          then
+                            false()
+                          else
+                            for $spa in $samplingPointAssessmentMetadata
+                              return
+                                query:existsViaNameLocalId(
+                                $spa,
+                                "AQD_SamplingPoint",
+                                $latestEnvelopeD
+                                ) 
+                                
+                                    
+            let $sparql_query := if(fn:empty($modelAssessmentMetadata) and fn:empty($samplingPointAssessmentMetadata)) then
+                                    "No AssessmentMetadata to execute this query"  
+                                 else if(not(fn:empty($modelAssessmentMetadata)) and $modelAssessmentMetadata != "" ) then
+                                     for $ma in $modelAssessmentMetadata
+                                     return sparqlx:getLink(query:existsViaNameLocalIdQuery($ma, "AQD_Model", $latestEnvelopeByYearD1b))
+                                 else if(not(fn:empty($samplingPointAssessmentMetadata)) and $samplingPointAssessmentMetadata != "" ) then
+                                         for $spa in $samplingPointAssessmentMetadata
+                                         return sparqlx:getLink(query:existsViaNameLocalIdQuery($spa, "AQD_SamplingPoint", $latestEnvelopeD)) 
             
             let $ul := $node/../../aqd:adjustmentType
             let $linkAjustment := $ul/@xlink:href
@@ -2330,7 +2365,7 @@ let $I18errorMessage := (
                                  then
                                     (:Skip check:)
                                     true()
-                            else if($poll and $modelAssessmentMetadata = "" and $ok-ma = false())                           
+                            else if($poll and ( ($modelAssessmentMetadata = "" and $ok-ma = false()) and ($samplingPointAssessmentMetadata = "" and $ok-spa = false()) ) )                           
                             then
                                 true()
                             else
@@ -2339,17 +2374,34 @@ let $I18errorMessage := (
 
             
 
-        return common:conditionalReportRow(
+        return if ($failingElementType = "Model") then
+        common:conditionalReportRow(
             $ok,
             [
                 ("gml:id", data($node/ancestor-or-self::aqd:AQD_SourceApportionment/@gml:id)),
-                ("aqd:pollutant", $pollutant),
+                ("aqd:pollutant", functx:substring-after-last($pollutant, "/")),
                 ("aqd:parentExceedanceSituation", $parentExceedanceSituation),
-                ("test", $modelAssessmentMetadata),
+                ("SPO/Model", $modelAssessmentMetadata),
+                ("Failing element type", $failingElementType),
                 (: ("Sparql", sparqlx:getLink(query:existsViaNameLocalIdQuery($modelAssessmentMetadata, "AQD_Model", $latestEnvelopesD1))) :)
                 (: ("Sparql", sparqlx:getLink(query:existsViaNameLocalIdQuery(data($node/ancestor-or-self::aqd:AQD_SourceApportionment/@gml:id), "AQD_Model", $latestEnvelopesD1))), :)
                 ("Sparql", $sparql_query),
-                ("SparqlQueryPollutant", sparqlx:getLink(query:get-pollutant-for-attainment-query($parentExceedanceSituation)))
+                ("SparqlQueryPollutant", sparqlx:getLink(query:get-pollutant-for-attainment-query($parentExceedanceSituation))),
+                ("Checked envelope", $latestEnvelopeByYearD1b)
+            ]
+        )
+        else if ($failingElementType = "SamplingPoint") then
+        common:conditionalReportRow(
+            $ok,
+            [
+                ("gml:id", data($node/ancestor-or-self::aqd:AQD_SourceApportionment/@gml:id)),
+                ("aqd:pollutant", functx:substring-after-last($pollutant, "/")),
+                ("aqd:parentExceedanceSituation", $parentExceedanceSituation),
+                ("SPO/Model", $samplingPointAssessmentMetadata),
+                ("Failing element type", $failingElementType),
+                ("Sparql", $sparql_query),
+                ("SparqlQueryPollutant", sparqlx:getLink(query:get-pollutant-for-attainment-query($parentExceedanceSituation))),
+                ("Checked envelope", $latestEnvelopeD)
             ]
         )
     } catch * {
@@ -2403,7 +2455,15 @@ let $I18errorMessage := (
                 
                 let $needed := not(common:is-polutant-air($pollutant))(:) and ($link = "http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/fullyCorrected" or $link = "http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/noneApplied"):)
                 let $needed2 := common:is-polutant-air($pollutant) and ($linkAjustment = "http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/noneApplicable" or $linkAjustment = "")
+                
                 let $samplingPointAssessmentMetadata := $node/aqd:samplingPointAssessmentMetadata/@xlink:href
+                let $ok-spa := if(functx:if-empty($samplingPointAssessmentMetadata, "") != "")
+                               then
+                                query:existsViaNameLocalId(
+                                    $samplingPointAssessmentMetadata,
+                                    "AQD_SamplingPoint",
+                                    $latestEnvelopeD
+                                    )
                 
                 let $modelAssessmentMetadata := $node/aqd:modelAssessmentMetadata/@xlink:href
                 let $ok-ma := if(functx:if-empty($modelAssessmentMetadata, "") != "")
@@ -2411,7 +2471,7 @@ let $I18errorMessage := (
                         query:existsViaNameLocalId(
                         $modelAssessmentMetadata,
                         "AQD_Model",
-                        $latestEnvelopesD1
+                        $latestEnvelopeByYearD1b
                         )
                     else
                         true()
@@ -2426,7 +2486,7 @@ let $I18errorMessage := (
                                  then
                                     (:Skip check:)
                                     $errors:INFO
-                            else if ($ok-ma) then
+                            else if ($ok-ma or $ok-spa) then
 
                                         $errors:ERROR
 
@@ -2447,7 +2507,7 @@ let $I18errorMessage := (
                         )
 
         let $I42errorMessage := (
-                            if ($I18errorLevel = $errors:WARNING)
+                            if ($I42errorLevel = $errors:WARNING)
                                 then ("No assessment information for NS and WSS correction is expected for this pollutant")
 
                                 else ($labels:I42)
