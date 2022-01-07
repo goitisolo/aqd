@@ -11,8 +11,10 @@ import module namespace query = "aqd-query" at "aqd-query.xquery";
 import module namespace errors = "aqd-errors" at "aqd-errors.xquery";
 import module namespace schemax = "aqd-schema" at "aqd-schema.xquery";
 import module namespace checks = "aqd-checks" at "aqd-checks.xq";
+
 (:import module namespace functx = "http://www.functx.com" at "aqd-functx.xq";:)
 import module namespace functx = "http://www.functx.com" at "functx-1.0-doc-2007-01.xq";
+
 
 declare namespace aqd = "http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0";
 declare namespace gml = "http://www.opengis.net/gml/3.2";
@@ -30,6 +32,7 @@ declare namespace sams="http://www.opengis.net/samplingSpatial/2.0";
 declare namespace sam = "http://www.opengis.net/sampling/2.0";
 declare namespace gmd = "http://www.isotc211.org/2005/gmd";
 declare namespace gco = "http://www.isotc211.org/2005/gco";
+
 
 declare namespace sparql = "http://www.w3.org/2005/sparql-results#";
 declare namespace skos = "http://www.w3.org/2004/02/skos/core#";
@@ -1823,6 +1826,70 @@ let $ms2Eb14b := prof:current-ms()
         }
 
     let $ms2Eb48 := prof:current-ms()
+
+     (: Eb49 - The aim of this task is to add new QC rule Eb49 which will test:
+
+- if the variables declared in ./om:result/gml:File/gml:fileReference after a # are unique,
+- if the combinations of file#variable declared in ./om:result/gml:File/gml:fileReference are unique,
+
+QC should return WARNING if the variables are not unique.
+QC should return BLOCKER if the combinations of file#variable are not unique.:)
+    
+ 
+
+    let $ms1Eb49 := prof:current-ms()
+    
+    let $Eb49invalid :=
+        try {
+
+        let $variables0:=
+            for $x in $docRoot//om:result/gml:File/gml:fileReference
+               
+             return substring-after($x, '#') ||"###"|| $x/../../../@gml:id
+                   (: <result>
+                        <fileReference>{substring-after($x, '#')}</fileReference>
+                        <gmlId>{$x/../../../@gml:id}</gmlId>                       
+                    </result>:)
+
+        let $variables:=
+            for $x in distinct-values($variables0 )   
+                
+                  let $repeated:=
+                      for $y in $docRoot//om:result/gml:File/gml:fileReference             
+                          return                     
+                         if ((substring-after($y,"#") = substring-before($x,"###") )  and (substring-after($x,"###") != ($y/../../../@gml:id)))then     
+                                          
+                          "Variable: " || $y       
+            return  $repeated
+
+
+        let $combinations:=
+            for $x in distinct-values($docRoot//om:result/gml:File/gml:fileReference)
+            where 1 < count($docRoot//om:result/gml:File/gml:fileReference[text() = $x ])
+             return  "Combination: " ||$x
+           
+                 
+             let $varcomb:= ($variables,$combinations)
+            
+            for $i in $varcomb
+            
+            return
+                <tr>
+                    <td title="Variable/Combination">{$i}</td>  
+                   <!-- <td title="variables0">{$variables0}</td>  
+                    <td title="variables">{$variables}</td> 
+                    <td title="combinations">{$combinations}</td>   
+
+<td title="$varcomb">{$varcomb}</td>       -->
+                </tr>
+        } catch * {
+            <tr class="{$errors:FAILED}">
+                <td title="Error code">{$err:code}</td>
+                <td title="Error description">{$err:description}</td>
+            </tr>
+        }
+
+    let $ms2Eb49 := prof:current-ms()
     
     
     let $ms2Total := prof:current-ms()
@@ -1879,6 +1946,7 @@ let $ms2Eb14b := prof:current-ms()
             {html:build2("Eb46", $labels:Eb46, $labels:Eb46_SHORT, $Eb46invalid, "All records are valid", "record", $errors:Eb46)}
             {html:build2("Eb47", $labels:Eb47, $labels:Eb47_SHORT, $Eb47invalid, "All records are valid", "record", $errors:Eb47)}
             {html:build2("Eb48", $labels:Eb48, $labels:Eb48_SHORT, $Eb48invalid, "All records are valid", "record", $errors:Eb48)}
+            {html:build2Distinct("Eb49", $labels:Eb49, $labels:Eb49_SHORT, $Eb49invalid, "All records are valid", "record", $errors:Eb49)}
         </table>
     <table>
     <br/>
@@ -1940,6 +2008,7 @@ let $ms2Eb14b := prof:current-ms()
        {common:runtime("Eb46",  $ms1Eb46, $ms2Eb46)}
        {common:runtime("Eb47",  $ms1Eb47, $ms2Eb47)}
        {common:runtime("Eb48",  $ms1Eb48, $ms2Eb48)}
+       {common:runtime("Eb49",  $ms1Eb49, $ms2Eb49)}
        {common:runtime("Total time",  $ms1Total, $ms2Total)}
     </table>
     </table>

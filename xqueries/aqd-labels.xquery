@@ -609,6 +609,8 @@ declare variable $labels:Eb47 := labels:getDefinition("Eb47");
 declare variable $labels:Eb47_SHORT := labels:getPrefLabel("Eb47");
 declare variable $labels:Eb48 := labels:getDefinition("Eb48");
 declare variable $labels:Eb48_SHORT := labels:getPrefLabel("Eb48");
+declare variable $labels:Eb49 := labels:getDefinition("Eb49");
+declare variable $labels:Eb49_SHORT := labels:getPrefLabel("Eb49");
 
 declare variable $labels:G0 := labels:getDefinition("G0");
 declare variable $labels:G0_SHORT := labels:getPrefLabel("G0");
