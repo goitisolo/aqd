@@ -801,14 +801,14 @@ let $ms2Eb14b := prof:current-ms()
     
     let $Eb23invalid :=
         try {
-            (for $x at $xpos in $docRoot//om:OM_Observation/om:result[swe:DataArray]
+            (for $x at $xpos in $docRoot//om:OM_Observation/om:result
             let $blockSeparator := string($x//swe:encoding/swe:TextEncoding/@blockSeparator)
             let $decimalSeparator := string($x//swe:encoding/swe:TextEncoding/@decimalSeparator)
             let $tokenSeparator := string($x//swe:encoding/swe:TextEncoding/@tokenSeparator)
 
             let $actual := count(tokenize(replace($x//swe:values, $blockSeparator || "$", ""), $blockSeparator))
             let $expected := number($x//swe:elementCount/swe:Count/swe:value)
-            where not($actual = $expected)
+            where not($actual = $expected) or ($expected = 0)
             return
                 <tr>
                     <td title="OM_Observation">{string($x/../@gml:id)}</td>
