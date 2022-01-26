@@ -972,17 +972,23 @@ let $C26table :=
             let $reportingMetric := $meta1/../../../aqd:assessmentThreshold//aqd:reportingMetric/@xlink:href => string()
             let $missing :=
                 if ($reportingMetric = "http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/daysAbove-3yr") then
-                    if (not($samplingPoint = $modelMethods2Y)) then 1 else 0
+                    if (not($samplingPoint = $modelMethods2Y)) then 1 || "###" ||2 else 0|| "###"
                 else if ($reportingMetric = "http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/AOT40c-5yr") then
-                    if (not($samplingPoint = $modelMethods4Y)) then 1 else 0
+                    if (not($samplingPoint = $modelMethods4Y)) then 1 || "###" || 4  else 0|| "###"
                 else
-                    if (not($samplingPoint = $modelMethods)) then 1 else 0
-            where ($missing = 1)
+                    if (not($samplingPoint = $modelMethods)) then 1 || "###" || 0 else 0|| "###"
+            (:where ($missing = 1):)
+            where (xs:integer(substring-before($missing,"###")) = 1)
             return
                 <tr>
                     <td title="AQD_AssessmentRegime">{data($meta1/../../../aqd:inspireId/base:Identifier/base:localId)}</td>
                     <td title="aqd:modelAssessmentMetadata">{data($meta1/@xlink:href)}</td>
                     <td title="aqd:samplingPointAssessmentMetadata"></td>
+                    <td title="reportingMetric">{substring-after($reportingMetric,"/reportingmetric/")}</td>
+                    
+                    <td title="Sparql">{sparqlx:getLink(query:getModelEndPosition($modelsEnvelope, xs:integer($reportingYear) - xs:integer(substring-after($missing,"###")) || "-01-01", $reportingYear || "-12-31"))}</td>
+                   <!-- <td title="Sparql Model 2Y">{sparqlx:getLink(query:getModelEndPosition($modelsEnvelope,xs:string(xs:integer($reportingYear) - 2) || "-01-01", $reportingYear || "-12-31"))}</td>
+                    <td title="Sparql Model 4Y">{sparqlx:getLink(query:getModelEndPosition($modelsEnvelope,xs:string(xs:integer($reportingYear) - 4) || "-01-01", $reportingYear || "-12-31"))}</td>-->
                 </tr>
 
         let $invalidSampingPoint :=
@@ -992,17 +998,21 @@ let $C26table :=
             let $reportingMetric := $meta2/../../../aqd:assessmentThreshold//aqd:reportingMetric/@xlink:href => string()
             let $missing :=
                 if ($reportingMetric = "http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/daysAbove-3yr") then
-                    if (not($samplingPoint = $sampingPointMethods2Y)) then 1 else 0
+                    if (not($samplingPoint = $sampingPointMethods2Y)) then 1 || "###" ||2 else 0|| "###"
                 else if ($reportingMetric = "http://dd.eionet.europa.eu/vocabulary/aq/reportingmetric/AOT40c-5yr") then
-                    if (not($samplingPoint = $sampingPointMethods4Y)) then 1 else 0
+                    if (not($samplingPoint = $sampingPointMethods4Y)) then 1 || "###" || 4  else 0|| "###"
                 else
-                    if (not($samplingPoint = $sampingPointMethods)) then 1 else 0
-            where ($missing = 1)
+                    if (not($samplingPoint = $sampingPointMethods)) then 1 || "###" || 0 else 0|| "###"
+            where (xs:integer(substring-before($missing,"###")) = 1)
             return
                 <tr>
                     <td title="AQD_AssessmentRegime">{data($meta2/../../../aqd:inspireId/base:Identifier/base:localId)}</td>
                     <td title="aqd:modelAssessmentMetadata"></td>
                     <td title="aqd:samplingPointAssessmentMetadata">{data($meta2/@xlink:href)}</td>
+                     <td title="reportingMetric">{substring-after($reportingMetric,"/reportingmetric/")}</td>
+                    <td title="Sparql">{sparqlx:getLink(query:getSamplingPointEndPosition($latestEnvelopeD,xs:integer($reportingYear) - xs:integer(substring-after($missing,"###")) || "-01-01",$reportingYear || "-12-31"))}</td>
+                    <!--<td title="Sparql SPO Methods 2Y">{sparqlx:getLink(query:getSamplingPointEndPosition($latestEnvelopeD,xs:string(xs:integer($reportingYear) - 2) || "-01-01",$reportingYear || "-12-31"))}</td>
+                    <td title="Sparql SPO Methods 4Y">{sparqlx:getLink(query:getSamplingPointEndPosition($latestEnvelopeD,xs:string(xs:integer($reportingYear) - 4) || "-01-01",$reportingYear || "-12-31"))}</td>-->
                 </tr>
 
         return
@@ -1010,7 +1020,13 @@ let $C26table :=
                 <tr>
                     <td title="AQD_AssessmentRegime">{data($method/../../aqd:inspireId/base:Identifier/base:localId)}</td>
                     <td title="aqd:modelAssessmentMetadata">None specified</td>
-                    <td title="aqd:samplingPointAssessmentMetadata">None specified</td>
+                    <td title="aqd:samplingPointAssessmentMetadata">None specified</td>                     
+                    <!--<td title="Sparql Model">{sparqlx:getLink(query:getModelEndPosition($modelsEnvelope, $reportingYear || "-01-01", $reportingYear || "-12-31"))}</td>
+                    <td title="Sparql Model 2Y">{sparqlx:getLink(query:getModelEndPosition($modelsEnvelope,xs:string(xs:integer($reportingYear) - 2) || "-01-01", $reportingYear || "-12-31"))}</td>
+                    <td title="Sparql Model 4Y">{sparqlx:getLink(query:getModelEndPosition($modelsEnvelope,xs:string(xs:integer($reportingYear) - 4) || "-01-01", $reportingYear || "-12-31"))}</td>
+                    <td title="Sparql SPO Methods">{sparqlx:getLink(query:getSamplingPointEndPosition($latestEnvelopeD,$reportingYear || "-01-01",$reportingYear || "-12-31"))}</td>
+                    <td title="Sparql SPO Methods 2Y">{sparqlx:getLink(query:getSamplingPointEndPosition($latestEnvelopeD,xs:string(xs:integer($reportingYear) - 2) || "-01-01",$reportingYear || "-12-31"))}</td>
+                    <td title="Sparql SPO Methods 4Y">{sparqlx:getLink(query:getSamplingPointEndPosition($latestEnvelopeD,xs:string(xs:integer($reportingYear) - 4) || "-01-01",$reportingYear || "-12-31"))}</td>-->
                 </tr>
             else
                 (($invalidModel), ($invalidSampingPoint))
@@ -1020,6 +1036,8 @@ let $C26table :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+
+
 
 
 let $C26errorClass := if (contains($source_url, "c_preliminary")) then $errors:WARNING else $errors:C26
@@ -1237,7 +1255,7 @@ let $C28invalid :=
 
 let $ms2C28 := prof:current-ms()
 
-(: C31 :)
+(: C31:)
 let $ms1C31 := prof:current-ms()
 
 let $C31table :=
@@ -1379,7 +1397,7 @@ pruebas C31 local-->
  
 
     let $ms2C31b := prof:current-ms()
-
+ 
 (: C32 - :)
 
 let $ms1C32 := prof:current-ms()
@@ -1817,11 +1835,11 @@ return
         {html:build2("C23b", $labels:C23b, $labels:C23b_SHORT, $C23binvalid, "All values are valid", " invalid value", $errors:C23b)}
         {html:build2Sparql("C24", $labels:C24, $labels:C24_SHORT, $C24invalid, "All values are valid", "", $C24errorClass)}
         {html:build2("C25", $labels:C25, $labels:C25_SHORT, $C25invalid, "All values are valid", "", $errors:C25)}
-        {html:build2("C26", $labels:C26, $labels:C26_SHORT, $C26table, "All values are valid", " invalid value", $C26errorClass)}
+        {html:build2Sparql("C26", $labels:C26, $labels:C26_SHORT, $C26table, "All values are valid", " invalid value", $C26errorClass)}
         {html:build2Sparql("C27", labels:interpolate($labels:C27, ($countZoneIds2, $countZoneIds1)), $labels:C27_SHORT, $C27table, "", " not unique zone", $errors:C27)}
         {html:build2Sparql("C28", $labels:C28, $labels:C28_SHORT, $C28invalid, "All values are valid", " invalid value(s) ", $errors:C28)}
         {html:build2Sparql("C29", $labels:C29, $labels:C29_SHORT,  $C29invalid, "All values are valid", " invalid value", $errors:C29)}
-       {html:build2Sparql("C31", $labels:C31, $labels:C31_SHORT, $C31table, "", "record", errors:getMaxError($C31table))}
+        {html:build2Sparql("C31", $labels:C31, $labels:C31_SHORT, $C31table, "", "record", errors:getMaxError($C31table))}
         {html:build4Sparql("C31b", $labels:C31b, $labels:C31b_SHORT, $C31btable, "", "record", errors:getMaxError($C31btable))}
         {html:build2Sparql("C32", $labels:C32, $labels:C32_SHORT, $C32table, "All values are valid", " invalid value", $errors:C32)}
         {html:build2("C33", $labels:C33, $labels:C33_SHORT, $C33invalid, "All values are valid", " invalid value", $errors:C33)}
