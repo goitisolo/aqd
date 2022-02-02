@@ -1734,7 +1734,7 @@ let $ms2Eb14b := prof:current-ms()
     
     
     (: Eb47 - The aim of this QC rule Eb47 is:
-      1. scan envelope to find all files with extensions such as *.zip, *.shp ; *.tiff, *.asc,
+      1. scan envelope to find all files with extensions such as *.zip, *.shp ; *.tiff, *.asc, *.tif
       2. compare with the list of files found in gml:fileReference,
       3. return BLOCKER if the lists are not identical. 
     :)
@@ -1743,7 +1743,7 @@ let $ms2Eb14b := prof:current-ms()
     
     let $Eb47invalid :=
       try {
-        (: 1. scan envelope to find all files with extensions such as *.zip, *.shp ; *.tiff, *.asc :)
+        (: 1. scan envelope to find all files with extensions such as *.zip, *.shp ; *.tiff, *.asc, *.tif :)
         let $envelopeUrl := common:getCleanUrl($source_url)
         let $xmlName := tokenize($envelopeUrl , "/")[last()]
         let $currentEnvelope := substring-before($envelopeUrl, $xmlName)
@@ -1751,13 +1751,13 @@ let $ms2Eb14b := prof:current-ms()
         let $docEnvelopexml := doc($envelopexml)
         
         (: getting envelope/xml file @link :)
-        let $filesEnvelopeXML := data($docEnvelopexml/envelope/file[ends-with(@link, ".zip") or ends-with(@link, ".shp") or ends-with(@link, ".tiff") or ends-with(@link, ".asc")]/@link)
+        let $filesEnvelopeXML := data($docEnvelopexml/envelope/file[ends-with(@link, ".zip") or ends-with(@link, ".shp") or ends-with(@link, ".tiff") or ends-with(@link, ".asc") or ends-with(@link, ".tif")]/@link)
         let $countFilesEnvelopeXML := count($filesEnvelopeXML)
 
         
         (: 2. compare with the list of files found in gml:fileReference :)
         (: getting gml:fileReference secuence :)
-        let $fileReferences := $docRoot//om:OM_Observation/om:result[gml:File]/gml:File[contains(gml:fileReference, ".zip") or contains(gml:fileReference, ".shp") or contains(gml:fileReference, ".tiff") or contains(gml:fileReference, ".asc")]/gml:fileReference
+        let $fileReferences := $docRoot//om:OM_Observation/om:result[gml:File]/gml:File[contains(gml:fileReference, ".zip") or contains(gml:fileReference, ".shp") or contains(gml:fileReference, ".tiff") or contains(gml:fileReference, ".asc") or contains(gml:fileReference, ".tif")]/gml:fileReference
         let $countFileReferences := count($fileReferences)
         
         (: lists comparison :)
@@ -1766,8 +1766,8 @@ let $ms2Eb14b := prof:current-ms()
         
                                           
         (: 3. return BLOCKER if the lists are not identical :)
-        let $filesEnvelopeXML_toCompare := data($docEnvelopexml/envelope/file[ends-with(@link, ".zip") or ends-with(@link, ".shp") or ends-with(@link, ".tiff") or ends-with(@link, ".asc")]/substring-after(@link, '://'))
-        let $fileReferences_toCompare := $docRoot//om:OM_Observation/om:result[gml:File]/gml:File[contains(gml:fileReference, ".zip") or contains(gml:fileReference, ".shp") or contains(gml:fileReference, ".tiff") or contains(gml:fileReference, ".asc")]/functx:substring-before-if-contains(substring-after(gml:fileReference, '://'), "#") 
+        let $filesEnvelopeXML_toCompare := data($docEnvelopexml/envelope/file[ends-with(@link, ".zip") or ends-with(@link, ".shp") or ends-with(@link, ".tiff") or ends-with(@link, ".asc") or ends-with(@link, ".tif")]/substring-after(@link, '://'))
+        let $fileReferences_toCompare := $docRoot//om:OM_Observation/om:result[gml:File]/gml:File[contains(gml:fileReference, ".zip") or contains(gml:fileReference, ".shp") or contains(gml:fileReference, ".tiff") or contains(gml:fileReference, ".asc") or contains(gml:fileReference, ".tif")]/functx:substring-before-if-contains(substring-after(gml:fileReference, '://'), "#") 
         let $searchingIdentical := if($sameNumOfFiles = true() and $countFilesEnvelopeXML != 0 and $countFileReferences != 0) then 
                                   (
                                       for $file in $filesEnvelopeXML_toCompare
