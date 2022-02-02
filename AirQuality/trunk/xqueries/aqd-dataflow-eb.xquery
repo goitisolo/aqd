@@ -801,7 +801,7 @@ let $ms2Eb14b := prof:current-ms()
     
     let $Eb23invalid :=
         try {
-            (for $x at $xpos in $docRoot//om:OM_Observation/om:result
+            (for $x at $xpos in $docRoot//om:OM_Observation/om:result[swe:DataArray]
             let $blockSeparator := string($x//swe:encoding/swe:TextEncoding/@blockSeparator)
             let $decimalSeparator := string($x//swe:encoding/swe:TextEncoding/@decimalSeparator)
             let $tokenSeparator := string($x//swe:encoding/swe:TextEncoding/@tokenSeparator)
