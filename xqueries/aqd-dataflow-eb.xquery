@@ -1373,7 +1373,7 @@ let $ms2Eb14b := prof:current-ms()
               let $reference := $x/gml:File/gml:fileReference
               let $referenceHTTPS := replace($reference, "http://", "https://")
               let $referenceHTTP := replace($reference, "https://", "http://")
-              let $okAllowedFileReference := ( if( contains($reference, ".zip") or contains($reference, ".shp") or contains($reference, ".tiff") or contains($reference, ".asc") ) then true()
+              let $okAllowedFileReference := ( if( contains($reference, ".zip") or contains($reference, ".shp") or contains($reference, ".tiff") or contains($reference, ".asc") or contains($reference, ".tif") ) then true()
                                               else false() )
               
               let $model := $x/../om:parameter/om:NamedValue[om:name/@xlink:href = $processParameterModel]
