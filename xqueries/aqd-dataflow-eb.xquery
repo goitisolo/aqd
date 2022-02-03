@@ -1874,15 +1874,18 @@ QC should return BLOCKER if the combinations of file#variable are not unique.:)
             for $x in distinct-values($docRoot//om:result/gml:File/gml:fileReference)
             where 1 < count($docRoot//om:result/gml:File/gml:fileReference[text() = $x ])
              return  "Combination: " ||$x
-           
-                 
-             let $varcomb:= ($variables,$combinations)
+                       
+        let $varcomb:= ($variables,$combinations)
             
-            for $i in $varcomb
+        for $i in $varcomb
+          let $errorType := 
+              if(contains($i, "Variable: ")) then "Warning" 
+              else if(contains($i, "Combination: ")) then functx:capitalize-first($errors:Eb49)
             
             return
                 <tr>
                     <td title="Variable/Combination">{$i}</td>  
+                    <td title="Error type">{$errorType}</td>
                    <!-- <td title="variables0">{$variables0}</td>  
                     <td title="variables">{$variables}</td> 
                     <td title="combinations">{$combinations}</td>   
@@ -1896,6 +1899,40 @@ QC should return BLOCKER if the combinations of file#variable are not unique.:)
             </tr>
         }
 
+    let $Eb49ErrorTypeWorkflow := 
+        let $variables0:=
+            for $x in $docRoot//om:result/gml:File/gml:fileReference
+            return substring-after($x, '#') ||"###"|| $x/../../../@gml:id
+
+        let $variables:=
+            for $x in distinct-values($variables0 )   
+                  let $repeated:=
+                      for $y in $docRoot//om:result/gml:File/gml:fileReference             
+                          return                     
+                         if ((substring-after($y,"#") = substring-before($x,"###") )  and (substring-after($x,"###") != ($y/../../../@gml:id)))then
+                          "Variable: " || $y       
+            return  $repeated
+
+        let $combinations:=
+            for $x in distinct-values($docRoot//om:result/gml:File/gml:fileReference)
+            where 1 < count($docRoot//om:result/gml:File/gml:fileReference[text() = $x ])
+            return  "Combination: " ||$x
+                       
+        let $varcomb:= ($variables,$combinations)
+            
+        for $i in $varcomb
+        return
+              if(contains($i, "Variable: ")) then $errors:WARNING
+              else if(contains($i, "Combination: ")) then $errors:Eb49
+    
+    let $Eb49maxErrorLevel := (if ($Eb49ErrorTypeWorkflow = $errors:Eb49)
+                            then( $errors:Eb49 )
+                            else(if ($Eb49ErrorTypeWorkflow = $errors:WARNING)
+                                then( $errors:WARNING )
+                                else( $errors:INFO )
+                                )
+                        )
+    
     let $ms2Eb49 := prof:current-ms()
     
     
@@ -1953,7 +1990,7 @@ QC should return BLOCKER if the combinations of file#variable are not unique.:)
             {html:build2("Eb46", $labels:Eb46, $labels:Eb46_SHORT, $Eb46invalid, "All records are valid", "record", $errors:Eb46)}
             {html:build2("Eb47", $labels:Eb47, $labels:Eb47_SHORT, $Eb47invalid, "All records are valid", "record", $errors:Eb47)}
             {html:build2("Eb48", $labels:Eb48, $labels:Eb48_SHORT, $Eb48invalid, "All records are valid", "record", $errors:Eb48)}
-            {html:build2Distinct("Eb49", $labels:Eb49, $labels:Eb49_SHORT, $Eb49invalid, "All records are valid", "record", $errors:Eb49)}
+            {html:build2Distinct("Eb49", $labels:Eb49, $labels:Eb49_SHORT, $Eb49invalid, "All records are valid", "record", $Eb49maxErrorLevel)}
         </table>
     <table>
     <br/>
