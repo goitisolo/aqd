@@ -1644,7 +1644,7 @@ let $ms2Eb14b := prof:current-ms()
     
     (: Eb46 - The aim of this QC rule Eb46 is:
       1. scan envelope to find all files with *.zip extension,
-      2. within each zip file count number of files with extensions such as: *.shp or *.tiff or *.asc,
+      2. within each zip file count number of files with extensions such as: *.shp or *.tiff or *.asc or *.tif,
       3. return BLOCKER if the count > 1 (ie each zip file should not contain more than 1 *.shp files, neither e.g. *.shp and *.asc).
     :)
     
@@ -1664,7 +1664,7 @@ let $ms2Eb14b := prof:current-ms()
         let $countZIPFilesEnvelope := count($ZIPFilesEnvelope)
 
         
-        (: 2. within each zip file count number of files with extensions such as: *.shp or *.tiff or *.asc :)         
+        (: 2. within each zip file count number of files with extensions such as: *.shp or *.tiff or *.asc or *.tif :)         
         for $y in $docEnvelopexml/envelope/file[@type="application/zip"]
           let $zipLink := data($y/@link)
           let $eionet := if (contains($zipLink, "https://cdrtest.eionet.europa.eu/"))
@@ -1685,7 +1685,7 @@ let $ms2Eb14b := prof:current-ms()
           let $response := http:send-request($request)[2] 
           let $zipContent := $response
           
-          (: counting *.shp or *.tiff or *.asc :)
+          (: counting *.shp or *.tiff or *.asc or *.tif :)
           let $zipContent2 := tokenize($zipContent, " ")
  
           let $countShpInZip := (
@@ -1705,11 +1705,17 @@ let $ms2Eb14b := prof:current-ms()
                                   return contains($elem, ".asc"))
               return count(index-of($isAscInZip, true()))
           )
+          
+          let $countTifInZip := (
+              let $isTifInZip := (for $elem in $zipContent2
+                                  return contains($elem, ".tif"))
+              return count(index-of($isTifInZip, true()))
+          )
               
                                           
         (: 3. return BLOCKER if the count > 1 (ie each zip file should not contain more than 1 *.shp files, neither e.g. *.shp and *.asc) :)
         let $ok := (
-                    if( $countShpInZip > 1 or $countTiffInZip > 1 or $countAscInZip > 1) then 
+                    if( $countShpInZip > 1 or $countTiffInZip > 1 or $countAscInZip > 1 or $countTifInZip > 1) then 
                       false()
                     else 
                       true()
@@ -1721,6 +1727,7 @@ let $ms2Eb14b := prof:current-ms()
                   <td title="ZIP name">{data($y/@name)}</td>
                   <td title="Number of .shp files">{$countShpInZip}</td>
                   <td title="Number of .tiff files">{$countTiffInZip}</td>
+                  <td title="Number of .tif files">{$countTifInZip}</td>
                   <td title="Number of .asc files">{$countAscInZip}</td>
               </tr>[position() = 1 to $errors:MEDIUM_LIMIT]
         } catch * {
