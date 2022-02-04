@@ -98,6 +98,7 @@ let $latestEnvelopeB := query:getLatestEnvelope($cdrUrl || $bdir)
 let $latestEnvelopeC := query:getLatestEnvelope($cdrUrl || $cdir, $reportingYear)
 let $latestEnvelopeD := query:getLatestEnvelope($cdrUrl || "d/")
 let $latestEnvelopeD1b := query:getLatestEnvelope($cdrUrl || "d1b/", $reportingYear)
+let $latestEnvelopeD1b_C_prelim := query:getLatestEnvelope($cdrUrl || "d1b/")
 let $getEnvelopeD1b := query:getEnvelopes($cdrUrl || "d1b/")
 let $knownRegimes := distinct-values(data(sparqlx:run(query:getAssessmentRegime($latestEnvelopeC))/sparql:binding[@name = 'inspireLabel']/sparql:literal))
 let $allRegimes := query:getAllRegimeIds($namespaces)
@@ -945,20 +946,31 @@ let $ms2C25 := prof:current-ms()
 let $ms1C26 := prof:current-ms()
 
 let $C26table :=
+
+(:latestEnvelopeD1b_C_prelim
+envelopeUrl
+:)
     try {
+        
+        let $modelC26:=
+            if (contains($envelopeUrl,"/c_preliminary"))then
+                $latestEnvelopeD1b_C_prelim
+            else
+                $modelsEnvelope
+
         let $startDate := $reportingYear || "-01-01"
         let $endDate := $reportingYear || "-12-31"
-        let $modelMethods := distinct-values(data(sparqlx:run(query:getModelEndPosition($modelsEnvelope, $startDate, $endDate))//sparql:binding[@name='inspireLabel']/sparql:literal))
+        let $modelMethods :=distinct-values(data(sparqlx:run(query:getModelEndPosition($modelC26, $startDate, $endDate))//sparql:binding[@name='inspireLabel']/sparql:literal))        
         let $sampingPointMethods := distinct-values(data(sparqlx:run(query:getSamplingPointEndPosition($latestEnvelopeD,$startDate,$endDate))//sparql:binding[@name='inspireLabel']/sparql:literal))
 
         let $startDate := xs:string(xs:integer($reportingYear) - 2) || "-01-01"
         let $endDate := $reportingYear || "-12-31"
-        let $modelMethods2Y := distinct-values(data(sparqlx:run(query:getModelEndPosition($modelsEnvelope, $startDate, $endDate))//sparql:binding[@name='inspireLabel']/sparql:literal))
+        let $modelMethods2Y :=distinct-values(data(sparqlx:run(query:getModelEndPosition($modelC26, $startDate, $endDate))//sparql:binding[@name='inspireLabel']/sparql:literal))       
         let $sampingPointMethods2Y := distinct-values(data(sparqlx:run(query:getSamplingPointEndPosition($latestEnvelopeD,$startDate,$endDate))//sparql:binding[@name='inspireLabel']/sparql:literal))
 
         let $startDate := xs:string(xs:integer($reportingYear) - 4) || "-01-01"
         let $endDate := $reportingYear || "-12-31"
-        let $modelMethods4Y := distinct-values(data(sparqlx:run(query:getModelEndPosition($modelsEnvelope, $startDate, $endDate))//sparql:binding[@name='inspireLabel']/sparql:literal))
+        let $modelMethods4Y :=distinct-values(data(sparqlx:run(query:getModelEndPosition($modelC26, $startDate, $endDate))//sparql:binding[@name='inspireLabel']/sparql:literal))
         let $sampingPointMethods4Y := distinct-values(data(sparqlx:run(query:getSamplingPointEndPosition($latestEnvelopeD,$startDate,$endDate))//sparql:binding[@name='inspireLabel']/sparql:literal))
 
         for $method in $docRoot//aqd:AQD_AssessmentRegime/aqd:assessmentMethods/aqd:AssessmentMethods
@@ -986,7 +998,7 @@ let $C26table :=
                     <td title="aqd:samplingPointAssessmentMetadata"></td>
                     <td title="reportingMetric">{substring-after($reportingMetric,"/reportingmetric/")}</td>
                     
-                    <td title="Sparql">{sparqlx:getLink(query:getModelEndPosition($modelsEnvelope, xs:integer($reportingYear) - xs:integer(substring-after($missing,"###")) || "-01-01", $reportingYear || "-12-31"))}</td>
+                    <td title="Sparql">{sparqlx:getLink(query:getModelEndPosition($modelC26, xs:integer($reportingYear) - xs:integer(substring-after($missing,"###")) || "-01-01", $reportingYear || "-12-31"))}</td>
                    <!-- <td title="Sparql Model 2Y">{sparqlx:getLink(query:getModelEndPosition($modelsEnvelope,xs:string(xs:integer($reportingYear) - 2) || "-01-01", $reportingYear || "-12-31"))}</td>
                     <td title="Sparql Model 4Y">{sparqlx:getLink(query:getModelEndPosition($modelsEnvelope,xs:string(xs:integer($reportingYear) - 4) || "-01-01", $reportingYear || "-12-31"))}</td>-->
                 </tr>
