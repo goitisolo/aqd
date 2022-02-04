@@ -924,7 +924,11 @@ let $ms1M46 := prof:current-ms()
 let $M46invalid :=
     try {
         for $latLong in $docRoot//aqd:AQD_ModelArea/sams:shape
-        let $latLongList := $latLong//gml:posList[../../../../../@srsName != 'urn:ogc:def:crs:EPSG::3035']
+        let $hasMultiSurface := common:isNodeInParent($latLong, 'gml:MultiSurface')
+        let $latLongList := (
+          if($hasMultiSurface) then $latLong//gml:posList[../../../../../@srsName != 'urn:ogc:def:crs:EPSG::3035']
+          else $latLong//gml:posList[../../../@srsName != 'urn:ogc:def:crs:EPSG::3035']
+        )
         let $latlongToken := fn:tokenize(normalize-space($latLongList), "\s+")
         let $lat := number($latlongToken[1])
         let $long := number($latlongToken[2])
