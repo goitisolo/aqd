@@ -760,8 +760,10 @@ declare variable $labels:G85 := labels:getDefinition("G85");
 declare variable $labels:G85_SHORT := labels:getPrefLabel("G85");
 declare variable $labels:G86 := labels:getDefinition("G86");
 declare variable $labels:G86_SHORT := labels:getPrefLabel("G86");
-declare variable $labels:G89 := labels:getDefinition("G89");
+declare variable $labels:G89 := labels:getDefinition("G86");
 declare variable $labels:G89_SHORT := labels:getPrefLabel("G89");
+declare variable $labels:G92 := labels:getDefinition("G92");
+declare variable $labels:G92_SHORT := labels:getPrefLabel("G92");
 
 declare variable $labels:H0 := labels:getDefinition("H0");
 declare variable $labels:H0_SHORT := labels:getPrefLabel("H0");
