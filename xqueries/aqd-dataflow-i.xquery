@@ -2129,7 +2129,7 @@ let $I18errorMessage := (
             let $linkAjustment := $ul/@xlink:href
             
             let $needed := not(common:is-polutant-air($pollutant))(:) and ($link = "http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/fullyCorrected" or $link = "http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/noneApplied"):)
-            let $needed2 := common:is-polutant-air($pollutant) and ($linkAjustment = "http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/noneApplicable" or $linkAjustment = "http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/noneApplied " or $linkAjustment = "")            
+            let $needed2 := common:is-polutant-air($pollutant) and ($linkAjustment = "http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/noneApplicable" or $linkAjustment = "http://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/noneApplied" or $linkAjustment = "https://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/noneApplicable" or $linkAjustment = "https://dd.eionet.europa.eu/vocabulary/aq/adjustmenttype/noneApplied" or $linkAjustment = "")
             (:let $needed3 := common:is-polutant-air($pollutant):)
 
             let $ok := 
