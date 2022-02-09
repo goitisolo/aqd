@@ -3000,7 +3000,8 @@ declare function query:getTimeExtensionExemption($cdrUrl as xs:string) as xs:str
       }"
 };
 
-declare function query:getG13($envelopeUrl as xs:string, $reportingYear as xs:string) as xs:string {
+(: New getG13 query implemented on 08/02/2022 following the issue #145163 :)
+(:declare function query:getG13($envelopeUrl as xs:string, $reportingYear as xs:string) as xs:string {
   "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
 PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
@@ -3023,9 +3024,49 @@ PREFIX aq: <http://reference.eionet.europa.eu/aq/ontology/>
            FILTER (strstarts(str(?reportingYear), '" || $reportingYear || "'))
 
        }"
+};:)
+declare function query:getG13($countryCode as xs:string, $reportingYear as xs:string) as xs:string {
+  let $reportingYear := xs:integer($reportingYear)
+  return
+  "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+  PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
+  PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+  PREFIX aq: <http://reference.eionet.europa.eu/aq/ontology/>
+  PREFIX AirQualityReporting: <http://dd.eionet.europa.eu/schemas/id2011850eu-1.0/AirQualityReporting.xsd>
+  PREFIX dcterms: <http://purl.org/dc/terms/>
+  PREFIX rod: <http://rod.eionet.europa.eu/schema.rdf#>
+  PREFIX obligations: <http://rod.eionet.europa.eu/obligations/>
+  
+  SELECT DISTINCT ?inspireLabel ?pollutant ?objectiveType ?reportingMetric ?protectionTarget
+  
+  WHERE {
+    GRAPH ?envelopeGraph {
+      ?envelope rod:hasFile ?dataFile .
+      ?envelope rod:locality ?locality .
+      ?envelope rod:obligation obligations:671 .
+      ?envelope rod:startOfPeriod ?startOfPeriod .
+      FILTER (year(?startOfPeriod) = " || $reportingYear || ")
+    }
+    ?locality rod:loccode '" || $countryCode || "' .
+    ?envelope rod:hasFile ?dataFile .
+    ?dataFile cr:xmlSchema AirQualityReporting:
+    FILTER NOT EXISTS { ?dataFile dcterms:isReplacedBy ?isReplacedBy } 
+  
+    GRAPH ?dataFile {
+      ?regime a aqd:AQD_AssessmentRegime .
+      ?regime aqd:assessmentThreshold ?assessmentThreshold .
+      ?regime aqd:pollutant ?pollutant .
+      ?regime aqd:inspireId ?inspireId .
+      ?regime aqd:declarationFor ?declaration .
+    }
+    ?inspireId rdfs:label ?inspireLabel .
+    ?inspireId aqd:localId ?localId .
+    ?declaration aq:reportingBegin ?reportingYear .
+    ?assessmentThreshold aq:objectiveType ?objectiveType .
+    ?assessmentThreshold aq:reportingMetric ?reportingMetric .
+    ?assessmentThreshold aq:protectionTarget ?protectionTarget .
+  }"
 };
-
-
 
 
 declare function query:getG66($cdrUrl as xs:string, $reportingYear as xs:string) as xs:string* {

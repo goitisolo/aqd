@@ -612,7 +612,7 @@ let $ms1G13 := prof:current-ms()
 
 let $G13Results :=
     try {
-        sparqlx:run(query:getG13($cdrUrl, $reportingYear))
+        sparqlx:run(query:getG13(upper-case($countryCode), $reportingYear))
     } catch * {
         ()
     }
@@ -631,7 +631,7 @@ let $G13invalid :=
             <tr>
                 <td title="aqd:AQD_Attainment">{data($x/aqd:inspireId/base:Identifier/base:localId)}</td>
                 <td title="aqd:assessment">{data($x/aqd:assessment/@xlink:href)}</td>
-                <td title="Sparql">{sparqlx:getLink(query:getG13($cdrUrl, $reportingYear))}</td>
+                <td title="Sparql">{sparqlx:getLink(query:getG13(upper-case($countryCode), $reportingYear))}</td>
             </tr>
     } catch * {
         <tr class="{$errors:FAILED}">
