@@ -872,23 +872,44 @@ let $M45invalid :=
         
 
         let $posListCountRes:=
-        for $x in $docRoot//aqd:AQD_ModelArea
+          for $x in $docRoot//aqd:AQD_ModelArea
             return
-                if (exists($x//gml:posList)) then
+                if (exists($x//gml:MultiSurface)) then
+                  for $polygon in $x//gml:MultiSurface/gml:surfaceMember/gml:Polygon 
+                    return
+                      if (exists($polygon//gml:posList)) then
+                        (for $coordinates in $polygon//gml:posList
+                        return
+                         <result>
+                              <model>{$x/aqd:inspireId/base:Identifier/base:localId}</model>
+                              <count>{count(fn:tokenize(normalize-space($coordinates), "\s+")) mod 2}</count>
+                              <posList>{$coordinates}</posList>
+                              <poly>{data($coordinates/../../../@gml:id)}</poly>
+                         </result>)
+                      else 
+                         <result>
+                              <model>{$x/aqd:inspireId/base:Identifier/base:localId}</model>
+                              <count>{"Missing value"}</count>
+                              <posList>{"Missing value"}</posList>
+                         </result>
+                else 
+                  if (exists($x//gml:posList)) then
+                    (for $coordinates in $x//gml:posList
+                    return
+                     <result>
+                          <model>{$x/aqd:inspireId/base:Identifier/base:localId}</model>
+                          <count>{count(fn:tokenize(normalize-space($coordinates), "\s+")) mod 2}</count>
+                          <posList>{$coordinates}</posList>
+                          <poly>{data($coordinates/../../../@gml:id)}</poly>
+                      </result>)
+                  else 
                    <result>
-                       <model>{$x/aqd:inspireId/base:Identifier/base:localId}</model>
-                        <count>{count(fn:tokenize(normalize-space($x//gml:posList), "\s+")) mod 2}</count>
-                        <posList>{$x//gml:posList}</posList>
-                        <poly>{data($x//gml:posList/../../../@gml:id)}</poly>
-                    </result>
-                  
-                 else 
-                  <result>
                         <model>{$x/aqd:inspireId/base:Identifier/base:localId}</model>
-                         <count>{"Missing value"}</count>
-                         <posList>{"Missing value"}</posList>
-                </result>
-          for $y in $posListCountRes
+                        <count>{"Missing value"}</count>
+                        <posList>{"Missing value"}</posList>
+                   </result>
+        
+        for $y in $posListCountRes
           return
         if (($y/posList!="Missing value") and ($y/count > 0) ) then
             
@@ -924,10 +945,14 @@ let $ms1M46 := prof:current-ms()
 let $M46invalid :=
     try {
         for $latLong in $docRoot//aqd:AQD_ModelArea/sams:shape
+        return 
+          if (exists($latLong//gml:Polygon)) then (
+            for $polygon in $latLong//gml:Polygon
+              for $coordinates in $polygon//gml:posList 
         let $hasMultiSurface := common:isNodeInParent($latLong, 'gml:MultiSurface')
         let $latLongList := (
-          if($hasMultiSurface) then $latLong//gml:posList[../../../../../@srsName != 'urn:ogc:def:crs:EPSG::3035']
-          else $latLong//gml:posList[../../../@srsName != 'urn:ogc:def:crs:EPSG::3035']
+          if($hasMultiSurface) then $coordinates[../../../../../@srsName != 'urn:ogc:def:crs:EPSG::3035']
+          else $coordinates[../../../@srsName != 'urn:ogc:def:crs:EPSG::3035']
         )
         let $latlongToken := fn:tokenize(normalize-space($latLongList), "\s+")
         let $lat := number($latlongToken[1])
@@ -935,10 +960,11 @@ let $M46invalid :=
 
         let $datalon := $latlongToken[position() mod 2 = 0]
         let $datalat := $latlongToken[position() mod 2 != 0]
-        let $maxlon := number(max($latlongToken[position() mod 2 = 0]))
-        let $minlon := number(min($latlongToken[position() mod 2 = 0]))
-        let $maxlat := number(max($latlongToken[position() mod 2 != 0]))
-        let $minlat := number(min($latlongToken[position() mod 2 != 0]))
+        let $maxlon := max(for $longCoord in $datalon return xs:double($longCoord))
+        let $minlon := min(for $longCoord in $datalon return xs:double($longCoord))
+        let $maxlat := max(for $latCoord in $datalat return xs:double($latCoord))
+        let $minlat := min(for $latCoord in $datalat return xs:double($latCoord))
+        
         let $NamespaceDD := 
          for $x in doc($vocabulary:AQD_Namespace || "rdf")//skos:Concept
           
@@ -976,15 +1002,16 @@ let $M46invalid :=
                 <td title="minMaxLatInXML">{$minlat || "  " || $maxlat}</td>               
                 <td title="minMaxLonInDD">{$LongitudeMin || "  " || $LongitudeMax}</td>
                 <td title="minMaxLatInDD">{$LatitudeMin || "  " || $LatitudeMax}</td>
-            </tr>
+            </tr>)
           else if ( count($latLong/*) = 0 ) then
             <tr>
-                <td title="Polygon">Missing value</td>
-                <td title="First vertex">{string($lat) || "  " || string($long)}</td>     
-                <td title="minMaxLonInXML">{$minlon || "  " ||$maxlon}</td>  
-                <td title="minMaxLatInXML">{$minlat || "  " || $maxlat}</td>               
-                <td title="minMaxLonInDD">{$LongitudeMin || "  " || $LongitudeMax}</td>
-                <td title="minMaxLatInDD">{$LatitudeMin || "  " || $LatitudeMax}</td>
+                <td title="Model">{$latLong/../aqd:inspireId/base:Identifier/base:localId}</td>
+                <td title="Polygon">{"Missing value"}</td>
+                <td title="First vertex">{"Missing polygon"}</td>     
+                <td title="minMaxLonInXML">{"Missing polygon"}</td>  
+                <td title="minMaxLatInXML">{"Missing polygon"}</td>               
+                <td title="minMaxLonInDD">{"Missing polygon"}</td>
+                <td title="minMaxLatInDD">{"Missing polygon"}</td>
             </tr>
     } catch * {
         <tr class="{$errors:FAILED}">
