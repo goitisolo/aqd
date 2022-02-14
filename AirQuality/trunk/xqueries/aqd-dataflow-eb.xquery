@@ -1936,6 +1936,193 @@ QC should return BLOCKER if the combinations of file#variable are not unique.:)
     let $ms2Eb49 := prof:current-ms()
     
     
+    (: Eb50a E1b overlapping observations :)
+    
+    let $ms1Eb50a := prof:current-ms()
+    
+    let $Eb50ainvalid :=
+      try {
+        (: 1. scan the XML to find the constelations: model + procedure + observedProperty + featureOfInterest + definition :)
+        let $constelations := 
+        (
+          for $x in $docRoot//om:OM_Observation
+            let $observationId := data($x/@gml:id)
+            let $modelNamedValue := $x/om:parameter/om:NamedValue[replace(om:name/@xlink:href, 'https://', 'http://') = $vocabulary:PROCESS_PARAMETER || "model"]
+            let $model := common:if-empty($modelNamedValue/om:value, $modelNamedValue/om:value/@xlink:href)
+            let $procedure := data($x/om:procedure/@xlink:href)
+            let $observedProperty := data($x/om:observedProperty/@xlink:href)
+            let $featureOfInterest := data($x/om:featureOfInterest/@xlink:href)
+            let $definition := $x/om:resultQuality//gml:BaseUnit/gml:identifier[replace(@codeSpace, 'https://', 'http://') = $vocabulary:AGGREGATION_PROCESS]
+          return $model || " " || $procedure || " " || $observedProperty || " " || $featureOfInterest || " " || $definition
+        )
+        
+        (: 2. look for duplicates :)
+        for $x in $docRoot//om:OM_Observation
+            
+          let $observationId := data($x/@gml:id)
+          let $modelNamedValue := $x/om:parameter/om:NamedValue[replace(om:name/@xlink:href, 'https://', 'http://') = $vocabulary:PROCESS_PARAMETER || "model"]
+          let $model := common:if-empty($modelNamedValue/om:value, $modelNamedValue/om:value/@xlink:href)
+          let $procedure := data($x/om:procedure/@xlink:href)
+          let $observedProperty := data($x/om:observedProperty/@xlink:href)
+          let $featureOfInterest := data($x/om:featureOfInterest/@xlink:href)
+          let $definition := $x/om:resultQuality//gml:BaseUnit/gml:identifier[replace(@codeSpace, 'https://', 'http://') = $vocabulary:AGGREGATION_PROCESS]
+          let $constelation := $model || " " || $procedure || " " || $observedProperty || " " || $featureOfInterest || " " || $definition
+          
+          let $areDuplicated := 
+            (
+              if(count(index-of($constelations, $constelation)) > 1) then true()
+              else false()
+            )
+                                      
+        (: 3. return BLOCKER if there are duplicated constelations :)
+          where $areDuplicated
+          return
+              <tr>
+                  <td title="om:OM_Observation">{$observationId}</td>
+                  <td title="model">{$model}</td>
+                  <td title="procedure">{$procedure}</td>
+                  <td title="observedProperty">{$observedProperty}</td>
+                  <td title="featureOfInterest">{$featureOfInterest}</td>
+                  <td title="definition">{$definition}</td>
+              </tr>[position() = 1 to $errors:MEDIUM_LIMIT]
+        } catch * {
+            <tr class="{$errors:FAILED}">
+                <td title="Error code">{$err:code}</td>
+                <td title="Error description">{$err:description}</td>
+            </tr>
+        }
+    
+    let $ms2Eb50a := prof:current-ms()
+    
+    
+    (: Eb50b E1b overlapping observations with swe:values :)
+    
+    let $ms1Eb50b := prof:current-ms()
+    
+    let $Eb50binvalid :=
+      try {
+        (: 1. scan the XML to find the constelations: model + procedure + observedProperty + featureOfInterest + definition and swe:values :)
+        let $constelations := 
+        (
+          for $x in $docRoot//om:OM_Observation
+            let $observationId := data($x/@gml:id)
+            let $modelNamedValue := $x/om:parameter/om:NamedValue[replace(om:name/@xlink:href, 'https://', 'http://') = $vocabulary:PROCESS_PARAMETER || "model"]
+            let $model := common:if-empty($modelNamedValue/om:value, $modelNamedValue/om:value/@xlink:href)
+            let $procedure := data($x/om:procedure/@xlink:href)
+            let $observedProperty := data($x/om:observedProperty/@xlink:href)
+            let $featureOfInterest := data($x/om:featureOfInterest/@xlink:href)
+            let $definition := $x/om:resultQuality//gml:BaseUnit/gml:identifier[replace(@codeSpace, 'https://', 'http://') = $vocabulary:AGGREGATION_PROCESS]
+            
+            (: getting swe:values, startTime and endTime :)
+            let $sweValues := $x/om:result/swe:DataArray/swe:values
+            
+            let $blockSeparator := string($x//swe:encoding/swe:TextEncoding/@blockSeparator)
+            let $decimalSeparator := string($x//swe:encoding/swe:TextEncoding/@decimalSeparator)
+            let $tokenSeparator := string($x//swe:encoding/swe:TextEncoding/@tokenSeparator)
+            
+            let $fields := data($x//swe:elementType/swe:DataRecord/swe:field/@name)
+            let $startPos := index-of($fields, "StartTime")
+            let $endPos := index-of($fields, "EndTime")
+            
+            for $i at $ipos in tokenize(replace($sweValues, $blockSeparator || "$", ""), $blockSeparator)[1]
+              let $startTime := tokenize($i, $tokenSeparator)[$startPos]
+              let $endTime := tokenize($i, $tokenSeparator)[$endPos]
+          
+          return 
+            <results>
+              <constelation>{$model || " " || $procedure || " " || $observedProperty || " " || $featureOfInterest || " " || $definition}</constelation>
+              <constelationWithTime>{$model || " " || $procedure || " " || $observedProperty || " " || $featureOfInterest || " " || $definition ||  " dates: " || $startTime ||  " " || $endTime}</constelationWithTime>
+            </results>
+        )
+        
+        (: 2. look for duplicates :)
+        for $x in $docRoot//om:OM_Observation
+            
+          let $observationId := data($x/@gml:id)
+          let $modelNamedValue := $x/om:parameter/om:NamedValue[replace(om:name/@xlink:href, 'https://', 'http://') = $vocabulary:PROCESS_PARAMETER || "model"]
+          let $model := common:if-empty($modelNamedValue/om:value, $modelNamedValue/om:value/@xlink:href)
+          let $procedure := data($x/om:procedure/@xlink:href)
+          let $observedProperty := data($x/om:observedProperty/@xlink:href)
+          let $featureOfInterest := data($x/om:featureOfInterest/@xlink:href)
+          let $definition := $x/om:resultQuality//gml:BaseUnit/gml:identifier[replace(@codeSpace, 'https://', 'http://') = $vocabulary:AGGREGATION_PROCESS]
+          let $sweValues := $x/om:result/swe:DataArray/swe:values
+          
+          (: getting startTime and endTime :)
+          let $blockSeparator := string($x//swe:encoding/swe:TextEncoding/@blockSeparator)
+          let $decimalSeparator := string($x//swe:encoding/swe:TextEncoding/@decimalSeparator)
+          let $tokenSeparator := string($x//swe:encoding/swe:TextEncoding/@tokenSeparator)
+          
+          let $fields := data($x//swe:elementType/swe:DataRecord/swe:field/@name)
+          let $startPos := index-of($fields, "StartTime")
+          let $endPos := index-of($fields, "EndTime")
+          
+          for $i at $ipos in tokenize(replace($sweValues, $blockSeparator || "$", ""), $blockSeparator)[1]
+            let $startTime := tokenize($i, $tokenSeparator)[$startPos]
+            let $endTime := tokenize($i, $tokenSeparator)[$endPos]
+
+          (: constelation :)
+          let $constelation := $model || " " || $procedure || " " || $observedProperty || " " || $featureOfInterest || " " || $definition
+          let $constelationWithTime := $model || " " || $procedure || " " || $observedProperty || " " || $featureOfInterest || " " || $definition || " dates: " || $startTime ||  " " || $endTime
+          
+          let $areDuplicated := 
+            (
+              if(count(index-of($constelations/constelation, $constelation)) > 1)
+                then true()
+              else false()
+            )
+
+          (: checking overlapping :)
+          let $overlapping := 
+            (
+              if(count(index-of($constelations/constelationWithTime, $constelationWithTime)) > 1) then 
+                true()
+              else if(count(index-of($constelations/constelation, $constelation) > 1)) then
+                (
+                  for $const in $constelations/constelationWithTime
+                    let $dates := functx:substring-after-if-contains($const," dates: ")
+                    let $constelationStartTime := tokenize($dates, " ")[1]
+                    let $constelationEndTime := tokenize($dates, " ")[2]
+                    let $overlappingTime :=
+                       ( if ( xs:dayTimeDuration( xs:date(substring-before(xs:string($constelationStartTime),"T")) - xs:date(substring-before(xs:string($endTime),"T")) ) div xs:dayTimeDuration("P1D") = 1
+                       or xs:dayTimeDuration( xs:date(substring-before(xs:string($constelationEndTime),"T")) - xs:date(substring-before(xs:string($startTime),"T")) ) div xs:dayTimeDuration("P1D") = -1
+                       or ( xs:date(substring-before(xs:string($constelationStartTime),"T")) < xs:date(substring-before(xs:string($endTime),"T")) and xs:date(substring-before(xs:string($constelationStartTime),"T")) > xs:date(substring-before(xs:string($startTime),"T")) )
+                       or ( xs:date(substring-before(xs:string($constelationEndTime),"T")) > xs:date(substring-before(xs:string($startTime),"T")) and xs:date(substring-before(xs:string($constelationEndTime),"T")) < xs:date(substring-before(xs:string($endTime),"T")) )
+                     )
+                      then true()
+                      else false() )
+                  return $overlappingTime
+                )
+            )
+          let $isOverlapping := if(count(index-of($overlapping, true())) >= 1) then true() else false()
+          
+          let $errorType :=
+              if(count(index-of($constelations/constelationWithTime, $constelationWithTime)) > 1) then "Blocker" 
+              else if($areDuplicated and count(index-of($overlapping, true())) >= 1) then (:functx:capitalize-first($errors:Eb50b):) "Error"
+          
+        (: 3. return BLOCKER if there are duplicated constelations and overlapping :)
+        where $areDuplicated and $isOverlapping
+          return
+              <tr>
+                  <td title="om:OM_Observation">{$observationId}</td>
+                  <td title="model">{$model}</td>
+                  <td title="procedure">{$procedure}</td>
+                  <td title="observedProperty">{$observedProperty}</td>
+                  <td title="featureOfInterest">{$featureOfInterest}</td>
+                  <td title="definition">{$definition}</td>
+                  <td title="swe:values startTime">{$startTime}</td>
+                  <td title="swe:values endTime">{$endTime}</td>
+                  <td title="error type">{$errorType}</td>
+              </tr>[position() = 1 to $errors:MEDIUM_LIMIT]
+        } catch * {
+            <tr class="{$errors:FAILED}">
+                <td title="Error code">{$err:code}</td>
+                <td title="Error description">{$err:description}</td>
+            </tr>
+        }
+    
+    let $ms2Eb50b := prof:current-ms()    
+    
+    
     let $ms2Total := prof:current-ms()
     return
         <table class="maintable hover">
@@ -1991,6 +2178,8 @@ QC should return BLOCKER if the combinations of file#variable are not unique.:)
             {html:build2("Eb47", $labels:Eb47, $labels:Eb47_SHORT, $Eb47invalid, "All records are valid", "record", $errors:Eb47)}
             {html:build2("Eb48", $labels:Eb48, $labels:Eb48_SHORT, $Eb48invalid, "All records are valid", "record", $errors:Eb48)}
             {html:build2Distinct("Eb49", $labels:Eb49, $labels:Eb49_SHORT, $Eb49invalid, "All records are valid", "record", $Eb49maxErrorLevel)}
+            {html:build2("Eb50a", $labels:Eb50a, $labels:Eb50a_SHORT, $Eb50ainvalid, "All records are valid", "record", $errors:Eb50a)}
+            {html:build2("Eb50b", $labels:Eb50b, $labels:Eb50b_SHORT, $Eb50binvalid, "All records are valid", "record", $errors:Eb50b)}
         </table>
     <table>
     <br/>
@@ -2053,6 +2242,8 @@ QC should return BLOCKER if the combinations of file#variable are not unique.:)
        {common:runtime("Eb47",  $ms1Eb47, $ms2Eb47)}
        {common:runtime("Eb48",  $ms1Eb48, $ms2Eb48)}
        {common:runtime("Eb49",  $ms1Eb49, $ms2Eb49)}
+       {common:runtime("Eb50a",  $ms1Eb50a, $ms2Eb50a)}
+       {common:runtime("Eb50b",  $ms1Eb50b, $ms2Eb50b)}
        {common:runtime("Total time",  $ms1Total, $ms2Total)}
     </table>
     </table>
