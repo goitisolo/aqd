@@ -2033,6 +2033,89 @@ let $G89invalid :=
 
 let $ms2G89 := prof:current-ms()
 
+
+(: G92 :)
+
+let $ms1G92 := prof:current-ms()
+
+let $G92invalid :=
+    try {
+        let $exceedanceResults := sparqlx:run(query:getAqdExceedanceQueryGraph($latestEnvelopeByYearG))
+                
+        let $localIdsXML := $docRoot//gml:featureMember/aqd:AQD_Attainment/aqd:inspireId/base:Identifier/base:localId
+        
+        (: 1. Error will return if base:localIds match and aqd:exceedance do not match: :)
+        let $notMatch := (
+          for $x in $docRoot//gml:featureMember/aqd:AQD_Attainment
+            let $attainmentId := $x/aqd:inspireId/base:Identifier/base:localId
+            let $exceedance := $x/aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedance
+            
+            for $result in $exceedanceResults[sparql:binding[@name='localId']/sparql:literal = $attainmentId]
+              let $localIdResult := $result/sparql:binding[@name='localId']/sparql:literal
+              let $exceedanceResult := (
+                  if($result/sparql:binding[@name='exceedance']/sparql:literal = 1) then "true"
+                  else if($result/sparql:binding[@name='exceedance']/sparql:literal = 0) then "false"
+              )
+              
+              let $errorMessage := if( $attainmentId = $localIdResult and ( ($exceedance="true" and $exceedanceResult="false") or ($exceedance="false" and $exceedanceResult="true") ) ) then "aqd:exceedance do not match"
+              
+              return if( $attainmentId = $localIdResult and ( ($exceedance="true" and $exceedanceResult="false") or ($exceedance="false" and $exceedanceResult="true") ) ) then 
+                <tr>
+                  <td title="base:localId from update">{$attainmentId}</td>
+                  <td title="aqd:exceedance from update">{$exceedance}</td>
+                  <td title="reporting year">{$reportingYear}</td>
+                  <td title="latest envelope by year">{$latestEnvelopeByYearG}</td>
+                  <td title="base:localId from latest envelope">{$localIdResult}</td>
+                  <td title="aqd:exceedance from latest envelope">{$exceedanceResult}</td>
+                  <td title="error message">{$errorMessage}</td>
+                  <td title="Sparql">{sparqlx:getLink(query:getAqdExceedanceQueryGraph($latestEnvelopeByYearG))}</td>
+                </tr>
+          )
+          
+          (: 2. Error will return if base:localIds (from SPARQL) are missing in the XML: :)
+          let $missing := (
+            for $result in $exceedanceResults
+              let $localIdResult := $result/sparql:binding[@name='localId']/sparql:literal
+              
+              let $isLatestLocalIdInXML := count(index-of($localIdsXML, $localIdResult))
+              
+              let $exceedanceResult := (
+                if( $isLatestLocalIdInXML = 0 ) then
+                  if($result/sparql:binding[@name='exceedance']/sparql:literal = 1) then "true"
+                  else if($result/sparql:binding[@name='exceedance']/sparql:literal = 0) then "false"
+              )
+              
+              let $errorMessage := if( $isLatestLocalIdInXML = 0 ) then "base:localId from the latest envelope is missing in the update"
+              
+              return if( $isLatestLocalIdInXML = 0 ) then
+                <tr>
+                  <td title="base:localId from update">{data("Missing value")}</td>
+                  <td title="aqd:exceedance from update">{data("Missing value")}</td>
+                  <td title="reporting year">{$reportingYear}</td>
+                  <td title="latest envelope by year">{$latestEnvelopeByYearG}</td>
+                  <td title="base:localId from latest envelope">{$localIdResult}</td>
+                  <td title="aqd:exceedance from latest envelope">{$exceedanceResult}</td>
+                  <td title="error message">{$errorMessage}</td>
+                  <td title="Sparql">{sparqlx:getLink(query:getAqdExceedanceQueryGraph($latestEnvelopeByYearG))}</td>
+                </tr>                
+          )
+        
+        (: 3. List of errors: :)    
+        let $countNotMatch := count($notMatch)
+        let $countMissing := count($missing)
+        return
+            (if($countNotMatch != 0) then $notMatch ,
+            if($countMissing != 0) then $missing )
+    } catch * {
+        <tr class="{$errors:FAILED}">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
+
+let $ms2G92 := prof:current-ms()
+
+
 let $ms2Total := prof:current-ms()
 return
     <table class="maintable hover">
@@ -2107,6 +2190,7 @@ return
         {html:build2("G86", $labels:G86, $labels:G86_SHORT, $G86invalid, "All values are valid", " invalid value", $errors:G86)}
         <!-- {html:buildNoCount2Sparql("G89", $labels:G89, $labels:G89_SHORT, $G89invalid, "All values are valid", "Invalid value found", $errors:G89)} -->
         {html:build2Sparql("G89", $labels:G89, $labels:G89_SHORT, $G89invalid, "All values are valid", " invalid value", $errors:G89)}
+        {html:build2Sparql("G92", $labels:G92, $labels:G92_SHORT, $G92invalid, "All values are valid", " invalid value", $errors:G92)}
         {$G82invalid}
     </table>
      <table>
@@ -2185,7 +2269,8 @@ return
        {common:runtime("G82",  $ms1G82, $ms2G82)}
        {common:runtime("G85",  $ms1G85, $ms2G85)}
        {common:runtime("G86",  $ms1G86, $ms2G86)}
-       {common:runtime("G89",  $ms1G80, $ms2G89)}
+       {common:runtime("G89",  $ms1G89, $ms2G89)}
+       {common:runtime("G92",  $ms1G92, $ms2G92)}
        {common:runtime("Total time",  $ms1Total, $ms2Total)}
     </table>
     </table>
