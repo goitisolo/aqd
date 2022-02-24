@@ -1364,8 +1364,16 @@ let $ms2Eb14b := prof:current-ms()
             let $envelopeUrl := common:getCleanUrl($source_url)
             let $xmlName := tokenize($envelopeUrl , "/")[last()]
             let $currentEnvelope := substring-before($envelopeUrl, $xmlName)
+            
             let $envelopexml := substring-before($envelopeUrl, $xmlName) || "xml"
-            let $docEnvelopexml := doc($envelopexml)
+            let $envelopeUrlHttps := replace($envelopeUrl, 'http://', 'https://')
+            let $envelopexmlHttps := substring-before($envelopeUrlHttps, $xmlName) || "xml"
+            let $docEnvelopexml := (
+              if(fn:doc-available($envelopexml)) then
+                doc($envelopexml)
+              else
+                doc($envelopexmlHttps)
+            )
             
             let $regex := functx:escape-for-regex($currentEnvelope) || ".+\.[a-z]{3,3}#.+"
             
@@ -1434,8 +1442,16 @@ let $ms2Eb14b := prof:current-ms()
           let $docEnvelopexml := doc($envelopexml):)
           let $envelopeUrl := common:getCleanUrl($source_url)
           let $xmlName := tokenize($envelopeUrl , "/")[last()]
+          
           let $envelopexml := substring-before($envelopeUrl, $xmlName) || "xml"
-          let $docEnvelopexml := doc($envelopexml)
+          let $envelopeUrlHttps := replace($envelopeUrl, 'http://', 'https://')
+          let $envelopexmlHttps := substring-before($envelopeUrlHttps, $xmlName) || "xml"
+          let $docEnvelopexml := (
+            if(fn:doc-available($envelopexml)) then
+              doc($envelopexml)
+            else
+              doc($envelopexmlHttps)
+          )
           
           for $x in $docRoot//om:OM_Observation
             let $fileReference := $x/om:result/gml:File/gml:fileReference
@@ -1656,8 +1672,16 @@ let $ms2Eb14b := prof:current-ms()
         let $envelopeUrl := common:getCleanUrl($source_url)
         let $xmlName := tokenize($envelopeUrl , "/")[last()]
         let $currentEnvelope := substring-before($envelopeUrl, $xmlName)
+        
         let $envelopexml := substring-before($envelopeUrl, $xmlName) || "xml"
-        let $docEnvelopexml := doc($envelopexml)
+        let $envelopeUrlHttps := replace($envelopeUrl, 'http://', 'https://')
+        let $envelopexmlHttps := substring-before($envelopeUrlHttps, $xmlName) || "xml"
+        let $docEnvelopexml := (
+          if(fn:doc-available($envelopexml)) then
+            doc($envelopexml)
+          else
+            doc($envelopexmlHttps)
+        )
         
         (: getting envelope/xml file @link :)
         let $ZIPFilesEnvelope := data($docEnvelopexml/envelope/file[ends-with(@link, ".zip")]/@link)
@@ -1754,8 +1778,16 @@ let $ms2Eb14b := prof:current-ms()
         let $envelopeUrl := common:getCleanUrl($source_url)
         let $xmlName := tokenize($envelopeUrl , "/")[last()]
         let $currentEnvelope := substring-before($envelopeUrl, $xmlName)
+        
         let $envelopexml := substring-before($envelopeUrl, $xmlName) || "xml"
-        let $docEnvelopexml := doc($envelopexml)
+        let $envelopeUrlHttps := replace($envelopeUrl, 'http://', 'https://')
+        let $envelopexmlHttps := substring-before($envelopeUrlHttps, $xmlName) || "xml"
+        let $docEnvelopexml := (
+          if(fn:doc-available($envelopexml)) then
+            doc($envelopexml)
+          else
+            doc($envelopexmlHttps)
+        )
         
         (: getting envelope/xml file @link :)
         let $filesEnvelopeXML := data($docEnvelopexml/envelope/file[ends-with(@link, ".zip") or ends-with(@link, ".shp") or ends-with(@link, ".tiff") or ends-with(@link, ".asc") or ends-with(@link, ".tif")]/@link)
