@@ -65,6 +65,7 @@ let $envelopeUrl := common:getEnvelopeXML($source_url)
 let $docRoot := doc($source_url)
 let $cdrUrl := common:getCdrUrl($countryCode)
 let $reportingYear := common:getReportingYear($docRoot)
+let $previousReportingYear := string(number($reportingYear) - 1)
 
 let $bdir := if (contains($source_url, "b_preliminary")) then "b_preliminary/" else "b/"
 let $cdir := if (contains($source_url, "c_preliminary")) then "c_preliminary/" else "c/"
@@ -85,6 +86,7 @@ let $latestEnvelopeByYearC := query:getLatestEnvelope($cdrUrl || "c/", $reportin
 let $latestEnvelopeD := query:getLatestEnvelope($cdrUrl || "d/")
 let $latestEnvelopeD1b := query:getLatestEnvelope($cdrUrl || "d1b/", $reportingYear)
 let $latestEnvelopeByYearG := query:getLatestEnvelope($cdrUrl || "g/", $reportingYear)
+let $latestEnvelopeFromPreviousYearG := query:getLatestEnvelope($cdrUrl || "g/", $previousReportingYear)
 
 let $envelopesC := distinct-values(query:getEnvelopes($cdrUrl || "c/", $reportingYear))
 let $latestEnvelopeC := query:getLatestEnvelope($cdrUrl || "c/", $reportingYear)
@@ -2034,6 +2036,145 @@ let $G89invalid :=
 let $ms2G89 := prof:current-ms()
 
 
+(: G91 :)
+
+let $ms1G91 := prof:current-ms()
+
+let $G91invalid :=
+    try {
+        let $exceedanceResults := sparqlx:run(query:getAqdExceedanceWithZoneQueryGraph($latestEnvelopeFromPreviousYearG))
+        
+        (: 1. Error will return if combination of elements aqd:pollutant + aqd:objectiveType + aqd:reportingMetric + aqd:protectionTarget + aqd:zone match and aqd:exceedance do not match: :)
+        let $notMatch := (
+          for $x in $docRoot//gml:featureMember/aqd:AQD_Attainment
+            let $attainmentId := $x/aqd:inspireId/base:Identifier/base:localId
+            let $exceedance := $x/aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedance
+            
+            let $pollutant := functx:substring-after-last(data($x/aqd:pollutant/@xlink:href), "/")
+            let $objectiveType := functx:substring-after-last(data($x/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType/@xlink:href), "/")
+            let $reportingMetric := functx:substring-after-last(data($x/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric/@xlink:href), "/")
+            let $protectionTarget := functx:substring-after-last(data($x/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/@xlink:href), "/")
+            let $zone := functx:substring-after-last(data($x/aqd:zone/@xlink:href), "/")
+            
+            for $result in $exceedanceResults(:[ sparql:binding[@name='pollutant']/sparql:uri = $pollutant and sparql:binding[@name='objectiveType']/sparql:uri = $objectiveType and sparql:binding[@name='reportingMetric']/sparql:uri = $reportingMetric and sparql:binding[@name='protectionTarget']/sparql:uri = $protectionTarget and sparql:binding[@name='zone']/sparql:uri = $zone ]:)
+              let $localIdResult := $result/sparql:binding[@name='localId']/sparql:literal
+              let $exceedanceResult := (
+                  if($result/sparql:binding[@name='exceedance']/sparql:literal = 1) then "true"
+                  else if($result/sparql:binding[@name='exceedance']/sparql:literal = 0) then "false"
+              )
+              let $pollutantResult := functx:substring-after-last($result/sparql:binding[@name='pollutant']/sparql:uri, "/")
+              let $objectiveTypeResult := functx:substring-after-last($result/sparql:binding[@name='objectiveType']/sparql:uri, "/")
+              let $reportingMetricResult := functx:substring-after-last($result/sparql:binding[@name='reportingMetric']/sparql:uri, "/")
+              let $protectionTargetResult := functx:substring-after-last($result/sparql:binding[@name='protectionTarget']/sparql:uri, "/")
+              let $zoneResult := functx:substring-after-last($result/sparql:binding[@name='zone']/sparql:uri, "/")
+              
+              let $errorMessage := 
+                if( ( $pollutant = $pollutantResult and $objectiveType = $objectiveTypeResult and $reportingMetric = $reportingMetricResult and $protectionTarget = $protectionTargetResult and $zone = $zoneResult ) and 
+                    ( ($exceedance="true" and $exceedanceResult="false") or ($exceedance="false" and $exceedanceResult="true") ) ) 
+                    then "combination of elements do not match"
+              
+              return 
+                if( ( $pollutant = $pollutantResult and $objectiveType = $objectiveTypeResult and $reportingMetric = $reportingMetricResult and $protectionTarget = $protectionTargetResult and $zone = $zoneResult ) and 
+                    ( ($exceedance="true" and $exceedanceResult="false") or ($exceedance="false" and $exceedanceResult="true") ) )
+                then 
+                <tr>
+                  <td title="base:localId from update">{$attainmentId}</td>
+                  <td title="aqd:exceedance from update">{$exceedance}</td>
+                  <td title="aqd:pollutant from update">{$pollutant}</td>
+                  <td title="aqd:objectiveType from update">{$objectiveType}</td>
+                  <td title="aqd:reportingMetric from update">{$reportingMetric}</td>
+                  <td title="aqd:protectionTarget from update">{$protectionTarget}</td>
+                  <td title="aqd:zone from update">{$zone}</td>
+                  
+                  <td title="base:localId from latest envelope from previous year">{$localIdResult}</td>
+                  <td title="aqd:exceedance from latest envelope from previous year">{$exceedanceResult}</td>
+                  <td title="aqd:pollutant from previous year">{$pollutantResult}</td>
+                  <td title="aqd:objectiveType from previous year">{$objectiveTypeResult}</td>
+                  <td title="aqd:reportingMetric from previous year">{$reportingMetricResult}</td>
+                  <td title="aqd:protectionTarget from previous year">{$protectionTargetResult}</td>
+                  <td title="aqd:zone from previous year">{$zoneResult}</td>
+                  
+                  <td title="error message">{$errorMessage}</td>
+                  <td title="Sparql">{sparqlx:getLink(query:getAqdExceedanceWithZoneQueryGraph($latestEnvelopeFromPreviousYearG))}</td>
+                </tr>
+          )
+          
+          (: 2. Error will return if the combination of elements aqd:pollutant + aqd:objectiveType + aqd:reportingMetric + aqd:protectionTarget + aqd:zone (from SPARQL) is missing in the XML: :)
+          let $missing := (
+            let $combinationXML := (
+              for $x in $docRoot//gml:featureMember/aqd:AQD_Attainment
+                let $attainmentId := $x/aqd:inspireId/base:Identifier/base:localId
+                let $exceedance := $x/aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/aqd:exceedance
+                
+                let $pollutant := functx:substring-after-last(data($x/aqd:pollutant/@xlink:href), "/")
+                let $objectiveType := functx:substring-after-last(data($x/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType/@xlink:href), "/")
+                let $reportingMetric := functx:substring-after-last(data($x/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric/@xlink:href), "/")
+                let $protectionTarget := functx:substring-after-last(data($x/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/@xlink:href), "/")
+                let $zone := functx:substring-after-last(data($x/aqd:zone/@xlink:href), "/")
+                
+                return $pollutant || " , " || $objectiveType || " , " || $reportingMetric  || " , " || $protectionTarget  || " , " || $zone
+            ) 
+            
+            for $result in $exceedanceResults
+              let $localIdResult := $result/sparql:binding[@name='localId']/sparql:literal
+              let $exceedanceResult := (
+                  if($result/sparql:binding[@name='exceedance']/sparql:literal = 1) then "true"
+                  else if($result/sparql:binding[@name='exceedance']/sparql:literal = 0) then "false"
+              )
+              let $pollutantResult := functx:substring-after-last($result/sparql:binding[@name='pollutant']/sparql:uri, "/")
+              let $objectiveTypeResult := functx:substring-after-last($result/sparql:binding[@name='objectiveType']/sparql:uri, "/")
+              let $reportingMetricResult := functx:substring-after-last($result/sparql:binding[@name='reportingMetric']/sparql:uri, "/")
+              let $protectionTargetResult := functx:substring-after-last($result/sparql:binding[@name='protectionTarget']/sparql:uri, "/")
+              let $zoneResult := functx:substring-after-last($result/sparql:binding[@name='zone']/sparql:uri, "/")
+              
+              let $combinationResults := $pollutantResult || " , " || $objectiveTypeResult || " , " || $reportingMetricResult  || " , " || $protectionTargetResult  || " , " || $zoneResult
+              
+              let $isPreviousYearCombinationInXML := count(index-of($combinationXML, $combinationResults))
+              
+              let $errorMessage := 
+                if( $isPreviousYearCombinationInXML = 0 ) then "combination of elements from the latest envelope from previous year is missing in the update"
+              
+              return 
+                if( $isPreviousYearCombinationInXML = 0 ) 
+                then 
+                <tr>
+                  <td title="base:localId from update">{data("Missing combination")}</td>
+                  <td title="aqd:exceedance from update">{data("Missing combination")}</td>
+                  <td title="aqd:pollutant from update">{data("Missing combination")}</td>
+                  <td title="aqd:objectiveType from update">{data("Missing combination")}</td>
+                  <td title="aqd:reportingMetric from update">{data("Missing combination")}</td>
+                  <td title="aqd:protectionTarget from update">{data("Missing combination")}</td>
+                  <td title="aqd:zone from update">{data("Missing combination")}</td>
+                  
+                  <td title="base:localId from latest envelope from previous year">{$localIdResult}</td>
+                  <td title="aqd:exceedance from latest envelope from previous year">{$exceedanceResult}</td>
+                  <td title="aqd:pollutant from previous year">{$pollutantResult}</td>
+                  <td title="aqd:objectiveType from previous year">{$objectiveTypeResult}</td>
+                  <td title="aqd:reportingMetric from previous year">{$reportingMetricResult}</td>
+                  <td title="aqd:protectionTarget from previous year">{$protectionTargetResult}</td>
+                  <td title="aqd:zone from previous year">{$zoneResult}</td>
+                  
+                  <td title="error message">{$errorMessage}</td>
+                  <td title="Sparql">{sparqlx:getLink(query:getAqdExceedanceWithZoneQueryGraph($latestEnvelopeFromPreviousYearG))}</td>
+                </tr>
+          )
+        
+        (: 3. List of errors: :)    
+        let $countNotMatch := count($notMatch)
+        let $countMissing := count($missing)
+        return
+            (if($countNotMatch != 0) then $notMatch ,
+            if($countMissing != 0) then $missing )
+    } catch * {
+        <tr class="{$errors:FAILED}">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
+
+let $ms2G91 := prof:current-ms()
+
+
 (: G92 :)
 
 let $ms1G92 := prof:current-ms()
@@ -2190,6 +2331,7 @@ return
         {html:build2("G86", $labels:G86, $labels:G86_SHORT, $G86invalid, "All values are valid", " invalid value", $errors:G86)}
         <!-- {html:buildNoCount2Sparql("G89", $labels:G89, $labels:G89_SHORT, $G89invalid, "All values are valid", "Invalid value found", $errors:G89)} -->
         {html:build2Sparql("G89", $labels:G89, $labels:G89_SHORT, $G89invalid, "All values are valid", " invalid value", $errors:G89)}
+        {html:build2Sparql("G91", $labels:G91, $labels:G91_SHORT, $G91invalid, "All values are valid", " invalid value", $errors:G91)}
         {html:build2Sparql("G92", $labels:G92, $labels:G92_SHORT, $G92invalid, "All values are valid", " invalid value", $errors:G92)}
         {$G82invalid}
     </table>
@@ -2270,6 +2412,7 @@ return
        {common:runtime("G85",  $ms1G85, $ms2G85)}
        {common:runtime("G86",  $ms1G86, $ms2G86)}
        {common:runtime("G89",  $ms1G89, $ms2G89)}
+       {common:runtime("G91",  $ms1G91, $ms2G91)}
        {common:runtime("G92",  $ms1G92, $ms2G92)}
        {common:runtime("Total time",  $ms1Total, $ms2Total)}
     </table>

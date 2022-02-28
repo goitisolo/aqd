@@ -385,6 +385,7 @@ declare variable $errors:G81 := errors:getError("G81");
 declare variable $errors:G85 := errors:getError("G85");
 declare variable $errors:G86 := errors:getError("G86");
 declare variable $errors:G89 := errors:getError("G89");
+declare variable $errors:G91 := errors:getError("G91");
 declare variable $errors:G92 := errors:getError("G92");
 
 declare variable $errors:H0 := errors:getError("H0");
