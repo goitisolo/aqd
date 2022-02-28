@@ -2036,7 +2036,7 @@ QC should return BLOCKER if the combinations of file#variable are not unique.:)
         (: 1. scan the XML to find the constelations: model + procedure + observedProperty + featureOfInterest + definition and swe:values :)
         let $constelations := 
         (
-          for $x in $docRoot//om:OM_Observation
+          for $x in $docRoot//om:OM_Observation[om:result/swe:DataArray/swe:values]
             let $observationId := data($x/@gml:id)
             let $modelNamedValue := $x/om:parameter/om:NamedValue[replace(om:name/@xlink:href, 'https://', 'http://') = $vocabulary:PROCESS_PARAMETER || "model"]
             let $model := common:if-empty($modelNamedValue/om:value, $modelNamedValue/om:value/@xlink:href)
@@ -2068,7 +2068,7 @@ QC should return BLOCKER if the combinations of file#variable are not unique.:)
         )
         
         (: 2. look for duplicates :)
-        for $x in $docRoot//om:OM_Observation
+        for $x in $docRoot//om:OM_Observation[om:result/swe:DataArray/swe:values]
             
           let $observationId := data($x/@gml:id)
           let $modelNamedValue := $x/om:parameter/om:NamedValue[replace(om:name/@xlink:href, 'https://', 'http://') = $vocabulary:PROCESS_PARAMETER || "model"]
