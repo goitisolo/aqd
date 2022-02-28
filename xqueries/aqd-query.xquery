@@ -1203,6 +1203,48 @@ declare function query:getAssessmentMethodsCModels($envelope as xs:string, $asse
    }"
 };
 
+(: G91 :)
+declare function query:getAqdExceedanceWithZoneQueryGraph($cdrUrl as xs:string) as xs:string {
+  "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+   PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
+   PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+
+  PREFIX dcterms: <http://purl.org/dc/terms/>
+  PREfIX contreg: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
+
+   SELECT distinct ?localId ?pollutant ?objectiveType ?reportingMetric ?protectionTarget ?desc_final ?exceedance ?numberExceedances ?numericalExceedance ?percentileExceedance ?zone ?envelope
+   
+   WHERE {
+      values ?envelope { <" || $cdrUrl || "> }
+      ?graph dcterms:isPartOf ?envelope .
+      ?graph contreg:xmlSchema ?xmlSchema .
+
+      GRAPH ?graph {
+      ?attainment a aqd:AQD_Attainment;
+      aqd:inspireId ?inspireId .
+      ?inspireId rdfs:label ?inspireLabel .
+      ?inspireId aqd:localId ?localId .
+    }
+    
+    ?attainment aqd:exceedanceDescriptionFinal ?desc_final .
+    ?desc_final   aqd:exceedance ?exceedance .
+    OPTIONAL {?desc_final aqd:exceedance ?exceedance}.
+    OPTIONAL {?desc_final   aqd:numberExceedances ?numberExceedances}.
+    OPTIONAL {?desc_final   aqd:numericalExceedance ?numericalExceedance}.
+    OPTIONAL {?desc_final   aqd:percentileExceedance ?percentileExceedance } .
+ 
+    ?attainment aqd:pollutant ?pollutant.
+
+    ?attainment aqd:environmentalObjective ?environmentalObjective.
+
+    ?environmentalObjective aqd:objectiveType ?objectiveType.
+    ?environmentalObjective aqd:reportingMetric ?reportingMetric .
+    ?environmentalObjective aqd:protectionTarget ?protectionTarget.
+    
+    ?attainment aqd:zone ?zone.
+   }"
+};
+
 (: G92 :)
 declare function query:getAqdExceedanceQueryGraph($cdrUrl as xs:string) as xs:string {
   "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
