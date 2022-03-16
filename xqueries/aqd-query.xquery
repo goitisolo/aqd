@@ -93,6 +93,49 @@ declare function query:getAssessmentRegime($url as xs:string) as xs:string {
    }"
 };
 
+(: C11 :)
+declare function query:getAssessmentRegimeC11($cdrUrl as xs:string, $beginDate as xs:string, $endDate as xs:string) as xs:string {
+  "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+  PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
+  PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+  PREFIX aq: <http://reference.eionet.europa.eu/aq/ontology/>
+  PREFIX dcterms: <http://purl.org/dc/terms/>
+  PREfIX contreg: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
+
+   SELECT DISTINCT
+    ?pollURI
+    ?Pollutant
+    ?ProtectionTarget
+    ?zoneURI
+    count(distinct bif:concat(str(?Zone), str(?pollURI), str(?ProtectionTarget))) AS ?countOnB
+
+   WHERE {
+    values ?envelope { <" || $cdrUrl || "> }
+    ?graph dcterms:isPartOf ?envelope .
+    ?graph contreg:xmlSchema ?xmlSchema .
+
+      GRAPH ?graph {
+              ?zoneURI a aqd:AQD_Zone;
+              aqd:zoneCode ?Zone;
+              aqd:pollutants ?polltargetURI;
+              aqd:inspireId ?inspireId;
+
+              aqd:designationPeriod ?designationPeriod .
+              ?designationPeriod aqd:beginPosition ?beginPosition .
+              OPTIONAL { ?designationPeriod aqd:endPosition ?endPosition . }
+              ?inspireId aqd:namespace ?Namespace .
+      } 
+    ?polltargetURI aqd:protectionTarget ?ProtectionTarget .
+    ?polltargetURI aqd:protectionTarget ?ProtectionTarget .
+    ?polltargetURI aqd:pollutantCode ?pollURI .
+    ?pollURI rdfs:label ?Pollutant .
+    FILTER regex(?pollURI,'') .
+    FILTER (((xsd:date(substr(str(?beginPosition),1,10)) <= xsd:date('" || $beginDate || "')) AND (!(bound(?endPosition)) ||
+    xsd:date(substr(str(?endPosition),1,10)) >= xsd:date('" || $endDate || "')))) .
+
+  }"
+};
+
 (: D :)
 (:declare function query:getSamplingPointProcess($url as xs:string) as xs:string {
   "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
