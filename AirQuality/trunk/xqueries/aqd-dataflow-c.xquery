@@ -95,6 +95,7 @@ let $namespaces := distinct-values($docRoot//base:namespace)
 
 
 let $latestEnvelopeB := query:getLatestEnvelope($cdrUrl || $bdir)
+let $latestEnvelopeByYearB := query:getLatestEnvelope($cdrUrl || $bdir, $reportingYear)
 let $latestEnvelopeC := query:getLatestEnvelope($cdrUrl || $cdir, $reportingYear)
 let $latestEnvelopeD := query:getLatestEnvelope($cdrUrl || "d/")
 let $latestEnvelopeD1b := query:getLatestEnvelope($cdrUrl || "d1b/", $reportingYear)
@@ -778,6 +779,136 @@ let $C10invalid :=
     }
 
 let $ms2C10 := prof:current-ms()
+
+
+(: C11 :)
+
+let $ms1C11 := prof:current-ms()
+
+let $C11invalid :=
+    try {
+      let $beginDate := substring(normalize-space($headerBeginPosition), 1, 10)
+      let $endDate := substring(normalize-space($headerEndPosition), 1, 10)
+      
+      let $environmentalObjectiveRdf := doc($vocabulary:ENVIRONMENTALOBJECTIVE || "rdf")
+      
+      let $combinationsInC := (
+        for $x in $docRoot//aqd:AQD_AssessmentRegime
+          let $localId := data($x/@gml:id)
+          let $pollutant := functx:substring-after-last(data($x/aqd:pollutant/@xlink:href), "/")
+          let $protectionTarget := functx:substring-after-last(data($x/aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:protectionTarget/@xlink:href), "/")
+          let $zoneId := functx:substring-after-last(data($x/aqd:zone/@xlink:href), "/")
+          let $objectiveType := functx:substring-after-last(data($x/aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:objectiveType/@xlink:href), "/")
+          let $reportingMetric := functx:substring-after-last(data($x/aqd:assessmentThreshold/aqd:AssessmentThreshold/aqd:environmentalObjective/aqd:EnvironmentalObjective/aqd:reportingMetric/@xlink:href), "/")
+          
+          return $pollutant || ", " || $protectionTarget || ", " || $zoneId || ", " || "Pollutant " || $pollutant || ", " || "Objective type " || $objectiveType || ", " || "Metric " || $reportingMetric || ", " || "Target " || $protectionTarget
+      )
+      
+      let $queryResults := sparqlx:run(query:getAssessmentRegimeC11($latestEnvelopeByYearB, $beginDate, $endDate))
+      
+      (: 1. Error will return if combination of elements Pollutant + Protection Target + ZoneId + Environmental objective from B is missing in C: :)
+      let $combinationsFromBMissingInC := (
+        for $result in $queryResults
+          let $pollutantCodeResult := functx:substring-after-last($result/sparql:binding[@name='pollURI']/sparql:uri, "/")
+          let $pollutantNameResult := $result/sparql:binding[@name='Pollutant']/sparql:literal
+          let $protectionTargetResult := functx:substring-after-last($result/sparql:binding[@name='ProtectionTarget']/sparql:uri, "/")
+          let $zoneResult := functx:substring-after-last($result/sparql:binding[@name='zoneURI']/sparql:uri, "#")
+          let $countOnBResult := $result/sparql:binding[@name='countOnB']/sparql:literal
+          
+          (: Environmental objective combinations: :)
+          for $environmentalObjectiveCombination in $environmentalObjectiveRdf//skos:Concept/skos:prefLabel
+            let $errorMessage := (
+              if ( contains($environmentalObjectiveCombination, "Pollutant " || $pollutantCodeResult || ",") and
+                contains($environmentalObjectiveCombination, "Target " || $protectionTargetResult) and
+                functx:is-value-in-sequence($pollutantCodeResult || ", " || $protectionTargetResult || ", " || $zoneResult || ", " || $environmentalObjectiveCombination, $combinationsInC) = false() ) then data("Combination from B missing in C")
+              else if($countOnBResult > 1) then data("Count on B: " || $countOnBResult)
+            )
+            return
+              if ( (contains($environmentalObjectiveCombination, "Pollutant " || $pollutantCodeResult || ",") and
+                contains($environmentalObjectiveCombination, "Target " || $protectionTargetResult) and
+                functx:is-value-in-sequence($pollutantCodeResult || ", " || $protectionTargetResult || ", " || $zoneResult || ", " || $environmentalObjectiveCombination, $combinationsInC) = false())
+                or $countOnBResult > 1 )
+              then
+              <tr>
+                  <td title="pollutant code">{$pollutantCodeResult}</td>
+                  <td title="pollutant">{$pollutantNameResult}</td>
+                  <td title="protection target">{$protectionTargetResult}</td>
+                  <td title="zone">{$zoneResult}</td>
+                  <td title="environmental objective">{$environmentalObjectiveCombination}</td>
+                  <td title="error message">{$errorMessage}</td>
+                  <td title="Sparql">{sparqlx:getLink(query:getAssessmentRegimeC11($latestEnvelopeByYearB, $beginDate, $endDate))}</td>
+              </tr>
+      )
+      
+      (: 2. Error will return if combination of elements Pollutant + Protection Target + ZoneId + Environmental objective from C is missing in B: :)
+      let $combinationsInB := (
+        for $result in $queryResults
+          let $pollutantCodeResult := functx:substring-after-last($result/sparql:binding[@name='pollURI']/sparql:uri, "/")
+          let $pollutantNameResult := $result/sparql:binding[@name='Pollutant']/sparql:literal
+          let $protectionTargetResult := functx:substring-after-last($result/sparql:binding[@name='ProtectionTarget']/sparql:uri, "/")
+          let $zoneResult := functx:substring-after-last($result/sparql:binding[@name='zoneURI']/sparql:uri, "#")
+          
+          (: Environmental objective combinations: :)
+          for $environmentalObjectiveCombination in $environmentalObjectiveRdf//skos:Concept/skos:prefLabel
+            return
+              if (contains($environmentalObjectiveCombination, "Pollutant " || $pollutantCodeResult || ",") and
+                contains($environmentalObjectiveCombination, "Target " || $protectionTargetResult) )
+              then $pollutantCodeResult || ", " || $protectionTargetResult || ", " || $zoneResult || ", " || $environmentalObjectiveCombination
+      )
+        
+      let $combinationsFromCMissingInB := (
+        for $combC in distinct-values($combinationsInC)
+          let $pollutant := tokenize($combC, ", ")[1]
+          let $protectionTarget := tokenize($combC, ", ")[2]
+          let $zoneId := tokenize($combC, ", ")[3] 
+          let $objectiveType := substring-after( (tokenize($combC, ", ")[5]), "Objective type " )
+          let $reportingMetric := substring-after( (tokenize($combC, ", ")[6]), "Metric " )
+          let $environmentalObjectiveCombinationC := $pollutant || ", " || $protectionTarget || ", " || $zoneId || ", " || "Pollutant " || $pollutant || ", " || "Objective type " || $objectiveType || ", " || "Metric " || $reportingMetric || ", " || "Target " || $protectionTarget
+          let $envObjCombC := "Pollutant " || $pollutant || ", " || "Objective type " || $objectiveType || ", " || "Metric " || $reportingMetric || ", " || "Target " || $protectionTarget
+          
+          (: Looking for duplicates: :)
+          let $areDuplicated := 
+            (
+              if(count(index-of($combinationsInC, $environmentalObjectiveCombinationC)) > 1) then true()
+              else false()
+            )
+          
+          let $errorMessage := (
+              if ( functx:is-value-in-sequence($environmentalObjectiveCombinationC, $combinationsInB) = false() ) then data("Combination from C missing in B")
+              else if( $areDuplicated = true()) then data("Count on C: " || count(index-of($combinationsInC, $environmentalObjectiveCombinationC)) )
+            )
+          
+          return
+            if ( functx:is-value-in-sequence($environmentalObjectiveCombinationC, $combinationsInB) = false() or $areDuplicated = true() )
+            then
+            <tr>
+                <td title="pollutant code">{$pollutant}</td>
+                <td title="pollutant">{dd:getNameFromPollutantCode($pollutant)}</td>
+                <td title="protection target">{$protectionTarget}</td>
+                <td title="zone">{$zoneId}</td>
+                <td title="environmental objective">{$envObjCombC}</td>
+                <td title="error message">{$errorMessage}</td>
+                <td title="Sparql">{sparqlx:getLink(query:getAssessmentRegimeC11($latestEnvelopeByYearB, $beginDate, $endDate))}</td>
+            </tr>
+      )
+      
+      (: 3. List of errors: :)    
+      let $countCombinationsFromBMissingInC := count($combinationsFromBMissingInC)
+      let $countCombinationsFromCMissingInB := count($combinationsFromCMissingInB)
+      return
+          (if($countCombinationsFromBMissingInC != 0) then $combinationsFromBMissingInC ,
+          if($countCombinationsFromCMissingInB != 0) then $combinationsFromCMissingInB )
+            
+    }  catch * {
+        <tr class="{$errors:FAILED}">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
+
+let $ms2C11 := prof:current-ms()
+
+
 (: C20 :)
 
 let $ms1C20 := prof:current-ms()
@@ -1841,6 +1972,7 @@ return
         {html:build2("C08", $labels:C08, $labels:C08_SHORT, $C08invalid, "All values are valid", " missing pollutant", $errors:C08)}
         {html:build0("C09", $labels:C09, $labels:C09_SHORT, $C09table, "pollutant")}
         {html:build2("C10", $labels:C10, $labels:C10_SHORT, $C10invalid, "All values are valid", " invalid value", $errors:C10)}
+        {html:build2Sparql("C11", $labels:C11, $labels:C11_SHORT, $C11invalid, "All values are valid", " invalid value", $errors:C11)}
         {html:build2("C20", $labels:C20, $labels:C20_SHORT, $C20invalid, "All combinations have been found", "record", $errors:C20)}
         {html:build2("C21", $labels:C21, $labels:C21_SHORT, $C21invalid, "All values are valid", " invalid value", $errors:C21)}
         {html:build2("C23a", $labels:C23a, $labels:C23a_SHORT, $C23ainvalid, "All values are valid", " invalid value", $errors:C23a)}
@@ -1893,6 +2025,7 @@ return
        {common:runtime("C08",  $ms1C08, $ms2C08)}
        {common:runtime("C09",  $ms1C09, $ms2C09)}
        {common:runtime("C10",  $ms1C10, $ms2C10)}
+       {common:runtime("C11",  $ms1C11, $ms2C11)}
        {common:runtime("C20", $ms1C20, $ms2C20)}
        {common:runtime("C21",  $ms1C21, $ms2C21)}
        {common:runtime("C23a",  $ms1C23a, $ms2C23a)}
