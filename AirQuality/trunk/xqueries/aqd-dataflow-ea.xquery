@@ -1147,8 +1147,8 @@ let $E26invalid :=
             <tr>
                 <td title="om:OM_Observation">{string($x/@gml:id)}</td>
                 <td title="aqd:AQD_SamplingPoint">{string($samplingPoint)}</td>
-                <td title="aqd:AQD_SamplingPointProcess">{$procedure}</td>
-                <td title="aqd:AQD_Sample">{$featureOfInterest}</td>
+                <td title="aqd:AQD_SamplingPointProcess">{functx:substring-after-if-contains($procedure, "://reference.eionet.europa.eu/aq/")}</td>
+                <td title="aqd:AQD_Sample">{functx:substring-after-if-contains($featureOfInterest, "://reference.eionet.europa.eu/aq/")}</td>
                 <td title="Pollutant">{$observedProperty}</td>
                 <td title="Sparql">{sparqlx:getLink(query:getSamplingPointMetadataFromFiles($latestEnvelopeD))}</td>
             </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
@@ -1204,8 +1204,8 @@ let $E26bfunc := function() {
         <tr>
             <td title="om:OM_Observation">{string($x/@gml:id)}</td>
             <td title="aqd:AQD_SamplingPoint">{string($samplingPoint)}</td>
-            <td title="aqd:AQD_SamplingPointProcess">{$procedure}</td>
-            <td title="aqd:AQD_Sample">{$featureOfInterest}</td>
+            <td title="aqd:AQD_SamplingPointProcess">{functx:substring-after-if-contains($procedure, "://reference.eionet.europa.eu/aq/")}</td>
+            <td title="aqd:AQD_Sample">{functx:substring-after-if-contains($featureOfInterest, "://reference.eionet.europa.eu/aq/")}</td>
             <td title="Pollutant">{$observedProperty}</td>
             <td title="Sparql">{sparqlx:getLink(query:getE26b($latestEnvelopeD))}</td>
         </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
