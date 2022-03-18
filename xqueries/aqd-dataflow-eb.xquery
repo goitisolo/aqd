@@ -976,8 +976,8 @@ let $ms2Eb14b := prof:current-ms()
                 <tr>
                     <td title="om:OM_Observation">{string($x/@gml:id)}</td>
                     <td title="aqd:AQD_Model">{string($model)}</td>
-                    <td title="aqd:AQD_ModelProcess">{$procedure}</td>
-                    <td title="aqd:AQD_ModelArea">{$featureOfInterest}</td>
+                    <td title="aqd:AQD_ModelProcess">{functx:substring-after-if-contains($procedure, "://reference.eionet.europa.eu/aq/")}</td>
+                    <td title="aqd:AQD_ModelArea">{functx:substring-after-if-contains($featureOfInterest, "://reference.eionet.europa.eu/aq/")}</td>
                     <td title="Pollutant">{$observedProperty}</td>
                     <td title="Sparql">{sparqlx:getLink(query:getModelMetadataSampling($cdrUrl))}</td>
                 </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]

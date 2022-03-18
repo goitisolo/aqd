@@ -1616,10 +1616,10 @@ let $G66invalid :=
         return
             <tr>
                 <td title="gml:id">{$localId}</td>
-                <td title="aqd:assessment">{$assessment}</td>
+                <td title="aqd:assessment">{functx:substring-after-if-contains($assessment, "://reference.eionet.europa.eu/aq/")}</td>
                 <td title="aqd:modelAssessmentMetadata">{$station}</td>
                 <td title="C gml:id">{$localIdC}</td>
-                <td title="C aqd:modelAssessmentMetadata">{$assessmentCsubs}</td>
+                <td title="C aqd:modelAssessmentMetadata">{functx:substring-after-if-contains($assessmentCsubs, "://reference.eionet.europa.eu/aq/")}</td>
                 <td title="Sparql">{sparqlx:getLink(query:getG66($latestEnvelopeC, $reportingYear))}</td>
             </tr>
     } catch * {
