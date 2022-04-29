@@ -3305,12 +3305,13 @@ let $D94invalid :=
     }
 
 let $ns2D94 := prof:current-ms()
-let $ms2Total := prof:current-ms()
+(:let $ms2Total := prof:current-ms():)
 
 (: D96 - Sampling point should belong to the same station as previous deliveries :)
 
 let $ns1D96 := prof:current-ms()
-
+(: commented on 20220427 because of the issue #148956 :)
+(:
 let $D96invalid :=
    
     try {
@@ -3331,6 +3332,51 @@ let $D96invalid :=
                 <td title="Current station">{data($x/ef:broader/@xlink:href)}</td>
                 <td title="Previous station">{data($y/sparql:binding[@name = 'broader']/sparql:uri)}</td>
                 <td title="Sparql">{sparqlx:getLink(query:getSamplingNetworkLatAndLong($latestEnvelopeD))}</td>
+            </tr>
+
+    } catch * {
+        <tr class="{$errors:FAILED}">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }
+:)
+
+let $D96invalid :=
+   
+    try {
+      
+        let $historicSP := sparqlx:run(query:getSamplingNetworkLatAndLong($latestEnvelopeD))
+            
+        let $samplingDataDoc:= (
+          for $x in $docRoot//aqd:AQD_SamplingPoint
+            let $localId := $x/ef:inspireId/base:Identifier/base:localId
+            let $broader := functx:substring-after-if-contains(data($x/ef:broader/@xlink:href), "://reference.eionet.europa.eu/aq/")
+            return $localId || "##" || $broader
+        )
+        
+        let $historicSPData:= ( 
+          for $y in $historicSP
+            let $historicLocalId := $y/sparql:binding[@name = 'localId']/sparql:literal
+            let $historicBroader := functx:substring-after-if-contains(data($y/sparql:binding[@name = 'broader']/sparql:uri), "://reference.eionet.europa.eu/aq/")
+            return $historicLocalId || "##" || $historicBroader
+        )
+        
+        let $historicSPLocalIds:= ( 
+          for $y in $historicSP
+            let $historicLocalId := $y/sparql:binding[@name = 'localId']/sparql:literal
+            return $historicLocalId
+        )
+        
+        for $x in $samplingDataDoc
+          let $spLocalId := tokenize($x, "##")[1]
+          let $spBroader := tokenize($x, "##")[2] 
+          return 
+          if( functx:is-value-in-sequence($spLocalId, $historicSPLocalIds) = true() and functx:is-value-in-sequence($x, $historicSPData) = false() ) then
+            <tr>
+                <td title="Local ID">{$spLocalId}</td>
+                <td title="Current station">{$spBroader}</td>
+                <td title="Sparql">{sparqlx:getLink(query:getSamplingNetworkLatAndLongDynamic($latestEnvelopeD, $spLocalId))}</td>
             </tr>
 
     } catch * {
