@@ -4209,6 +4209,36 @@ SELECT DISTINCT ?lat ?long ?broader ?inspireLabel ?localId
 }"
 };
 
+declare function query:getSamplingNetworkLatAndLongDynamic($cdrUrl as xs:string, $localId as xs:string) as xs:string {
+
+    "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
+PREFIX aqd: <http://rdfdata.eionet.europa.eu/airquality/ontology/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREfIX contreg: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
+PREfIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+
+SELECT DISTINCT ?lat ?long ?broader ?inspireLabel ?localId
+  WHERE {
+   
+    values ?envelope {<"||$cdrUrl||">}
+    ?graph dcterms:isPartOf ?envelope .
+    ?graph contreg:xmlSchema ?xmlSchema .
+      GRAPH ?graph {
+      ?samplingPoint a aqd:AQD_SamplingPoint .
+      ?samplingPoint aqd:inspireId ?inspireId .
+      ?samplingPoint geo:lat ?lat.
+      ?samplingPoint geo:long ?long.
+      ?samplingPoint aqd:broader ?broader
+      }
+    ?inspireId rdfs:label ?inspireLabel .
+    ?inspireId aqd:localId ?localId .
+    ?inspireId aqd:namespace ?namespace .
+    
+    FILTER(?localId = '" || $localId || "')
+}"
+};
+
 (:~ Returns the areaClassification for a given attainment
 
 /aqd:AQD_Attainment/aqd:exceedanceDescriptionFinal/aqd:ExceedanceDescription/
