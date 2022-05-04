@@ -3391,7 +3391,8 @@ let $ns2D96 := prof:current-ms()
 (: D97 - Sampling point should have same lat & long as previous deliveries :)
 
 let $ns1D97 := prof:current-ms()
-
+(: Commented to improve the speed in May 2022 by @diezzana, issue #148957 :)
+(:
 let $D97invalid :=
    
     try {
@@ -3439,7 +3440,71 @@ let $D97invalid :=
             <td title="Error description">{$err:description}</td>
         </tr>
     }
+:)
 
+let $D97invalid :=
+   
+    try {
+       
+        let $historicSP := sparqlx:run(query:getSamplingNetworkLatAndLong($latestEnvelopeD))
+            
+        let $samplingDataDoc:= (
+          for $x in $docRoot//aqd:AQD_SamplingPoint
+              let $localId := $x/ef:inspireId/base:Identifier/base:localId
+              let $latLong:= $x/ef:geometry/gml:Point/gml:pos
+              let $latCoordinate := (
+                if (data($latLong/@srsDimension)="2") then
+                      xs:decimal(substring-before($latLong," "))
+                else if (data($latLong/@srsDimension)="1") then 
+                        xs:decimal(($latLong))
+                            else
+                                ""
+              )
+              let $longCoordinate := (
+                if (data($latLong/@srsDimension)="2") then
+                    xs:decimal(substring-after($latLong," "))
+                else if (data($latLong/@srsDimension)="1") then 
+                      ""
+                          else
+                              ""
+              )
+          return $localId  || "##" || $latCoordinate || "##" || $longCoordinate
+        )
+        
+        let $historicSPData:= ( 
+          for $y in $historicSP
+            let $historicLocalId := $y/sparql:binding[@name = 'localId']/sparql:literal
+            let $historicLat := $y/sparql:binding[@name = 'lat']/sparql:literal
+            let $historicLong := $y/sparql:binding[@name = 'long']/sparql:literal
+            return $historicLocalId || "##" || $historicLat || "##" || $historicLong
+        )
+        
+        let $historicSPLocalIds:= ( 
+          for $y in $historicSP
+            let $historicLocalId := $y/sparql:binding[@name = 'localId']/sparql:literal
+            return $historicLocalId
+        )
+        
+        for $sampling in $samplingDataDoc
+          let $spLocalId := tokenize($sampling, "##")[1]
+          let $spLat := tokenize($sampling, "##")[2] 
+          let $spLong := tokenize($sampling, "##")[3] 
+          where ( functx:is-value-in-sequence($spLocalId, $historicSPLocalIds) = true() and functx:is-value-in-sequence($sampling, $historicSPData) = false() )
+          return
+            <tr>
+                <td title="Local ID">{$spLocalId}</td>
+                <td title="Current lat">{$spLat}</td>
+                <td title="Current long">{$spLong}</td>
+                <td title="Sparql">{sparqlx:getLink(query:getSamplingNetworkLatAndLongDynamic($latestEnvelopeD, $spLocalId))}</td>
+            </tr>
+
+    } catch * {
+        <tr class="{$errors:FAILED}">
+            <td title="Error code">{$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+        </tr>
+    }    
+    
 let $ns2D97 := prof:current-ms()
 
 let $ms2Total := prof:current-ms()
