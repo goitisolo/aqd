@@ -451,8 +451,8 @@ let $M15invalid :=
     try {
         let $allNotNullEndPeriods :=
             for $allPeriod in $docRoot//aqd:AQD_Model/ef:observingCapability/ef:ObservingCapability/ef:observingTime/gml:TimePeriod
-            where ($allPeriod/gml:endPosition[normalize-space(@indeterminatePosition) != "unknown"]
-                    or fn:string-length($allPeriod/gml:endPosition) > 0)
+            where ( $allPeriod/gml:endPosition[normalize-space(@indeterminatePosition) != "unknown"]
+                    and (fn:string-length($allPeriod/gml:endPosition) > 0 and $allPeriod/gml:endPosition != "unknown") )
             return $allPeriod
 
         for $observingCapabilityPeriod in $allNotNullEndPeriods
