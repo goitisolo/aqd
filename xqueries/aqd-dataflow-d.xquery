@@ -66,6 +66,7 @@ let $ms1GeneralParameters:= prof:current-ms()
 let $docRoot := doc($source_url)
 let $cdrUrl := common:getCdrUrl($countryCode)
 let $reportingYear := common:getReportingYear($docRoot)
+let $previousReportingYear := string(number($reportingYear) - 1)
 
 let $headerBeginPosition := $docRoot//aqd:AQD_ReportingHeader/aqd:reportingPeriod/gml:TimePeriod/gml:beginPosition
 let $headerEndPosition := $docRoot//aqd:AQD_ReportingHeader/aqd:reportingPeriod/gml:TimePeriod/gml:endPosition
@@ -84,9 +85,11 @@ let $DCombinations :=
 
 let $latestEnvelopeB := query:getLatestEnvelope($cdrUrl || "b/")
 let $latestEnvelopeD := query:getLatestEnvelope($cdrUrl || "d/")
+let $latestEnvelopeFromPreviousYearD := query:getLatestEnvelope($cdrUrl || "d/", $previousReportingYear)
 
 let $namespaces := distinct-values($docRoot//base:namespace)
 let $knownFeatures := distinct-values(data(sparqlx:run(query:getAllFeatureIds($dataflowD:FEATURE_TYPES, $latestEnvelopeD, $namespaces))//sparql:binding[@name='inspireLabel']/sparql:literal))
+let $knownFeaturesFromLatestEnvelopeByYear := distinct-values(data(sparqlx:run(query:getAllFeatureIds($dataflowD:FEATURE_TYPES, $latestEnvelopeFromPreviousYearD, $namespaces))//sparql:binding[@name='inspireLabel']/sparql:literal))
 let $SPOnamespaces := distinct-values($docRoot//aqd:AQD_SamplingPoint//base:Identifier/base:namespace)
 let $SPPnamespaces := distinct-values($docRoot//aqd:AQD_SamplingPointProcess/ompr:inspireId/base:Identifier/base:namespace)
 let $networkNamespaces := distinct-values($docRoot//aqd:AQD_Network/ef:inspireId/base:Identifier/base:namespace)
@@ -355,6 +358,32 @@ let $D03bfunc := function() {
 let $D03binvalid := errors:trycatch($D03bfunc)
 
 let $ns2D03b := prof:current-ms()
+
+(: D03c: Total number of updated records for each feature type included in the delivery. Warning will be returned if D is not complete in relation to latest Delivery from previous year. :)
+
+let $ns1D03c := prof:current-ms()
+
+let $D03cfunc := function() {
+    let $featureTypes := remove($dataflowD:FEATURE_TYPES, index-of($dataflowD:FEATURE_TYPES, "aqd:AQD_RepresentativeArea"))
+    
+    let $currentIds := (
+      for $featureType at $pos in $featureTypes
+        for $x in $docRoot//descendant::*[name() = $featureType]
+          let $inspireId := $x//base:Identifier/base:namespace/string() || "/" || $x//base:Identifier/base:localId/string()
+      return $inspireId
+    )
+
+    for $x in $knownFeaturesFromLatestEnvelopeByYear
+    where not($x = $currentIds)
+    return
+        <tr>
+            <td title="inspireId">{$x}</td>
+            <td title="Sparql">{sparqlx:getLink(query:getAllFeatureIds($dataflowD:FEATURE_TYPES, $latestEnvelopeFromPreviousYearD, $namespaces))}</td>
+        </tr>
+}
+let $D03cinvalid := errors:trycatch($D03cfunc)
+
+let $ns2D03c := prof:current-ms()
 
 (: D04 :)
 
@@ -3525,8 +3554,9 @@ return
         
         
         {html:buildSimpleSparql("D02", $labels:D02, $labels:D02_SHORT, $D02table, "", "feature type", $D02errorLevel)}
-        {html:buildSimpleSparql("D03", $labels:D03, $labels:D03_SHORT, $D03table, $D3count, "feature type", $D03errorLevel)}
+        {html:build2Sparql("D03", $labels:D03, $labels:D03_SHORT, $D03table, $D3count, "feature type", $D03errorLevel)}
         {html:build2Sparql("D03b", $labels:D03b, $labels:D03b_SHORT, $D03binvalid, "All values are valid", "feature type", $errors:D03b)}
+        {html:build2Sparql("D03c", $labels:D03c, $labels:D03c_SHORT, $D03cinvalid, "All values are valid", "feature type", $errors:D03c)}
         {html:build1("D04", $labels:D04, $labels:D04_SHORT, $D04table, string(count($D04table)), "", "", "", $errors:D04)}
         {html:build2("D05", $labels:D05, $labels:D05_SHORT, $D05invalid, "All values are valid", "record", $errors:D05)}
         {html:buildInfoTR("Specific checks on AQD_Network feature(s) within this XML")}
@@ -3641,6 +3671,7 @@ return
        {common:runtime("D02", $ns1D02, $ns2D02)}
        {common:runtime("D03", $ns1D03, $ns2D03)}
        {common:runtime("D03b", $ns1D03b, $ns2D03b)}
+       {common:runtime("D03c", $ns1D03c, $ns2D03c)}
        {common:runtime("D04",  $ns1D04, $ns2D04)}
        {common:runtime("D05", $ns1D05, $ns2D05)}
        {common:runtime("D06",  $ns1D06, $ns2D06)}
