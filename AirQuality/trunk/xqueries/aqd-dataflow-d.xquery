@@ -1112,7 +1112,8 @@ let $ns1D23 := prof:current-ms()
         </tr>
     }:)
 
-    let $D23invalid :=
+    (: commented by @diezzana 16 May 2022 :)
+    (:let $D23invalid :=
     try {               
 
                  for $allStations in $docRoot//aqd:AQD_Station
@@ -1139,6 +1140,63 @@ let $ns1D23 := prof:current-ms()
         
             <tr>
                 <td title="aqd:AQD_Station">{data($allStations/@gml:id)}</td>
+                <td title="belongs to aqd:AQD_Network ">{$belongsTo}</td>
+                <td title="Station beginPos">{$stationBeginPos}</td>
+                <td title="Network beginPos">{$networkBeginPos}</td>
+                <td title="Station endPos">{$stationEndPos}</td>
+                <td title="Network endPos">{$networkEndPos}</td>
+            </tr>
+
+    }  catch * {
+        <tr class="{$errors:FAILED}">
+            <td title="Error code"> {$err:code}</td>
+            <td title="Error description">{$err:description}</td>
+            <td></td>
+        </tr>
+    }:)
+    
+    (: updated by @diezzana 16 May 2022 :)
+    let $D23invalid :=
+    try {          
+             
+        (: 1- aqd:AQD_Network data :)
+        let $networkIds := (
+          for $network in $docRoot//aqd:AQD_Network
+            return data($network/@gml:id)
+        )
+                  
+        let $networkIdPos := (
+          for $network in $docRoot//aqd:AQD_Network
+            let $networkId := data($network/@gml:id)
+            let $networkBeginPos := $network/aqd:operationActivityPeriod/gml:TimePeriod/gml:beginPosition
+            let $networkEndPos := $network/aqd:operationActivityPeriod/gml:TimePeriod/gml:endPosition 
+            return $networkId || ", " || $networkBeginPos || ", " || $networkEndPos
+        )
+        
+        (: 2- aqd:AQD_Station :)
+        for $station in $docRoot//aqd:AQD_Station
+          (: aqd:AQD_Station :)
+          let $belongsTo := fn:substring-after(data($station/ef:belongsTo/@xlink:href), '/')
+          let $stationBeginPos := $station/ef:operationalActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:beginPosition
+          let $stationEndPos := $station/ef:operationalActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:endPosition
+               
+          (: aqd:AQD_Network :)
+          let $indexOfNetwork := index-of($networkIds, $belongsTo)
+          let $networkData := $networkIdPos[$indexOfNetwork]    
+          let $networkId := tokenize($networkData, ", ")[1]
+          let $networkBeginPos := tokenize($networkData, ", ")[2]
+          let $networkEndPos := tokenize($networkData, ", ")[3]          
+
+          where ( $belongsTo != "" and $belongsTo = $networkId ) 
+          return        
+          if (($stationBeginPos < $networkBeginPos) or 
+              ($stationBeginPos="") or 
+              ($networkBeginPos="") or 
+              (($networkEndPos != "") and ($stationEndPos != "") and ($stationEndPos > $networkEndPos) ) or
+              (($networkEndPos != "") and(($stationEndPos[normalize-space(@indeterminatePosition) = "unknown"] )or ($stationEndPos = "")))    
+          ) then
+            <tr>
+                <td title="aqd:AQD_Station">{data($station/@gml:id)}</td>
                 <td title="belongs to aqd:AQD_Network ">{$belongsTo}</td>
                 <td title="Station beginPos">{$stationBeginPos}</td>
                 <td title="Network beginPos">{$networkBeginPos}</td>
