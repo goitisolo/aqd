@@ -1581,26 +1581,35 @@ let $ms2E33 := prof:current-ms()
 let $ms1E34 := prof:current-ms()
 
 let $E34func := function() {
+   ( let $year:= string(xs:integer($reportingYear) -1)
+                    
+    let $discoUrl:="https://discodata.eea.europa.eu/sql?query=SELECT%20SamplingPoint%2CAirPollutionLevel%20FROM%20%5BAirQualityDataFlows%5D.%5Blatest%5D.%5BAirQualityStatistics%5D%0D%0AWHERE%20DataAggregationProcessId%20%3D%20%27P1Y%27%0D%0AAND%20YearOfStatistics%20%3D%20"||$year||"%0D%0AAND%20CountryCode%20%3D%20%27"||$countryCode||"%27&amp;p=1&amp;nrOfHits=100&amp;mail=null&amp;schema=null"
+    (:"https://discodata.eea.europa.eu/sql?query=SELECT%20SamplingPoint%2CAirPollutionLevel%20FROM%20%5BAirQualityDataFlows%5D.%5Blatest%5D.%5BAirQualityStatistics%5D%0D%0AWHERE%20DataAggregationProcessId%20%3D%20%27P1Y%27%0D%0AAND%20AirPollutant%20IN%20(%27SO2%27%2C%27NO2%27%2C%27PM10%27%2C%27PM2.5%27)%0D%0A%0D%0AAND%20YearOfStatistics%20%3D%20"||$year||"%0D%0AAND%20CountryCode%20%3D%20%27"||$countryCode||"%27&amp;p=1&amp;nrOfHits=10000&amp;mail=null&amp;schema=null":)(:con filtro AND AirPollutant IN ('SO2','NO2','PM10','PM2.5'):)
+    (:"https://discodata.eea.europa.eu/sql?query=SELECT%20*%20FROM%20%5BAirQualityDataFlows%5D.%5Blatest%5D.%5BAirQualityStatistics%5D%0D%0AWHERE%20DataAggregationProcessId%20%3D%20%27P1Y%27%0D%0AAND%20AirPollutant%20IN%20(%27SO2%27%2C%27NO2%27%2C%27PM10%27%2C%27PM2.5%27)%0D%0AAND%20YearOfStatistics%20%3D%20"||$year||"%0D%0AAND%20CountryCode%20%3D%20%27"||$countryCode||"%27&amp;p=1&amp;nrOfHits=5000&amp;mail=null&amp;schema=null":)
+    let $discodataJSON := json-doc($discoUrl)
+    let $discodataArray:=$discodataJSON('results') (:ARRAY:)        
+    let $s := array:size($discodataArray )
+
+    (:  for $i in (1 to $s)
+    $discodataArray($i)?AirPollutantGroup:)
+
+    (:(let $previousData := sparqlx:run(query:getE34($countryCode, $reportingYear)):)
     
-    (let $previousData := sparqlx:run(query:getE34($countryCode, $reportingYear))
-          
     for $x at $xpos in $docRoot//om:OM_Observation
    
-      let $previousTRT:=
+      let $previousComparison:=
         for $y in $x/om:parameter/om:NamedValue[om:name/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/processparameter/SamplingPoint"]
-         (: let $samplingPoint := tokenize(common:if-empty($y/om:value, 'no data'), "/")[last()]:)
-         let $samplingPoint := tokenize(common:if-empty($y/om:value, $y/om:value/@xlink:href), "/")[last()]
-         (:let $previousMean := sparqlx:run(query:getE34Sampling($countryCode, $reportingYear, $samplingPoint)):)
-        return $previousData[(sparql:binding[@name = "SamplingPointLocalId"]/sparql:literal = $samplingPoint)]/sparql:binding[@name = "AQValue"]/sparql:literal
+        let $samplingPoint := tokenize(common:if-empty($y/om:value, $y/om:value/@xlink:href), "/")[last()]
+         for $i in (1 to $s)
+           return 
+            if ($discodataArray($i)?SamplingPoint = $samplingPoint) then
+
+        (:return $previousData[(sparql:binding[@name = "SamplingPointLocalId"]/sparql:literal = $samplingPoint)]/sparql:binding[@name = "AQValue"]/sparql:literal:)
+         $discodataArray($i)?AirPollutionLevel
       
-       let $previousTRTquery:=
-         for $y in $x/om:parameter/om:NamedValue[om:name/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/processparameter/SamplingPoint"]
-            let $samplingPoint := tokenize(common:if-empty($y/om:value, $y/om:value/@xlink:href), "/")[last()]
-            let $previousMean := sparqlx:getLink(query:getE34Sampling($countryCode, $reportingYear, $samplingPoint))
-        return $previousMean
 
  
-   return if (string($previousTRT) = 'NaN' ) then () else 
+   return if (string($previousComparison) = 'NaN' ) then () else 
 
     let $blockSeparator := string($x//swe:encoding/swe:TextEncoding/@blockSeparator)
     let $decimalSeparator := string($x//swe:encoding/swe:TextEncoding/@decimalSeparator)
@@ -1630,15 +1639,23 @@ let $E34func := function() {
                 ($count div common:getYearHoursCount($reportingYear)) => format-number("0.01")
         let $dc := number($dc) * 100
         return $dc || "%"
-    let $higherLimit := $previousTRT * 3
-    let $lowerLimit := $previousTRT div 3
+    let $higherLimit := $previousComparison * 3
+    let $lowerLimit := $previousComparison div 3
     where $mean > $higherLimit or $mean < $lowerLimit
     
+
+  (:  for $y in $x/om:parameter/om:NamedValue[om:name/@xlink:href = "http://dd.eionet.europa.eu/vocabulary/aq/processparameter/SamplingPoint"]
+        let $samplingPoint := tokenize(common:if-empty($y/om:value, $y/om:value/@xlink:href), "/")[last()]
+     for $i in (1 to $s):)
     return    
         <tr>
+        <!--<td title="$s">{$s}</td>
+        <td title="$discodataArray($i)?SamplingPoint">{$discodataArray($i)?SamplingPoint}</td>
+        <td title="AirPollutionLevel">{$discodataArray($i)?AirPollutionLevel}</td>
+         <td title="$samplingPoint">{$samplingPoint}</td>-->
             <td title="OM_Observation">{string($x/@gml:id)}</td>
             <td title="Mean">{format-number($mean, "0.1")}</td>
-            <td title="Previous Mean">{format-number($previousTRT, "0.1")}</td>
+            <td title="Previous Mean">{format-number($previousComparison, "0.1")}</td>
             <td title="Data coverage">{$coverageType || " coverage: " || $dataCoverage}</td>
             <td title="Sparql">{sparqlx:getLink(query:getE34($countryCode, $reportingYear))}</td>
         </tr>)[position() = 1 to $errors:MEDIUM_LIMIT]
