@@ -1250,33 +1250,23 @@ let $ns1D25 := prof:current-ms()
 let $D25table :=
     try {
         for $altitude in $docRoot//aqd:AQD_Station/aqd:altitude
-        let $uom:= data($altitude/@uom)
-        let $status:=
+          let $uom:= data($altitude/@uom)
+         
+          let $rdfLengthHttp := data(doc($vocabulary:UOM_LENGTH || "rdf")//skos:Concept/replace(@rdf:about, 'https://', 'http://'))
+          let $rdfLengthHttps := data(doc($vocabulary:UOM_LENGTH || "rdf")//skos:Concept/replace(@rdf:about, 'http://', 'https://'))
+          
+          let $status := (
+            if( starts-with($uom,'http://') and $uom = $rdfLengthHttp ) then "OK"
+            else if( starts-with($uom,'https://') and $uom = $rdfLengthHttps ) then "OK"
+            else "NOK"
+          )
         
-            if (starts-with($uom,'http://') or starts-with($uom,'https://')) then (      
-                   
-                            let $request := <http:request href="{$uom}" method="HEAD"/>
-                            let $response := http:send-request($request)[1]  
-
-                            let $url := $request/@href 
-                            let $message := $response/@message
-
-                            return  $response/@status)
-            else (
-
-               0
-                )
-   
-    
-     
-         where ((string(number(data($altitude)))= 'NaN') or (number(data($altitude))< -10) or (number(data($altitude)) > 5700 ) or ($status!=200))
-        return
+          where ((string(number(data($altitude)))= 'NaN') or (number(data($altitude))< -10) or (number(data($altitude)) > 5700 ) or ($status = "NOK") )
+          return
             <tr class="{$errors:BLOCKER}">
                 <td title="aqd:AQD_Station">{data($altitude/../@gml:id)}</td>
                 <td title="altitude">{data($altitude)}</td>                
                 <td title="uom url">{$uom}</td>
-               <!-- <td title="gml:beginPosition">{$operationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:beginPosition}</td>
-                <td title="gml:endPosition">{$operationActivityPeriod/ef:OperationalActivityPeriod/ef:activityTime/gml:TimePeriod/gml:endPosition}</td>-->
             </tr>
     }  catch * {
         <tr class="{$errors:FAILED}">
@@ -1285,7 +1275,6 @@ let $D25table :=
             <td></td>
         </tr>
     }
-
 
 let $ns2D25 := prof:current-ms()
 
