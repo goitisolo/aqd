@@ -3181,7 +3181,9 @@ declare function query:getG13($countryCode as xs:string, $reportingYear as xs:st
       ?regime a aqd:AQD_AssessmentRegime .
       ?regime aqd:assessmentThreshold ?assessmentThreshold .
       ?regime aqd:pollutant ?pollutant .
-      ?regime aqd:inspireId ?inspireId .
+      GRAPH ?tmp {
+        ?regime aqd:inspireId ?inspireId .
+      }
       ?regime aqd:declarationFor ?declaration .
     }
     ?inspireId rdfs:label ?inspireLabel .
