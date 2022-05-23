@@ -663,6 +663,7 @@ let $G13binvalid :=
             <tr>
                 <td title="aqd:AQD_Attainment">{data($x/aqd:inspireId/base:Identifier/base:localId)}</td>
                 <td title="aqd:assessment">{data($x/aqd:assessment/@xlink:href)}</td>
+                <td title="Sparql">{sparqlx:getLink(query:getG13(upper-case($countryCode), $reportingYear))}</td>
             </tr>
     } catch * {
         <tr class="{$errors:FAILED}">
@@ -694,6 +695,7 @@ let $G13cinvalid :=
             <tr>
                 <td title="aqd:AQD_Attainment">{data($x/aqd:inspireId/base:Identifier/base:localId)}</td>
                 <td title="aqd:assessment">{data($x/aqd:assessment/@xlink:href)}</td>
+                <td title="Sparql">{sparqlx:getLink(query:getG13(upper-case($countryCode), $reportingYear))}</td>
             </tr>
     } catch * {
         <tr class="{$errors:FAILED}">
@@ -2279,8 +2281,8 @@ return
         {html:build2("G11", $labels:G11, $labels:G11_SHORT, $G11invalid, "All values are valid", " invalid value", $errors:G11)}
         {html:build2("G12", $labels:G12, $labels:G12_SHORT, $G12invalid, "All values are valid", " invalid value", $errors:G12)}
         {html:build2Sparql("G13", $labels:G13, $labels:G13_SHORT, $G13invalid, "All values are valid", " invalid value", $errors:G13)}
-        {html:build2("G13b", $labels:G13b, $labels:G13b_SHORT, $G13binvalid, "All values are valid", " invalid value", $errors:G13b)}
-        {html:build2("G13c", $labels:G13c, $labels:G13c_SHORT, $G13cinvalid, "All values are valid", " invalid value", $errors:G13c)}
+        {html:build2Sparql("G13b", $labels:G13b, $labels:G13b_SHORT, $G13binvalid, "All values are valid", " invalid value", $errors:G13b)}
+        {html:build2Sparql("G13c", $labels:G13c, $labels:G13c_SHORT, $G13cinvalid, "All values are valid", " invalid value", $errors:G13c)}
         {html:build2Sparql("G14", $labels:G14, $labels:G14_SHORT, $G14table, "All values are valid", "record", errors:getMaxError($G14table))}
         {html:build2Sparql("G14b", $labels:G14b, $labels:G14b_SHORT, $G14binvalid, "All assessment regimes are reported", " missing assessment regime", $errors:G14b)}
         {html:build2Sparql("G15", $labels:G15, $labels:G15_SHORT, $G15invalid, "All values are valid", " invalid value", $errors:G15)}
